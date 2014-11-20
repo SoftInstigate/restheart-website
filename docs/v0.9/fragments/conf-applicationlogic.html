@@ -1,0 +1,39 @@
+<!-- ***** Application Logic -->
+<div id="conf-applicationlogic" class="bs-docs-section">
+    <h2>Application Logic</h2>
+    <p>RESTHeart has a pipeline architecture where specialized <a href="http://undertow.io/documentation/core/overview.html#_handlers" target="_blank">undertow handlers</a> are chained to serve the requests.</p>
+    <p>In order to provide additional application logic, custom handlers pipes can be bound under the /_logic URL.</p>
+    <p>The custom hanlder must extends the <code>com.softinstigate.restheart.handlers.ApplicationLogicHandler</code> class</p>
+    <p>Use <code>application-logic-mounts</code> to configure custom handlers.</p>
+    <p>In the following example two built-in application logic handlers are defined:
+    <ul>
+        <li>PingHandler bound to /_logic/ping that implements a simple ping service</li>
+        <li>GetRoleHandler bound to /_logic/roles/mine that returns the current user authentication status and eventually its roles</li>
+    </ul>
+
+    <div class="bs-callout bs-callout-info">
+        <p>
+            note the <code>secured</code> property that allows to put the handler under the RESTHeart security context and 
+            the <code>args</code> properties that are passed to the custom handler.
+        </p>
+    </div>
+
+    {% highlight yaml %}
+                            
+application-logic-mounts:
+ - what: com.softinstigate.restheart.handlers.applicationlogic.PingHandler
+   where: /ping
+   secured: false
+   args: 
+        msg: "ciao from the restheart team"
+ - what: com.softinstigate.restheart.handlers.applicationlogic.GetRoleHandler
+   where: /roles/mine
+   secured: false
+   args:
+      url: /_logic/roles/mine
+      send-challenge: false
+      idm-implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+      idm-conf-file: ../etc/security-integrationtest.yaml
+    {% endhighlight %}
+
+</div>

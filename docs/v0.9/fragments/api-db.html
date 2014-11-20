@@ -1,0 +1,150 @@
+<div id="api-db" class="bs-docs-section">
+    <h2>The DB resources</h2>
+    <p class="lead">
+        The DB resources allow you to manage your mongodb databases. 
+        <br/>
+        The operations described in this section are part of the data model API, i.e. they are used at development time to define the data structure.
+    </p>
+
+    <div class="bs-callout bs-callout-info">
+        <p>
+            Each db has its own properties. This means that you can attach any json document to your dbs. 
+            For instance, you can use this feature to implement a custom Access Manager that uses some DB ACL properties to enforce the security policy.
+        </p>
+    </div>
+</div>
+
+<div id="api-db-get" class="bs-docs-section">
+    <h3><code>GET /&lt;dbname&gt;</code></h3>
+
+    <p class="lead">
+        returns the HAL representation of the db &lt;dbname&gt
+        with its collections as embedded resources
+    </p>
+
+    <div class="bs-callout bs-callout-info">
+        Paging supported.
+    </div>
+
+    <table class="table table-condensed">
+        <thead>
+        <p class="lead">Special Properties</p>
+        <p>the following properties are autmatically managed by RESTHeart. Their keys start with _ thus are reserved (cannot be modified)</p>
+        <tr>
+            <th>key</th>
+            <th>description</th>
+            <th>when returned</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>_id</td>
+            <td>the db name</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_created_on</td>
+            <td>creation timestamp in ISO-8601 format</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_lastupdated_on</td>
+            <td>last update timestamp in ISO-8601 format</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_etag</td>
+            <td>the entity tag</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_db-props-cached</td>
+            <td>true if the returned properties come from the local cache</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_size</td>
+            <td>how many collections exist</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_returned</th>
+            <td>how many embedded collections were returned</td>
+            <td>always</td>
+        </tr>
+        <tr>
+            <td>_total_pages</th>
+            <td>how many pages are available (refer to page query parameter)</td>
+            <td>always</td>
+        </tr>
+    </tbody>
+    </table>
+
+    <p class="lead">Examples</p>
+
+    {% highlight json %}
+
+                          example here
+
+    {% endhighlight %}
+</div>
+
+<div id="api-db-put" class="bs-docs-section">
+    <h3><code>PUT /&lt;dbname&gt;</code></h3>
+
+    <p class="lead">
+        creates the db &lt;dbname&gt or updates its properties
+    </p>
+    
+    <div class="bs-callout bs-callout-info">
+        <p>
+            PUT has upsert semantic: if the DB &lt;dbname&get exists it will be updated, otherwise it will be created.
+        </p>
+    </div>
+    
+    {% include_relative fragments/api-common-put.html %}
+    
+    <p class="lead">Examples</p>
+
+    {% highlight json %}
+
+                          example here
+
+    {% endhighlight %}
+</div>
+
+<div id="api-db-patch" class="bs-docs-section">
+    <h3><code>PATCH /&lt;dbname&gt;</code></h3>
+
+    <p class="lead">
+        partially updates the properties of the db &lt;dbname&gt
+    </p>
+    
+    {% include_relative fragments/api-common-patch.html %}
+    
+    <p class="lead">Examples</p>
+
+    {% highlight json %}
+
+                          example here
+
+    {% endhighlight %}
+</div>
+
+<div id="api-db-delete" class="bs-docs-section">
+    <h3><code>DELETE /&lt;dbname&gt;</code></h3>
+
+    <p class="lead">
+        deletes the db &lt;dbname&gt
+    </p>
+    
+    {% include_relative fragments/api-common-delete.html %}
+    
+    <p class="lead">Examples</p>
+
+    {% highlight json %}
+
+                          example here
+
+    {% endhighlight %}
+</div>

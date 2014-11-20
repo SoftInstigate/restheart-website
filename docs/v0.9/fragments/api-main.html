@@ -1,0 +1,66 @@
+<!-- API -->
+<h1 id="api" class="page-header">API</h1>
+<p>
+    RESTHeart API serves 4 types of resources:
+</p>
+<dl class="dl-horizontal">
+    <dt><strong>Root</strong></dt>
+    <dd>at URL /</dd>
+
+    <dt><strong>DB</strong></dt>
+    <dd>at URLs /&lt;dbName&gt;</dd>
+
+    <dt><strong>Collection</strong></dt>
+    <dd>at URLs /&lt;dbName/&gt;/&lt;collectionName&gt;</dd>
+
+    <dt><strong>Document</strong></dt>
+    <dd>at URLs /&lt;dbName&gt;/&lt;collectionName/&gt;/&lt;documentId&gt;</dd>
+</dl>
+
+<div class="bs-callout bs-callout-warning">
+    <p>
+        By using mongo-mounts RESTHeart can expose different resources at different URLs. 
+    </p>
+    <p>
+        In this section we assume the following (default) configuration:
+
+    {% highlight yaml %}
+
+mongo-mounts:
+ - what: "*"
+   where: /
+    {% endhighlight %}
+
+    i.e. that all resources are being served from the root URL.
+</div>
+<div class="bs-callout bs-callout-info">
+    <p>
+        In this section, the examples make use of the brilliant <strong>httpie</strong> tool. If you don't have it already go <a href="http://httpie.org" target="_blank">httpie.org</a> and grab it NOW!
+    </p>
+</div>
+
+<p>
+    Resources are represented in the <a href="http://stateless.co/hal_specification.html" target="_blank">HAL+json</a> hypermedia type.
+</p>
+
+<p>
+    In HAL, a resource is represented as:
+<ul>
+    <li>a set of properties</li>
+    <li>a set of embedded resources representations</li>
+    <li>a set of links</li>
+</ul>
+
+<div class="bs-callout bs-callout-info">
+    <ul>
+        <li>Resource ids starting with _ are reserved.</li>
+        <li>Property keys starting with _ are reserved with the exception of "_id".</li>
+    </ul>
+    <p>
+        <strong>You cannot create a resource with a reserved id (if you try you'll get back <code>BAD_REQUEST</code> response code).</strong>
+    </p>
+    <p>
+        <strong>If you try to send a resource with a property having a reserved key, this will be filterd out. This includes <code>_embedded</code> and <code>_links</code>.</strong>
+    </p>
+</div>
+<!-- End API -->

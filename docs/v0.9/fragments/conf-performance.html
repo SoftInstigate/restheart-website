@@ -1,0 +1,44 @@
+<!-- ***** Performance settings -->
+<div id="conf-performance" class="bs-docs-section">
+    <h2>Performance settings</h2>
+    <h4>forcing gzip encoding</h4>
+    <p>
+        In order to save bandwitdth RESTHeart can force requests to support the giz encoding (if not, requests will be rejected)
+    <ul>
+        <li><code>force-gzip-encoding</code> default value is <code>false</code>.</li>
+    </ul>
+    <h4>local cache</h4>
+    <p>
+        local-cache allows to cache the db and collection properties to drammatically improve performaces.
+        Without caching, a GET on a document would requires two additional queries to retrieve the db and the collection properties.
+    </p>
+    <p>
+        You have to pay attention to local caching only in case of a multi-node deployments (horizontal scalability). In this case a change in a db or collection properties
+        would reflect on other nodes at worst after the TTL (cache entries time to live).
+        In most of the cases Dbs and collections properties only change at development time.
+    <ul>
+        <li><code>local-cache-enabled</code> (default value <code>true</code>)</li>
+        <li><code>local-cache-ttl</code> (default value is <code>1000</code> milliseconds, -1 means forever)</li>              
+    </ul>
+
+    <h4>limit the concurrent requests</h4>
+    <p>
+        To set a limit for the maximum number of concurrent requests being served
+    </p>
+    <ul>
+        <li><code>requests-limit</code> (default value<code>100</code>)</li>
+    </ul>
+
+    <h4>undertow performance tuning</h4>
+    <p>
+        for more information refer to undertow documentation
+    </p>
+    <ul>
+        <li><code>io-threads</code> (default value<code>2</code>) the number of I/O threads created for non-blocking tasks. at least 2. suggested value: core*2</li>
+        <li><code>worker-threads</code> (default value<code>32</code>) the number of threads created for blocking tasks (such as ones involving db access). suggested value: core*16</li>
+        <li><code>buffer-size</code> (default value<code>16384</code>) use 16k buffers for best performance - as in linux 16k is generally the default amount of data that can be sent in a single write() call</li>
+        <li><code>buffers-per-region</code> (default value<code>20</code>)</li>
+        <li><code>direct-buffers</code> (default value<code>true</code>) should the buffer pool use direct buffers, this instructs the JVM to use native (if possible) I/O operations on the buffers</li>
+    </ul> 
+
+</div>
