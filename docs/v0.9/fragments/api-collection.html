@@ -1,4 +1,7 @@
 <div id="api-coll" class="bs-docs-section">
+    <i id="api-db-coll"></i> <!-- anchor for restheart docs curies -->
+    <i id="api-indexes-coll"></i> <!-- anchor for restheart docs curies -->
+    <i id="api-doc-coll"></i> <!-- anchor for restheart docs curies -->
     <h2>The Collection resources</h2>
     <p class="lead">
         The Collection resources allow you to manage your mongodb collections. 
@@ -133,49 +136,49 @@
             <th>description</th>
             <th>when returned</th>
         </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>_id</td>
-            <td>the collection name</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_created_on</td>
-            <td>creation timestamp in ISO-8601 format</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_lastupdated_on</td>
-            <td>last update timestamp in ISO-8601 format</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_etag</td>
-            <td>the entity tag</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_collection-props-cached</td>
-            <td>true if the returned properties come from the local cache</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_size</td>
-            <td>how many documents exist in this collection</td>
-            <td>only if count query parameter was specified</td>
-        </tr>
-        <tr>
-            <td>_returned</th>
-            <td>how many embedded documentes were returned</td>
-            <td>always</td>
-        </tr>
-        <tr>
-            <td>_total_pages</th>
-            <td>how many pages are available (refer to page query parameter)</td>
-            <td>only if count query parameter was specified</td>
-        </tr>
-    </tbody>
+        </thead>
+        <tbody>
+            <tr>
+                <td>_id</td>
+                <td>the collection name</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_created_on</td>
+                <td>creation timestamp in ISO-8601 format</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_lastupdated_on</td>
+                <td>last update timestamp in ISO-8601 format</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_etag</td>
+                <td>the entity tag</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_collection-props-cached</td>
+                <td>true if the returned properties come from the local cache</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_size</td>
+                <td>how many documents exist in this collection</td>
+                <td>only if count query parameter was specified</td>
+            </tr>
+            <tr>
+                <td>_returned</th>
+                <td>how many embedded documentes were returned</td>
+                <td>always</td>
+            </tr>
+            <tr>
+                <td>_total_pages</th>
+                <td>how many pages are available (refer to page query parameter)</td>
+                <td>only if count query parameter was specified</td>
+            </tr>
+        </tbody>
     </table>
 
     <table class="table table-condensed">
@@ -190,29 +193,34 @@
         <tbody>
             <tr>
                 <td>count</td>
+                <i id="api-coll-countandpaging"></i> <!-- anchor for restheart docs curies -->
                 <td>if this parameter is in the query string, return the _size and _total_pages properties. Note: counting the elements of a collection slows down the request.</td>
                 <td>don't count</td>
             </tr>
-            <tr>
-                <td>pagesize</td>
-                <td>used for paging: the number of _embedded document resources to return as maximun</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>page</th>
-                <td>used for paging: the page to return</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>sort_by</th>
-                <td>used for sorting: the field to sort (prepend with - for descending sorting). multiple sorty_by parameters can be specified.</td>
-                <td>_id</td>
-            </tr>
-            <tr>
-                <td>filter</th>
-                <td>used for filtering: a json mongodb filtering expression expression to apply. e.g. filter={"name":{"$regex":".*k"}}. . multiple filter parameters can be specified.</td>
-                <td>&lt;none&gt;</td>
-            </tr>
+        <i id="api-collection-paging"></i> <!-- anchor for restheart docs curies -->
+        <tr>
+            <td>pagesize</td>
+            <i id="api-coll-paging"></i> <!-- anchor for restheart docs curies -->
+            <td>used for paging: the maximum number of _embedded resources to return per page</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>page</th>
+            <td>used for paging: the page to return</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>sort_by</th>
+            <i id="api-coll-sort"></i> <!-- anchor for restheart docs curies -->
+            <td>used for sorting: the field to sort (prepend with - for descending sorting). multiple sorty_by parameters can be specified.</td>
+            <td>_id</td>
+        </tr>
+        <tr>
+            <td>filter</th>
+            <i id="api-coll-filter"></i> <!-- anchor for restheart docs curies -->
+            <td>used for filtering: a json mongodb filtering expression expression to apply. e.g. filter={"name":{"$regex":".*k"}}. . multiple filter parameters can be specified.</td>
+            <td>&lt;none&gt;</td>
+        </tr>
         </tbody>
     </table>
 
@@ -295,7 +303,7 @@
 
     {% highlight json %}
 
-                          example here
+    example here
 
     {% endhighlight %}
 </div>
@@ -319,7 +327,7 @@
 
     {% highlight json %}
 
-                          example here
+    example here
 
     {% endhighlight %}
 </div>
@@ -444,7 +452,7 @@
 
     {% highlight json %}
 
-                          example here
+    example here
 
     {% endhighlight %}
 </div>
@@ -468,7 +476,7 @@
 
     {% highlight json %}
 
-                          example here
+    example here
 
     {% endhighlight %}
 </div>
@@ -486,7 +494,7 @@
 
     {% highlight json %}
 
-                          example here
+    example here
 
     {% endhighlight %}
 </div>
