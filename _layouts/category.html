@@ -1,0 +1,19 @@
+---
+layout: blog
+icon: icon-bell
+excerpt_link: "More ..."
+---
+<div class="container">
+    {% if site.categories.[page.filter_category] %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="post-title">Category: {{page.filter_category}}</h1>
+        </div>
+    </div>
+    {% for post in site.categories.[page.filter_category] %}
+    {% include excerpts.html %}
+    {% endfor %}
+    {% else %}
+    <h2>No posts to display.</h2>
+    {% endif %}
+</div>
