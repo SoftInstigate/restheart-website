@@ -14,7 +14,7 @@ You can download RESTHeart from [GitHub](https://github.com/softinstigate/resthe
 <!-- more -->
 
 
-## before we get into the code
+## Before we get into the code
 {: .post}
 
 RESTHeart uses the [HAL+json](http://stateless.co/hal_specification.html)  hypermedia format. HAL stands for _Hypermedia Application Language_ and it is simple, elegant and powerful.
@@ -30,7 +30,7 @@ It builts up on 2 simple concepts: _Resources_ and _Links_
 
 ![](http://stateless.co/info-model.png)
 
-## the code baby!
+## The code baby!
 {: .post}
 
 We'll get a collection resource and analyze it. As any other in RESTHeart, a collection resource is represented with HAL; thus has its own properties, documents as embedded resources and links (for paginations, sorting, etc).
@@ -51,20 +51,24 @@ Date: Tue, 18 Nov 2014 17:39:35 GMT
 
 {% endhighlight %}
 
-## the resource properties
+## The properties
 {: .post}
 
 In this case, the collection properties comprise the field _desc_; this is user defined.
 
 The other fields are reserved properties (i.e. are managed automatically by RESTHeart for you); these always starts with _:
 
-* _type
-* _id the unique id of the collection
-* _etag entity tag, used for caching and to avoid ghost writes.* _created_on (you get this property for free)
-* _lastupdated_on (you get this property for free)
-* _size the number of the documents in the collection (note the count query parameter)
-* _returned the number of the documents embedded in this representation
-* _collection-props-cached a flag that gets true when the returned collection properties come from the local cache. refer to [local cache documentation](http://www.restheart.org/docs/v0.9/#/configuration/performance) for more information
+| Property                     | Description                                                                                                                                                                                                                           |
+|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_type**                    | the type of this resource. in this case 'COLLECTION'                                                                                                                                                                                                                                     |
+| **_id**                      | the name of the collection                                                                                                                                                                                                            |
+| **_etag**                    | entity tag, used for caching and to avoid ghost writes.                                                                                                                                                                               |
+| **_created_on**              | collection creation date stamp in ISO 6801 format                                                                                                                                                                                     |
+| **_lastupdated_on**          | collection last update date stamp in ISO 6801 format                                                                                                                                                                                  |
+| **_size**                    | the number of the documents in the collection (note this is only returned if the count query parameter is specified)                                                                                                                  |
+| **_returned**                | the number of the documents embedded in this representation                                                                                                                                                                           |
+| **_collection-props-cached** | a flag that gets true when the returned collection properties come from the local cache. refer to the [local cache documentation](http://www.restheart.org/docs/v0.9/configuration.html) for more information |
+                                                                                                                                                                                                                                |
 
 {% highlight json %}
 {
@@ -82,7 +86,7 @@ The other fields are reserved properties (i.e. are managed automatically by REST
 }
 {% endhighlight %}
 
-## the embedded resources
+## The embedded resources
 {: .post}
 
 > the collection embedded resources are the collection documents, recursiverly represented as HAL documents.
@@ -115,59 +119,60 @@ The other fields are reserved properties (i.e. are managed automatically by REST
     }
 {% endhighlight %}
 
-## the links
+## The links
 {: .post}
 
-* **self** link to itself
-* **first** link to the first page
-* **last**  link to the last page
-* **rh:filter** templated link for filtering
-* **rh:sort** templated link for sorting
-* **rh:_indexes** link to the collection indexes resource
-* **rh:paging** templated link for paging
-* **rh:countandpaging** templated link for counting (return the number of documents in the collection) and paging
-* **curies** (compacts URIes) bind links to documentation. you can figure out that links with rel starting with _rh_ are documented on the www.restheart.org website. For instance the rh:db rel is documented at [www.restheart.org/docs/v0.9/#api/coll/db](http://www.restheart.org/docs/v0.9/#api/coll/db). Try it if you like!
+| Link                  | Description                                                                               |
+|-----------------------|-------------------------------------------------------------------------------------------|
+| **self**              | link to itself                                                                            |
+| **first**             | link to the first page                                                                    |
+| **last**              | link to the last page                                                                     |
+| **rh:filter**         | templated link for filtering                                                              |
+| **rh:sort**           | templated link for sorting                                                                |
+| **rh:indexes**        | link to the collection indexes resource                                                   |
+| **rh:paging**         | templated link for paging                                                                 |
+| **rh:countandpaging** | - templated link for counting (return the number of documents in the collection) and paging|
+| **curies**            | (compacts URIes) bind links to documentation. you can figure out that links with rel starting with _rh_ are documented on the www.restheart.org website. For instance the rh:db rel is documented at [http://www.restheart.org/docs/v0.9/#api-coll-db](http://www.restheart.org/docs/v0.9/#api-coll-db). Try it if you like!|
+
 
 {% highlight json %}
-
-	"_links": {
-        "curies": [
-            {
-                "href": "/_doc/?ln=http://www.restheart.org/docs/v0.9/%23api/coll/{rel}", 
-                "name": "rh", 
-                "templated": true
-            }
-        ], 
-        "first": {
-            "href": "/myfirstdb/myfirstcoll?pagesize=100&count"
-        }, 
-        "last": {
-            "href": "/myfirstdb/myfirstcoll&pagesize=100&count"
-        }, 
-        "rh:_indexes": {
-            "href": "/myfirstdb/myfirstcoll/_indexes"
-        }, 
-        "rh:countandpaging": {
-            "href": "/myfirstdb/myfirstcoll/{?page}{&pagesize}&count", 
+"_links": {
+    "curies": [
+        {
+            "href": "http://www.restheart.org/docs/v0.9/#api-coll-db", 
+            "name": "rh", 
             "templated": true
-        }, 
-        "rh:db": {
-            "href": "/myfirstdb"
-        }, 
-        "rh:filter": {
-            "href": "/myfirstdb/myfirstcoll/{?filter}", 
-            "templated": true
-        }, 
-        "rh:paging": {
-            "href": "/myfirstdb/myfirstcoll/{?page}{&pagesize}", 
-            "templated": true
-        }, 
-        "rh:sort": {
-            "href": "/myfirstdb/myfirstcoll/{?sort_by}", 
-            "templated": true
-        }, 
-        "self": {
-            "href": "/myfirstdb/myfirstcoll?count"
         }
+    ], 
+    "first": {
+        "href": "/myfirstdb/myfirstcoll?pagesize=100&count"
+    }, 
+    "last": {
+        "href": "/myfirstdb/myfirstcoll&pagesize=100&count"
+    }, 
+    "rh:_indexes": {
+        "href": "/myfirstdb/myfirstcoll/_indexes"
+    }, 
+    "rh:countandpaging": {
+        "href": "/myfirstdb/myfirstcoll/{?page}{&pagesize}&count", 
+        "templated": true
+    }, 
+    "rh:db": {
+        "href": "/myfirstdb"
+    }, 
+    "rh:filter": {
+        "href": "/myfirstdb/myfirstcoll/{?filter}", 
+        "templated": true
+    }, 
+    "rh:paging": {
+        "href": "/myfirstdb/myfirstcoll/{?page}{&pagesize}", 
+        "templated": true
+    }, 
+    "rh:sort": {
+        "href": "/myfirstdb/myfirstcoll/{?sort_by}", 
+        "templated": true
+    }, 
+    "self": {
+        "href": "/myfirstdb/myfirstcoll?count"
+    }
 {% endhighlight %}
-
