@@ -6,55 +6,64 @@
 
 <html lang="en">
     <!--<![endif]-->
-  {% include head.html %}
+    {% include head.html %}
 
-  <body>
-    {% include header.html %}
+    <body>
+        {% include header.html %}
 
-    <div class="page-content">
-      <div class="wrapper">
-        {{ content }}
-      </div>
-    </div>
+        <div class="page-content">
+            <div class="wrapper">
+                {{ content }}
+            </div>
+        </div>
 
-    {% include footer.html %}
+        {% include footer.html %}
 
-    <!-- End Document 
-    ================================================== -->
-    <script type="text/javascript" src="{{ "/js/jquery/1.8.3/jquery.min.js" | prepend: site.baseurl }}"></script>
-    <script type="text/javascript" src="{{ "/js/jquery-ui/jquery-ui-1.8.23.custom.min.js" | prepend: site.baseurl }}"></script>
-    <!-- third party plugins  -->
-    <script type="text/javascript" src="{{ "/bootstrap/js/bootstrap.js" | prepend: site.baseurl }}"></script>
-    <script type="text/javascript" src="{{ "/js/docs.min.js" | prepend: site.baseurl }}"></script>
-    <script type="text/javascript">
-                /*
-                 |--------------------------------------------------------------------------
-                 | SHARRRE
-                 |--------------------------------------------------------------------------
-                 */
-                if ($('#shareme').length) {
+        <!-- End Document 
+        ================================================== -->
+        <script type="text/javascript" src="{{ "/js/jquery/1.8.3/jquery.min.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript" src="{{ "/js/jquery-ui/jquery-ui-1.8.23.custom.min.js" | prepend: site.baseurl }}"></script>
+        <!-- third party plugins  -->
+        <script type="text/javascript" src="{{ "/bootstrap/js/bootstrap.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript" src="{{ "/js/docs.min.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript">
+    $("li.active > ul.nav > li > a").on('click', function (e) {
+        // prevent default anchor click behavior
+        e.preventDefault();
+        // animate
+        $('html, body').animate({scrollTop: $(this.hash).offset().top - 100}, 300, function () {
+        });
+    });
+        </script>
+        <script type="text/javascript">
+            /*
+             |--------------------------------------------------------------------------
+             | SHARRRE
+             |--------------------------------------------------------------------------
+             */
+            if ($('#shareme').length) {
 
-                    $('#shareme').sharrre({
-                        share: {
-                            googlePlus: true,
-                            facebook: true,
-                            twitter: true,
-                            linkedin: true
-                        },
-                        buttons: {
-                            googlePlus: {size: 'tall', annotation: 'bubble'},
-                            facebook: {layout: 'box_count'},
-                            twitter: {count: 'vertical'},
-                            linkedin: {counter: 'top'}
-                        },
-                        enableHover: false,
-                        enableCounter: false,
-                        enableTracking: true,
-                        //url:'document.location.href'
-                    });
-                }
+                $('#shareme').sharrre({
+                    share: {
+                        googlePlus: true,
+                        facebook: true,
+                        twitter: true,
+                        linkedin: true
+                    },
+                    buttons: {
+                        googlePlus: {size: 'tall', annotation: 'bubble'},
+                        facebook: {layout: 'box_count'},
+                        twitter: {count: 'vertical'},
+                        linkedin: {counter: 'top'}
+                    },
+                    enableHover: false,
+                    enableCounter: false,
+                    enableTracking: true,
+                    //url:'document.location.href'
+                });
+            }
 
-    </script>
-  </body>
+        </script>
+    </body>
 
 </html>
