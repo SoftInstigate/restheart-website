@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+    <!--<![endif]-->
+    {% include head.html %}
+
+    <body style="padding-top: 0 !important">
+        <div class="page-content">
+            <div class="wrapper">
+                {{ content }}
+            </div>
+        </div>
+
+        {% include footer.html %}
+
+        <!-- End Document 
+        ================================================== -->
+        <script type="text/javascript" src="{{ "/js/jquery/1.8.3/jquery.min.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript" src="{{ "/js/jquery-ui/jquery-ui-1.8.23.custom.min.js" | prepend: site.baseurl }}"></script>
+        <!-- third party plugins  -->
+        <script type="text/javascript" src="{{ "/bootstrap/js/bootstrap.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript" src="{{ "/js/docs.min.js" | prepend: site.baseurl }}"></script>
+        <script type="text/javascript">
+    $("li.scroll-anchor > ul.nav > li > a").on('click', function (e) {
+        // prevent default anchor click behavior
+        e.preventDefault();
+        // animate
+        $('html, body').animate({scrollTop: $(this.hash).offset().top - 100}, 300, function () {
+        });
+    });
+        </script>
+        <script type="text/javascript">
+            /*
+             |--------------------------------------------------------------------------
+             | SHARRRE
+             |--------------------------------------------------------------------------
+             */
+            if ($('#shareme').length) {
+
+                $('#shareme').sharrre({
+                    share: {
+                        googlePlus: true,
+                        facebook: true,
+                        twitter: true,
+                        linkedin: true
+                    },
+                    buttons: {
+                        googlePlus: {size: 'tall', annotation: 'bubble'},
+                        facebook: {layout: 'box_count'},
+                        twitter: {count: 'vertical'},
+                        linkedin: {counter: 'top'}
+                    },
+                    enableHover: false,
+                    enableCounter: false,
+                    enableTracking: true,
+                    //url:'document.location.href'
+                });
+            }
+
+        </script>
+    </body>
+
+</html>
