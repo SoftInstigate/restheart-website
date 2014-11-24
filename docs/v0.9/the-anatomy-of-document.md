@@ -1,14 +1,8 @@
 ---
-layout: post
-title:  "The anatomy of a RESTHeart document"
-author: Andrea Di Cesare
-date:   2014-11-17 20:07
-permalink: /restheart/the-anatomy-of-a-restheart-document
-categories:
-  - restheart
-  - tutorials
-tags:
- - hal+json
+layout: doc-page-md
+title:  "The anatomy of a document"
+permalink: /docs/v0.9/the-anatomy-of-a-document.html
+class2: active
 ---
 
 RESTHeart is the REST API data server for mongodb. 

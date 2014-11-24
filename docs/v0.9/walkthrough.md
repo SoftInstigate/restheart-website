@@ -1,32 +1,19 @@
 ---
-layout: post
-title:  "RESTHeart walkthrough"
-author: Andrea Di Cesare
-date:   2014-11-17 20:07
-permalink: /restheart/walkthrough
-categories:
-  - tutorials
-tags:
- - restheart
+layout: doc-page-md
+title:  "API walkthrough"
+permalink: /docs/v0.9/walkthrough.html
+class3: active
 ---
 
 In this walktrhout we'll use RESTHeart to create a db, a collection and a couple of documents in mondodb.<!-- more -->
 
 RESTHeart represents resources as HAL+json documents. Before going furhter you might want to check:
 
-* the [_RESTHeart - the anatomy of a document_](/restheart/the-anatomy-of-a-document) post
+* the [_RESTHeart - up and running_](/blog/up-and-running) post
+* the [_RESTHeart - the anatomy of a document_](/blog/the-anatomy-of-a-document) post
 * the [HAL specification](http://stateless.co/hal_specification.html)
 
-We'll use [httpie](httpie.org), a brilliant command line HTTP client. You don't have it? Install it or use curl. You don't have curl? Then my condolences, you must be running MS Windows.
-
-## get restheart
-{: .post}
-
-- [downlaod](https://github.com/SoftInstigate/RESTHeart/releases) the latest release of RESTHeart from github 
-- unzip the package
-
-> note: you'll need mongodb and java 1.8
-
+We'll use [httpie](httpie.org), a brilliant command line HTTP client (you can also use curl of course!).
 
 ## start mongodb and restheart
 {: .post}
