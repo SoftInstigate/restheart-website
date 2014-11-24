@@ -6,7 +6,7 @@ date:   2014-11-17 20:07
 permalink: /restheart/the-anatomy-of-a-restheart-document
 categories:
   - restheart
-  - tutorial
+  - tutorials
 tags:
  - hal+json
 ---

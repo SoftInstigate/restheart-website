@@ -5,7 +5,7 @@ author: Andrea Di Cesare
 date:   2014-11-17 20:07
 permalink: /restheart/walkthrough
 categories:
-  - restheart
+  - tutorials
 tags:
  - restheart
 ---
