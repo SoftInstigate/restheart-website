@@ -34,7 +34,8 @@ db version v2.6.3
 2014-11-24T15:42:54.389+0100 git version: 255f67a66f9603c59380b2a389e386910bbb52cb
 {% endhighlight %} 
 
-> note: RESTHeart has been tested with mongodb version 2.4 and 2.6.
+RESTHeart has been tested with mongodb version 2.4 and 2.6.
+{: .bs-callout.bs-callout-info}
 
 ## Install RESTHeart
 {: .post}
@@ -82,9 +83,11 @@ $ java -server -jar restheart.jar
 18:14:59.101 [main] INFO  c.s.restheart.Bootstrapper - RESTHeart started **********************************************
 {% endhighlight %}
 
-Let's open the embedded HAL browser to check that everythig is fine. The HAL browser allows you to surf the DATA API with your browser.
+We'll now use the embedded HAL browser to check that everythig is fine. The HAL browser allows you to surf the DATA API with your browser.
+{: .bs-callout.bs-callout-info}
 
-### Open your browser at [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
+Open your browser at [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
+
 
 ## Enable mongodb authentication
 {: .post}
