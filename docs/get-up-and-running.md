@@ -142,7 +142,7 @@ $ cd <RESTHeart_DIR>
 $ vi etc/restheart.yml
 {% endhighlight %}
 
-Find, uncomment and modify the following section providing the chosen username, password and  authentication db (the db where the mongodb user is defined, in our case 'admin').
+Find, uncomment and modify the following section providing the chosen username, password and authentication db (the db where the mongodb user is defined, in our case 'admin').
 
 {% highlight yaml %}
 # Provide mongodb users credentials with mongo-credentials.
@@ -160,7 +160,52 @@ $ java -server -jar restheart.jar etc/restheart.yml
 
 Test the connection opening the HAL browser at [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
 
+Note that the example configuration file <code>etc/restheart.yml</code> also enables the RESTHeart security. 
+Opening the HAL browser page, you'll be asked to authenticate. You can use of one of the credentials defined in <code>etc/security.yml</code> file (try username = 'a' and password = 'a').
+{: .bs-callout.bs-callout-info}
+
 ## Enable RESTHeart security
 {: .post}
 
-> WORK IN PROGRESS
+We'll use the default file based security implementation (<code>SimpleFileIdentityManager</code> and <code>SimpleAccessManager</code>) to enforce user authentication on RESTHeart API. 
+Please refer to [configuration documentation](http://127.0.0.1:4000/docs/configuration.html#conf-security) for more information.
+
+Open the <code>etc/restheart.yml</code>. The security section is the following:
+
+{% highlight yaml %}
+idm:    
+    implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+    conf-file: ./etc/security.yml
+access-manager:    
+    implementation-class: com.softinstigate.restheart.security.impl.SimpleAccessManager
+    conf-file: ./etc/security.yml
+{% endhighlight %}
+
+This setting plugs the specified identity manager (IDM) and the access manager (AM) implementations to RESTHeart.
+
+Both the IDM and AM are in turn configured by the <code>etc/security.yml</code> configuration file.
+The security configuration file defines users, roles and permissions.
+
+{% highlight yaml %}
+users:
+    - userid: a
+      password: a
+      roles: [admins]
+...
+permissions:
+    - role: admins
+      predicate: path-prefix[path="/"]
+...      
+{% endhighlight %}
+
+Permissions are given to roles by the means of undertow predicates on requests. Requests satisfying the predicates are accepted. For instance, the predicate <code>path-prefix[path="/"]</code> is satisfied by any request; thus users with _admin_ role is allowed any verb on any URI.
+
+Refer to [udertow documentation](http://undertow.io/documentation/core/predicates-attributes-handlers.html) for more information on requests predicates.
+
+The special role <code>$unauthenticated</code> allows to give permissions on resources without requiring authentication. 
+For instance the following permission allows unauthenticated users to GET any resource with URI starting with /publicdb
+
+{% highlight yaml %}
+    - role: $unauthenticated
+      predicate: path-prefix[path="/publicdb/"] and method[value="GET"]
+{% endhighlight %}
