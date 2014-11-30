@@ -92,7 +92,73 @@ Open your browser at [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/brows
 ## Enable mongodb authentication
 {: .post}
 
-> WORK IN PROGRESS
+For more information, refer to the [mongodb documentation](http://docs.mongodb.org/manual/tutorial/enable-authentication/)
+{: .bs-callout.bs-callout-info}
+
+Start mongodb with authentication enablend and connect to the MongoDB instance from a client running on the same system. This access is made possible by the localhost exception.
+
+{% highlight bash %}
+$ mongod --fork --syslog --auth
+$ mongo 
+{% endhighlight %}
+
+Create the admin user. The procedure is different depending on mongodb version.
+
+#### For mongodb version 2.6
+
+{% highlight bash %}
+> use admin
+> db.createUser(
+  {
+    user: "admin",
+    pwd: "changeit",
+    roles:
+    [ {
+        role: "root",
+        db: "admin"
+      } ] } )
+{% endhighlight %}
+
+#### For mongodb version 2.4
+
+{% highlight bash %}
+> use admin
+> db.addUser( { 
+              user: "admin",
+              pwd: "changeit",
+              roles: [ "clusterAdmin", "dbAdminAnyDatabase" ] } )
+{% endhighlight %}
+
+You can use a mongodb user with less priviledges; for instance, a user that can use just a single DB. In this case you might want to have RESTHeart serving requests just about this resource. You can achieve this via [mongo-mounts](http://127.0.0.1:4000/docs/configuration.html#conf-mongodb).
+{: .bs-callout.bs-callout-warning}
+
+We need to provide the mongodb authentication credentials in the RESTHeart configuration file: [see docs](./configuration.html). 
+{: .bs-callout.bs-callout-info}
+
+We'll use the restheart.yml example configuration file that comes with RESTHeart download package (you find it in the etc directory).
+
+{% highlight bash %}
+$ cd <RESTHeart_DIR>
+$ vi etc/restheart.yml
+{% endhighlight %}
+
+Find, uncomment and modify the following section providing the chosen username, password and  authentication db (the db where the mongodb user is defined, in our case 'admin').
+
+{% highlight yaml %}
+# Provide mongodb users credentials with mongo-credentials.
+mongo-credentials:
+    - auth-db: admin
+      user: admin
+      password: changeit
+{% endhighlight %}
+
+Now start RESTHeart specifying the configuration file
+
+{% highlight bash %}
+$ java -server -jar restheart.jar etc/restheart.yml
+{% endhighlight %}
+
+Test the connection opening the HAL browser at [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
 
 ## Enable RESTHeart security
 {: .post}
