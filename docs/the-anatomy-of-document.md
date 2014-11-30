@@ -1,7 +1,7 @@
 ---
 layout: doc-page-md
 title:  "The anatomy of a document"
-permalink: /docs/v0.9/the-anatomy-of-a-document.html
+permalink: /docs/the-anatomy-of-a-document.html
 class2: active
 ---
 

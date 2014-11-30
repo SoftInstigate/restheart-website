@@ -1,7 +1,7 @@
 ---
 layout: doc-page-md
 title:  "RESTHeart up and running"
-permalink: /docs/v0.9/get-up-and-running.html
+permalink: /docs/get-up-and-running.html
 class1: active
 ---
 
