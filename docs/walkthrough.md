@@ -13,7 +13,7 @@ RESTHeart represents resources as HAL+json documents. Before going furhter you m
 * [RESTHeart - the anatomy of a document](/docs/the-anatomy-of-a-document.html)
 * the [HAL specification](http://stateless.co/hal_specification.html)
 
-We'll use [httpie](httpie.org), a brilliant command line HTTP client (you can also use curl of course!).
+We'll use [httpie](http://httpie.org), a brilliant command line HTTP client (you can also use curl of course!).
 
 ## start mongodb and restheart
 {: .post}
