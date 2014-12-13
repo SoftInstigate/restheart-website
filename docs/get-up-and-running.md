@@ -8,7 +8,15 @@ class1: active
 * Table of contents
 {: toc}
 
-## 1. What you need ##
+
+## 1. Quickstart - run it with Vagrant ##
+{: .post}
+
+If you don't want to install and run all the components manually on your host, there is a new [Vagrant box](https://github.com/SoftInstigate/restheart-ansible) available for creating a complete virtual development environment using a Ubuntu image with JDK 8, MongoDB and RESTHeart server. You can then skip section 2 to 6 and jump directly to section 7, in case you want to know how to activate authentication and security (you probably don't need those features in a Vagrant development box).
+
+Othwerwise, please follow the next sections for a local installation.
+
+## 2. Run it on your host - what you need ##
 {: .post}
 
 If you don't have them already, please download the following packages:
@@ -19,7 +27,7 @@ If you don't have them already, please download the following packages:
 
 Most of the work must be done using a command line interface. 
 
-## 2. Install Java and MongoDB ##
+## 3. Install Java and MongoDB ##
 {: .post}
 
 Install [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and [MongoDB](http://docs.mongodb.org/manual/installation/) following the instructions for your specific operating system and make sure that their binaries are actually executable (so they are in your PATH env variable).
@@ -42,7 +50,7 @@ db version v2.6.3
 RESTHeart has been tested with MongoDB version 2.4 and 2.6.
 {: .bs-callout.bs-callout-info}
 
-## 3. Install RESTHeart ##
+## 4. Install RESTHeart ##
 {: .post}
 
 To _install_ RESTHeart just extract the content of the [dowloaded](https://github.com/SoftInstigate/RESTHeart/releases) package in the desired directory.
@@ -52,7 +60,7 @@ You are interested in two files:
 * `restheart.jar`
 * `etc/restheart.yml` <- an example configuration file
 
-## 4 .Start MongoDB ##
+## 5 .Start MongoDB ##
 {: .post}
 
 In pursuit of simplicity we are first going to start MongoDB without enabling authetication. We'll see later how to enable it.
@@ -68,7 +76,7 @@ child process started successfully, parent exiting
 
 By default MongoDB starts listening for connections on `127.0.0.1:27017`.
 
-## 5. Start the RESTHeart server ##
+## 6. Start the RESTHeart server ##
 {: .post}
 
 Run the RESTHeart server by typing `java -server -jar restheart.jar`.
@@ -107,7 +115,7 @@ To see the HAL user interface, now open your browser at:
 [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
 {: .text-center}
 
-## 6. Enable MongoDB authentication ##
+## 7. Enable MongoDB authentication ##
 {: .post}
 
 For more information, refer to the [MongoDB documentation](http://docs.MongoDB.org/manual/tutorial/enable-authentication/)
@@ -122,7 +130,7 @@ $ mongo
 
 Create the admin user. The procedure is different depending on MongoDB version.
 
-### 6.1. For MongoDB version 2.6 ###
+### 7.1. For MongoDB version 2.6 ###
 
 {% highlight bash %}
 > use admin
@@ -137,7 +145,7 @@ Create the admin user. The procedure is different depending on MongoDB version.
       } ] } )
 {% endhighlight %}
 
-### 6.2. For MongoDB version 2.4 ###
+### 7.2. For MongoDB version 2.4 ###
 
 {% highlight bash %}
 > use admin
@@ -182,7 +190,7 @@ Note that the example configuration file <code>etc/restheart.yml</code> also ena
 Opening the HAL browser page, you'll be asked to authenticate. You can use of one of the credentials defined in <code>etc/security.yml</code> file (try username = 'a' and password = 'a').
 {: .bs-callout.bs-callout-info}
 
-## 7. Enable RESTHeart security ##
+## 8. Enable RESTHeart security ##
 {: .post}
 
 We'll use the default file based security implementation (<code>SimpleFileIdentityManager</code> and <code>SimpleAccessManager</code>) to enforce user authentication on RESTHeart API. 
