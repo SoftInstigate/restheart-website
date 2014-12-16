@@ -1,6 +1,6 @@
 restheart-website
 =================
 
-[restheart.org](restheart.org) web site
+[restheart.org](http://restheart.org) Web site.
 
-RESTHeart is the REST data API server for mongodb, fork it on [github](https://github.com/SoftInstigate/restheart)
+RESTHeart is the Java REST data API server for MongoDB, fork it on [github](https://github.com/SoftInstigate/restheart)
