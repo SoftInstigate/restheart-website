@@ -12,9 +12,11 @@ class1: active
 ## 1. Quickstart - run it with Vagrant ##
 {: .post}
 
-If you don't want to install and run all the components manually on your host, there is a new [Vagrant box](https://github.com/SoftInstigate/restheart-ansible) available for creating a complete virtual development environment using a Ubuntu image with JDK 8, MongoDB and RESTHeart server. You can then skip section 2 to 6 and jump directly to section 7, in case you want to know how to activate authentication and security (you probably don't need those features in a Vagrant development box).
+If you don't want to install and run all the components manually on your host, there is a handy [Vagrant box](https://github.com/SoftInstigate/restheart-ansible) available for creating a complete virtual development environment, using a Ubuntu 14.04 image with JDK 8, MongoDB 2.6 and the latest RESTHeart server. You can then skip section 2 to 6 and jump directly to section 7, in case you want to know how to change the default security settings.
 
-Othwerwise, please follow the next sections for a local installation.
+> Vagrant is recommended as it makes your first contact with RESTHeart a lot simpler.
+
+Othwerwise, please follow the next sections for a full local installation.
 
 ## 2. Run it on your host - what you need ##
 {: .post}
