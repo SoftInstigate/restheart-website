@@ -1,13 +1,13 @@
 ---
 layout: doc-page-md
-title:  "API walkthrough"
+title:  "API walk-through"
 permalink: /docs/walkthrough.html
 class3: active
 ---
 
-In this walkthrough we'll use RESTHeart to create a db, a collection and a couple of documents in mondodb.<!-- more -->
+In this walk-through we'll use RESTHeart to create a db, a collection and a couple of documents in MongoDB.<!-- more -->
 
-RESTHeart represents resources as HAL+json documents. Before going furhter you might want to check:
+RESTHeart represents resources as HAL+JSON documents. Before going further you might want to check:
 
 * [RESTHeart - up and running](/docs/get-up-and-running.html) 
 * [RESTHeart - the anatomy of a document](/docs/the-anatomy-of-a-document.html)
@@ -15,7 +15,7 @@ RESTHeart represents resources as HAL+json documents. Before going furhter you m
 
 We'll use [httpie](http://httpie.org), a brilliant command line HTTP client (you can also use curl of course!).
 
-## start mongodb and restheart
+## start MongoDB and RESTHeart
 {: .post}
 
 {% highlight bash %}
@@ -106,7 +106,7 @@ Date: Tue, 18 Nov 2014 11:32:45 GMT
 { "_type" : "COLLECTION" , "_id" : "myfirstcoll" , "desc" : "this is my first collection created with restheart" , "_created_on" : "2014-11-18T11:28:27Z" , "_etag" : "546b2d5bef863f5121fc91ef" , "_lastupdated_on" : "2014-11-18T11:28:27Z" , "_collection-props-cached" : false , "_returned" : 2 , "_embedded" : { "rh:doc" : [ { "_type" : "DOCUMENT" , "_id" : "546b2dacef863f5121fc91f1" , "name" : "restheart" , "rating" : "super cool" , "_etag" : "546b2dacef863f5121fc91f0" , "_created_on" : "2014-11-18T11:29:48Z" , "_lastupdated_on" : "2014-11-18T11:29:48Z" , "_links" : { "self" : { "href" : "/myfirstdb/myfirstcoll/546b2dacef863f5121fc91f1"} , "rh:coll" : { "href" : "/myfirstdb"} , "curies" : [ { "href" : "/_doc/?ln=http://www.restheart.org/docs/v0.9/%23api/doc/{rel}" , "templated" : true , "name" : "rh"}]}} , { "_type" : "DOCUMENT" , "_id" : "546b2dcdef863f5121fc91f3" , "name" : "mongodb" , "rating" : "hyper cool" , "_etag" : "546b2dcdef863f5121fc91f2" , "_created_on" : "2014-11-18T11:30:21Z" , "_lastupdated_on" : "2014-11-18T11:30:21Z" , "_links" : { "self" : { "href" : "/myfirstdb/myfirstcoll/546b2dcdef863f5121fc91f3"} , "rh:coll" : { "href" : "/myfirstdb"} , "curies" : [ { "href" : "/_doc/?ln=http://www.restheart.org/docs/v0.9/%23api/doc/{rel}" , "templated" : true , "name" : "rh"}]}}]} , "_links" : { "self" : { "href" : "/myfirstdb/myfirstcoll"} , "rh:db" : { "href" : "/myfirstdb"} , "rh:filter" : { "href" : "/myfirstdb/myfirstcoll/{?filter}" , "templated" : true} , "rh:sort" : { "href" : "/myfirstdb/myfirstcoll/{?sort_by}" , "templated" : true} , "rh:paging" : { "href" : "/myfirstdb/myfirstcoll/{?page}{&pagesize}" , "templated" : true} , "rh:countandpaging" : { "href" : "/myfirstdb/myfirstcoll/{?page}{&pagesize}&count" , "templated" : true} , "rh:_indexes" : { "href" : "/myfirstdb/myfirstcoll/_indexes"} , "curies" : [ { "href" : "/_doc/?ln=http://www.restheart.org/docs/v0.9/%23api/coll/{rel}" , "templated" : true , "name" : "rh"}]}}
 {% endhighlight %}
 
-> the interesting part of the returned HAL+json object is the _embedded object
+> the interesting part of the returned HAL+JSON object is the _embedded object
 
 {% highlight json %}
 
