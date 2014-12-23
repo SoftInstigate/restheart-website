@@ -5,7 +5,7 @@ permalink: /docs/walkthrough.html
 class3: active
 ---
 
-In this walktrhout we'll use RESTHeart to create a db, a collection and a couple of documents in mondodb.<!-- more -->
+In this walkthrough we'll use RESTHeart to create a db, a collection and a couple of documents in mondodb.<!-- more -->
 
 RESTHeart represents resources as HAL+json documents. Before going furhter you might want to check:
 
