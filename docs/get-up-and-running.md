@@ -86,6 +86,10 @@ Run the RESTHeart server by typing `java -server -jar restheart.jar`.
 This starts it with the default configuration, which is fine for MongoDB running on localhost, on default port and without authentication.
 {: .bs-callout.bs-callout-info}
 
+On Linux, OSX and Solaris you can also run RESTHeart as a [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.
+Note that this will force the console logging to be turned off and the file logging on, regardless the specified log configuration options.
+{: .bs-callout.bs-callout-info}
+
 For example:
 
 {% highlight bash %}
