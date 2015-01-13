@@ -5,8 +5,8 @@ permalink: /docs/the-anatomy-of-a-document.html
 class2: active
 ---
 
-RESTHeart is the REST API data server for mongodb. 
-Mongodb resources (dbs, collections, indexes and documents) are mapped to URIs and, following the REST mantra, you _transfer_ their _states_ back and forth by the means of _representations_.
+RESTHeart is the REST API data server for MongoDB. 
+MongoDB resources (dbs, collections, indexes and documents) are mapped to URIs and, following the REST mantra, you _transfer_ their _states_ back and forth by the means of _representations_.
 This post introduces you to such **representation** format.
 
 You can download RESTHeart from [GitHub](https://github.com/softinstigate/restheart) 
@@ -19,9 +19,9 @@ You can download RESTHeart from [GitHub](https://github.com/softinstigate/resthe
 
 RESTHeart uses the [HAL+json](http://stateless.co/hal_specification.html)  hypermedia format. HAL stands for _Hypermedia Application Language_ and it is simple, elegant and powerful.
 
-It builts up on 2 simple concepts: _Resources_ and _Links_
+It builds up on 2 simple concepts: _Resources_ and _Links_
 
-> Resources have state (plain json), embedded resources and links
+> Resources have state (plain JSON), embedded resources and links
 
 
 > Links have target (href URI) and relations (aka _rel_)
@@ -33,7 +33,7 @@ It builts up on 2 simple concepts: _Resources_ and _Links_
 ## The code baby!
 {: .post}
 
-We'll get a collection resource and analyze it. As any other in RESTHeart, a collection resource is represented with HAL; thus has its own properties, documents as embedded resources and links (for paginations, sorting, etc).
+We'll get a collection resource and analyze it. As any other in RESTHeart, a collection resource is represented with HAL; thus has its own properties, documents as embedded resources and links (for pagination, sorting, etc).
 
 {% highlight bash %}
 $ http --pretty=none GET 127.0.0.1:8080/myfirstdb/myfirstcoll?count
@@ -89,7 +89,7 @@ The other fields are reserved properties (i.e. are managed automatically by REST
 ## The embedded resources
 {: .post}
 
-> the collection embedded resources are the collection documents, recursiverly represented as HAL documents.
+> the collection embedded resources are the collection documents, recursively represented as HAL documents.
 
 {% highlight json %}
 

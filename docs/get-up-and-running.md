@@ -8,7 +8,17 @@ class1: active
 * Table of contents
 {: toc}
 
-## 1. What you need ##
+
+## 1. Quick-start - run it with Vagrant ##
+{: .post}
+
+If you don't want to install and run all the components manually on your host, there is a handy [Vagrant box](https://github.com/SoftInstigate/restheart-ansible) available for creating a complete virtual development environment, using a Ubuntu 14.04 image with JDK 8, MongoDB 2.6 and the latest RESTHeart server. You can then skip section 2 to 6 and jump directly to section 7, in case you want to know how to change the default security settings.
+
+> Vagrant is recommended as it makes your first contact with RESTHeart a lot simpler.
+
+Otherwise, please follow the next sections for a full local installation.
+
+## 2. Run it on your host - what you need ##
 {: .post}
 
 If you don't have them already, please download the following packages:
@@ -19,7 +29,7 @@ If you don't have them already, please download the following packages:
 
 Most of the work must be done using a command line interface. 
 
-## 2. Install Java and MongoDB ##
+## 3. Install Java and MongoDB ##
 {: .post}
 
 Install [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and [MongoDB](http://docs.mongodb.org/manual/installation/) following the instructions for your specific operating system and make sure that their binaries are actually executable (so they are in your PATH env variable).
@@ -42,7 +52,7 @@ db version v2.6.3
 RESTHeart has been tested with MongoDB version 2.4 and 2.6.
 {: .bs-callout.bs-callout-info}
 
-## 3. Install RESTHeart ##
+## 4. Install RESTHeart ##
 {: .post}
 
 To _install_ RESTHeart just extract the content of the [dowloaded](https://github.com/SoftInstigate/RESTHeart/releases) package in the desired directory.
@@ -52,10 +62,10 @@ You are interested in two files:
 * `restheart.jar`
 * `etc/restheart.yml` <- an example configuration file
 
-## 4 .Start MongoDB ##
+## 5 .Start MongoDB ##
 {: .post}
 
-In pursuit of simplicity we are first going to start MongoDB without enabling authetication. We'll see later how to enable it.
+In pursuit of simplicity we are first going to start MongoDB without enabling authentication. We'll see later how to enable it.
 
 You can just start MongoDB by running the `mongod` command from a shell prompt. It is configured by default to use the `/data/db` folder, which must exist already or you have to create it beforehand. If you do not want to use the default data directory (i.e., `/data/db`), specify the path to the data directory using the `--dbpath` option: `mongod --dbpath <path to data directory>`. You might prefer to run the MongoDB process in background, using the `--fork` parameter: `mongod --fork --syslog`:
 
@@ -68,7 +78,7 @@ child process started successfully, parent exiting
 
 By default MongoDB starts listening for connections on `127.0.0.1:27017`.
 
-## 5. Start the RESTHeart server ##
+## 6. Start the RESTHeart server ##
 {: .post}
 
 Run the RESTHeart server by typing `java -server -jar restheart.jar`.
@@ -97,7 +107,7 @@ $ java -server -jar restheart.jar
 18:14:59.101 [main] INFO  c.s.restheart.Bootstrapper - RESTHeart started **********************************************
 {% endhighlight %}
 
-We'll now use the [HAL](http://stateless.co/hal_specification.html) format and the embedded [HAL browser](https://github.com/mikekelly/hal-browser) to check that everythig is fine. The HAL browser allows you to surf the DATA API with your regular Web browser.
+We'll now use the [HAL](http://stateless.co/hal_specification.html) format and the embedded [HAL browser](https://github.com/mikekelly/hal-browser) to check that everything is fine. The HAL browser allows you to surf the DATA API with your regular Web browser.
 
 [HAL](http://stateless.co/hal_specification.html) is a simple format that gives a consistent and easy way to hyperlink between resources in your API. _Adopting HAL will make your API explorable, and its documentation easily discoverable from within the API itself. In short, it will make your API easier to work with and therefore more attractive to client developers. APIs that adopt HAL can be easily served and consumed using open source libraries available for most major programming languages. It's also simple enough that you can just deal with it as you would any other JSON_.
 {: .bs-callout.bs-callout-info}
@@ -107,7 +117,7 @@ To see the HAL user interface, now open your browser at:
 [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
 {: .text-center}
 
-## 6. Enable MongoDB authentication ##
+## 7. Enable MongoDB authentication ##
 {: .post}
 
 For more information, refer to the [MongoDB documentation](http://docs.MongoDB.org/manual/tutorial/enable-authentication/)
@@ -122,7 +132,7 @@ $ mongo
 
 Create the admin user. The procedure is different depending on MongoDB version.
 
-### 6.1. For MongoDB version 2.6 ###
+### 7.1. For MongoDB version 2.6 ###
 
 {% highlight bash %}
 > use admin
@@ -137,7 +147,7 @@ Create the admin user. The procedure is different depending on MongoDB version.
       } ] } )
 {% endhighlight %}
 
-### 6.2. For MongoDB version 2.4 ###
+### 7.2. For MongoDB version 2.4 ###
 
 {% highlight bash %}
 > use admin
@@ -160,7 +170,7 @@ $ cd <RESTHeart_DIR>
 $ vi etc/restheart.yml
 {% endhighlight %}
 
-Find, uncomment and modify the following section providing the chosen username, password and authentication db (the db where the MongoDB user is defined, in our case 'admin').
+Find, uncomment and modify the following section providing the chosen user-name, password and authentication db (the db where the MongoDB user is defined, in our case 'admin').
 
 {% highlight yaml %}
 # Provide MongoDB users credentials with mongo-credentials.
@@ -182,7 +192,7 @@ Note that the example configuration file <code>etc/restheart.yml</code> also ena
 Opening the HAL browser page, you'll be asked to authenticate. You can use of one of the credentials defined in <code>etc/security.yml</code> file (try username = 'a' and password = 'a').
 {: .bs-callout.bs-callout-info}
 
-## 7. Enable RESTHeart security ##
+## 8. Enable RESTHeart security ##
 {: .post}
 
 We'll use the default file based security implementation (<code>SimpleFileIdentityManager</code> and <code>SimpleAccessManager</code>) to enforce user authentication on RESTHeart API. 
@@ -218,7 +228,7 @@ permissions:
 
 RESTHeart uses [Undertow](http://undertow.io) as the embedded HTTP server.
 
-Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO. Undertow is extremely lightweight, with the Undertow core jar coming in at under 1Mb. It is lightweight at runtime too, with a simple embedded server using less than 4Mb of heap space. Undertow is sponsored by JBoss and is the default web server in the [Wildfly Application Server](https://github.com/wildfly/wildfly).
+Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO. Undertow is extremely lightweight, with the Undertow core jar coming in at under 1Mb. It is lightweight at run-time too, with a simple embedded server using less than 4Mb of heap space. Undertow is sponsored by JBoss and is the default web server in the [Wildfly Application Server](https://github.com/wildfly/wildfly).
 {: .bs-callout.bs-callout-info}
 
 Permissions are given to roles by the means of Undertow's predicates on requests. Requests satisfying the predicates are accepted. For instance, the predicate <code>path-prefix[path="/"]</code> is satisfied by any request; thus users with _admin_ role is allowed any verb on any URI.

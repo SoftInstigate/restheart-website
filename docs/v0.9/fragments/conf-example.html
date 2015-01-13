@@ -10,7 +10,7 @@
 # Listeners allow to specify the protocol, ip, port and to use.
 # The supported protocols are: http, https and ajp. You can setup a listener per protocol (up to 3).
 
-# WARNING: RESTHeart uses basic authentication; usernames and passwords are sent over the net on each request.
+# WARNING: RESTHeart uses basic authentication; user-names and passwords are sent over the net on each request.
 # Using the http listener is not secure: users credentials can be sniffed by a man-in-the-middle attack.
 # Use the http listener only on trusted environments.
 
@@ -38,28 +38,28 @@ ajp-port: 8009
 use-embedded-keystore: true
 
 # To use your own certificate you need to import it (and eventually the CA certificates chain) into a java keystore
-# and speficy use-embedded-keystore: false and the keystore-file,keystore-password and certpassword configuration properties. 
+# and specify use-embedded-keystore: false and the keystore-file,keystore-password and certpassword configuration properties. 
 # Refer to the java keystore documentation for that.
 
 #keystore-file: /path/to/keystore/file
 #keystore-password: password
 #certpassword: password
 
-#### mongodb 
+#### MongoDB 
 
-# Secify the ip and port of mongodb with mongo-servers. For mongodb replica set, specify all your servers.
+# Specify the ip and port of MongoDB with mongo-servers. For MongoDB replica set, specify all your servers.
 
 mongo-servers:
     - host: 127.0.0.1
       port: 27017
 
-# Provide mongodb users credentials with mongo-credentials.
+# Provide MongoDB users credentials with mongo-credentials.
 mongo-credentials:
     - auth-db: admin
       user: admin
       password: adminadmin
 
-# Use mongo-mounts to bind URls to mongodb resources using the out-of-the-box URL rewrite feature.
+# Use mongo-mounts to bind URls to MongoDB resources using the out-of-the-box URL rewrite feature.
 mongo-mounts:
     - what: "*"
       where: /
@@ -79,8 +79,8 @@ static-resources-mounts:
 #### application logic
 
 # RESTHeart has a pipeline architecture where specialized undertow handlers are chained to serve the requests.
-# In order to provide additional application logic, custom hanlders pipes can be bound under the /_logic URL.
-# The custom hanlder must extends the com.softinstigate.restheart.handlers.ApplicationLogicHandler class
+# In order to provide additional application logic, custom handlers pipes can be bound under the /_logic URL.
+# The custom handler must extends the com.softinstigate.restheart.handlers.ApplicationLogicHandler class
 # Use application-logic-mounts to configure custom handlers.
 
 # In the following example two built-in application logic handlers are defined:
@@ -129,12 +129,12 @@ enable-log-file: false
 enable-log-console: true
 log-level: INFO
 
-#### performace settings
+#### performance settings
 
-# In order to save bandwitdth RESTHeart can force requests to support the giz encoding (if not, requests will be rejected)
+# In order to save bandwidth RESTHeart can force requests to support the GZIP encoding (if not, requests will be rejected)
 force-gzip-encoding: false
 
-# local-cache allows to cache the db and collection properties to drammatically improve performaces. 
+# local-cache allows to cache the db and collection properties to dramatically improve performances. 
 # Without caching, a GET on a document would requires two additional queries to retrieve the db and the collection properties.
 # pay attention to local caching only in case of a multi-node deployments (horizontal scalability). 
 # In this case a change in a db or collection properties would reflect on other nodes at worst after the TTL (cache entries time to live). 

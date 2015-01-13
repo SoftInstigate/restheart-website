@@ -4,7 +4,7 @@
     <i id="api-doc-coll"></i> <!-- anchor for restheart docs curies -->
     <h2>The Collection resources</h2>
     <p class="lead">
-        The Collection resources allow you to manage your mongodb collections. 
+        The Collection resources allow you to manage your MongoDB collections. 
         <br/>
         The PUT, PATCH and DELETE operations are part of the data model API, i.e. they are used at development time to define the data structure.
         <br/>
@@ -13,25 +13,25 @@
 
     <div class="bs-callout bs-callout-info">
         <p>
-            Each collection has its own properties. This means that you can attach any json document to your collections. 
+            Each collection has its own properties. This means that you can attach any JSON document to your collections. 
             <br/>
             For instance, you can use this feature to implement a custom Access Manager that uses some collection ACL properties to enforce the security policy.
             <br/>
-            Some collection properties are metadata and have a special meaning. For instance the property <code>rels</code> allow to define the relationship between collections.
+            Some collection properties are meta-data and have a special meaning. For instance the property <code>rels</code> allow to define the relationship between collections.
         </p>
     </div>
 </div>
 
 <div id="api-coll-metadata" class="bs-docs-section">
-    <h3>Collection metadata</h3>
+    <h3>Collection meta-data</h3>
 
     <p class="lead">
-        Metadata are special properties used by RESTHeart to control the representation of the resources. 
+        Meta-data are special properties used by RESTHeart to control the representation of the resources. 
     </p>
 
     <table class="table table-condensed">
         <thead>
-        <p class="lead">Metadata properties</p>
+        <p class="lead">Meta-data properties</p>
         <tr>
             <th>properties</th>
             <th>description</th>
@@ -39,7 +39,7 @@
         </tr>
         <tr>
             <td>rels</td>
-            <td>the <code>rels</code> properties allow to define the relationships between documents. When defined, the representation of the collection's documents automagically includes the links to the referenced documents between the HAL <code>_link</code> property</p></td>
+            <td>the <code>rels</code> properties allow to define the relationships between documents. When defined, the representation of the collection's documents auto-magically includes the links to the referenced documents between the HAL <code>_link</code> property</p></td>
             <td>array of rel objects</td>
         </tr>
         </tr>
@@ -130,7 +130,7 @@
     <table class="table table-condensed">
         <thead>
         <p class="lead">Special Properties</p>
-        <p>the following properties are autmatically managed by RESTHeart. Their keys start with _ thus are reserved (cannot be modified)</p>
+        <p>the following properties are automatically managed by RESTHeart. Their keys start with _ thus are reserved (cannot be modified)</p>
         <tr>
             <th>key</th>
             <th>description</th>
@@ -170,7 +170,7 @@
             </tr>
             <tr>
                 <td>_returned</th>
-                <td>how many embedded documentes were returned</td>
+                <td>how many embedded documents were returned</td>
                 <td>always</td>
             </tr>
             <tr>
@@ -217,8 +217,8 @@
         </tr>
         <tr>
             <td>filter</th>
-                <i id="api-coll-filter"></i> <!-- anchor for restheart docs curies -->
-            <td>used for filtering: a json mongodb filtering expression expression to apply. e.g. filter={"name":{"$regex":".*k"}}. . multiple filter parameters can be specified.</td>
+            <i id="api-coll-filter"></i> <!-- anchor for restheart docs curies -->
+            <td>used for filtering: a JSON MongoDB filtering expression expression to apply. e.g. filter={"name":{"$regex":".*k"}}. . multiple filter parameters can be specified.</td>
             <td>&lt;none&gt;</td>
         </tr>
         </tbody>
@@ -241,7 +241,7 @@
             </tr>
             <tr>
                 <td class="bg-danger">400 BAD REQUEST</th>
-                <td>a query parameter has an invalid value (e.g. pagesize is negative or not a number)</td>
+                <td>a query parameter has an invalid value (e.g. page size is negative or not a number)</td>
                 <td> a response document is sent with detailed information about the error</td>
             </tr>
             <tr>
@@ -252,7 +252,7 @@
             <tr>
                 <td class="bg-danger">403 FORBIDDEN</th>
                 <td>no authentication credentials sent</td>
-                <td>this is only sent for requests with No-Auth-Challgenge header or noauthchallenge query parameter</td>
+                <td>this is only sent for requests with No-Auth-Challenge header or noauthchallenge query parameter</td>
             </tr>
             <tr>
                 <td class="bg-danger">404 NOT FOUND</th>
@@ -261,7 +261,7 @@
             </tr>
             <tr>
                 <td class="bg-danger">500 INTERNAL SERVER ERROR</th>
-                <td>an error occurred (e.g. mongodb is down)</td>
+                <td>an error occurred (e.g. MongoDB is down)</td>
                 <td>a response document is sent with detailed information about the error, including the complete stack trace of the exception as an embedded resource</td>
             </tr>
         </tbody>
@@ -379,17 +379,17 @@
             <tr>
                 <td class="bg-danger">403 FORBIDDEN</th>
                 <td>no authentication credentials sent</td>
-                <td>this is only sent for requests with No-Auth-Challgenge header or noauthchallenge query parameter</td>
+                <td>this is only sent for requests with No-Auth-Challenge header or noauthchallenge query parameter</td>
             </tr>
             <tr>
                 <td class="bg-danger">406 NOT_ACCEPTABLE</th>
-                <td>the requet body is not a valid json or hal+json document or the id is reserved (e.g. starts with _) or optional _id propert does not match the resource id in URL</td>
+                <td>the request body is not a valid JSON or HAL+JSON document or the id is reserved (e.g. starts with _) or optional _id property does not match the resource id in URL</td>
                 <td></td>
             </tr>
             <tr>
                 <td class="bg-danger">409 CONFLICT</th>
                 <td>in case of update, the If-Match header with the ETag value was not provided</td>
-                <td>in order to avoid gost writes, updating a resource requires the ETag to be provided via the If-Match header.</td>
+                <td>in order to avoid ghost writes, updating a resource requires the ETag to be provided via the If-Match header.</td>
             </tr>
             <tr>
                 <td class="bg-danger">412 PRECONDITION_FAILED</th>
@@ -402,7 +402,7 @@
             </tr>
             <tr>
                 <td class="bg-danger">500 INTERNAL SERVER ERROR</th>
-                <td>an error occurred (e.g. mongodb is down)</td>
+                <td>an error occurred (e.g. MongoDB is down)</td>
                 <td>in case of error a response document is sent together with detailed information about the error, including the complete stack trace of the exception as an embedded resource</td>
             </tr>
         </tbody>
