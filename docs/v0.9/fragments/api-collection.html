@@ -126,6 +126,10 @@
     <div class="bs-callout bs-callout-info">
         ETag based caching supported (<a href="http://en.wikipedia.org/wiki/HTTP_ETag" target="_blank">entity tag</a> ).
     </div>
+    
+    <div class="bs-callout bs-callout-info">
+        Eager db cursors preallocation supported. Dramatically improves read performances on big collections.
+    </div>
 
     <table class="table table-condensed">
         <thead>
@@ -213,13 +217,19 @@
             <td>sort_by</th>
                 <i id="api-coll-sort"></i> <!-- anchor for restheart docs curies -->
             <td>used for sorting: the field to sort (prepend with - for descending sorting). multiple sorty_by parameters can be specified.</td>
-            <td>_id</td>
+            <td>-created_on</td>
         </tr>
         <tr>
             <td>filter</th>
             <i id="api-coll-filter"></i> <!-- anchor for restheart docs curies -->
             <td>used for filtering: a JSON MongoDB filtering expression expression to apply. e.g. filter={"name":{"$regex":".*k"}}. . multiple filter parameters can be specified.</td>
             <td>&lt;none&gt;</td>
+        </tr>
+        <tr>
+            <td>eager</th>
+            <i id="api-coll-eager"></i> <!-- anchor for restheart docs curies -->
+            <td>specify the eager db cursors preallocation policy: valid values are linear, random, none.</td>
+            <td>linear</td>
         </tr>
         </tbody>
     </table>

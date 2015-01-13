@@ -1,6 +1,24 @@
 <!-- ***** Performance settings -->
 <div id="conf-performance" class="bs-docs-section">
     <h2>Performance settings</h2>
+    
+    <h4>eager db cursors preallocation engine <code>availabe from version 0.9.8</code></h4>
+    
+    <p>
+    In big collections, reading a far page involves skipping the db cursor for many documents resulting in a performance bottleneck.    
+    For instance, with default pagesize of 100, a GET with page=50.000 involves 500.000 skips on the db cursor.
+    The eager db cursors preallocation engine boosts up performaces (in some use cases, up to 1000%).
+    </p>
+    
+     <ul>
+        <li><code>eager-cursor-allocation-pool-size</code> default value is <code>100</code>.</li>
+        <li><code>eager-cursor-allocation-linear-slice-width</code> default value is <code>1000</code>.</li>
+        <li><code>eager-cursor-allocation-linear-slice-delta</code> default value is <code>100</code>.</li>
+        <li><code>eager-cursor-allocation-linear-slice-heights</code> default value is <code>[4,2,1]</code>.</li>
+        <li><code>eager-cursor-allocation-random-max-cursors</code> default value is <code>20</code>.</li>
+        <li><code>eager-cursor-allocation-random-slice-min-width</code> default value is <code>1000</code>.</li>
+    </ul>
+    
     <h4>forcing gzip encoding</h4>
     <p>
         In order to save bandwidth RESTHeart can force requests to support the GZIP encoding (if not, requests will be rejected)
