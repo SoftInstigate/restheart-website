@@ -87,7 +87,7 @@ This starts it with the default configuration, which is fine for MongoDB running
 {: .bs-callout.bs-callout-info}
 
 Starting from version 0.9.8, on Linux, OSX and Solaris you can run RESTHeart as a [daemon process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.
-Note that this will force the console logging and the file logging on to be turned off and on respectively, regardless the specified log configuration options.
+Note that this will force the console logging and the file logging to be turned off and on respectively, regardless the specified log configuration options.
 {: .bs-callout.bs-callout-info}
 
 For example:
