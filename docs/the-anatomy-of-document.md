@@ -5,12 +5,9 @@ permalink: /docs/the-anatomy-of-a-document.html
 class2: active
 ---
 
-RESTHeart is the REST API data server for MongoDB. 
-MongoDB resources (dbs, collections, indexes and documents) are mapped to URIs and, following the REST mantra, you _transfer_ their _states_ back and forth by the means of _representations_.
-This post introduces you to such **representation** format.
-
-You can download RESTHeart from [GitHub](https://github.com/softinstigate/restheart) 
-
+RESTHeart maps MongoDB resources (dbs, collections, indexes and documents) to URIs and, following the REST mantra, you can _transfer_ their _states_ back and forth by the means of _representations_.
+This section introduces you to such **representation** format.
+j
 <!-- more -->
 
 
