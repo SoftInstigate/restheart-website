@@ -5,17 +5,15 @@ permalink: /docs/performances.html
 class2: active
 ---
 
-RESTHeart delivers excellent performances and it often outcomes the results that can be achieved accessing MongoDB directly via its driver. This section includes the performance test results gathered by the SoftInstigate development team and includes all the information needed to reproduce the tests. 
-
-<!-- more -->
+The RESTHeart API Server delivers excellent performances and it often overcomes the results that can be achieved accessing MongoDB directly via its Java driver. This section includes the performance test results gathered by the SoftInstigate's development team and includes all the information needed to autonomously reproduce the tests.<!-- more -->
 
 ## Results
 {: .post}
 
-### test case 1
+### Test case 1
 {: .post}
 
-> measure the execution time to create 1 million documents with random data using 200 test threads.
+> Measure the execution time to create 1 million documents with random data using 200 test threads.
 
 ![test 1 execution time](/images/perftest/test-1-et.png)
 
@@ -28,10 +26,10 @@ RESTHeart delivers excellent performances and it often outcomes the results that
 
 <br/>
 
-### test case 2
+### Test case 2
 {: .post}
 
-> measure the execution time to query a collection 100.000 times, getting 5 documents each time (limit 5) and skipping just 25 documents, under different concurrency levels. 
+> Measure the execution time to query a collection 100.000 times, getting 5 documents each time (limit 5) and skipping just 25 documents, under different concurrency levels. 
 
 ![test 2 execution time](/images/perftest/test-2-et.png)
 
@@ -46,10 +44,10 @@ RESTHeart delivers excellent performances and it often outcomes the results that
 
 <br/>
 
-### test case 3
+### Test case 3
 {: .post}
 
-> measure the execution time to query a collection 2.000 times, getting 5 documents each time (limit 5) and skipping just 250.000 documents, under different concurrency levels.
+> Measure the execution time to query a collection 2.000 times, getting 5 documents each time (limit 5) and skipping just 250.000 documents, under different concurrency levels.
 
 ![test 3 execution time](/images/perftest/test-3-et.png)
 
@@ -64,10 +62,10 @@ RESTHeart delivers excellent performances and it often outcomes the results that
 
 <br/>
 
-### test case 4
+### Test case 4
 {: .post}
 
-> measure the execution time to query a collection 500 times, getting 5 documents each time (limit 5) skipping more and more documents each time, with a concurrency level of 4.
+> Measure the execution time to query a collection 500 times, getting 5 documents each time (limit 5) skipping more and more documents each time, with a concurrency level of 4.
 
 ![test 4 execution time](/images/perftest/test-3-et.png)
 
@@ -86,7 +84,7 @@ Kskips = 1000 skip
 ## How we tested
 {: .post}
 
-### hardware
+### Hardware
 {: .post}
 
 MongoDB and RESTHeart running on Sunfire X2200 M2 with 2 CPU with 16 Gbyte of RAM. See full specification [here](http://docs.oracle.com/cd/E19121-01/sf.x2200m2/819-6597-12/Chap1.html). This is an _old_ server (8 years old) with 2 dual core 2,2GHz AMD Opteron CPUs.
@@ -95,7 +93,7 @@ Test cases run by MacBook Pro with 2,66 GHz Intel Core i7 and 8 GB 1067 MHz DDR3
 
 The client and the server on the same local network linked by a 10/100 Ethernet switch.
 
-### software
+### Software
 {: .post}
 
 * __Server OS__: Ubuntu server 64bit 14.04.1 LTS
@@ -103,7 +101,7 @@ The client and the server on the same local network linked by a 10/100 Ethernet 
 * __MongoDB__: 2.6.7
 * __RESTHeart__: 2.8-SNAPSHOT (commit 01d403a5db8b765ad5b0a8eec1fda420c392ab58)
 
-### configuration
+### Configuration
 {: .post}
 
 __MongoDB__: run (without authentication enabled) with the following command
@@ -112,7 +110,6 @@ __MongoDB__: run (without authentication enabled) with the following command
 $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 {% endhighlight %}
 
-
 __RESTHeart__: run with default parameters with the following exception:
 
 * logging to file off
@@ -120,10 +117,10 @@ __RESTHeart__: run with default parameters with the following exception:
 * io-threads: 8 
 * worker-threads: 64 
 
-### test cases
+### Test cases
 {: .post}
 
 We used the brilliant [load test tool](https://github.com/bazhenov/load-test-tool).
 
-The test case code is available on github as part of the RESTHeart source code baseline. You can find it [here](https://github.com/SoftInstigate/restheart/tree/develop/src/test/java/org/restheart/test/performance)
+The test case code is available on Github as part of the RESTHeart source code baseline. You can find it [here](https://github.com/SoftInstigate/restheart/tree/develop/src/test/java/org/restheart/test/performance)
 
