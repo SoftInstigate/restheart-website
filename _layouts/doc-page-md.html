@@ -17,8 +17,8 @@ layout: default
         <nav class="col-md-2">
             <div class="nav bs-docs-sidebar affix hidden-xs hidden-sm" role="complementary">
                 <ul class="nav">
-                    <li class="active">
-                        <a href="#">Intro</a>
+                    <li class="{{ page.intro }}">
+                        <a href="./overview.html">Intro</a>
                         <ul class="nav">
                             <li class="{{ page.class1 }}"><a href="./get-up-and-running.html">Get up and running</a></li>
                             <li class="{{ page.class2 }}"><a href="./the-anatomy-of-a-document.html">The anatomy of a document</a></li>
@@ -26,11 +26,12 @@ layout: default
                         </ul>
                     </li>
                     <li>
-                        <a href="./configuration.html">Configuration</a>
+                        <a class="{{ page.conf }}" href="./configuration.html">Configuration</a>
                     </li>
                     <li>
-                        <a href="./api.html">API</a>
+                        <a class="{{ page.api }}"href="./api.html">API</a>
                     </li>
+                    <li class="{{ page.perf-class }}">
                         <a href="./performances.html">Performances</a>
                     </li>
                 </ul>
@@ -44,12 +45,21 @@ layout: default
 <nav class="navbar navbar-inverse navbar-fixed-bottom hidden-md hidden-lg" role="navigation">
     <div class="container-fluid text-center">
         <div>
-            <a href="#" class="nav-bottom-item-level1"><strong>Intro</strong></a>
+                {% if page.intro %}
+            <a href="./overview.html" class="nav-bottom-item-level1"><strong>Intro</strong></a>
+                {% else %}
+            <a href="./overview.html" class="nav-bottom-item-level1">Intro</a>
+                {% endif %}
             <a href="./configuration.html" class="nav-bottom-item-level1">Configuration</a>
             <a href="./api.html" class="nav-bottom-item-level1">API</a>
-            <a href="./performances.html" class="nav-bottom-item-level2">Performances</a>
+                {% if page.perf %}
+            <a href="./performances.html" class="nav-bottom-item-level1"><strong>Performances</strong></a>
+                {% else %}
+            <a href="./performances.html" class="nav-bottom-item-level1">Performances</a>
+                {% endif %}
+            
         </div>
-        <div>
+        <div class="{{ page.level2 }}">
             <a href="./get-up-and-running.html" class="nav-bottom-item-level2">Get up and running</a>
             <a href="./the-anatomy-of-a-document.html" class="nav-bottom-item-level2">The anatomy of a document</a>
             <a href="./walkthrough.html" class="nav-bottom-item-level2">API walkthrough</a>

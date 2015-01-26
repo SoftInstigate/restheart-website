@@ -3,6 +3,7 @@ layout: doc-page-md
 title:  "The anatomy of a document"
 permalink: /docs/the-anatomy-of-a-document.html
 class2: active
+intro: true
 ---
 
 RESTHeart maps MongoDB resources (dbs, collections, indexes and documents) to URIs and, following the REST mantra, you can _transfer_ their _states_ back and forth by the means of _representations_.

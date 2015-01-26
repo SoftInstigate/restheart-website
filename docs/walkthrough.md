@@ -3,6 +3,7 @@ layout: doc-page-md
 title:  "API walk-through"
 permalink: /docs/walkthrough.html
 class3: active
+intro: true
 ---
 
 In this walk-through we'll use RESTHeart to create a db, a collection and a couple of documents in MongoDB.<!-- more -->
