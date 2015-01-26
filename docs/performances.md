@@ -19,10 +19,11 @@ The RESTHeart API Server delivers excellent performances and it often overcomes 
 
 > In this scenario, using RESTHeart introduces just 2,41% overhead over the total execution time.
 
-||Execution Time|TPS|
-|-|:-:|:-:|
-|__RESTHeart__|250s|3990tps|
-|__Direct__|244s|4086tps|
+|             |Execution Time|TPS     |
+|-------------|:------------:|:------:|
+|__RESTHeart__|250s          |3990 tps|
+|__Direct__   |244s          |4086 tps|
+{: .table .table-bordered}
 
 <br/>
 
@@ -37,10 +38,11 @@ The RESTHeart API Server delivers excellent performances and it often overcomes 
 
 > RESTHeart delivers better performances under any concurrency level over the direct access via the MongoDB driver.
 
-||50|100|200|250|400|500|
-|:-|:-:|:-:||:-:|:-:||:-:|:-:|
-|__RESTHeart__|78s|82s|78s|76s|76s|76s|
-|__Direct__|97s|95s|96s|96s|109s|112s|
+| Threads       | 50  | 100 | 200 | 250 | 400  | 500  |
+| ------------- | ---:| ---:| ---:| ---:| ----:| ----:|
+| __RESTHeart__ | 78s | 82s | 78s | 76s | 76s  | 76s  |
+| __Direct__    | 97s | 95s | 96s | 96s | 109s | 112s |
+{: .table .table-bordered }
 
 <br/>
 
@@ -55,10 +57,11 @@ The RESTHeart API Server delivers excellent performances and it often overcomes 
 
 > Thanks to the eager pre-allocation dbcursor engine, queries with significant skip parameter executes much faster (50 times in this case) with RESTHeart.
 
-||1|2|4|5|8|10|20|40|50|80|100|200|400|500|
-|:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|__RESTHeart__|16,28s|6,22|5,05s|2,53s|3,76s|3,6s|2,98s|5,65s|9,04s|10,74s|6,76s|9,24s|6,76s|12,71s|
-|__Direct__|1091s|627s|324s|328s|329s|325s|324s|321s|321s|304s|302s|305s|327s|327s|
+| Threads       | 1 | 2 | 4 | 5 | 8 | 10 | 20 | 40 | 50 | 80 | 100 | 200 | 400 | 500 |
+|:--------------|:-:|:-:|:-:|:-:|:-:|:--:|:--:|:--:|:--:|:--:|:---:|:---:|:---:|:---:|
+| __RESTHeart__ | 16,28s | 6,22s | 5,05s | 2,53s | 3,76s | 3,6s | 2,98s | 5,65s | 9,04s | 10,74s | 6,76s | 9,24s | 6,76s | 12,71s |
+| __Direct__   | 1091s | 627s | 324s |328s |329s | 325s | 324s | 321s | 321s | 304s | 302s | 305s | 327s | 327s |
+{: .table .table-bordered }
 
 <br/>
 
@@ -75,10 +78,11 @@ The RESTHeart API Server delivers excellent performances and it often overcomes 
 
 Kskips = 1000 skip
 
-||250 Kskips|500 Kskips|750 Kskips|1.000 Kskips|1.250 Kskips|1.500 Kskips|1.750 kskips|2.000 kskips|2.250 Kskips|
-|:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|__RESTHeart__|2,6s|1,91s|1,9s|1,88s|1,58s|2,05s|1,51s|1,52s|1,51s|
-|__Direct__|79s|156s|242s|317s|375s|453s|558s|601s|713s|
+| Kskips        | 250 | 500 | 750 | 1.000 | 1.250 | 1.500 | 1.750 | 2.000 | 2.250 |
+|:--------------|:---:|:---:|:---:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+| __RESTHeart__ | 2,6s | 1,91s | 1,9s | 1,88s | 1,58s | 2,05s | 1,51s | 1,52s | 1,51s |
+| __Direct__    | 79s | 156s | 242s | 317s | 375s | 453s | 558s | 601s | 713s |
+{: .table .table-bordered }
 
 
 ## How we tested
