@@ -1,6 +1,76 @@
 ---
 layout: default
+# id (and subid if second level page) must match with the page menu_id (and submenuid) in the referenced page for the menu selection to work
+# for subitems, do not specify the subitem.id only for anchors
+
+menu-l1-items:
+ - href: /docs/overview.html
+   title: Overview
+   id: 1
+ - href: /docs/get-up-and-running.html
+   title: Installation
+   id: 2
+ - href: /docs/walkthrough.html
+   title: API walkthrough
+   id: 3
+ - href: /docs/resource-representation-format.html
+   title: Resource Representation Format
+   id: 4
+ - href: /docs/resource-types.html
+   title: Resource Types
+   id: 5
+ - href: /docs/authentication.html
+   title: Authentication
+   id: 6
+ - href: /docs/request-execution-optimization.html
+   title: Request Execution Optimization
+   id: 7
+ - href: /docs/configuration.html
+   title: Configuration
+   id: 8
+   subitems:
+    - href: "#conf-listeners"
+      title: Listeners
+    - href: "#conf-ssl"
+      title: ssl
+    - href: "#conf-mongodb"
+      title: MongoDB
+    - href: "#conf-security"
+      title: Security
+    - href: "#conf-logging"
+      title: Logging
+    - href: "#conf-staticresources"
+      title: Static resources
+    - href: "#conf-applicationlogic"
+      title: Application Logic
+    - href: "#conf-performance"
+      title: Performance settings
+    - href: "#conf-example"
+      title: Example
+ - href: /docs/api.html
+   title: API
+   id: 9
+   subitems:
+    - href: "#api-root"
+      title: root
+    - href: "#api-db"
+      title: db
+    - href: "#api-coll"
+      title: collection
+    - href: "#api-indexes"
+      title: indexes
+    - href: "#api-doc"
+      title: document
+    - href: "#api-bucket"
+      title: file bucket
+    - href: "#api-file"
+      title: file
+ - href: /docs/performances.html
+   title: Performances
+   id: 10
+
 ---
+
 <div class="mb30"></div>
 
 <div class="container">
@@ -17,23 +87,41 @@ layout: default
         <nav class="col-md-2">
             <div class="nav bs-docs-sidebar affix hidden-xs hidden-sm" role="complementary">
                 <ul class="nav">
-                    <li class="{{ page.intro }}">
-                        <a href="./overview.html">Intro</a>
-                        <ul class="nav">
-                            <li class="{{ page.class1 }}"><a href="./get-up-and-running.html">Get up and running</a></li>
-                            <li class="{{ page.class2 }}"><a href="./the-anatomy-of-a-document.html">The anatomy of a document</a></li>
-                            <li class="{{ page.class3 }}"><a href="./walkthrough.html">API walkthrough</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="{{ page.conf }}" href="./configuration.html">Configuration</a>
-                    </li>
-                    <li>
-                        <a class="{{ page.api }}"href="./api.html">API</a>
-                    </li>
-                    <li class="{{ page.perf-class }}">
-                        <a href="./performances.html">Performances</a>
-                    </li>
+
+                    {% for item in page.menu-l1-items %}
+
+                    {% if {{page.menuid}} == {{item.id}} %}
+
+                        {% if {{item.subitems}} %}
+
+                    <li class="active scroll-anchor">
+                    <a href="#">{{item.title}}</a>
+                    <ul class="nav">
+
+                        {% for subitem in item.subitems %}
+
+                        {% if {{subitem.id}} && {{page.submenuid}} == {{subitem.id}} %}
+                            <li class="active"><a href="{{subitem.href}}">{{subitem.title}}</a></li>
+                        {% else %}
+                            <li><a href="{{subitem.href}}">{{subitem.title}}</a></li>
+                        {% endif %}
+
+                        {% endfor %}
+
+                    </ul>
+
+                        {% else %}
+                    
+                    <li class="active"><a href="{{item.href}}">{{item.title}}</a></li>
+
+                        {% endif %}
+
+                    {% else %}
+                    <li><a href="{{item.href}}">{{item.title}}</a></li>
+                    {% endif %}
+
+                    {% endfor %}
+
                 </ul>
             </div>
         </nav>
@@ -59,6 +147,7 @@ layout: default
                 {% endif %}
             
         </div>
+
         <div class="{{ page.level2 }}">
             <a href="./get-up-and-running.html" class="nav-bottom-item-level2">Get up and running</a>
             <a href="./the-anatomy-of-a-document.html" class="nav-bottom-item-level2">The anatomy of a document</a>

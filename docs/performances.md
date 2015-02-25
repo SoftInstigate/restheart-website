@@ -2,9 +2,7 @@
 layout: doc-page-md
 title:  "RESTHeart performances"
 permalink: /docs/performances.html
-perf: true
-perf-class: active
-level2: hidden
+menuid: 10
 ---
 
 The RESTHeart API Server delivers excellent performances and it often overcomes the results that can be achieved accessing MongoDB directly via its Java driver. This section includes the performance test results gathered by the SoftInstigate's development team and includes all the information needed to autonomously reproduce the tests.<!-- more -->

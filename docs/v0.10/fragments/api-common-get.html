@@ -1,0 +1,97 @@
+<table class="table table-condensed">
+    <thead>
+    <p class="lead">Query parameters</p>
+    <tr>
+        <th>parameter</th>
+        <th>description</th>
+        <th>default value</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>pagesize</td>
+        <td>used for paging: the maximum number of _embedded resources to return per page</td>
+        <td>100</td>
+    </tr>
+    <tr>
+        <td>page</th>
+        <td>used for paging: the page to return</td>
+        <td>1</td>
+    </tr>
+</tbody>
+</table>
+
+<table class="table table-condensed">
+    <thead>
+    <p class="lead">Return codes</p>
+    <tr>
+        <th>code</th>
+        <th>when</th>
+        <th>details</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td class="bg-success">200 OK</td>
+        <td>the request completed successfully</td>
+        <td/>
+    </tr>
+    <tr>
+        <td class="bg-danger">400 BAD REQUEST</th>
+        <td>a query parameter has an invalid value (e.g. pagesize is negative or not a number)</td>
+        <td>a response document is sent with detailed information about the error</td>
+    </tr>
+    <tr>
+        <td class="bg-danger">401 UNAUTHORIZED</th>
+        <td>the authentication failed or the authenticated user is not authorized to request this resource</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="bg-danger">403 FORBIDDEN</th>
+        <td>no authentication credentials sent</td>
+        <td>this is only sent for requests with No-Auth-Challenge header or noauthchallenge query parameter</td>
+    </tr>
+    <tr>
+        <td class="bg-danger">404 NOT FOUND</th>
+        <td>if the resource does not exist</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="bg-danger">500 INTERNAL SERVER ERROR</th>
+        <td>an error occurred (e.g. MongoDB is down)</td>
+        <td>a response document is sent with detailed information about the error, including the complete stack trace of the exception as an embedded resource</td>
+    </tr>
+</tbody>
+</table>
+
+<table class="table table-condensed">
+    <thead>
+    <p class="lead">Headers</p>
+    <tr>
+        <th>header</th>
+        <th>mandatory</th>
+        <th>type</th>
+        <th>description</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Authorization</td>
+        <td>no</td>
+        <td>request</td>
+        <td>basic authentication required according to the security policy.</td>
+    </tr>
+    <tr>
+        <td>Accept-Encoding</td>
+        <td>no (yes in case configuration <code>force-gzip-encoding</code> is true)</td>
+        <td>request</td>
+        <td>gzip encoding can be requested</td>
+    </tr>
+    <tr>
+        <td>No-Auth-Challenge</td>
+        <td>no</td>
+        <td>request</td>
+        <td>requests with this header will not be challenged for basic authentication (i.e. will not get the WWW-Authenticate response header). this can also be achieved passing the noauthchallenge query parameter.</td>
+    </tr>
+</tbody>
+</table>
