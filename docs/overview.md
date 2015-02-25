@@ -2,8 +2,13 @@
 layout: doc-page-md
 title: RESTHeart, the REST DATA API server for MongoDB
 permalink: /docs/overview.html
-menuid: 1
+menu:
+ id: 1
 ---
+
+<p class="text-center">
+    <a class="btn btn-primary" href="./get-up-and-running.html">Get up and running!</a>
+</p>
 
 - __Zero development time__: just start it and the data REST API is ready to use
 - __CRUD operations API__ on your data
@@ -18,10 +23,3 @@ menuid: 1
 - Embeds the brilliant [HAL browser](http://github.com/mikekelly/hal-browser) by Mike Kelly (the author of the HAL specifications)
 - Support __Cross-origin resource sharing__ [CORS](http://en.wikipedia.org/wiki/Cross-origin__resource__sharing"CORS) so that your one page web application can deal with RESTHeart running on a different domain. 
 - Ideal as [AngularJS](https://angularjs.org/) (or any other MVW JavaScript framework) __back-end__
-
-
-
-
-<p class="text-center">
-    <a class="btn btn-primary" href="./get-up-and-running.html">Get up and running!</a>
-</p>

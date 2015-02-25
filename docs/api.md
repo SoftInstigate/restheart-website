@@ -2,7 +2,8 @@
 layout: doc-page-md
 title: RESTHeart API
 permalink: /docs/api.html
-menuid: 9
+menu:
+ id: 6
 fragments:
  - href: v0.10/fragments/api-main.html
  - href: v0.10/fragments/api-root.html

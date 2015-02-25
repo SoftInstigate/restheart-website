@@ -2,7 +2,8 @@
 layout: doc-page-md
 title:  "RESTHeart up and running"
 permalink: /docs/get-up-and-running.html
-menuid: 2
+menu:
+ id: 2
 ---
 
 * Table of contents

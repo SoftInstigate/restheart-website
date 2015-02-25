@@ -1,8 +1,10 @@
 ---
 layout: doc-page-md
-title: file resource
+title: Resource Types
 permalink: /docs/resource-types.html
-menuid: 5
+menu:
+ id: 4
+ subid: 2
 ---
 
 > Work in progress!

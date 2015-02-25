@@ -2,7 +2,9 @@
 layout: doc-page-md
 title:  "Resource Representation Format"
 permalink: /docs/resource-representation-format.html
-menuid: 4
+menu:
+ id: 4
+ subid: 1
 ---
 
 RESTHeart maps MongoDB resources (dbs, collections, indexes and documents) to URIs and, following the REST mantra, you can _transfer_ their _states_ back and forth by the means of _representations_.

@@ -2,7 +2,9 @@
 layout: doc-page-md
 title: authentication
 permalink: /docs/authentication.html
-menuid: 6
+menu:
+ id: 4
+ subid: 3
 ---
 
 > Work in progress!

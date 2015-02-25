@@ -1,10 +1,10 @@
 ---
 layout: doc-page-md
-title: request execution optimization
-permalink: /docs/request-execution-optimization.html
+title: Resource URI
+permalink: /docs/resource-uri.html
 menu:
  id: 4
- subid: 4
+ subid: 5
 ---
 
 > Work in progress!
