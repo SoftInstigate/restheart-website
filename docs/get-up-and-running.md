@@ -50,7 +50,7 @@ db version v2.6.3
 2014-11-24T15:42:54.389+0100 git version: 255f67a66f9603c59380b2a389e386910bbb52cb
 {% endhighlight %} 
 
-RESTHeart has been tested with MongoDB version 2.4 and 2.6.
+RESTHeart has been tested with MongoDB version 3.0, 2.6 and 2.4.
 {: .bs-callout.bs-callout-info}
 
 ## 4. Install RESTHeart ##
@@ -137,7 +137,7 @@ $ mongo
 
 Create the admin user. The procedure is different depending on MongoDB version.
 
-### 7.1. For MongoDB version 2.6 ###
+### 7.1. For MongoDB version 3.0 and 2.6 ###
 
 {% highlight bash %}
 > use admin
