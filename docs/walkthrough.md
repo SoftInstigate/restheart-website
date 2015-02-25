@@ -10,8 +10,8 @@ In this walk-through we'll use RESTHeart to create a db, a collection and a coup
 
 RESTHeart represents resources as HAL+JSON documents. Before going further you might want to check:
 
-* [RESTHeart - up and running](/docs/get-up-and-running.html) 
-* [RESTHeart - the anatomy of a document](/docs/the-anatomy-of-a-document.html)
+* [Get Up and Running](/docs/get-up-and-running.html) 
+* [Resource Representation Format](/docs/resource-representation-format.html)
 * the [HAL specification](http://stateless.co/hal_specification.html)
 
 We'll use [httpie](http://httpie.org), a brilliant command line HTTP client (you can also use curl of course!).
