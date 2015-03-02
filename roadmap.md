@@ -60,7 +60,7 @@ permalink: /roadmap.html
 <div class="container mb30">
     <div class="row">
         <div class="alert alert-warning " role="alert">
-            <h1 class="text-center">Panned for 0.12</h1>
+            <h1 class="text-center">Planned for 0.12</h1>
 
             <!-- paste issues here from release notes jira page -->
     
