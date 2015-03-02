@@ -9,7 +9,7 @@ permalink: /roadmap.html
         <div class="alert alert-success" role="alert">
         <div class="text-center">
             <h1>Next release 0.11</h1>
-            <a href="https://softinstigate.atlassian.net/projects/RH/versions/10201" class="btn btn-success" target="_blank">check development status</a>.
+            <a href="https://softinstigate.atlassian.net/projects/RH/versions/10201" class="btn btn-success" target="_blank">development status</a>.
         </div>
 
         <!-- paste issues here from release notes jira page -->
