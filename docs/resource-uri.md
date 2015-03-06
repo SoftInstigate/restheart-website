@@ -12,7 +12,7 @@ This section introduces the resource URI, i.e. how resources are indentified in 
 ## The URI of the root resource
 {: .post}
 
-The __root resource__ (the API entry point) is identified by the URI is <code>/</code>.
+The URI of the __root resource__ (the API entry point) is <code>/</code>.
 
 ## The URI of the database resource
 {: .post}
@@ -25,7 +25,7 @@ where __/&lt;dbName&gt;__ is the database name and it is a string.
 ## The URI of the collection resource
 {: .post}
 
-The __collection resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;</code>
+The URI of the __collection resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;</code>
 
 Where __&lt;collName&gt;__ is the collection name and it a string.
 {: .bs-callout.bs-callout-info}
@@ -33,9 +33,9 @@ Where __&lt;collName&gt;__ is the collection name and it a string.
 ## The URI of the document resource
 {: .post}
 
-The __document resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;docId&gt;[?id_type=TYPE]</code>.
+The URI of the __document resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;docId&gt;[?id_type=TYPE]</code>.
 
-Where __&lt;docId&gt;__ is the value of the _id property of the document and __id_type__ is the type of the id.
+Where __&lt;docId&gt;__ is the value of the _id property of the document and __TYPE__ is the type of the id.
 {: .bs-callout.bs-callout-info}
 
 In MongoDB the _id property can be of any type. For instance it can also be a json object, as in the following document:
@@ -60,7 +60,7 @@ The following table shows the supported types
 |MaxKey             | MAXKEY       |
 {: .table .table-bordered}
 
-__*__ The default is __STRING_OID__ (you don't have to specify it). It means that the __&lt;docId&gt;__ is interpreted as an ObjectId if its value is a valid ObjectId or a String.
+__*__ The default value of the id_type query parameter is __STRING_OID__ (you don't have to specify it). In this case, the value of the __&lt;docId&gt;__ is interpreted either as an ObjectId or a String. The former applies if the value is a valid ObjectId.
 {: .bs-callout.bs-callout-info}
 
 __**__ __STRING__ is useful if the _id value would be a valid ObjectId but it is actually a String.
@@ -113,12 +113,12 @@ __/db/coll/54f77f0fc2e6ea386c0752a5?id_type=STRING__
 ## The URI of the indexes resource
 {: .post}
 
-The __indexes resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;/_indexes</code>.
+The URI of the __indexes resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;/_indexes</code>.
 
 ## The URI of the index resource
 {: .post}
 
-The __index resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;/_indexes/&lt;indexId&gt;</code>.
+The URI of the __index resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;/_indexes/&lt;indexId&gt;</code>.
 
 Where __&lt;indexId&gt;__ is the value of the _id property of the index and must be a string (other types of index _id are not supported).
 {: .bs-callout.bs-callout-info}
@@ -126,7 +126,7 @@ Where __&lt;indexId&gt;__ is the value of the _id property of the index and must
 ## The URI of the file bucket resource
 {: .post}
 
-The __file bucket resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;bucketName&gt;.files</code>
+The URI of the __file bucket resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;bucketName&gt;.files</code>
 
 Where __/&lt;bucketName&gt;__ is the file bucket name and it is a string.
 {: .bs-callout.bs-callout-info}
@@ -134,7 +134,7 @@ Where __/&lt;bucketName&gt;__ is the file bucket name and it is a string.
 ## The URI of the file resource
 {: .post}
 
-The __file resource__ is identified by the URI <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;bucketName&gt;.files/&lt;fileId&gt;</code>
+The URI of the __file resource__ is <code>/&lt;dbName&gt;/&lt;collName&gt;/&lt;bucketName&gt;.files/&lt;fileId&gt;</code>
 
 Where __/&lt;fileId&gt;__ is the value of the _id property of the file; the same rules for document _id apply.
 {: .bs-callout.bs-callout-info}
@@ -147,5 +147,5 @@ The default configuration just pipes in any MongoDB resource. In this case the U
 However diffent mongo-mounts settings can result in the same MongoDB resource being bound to different URIs.
 {: .bs-callout.bs-callout-info}
 
-If a resource URI contains one or more RFC 3986 reserved characters, they must be [percent encoded](https://en.wikipedia.org/wiki/Percent-encoding). However most of the HTTP client will encode the URL for you, including all the browsers. For instance, the URI of the database <code>my database</code> is <code>/my%20database</code>.
+If a resource URL contains one or more RFC 3986 reserved characters, they must be [percent encoded](https://en.wikipedia.org/wiki/Percent-encoding). However most of the HTTP client will encode the URL for you, including all the browsers. For instance, the URL of the database <code>my database</code> is <code>https://whatever.org/my%20database</code>.
 {: .bs-callout.bs-callout-info}
