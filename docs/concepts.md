@@ -5,6 +5,8 @@ permalink: /docs/concepts.html
 menu:
  id: 4
 toc:
+ - href: /docs/piping-resources.html
+   title: Piping in resources
  - href: /docs/resource-uri.html
    title: Resource URI
  - href: /docs/resource-representation-format.html

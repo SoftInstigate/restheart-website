@@ -17,7 +17,7 @@ The URI of the __root resource__ (the API entry point) is <code>/</code>.
 ## The URI of the database resource
 {: .post}
 
-The __database resource__ is identified by the URI <code>/&lt;dbName&gt;</code>, 
+The URI of the __database resource__ is <code>/&lt;dbName&gt;</code>, 
 
 where __/&lt;dbName&gt;__ is the database name and it is a string.
 {: .bs-callout.bs-callout-info}
