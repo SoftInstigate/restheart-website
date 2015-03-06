@@ -31,7 +31,7 @@ __RESTHeart__ represents the state of MongoDb resources using the [strict mode r
 
 > MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format which type system is a superset of JSON's. To preserve type information, MongoDB adds this extension to the JSON.
 
-For instance, the following JSON document includes an ObjectId and a Date. This types are supported by BSON and represented according to the strict mode representation.
+For instance, the following JSON document includes an ObjectId and a Date. These types are supported by BSON and represented with JSON according to the 'strict mode'.
 
 {% highlight json %}
 
