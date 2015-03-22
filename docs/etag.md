@@ -1,10 +1,10 @@
 ---
 layout: doc-page-md
-title: request execution optimization
-permalink: /docs/request-execution-optimization.html
+title: ETag
+permalink: /docs/etag.html
 menu:
  id: 4
- subid: 7
+ subid: 4
 ---
 
 > Work in progress!

@@ -1,10 +1,10 @@
 ---
 layout: doc-page-md
-title: request execution optimization
-permalink: /docs/request-execution-optimization.html
+title: Schema Check
+permalink: /docs/schema-check.html
 menu:
  id: 4
- subid: 7
+ subid: 10
 ---
 
 > Work in progress!
