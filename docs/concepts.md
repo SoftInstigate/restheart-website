@@ -13,8 +13,8 @@ toc:
    title: Resource URI
  - href: /docs/resource-representation-format.html
    title: Resource Representation Format
- - href: /docs/authentication.html
-   title: Authentication
+ - href: /docs/security.html
+   title: Security
  - href: /docs/etag.html
    title: ETag
  - href: /docs/request-execution-optimization.html
