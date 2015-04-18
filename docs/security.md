@@ -35,13 +35,13 @@ The header's value is the string 'Basic ' plus the base 64 encoding of the strin
 
 The security is set-up by configuring:
 
-* the __Identitiy Manager__ which is responsible of authenticating the users.
-* the __Access Manager__ which is responsible of enforcing the authorization policy.
+* the __Identitiy Manager__ which is responsible for authenticating the users.
+* the __Access Manager__ which is responsible for enforcing the authorization policy.
 
 Both the IDM and the AM are pluggable; this means that you can use one of the pre-built implementations or develop your owns.
 {: .bs-callout.bs-callout-info}
 
-With stateless basic authentication, user credentials  must be sent over the network on each request. It is mandatory to use only the http**s** listener; with the http listener credentials can be sniffed by a man-in-the-middle attack. Use the http listener only at development time and on trusted environments.
+With stateless basic authentication, user credentials must be sent over the network on each request. It is mandatory to use only the http**s** listener; with the http listener credentials can be sniffed by a man-in-the-middle attack. Use the http listener only at development time and on trusted environments.
 {: .bs-callout.bs-callout-danger}
 
 ## Authentication
@@ -63,9 +63,9 @@ The __conf-file__ yaml file, is passed to the constructor of the class as a Map<
 
 ### SimpleFileIdentityManager
 
-The SimpleFileIdentityManager shipped with RESTHeart called  (class is org.restheart.security.impl.SimpleFileIdentityManager) authenticates users defined in a yaml file.
+The SimpleFileIdentityManager shipped with RESTHeart (class is org.restheart.security.impl.SimpleFileIdentityManager) authenticates users defined in a yaml file.
 
-This is how the conf-file looks like:
+This is how the straightforward conf-file looks like:
 
 {% highlight yaml %}
 users:
@@ -79,7 +79,7 @@ users:
 
 ### DbIdentityManager
 
-The DbIdentityManager shipped with RESTHeart called SimpleAccessManager (class is org.restheart.security.impl.DbIdentityManager) authenticate users defined in a mongodb collection.
+The DbIdentityManager shipped with RESTHeart (class is org.restheart.security.impl.DbIdentityManager) authenticates users defined in a mongodb collection.
 
 This is how the conf-file looks like:
 
@@ -94,7 +94,7 @@ dbim:
  {% endhighlight %}
 
  the db and coll properties point to the collection with the users (userbase._accounts in this case). 
- The other options control the cache that, if enabled, avoids the IDM to actually sends a query for each request.
+ The other options control the cache that avoids the IDM to actually sends a mongodb query for each request.
 
 The collection must have the following fields:
 
@@ -102,7 +102,7 @@ The collection must have the following fields:
  * password: a string 
  * roles: an array of strings.
 
-__Note__ the _ prefix to the collection name. RESTHeart threats collections whose names start with _ as reserved: they are not exposed by the API. Otherwise users can easily read passwords and create users. If you want to actually expose it, the other option is to define an appropriate access policy enforced by the Access Manager.
+__Note__ the _ prefix to the collection name. RESTHeart threats collections whose names start with _ as reserved: they are not exposed by the API. Otherwise users can easily read passwords and create users. If you want to actually expose it, the other option is defining an appropriate access policy enforced by the Access Manager.
 {: .bs-callout.bs-callout-warning}
 
 You might also want to filter out the password field with a [representation transformation](/representation-transformation.html) to never allow users to read it. 
@@ -119,15 +119,15 @@ access-manager:
     conf-file: ./etc/security.yml
 {% endhighlight %}
 
-The __implementation-class__ property specifies the java class that implements it. You can specify one of the implementations shipped out-of-the-box or implement your own. In the latter case you need to implement the interface org.restheart.security.AccessManager.
+The __implementation-class__ property specifies the java class that implements it. You can specify the default, out-of-the-box implementation or implement your own. In the latter case you need to implement the interface org.restheart.security.AccessManager.
 
-The __conf-file__ yaml file, is passed to the constructor of the class as a Map<String, Object>.
+The __conf-file__ yaml file properties are passed to the constructor of the class as a Map<String, Object>.
 
 ### SimpleAccessManager
 
-There is a single implementation of the Access Manager shipped with RESTHeart called SimpleAccessManager (class is org.restheart.security.impl.SimpleAccessManager).
+The default implementation of the Access Manager shipped with RESTHeart is called SimpleAccessManager (class is org.restheart.security.impl.SimpleAccessManager).
 
-It is an AM that enforces the access policy specified in a yaml configuration file as a set of permissions.
+This AM enforces the access policy specified in a yaml configuration file as a set of permissions.
 
 This is how the configuration file looks like:
 
@@ -141,7 +141,7 @@ permissions:
    predicate: path-prefix[path="/publicdb/"]
 {% endhighlight %}
 
-permissions are given to roles and are expressed as request predicates on http requests. Please refer to [undertow documentation](http://undertow.io/documentation/core/predicates-attributes-handlers.html) for more information about predicates.
+Permissions are given to roles and are expressed as request predicates on http requests. Please refer to [undertow documentation](http://undertow.io/documentation/core/predicates-attributes-handlers.html) for more information about predicates.
  
 Assign permission to the special role __$unauthenticated__ to enable requests on resources without requiring authentication.
 {: .bs-callout.bs-callout-info}
@@ -179,11 +179,11 @@ auth-token-ttl: 15 # time to live after last read, in minutes
 
 The default configuration file, pipes in the very useful custom handler GetRoleHandler, that responds at url <code>/_logic/roles/&lt;userid&gt;</code>
 
-When a request, the possible responses are:
+On GET <code>/_logic/roles/&lt;userid&gt;</code> requests, the possible responses are:
 
 * 401 Unauthorized, if no or wrong credentials were passed in the _Authorization_ header 
-* 403 Forbidden, if the URL 
-* 200 OK, sending back the following document, which includes the roles array:
+* 403 Forbidden, since the user can only GET its own roles
+* 200 OK if credentials match, sending back the following document, which includes the roles array:
 
 {% highlight json %}
 {
