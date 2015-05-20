@@ -34,7 +34,7 @@ __Allowed Methods__
 |-|-|
 |GET|Returns the &lt;dbname&gt; database properties and the list of its collections|
 |PUT|Creates or updates the database &lt;dbname&gt;|
-|PATCH|Updates the database properties (only passed data)&lt;docidg&gt;|
+|PATCH|Updates the database properties &lt;docidg&gt; (only passed data)|
 |DELETE|Deletes the database &lt;dbname&gt;|
 {: .table .table-bordered}
 
@@ -51,7 +51,7 @@ __Allowed Methods__
 |-|-|
 |GET|Returns the &lt;collname&gt; collection properties and the list of its documents|
 |PUT|Creates or updates the collection &lt;collname&gt;|
-|PATCH|Updates the collection properties (only passed data)&lt;docidg&gt;|
+|PATCH|Updates the collection properties &lt;docidg&gt; (only passed data)|
 |POST|Creates or updates a document in the collection &lt;collname&gt;|
 |DELETE|Deletes the collection &lt;collname&gt;|
 {: .table .table-bordered}
@@ -98,7 +98,7 @@ __Allowed Methods__
 |-|-|
 |GET|Return the document &lt;docidg&gt; |
 |PUT|Creates or updates the document &lt;docidg&gt;|
-|PATCH|Updates the document (only passed data)&lt;docidg&gt;|
+|PATCH|Updates the document &lt;docidg&gt; (only passed data)|
 |DELETE|Deletes the document &lt;docidg&gt;|
 {: .table .table-bordered}
 
