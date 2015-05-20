@@ -34,7 +34,7 @@ __Allowed Methods__
 |-|-|
 |GET|Returns the &lt;dbname&gt; database properties and the list of its collections|
 |PUT|Creates or updates the database &lt;dbname&gt;|
-|PATCH|Updates the database properties &lt;docidg&gt; (only passed data)|
+|PATCH|Updates the database properties &lt;docid&gt; (only passed data)|
 |DELETE|Deletes the database &lt;dbname&gt;|
 {: .table .table-bordered}
 
@@ -51,7 +51,7 @@ __Allowed Methods__
 |-|-|
 |GET|Returns the &lt;collname&gt; collection properties and the list of its documents|
 |PUT|Creates or updates the collection &lt;collname&gt;|
-|PATCH|Updates the collection properties &lt;docidg&gt; (only passed data)|
+|PATCH|Updates the collection properties &lt;docid&gt; (only passed data)|
 |POST|Creates or updates a document in the collection &lt;collname&gt;|
 |DELETE|Deletes the collection &lt;collname&gt;|
 {: .table .table-bordered}
@@ -90,16 +90,16 @@ __Allowed Methods__
 
 > The Document resource allows you to manage your documents.
 
-__URI__ <code>/&lt;dbname&gt;/&lt;collname&gt;/&lt;docidg&lt;</code>
+__URI__ <code>/&lt;dbname&gt;/&lt;collname&gt;/&lt;docid&gt;</code>
 
 __Allowed Methods__
 
 |Method|Description|
 |-|-|
-|GET|Return the document &lt;docidg&gt; |
-|PUT|Creates or updates the document &lt;docidg&gt;|
-|PATCH|Updates the document &lt;docidg&gt; (only passed data)|
-|DELETE|Deletes the document &lt;docidg&gt;|
+|GET|Return the document &lt;docid&gt; |
+|PUT|Creates or updates the document &lt;docid&gt;|
+|PATCH|Updates the document &lt;docid&gt; (only passed data)|
+|DELETE|Deletes the document &lt;docid&gt;|
 {: .table .table-bordered}
 
 ## File buckets
