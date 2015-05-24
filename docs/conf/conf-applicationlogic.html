@@ -3,7 +3,7 @@
     <h2>Application Logic</h2>
     <p>RESTHeart has a pipeline architecture where specialized <a href="http://undertow.io/documentation/core/overview.html#_handlers" target="_blank">undertow handlers</a> are chained to serve the requests.</p>
     <p>In order to provide additional application logic, custom handlers pipes can be bound under the /_logic URL.</p>
-    <p>The custom handler must extends the <code>com.softinstigate.restheart.handlers.ApplicationLogicHandler</code> class</p>
+    <p>The custom handler must extends the <code>org.restheart.handlers.ApplicationLogicHandler</code> class</p>
     <p>Use <code>application-logic-mounts</code> to configure custom handlers.</p>
     <p>In the following example two built-in application logic handlers are defined:
     <ul>
@@ -21,18 +21,18 @@
     {% highlight yaml %}
                             
 application-logic-mounts:
- - what: com.softinstigate.restheart.handlers.applicationlogic.PingHandler
+ - what: org.restheart.handlers.applicationlogic.PingHandler
    where: /ping
    secured: false
    args: 
         msg: "ciao from the restheart team"
- - what: com.softinstigate.restheart.handlers.applicationlogic.GetRoleHandler
+ - what: org.restheart.handlers.applicationlogic.GetRoleHandler
    where: /roles/mine
    secured: false
    args:
       url: /_logic/roles/mine
       send-challenge: false
-      idm-implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+      idm-implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
       idm-conf-file: ../etc/security-integrationtest.yaml
     {% endhighlight %}
 

@@ -80,7 +80,7 @@ static-resources-mounts:
 
 # RESTHeart has a pipeline architecture where specialized undertow handlers are chained to serve the requests.
 # In order to provide additional application logic, custom handlers pipes can be bound under the /_logic URL.
-# The custom handler must extends the com.softinstigate.restheart.handlers.ApplicationLogicHandler class
+# The custom handler must extends the org.restheart.handlers.ApplicationLogicHandler class
 # Use application-logic-mounts to configure custom handlers.
 
 # In the following example two built-in application logic handlers are defined:
@@ -88,16 +88,16 @@ static-resources-mounts:
 # GetRoleHandler bound to /_logic/roles/mine that returns the current user authentication status and eventually its roles
 
 application-logic-mounts:
-    - what: com.softinstigate.restheart.handlers.applicationlogic.PingHandler
+    - what: org.restheart.handlers.applicationlogic.PingHandler
       where: /ping
       secured: false
       args:
           msg: "ciao from the restheart team"
-    - what: com.softinstigate.restheart.handlers.applicationlogic.GetRoleHandler
+    - what: org.restheart.handlers.applicationlogic.GetRoleHandler
       where: /roles/mine
       secured: false
       args:
-          idm-implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+          idm-implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
           idm-conf-file: ../etc/security-integrationtest.yaml
 
 ### security 
@@ -111,10 +111,10 @@ application-logic-mounts:
 # conf-file paths are either absolute (starting with /) or relative to the RESTHeart jar directory
 
 idm:    
-    implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+    implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
     conf-file: ../etc/security.yaml
 access-manager:    
-    implementation-class: com.softinstigate.restheart.security.impl.SimpleAccessManager
+    implementation-class: org.restheart.security.impl.SimpleAccessManager
     conf-file: ../etc/security.yaml
 
 #### logging

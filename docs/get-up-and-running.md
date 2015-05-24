@@ -207,10 +207,10 @@ Open the <code>etc/restheart.yml</code>. The security section is the following:
 
 {% highlight yaml %}
 idm:
-    implementation-class: com.softinstigate.restheart.security.impl.SimpleFileIdentityManager
+    implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
     conf-file: ./etc/security.yml
 access-manager:
-    implementation-class: com.softinstigate.restheart.security.impl.SimpleAccessManager
+    implementation-class: org.restheart.security.impl.SimpleAccessManager
     conf-file: ./etc/security.yml
 {% endhighlight %}
 
