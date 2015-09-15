@@ -1,15 +1,6 @@
 ---
-layout: doc-page-md
+layout: doc-redirect-to-confluence
 title: request execution optimization
 permalink: /docs/request-execution-optimization.html
-menu:
- id: 4
- subid: 7
+href: https://softinstigate.atlassian.net/wiki/x/h4CM
 ---
-
-> Work in progress!
-
-## Overview
-{: .post}
-
-Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur. Hi omnes lingua, institutis, legibus inter se differunt.
