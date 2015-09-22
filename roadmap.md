@@ -21,8 +21,6 @@ permalink: /roadmap.html
 		</li>
 		<li>[<a href='https://softinstigate.atlassian.net/browse/RH-93'>RH-93</a>] -         wrong rels link when string id contains spaces
 		</li>
-		<li>[<a href='https://softinstigate.atlassian.net/browse/RH-96'>RH-96</a>] -         update undertow to 1.2
-		</li>
 		</ul>
 
 		<br>
@@ -31,6 +29,8 @@ permalink: /roadmap.html
 		</h2>
 		<ul>
 		<li>[<a href='https://softinstigate.atlassian.net/browse/RH-90'>RH-90</a>] -         Improve dbs/collections scan on startup
+		</li>
+		<li>[<a href='https://softinstigate.atlassian.net/browse/RH-96'>RH-96</a>] -         update undertow to 1.2
 		</li>
 		</ul>
 		<!-- *** -->
