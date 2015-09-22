@@ -50,6 +50,10 @@ permalink: /roadmap.html
 			<h2>        New Feature
 			</h2>
 			<ul>
+			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-73'>RH-73</a>] -         webhooks
+			</li>
+			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-97'>RH-97</a>] -         changesfeed
+			</li>
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-7'>RH-7</a>] -         batch operations
 			</li>
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-19'>RH-19</a>] -         support array push and properties deletion
@@ -68,10 +72,6 @@ permalink: /roadmap.html
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-43'>RH-43</a>] -         allow defining write concern
 			</li>
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-64'>RH-64</a>] -         allow file metadata update
-			</li>
-			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-73'>RH-73</a>] -         WebHook
-			</li>
-			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-97'>RH-97</a>] -         changesfeed
 			</li>
 			</ul>
 			<!-- *** -->
@@ -94,8 +94,6 @@ permalink: /roadmap.html
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-23'>RH-23</a>] -         collect and display statistics
 			</li>
 			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-51'>RH-51</a>] -         allow plugging in a distributed cache
-			</li>
-			<li>[<a href='https://softinstigate.atlassian.net/browse/RH-52'>RH-52</a>] -         application logic via javascript function metadata - TBD
 			</li>
 			</ul>
 
