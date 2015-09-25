@@ -4,9 +4,9 @@ title: bucket
 permalink: /curies/1.0/bucket.html
 ---
 
-## The File Bucket resource
+## The Bucket resource
 
-The File Bucket resource represents a containers for binary files (GridFS). 
+The Bucket resource represents a containers for binary files (GridFS). 
 Requests to Bucket URI allow to manage the file buckets, create files and get the list of existing files.
 
 Allowed methods are:
@@ -18,7 +18,7 @@ PUT	|Creates or updates the files bucket
 POST	|Creates a file in the bucket
 DELETE	|Deletes the files bucket
 
-The resource URI format is <code>/<dbname>/<bucketname>.files</code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;bucketname&gt;.files</code>
 
 {: .bs-callout .bs-callout-info }
 The name of the bucket **must** end with the **.files** suffix. This is how a bucket resource URI is distinguished from a collection resource URI.
@@ -123,6 +123,7 @@ GET /test/mybucket.files/5516d178c2e657ee55badc8c/binary downloads the binary da
 
 ## Documentation references
 
+* [Collection Resource](coll.html)
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/ToCM" target="_blank">URI Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/hICM" target="_blank">ETag</a>

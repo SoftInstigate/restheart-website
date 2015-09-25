@@ -17,7 +17,7 @@ GET	|Returns the file document (that includes the link to download the binary da
 PUT	|Creates the file in the bucket
 DELETE	|Deletes the file
 
-The resource URI format is <code>/<dbname>/<bucketname>.files/<fileid></code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;bucketname&gt;.files/&lt;fileid&gt;</code>
 
 {: .bs-callout .bs-callout-info }
 Updating an existing file in not yet possibile. These are immutable resources.

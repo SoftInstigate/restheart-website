@@ -1,7 +1,7 @@
 ---
 layout: page
-title: indexes
-permalink: /curies/1.0/indexes.html
+title: index
+permalink: /curies/1.0/cindex.html
 ---
 
 ## The Index resource
@@ -15,7 +15,7 @@ Method|Description
 PUT	Creates the index in the collection
 DELETE	Deletes the index of the collection
 
-The resource URI format is <code>/<dbname>/<collname>/_indexes/<indexid></code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/_indexes/&lt;indexid&gt;</code>
 
 ## Examples
 

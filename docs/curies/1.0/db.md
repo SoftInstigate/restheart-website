@@ -19,7 +19,7 @@ PUT   |Creates or updates the database <dbname>
 PATCH |Updates the database <dbname> (only passed data)
 DELETE|Deletes the database <dbname>
 
-The resource URI format is <code>/<dbname></code>
+The resource URI format is <code>/&lt;dbname&gt;</code>
 
 ## Examples:
 
@@ -115,7 +115,6 @@ Note between the _links, the link to its parent resource, in this case the root.
 * [Root Resource](root.html)
 * [Collection Resource](coll.html)
 * [Bucket Resource](bucket.html)
-* [Indexes Resource](indexes.html)
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/ToCM" target="_blank">URI Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/hICM" target="_blank">ETag</a>

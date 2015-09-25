@@ -18,7 +18,7 @@ PUT	|Creates or updates the document
 PATCH	|Updates the document (only passed data)
 DELETE	|Deletes the document
 
-The resource URI format is <code>/<dbname>/<collname>/<docid></code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/&lt;docid&gt;</code>
 
 ## Examples
 

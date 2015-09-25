@@ -19,6 +19,8 @@ PATCH	|Updates the collection properties
 POST	|Creates or updates a document in the collection
 DELETE	|Deletes the collection
 
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;</code>
+
 {: .bs-callout .bs-callout-info }
 The following options influence the files returned as embedded resources to a GET collection request: [pagination](paging.html), [sorting](sort.html), [filtering](filter.html) and [projecting](keys.html).
 
@@ -110,8 +112,6 @@ Note between the _links, the URI of its parent resource, in this case the databa
 
 * [DB Resource](db.html)
 * [Document Resource](document.html)
-* [Bucket Resource](bucket.html)
-* [File Resource](file.html)
 * [Indexes Resource](indexes.html)
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/ToCM" target="_blank">URI Format</a>

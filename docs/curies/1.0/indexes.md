@@ -14,7 +14,7 @@ The only allowed method is GET:
 Method|Description
 GET|Returns the indexes of the collection <collname>
 
-The resource URI format is <code>/<dbname>/<collname>/_indexes</code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/_indexes</code>
 
 ## Examples
 
