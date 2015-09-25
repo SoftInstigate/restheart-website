@@ -46,14 +46,17 @@ The embedded resources are paginated, i.e. only a subset of the children resourc
     * **previous**: links to the previuos page
 {: } 
 
+{: .bs-callout .bs-callout-info }
 Dbs and Collections are sorted alphabetically.<br>
 Documents and Files are sorted by default by _id descending. If _id are ObjectId, this makes sure that last created document or file is the first returned. See [sort](sort.html) for more inforation.
-{: .bs-callout .bs-callout-info }
 
-If the *count* query parameter is specified, the properties **_total_pages**: and **_size** are returned.
 {: .bs-callout .bs-callout-info }
+For Root and DBs, **_total_pages**: and **_size** are always returned.<br>
+For collections, the are returned only if the *count* query parameter is specified.
+Note that in this case, two queries are actually needed slowing down the request.
 
-For instance, to return the documents from 30 to 39 of the collection /test/coll:
+
+For instance, to return the documents from 20 to 29 (page 3) of the collection /test/coll:
 
 {% highlight js %}
 $ http GET "127.0.0.1:8080/test/coll?count&page=3&pagesize=10"
@@ -89,6 +92,10 @@ HTTP/1.1 200 OK
 
 ## Documentation references
 
+* [Root Resource](root.html)
+* [DB Resource](db.html)
+* [Collection Resource](coll.html)
+* [Bucket Resource](bucket.html)
 * <a href="https://softinstigate.atlassian.net/wiki/x/UICM" target="_blank">Representation Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/XACk" target="_blank">Query Documents</a>
