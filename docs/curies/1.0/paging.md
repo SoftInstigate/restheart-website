@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: paging
 permalink: /curies/1.0/paging.html
 ---

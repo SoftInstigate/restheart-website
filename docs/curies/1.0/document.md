@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: document
 permalink: /curies/1.0/document.html
 ---

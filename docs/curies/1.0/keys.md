@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: keys
 permalink: /curies/1.0/keys.html
 ---

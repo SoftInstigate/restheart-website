@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: bucket
 permalink: /curies/1.0/bucket.html
 ---

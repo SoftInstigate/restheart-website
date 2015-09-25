@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: coll
 permalink: /curies/1.0/coll.html
 ---

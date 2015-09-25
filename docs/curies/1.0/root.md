@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: root
 permalink: /curies/1.0/root.html
 ---

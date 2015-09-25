@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: index
 permalink: /curies/1.0/cindex.html
 ---

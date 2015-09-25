@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: filter
 permalink: /curies/1.0/filter.html
 ---

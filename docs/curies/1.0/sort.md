@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-notopnav
 title: sort
 permalink: /curies/1.0/sort.html
 ---
