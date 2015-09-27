@@ -4,9 +4,8 @@ title: Support
 permalink: /support.html
 ---
 
-## First <a class="btn btn-success btn-small" href="https://softinstigate.atlassian.net/issues/?filter=10403" target="_blank">Check the roadmap</a> the solution for your need might be already on the road. 
+## <a class="btn btn-success btn-small" href="https://softinstigate.atlassian.net/issues/?filter=10403" target="_blank">Check the development status</a> the solution for your need might be already on the road. 
 
-## You can also <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Ask for an improvement or report a bug</a> to the community on github.
+## <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Ask for an improvement or report a bug</a> on github.
 
-## [SoftInstigate](http://www.softinstigate.com), the company behind __RESTHeart__, provides professional support <a class="btn btn-warning" href="mailto:info@softinstigate.com?subject=RESTHeart%20Professional%20Service%20Inquiry">Inquiry for Support</a>
-
+## <a class="btn btn-warning" href="http://stackoverflow.com/questions/tagged/restheart">Ask a question on stackoverflow</a> using the restheart tag.
