@@ -8,8 +8,7 @@ permalink: /roadmap.html
     <div class="row">
         <div class="alert alert-success" role="alert">
         <div class="text-center">
-            <h1>Next release 1.0.0</h1>
-            <a href="https://softinstigate.atlassian.net/projects/RH/versions/10201" class="btn btn-success" target="_blank">development status</a>.
+            <h1>Current release 1.0.0</h1>
         </div>
 
         <!-- paste issues here from release notes jira page -->
