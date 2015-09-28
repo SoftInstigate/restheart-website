@@ -22,11 +22,10 @@
 
         <!-- End Document 
         ================================================== -->
-        <script type="text/javascript" src="{{ "/js/jquery/1.8.3/jquery.min.js" | prepend: site.baseurl }}"></script>
-        <script type="text/javascript" src="{{ "/js/jquery-ui/jquery-ui-1.8.23.custom.min.js" | prepend: site.baseurl }}"></script>
+        <script src="//code.jquery.com/jquery.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/3.3.0/ekko-lightbox.min.js"></script>
         <!-- third party plugins  -->
-        <script type="text/javascript" src="{{ "/bootstrap/js/bootstrap.js" | prepend: site.baseurl }}"></script>
-        <script type="text/javascript" src="{{ "/js/docs.min.js" | prepend: site.baseurl }}"></script>
         <script type="text/javascript">
 $("li.scroll-anchor > ul.nav > li > a.anchor").on('click', function (e) {
     // prevent default anchor click behavior
@@ -64,6 +63,13 @@ $("li.scroll-anchor > ul.nav > li > a.anchor").on('click', function (e) {
                 });
             }
 
+        </script>
+        <script type="text/javascript">
+            $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
+                console.log("delegated!!!");
+                event.preventDefault();
+                $(this).ekkoLightbox();
+            });
         </script>
     </body>
 </html>
