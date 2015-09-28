@@ -11,7 +11,7 @@ The Root resource is the API entry point, requests to Root URI allow get the lis
 Allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 ------|-----------
 GET   |Returns the <a href="paging.html">paginated</a> list of the databases
 

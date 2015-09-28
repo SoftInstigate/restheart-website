@@ -11,7 +11,7 @@ The Indexes resource allows you to list the indexes of your collections.
 The allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 PUT	Creates the index in the collection
 DELETE	Deletes the index of the collection
 

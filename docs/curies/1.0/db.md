@@ -12,7 +12,7 @@ Allowed methods are:
 
 
 {: .table }
-Method|Description
+**Method**|**Description**
 ------|-----------
 GET   |Returns the <dbname> database properties and the <a href="paging.html">paginated</a> list of its collections and file buckets
 PUT   |Creates or updates the database <dbname>

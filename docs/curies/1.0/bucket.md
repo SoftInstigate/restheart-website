@@ -12,7 +12,7 @@ Requests to Bucket URI allow to manage the file buckets, create files and get th
 Allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 GET	|Returns the files bucket properties and the <a href="paging.html">paginated</a> list of its files
 PUT	|Creates or updates the files bucket
 POST	|Creates a file in the bucket

@@ -12,13 +12,32 @@ Requests to Document URI allow to create, delete, update files and get their pro
 Allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 GET	|Return the document
 PUT	|Creates or updates the document
 PATCH	|Updates the document (only passed data)
 DELETE	|Deletes the document
 
-The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/&lt;docid&gt;</code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/&lt;docid&gt;[?doc_type=TYPE]</code>
+
+The query parameter <code>doc_type</code> is optional; its default value is **STRING_OID**: by default RESTHeart treats the <code>docid</code> as an ObjectId, if the value is a valid ObjectId, or a String.
+
+The following table shows the supported types:
+
+{: .table }
+**Type** |**id_type**
+ObjectId	|OID or STRING_OID
+String  |STRING* or STRING_OID
+Number	|NUMBER
+Date	|DATE
+MinKey	|MINKEY
+MaxKey	|MAXKEY
+
+{: .bs-callout .bs-callout-info }
+\* doc_type=STRING is useful if the _id value would be a valid ObjectId but it is actually stored as a String.
+
+{: .bs-callout .bs-callout-info }
+Refer to [URI Format](https://softinstigate.atlassian.net/wiki/x/ToCM) for more information.
 
 ## Examples
 
@@ -104,6 +123,7 @@ HTTP/1.1 204 No Content
 ## Documentation references
 
 * [Collection Resource](coll.html)
+* <a href="https://softinstigate.atlassian.net/wiki/x/ToCM" target="_blank">URI Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/UICM" target="_blank">Representation Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/XACk" target="_blank">Query Documents</a>

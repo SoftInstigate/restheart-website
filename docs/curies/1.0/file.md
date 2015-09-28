@@ -12,12 +12,29 @@ Requests to File URI allow to create, delete files and get their properties and 
 Allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 GET	|Returns the file document (that includes the link to download the binary data)
 PUT	|Creates the file in the bucket
 DELETE	|Deletes the file
 
-The resource URI format is <code>/&lt;dbname&gt;/&lt;bucketname&gt;.files/&lt;fileid&gt;</code>
+The resource URI format is <code>/&lt;dbname&gt;/&lt;bucketname&gt;.files/&lt;fileid&gt;[?doc_type=TYPE]</code>
+
+The query parameter <code>doc_type</code> is optional; its default value is **STRING_OID**: by default RESTHeart treats the <code>docid</code> as an ObjectId, if the value is a valid ObjectId, or a String.
+
+The following table shows the supported types:
+
+{: .table }
+**Type** |**id_type**
+ObjectId	|OID or STRING_OID
+String  |STRING* or STRING_OID
+Number	|NUMBER
+Date	|DATE
+MinKey	|MINKEY
+MaxKey	|MAXKEY
+
+{: .bs-callout .bs-callout-info }
+\* doc_type=STRING is useful if the _id value would be a valid ObjectId but it is actually stored as a String.
+Refer to [URI Format](https://softinstigate.atlassian.net/wiki/x/ToCM) for more information.
 
 {: .bs-callout .bs-callout-info }
 Updating an existing file in not yet possibile. These are immutable resources.
@@ -128,6 +145,7 @@ See [ETag](https://softinstigate.atlassian.net/wiki/x/hICM) documentation sectio
 ## Documentation references
 
 * [Bucket Resource](bucket.html)
+* <a href="https://softinstigate.atlassian.net/wiki/x/ToCM" target="_blank">URI Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/UICM" target="_blank">Representation Format</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
 * <a href="https://softinstigate.atlassian.net/wiki/x/XACk" target="_blank">Query Documents</a>

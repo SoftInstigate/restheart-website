@@ -12,7 +12,7 @@ Requests to Collection URI allow to manage the collections, create documents and
 Allowed methods are:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 GET	|Returns the collection properties and the list of its documents
 PUT	|Creates or updates the collection
 PATCH	|Updates the collection properties

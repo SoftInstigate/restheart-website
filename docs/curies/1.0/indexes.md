@@ -11,7 +11,7 @@ The Indexes resource allows you to list the indexes of your collections.
 The only allowed method is GET:
 
 {: .table }
-Method|Description
+**Method**|**Description**
 GET|Returns the indexes of the collection <collname>
 
 The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;/_indexes</code>
