@@ -9,7 +9,7 @@ permalink: /support-packages.html
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
-                    <strong style="color:blue">Support bundle</strong>
+                    <strong class="text-info">Support bundle</strong>
                     <h3>499€<span>per 5 cases</span></h3>
                     <ul>
                         <li>Support ticket package</li>
@@ -19,7 +19,7 @@ permalink: /support-packages.html
                         <li><strong>Discounts for bigger packages</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support%20Sales%20Inqury">
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_ticket_package%20Sales%20Inqury">
                             Email us
                         </a>
                     </p>
@@ -27,7 +27,7 @@ permalink: /support-packages.html
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
-                    <strong style="color:blue">Custom Development</strong>
+                    <strong class="text-info">Custom Development</strong>
                     <h3>999€<span>per 1 week sprint</span></h3>
                     <ul>
                         <li>Custom development</li>
@@ -37,13 +37,13 @@ permalink: /support-packages.html
                         <li><strong>Discount if improvements are donated to the community</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Custom_development%20Sales%20Inqury">Email us</a>
                     </p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
-                    <strong style="color:blue">Operations Support</strong>
+                    <strong class="text-info">Operations Support</strong>
                     <h3>499€<span>per month</span></h3>
                     <ul>
                         <li>Support and priority maintenance</li>
@@ -53,13 +53,13 @@ permalink: /support-packages.html
                         <li><strong>10% discount for 1 year commitment</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_and_priority_maintenance%20Sales%20Inqury">Email us</a>
                     </p>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
-                    <strong style="color:blue">Training</strong>
+                    <strong class="text-info">Training</strong>
                     <h3>499€<span>per session</span></h3>
                     <ul>
                         <li>A 8 hours training session (2 events, 4 hours each)</li>
@@ -69,7 +69,7 @@ permalink: /support-packages.html
                         <li>The trainer is a RESTHeart architect.</li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Training%20Sales%20Inqury">Email us</a>
                     </p>
                 </div>
             </div>

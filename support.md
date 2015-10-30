@@ -34,6 +34,12 @@ permalink: /support.html
     </div>
 </section>
 
+<section class="slice" id="questions" style="padding-top: 10px; text-align:center">
+<div class="container">
+    <a href="/support-packages.html" class="btn btn-primary btn-sm">Buy a support package</a>
+</div>
+</section>
+
 # Community Support
 
 > RESTHeart team and the community offers free support via Stackoverflow and Github. Although no SLA or commitment are guaranteed, we are proud of our brilliant results: check below our statistics.
