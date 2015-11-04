@@ -1,54 +1,17 @@
 ---
-layout: page
+layout: page-notitle
 title: Roadmap
 permalink: /roadmap.html
 ---
 
-<div class="container mb30">
-    <div class="row">
-        <div class="alert alert-success" role="alert">
-        <div class="text-center">
-            <h1>Current release 1.0.0</h1>
-        </div>
+<!-- 1.1 -->
 
-        <!-- paste issues here from release notes jira page -->
-
-                    <h2>        Bug
-                    </h2>
-                    <ul>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-91'>RH-91</a>] -         RESTHeart integration tests fail &quot;sometimes&quot;
-                    </li>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-92'>RH-92</a>] -         wrong result set due to eager dbcursor preallocation
-                    </li>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-93'>RH-93</a>] -         wrong rels link when string id contains spaces
-                    </li>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-102'>RH-102</a>] -         wrong links in embedded resource
-                    </li>
-                    </ul>
-
-                    <br>
-
-                    <h2>        Improvement
-                    </h2>
-                    <ul>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-90'>RH-90</a>] -         Improve dbs/collections scan on startup
-                    </li>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-96'>RH-96</a>] -         update undertow to 1.2
-                    </li>
-                    <li>[<a href='https://softinstigate.atlassian.net/browse/RH-103'>RH-103</a>] -         improve curies mgmt and documentation
-                    </li>
-                    </ul>
-		<!-- *** -->
-		</div>
-	</div>
-</div>
-
-<!-- 0.12 -->
+<br>
 
 <div class="container mb30">
     <div class="row">
         <div class="alert alert-warning " role="alert">
-            <h1 class="text-center">Planned for 1.1.0</h1>
+            <h1 class="text-center">Planned for 1.1</h1>
 
             <!-- paste issues here from release notes jira page -->
     
@@ -84,12 +47,12 @@ permalink: /roadmap.html
 	</div>
 </div>
 
-<!-- 0.13 -->
+<!-- 1.2 -->
 
 <div class="container">
     <div class="row">
         <div class="alert alert-danger" role="alert">
-            <h1 class="text-center">Planned for 1.2.0</h1>
+            <h1 class="text-center">Planned for 1.2</h1>
 
 	        <!-- paste issues here from release notes jira page -->
 
