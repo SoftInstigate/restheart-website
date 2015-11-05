@@ -13,20 +13,20 @@ permalink: /try.html
         <article class="col-sm-12 col-md-4">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">From the command line</h3>
-                <p>You can use curl or httpie to play with our demo instance.</p>
+                <p>Use <strong>curl</strong> or <strong>httpie</strong> to play with our demo instance.</p>
                 <p>See below for a step by step tutorial.</p>
             </section>
         </article>
         <article class="col-sm-12 col-md-4">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
-                <p>RESTHeart uses the <strong>H</strong>ypertext <strong>A</strong>pplication <strong>L</strong>anguage json representation format and embeds the brilliant <strong>HAL browser</strong>.</p>
+                <p>RESTHeart uses the <strong>H</strong>ypertext <strong>A</strong>pplication <strong>L</strong>anguage json representation format and embeds the <strong>HAL browser</strong>.</p>
                 <p>Go and play with it on our demo instance at <a href="http://dbapi.io/browser/#/db/coll" target="_blank">dbapi.io</a>.</p>
             </section>
         </article>
         <article class="col-sm-12 col-md-4">
             <section>
-                <h3 style="text-align:center; margin-bottom: 25px;">Looking the Notes demo web application</h3>
+                <h3 style="text-align:center; margin-bottom: 25px;">Looking the Notes example web application</h3>
                 <p>You can preview the notes web application at <a href="http://dbapi.io/notes" target="_blank">dbapi.io/notes</a>.</p>
                 <p>The code is available on <a href="https://github.com/softinstigate/restheart-notes-example" target="_blank">github</a>.</p>
                 <p>The application is described in the <a href="https://softinstigate.atlassian.net/wiki/x/AoBu" target="_blank">documentation</a>.</p>
@@ -38,9 +38,9 @@ permalink: /try.html
 
 # Try it from the command line
 
-The demo instance expose a collection at <code>http://dbapi.io/db/coll</code> without requiring authentication.
+The demo instance exposes a collection at <code>http://dbapi.io/db/coll</code> without requiring authentication.
 Access to any other MongoDB resoruces is forbidden.<br>
-The database is presisted on an ephemeral storage and it is reset on regular basis, so feel free to play with it but don't rely on it.
+The database is presisted on an ephemeral storage and it is reset on regular basis: feel free to play with it but don't rely on it.
 {: .bs-callout .bs-callout-info }
 
 <div class="row" style="margin-top: 20px">
@@ -117,7 +117,7 @@ Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Unti
 <div class="row" style="margin-top: 20px">
     <div class="col-md-3" style="padding-top:7px">
         <p><strong>Get the second document.</strong></p>
-        <p>The returned representation contains all the document properties plus few more. This is HAL format in action!</p>
+        <p>The returned representation contains all the document properties plus few more. This is the HAL format in action!</p>
     </div>
     <div class="col-md-9">
         {% highlight bash %}
