@@ -15,7 +15,7 @@ permalink: /support-packages.html
                         <li>5 support tickets package</li>
                         <li>8x5 priority support</li>
                         <li>Managed via JIRA</li>
-                        <li>No direct interactions</li>
+                        <li>Questions directly answered by the development team</li>
                         <li><strong>Valid for 1 year</strong></li>
                     </ul>
                     <p class="sign">
@@ -32,8 +32,7 @@ permalink: /support-packages.html
                     <ul>
                         <li>Remote development and integrations</li>
                         <li>Managed via JIRA and Skype</li>
-                        <li>Optional operations support available</li>
-                        <li>Final price depends on scope or time</li>
+                        <li>Agreement on scope and acceptance criteria</li>
                         <li><strong>10% discount if improvements can be released to the community</strong></li>
                     </ul>
                     <p class="sign">
@@ -49,7 +48,7 @@ permalink: /support-packages.html
                         <li>8x5 remote operations and monitoring</li>
                         <li>Managed via JIRA</li>
                         <li>On-premises or public Cloud</li>
-                        <li>Direct interactions via Skype when necessary</li>
+                        <li>Direct interactions via Skype</li>
                         <li><strong>10% discount for 1 year upfront payment</strong></li>
                     </ul>
                     <p class="sign">
@@ -62,10 +61,10 @@ permalink: /support-packages.html
                     <strong class="text-info">Training</strong>
                     <h3><span>Fixed at</span><br />399€<span>per session</span></h3>
                     <ul>
-                        <li>A 4 hours remote training session</li>
+                        <li>4 hours remote training</li>
                         <li>Configuration, development and operations</li>
-                        <li>Maximum 3 attendees</li>
-                        <li>Via Skype or Google Hangout</li>
+                        <li>Maximum 5 attendees</li>
+                        <li>Via Skype or Hangout</li>
                         <li><strong>The trainer is a RESTHeart architect</strong></li>
                     </ul>
                     <p class="sign">
