@@ -10,13 +10,13 @@ permalink: /support-packages.html
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
                     <strong class="text-info">Support bundle</strong>
-                    <h3>499€<span>per 5 cases</span></h3>
+                    <h3><span>Starting from</span><br />499€<span>Per 5 cases</span></h3>
                     <ul>
-                        <li>Support ticket package</li>
-                        <li>Covers development, operations and priority maintenance</li>
+                        <li>5 support tickets package</li>
+                        <li>8x5 priority support</li>
                         <li>Managed via JIRA</li>
-                        <li>Direct interaction via Hangout or email</li>
-                        <li><strong>Discounts for bigger packages</strong></li>
+                        <li>Questions directly answered by the development team</li>
+                        <li><strong>Valid for 1 year</strong></li>
                     </ul>
                     <p class="sign">
                         <a class="btn" href="mailto:info@softinstigate.com?subject=Support_ticket_package%20Sales%20Inqury">
@@ -28,13 +28,12 @@ permalink: /support-packages.html
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
                     <strong class="text-info">Custom Development</strong>
-                    <h3>999€<span>per 1 week sprint</span></h3>
+                    <h3><span>Starting from</span><br />999€<span>per 1 week sprint</span></h3>
                     <ul>
-                        <li>Custom development</li>
-                        <li>Managed via Agile Jira</li>
-                        <li>Direct interaction via Skype or email</li>
-                        <li>Developed by RESTHeart team</li>
-                        <li><strong>Discount if improvements are donated to the community</strong></li>
+                        <li>Remote development and integrations</li>
+                        <li>Managed via JIRA and Skype</li>
+                        <li>Agreement on scope and acceptance criteria</li>
+                        <li><strong>10% discount if improvements can be released to the community</strong></li>
                     </ul>
                     <p class="sign">
                         <a class="btn" href="mailto:info@softinstigate.com?subject=Custom_development%20Sales%20Inqury">Email us</a>
@@ -43,14 +42,14 @@ permalink: /support-packages.html
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
-                    <strong class="text-info">Operations Support</strong>
-                    <h3>499€<span>per month</span></h3>
+                    <strong class="text-info">Managed Operations</strong>
+                    <h3><span>Starting from</span><br />699€<span>per month</span></h3>
                     <ul>
-                        <li>Support and priority maintenance</li>
-                        <li>Setup on-premises or any public Cloud</li>
-                        <li>Managed via Jira</li>
-                        <li>Direct interaction via Skype or email</li>
-                        <li><strong>10% discount for 1 year commitment</strong></li>
+                        <li>8x5 remote operations and monitoring</li>
+                        <li>Managed via JIRA</li>
+                        <li>On-premises or public Cloud</li>
+                        <li>Direct interactions via Skype</li>
+                        <li><strong>10% discount for 1 year upfront payment</strong></li>
                     </ul>
                     <p class="sign">
                         <a class="btn" href="mailto:info@softinstigate.com?subject=Support_and_priority_maintenance%20Sales%20Inqury">Email us</a>
@@ -60,13 +59,13 @@ permalink: /support-packages.html
             <div class="col-md-3 col-sm-6">
                 <div class="pricingBloc">
                     <strong class="text-info">Training</strong>
-                    <h3>499€<span>per session</span></h3>
+                    <h3><span>Fixed at</span><br />399€<span>per session</span></h3>
                     <ul>
-                        <li>A 8 hours training session (2 events, 4 hours each)</li>
-                        <li>Configuration, development and operations.</li>
-                        <li>Maximum 10 attendees.</li>
-                        <li>Via Skype or Google Hangout.</li>
-                        <li>The trainer is a RESTHeart architect.</li>
+                        <li>4 hours remote training</li>
+                        <li>Configuration, development and operations</li>
+                        <li>Maximum 5 attendees</li>
+                        <li>Via Skype or Hangout</li>
+                        <li><strong>The trainer is a RESTHeart architect</strong></li>
                     </ul>
                     <p class="sign">
                         <a class="btn" href="mailto:info@softinstigate.com?subject=Training%20Sales%20Inqury">Email us</a>
