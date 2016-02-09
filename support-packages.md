@@ -30,7 +30,7 @@ permalink: /support-packages.html
                     <strong class="text-info">Custom Development</strong>
                     <h3><span>Starting from</span><br />999€<span>per 1 week sprint</span></h3>
                     <ul>
-                        <li>Remote development and integrations</li>
+                        <li>Remote development and integrations <strong>strictly related to the product</strong></li>
                         <li>Managed via JIRA and Skype</li>
                         <li>Agreement on scope and acceptance criteria</li>
                         <li><strong>10% discount if improvements can be released to the community</strong></li>
