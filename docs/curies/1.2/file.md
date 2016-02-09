@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: file
-permalink: /curies/1.0/file.html
+permalink: /curies/1.2/file.html
 ---
 
 ## The File resource

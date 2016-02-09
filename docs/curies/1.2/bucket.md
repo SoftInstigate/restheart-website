@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: bucket
-permalink: /curies/1.0/bucket.html
+permalink: /curies/1.2/bucket.html
 ---
 
 ## The Bucket resource

@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: root
-permalink: /curies/1.0/root.html
+permalink: /curies/1.2/root.html
 ---
 
 ## The Root resource

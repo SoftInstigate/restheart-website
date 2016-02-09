@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: db
-permalink: /curies/1.0/db.html
+permalink: /curies/2.0/db.html
 ---
 
 ## The DB resource

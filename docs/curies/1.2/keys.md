@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: keys
-permalink: /curies/1.0/keys.html
+permalink: /curies/1.2/keys.html
 ---
 
 ## Projecting documents

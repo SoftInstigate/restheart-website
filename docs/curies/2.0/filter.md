@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: filter
-permalink: /curies/1.0/filter.html
+permalink: /curies/2.0/filter.html
 ---
 
 ## Filtering documents

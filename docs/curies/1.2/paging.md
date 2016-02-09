@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: paging
-permalink: /curies/1.0/paging.html
+permalink: /curies/1.2/paging.html
 ---
 
 ## Introduction

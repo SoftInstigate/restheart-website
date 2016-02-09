@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: coll
-permalink: /curies/1.0/coll.html
+permalink: /curies/2.0/coll.html
 ---
 
 ## The Collection resource

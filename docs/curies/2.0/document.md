@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: document
-permalink: /curies/1.0/document.html
+permalink: /curies/2.0/document.html
 ---
 
 ## The Document resource

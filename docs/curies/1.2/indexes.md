@@ -1,7 +1,7 @@
 ---
 layout: page-notopnav
 title: indexes
-permalink: /curies/1.0/indexes.html
+permalink: /curies/1.2/indexes.html
 ---
 
 ## The Indexes resource
