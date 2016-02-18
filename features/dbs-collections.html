@@ -1,99 +1,74 @@
+<div>
+    <h4>General notes</h4>
+    <ul>
+        <li>data follow the <a href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/" target="_blank">strict mode representation of BSON</a>, e.g. <code>{"_id": {"$oid":"568106e67d3126b74dc5f9af"}}</code> for ObjectId</li>
+        <li>the root embeds <strong>collections</strong></li>
+        <li>dbs have <strong>properties</strong> and embed <strong>collections</strong></li>
+    </ul>
+
+    <h4>Notes on READ operations</h4>
+    <ul>
+        <li>use <code>page</code> and <code>pagesize</code> query parameters for pagination and <code>np</code> (<strong>n</strong>o <strong>p</strong>roperties) to exlude properties from the request.</li>
+        <li><code>np</code> <code>np</code> (<strong>n</strong>o <strong>p</strong>roperties) to exlude properties from the request.</li>
+    </ul>
+
+    <h4>General notes on WRITE operations</h4>
+    <ul>
+        <li><code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set</li>
+        <li>all write operation can use the <a href="https://docs.mongodb.org/manual/core/document/#dot-notation" target="_blank">dot notation</a> and all mongodb <a href="https://docs.mongodb.org/manual/reference/operator/update/" target="_blank">update operators</a></li>
+        <li>server or client can optionally require to check the ETag to avoid ghost writes, but by default <code>DELETE /db</code> and <code>DELETE /db/coll</code> requires it</li>
+    </ul>
+</div>
+
 <table class="table middle">
     <tbody>
         <tr>
-            <td style="width: 50%"><strong>Request</strong></td>
-            <td style="width: 20%"><strong>Description</strong></td>
-            <td style="width: 25%"><strong>Notes</strong></td>
-            <td style="width: 5%"><strong>Ref</strong></td>
+            <td style="width: 60%"><strong>Request</strong></td>
+            <td style="width: 40%"><strong>Description</strong></td>
         </tr>
         <tr>
             <td><code>GET /</code></td>
             <td>returns the existing dbs</td>
-            <td>
-                the <code>/</code> resource <strong>embeds</strong> the existing dbs
-            </td>
-            <td>
-                <a href="https://softinstigate.atlassian.net/wiki/x/UICM" target="_blank">HAL</a>
-            </td>
         </tr>
         
         <tr>
             <td><code>PUT /db {"descr": "my first db"}</code></td>
             <td>upserts the db <code>db</code></td>
-            <td>
-                all resources, including dbs, have <strong>properties</strong>
-            </td>
         </tr>
         
         <tr>
             <td><code>PATCH /db {"number": 1}</code></td>
             <td>modifies the db <code>db</code></td>
-            <td>
-                <code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set
-            </td>
-            <td>
-                <a href="https://softinstigate.atlassian.net/wiki/x/JQBGAQ" target="_blank">Write Reqs</a>
-            </td>
         </tr>
         
         <tr>
             <td><code>DELETE /db If-Match:&lt;Etag&gt;</code></td>
             <td>deletes the db <code>db</code></td>
-            <td>
-                By default deleting a db requires to pass the <code>ETag</code> using the If-Match header. 
-            </td>
-            <td>
-                <a href="https://softinstigate.atlassian.net/wiki/x/hICM" target="_blank">ETag</a>
-            </td>
         </tr>
         
         <tr>
             <td><code>GET /db</code></td>
-            <td>returns the existing collections of <code>db</code></td>
-            <td>
-                dbs <strong>embed</strong> their collections
-            </td>
-            <td></td>
+            <td>returns the properties and the existing collections of <code>db</code></td>
         </tr>
         
         <tr>
             <td><code>PUT /db/coll {"descr": "my first collection"}</code></td>
             <td>upserts the collection <code>db.coll</code></td>
-            <td>
-                all resources, including collections, have <strong>properties</strong>
-            </td>
-            <td></td>
         </tr>
         
         <tr>
             <td><code>PATCH /db/coll {"number": 1}</code></td>
             <td>modifies the collection <code>db.coll</code></td>
-            <td>
-                <code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set
-            </td>
-            <td></td>
         </tr>
         
         <tr>
-            <td><code>PUT /db/coll/_indexes/name_idx { "keys":{"name":1}, "ops":{"unique": true, "sparse": true} }</code></td>
+            <td><code>PUT /db/coll/_indexes/name_idx { "keys":{"name":1} }</code></td>
             <td>create the index <code>name_idx</code> in the collection <code>db.coll</code></td>
-            <td>
-                
-            </td>
-            <td>
-                <a href="https://softinstigate.atlassian.net/wiki/x/hICM" target="_blank">ETag</a>
-            </td>
         </tr>
         
         <tr>
             <td><code>DELETE /db/coll If-Match:&lt;Etag&gt;</code></td>
             <td>deletes the collection <code>db.coll</code></td>
-            <td>
-                By default, deleting a collection requires to pass the <code>ETag</code> using the If-Match header.
-            </td>
-            <td>
-                <a href="https://softinstigate.atlassian.net/wiki/x/SQC9" target="_blank">Indexes</a>
-            </td>
         </tr>
     </tbody>
 </table>

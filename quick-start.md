@@ -1,11 +1,11 @@
 ---
 layout: page-notitle
-title: Starter Guide
-permalink: /starter-guide.html
+title: Quick Start
+permalink: /quick-start.html
 features:
 - href: features/dbs-collections.html
+  title: DB and Collections  
   anchor: db-coll
-  title: DB and Collections
 - href: features/documents.html
   title: Documents
   anchor: docs
@@ -25,6 +25,6 @@ features:
 {% for feature in page.features %}
 <div id="{{feature.anchor}}" class="section">
     <h2><strong>{{feature.title}}</strong></h2>
-{% include_relative {{feature.href}} %}
+    {% include_relative {{feature.href}} %}
 </div>
 {% endfor %}
