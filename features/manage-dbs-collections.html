@@ -1,0 +1,80 @@
+<table class="table middle">
+    <tbody>
+        <tr>
+            <td style="width: 50%"><strong>Request</strong></td>
+            <td style="width: 25%"><strong>Description</strong></td>
+            <td style="width: 25%"><strong>Notes</strong></td>
+        </tr>
+        <tr>
+            <td><code>GET /</code></td>
+            <td>returns the existing dbs</td>
+            <td>
+                the <code>/</code> resource <strong>embeds</strong> the existing dbs
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>PUT /db {"descr": "my first db"}</code></td>
+            <td>upserts the db <code>db</code></td>
+            <td>
+                all resources, including dbs, have <strong>properties</strong>
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>PATCH /db {"number": 1}</code></td>
+            <td>modifies the db <code>db</code></td>
+            <td>
+                <code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole property set
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>DELETE /db If-Match:&lt;Etag&gt;</code></td>
+            <td>deletes the db <code>db</code></td>
+            <td>
+                By default deleting a db requires to pass the <code>ETag</code> using the If-Match header. See <a href="https://softinstigate.atlassian.net/wiki/x/hICM">ETag</a> section of the documentation.
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>GET /db</code></td>
+            <td>returns the existing collections of <code>db</code></td>
+            <td>
+                dbs <strong>embed</strong> their collections
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>PUT /db/coll {"descr": "my first collection"}</code></td>
+            <td>upserts the collection <code>db.coll</code></td>
+            <td>
+                all resources, including collections, have <strong>properties</strong>
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>PATCH /db/coll {"number": 1}</code></td>
+            <td>modifies the collection <code>db.coll</code></td>
+            <td>
+                <code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole property set
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>PUT /db/coll/_indexes/name_idx { "keys":{"name":1}, "ops":{"unique": true, "sparse": true} }</code></td>
+            <td>create the index <code>name_idx</code> in the collection <code>db.coll</code></td>
+            <td>
+                
+            </td>
+        </tr>
+        
+        <tr>
+            <td><code>DELETE /db/coll If-Match:&lt;Etag&gt;</code></td>
+            <td>deletes the collection <code>db.coll</code></td>
+            <td>
+                By default deleting a collection requires to pass the <code>ETag</code> using the If-Match header. See <a href="https://softinstigate.atlassian.net/wiki/x/hICM">ETag</a> section of the documentation.
+            </td>
+        </tr>
+    </tbody>
+</table>
