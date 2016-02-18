@@ -1,26 +1,32 @@
 <div>
-    <h4>General notes</h4>
-    <ul>
-        <li>use the <a href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/" target="_blank">strict mode representation of BSON</a>, e.g. <code>{"_id": {"$oid":"568106e67d3126b74dc5f9af"}}</code> for ObjectId</li>
-        <li>use <code>shardkey</code> query parameter to eventually specify the shard keys, e.g. <code>shardkey={"sk":"value"}</code></li>
-    </ul>
+    <div class="bs-callout bs-callout-info">
+        <h4>General notes</h4>
+        <ul>
+            <li>use the <a href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/" target="_blank">strict mode representation of BSON</a>, e.g. <code>{"_id": {"$oid":"568106e67d3126b74dc5f9af"}}</code> for ObjectId</li>
+            <li>use <code>shardkey</code> query parameter to eventually specify the shard keys, e.g. <code>shardkey={"sk":"value"}</code></li>
+        </ul>
+    </div>
 
-    <h4>Notes on READ operations</h4>
-    <ul>
-        <li>use <code>page</code> and <code>pagesize</code> query parameters for pagination and <code>np</code> (<strong>n</strong>o <strong>p</strong>roperties) to exlude properties from the request.</li>
-        <li><code>keys</code> query parameter defines the properties to return (projection), e.g. <code>keys={"a":1, "obj.prop":1}</code></li>
-        <li><code>filter</code> query parameter specifies a mongodb query, e.g. <code>filter={"n":{"$gt":5}}</code></li>
-        <li>use <code>id_type</code> optional query parameter to properly identify docs <code>/db/coll/1</code> (string) vs <code>/db/coll/1?id_type=number</code></li>
-    </ul>
+    <div class="bs-callout bs-callout-info">
+        <h4>Notes on READ operations</h4>
+        <ul>
+            <li>use <code>page</code> and <code>pagesize</code> query parameters for pagination and <code>np</code> (<strong>n</strong>o <strong>p</strong>roperties) to exlude properties from the request.</li>
+            <li><code>keys</code> query parameter defines the properties to return (projection), e.g. <code>keys={"a":1, "obj.prop":1}</code></li>
+            <li><code>filter</code> query parameter specifies a mongodb query, e.g. <code>filter={"n":{"$gt":5}}</code></li>
+            <li>use <code>id_type</code> optional query parameter to properly identify docs <code>/db/coll/1</code> (string) vs <code>/db/coll/1?id_type=number</code></li>
+        </ul>
+    </div>
 
-    <h4>Notes on WRITE operations</h4>
-    <ul>
-        
-        <li><code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set</li>
-        <li>if the <code>_id</code> is not specified, it will be generated as a new ObjectId</li>
-        <li>all write operation can use the <a href="https://docs.mongodb.org/manual/core/document/#dot-notation" target="_blank">dot notation</a> and all mongodb <a href="https://docs.mongodb.org/manual/reference/operator/update/" target="_blank">update operators</a></li>
-        <li>server or client can optionally requires to check the ETag to avoid ghost writes</li>
-    </ul>
+    <div class="bs-callout bs-callout-info">
+        <h4>Notes on WRITE operations</h4>
+        <ul>
+
+            <li><code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set</li>
+            <li>if the <code>_id</code> is not specified, it will be generated as a new ObjectId</li>
+            <li>all write operation can use the <a href="https://docs.mongodb.org/manual/core/document/#dot-notation" target="_blank">dot notation</a> and all mongodb <a href="https://docs.mongodb.org/manual/reference/operator/update/" target="_blank">update operators</a></li>
+            <li>server or client can optionally requires to check the ETag to avoid ghost writes</li>
+        </ul>
+    </div>
 </div>
 
 <table class="table middle">

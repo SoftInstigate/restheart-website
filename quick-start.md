@@ -20,11 +20,9 @@ features:
   anchor: validation
 ---
 
-<div style="margin-top: 25px"></div>
-
 {% for feature in page.features %}
-<div id="{{feature.anchor}}" class="section">
-    <h2><strong>{{feature.title}}</strong></h2>
+<div id="{{feature.anchor}}" class="section" style="margin-top: 25px">
+    <h1>{{feature.title}}</h1>
     {% include_relative {{feature.href}} %}
 </div>
 {% endfor %}
