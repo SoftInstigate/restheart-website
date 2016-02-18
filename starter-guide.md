@@ -3,7 +3,7 @@ layout: page-notitle
 title: Starter Guide
 permalink: /starter-guide.html
 features:
-- href: features/manage-dbs-collections.html
+- href: features/dbs-collections.html
   anchor: db-coll
   title: DB and Collections
 - href: features/documents.html
