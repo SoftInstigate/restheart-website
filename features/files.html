@@ -1,3 +1,67 @@
-<div class="well">
-    work in progress
+<div>
+    <div class="bs-callout bs-callout-info">
+        <h4>General notes</h4>
+        <ul>
+            <li>files are immutable: they cannot be modified</li>
+            <li>same notes than documents apply for files, e.g. the <code>filter</code> query parameter</li>
+            <li>file are automatically given the <strong>fileType</strong> property</li>
+        </ul>
+    </div>
 </div>
+
+
+<table class="table middle">
+    <tbody>
+        <tr>
+            <td style="width: 60%"><strong>Request</strong></td>
+            <td style="width: 40%"><strong>Description</strong></td>
+        </tr>
+
+        <tr>
+            <td><code>PUT /db/bucket.files {"descr": "my first file bucket"}</code></td>
+            <td>upserts the file bucket <code>db.bucket</code>; the <code>.files</code> suffix marks it as a file bucket</td>
+        </tr>
+        
+        <tr>
+            <td><code>PATCH /db/bucket.files {"number": 1}</code></td>
+            <td>modifies the properties of the file bucket <code>db.bucket</code>;</td>
+        </tr>
+        
+        <tr>
+            <td><code>GET /db/bucket.files</code></td>
+            <td>returns the properties and the paginated files of <code>db.bucket</code></td>
+        </tr>
+
+        <tr>
+            <td><code>GET /db/bucket.files/file</code></td>
+            <td>returns the properties of file <code>file</code></td>
+        </tr>
+        
+        <tr>
+            <td><code>GET /db/bucket.files/file/binary</code></td>
+            <td>returns the binary content of file <code>file</code></td>
+        </tr>
+        
+        <tr>
+            <td><code>POST /db/bucket.files properties={"a": 1} file=&lt;binary&gt;</code></td>
+            <td>
+                <p>creates an immutable file in bucket <code>db.bucket</code></p>
+                <p>note this is a multipart request</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><code>PUT /db/bucket.files/file properties={"a": 1} file=&lt;binary&gt;</code></td>
+            <td>
+                <p>creates the immutable file <code>file</code> in the bucket <code>db.bucket</code></p>
+                <p>note this is a multipart request</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><code>DELETE /bucket.files/coll/file</code></td>
+            <td>deletes the file <code>file</code></td>
+        </tr>
+
+    </tbody>
+</table>
