@@ -12,13 +12,11 @@ features:
 - href: features/files.html
   title: Files
   anchor: files
-- href: features/aggregations.html
-  title: Aggregation Operations
-  anchor: aggrs
-- href: features/validation.html
-  title: Validation
-  anchor: validation
 ---
+
+<div>
+    For detailed information refer to official <a href="https://softinstigate.atlassian.net/wiki/x/l4CM" target="_black">documentation</a>
+</div>
 
 {% for feature in page.features %}
 <div id="{{feature.anchor}}" class="section" style="margin-top: 25px">
