@@ -4,11 +4,7 @@ title: Try
 permalink: /try.html
 ---
 
-# how do you prefer to try it?
-
-<br>
-
-<section class="slice" id="questions" style="padding-top: 10px">
+<section class="slice" id="questions" style="padding-top: 30px">
     <div class="container">
         <article class="col-sm-12 col-md-4">
             <section>
