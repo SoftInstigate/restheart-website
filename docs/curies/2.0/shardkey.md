@@ -1,48 +1,34 @@
 ---
 layout: page-notopnav
-title: keys
-permalink: /curies/2.0/keys.html
+title: shardkey
+permalink: /curies/2.0/shardkey.html
 ---
 
-## Projecting documents
+## Shards
 
-Projection limits the fields to return for all matching documents, specifying the inclusion or the exclusion of fields.
+> The shard key determines the distribution of the collection’s documents among the cluster’s shards.
 
-This is done via the **keys** query parameter. 
+This is specified via the **shardkey** query parameter. 
 
 {: .bs-callout .bs-callout-info }
-The system properties (properties starting with **_** that are managed automatically by RESTHeart) are not affected by this option.
 
 ## Examples
 
-### return just the property *title*
+### return documents with given shardkey
 
 {% highlight bash %}
-$ http GET 127.0.0.1:8080/test/coll?keys={'title':1}
+GET 127.0.0.1:8080/test/coll?shardkey={"skey":"A"}
 {% endhighlight %}
 
-### return all but the property *title*
+### write document specifying the shardkey
 
 {% highlight bash %}
-$ http GET 127.0.0.1:8080/test/coll?keys={'title':0}
+$ http POST "127.0.0.1:8080/test/coll?shardkey={"skey":"B"} desc="just a document"
 {% endhighlight %}
-
-## return just the properties *title* and *summary*
-
-{% highlight bash %}
-$ http GET "127.0.0.1:8080/test/coll?keys={title:1}&keys={'summary':1}"
-{% endhighlight %}
-
-{: .bs-callout .bs-callout-info }
-note that you specify multiple keys using multiple keys query parameters
 
 ## Documentation references
 
-* [Collection Resource](coll.html)
-* [Document Resource](document.html)
-* <a href="https://softinstigate.atlassian.net/wiki/x/UICM" target="_blank">Representation Format</a>
-* <a href="https://softinstigate.atlassian.net/wiki/x/SoCM" target="_blank">Reference Sheet</a>
-* <a href="https://softinstigate.atlassian.net/wiki/x/XACk" target="_blank">Query Documents</a>
+* <a href="https://softinstigate.atlassian.net/wiki/x/BoBRAQ" target="_blank">Shard Keys Documents</a>
 
 ## How to use the examples
 The examples make use of the brilliant [httpie](https://github.com/jkbrzt/httpie) CLI HTTP client and are ment to be used with RESTHeart stareted on the localhost without the authentication enabled.

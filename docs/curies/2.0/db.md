@@ -8,7 +8,9 @@ permalink: /curies/2.0/db.html
 
 The DB resource represent a database. Request to DB URIs allow to manage the databases and get the list of their collections and file buckets.
 
-Allowed methods are:
+The resource URI format is <code>/&lt;dbname&gt;</code>
+
+### Allowed methods
 
 
 {: .table }
@@ -19,7 +21,16 @@ PUT   |Creates or updates the database <dbname>
 PATCH |Updates the database <dbname> (only passed data)
 DELETE|Deletes the database <dbname>
 
-The resource URI format is <code>/&lt;dbname&gt;</code>
+### Useful query parameters
+
+### Useful query parameters
+
+{: .table }
+**qparam**|**Description**|**applies to**
+---------|--------
+[page](paging.html)     | Data page to return (default 1)|GET
+[pagesize](paging.html) | Data page size (default 100, maximum 1000; If equals to 0 only returns the db properties)|GET
+np       | Don't return db properties, i.e. only embedded collections and file buckets|GET
 
 ## Examples:
 
@@ -29,18 +40,15 @@ The resource URI format is <code>/&lt;dbname&gt;</code>
 $ http PUT 127.0.0.1:8080/test descr="my first db"
 HTTP/1.1 201 Created
 ...
-ETag: 55e84b95c2e66d1e0a8e46b2
 {% endhighlight %}
 
 ### update the database <code>/test</code> adding the property *creator*
 
 {% highlight bash %}
-$ http PUT 127.0.0.1:8080/test creator="ujibang" If-Match:55e84b95c2e66d1e0a8e46b2
+$ http PATCH 127.0.0.1:8080/test creator="ujibang"
 {% endhighlight %}
 
 {: .bs-callout .bs-callout-info }
-Note the If-Match request header. This needs to be added to modify an existing resource. 
-See [ETag](https://softinstigate.atlassian.net/wiki/x/hICM) documentation section for more information.
 
 ### get the database <code>/test</code> which includes its collections and file buckets as _embedded resources.
 
@@ -50,65 +58,36 @@ HTTP/1.1 200 OK
 ...
 
 {
-    "_created_on": "2015-03-28T09:22:48Z", 
-    "_db-props-cached": false,
-    "_links": {
-        "rh:root": {
-            "href": "/"
-        }, 
-        ...
-    }, 
     "_embedded": {
         "rh:bucket": [
             {
-                "_collection-props-cached": false, 
-                "_created_on": "2015-03-28T09:23:42Z", 
-                "_embedded": {}, 
-                "_etag": {
-                    "$oid": "5516731ec2e6e922cf58d6af"
-                }, 
                 "_id": "mybucket.files", 
-                "_lastupdated_on": "2015-03-28T09:23:42Z", 
-                "_links": {
-                    "self": {
-                        "href": "/test/mybucket.files"
-                    }
-                }, 
-                "_type": "FILES_BUCKET", 
-                "descr": "my first bucket"
+                "descr": "my first bucket",
+                "_etag": { "$oid": "5516731ec2e6e922cf58d6af" }
             }
         ], 
         "rh:coll": [
             {
-                "_collection-props-cached": false, 
-                "_created_on": "2015-09-10T10:47:33Z", 
-                "_embedded": {}, 
-                "_etag": {
-                    "$oid": "55f15fc5c2e65448b566d18d"
-                }, 
                 "_id": "mycollection", 
-                "_lastupdated_on": "2015-09-10T10:47:33Z", 
-                "_links": {
-                    "self": {
-                        "href": "/test/mycollection"
-                    }
-                }, 
-                "_type": "COLLECTION", 
-                "descr": "my first collection"
+                "descr": "my first collection",
+                "_etag": { "$oid": "55f15fc5c2e65448b566d18d" }
             }
         ]
     }, 
-    ...
+    "descr: "my first db",
+    "creator": "ujibang",
+    "_etag": { "$oid": "55e84b95c2e66d1e0a8e46b2" },
     "_returned": 2, 
     "_size": 2, 
     "_total_pages": 1, 
-    "_type": "DB", 
-    "descr": "my first db"
 }
+
 {% endhighlight %}
 
 {: .bs-callout .bs-callout-info }
-Note between the _links, the link to its parent resource, in this case the root.
+Note the _etag property. It enables web caching and can be used to avoid ghost writes.<br/>
+By default it is mandatory to specify it via the If-Match header to delete a db.
+See [ETag](https://softinstigate.atlassian.net/wiki/x/hICM) documentation section for more information.
 
 ## Documentation references
 

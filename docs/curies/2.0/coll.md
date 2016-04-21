@@ -9,20 +9,30 @@ permalink: /curies/2.0/coll.html
 The Collection resource represents a collection.
 Requests to Collection URI allow to manage the collections, create documents and get the list of existing documents.
 
-Allowed methods are:
+The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;</code>
+
+### Allowed methods
 
 {: .table }
 **Method**|**Description**
 GET	|Returns the collection properties and the list of its documents
 PUT	|Creates or updates the collection
 PATCH	|Updates the collection properties
-POST	|Creates or updates a document in the collection
+POST	|Creates or updates one document (passing an object) or several documents (passing an array of objects) in the collection
 DELETE	|Deletes the collection
 
-The resource URI format is <code>/&lt;dbname&gt;/&lt;collname&gt;</code>
+### Useful query parameters
 
-{: .bs-callout .bs-callout-info }
-The following options influence the files returned as embedded resources to a GET collection request: [pagination](paging.html), [sorting](sort.html), [filtering](filter.html) and [projecting](keys.html).
+{: .table }
+**qparam**|**Description**|**applies to**
+---------|--------
+[page](paging.html)     | Data page to return (default 1)|GET
+[pagesize](paging.html) | Data page size (default 100, maximum 1000; If equals to 0 only returns the db properties)|GET
+np       | Don't return collection properties, i.e. only embedded documents|GET
+[filter](filter.html)   | Filter query|GET
+[keys](keys.html)     | Documents keys to return (projection)|GET
+[sort](sort.html)     | Sort to apply to returned documents|GET
+[shardkey](shardkey.html)  | In case of shared server, the shard keys|Any verb
 
 ## Examples:
 
@@ -32,19 +42,15 @@ The following options influence the files returned as embedded resources to a GE
 $ http PUT 127.0.0.1:8080/test/coll descr="my first collection"
 HTTP/1.1 201 Created
 ...
-ETag: 5516731ec2e6e922cf58d6af
 {% endhighlight %}
 
 ### update the collection <code>/test</coll</code> adding the property *creator*
 
 {% highlight bash %}
-$ http PUT 127.0.0.1:8080/test/coll creator="ujibang" If-Match:5516731ec2e6e922cf58d6af
+$ http PUT 127.0.0.1:8080/test/coll creator="ujibang"
 HTTP/1.1 201 CREATED
+...
 {% endhighlight %}
-
-{: .bs-callout .bs-callout-info }
-Note the If-Match request header. This needs to be added to modify an existing resource. 
-See [ETag](https://softinstigate.atlassian.net/wiki/x/hICM) documentation section for more information.
 
 ### create a document in the collection <code>/test/coll</code>.
 
@@ -70,43 +76,29 @@ HTTP/1.1 200 OK
 ...
 
 {
-    "_collection-props-cached": false, 
-    "_created_on": "2015-09-03T13:32:18Z", 
-    "_links": {
-        "rh:indexes": {
-            "href": "/test/coll/_indexes"
-        }
-        "rh:db": {
-            "href": "/test"
-        },
-        ...
-    },
     "_embedded": {
         "rh:doc": [
             {
-                ...
-                "array": [
-                    1, 
-                    2, 
-                    3
-                ], 
+                "_id": { "$oid": "55f15fc5c2e65448b566d18d" }
+                "array": [ 1, 2, 3 ], 
                 "number": 1, 
-                "object": {
-                    "a": 1, 
-                    "b": 2
-                }, 
-                "string": "whatever"
+                "object": { "a": 1, "b": 2 }, 
+                "string": "whatever",
+                "_etag": { "$oid": "5516731ec2e6e922cf58d6af" }
             }
         ]
     }, 
     ...
     "_returned": 1, 
-    "descr": "a collection for testing"
+    "descr": "a collection for testing",
+    "_etag": { "$oid": "55e84b95c2e66d1e0a8e46b2" },
 }
 {% endhighlight %}
 
 {: .bs-callout .bs-callout-info }
-Note between the _links, the URI of its parent resource, in this case the database /test and of the collection [indexes](indexes.html).
+Note the _etag property. It enables web caching and can be used to avoid ghost writes.<br/>
+By default it is mandatory to specify it via the If-Match header to delete a collection.
+See [ETag](https://softinstigate.atlassian.net/wiki/x/hICM) documentation section for more information.
 
 ## Documentation references
 

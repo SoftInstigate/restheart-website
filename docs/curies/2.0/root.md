@@ -8,14 +8,22 @@ permalink: /curies/2.0/root.html
 
 The Root resource is the API entry point, requests to Root URI allow get the list of existing databases.
 
-Allowed methods are:
+The resource URI is <code>/</code>
+
+### Allowed methods
 
 {: .table }
 **Method**|**Description**
 ------|-----------
 GET   |Returns the <a href="paging.html">paginated</a> list of the databases
 
-The resource URI format is <code>/</code>
+### Useful query parameters
+
+{: .table }
+**qparam**|**Description**|**applies to**
+---------|--------
+[page](paging.html)     | Data page to return (default 1)|GET
+[pagesize](paging.html) | Data page size (default 100, maximum 1000; If equals to 0 only returns the db properties)|GET
 
 ## Documentation references
 

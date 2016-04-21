@@ -12,6 +12,7 @@ RESTHeart represents resources using the HAL format where children resources are
 * Dbs embed Collections and File buckets
 * Collections embed Documents
 * File buckets embed Files
+* Schema stores embed schemas
 
 Example, a GET on /rest/coll collection URI, returns its documents in the **_embedded.rh:doc** array.
 

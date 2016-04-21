@@ -27,7 +27,7 @@ $ http GET 127.0.0.1:8080/test/coll?keys={'title':1}
 $ http GET 127.0.0.1:8080/test/coll?keys={'title':0}
 {% endhighlight %}
 
-## return just the properties *title* and *summary*
+### return just the properties *title* and *summary*
 
 {% highlight bash %}
 $ http GET "127.0.0.1:8080/test/coll?keys={title:1}&keys={'summary':1}"
