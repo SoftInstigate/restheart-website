@@ -46,7 +46,7 @@ The database is presisted on an ephemeral storage and it is reset on regular bas
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PUT http://dbapi.io/db/coll/docid -d '{"from":"Andrea", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "Content-Type: application/json" -X PUT http://dbapi.io/db/coll/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 ...
@@ -64,10 +64,10 @@ HTTP/1.1 201 Created
 
 $ curl http://dbapi.io/db/coll/docid
 
-{ 
+{
   "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
   "_id" : "docid",
-  "from" : "Andrea",
+  "from" : "ujibang",
   "message" : "RESTHeart rocks"
 }
 
@@ -83,7 +83,7 @@ $ curl http://dbapi.io/db/coll/docid
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X POST http://dbapi.io/db/coll -d '{"from":"Andrea", "message": "MongoDB rocks as well!"}' 
+$ curl -i -H "Content-Type: application/json" -X POST http://dbapi.io/db/coll -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
 Location: http://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
@@ -101,7 +101,7 @@ Location: http://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PATCH http://dbapi.io/db/coll/docid -d '{"$currentDate": { "header.timestamp": true}}' 
+$ curl -i -H "Content-Type: application/json" -X PATCH http://dbapi.io/db/coll/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
@@ -120,10 +120,10 @@ HTTP/1.1 200 OK
 
 $ curl http://dbapi.io/db/coll/docid
 
-{ 
+{
   "_etag" : { "$oid" : "5718d948c9e77c000609f677" },
   "_id" : "docid",
-  "from" : "Andrea",
+  "from" : "ujibang",
   "header" : { "timestamp" : { "$date" : 1461246280498 } },
   "message" : "RESTHeart rocks!!"
 }
@@ -141,23 +141,23 @@ $ curl http://dbapi.io/db/coll/docid
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl http://dbapi.io/db/coll?filter='\{"name":"Andrea"\}'
+$ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
 
-{ "_embedded" : { "rh:doc" : [ 
-          { 
-            "_etag" : { "$oid" : "5718d6d2c9e77c000609f671" },
-            "_id" : { "$oid" : "5718d6d21b58712bd150d352" },
+{ "_embedded" : { "rh:doc" : [
+          {
+            "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
+            "_id" : "docid",
             "message" : "RESTHeart rocks!",
-            "from" : "Andrea"
+            "from" : "ujibang"
           },
-          { 
+          {
             "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" },
-            "_id" : { "$oid" : "57175e2dc9e77c0006eb9ef3" },
-            "message" : "RESTHeart rocks!",
-            "from" : "Maurizio"
+            "_id" : { "$oid" : "563a40d6e4b0ef984cae182b" },
+            "message" : "MongoDB rocks as well!",
+            "from" : "ujibang"
           }
         ] },
-  "_etag" : { "$oid" : "56fd8c47c9e77c00078dc74f" },
+  "_etag" : { "$oid" : "57f3d7d0c9e77c00075daae9" },
   "_id" : "coll",
   "_returned" : 2
 }
