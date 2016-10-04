@@ -148,7 +148,7 @@ $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
             "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
             "_id" : "docid",
             "message" : "RESTHeart rocks!",
-            "header" : { "timestamp" : { "$date" : 1461246280498 } },
+            "header" : { "timestamp" : { "$date" : 1475598488601 } },
             "from" : "ujibang"
           },
           {
