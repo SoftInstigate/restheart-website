@@ -124,7 +124,7 @@ $ curl http://dbapi.io/db/coll/docid
   "_etag" : { "$oid" : "5718d948c9e77c000609f677" },
   "_id" : "docid",
   "from" : "ujibang",
-  "header" : { "timestamp" : { "$date" : 1461246280498 } },
+  "header" : { "timestamp" : { "$date" : 1475598488601 } },
   "message" : "RESTHeart rocks!!"
 }
 
@@ -148,6 +148,7 @@ $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
             "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
             "_id" : "docid",
             "message" : "RESTHeart rocks!",
+            "header" : { "timestamp" : { "$date" : 1461246280498 } },
             "from" : "ujibang"
           },
           {
