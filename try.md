@@ -34,7 +34,7 @@ permalink: /try.html
 
 # Try it from the command line
 
-The demo instance exposes a collection at <code><a href="http://dbapi.io/db/coll">http://dbapi.io/db/coll</a></code> without requiring authentication.
+The demo instance exposes a collection at <a href="http://dbapi.io/db/coll"><code>http://dbapi.io/db/coll</code></a> without requiring authentication.
 Access to any other MongoDB resource is forbidden.<br>
 The database is reset on regular basis: feel free to play with it but <b>don't rely on it</b>.
 {: .bs-callout .bs-callout-info }
