@@ -31,6 +31,9 @@ permalink: /try.html
     </div>
 </section>
 
+# Angular 2 Example
+
+<iframe style="width: 100%; height: 600px" src="http://embed.plnkr.co/LmWwyj" frameborder="0" allowfullscren="allowfullscren"></iframe>
 
 # Try it from the command line
 
