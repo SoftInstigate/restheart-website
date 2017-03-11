@@ -69,10 +69,10 @@ HTTP/1.1 201 Created
 $ curl http://dbapi.io/db/coll/docid
 
 {
-  "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
   "_id" : "docid",
   "from" : "ujibang",
-  "message" : "RESTHeart rocks"
+  "message" : "RESTHeart rocks",
+  "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
 }
 
         {% endhighlight %}
@@ -125,11 +125,11 @@ HTTP/1.1 200 OK
 $ curl http://dbapi.io/db/coll/docid
 
 {
-  "_etag" : { "$oid" : "5718d948c9e77c000609f677" },
   "_id" : "docid",
   "from" : "ujibang",
+  "message" : "RESTHeart rocks!!",
   "header" : { "timestamp" : { "$date" : 1475598488601 } },
-  "message" : "RESTHeart rocks!!"
+  "_etag" : { "$oid" : "5718d948c9e77c000609f677" },
 }
 
         {% endhighlight %}
@@ -140,33 +140,68 @@ $ curl http://dbapi.io/db/coll/docid
     <div class="col-md-3" style="padding-top:7px">
         <p><strong>Find</strong> documents via query.</p>
         <p>The <code>filter</code> query parameter allows to specify any MongoDB query.</p>
-        <p>The matching documents are in the <code>_embedded.['rh:doc']</code> array.</p>
+        <p>The matching documents are in the <code>_embedded</code> array.</p>
     </div>
     <div class="col-md-9">
         {% highlight bash %}
 
 $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
 
-{ "_embedded" : { "rh:doc" : [
+{ 
+    "_id" : "coll",
+    "_returned" : 2,
+    "_embedded" : [
           {
-            "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" },
             "_id" : "docid",
+            "from" : "ujibang",
             "message" : "RESTHeart rocks!",
             "header" : { "timestamp" : { "$date" : 1475598488601 } },
-            "from" : "ujibang"
+            "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
           },
           {
-            "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" },
             "_id" : { "$oid" : "563a40d6e4b0ef984cae182b" },
+            "from" : "ujibang",
             "message" : "MongoDB rocks as well!",
-            "from" : "ujibang"
+            "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" }
           }
-        ] },
-  "_etag" : { "$oid" : "57f3d7d0c9e77c00075daae9" },
-  "_id" : "coll",
-  "_returned" : 2
+        ],
+    "_etag" : { "$oid" : "57f3d7d0c9e77c00075daae9" }
 }
 
         {% endhighlight %}
+
+    </div>
+    
+
+    <div class="row" style="margin-top: 20px">
+    <div class="col-md-3" style="padding-top:7px">
+        <p><strong>Get</strong> documents as an array (without the collection properties).</p>
+        <p>The <code>np</code> query parameter allows to get rid of the collection properties.</p>
+        <p>In this case, the response body is just an array of documents.</p>
+        <p><code>np</code> stands for No Properties</p>
+    </div>
+    <div class="col-md-9">
+        {% highlight bash %}
+
+$ curl http://dbapi.io/db/coll?np
+
+[  
+    {   "_id" : "docid",
+        "from" : "ujibang",
+        "message" : "RESTHeart rocks!",
+        "header" : { "timestamp" : { "$date" : 1475598488601 } },
+        "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
+    },
+    {   "_id" : { "$oid" : "563a40d6e4b0ef984cae182b" },
+        "from" : "ujibang",
+        "message" : "MongoDB rocks as well!",
+        "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" }
+    },
+    ....
+]
+
+
+        {% endhighlight %}
+
     </div>
 </div>
