@@ -69,10 +69,12 @@ HTTP/1.1 201 Created
 $ curl http://dbapi.io/db/coll/docid
 
 {
-  "_id" : "docid",
-  "from" : "ujibang",
-  "message" : "RESTHeart rocks",
-  "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
+	"_id": "docid",
+	"from": "ujibang",
+	"message": "RESTHeart rocks",
+	"_etag": {
+		"$oid": "57069cb9c9e77c00078dc780"
+	}
 }
 
         {% endhighlight %}
@@ -125,11 +127,17 @@ HTTP/1.1 200 OK
 $ curl http://dbapi.io/db/coll/docid
 
 {
-  "_id" : "docid",
-  "from" : "ujibang",
-  "message" : "RESTHeart rocks!!",
-  "header" : { "timestamp" : { "$date" : 1475598488601 } },
-  "_etag" : { "$oid" : "5718d948c9e77c000609f677" },
+	"_id": "docid",
+	"from": "ujibang",
+	"message": "RESTHeart rocks!!",
+	"header": {
+		"timestamp": {
+			"$date": 1475598488601
+		}
+	},
+	"_etag": {
+		"$oid": "5718d948c9e77c000609f677"
+	}
 }
 
         {% endhighlight %}
@@ -147,25 +155,34 @@ $ curl http://dbapi.io/db/coll/docid
 
 $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
 
-{ 
-    "_id" : "coll",
-    "_returned" : 2,
-    "_embedded" : [
-          {
-            "_id" : "docid",
-            "from" : "ujibang",
-            "message" : "RESTHeart rocks!",
-            "header" : { "timestamp" : { "$date" : 1475598488601 } },
-            "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
-          },
-          {
-            "_id" : { "$oid" : "563a40d6e4b0ef984cae182b" },
-            "from" : "ujibang",
-            "message" : "MongoDB rocks as well!",
-            "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" }
-          }
-        ],
-    "_etag" : { "$oid" : "57f3d7d0c9e77c00075daae9" }
+{
+	"_id": "coll",
+	"_returned": 2,
+	"_embedded": [{
+		"_id": "docid",
+		"from": "ujibang",
+		"message": "RESTHeart rocks!",
+		"header": {
+			"timestamp": {
+				"$date": 1475598488601
+			}
+		},
+		"_etag": {
+			"$oid": "57069cb9c9e77c00078dc780"
+		}
+	}, {
+		"_id": {
+			"$oid": "563a40d6e4b0ef984cae182b"
+		},
+		"from": "ujibang",
+		"message": "MongoDB rocks as well!",
+		"_etag": {
+			"$oid": "57175e2dc9e77c0006eb9ef4"
+		}
+	}],
+	"_etag": {
+		"$oid": "57f3d7d0c9e77c00075daae9"
+	}
 }
 
         {% endhighlight %}
@@ -185,21 +202,28 @@ $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
 
 $ curl http://dbapi.io/db/coll?np
 
-[  
-    {   "_id" : "docid",
-        "from" : "ujibang",
-        "message" : "RESTHeart rocks!",
-        "header" : { "timestamp" : { "$date" : 1475598488601 } },
-        "_etag" : { "$oid" : "57069cb9c9e77c00078dc780" }
-    },
-    {   "_id" : { "$oid" : "563a40d6e4b0ef984cae182b" },
-        "from" : "ujibang",
-        "message" : "MongoDB rocks as well!",
-        "_etag" : { "$oid" : "57175e2dc9e77c0006eb9ef4" }
-    },
-    ....
-]
-
+[{
+	"_id": "docid",
+	"from": "ujibang",
+	"message": "RESTHeart rocks!",
+	"header": {
+		"timestamp": {
+			"$date": 1475598488601
+		}
+	},
+	"_etag": {
+		"$oid": "57069cb9c9e77c00078dc780"
+	}
+}, {
+	"_id": {
+		"$oid": "563a40d6e4b0ef984cae182b"
+	},
+	"from": "ujibang",
+	"message": "MongoDB rocks as well!",
+	"_etag": {
+		"$oid": "57175e2dc9e77c0006eb9ef4"
+	}
+}]
 
         {% endhighlight %}
 
