@@ -17,15 +17,13 @@ layout: page
 -   [ETag](/docs3/ETag)
 -   [Request Transformers](/docs3/Request_Transformers)
 -   [Request Checkers](/docs3/Request_Checkers)
--   [Document validation with JSON
-    schema](/docs3/Document_validation_with_JSON_schema)
+-   [Document validation with JSON schema](/docs3/Document_validation_with_JSON_schema)
 -   [Application Logic](/docs3/Application_Logic)
 -   [Request Hooks](/docs3/Request_Hooks)
 -   [Relationships](/docs3/Relationships)
 -   [Shard Keys](/docs3/Shard_Keys)
 -   [Manage Collection Indexes](/docs3/Manage_Collection_Indexes)
--   [Speedup Requests with Cursor
-    Pools](/docs3/Speedup_Requests_with_Cursor_Pools)
+-   [Speedup Requests with Cursor Pools](/docs3/Speedup_Requests_with_Cursor_Pools)
 -   [CORS Support](/docs3/CORS_Support)
 -   [Metrics on Requests](/docs3/Metrics_on_Requests)
 -   [Performances](/docs3/Performances)
