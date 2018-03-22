@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Relationships
 ---
-
-# Relationships
 
 * [Introduction](#introduction)
 * [The <em>rels</em> collection metadata](#the-rels-collection-metadata)

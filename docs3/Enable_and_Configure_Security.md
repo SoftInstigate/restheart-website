@@ -1,5 +1,6 @@
 ---
 layout: docs
+title: Enable and Configure Security
 ---
 
 # Enable and Configure Security

@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Users provisioning how-to
 ---
-
-# Users provisioning how-to
 
 * [Introduction ](#introduction)
 * [Steps](#steps)

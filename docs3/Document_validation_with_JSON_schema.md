@@ -1,5 +1,6 @@
 ---
 layout: docs
+title: Document validation with JSON schema
 ---
 
 # Validation with JSON schema

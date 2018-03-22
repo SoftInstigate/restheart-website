@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Reference sheet
 ---
-
-# Reference sheet
 
 * [Root resource](#root-resource)
 * [Database](#database)

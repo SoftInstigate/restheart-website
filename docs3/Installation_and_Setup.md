@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Installation and Setup
 ---
-
-# Installation and Setup
 
 * [Quick-start](#quick-start)
     * [Docker](#docker)
@@ -135,9 +134,8 @@ default value: this way it is not required to specify all the possible
 options in the configuration file following the *convention over
 configuration* approach.
 
-For more information about the configuration file format refer to
-[Advanced Configuration](Advanced_Configuration) and [Default
-Configuration File](Default_Configuration_File) sections.
+For more information about the configuration file format refer to [Default
+Configuration File](/docs3/Default_Configuration_File) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
 process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.

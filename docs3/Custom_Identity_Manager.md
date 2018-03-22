@@ -1,5 +1,6 @@
 ---
 layout: docs
+title: Custom Identity Manager
 ---
 
 * [Introduction](#introduction)
@@ -11,8 +12,6 @@ layout: docs
     * [Using the java classpath option](#using-the-java-classpath-option)
     * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
 * [Example](#example)
-
-# Custom Identity Manager
 
 **/\*\*/ Introduction Develop The IDM class Methods to implement
 Configuration Add custom classes to the classpath Using the java

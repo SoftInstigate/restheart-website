@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Speedup Requests with Cursor Pools
 ---
-
-# Speedup Requests with Cursor Pools
 
 * [Introduction](#introduction)
 * [How it works](#how-it-works)

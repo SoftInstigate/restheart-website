@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Representation Format
 ---
-
-# Representation Format
 
 **WORK IN PROGRESS**
 

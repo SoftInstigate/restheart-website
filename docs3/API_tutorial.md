@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: API tutorial
 ---
-
-# API tutorial
 
 * [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
 * [Create a Database ](#create-a-database)

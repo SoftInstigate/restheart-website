@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Collection Indexes
 ---
-
-# Manage Collection Indexes
 
 * [Introduction](#introduction)
 * [List the collection indexes](#list-the-collection-indexes)

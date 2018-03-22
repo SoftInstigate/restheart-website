@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Default Conf File
 ---
-
-# Default Configuration File
 
 ``` bash
 ## RESTHeart Configuration File.
@@ -27,6 +26,21 @@ http-port: 8080
 ajp-listener: false
 ajp-host: 0.0.0.0
 ajp-port: 8009
+
+#### Instance name
+
+# The name of this restheart instance. displayed in log, also allows to implement instance specific custom code
+# For instance, an email notifier hook can send emails to a test email address in development environments
+
+instance-name: default
+
+#### default representation format (PLAIN_JSON or HAL)
+
+default-representation-format: PLAIN_JSON
+
+#### use Ansi console for logging. Default to 'true' if parameter missing, for backward compatibility
+
+ansi-console: true
 
 #### SSL Configuration
 
@@ -61,11 +75,16 @@ use-embedded-keystore: true
 mongo-uri: mongodb://127.0.0.1
 
 # Use mongo-mounts to bind URls to mongodb resources using the out-of-the-box URL rewrite feature.
+# The where URI can be an absolute path (eg. /api) or path template (eg. /{foo}/bar/*). 
+# The values of the path templates properties are available:
+# - in the what property (e.g. what: /{foo}_db/coll) 
+# - programmatically from RequestContext.getPathTemplateParamenters() method.
+# It is not possible to mix absolute paths and path templates: where URIs need to be either all absolute paths or all path templates.
 mongo-mounts:
     - what: "*"
       where: /
 
-#### Static Web Resources
+#### Static Web Resources
 
 # Static web resources to bind to the specified URL.
 # The 'what' property is the path of the directory containing the resources.
@@ -79,7 +98,7 @@ static-resources-mounts:
       secured: false
       embedded: true
 
-#### Application Logic
+#### Application Logic
 
 # RESTHeart has a pipeline architecture where specialized undertow handlers are chained to serve the requests.
 # In order to provide additional application logic, custom hanlders pipes can be bound under the /_logic URL.
@@ -105,50 +124,57 @@ application-logic-mounts:
     - what: org.restheart.handlers.applicationlogic.CacheInvalidator
       where: /ic
       secured: true
+    - what: org.restheart.handlers.applicationlogic.CsvLoaderHandler
+      where: /csv
+      secured: true
 
 ### Metadata Named Singletons
 
 # Metadata implementation can rely on singletons, this section configures the
-# singleton factory #org.restheart.hal.metadata.singletons.NamedSingletonsFactory
+# singleton factory #org.restheart.metadata.NamedSingletonsFactory
 
 metadata-named-singletons:
     # Checkers group used by handler:
     # org.restheart.handlers.metadata.CheckMetadataHandler
     # More information in checkers javadoc
     - group: checkers
-      interface: org.restheart.hal.metadata.singletons.Checker
+      interface: org.restheart.metadata.checkers.Checker
       singletons:
         - name: jsonSchema
-          class: org.restheart.hal.metadata.singletons.JsonSchemaChecker
+          class: org.restheart.metadata.checkers.JsonSchemaChecker
         - name: checkContent
-          class: org.restheart.hal.metadata.singletons.JsonPathConditionsChecker
+          class: org.restheart.metadata.checkers.JsonPathConditionsChecker
         - name: checkContentSize
-          class: org.restheart.hal.metadata.singletons.ContentSizeChecker
+          class: org.restheart.metadata.checkers.ContentSizeChecker
 
     # Checkers group used by handlers:
     # org.restheart.handlers.metadata.RequestTransformerMetadataHandler and
     # org.restheart.handlers.metadata.ResponseTransformerMetadataHandler
     # More information in transformers javadoc
     - group: transformers
-      interface: org.restheart.hal.metadata.singletons.Transformer
+      interface: org.restheart.metadata.transformers.Transformer
       singletons:
         - name: addRequestProperties
-          class: org.restheart.hal.metadata.singletons.RequestPropsInjecterTransformer
+          class: org.restheart.metadata.transformers.RequestPropsInjecterTransformer
         - name: filterProperties
-          class: org.restheart.hal.metadata.singletons.FilterTransformer
+          class: org.restheart.metadata.transformers.FilterTransformer
         - name: stringsToOids
-          class: org.restheart.hal.metadata.singletons.ValidOidsStringsAsOidsTransformer
+          class: org.restheart.metadata.transformers.ValidOidsStringsAsOidsTransformer
         - name: oidsToStrings
-          class: org.restheart.hal.metadata.singletons.OidsAsStringsTransformer
-    
-    # WebHook group used by handler:
-    # org.restheart.handlers.metadata.WebHookHandler
-    # More information in webhook javadoc
-    - group: webhooks
-      interface: org.restheart.hal.metadata.singletons.WebHook
+          class: org.restheart.metadata.transformers.OidsAsStringsTransformer
+        - name: writeResult
+          class: org.restheart.metadata.transformers.WriteResultTransformer
+        - name: hashProperties
+          class: org.restheart.metadata.transformers.HashTransformer
+          
+    # Hook group used by handler:
+    # org.restheart.handlers.metadata.HookHandler
+    # More information in hook javadoc
+    - group: hooks
+      interface: org.restheart.metadata.hooks.Hook
       singletons:
         - name: snooper
-          class: org.restheart.hal.metadata.singletons.SnooperWebHook
+          class: org.restheart.metadata.hooks.SnooperHook
 
 ### Security
 
@@ -157,7 +183,7 @@ metadata-named-singletons:
 # idm: the Identity Manager responsible of authentication
 # access-manager: the Access Manager responsible of authorization
 # The RESTHeart security is pluggable and you can provide you own implementation of both IDM and AM.
-# The provided default implementations of IDM and AM are SimpleFileIdentityManager, DbIdentityManager and SimpleAccessManager.
+# The provided default implementations of IDM and AM are SimpleFileIdentityManager, DbIdentityManager, ADIdentityManager and SimpleAccessManager.
 # conf-file paths are either absolute (starting with /) or relative to the restheart.jar file path
 
 idm:
@@ -166,6 +192,43 @@ idm:
 access-manager:
     implementation-class: org.restheart.security.impl.SimpleAccessManager
     conf-file: ./etc/security.yml
+    
+# RESTHeart uses the BasicAuthenticationMechanism by default. 
+# A different mechanism can be specified via the auth-mechanism configuration option
+# the implementation-class must specify a factory class implementing
+# the interface org.restheart.security.AuthenticationMechanismFactory
+# See http://undertow.io/undertow-docs/undertow-docs-1.4.0/index.html#security 
+# JwtAuthenticationManagerFactory and IdentityAuthenticationManagerFactory 
+# for example implementations
+
+# Identity Authentication Manager 
+# All requests are bound to the specified user
+
+#auth-mechanism:
+#    implementation-class: org.restheart.security.impl.IdentityAuthenticationManagerFactory
+#    username: a
+#    pwd: a
+
+# Jwt Authentication Manager 
+# Authentication via Json Web Token https://jwt.io
+
+# algorithm: RSA (RS256 | RS384 |RS512) or HMAC (HS256 | HS384 | HS512)
+# key: for RSA the base64 encoded of the public key; for HMAC, the secret key
+# base64Encoded: set to true if the jwt token is base64 encoded. optional, default valud: false
+# usernameClaim: the claim that holds the username. optional, default value: 'sub' (jwt subject). 
+# rolesClaim: the claim that holds the roles as string or array of strings
+# issuer: verify the issues (iss claim). optional, default value matches: null (don't check iss)
+# audience: verify the audience (aud claim). optional, default value matches: null (don't check aud)
+
+#auth-mechanism:
+#    implementation-class: org.restheart.security.impl.JwtAuthenticationManagerFactory
+#    algorithm: HS256
+#    key: secret
+#    base64Encoded: false
+#    usernameClaim: sub
+#    rolesClaim: roles
+#    issuer: myIssuer
+#    audience: myAudience
 
 # Authentication Token
 
@@ -176,6 +239,10 @@ access-manager:
 auth-token-enabled: true
 auth-token-ttl: 15
 
+# Check if aggregation variables use operators. allowing operators in aggregation variables 
+# is risky. requester can inject operators modifying the query
+aggregation-check-operators: true
+
 #### Logging
 
 # enable-log-console: true => log messages to the console (default value: true)
@@ -183,7 +250,7 @@ auth-token-ttl: 15
 # log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
 # log-level: to set the log level. Value can be OFF, ERROR, WARN, INFO, DEBUG, TRACE and ALL. (default value is INFO)
 # requests-log-level: log the request-response. 0 => no log, 1 => light log, 2 => detailed dump
-# WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers)
+# WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers)
 
 enable-log-file: false
 #log-file-path: /tmp/restheart.log
@@ -233,6 +300,12 @@ local-cache-ttl: 1000
 # Limit for the maximum number of concurrent requests being served
 requests-limit: 1000
 
+# Time limit in milliseconds for processing queries on the server (without network latency). 0 means no time limit
+query-time-limit: 0
+
+# Time limit in milliseconds for processing aggregations on the server (without network latency). 0 means no time limit
+aggregation-time-limit: 0
+
 # Number of I/O threads created for non-blocking tasks. at least 2. suggested value: core*2
 io-threads: 2
 
@@ -266,7 +339,7 @@ connection-options:
     # The idle timeout in milliseconds after which the channel will be closed.
     # If the underlying channel already has a read or write timeout set 
     # the smaller of the two values will be used for read/write timeouts.
-    # Defaults to unlimited (-1).
+    # Defaults to unlimited (-1).
     IDLE_TIMEOUT: -1
     
     # The maximum allowed time of reading HTTP request in milliseconds.
@@ -275,7 +348,7 @@ connection-options:
     
     # The amount of time the connection can be idle with no current requests 
     # before it is closed;
-    # Defaults to unlimited (-1).
+    # Defaults to unlimited (-1).
     NO_REQUEST_TIMEOUT: -1
 
     # The maximum number of query parameters that are permitted in a request. 

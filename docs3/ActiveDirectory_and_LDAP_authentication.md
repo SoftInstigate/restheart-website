@@ -1,14 +1,11 @@
 ---
 layout: docs
+title: ActiveDirectory and LDAP authentication 
 ---
-
-# ActiveDirectory and LDAP authentication
 
 * [Introduction](#introduction)
     * [Configuration](#configuration)
     * [Roles and Groups](#roles-and-groups)
-
-  
 
 ## Introduction
 

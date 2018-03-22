@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Resources Configuration
 ---
-
-# Resources Configuration
 
 * [Introduction](#introduction)
 * [Data resources](#data-resources)

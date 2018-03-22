@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: An example Web application with AngularJS
 ---
-
-# An example Web application with AngularJS
 
 * [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
 * [Ingredients](#ingredients)

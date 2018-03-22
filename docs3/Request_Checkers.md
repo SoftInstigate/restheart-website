@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Request Checkers
 ---
-
-# Request Checkers
 
 * [Introduction](#introduction)
 * [The <em>checkers</em> collection metadata](#the-checkerscollection-metadata)

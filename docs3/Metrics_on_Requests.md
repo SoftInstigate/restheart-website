@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Metrics on Requests
 ---
-
-# Metrics on Requests
 
 * [Introduction](#introduction)
 * [Formats](#formats)

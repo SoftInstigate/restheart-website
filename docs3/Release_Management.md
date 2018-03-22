@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Release Management
 ---
-
-# Release Management
 
 The project has one “master” where all the new code is committed
 (unreleased versions) while released versions are tagged on `master` and

@@ -1,8 +1,7 @@
 ---
+title: How to package custom code
 layout: docs
 ---
-
-# How to package custom code
 
 ## Introduction
 

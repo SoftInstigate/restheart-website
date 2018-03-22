@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Documentation
 ---
-
-# Contents
 
 -   [Installation and Setup](/docs3/Installation_and_Setup)
 -   [API tutorial](/docs3/API_tutorial)

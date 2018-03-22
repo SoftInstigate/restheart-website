@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: CORS Support
 ---
-
-# CORS Support
 
 * [Introduction](#introduction)
 * [CORS Support](#cors-support)

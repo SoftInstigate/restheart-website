@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Request Transformers
 ---
-
-# Request Transformers
 
 * [Introduction](#introduction)
 * [The <em>rts</em> collection metadata](#thertscollection-metadata)

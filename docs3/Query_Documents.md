@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Queries
 ---
-
-# Query Documents
 
 * [Introduction](#introduction)
     * [Example](#example)

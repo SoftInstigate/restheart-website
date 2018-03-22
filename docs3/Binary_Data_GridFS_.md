@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Binary Data (GridFS)
 ---
-
-# Binary Data (GridFS)
 
 Contents:
 

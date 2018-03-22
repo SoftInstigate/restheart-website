@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Resource URI
 ---
-
-# Resource URI
 
 * [Introduction](#introduction)
 * [Resources URIs](#resources-uris)

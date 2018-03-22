@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Write Requests
 ---
-
-# Write Requests
 
 * [Introduction](#introduction)
 * [Write verbs](#write-verbs)

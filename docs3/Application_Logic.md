@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Application Logic
 ---
-
-# Application Logic
 
 * [Introduction](#introduction)
 * [How to](#how-to)

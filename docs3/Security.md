@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Security
 ---
-
-# Security
 
 -   [Enable and Configure Security](/docs3/Enable_and_Configure_Security)
 -   [How Clients authenticate](/docs3/How_Clients_authenticate)

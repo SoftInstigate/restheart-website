@@ -1,7 +1,6 @@
 ---
 layout: docs
+title: Shard Keys
 ---
-
-# Shard Keys
 
 Work in progress

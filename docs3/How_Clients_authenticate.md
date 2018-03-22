@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: How Clients authenticate
 ---
-
-# How Clients authenticate
 
 * [Introduction](#introduction)
 * [Some examples** **](#some-examples-)

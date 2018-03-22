@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Performances
 ---
-
-# Performances
 
 * [Results](#results)
     * [Test case 1](#test-case-1)

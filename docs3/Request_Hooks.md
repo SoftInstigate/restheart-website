@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Request Hooks
 ---
-
-# Request Hooks
 
 * [Introduction](#introduction)
 * [The <em>hooks</em> collection metadata](#the-hooks-collection-metadata)

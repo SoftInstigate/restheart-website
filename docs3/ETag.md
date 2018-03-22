@@ -1,16 +1,13 @@
 ---
 layout: docs
+title: ETag
 ---
-
-# ETag
 
 * [Introduction](#introduction)
 * [ETag for write requests](#etag-for-write-requests)
 * [ETag for web caching](#etag-for-web-caching)
 * [ETag policy](#etag-policy)
 * [An example with AngularJs](#an-example-with-angularjs)
-
-
 
 ## Introduction
 

@@ -1,8 +1,7 @@
 ---
 layout: docs
+title: Aggregations
 ---
-
-# Aggregations
 
 * [Introduction](#introduction)
 * [The aggrs collection metadata](#theaggrscollection-metadata)

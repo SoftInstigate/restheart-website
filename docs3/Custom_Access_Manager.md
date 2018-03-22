@@ -1,5 +1,6 @@
 ---
 layout: docs
+title: Custom Access Manager
 ---
 
 * [Introduction](#introduction)
@@ -11,8 +12,6 @@ layout: docs
     * [Using the java classpath option](#using-the-java-classpath-option)
     * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
 * [Example](#example)
-
-# Custom Access Manager
 
 **/\*\*/ Introduction Develop The AM class Constructor Methods to
 implement How to add the custom classes to the classpath Using the java
