@@ -4,22 +4,22 @@ layout: page
 
 # Installation and Setup
 
--   [Quick-start](#quick-start)
-    -   [Docker](#docker)
-    -   [Vagrant](#vagrant)
-    -   [Bare metal](#baremetal)
--   [Run it on your host - what you need](#run-it-on-your-host)
-    -   [1. Install Java and MongoDB](#1-install-java-and-mongoDB)
-    -   [2. Install RESTHeart](#2-install-restheart)
-    -   [3. Start MongoDB](#3-start-mongodb)
-    -   [4. Start the RESTHeart server](#4-start-the-restheart-server)
-    -   [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
-        -   [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
-        -   [5.2. MongoDB authentication with just enough permissions ](#52-mongodb-authentication-with-just-enough-permissions)
-    -   [6. Clients Authentication and Authorization](#6-clients-authentication-and-authorization)
--   [Additional resources for beginners](#additional-resources-for-beginners)
+* [Quick-start](#quick-start)
+    * [Docker](#docker)
+    * [Vagrant](#vagrant)
+    * [Bare metal](#bare-metal)
+* [Run it on your host](#run-it-on-your-host)
+    * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
+    * [2. Install RESTHeart](#2-install-restheart)
+    * [3. Start MongoDB](#3-start-mongodb)
+    * [4. Start the RESTHeart server](#4-start-the-restheart-server)
+    * [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
+    * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
+    * [5.2. MongoDB authentication with just enough permissions ](#52-mongodb-authentication-with-just-enough-permissions)
+    * [6. Clients Authentication and Authorization](#6-clients-authentication-and-authorization)
+* [Additional resources for beginners](#additional-resources-for-beginners)
 
-# Quick-start
+## Quick-start
 
 ### Docker
 
@@ -49,7 +49,7 @@ you to update it to fit your purpose. Pull requests are welcome.
 
 Please follow the next sections for a full local installation.
 
-# Run it on your host
+## Run it on your host
 
 If you don’t have them already, please download the following packages:
 
@@ -59,7 +59,7 @@ If you don’t have them already, please download the following packages:
 
 Most of the work must be done using a command line interface. 
 
-## 1. Install Java and MongoDB
+### 1. Install Java and MongoDB
 
 Install [Java
 8](index) and [MongoDB](http://docs.mongodb.org/manual/installation/) following
@@ -83,7 +83,7 @@ db version v3.0.7
 
 RESTHeart has been tested with MongoDB version 3.2, 3.0, 2.6 and 2.4.
 
-## 2. Install RESTHeart
+### 2. Install RESTHeart
 
 To *install* RESTHeart just extract the content of
 the [dowloaded](https://github.com/SoftInstigate/RESTHeart/releases) package
@@ -94,7 +94,7 @@ You are interested in two files:
 -   `restheart.jar`
 -   `etc/restheart.yml` &lt;- an example configuration file
 
-## 3. Start MongoDB
+### 3. Start MongoDB
 
 In pursuit of simplicity we are first going to start MongoDB without
 enabling authentication. We’ll see later how to enable it.
@@ -117,7 +117,7 @@ child process started successfully, parent exiting
 By default MongoDB starts listening for connections on 127.0.0.1:27017. 
 ```
 
-## 4. Start the RESTHeart server
+### 4. Start the RESTHeart server
 
 Run the RESTHeart server by typing `java -server -jar restheart.jar`.
 
@@ -188,7 +188,7 @@ with it as you would any other JSON*.
 To see the HAL user interface, now open your browser
 at: [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
 
-## 5. Enable MongoDB authentication
+### 5. Enable MongoDB authentication
 
 This section assumes using MongoDB 3.2. For other versions, the security
 configuration is similar but different. Rrefer to the [MongoDB
@@ -258,7 +258,7 @@ enables the RESTHeart security. Opening the HAL browser page, you’ll be
 asked to authenticate. You can use of one of the credentials defined
 in `etc/security.yml` file (try username = ‘a’ and password = ‘a’).
 
-### 5.1 Connect RESTHeart to MongoDB over TLS/SSL
+#### 5.1 Connect RESTHeart to MongoDB over TLS/SSL
 
 MongoDB clients can use TLS/SSL to encrypt connections to mongod and
 mongos instances.
@@ -298,7 +298,7 @@ mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 $ java -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
 ```
 
-### 5.2. MongoDB authentication with just enough permissions 
+#### 5.2. MongoDB authentication with just enough permissions 
 
 In the previous examples we used a mongodb user with *root *role (or
 *clusterAdmin* and *dbAdminAnyDatabase* roles for version 2.4) for the
@@ -336,13 +336,13 @@ To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
 
-## 6. Clients Authentication and Authorization
+### 6. Clients Authentication and Authorization
 
 Refert to [Security](Security) section for detailed information about
 how enable, configure and customize clients authentication and
 authorization.
 
-# Additional resources for beginners
+## Additional resources for beginners
 
 There are some introductory articles about RESTHeart from
 [Compose.io](https://www.compose.com):

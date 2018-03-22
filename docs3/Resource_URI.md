@@ -4,18 +4,18 @@ layout: page
 
 # Resource URI
 
--   [Introduction](#ResourceURI-Introduction)
--   [Resources URIs](#ResourceURI-ResourcesURIs)
--   [Document id](#ResourceURI-Documentid)
-    -   [Some examples](#ResourceURI-Someexamples)
--   [mongo-mounts](#ResourceURI-mongo-mounts)
+* [Introduction](#introduction)
+* [Resources URIs](#resources-uris)
+* [Document id](#document-id)
+    * [Some examples](#some-examples)
+* [mongo-mounts](#mongo-mounts)
 
-# Introduction
+## Introduction
 
-This section explains the resource URI format, i.e. how the resources
+This page explains the resource URI format, i.e. how the resources
 are identified.
 
-# Resources URIs
+## Resources URIs
 
 <table>
 <colgroup>
@@ -94,7 +94,7 @@ are identified.
 </tbody>
 </table>
 
-# Document id
+## Document id
 
 In MongoDB, the \_id can be of any type. For instance, it can be an
 ObjectId, a String or even a JSON object, as in the following document:
@@ -127,7 +127,7 @@ value is a valid ObjectId.
 **\*\*** **STRING** is useful if the \_id value would be a valid
 ObjectId and it is actually a String.
 
-## Some examples
+### Some examples
 
 |                                                       |                                                   |
 |-------------------------------------------------------|---------------------------------------------------|
@@ -137,7 +137,7 @@ ObjectId and it is actually a String.
 | **/db/coll/54f77f0fc2e6ea386c0752a5**                 | { "\_id": { "$oid": "54f77f0fc2e6ea386c0752a5"} } |
 | **/db/coll/54f77f0fc2e6ea386c0752a5?id\_type=STRING** | { "\_id": "54f77f0fc2e6ea386c0752a5" }            |
 
-# mongo-mounts
+## mongo-mounts
 
 The `mongo-mounts` configuration options allows to bind MongoDB
 resources to URIs. The default configuration binds all MongoDB resource

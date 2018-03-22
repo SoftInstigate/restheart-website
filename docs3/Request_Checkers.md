@@ -4,17 +4,14 @@ layout: page
 
 # Request Checkers
 
--   [Introduction](#RequestCheckers-Introduction)
--   [The checkers collection
-    metadata](#RequestCheckers-Thecheckerscollectionmetadata)
--   [Checkers](#RequestCheckers-Checkers)
--   [Schema validation with checkContent
-    checker](#RequestCheckers-checkContentSchemavalidationwithcheckContentchecker)
-    -   [Json path expressions](#RequestCheckers-Jsonpathexpressions)
-    -   [Example](#RequestCheckers-Example)
--   [Limiting file size with
-    checkContentSize](#RequestCheckers-checkContentSizeLimitingfilesizewithcheckContentSize)
--   [Custom Checkers](#RequestCheckers-customCheckersCustomCheckers)
+* [Introduction](#introduction)
+* [The <em>checkers</em> collection metadata](#the-checkerscollection-metadata)
+* [Checkers](#checkers)
+* [Schema validation with checkContent checker](#schema-validation-with-checkcontent-checker)
+    * [Json path expressions](#json-path-expressions)
+    * [Example](#example)
+* [Limiting file size with checkContentSize](#limiting-file-size-with-checkcontentsize)
+* [Custom Checkers](#custom-checkers)
 
 ## Introduction
 

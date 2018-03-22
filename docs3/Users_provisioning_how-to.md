@@ -4,30 +4,21 @@ layout: page
 
 # Users provisioning how-to
 
--   [Steps](#Usersprovisioninghow-to-Steps)
-    -   [1. Configure RESTHeart to use
-        the DbIdentityManager](#Usersprovisioninghow-to-1.ConfigureRESTHearttousetheDbIdentityManager)
-    -   [2. Configure the mandatory security.yml
-        file](#Usersprovisioninghow-to-2.Configurethemandatorysecurity.ymlfile)
-    -   [3. Create the Javascript
-        file](#Usersprovisioninghow-to-3.CreatetheJavascriptfile)
-    -   [4. Create all the users via mongo
-        shell](#Usersprovisioninghow-to-4.Createalltheusersviamongoshell)
-    -   [5. Check the database and
-        collection](#Usersprovisioninghow-to-5.Checkthedatabaseandcollection)
-    -   [6. Start RESTHeart](#Usersprovisioninghow-to-6.StartRESTHeart)
-    -   [7. Check the admin's
-        roles](#Usersprovisioninghow-to-7.Checktheadmin'sroles)
-    -   [8. Replace the temporary
-        password](#Usersprovisioninghow-to-8.Replacethetemporarypassword)
-    -   [9. GET the final
-        document](#Usersprovisioninghow-to-9.GETthefinaldocument)
-    -   [10. Create another
-        user](#Usersprovisioninghow-to-10.Createanotheruser)
-    -   [11. Check the new
-        user](#Usersprovisioninghow-to-11.Checkthenewuser)
+* [Introduction ](#introduction)
+* [Steps](#steps)
+    * [1. Configure RESTHeart to use the DbIdentityManager](#1-configure-restheart-to-use-thedbidentitymanager)
+    * [2. Configure the mandatory security.yml file](#2-configure-the-mandatorysecurityyml-file)
+    * [3. Create the Javascript file](#3-create-the-javascript-file)
+    * [4. Create all the users via mongo shell](#4-create-all-the-users-via-mongo-shell)
+    * [5. Check the database and collection](#5-check-the-database-and-collection)
+    * [6. Start RESTHeart](#6-start-restheart)
+    * [7. Check the admin's roles](#7-check-the-admins-roles)
+    * [8. Replace the temporary password](#8-replace-the-temporary-password)
+    * [9. GET the final document](#9-get-the-final-document)
+    * [10. Create another user](#10-create-another-user)
+    * [11. Check the new user](#11-check-the-new-user)
 
- 
+## Introduction 
 
 RESTHeart offers a couple of options for authenticating users:
 

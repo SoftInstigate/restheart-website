@@ -4,12 +4,10 @@ layout: page
 
 # Request Hooks
 
--   [Introduction](#RequestHooks-Introduction)
--   [The hooks collection
-    metadata](#RequestHooks-Thehookscollectionmetadata)
--   [How to develop an Hook](#RequestHooks-HowtodevelopanHook)
--   [How to declare an Hook in the configuration
-    file](#RequestHooks-HowtodeclareanHookintheconfigurationfile)
+* [Introduction](#introduction)
+* [The <em>hooks</em> collection metadata](#the-hooks-collection-metadata)
+* [How to develop an Hook](#how-to-develop-an-hook)
+* [How to declare an Hook in the configuration file](#how-to-declare-an-hook-in-the-configuration-file)
 
 ## Introduction
 

@@ -4,13 +4,12 @@ layout: page
 
 # Relationships
 
--   [Introduction](#Relationships-Introduction)
--   [The rels collection
-    metadata](#Relationships-Therelscollectionmetadata)
--   [Examples](#Relationships-Examples)
-    -   [Tree of documents](#Relationships-Treeofdocuments)
-    -   [One-to-Many, owning](#Relationships-One-to-Many,owning)
-    -   [One-to-Many, inverse](#Relationships-One-to-Many,inverse)
+* [Introduction](#introduction)
+* [The <em>rels</em> collection metadata](#the-rels-collection-metadata)
+* [Examples](#examples)
+    * [Tree of documents](#tree-of-documents)
+    * [One-to-Many, owning](#one-to-many-owning)
+    * [One-to-Many, inverse](#one-to-many-inverse)
 
 ## Introduction
 

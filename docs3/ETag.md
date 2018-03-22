@@ -4,11 +4,13 @@ layout: page
 
 # ETag
 
--   [Introduction](#ETag-Introduction)
--   [ETag for write requests](#ETag-ETagforwriterequests)
--   [ETag for web caching](#ETag-ETagforwebcaching)
--   [ETag policy](#ETag-ETagpolicy)
--   [An example with AngularJs](#ETag-AnexamplewithAngularJs)
+* [Introduction](#introduction)
+* [ETag for write requests](#etag-for-write-requests)
+* [ETag for web caching](#etag-for-web-caching)
+* [ETag policy](#etag-policy)
+* [An example with AngularJs](#an-example-with-angularjs)
+
+
 
 ## Introduction
 

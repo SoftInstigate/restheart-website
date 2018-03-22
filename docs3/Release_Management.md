@@ -9,7 +9,7 @@ The project has one “master” where all the new code is committed
 then maintained in their own branches (named `1.0.x`, `1.1.x`, `1.2.x`,
 ….).
 
-### Process
+## Process
 
 1.  As soon as a minor release is finalized (e.g we released 2`.0.0`) we
     tag it on `master`

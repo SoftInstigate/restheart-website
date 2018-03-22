@@ -4,9 +4,9 @@ layout: page
 
 # CORS Support
 
--   [Introduction](#CORSSupport-Introduction)
--   [CORS Support](#CORSSupport-CORSSupport)
--   [Example](#CORSSupport-Example)
+* [Introduction](#introduction)
+* [CORS Support](#cors-support)
+* [Example](#example)
 
 ## Introduction
 

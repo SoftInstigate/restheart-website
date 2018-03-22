@@ -2,6 +2,16 @@
 layout: page
 ---
 
+* [Introduction](#introduction)
+* [Develop](#develop)
+    * [The AM class](#the-am-class)
+    * [Constructor](#constructor)
+    * [Methods to implement](#methods-to-implement)
+* [How to add the custom classes to the classpath](#how-to-add-the-custom-classes-to-the-classpath)
+    * [Using the java classpath option](#using-the-java-classpath-option)
+    * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
+* [Example](#example)
+
 # Custom Access Manager
 
 **/\*\*/ Introduction Develop The AM class Constructor Methods to

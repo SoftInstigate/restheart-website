@@ -4,22 +4,16 @@ layout: page
 
 # Aggregations
 
--   [Introduction](#Introduction)
--   [The aggrs collection
-    metadata](#aggrscollectionmetadata)
-    -   [aggragation pipeline metadata object
-        format](#Aggregations-aggragationpipelinemetadataobjectformat)
-    -   [mapReduce metadata object
-        format](#Aggregations-mapReducemetadataobjectformat)
--   [Examples](#Aggregations-Examples)
--   [Passing variables to aggregation
-    operations](#Aggregations-Passingvariablestoaggregationoperations)
-    -   [Variables in stages or
-        query](#Aggregations-Variablesinstagesorquery)
-    -   [Variables in map or reduce
-        functions](#Aggregations-Variablesinmaporreducefunctions)
+* [Introduction](#introduction)
+* [The aggrs collection metadata](#theaggrscollection-metadata)
+    * [aggragation pipeline metadata object format](#aggragation-pipeline-metadata-object-format)
+    * [mapReduce metadata object format](#mapreduce-metadata-object-format)
+* [Examples](#examples)
+* [Passing variables to aggregation operations](#passing-variables-to-aggregation-operations)
+    * [Variables in stages or query](#variables-in-stages-or-query)
+    * [Variables in map or reduce functions](#variables-in-map-or-reduce-functions)
 
-## Introduction<a name=""></a>
+## Introduction
 
 RESTHeart manages aggregation operations: both *aggregation pipelines*
 and *map reduce functions *are supported.
@@ -32,7 +26,7 @@ and *map reduce functions *are supported.
 In both cases only *inline* output type is supported, i.e. no result is
 written to the DB server.    
 
-## The *aggrs* collection metadata<a name=""></a>
+## The *aggrs* collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
@@ -48,7 +42,7 @@ operations but only those defined (and tested) by the developers.
 
 `aggrs` is an array of *pipeline* or *mapReduce *objects.
 
-### aggragation pipeline metadata object format<a name=""></a>
+### aggragation pipeline metadata object format
 
 **pipeline object format**
 
@@ -111,7 +105,7 @@ In RESTHeart 1.x, these escapes are not managed automatically: the
 developer had to explicitly use them; starting from version 2.0 this is
 not needed anymore.
 
-### mapReduce metadata object format<a name=""></a>
+### mapReduce metadata object format
 
 **mapReduce object format**
 
@@ -163,7 +157,7 @@ not needed anymore.
 </tbody>
 </table>
 
-## Examples<a name=""></a>
+## Examples
 
 The following requests upsert a collection  defining two aggregation
 operations:
@@ -218,7 +212,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-## Passing variables to aggregation operations<a name=""></a>
+## Passing variables to aggregation operations
 
 The query parameter `avars` allows to pass variables to the aggregation
 operations.
@@ -252,7 +246,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-### Variables in stages or query<a name=""></a>
+### Variables in stages or query
 
 Variables can be used in aggregation pipeline stages and map reduce
 query as follows:
@@ -272,7 +266,7 @@ variable *n:*
 }
 ```
 
-### Variables in map or reduce functions<a name=""></a>
+### Variables in map or reduce functions
 
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:

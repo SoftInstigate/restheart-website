@@ -4,13 +4,12 @@ layout: page
 
 # Speedup Requests with Cursor Pools
 
--   [Introduction](#SpeedupRequestswithCursorPools-Introduction)
--   [How it works](#SpeedupRequestswithCursorPools-Howitworks)
--   [Request
-    parameters](#SpeedupRequestswithCursorPools-Requestparameters)
--   [Configuration](#SpeedupRequestswithCursorPools-Configuration)
--   [Consideration on concurrent
-    insertions](#SpeedupRequestswithCursorPools-Considerationonconcurrentinsertions)
+* [Introduction](#introduction)
+* [How it works](#how-it-works)
+* [Request parameters](#request-parameters)
+* [Configuration](#configuration)
+* [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
+* [Attachments:](#attachments)
 
 ## Introduction
 

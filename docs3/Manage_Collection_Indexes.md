@@ -4,6 +4,13 @@ layout: page
 
 # Manage Collection Indexes
 
+* [Introduction](#introduction)
+* [List the collection indexes](#list-the-collection-indexes)
+* [Create an index](#create-an-index)
+* [<strong>Delete an index</strong>](#delete-an-index)
+* [<strong>Notes</strong>](#notes)
+    * [**Invalid options **](#invalid-options)
+
 ## Introduction
 
 Use the `/db/coll/_indexes` resource to manage the indexes of the

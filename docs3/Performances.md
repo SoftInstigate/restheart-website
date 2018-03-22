@@ -4,18 +4,16 @@ layout: page
 
 # Performances
 
--   [Results](#Performances-Results)
-    -   [Test case 1](#Performances-Testcase1)
-    -   [Test case 2](#Performances-Testcase2)
-    -   [Test case 3](#Performances-Testcase3)
-    -   [Test case 4](#Performances-Testcase4)
--   [How we tested](#Performances-Howwetested)
-    -   [Hardware](#Performances-Hardware)
-    -   [Software](#Performances-Software)
-    -   [Configurations](#Performances-Configurations)
-    -   [Test cases](#Performances-Testcases)
-
- 
+* [Results](#results)
+    * [Test case 1](#test-case-1)
+* [Test case 2](#test-case-2)
+    * [Test case 3](#test-case-3)
+    * [Test case 4](#test-case-4)
+* [How we tested](#how-we-tested)
+    * [Hardware](#hardware)
+    * [Software](#software)
+    * [Configurations](#configurations)
+    * [Test cases](#test-cases)
 
 RESTHeart has been designed and developed with lightness and
 performances as fundamental parameters. On this regards, also thanks to
@@ -26,9 +24,9 @@ This section includes the performance test results gathered by the
 SoftInstigate’s development team and includes all the information needed
 to autonomously reproduce the tests.
 
-# Results
+## Results
 
-## Test case 1
+### Test case 1
 
 Measure the execution time to create **1 million documents** with random
 data, using **200 test threads.**
@@ -63,7 +61,7 @@ direct access via MongoDB driver:
 | **RESTHeart** |  78s|  82s|  78s|  76s|   76s|   76s|
 | **Direct**    |  97s|  95s|  96s|  96s|  109s|  112s|
 
-## Test case 3
+### Test case 3
 
 Measure the execution time to **query a collection 2.000 times**,
 getting 5 documents each time (limit 5) and skipping just 250.000
@@ -83,7 +81,7 @@ with RESTHeart:
 | **RESTHeart** | 16,28s | 6,22s | 5,05s | 2,53s | 3,76s | 3,6s | 2,98s | 5,65s | 9,04s | 10,74s | 6,76s | 9,24s | 6,76s | 12,71s |
 | **Direct**    |  1091s |  627s |  324s |  328s |  329s | 325s |  324s |  321s |  321s |  304s  |  302s |  305s |  327s |  327s  |
 
-## Test case 4
+### Test case 4
 
 Measure the execution time to **query a collection 500 times**, getting
 5 documents each time (limit 5) skipping more and more documents each
@@ -105,9 +103,9 @@ scenario) with RESTHeart.
 | **RESTHeart** | 2,6s | 1,91s | 1,9s | 1,88s | 1,58s | 2,05s | 1,51s | 1,52s | 1,51s |
 | **Direct**    |  79s |  156s | 242s |  317s |  375s |  453s |  558s |  601s |  713s |
 
-# How we tested
+## How we tested
 
-## Hardware
+### Hardware
 
 MongoDB and RESTHeart running on Sunfire X2200 M2 with 2 CPU with 16
 Gbyte of RAM. See full
@@ -120,14 +118,14 @@ GB 1067 MHz DDR3
 The client and the server on the same local network linked by a 10/100
 Ethernet switch.
 
-## Software
+### Software
 
 -   **Server OS**: Ubuntu server 64bit 14.04.1 LTS
 -   **Client OS**: Mac OS X Yosemite 10.10.1
 -   **MongoDB**: 2.6.7
 -   **RESTHeart**: commit 01d403a5db8b765ad5b0a8eec1fda420c392ab58
 
-## Configurations
+### Configurations
 
 **MongoDB**: run (without authentication enabled) with the following
 command
@@ -143,7 +141,7 @@ $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 -   io-threads: 8 
 -   worker-threads: 64 
 
-## Test cases
+### Test cases
 
 We used the brilliant [load test
 tool](https://github.com/bazhenov/load-test-tool).

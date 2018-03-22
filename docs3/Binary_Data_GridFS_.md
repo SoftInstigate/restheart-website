@@ -6,18 +6,15 @@ layout: page
 
 Contents:
 
--   [Introduction](#BinaryData(GridFS)-Introduction)
--   [Specifications](#BinaryData(GridFS)-Specifications)
--   [Using curl](#BinaryData(GridFS)-Usingcurl)
-    -   [POST a binary file with
-        curl](#BinaryData(GridFS)-POSTabinaryfilewithcurl)
-    -   [Uploading files with
-        PUT](#BinaryData(GridFS)-UploadingfileswithPUT)
-    -   [The "properties"
-        part](#BinaryData(GridFS)-The%22properties%22part)
-    -   [GET a binary file with
-        curl](#BinaryData(GridFS)-GETabinaryfilewithcurl)
--   [Using httpie](#BinaryData(GridFS)-Usinghttpie)
+* [Introduction](#introduction)
+* [Specifications](#specifications)
+* [Using curl](#using-curl)
+    * [POST a binary file with curl](#post-a-binary-file-with-curl)
+    * [Uploading files with PUT](#uploading-files-with-put)
+    * [The "properties" part](#the-properties-part)
+    * [GET a binary file with curl](#get-a-binary-file-with-curl)
+* [Using httpie](#using-httpie)
+* [Attachments:](#attachments)
 
 ## Introduction
 

@@ -4,10 +4,13 @@ layout: page
 
 # Resources Configuration
 
--   [Data resources](#ResourcesConfiguration-Dataresources)
-    -   [Some examples](#ResourcesConfiguration-Someexamples)
--   [Static resources](#ResourcesConfiguration-Staticresources)
--   [Application logic](#ResourcesConfiguration-Applicationlogic)
+* [Introduction](#introduction)
+* [Data resources](#data-resources)
+    * [Some examples](#some-examples)
+* [Static resources](#static-resources)
+* [Application logic](#application-logic)
+
+## Introduction
 
 RESTHeart not only exposes **data**, but also serves **static
 resources** and **custom application logic**. Everything goes through

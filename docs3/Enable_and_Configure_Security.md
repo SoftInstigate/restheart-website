@@ -4,18 +4,16 @@ layout: page
 
 # Enable and Configure Security
 
--   [Introduction](#EnableandConfigureSecurity-Introduction)
-    -   [How to use the default self signed
-        certificate ](#EnableandConfigureSecurity-Howtousethedefaultselfsignedcertificate)
-    -   [How to use a valid
-        certificate](#EnableandConfigureSecurity-Howtouseavalidcertificate)
-    -   [Configuration](#EnableandConfigureSecurity-Configuration)
-    -   [SimpleFileIdentityManager](#EnableandConfigureSecurity-SimpleFileIdentityManager)
-    -   [DbIdentityManager](#EnableandConfigureSecurity-DbIdentityManager)
-    -   [Configuration](#EnableandConfigureSecurity-Configuration.1)
-    -   [SimpleAccessManager](#EnableandConfigureSecurity-SimpleAccessManager)
-        -   [Specify Permission on URI Remapped
-            Resources](#EnableandConfigureSecurity-SpecifyPermissiononURIRemappedResources)
+* [Introduction](#introduction)
+    * [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
+    * [How to use a valid certificate](#how-to-use-a-valid-certificate)
+    * [Configuration](#configuration)
+    * [SimpleFileIdentityManager](#simplefileidentitymanager)
+    * [DbIdentityManager](#dbidentitymanager)
+    * [Configuration](#configuration-1)
+    * [SimpleAccessManager](#simpleaccessmanager)
+    * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
+* [Attachments:](#attachments)
 
 ## Introduction
 

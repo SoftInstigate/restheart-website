@@ -2,6 +2,16 @@
 layout: page
 ---
 
+* [Introduction](#introduction)
+* [Develop](#develop)
+    * [The IDM class](#the-idm-class)
+    * [Methods to implement](#methods-to-implement)
+* [Configuration](#configuration)
+* [Add custom classes to the classpath](#add-custom-classes-to-the-classpath)
+    * [Using the java classpath option](#using-the-java-classpath-option)
+    * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
+* [Example](#example)
+
 # Custom Identity Manager
 
 **/\*\*/ Introduction Develop The IDM class Methods to implement

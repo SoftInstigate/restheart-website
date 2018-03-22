@@ -4,7 +4,16 @@ layout: page
 
 # Metrics on Requests
 
-# Introduction
+* [Introduction](#introduction)
+* [Formats](#formats)
+    * [using restheart rep query parameter](#using-restheart-rep-query-parameter)
+    * [using HTTP content negoatiation](#using-http-content-negoatiation)
+* [Configuration options](#configuration-options)
+* [Reading data](#reading-data)
+* [Examples](#examples)
+
+
+## Introduction
 
 Gathering metrics about your production (and staging) environments can
 give you valuable knowledge about your infrastructure. Not only do
@@ -71,7 +80,7 @@ If metrics are not configured to be collected at the given level, the
 endpoint will return `404 NOT FOUND`. Each upper level contains all the
 information from the deeper levels, aggregated.
 
-# Examples
+## Examples
 
 Note the structure of the response fields: the field names are related
 to the type of the query (e.g. `METRICS`, `DATABASE`, `COLLECTION`,

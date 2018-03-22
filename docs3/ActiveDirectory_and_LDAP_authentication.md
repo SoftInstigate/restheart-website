@@ -4,13 +4,13 @@ layout: page
 
 # ActiveDirectory and LDAP authentication
 
--   [Introduction](#Introduction)
-    -   [Configuration](#Configuration)
-    -   [Roles/Groups](#RolesGroups)
+* [Introduction](#introduction)
+    * [Configuration](#configuration)
+    * [Roles and Groups](#roles-and-groups)
 
   
 
-## Introduction<a name="Introduction"></a>
+## Introduction
 
 A simple implementation of LDAP authentication has been provided and can
 be specified in the configuration file.  Written for use in an
@@ -26,7 +26,7 @@ has not been thoroughly scrutinized by any security professional, and I
 am not an expert in authentication. If you see improvements that can be
 made, please don't hesitate to bring them to our attention.
 
-### Configuration<a name="Configuration"></a>
+### Configuration
 
 In restheart.yml, update the idm implementation-class to use
 ADIdentityManager:
@@ -64,7 +64,7 @@ of "john", the following attempts would be made (in this order):
 In many cases, only one domain controller or principal name suffix are
 needed.  
 
-### Roles/Groups<a name="RolesGroups"></a>
+### Roles and Groups
 
 Once authenticated, the group memberships of the user will be retrieved
 and used by the Access Manager to determine authorization of actions on

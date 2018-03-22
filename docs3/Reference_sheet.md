@@ -4,16 +4,16 @@ layout: page
 
 # Reference sheet
 
--   [Root resource](#Referencesheet-Rootresource)
--   [Database](#Referencesheet-Database)
--   [Collection](#Referencesheet-Collection)
--   [Indexes](#Referencesheet-Indexes)
--   [Index](#Referencesheet-Index)
--   [Document](#Referencesheet-Document)
--   [File buckets](#Referencesheet-Filebuckets)
--   [File](#Referencesheet-File)
--   [Schema store](#Referencesheet-Schemastore)
--   [Schema](#Referencesheet-Schema)
+* [Root resource](#root-resource)
+* [Database](#database)
+* [Collection](#collection)
+* [Indexes](#indexes)
+* [Index](#index)
+* [Document](#document)
+* [File buckets](#file-buckets)
+* [File](#file)
+* [Schema store](#schema-store)
+* [Schema](#schema)
 
 ## Root resource
 

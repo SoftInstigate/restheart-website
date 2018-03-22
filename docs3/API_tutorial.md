@@ -4,15 +4,13 @@ layout: page
 
 # API tutorial
 
--   [Start MongoDB and RESTHeart](#APItutorial-StartMongoDBandRESTHeart)
--   [Create a Database ](#APItutorial-CreateaDatabase)
--   [Create a Collection](#APItutorial-CreateaCollection)
--   [Create two Documents](#APItutorial-CreatetwoDocuments)
--   [Get all Documents from the
-    Collection](#APItutorial-GetallDocumentsfromtheCollection)
--   [GET Document by URL (by id)](#APItutorial-GETDocumentbyURL(byid))
--   [Query documents by name property (using Collection
-    filter) ](#APItutorial-Querydocumentsbynameproperty(usingCollectionfilter))
+* [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
+* [Create a Database ](#create-a-database)
+* [Create a Collection](#create-a-collection)
+* [Create two Documents](#create-two-documents)
+* [Get all Documents from the Collection](#get-all-documents-from-the-collection)
+* [GET Document by URL (by id)](#get-document-by-url-by-id)
+* [Query documents by name property (using Collection filter) ](#query-documents-by-name-property-using-collection-filter)
 
  
 

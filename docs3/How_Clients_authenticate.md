@@ -4,15 +4,12 @@ layout: page
 
 # How Clients authenticate
 
--   [Introduction](#HowClientsauthenticate-Introduction)
--   [Some examples](#HowClientsauthenticate-Someexamples)
--   [Basic Authentication for
-    dummies](#HowClientsauthenticate-BasicAuthenticationfordummies)
--   [Authentication Token](#HowClientsauthenticate-AuthenticationToken)
-    -   [Suggested way to check credentials and obtain user’s
-        roles](#HowClientsauthenticate-Suggestedwaytocheckcredentialsandobtainuser’sroles)
--   [How to avoid the basic authentication popup in
-    browsers](#HowClientsauthenticate-Howtoavoidthebasicauthenticationpopupinbrowsers)
+* [Introduction](#introduction)
+* [Some examples** **](#some-examples-)
+* [Basic Authentication for dummies](#basic-authentication-for-dummies)
+* [Authentication Token](#authentication-token)
+    * [Suggested way to check credentials and obtain user’s roles](#suggested-way-to-check-credentials-and-obtain-users-roles)
+* [How to avoid the basic authentication popup in browsers](#how-to-avoid-the-basic-authentication-popup-in-browsers)
 
 ## Introduction
 

@@ -4,37 +4,29 @@ layout: page
 
 # An example Web application with AngularJS
 
--   [Ingredients](#AnexampleWebapplicationwithAngularJS1.x-Ingredients)
--   [Introduction](#AnexampleWebapplicationwithAngularJS1.x-Introduction)
--   [Goals](#AnexampleWebapplicationwithAngularJS1.x-Goals)
--   [Getting the servers up and
-    running](#AnexampleWebapplicationwithAngularJS1.x-Gettingtheserversupandrunning)
--   [Creating the data
-    structure](#AnexampleWebapplicationwithAngularJS1.x-Creatingthedatastructure)
--   [The Web
-    client](#AnexampleWebapplicationwithAngularJS1.x-TheWebclient)
--   [Understanding the Web
-    client](#AnexampleWebapplicationwithAngularJS1.x-UnderstandingtheWebclient)
-    -   [Application initialization and
-        configuration](#AnexampleWebapplicationwithAngularJS1.x-Applicationinitializationandconfiguration)
-    -   [Authentication](#AnexampleWebapplicationwithAngularJS1.x-Authentication)
-    -   [Getting, Posting, and Deleting
-        Notes](#AnexampleWebapplicationwithAngularJS1.x-Getting,Posting,andDeletingNotes)
-        -   [Notes
-            list](#AnexampleWebapplicationwithAngularJS1.x-Noteslist)
-        -   [Creating a new
-            note](#AnexampleWebapplicationwithAngularJS1.x-Creatinganewnote)
-        -   [Updating and Deleting a
-            note](#AnexampleWebapplicationwithAngularJS1.x-UpdatingandDeletinganote)
--   [Stopping and
-    restarting](#AnexampleWebapplicationwithAngularJS1.x-Stoppingandrestarting)
--   [Conclusions](#AnexampleWebapplicationwithAngularJS1.x-Conclusions)
--   [References](#AnexampleWebapplicationwithAngularJS1.x-References)
+* [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
+* [Ingredients](#ingredients)
+* [Introduction](#introduction)
+* [Goals](#goals)
+* [Getting the servers up and running](#getting-the-servers-up-and-running)
+* [Creating the data structure](#creating-the-data-structure)
+* [The Web client](#the-web-client)
+* [Understanding the Web client](#understanding-the-web-client)
+    * [Application initialization and configuration](#application-initialization-and-configuration)
+    * [Authentication](#authentication)
+    * [Getting, Posting, and Deleting Notes](#getting-posting-and-deleting-notes)
+    * [Notes list](#notes-list)
+    * [Creating a new note](#creating-a-new-note)
+    * [Updating and Deleting a note](#updating-and-deleting-a-note)
+* [Stopping and restarting](#stopping-and-restarting)
+* [Conclusions](#conclusions)
+* [References](#references)
+* [Attachments:](#attachments)
 
 Please provide us with your feedback, so that we can improve this
 tutorial.
 
-# Web API in action with AngularJS, RESTHeart and MongoDB
+## Web API in action with AngularJS, RESTHeart and MongoDB
 
 Imagine the following scenario: you want to develop a Web application on
 top of a data model, following simple CRUD operations. Data can be

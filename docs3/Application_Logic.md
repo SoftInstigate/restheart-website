@@ -4,13 +4,13 @@ layout: page
 
 # Application Logic
 
--   [Introduction](#Introduction)
--   [How to](#Howto)
--   [Examples](#Examples)
-    -   [PingHandler](#PingHandler)
-    -   [Aggregation query](#AggregationHandler)
+* [Introduction](#introduction)
+* [How to](#how-to)
+* [Examples](#examples)
+    * [PingHandler](#pinghandler)
+    * [Aggregation query](#aggregation-query)
 
-## Introduction<a name="Introduction"></a>
+## Introduction
 
 RESTHeart has a pipeline architecture where specialized [undertow
 handlers](http://undertow.io/undertow-docs/undertow-docs-2.0.0/undertow-handler-guide.html) are
@@ -19,7 +19,7 @@ chained together to serve the requests.
 In order to provide additional application logic, custom handlers can be
 bound under the /\_logic URL.
 
-## How to<a name="Howto"></a>
+## How to
 
 The custom handler must extend the
 class `org.restheart.handlers.applicationlogic.ApplicationLogicHandler.`
@@ -101,7 +101,7 @@ The following table describes the configuration options:
 </tbody>
 </table>
 
-## Examples<a name="Examples"></a>
+## Examples
 
 The class(es) that implements the custom ApplicationHandler must be
 added to the java classpath.
@@ -113,7 +113,7 @@ start RESTHeart with the following command:
 
     $ java -server -classpath restheart.jar:custom-handler.jar org.restheart.Bootstrapper restheart.yml
 
-### PingHandler<a name="PingHandler"></a>
+### PingHandler
 
 The following is the code of the simple PingHandler that implements a
 simple ping service.
@@ -164,7 +164,7 @@ public class PingHandler extends ApplicationLogicHandler {
 }
 ```
 
- Configuration:
+Configuration:
 
 ``` plain
 application-logic-mounts:
@@ -175,7 +175,7 @@ application-logic-mounts:
           msg: "ciao from the restheart team"
 ```
 
-### Aggregation query<a name="AggregationHandler"></a>
+### Aggregation query
 
 The following example shows how to use the ApplicationHandler to run an
 aggregation query.

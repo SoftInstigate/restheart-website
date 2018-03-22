@@ -6,17 +6,13 @@ layout: page
 
 **WORK IN PROGRESS**
 
--   need to update this section for new plain json representation format
-
--   [Hypermedia Application
-    Language](#RepresentationFormat-HypermediaApplicationLanguage)
--   [Strict mode representations of
-    BSON](#RepresentationFormat-StrictmoderepresentationsofBSON)
--   [Hal mode](#RepresentationFormat-Halmode)
--   [Examples](#RepresentationFormat-Examples)
--   [Properties](#RepresentationFormat-Properties)
--   [Embedded resources](#RepresentationFormat-Embeddedresources)
--   [Links](#RepresentationFormat-Links)
+* [Hypermedia Application Language](#hypermedia-application-language)
+* [Strict mode representations of BSON](#strict-mode-representations-of-bson)
+* [Hal mode](#hal-mode)
+* [Examples](#examples)
+* [Properties](#properties)
+* [Embedded resources](#embedded-resources)
+* [Links](#links)
 
 Following the REST mantra, you *transfer* resource *states* back and
 forth by the means of *representations*.

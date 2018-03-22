@@ -4,8 +4,6 @@ layout: page
 
 # How to package custom code
 
--   [Introduction](#Howtopackagecustomcode-Introduction)
-
 ## Introduction
 
 You can extend RESTHeart by implementing custom extensions, such as
@@ -30,5 +28,3 @@ To add RESTHeart dependency to your pom.xml, just add this:
     <version>3.2.0</version>
 </dependency>
 ```
-
-  

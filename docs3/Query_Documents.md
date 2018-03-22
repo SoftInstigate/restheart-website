@@ -4,40 +4,30 @@ layout: page
 
 # Query Documents
 
--   [Introduction](#QueryDocuments-Introduction)
-    -   [Example](#QueryDocuments-Example)
-    -   [Default sorting](#QueryDocuments-Defaultsorting)
--   [Filtering](#QueryDocuments-filteringFiltering)
-    -   [Examples](#QueryDocuments-Examples)
-        -   [Return documents whose title starts with "Star
-            Trek"](#QueryDocuments-Returndocumentswhosetitlestartswith%22StarTrek%22)
-        -   [Return documents whose title starts with "Star Trek"
-            and publishing\_date is later than 4/9/2015,
-            8AM](#QueryDocuments-Returndocumentswhosetitlestartswith%22StarTrek%22andpublishing_dateislaterthan4/9/2015,8AM)
--   [Counting](#QueryDocuments-countingCounting)
--   [Paging](#QueryDocuments-pagingPaging)
--   [Sorting](#QueryDocuments-sortingSorting)
-    -   [sort simple format](#QueryDocuments-sortsimpleformat)
-    -   [sort JSON expression
-        format](#QueryDocuments-sortJSONexpressionformat)
-    -   [Examples](#QueryDocuments-Examples.1)
-        -   [Sort by the date
-            ascending](#QueryDocuments-Sortbythedateascending)
-        -   [Sort by
-            the date descending](#QueryDocuments-Sortbythedatedescending)
-        -   [Sort by the date descending and title
-            ascending ](#QueryDocuments-Sortbythedatedescendingandtitleascending)
-        -   [Sort by search score](#QueryDocuments-Sortbysearchscore)
--   [Projection](#QueryDocuments-projectionProjection)
-    -   [Examples](#QueryDocuments-Examples.2)
-        -   [Only return the property
-            title](#QueryDocuments-Onlyreturnthepropertytitle)
-        -   [Return all but the
-            property title](#QueryDocuments-Returnallbutthepropertytitle)
-        -   [Only return the properties title and
-            summary](#QueryDocuments-Onlyreturnthepropertiestitleandsummary)
+* [Introduction](#introduction)
+    * [Example](#example)
+    * [Default sorting](#default-sorting)
+* [Filtering](#filtering)
+    * [Examples](#examples)
+    * [Return documents whose title starts with "Star Trek"](#return-documents-whosetitlestarts-with-star-trek)
+    * [Return documents whose title starts with "Star Trek" and <code>publishing_date </code>is later than 4/9/2015, 8AM](#return-documents-whosetitlestarts-with-star-trek-andpublishing_dateis-later-than-492015-8am)
+* [Counting](#counting)
+* [Paging](#paging)
+* [Sorting](#sorting)
+    * [Sort simple format](#sort-simple-format)
+    * [Sort JSON expression format](#sort-json-expression-format)
+    * [Examples](#examples-1)
+    * [Sort by the <em>date</em> ascending](#sort-by-thedate-ascending)
+    * [Sort by the <em>date</em> descending](#sort-by-thedatedescending)
+    * [Sort by the <em>date</em> descending and title ascending ](#sort-by-thedatedescending-and-title-ascending)
+    * [Sort by search score](#sort-by-search-score)
+* [Projection](#projection)
+    * [Examples](#examples-2)
+    * [Only return the property title](#only-return-the-property-title)
+    * [Return all but the property <em>title</em>](#return-all-but-the-propertytitle)
+    * [Only return the properties <em>title</em> and <em>summary</em>](#only-return-the-propertiestitle-and-summary)
 
-# Introduction
+## Introduction
 
 In RESTHeart, `GET` collection resource requests
 (`GET /db/coll`) retrieve documents from the collection as embedded
@@ -51,7 +41,7 @@ Format](Representation_Format) for more information about HAL.
 This section also applies to File Bucket and Schema Store resources,
 that embed File and JSON schema resources respectively.
 
-## Example
+### Example
 
 To retrieve the first 100 documents of a collection:
 
@@ -82,7 +72,7 @@ Excluding collection properties
 The query parameter **`np`** (No Properties) excludes the collection
 properties from the response.
 
-## Default sorting
+### Default sorting
 
 The default sorting of the documents is by the **`_id` descending**.
 
@@ -104,7 +94,7 @@ To disable default sorting just add the `sort={}` query parameter 
 See the [sorting](#QueryDocuments-sorting) section to know how to
 specify different sorting criteria.
 
-# Filtering
+## Filtering
 
 The **`filter`** query parameter allows to specify conditions on the
 documents to be returned.
@@ -115,9 +105,9 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
-## Examples
+### Examples
 
-### Return documents whose `title` starts with "Star Trek"
+#### Return documents whose `title` starts with "Star Trek"
 
 ``` plain
 GET /test/coll?filter={'title':{'$regex':'(?i)^STAR TREK.*'}}
@@ -128,7 +118,7 @@ mongodb [$regex](http://docs.mongodb.org/manual/reference/operator/query/regex/
 where the *i* option performs a case-insensitive match for documents
 with title value that starts with the string "STAR TREK".
 
-### Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM
+#### Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM
 
 ``` js
 GET /test/coll?filter={'$and':[{'title':{'$regex':'(?i)^STAR TREK.*'},{'publishing_date':{'$gte':{'$date':'2015-09-04T08:00:00Z'}}}]}
@@ -156,7 +146,7 @@ username:
 
     regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]
 
-# Counting
+## Counting
 
 Specifying the *count* query parameter (e.g. `?count=true` ), RESTHeart
 returns:
@@ -177,7 +167,7 @@ Impact on performances
 and once of actually retrieving the data; this has performance
 implications!
 
-# Paging
+## Paging
 
 Embedded documents are always paginated, i.e. only a subset of the
 collection's document is returned on each request.
@@ -216,14 +206,14 @@ HTTP/1.1 200 OK
 }
 ```
 
-# Sorting
+## Sorting
 
 Sorting is controlled by the `sort `query parameter.
 
 Note that documents cannot be sorted by system properties (properties
 starting with \_ that are managed automatically by RESTHeart).
 
-## sort simple format
+### Sort simple format
 
 The `sort `simplified format is :
 
@@ -239,7 +229,7 @@ Specify multiple sort options using multiple `sort` query parameters
 GET /db/coll?sort=name&sort=-age
 ```
 
-## sort JSON expression format
+### Sort JSON expression format
 
 `sort` can also be a MongoDB [sort
 expression](https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort).
@@ -251,7 +241,7 @@ improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 sort={"field": 1}
 ```
 
-## Examples
+### Examples
 
 ### Sort by the *date* ascending
 
@@ -261,7 +251,7 @@ GET /test/coll?sort=date
 GET /test/coll?sort={"date":1}
 ```
 
-### Sort by the *date* descending
+#### Sort by the *date* descending
 
 ``` js
 GET /test/coll?sort=-date
@@ -269,7 +259,7 @@ GET /test/coll?sort=-date
 GET /test/coll?sort={"date":-1}
 ```
 
-### Sort by the *date* descending and title ascending 
+#### Sort by the *date* descending and title ascending 
 
 ``` js
 GET /test/coll?sort=-date&sort=title
@@ -277,7 +267,7 @@ GET /test/coll?sort=-date&sort=title
 GET /test/coll?sort={"date":-1, "title":1}
 ```
 
-### Sort by search score
+#### Sort by search score
 
 This is only possible with json expression format
 
@@ -289,7 +279,7 @@ PUT /test/coll/_indexes/text {"keys": {"title": "text }}
 GET /test/coll?filter={"$text":{"$search":"a search string"}}&keys={"title":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
 ```
 
-# Projection
+## Projection
 
 Projection limits the fields to return for all matching documents,
 specifying the inclusion or the exclusion of fields.
@@ -303,21 +293,21 @@ projecting multiple keys
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
-## Examples
+### Examples
 
-### Only return the property title
+#### Only return the property title
 
 ``` js
 GET /test/coll?keys={'title':1}
 ```
 
-### Return all but the property *title*
+#### Return all but the property *title*
 
 ``` js
 GET /test/coll?keys={'title':0}
 ```
 
-### Only return the properties *title* and *summary*
+#### Only return the properties *title* and *summary*
 
 ``` js
 GET /test/coll?keys={'title':1}&keys={'summary':1}

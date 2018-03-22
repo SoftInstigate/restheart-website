@@ -4,12 +4,10 @@ layout: page
 
 # Document validation with JSON schema
 
--   [Introduction](#DocumentvalidationwithJSONschema-Introduction)
--   [The Schema Store and Schema
-    resources](#DocumentvalidationwithJSONschema-TheSchemaStoreandSchemaresources)
--   [Document
-    validation](#DocumentvalidationwithJSONschema-Documentvalidation)
--   [Example](#DocumentvalidationwithJSONschema-Example)
+* [Introduction](#introduction)
+* [The Schema Store and Schema resources](#the-schema-store-and-schema-resources)
+* [Document validation](#document-validation)
+* [Example](#example)
 
 ## Introduction
 

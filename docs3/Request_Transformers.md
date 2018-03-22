@@ -4,17 +4,12 @@ layout: page
 
 # Request Transformers
 
--   [Introduction](#RequestTransformers-Introduction)
--   [The rts collection
-    metadata](#RequestTransformers-Thertscollectionmetadata)
--   [Available and Custom
-    Transformers](#RequestTransformers-AvailableandCustomTransformers)
--   [Inject properties with addRequestProperties
-    transformer](#RequestTransformers-addRequestPropertiesInjectpropertieswithaddRequestPropertiestransformer)
--   [Filter out properties with filterProperties
-    transformer](#RequestTransformers-filterPropertiesFilteroutpropertieswithfilterPropertiestransformer)
--   [Custom
-    Transformers](#RequestTransformers-customTransformersCustomTransformers)
+* [Introduction](#introduction)
+* [The <em>rts</em> collection metadata](#thertscollection-metadata)
+* [Available and Custom Transformers](#available-and-custom-transformers)
+* [Inject properties with addRequestProperties transformer](#inject-properties-withaddrequestproperties-transformer)
+* [Filter out properties with <em>filterProperties</em> transformer](#filter-out-properties-withfilterproperties-transformer)
+* [Custom Transformers](#custom-transformers)
 
 ## Introduction
 

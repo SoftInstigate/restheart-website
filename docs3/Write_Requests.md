@@ -4,10 +4,16 @@ layout: page
 
 # Write Requests
 
-/\*\*/ Introduction Write verbs Dot notation Array Embedded Documents
-Update operators Bulk Write Requests POST an array of documents PATCH
-multiple documents using the wildcard document id DELETE multiple
-documents using the wildcard document id
+* [Introduction](#introduction)
+* [Write verbs](#write-verbs)
+* [Dot notation](#dot-notation)
+    * [Array](#array)
+    * [Embedded Documents](#embedded-documents)
+* [Update operators](#update-operators)
+* [Bulk Write Requests](#bulk-write-requests)
+    * [POST an array of documents](#post-an-array-of-documents)
+    * [PATCH multiple documents using the wildcard document id](#patch-multiple-documents-using-the-wildcard-document-id)
+    * [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
 
 ## Introduction
 
