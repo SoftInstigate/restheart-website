@@ -38,7 +38,7 @@ to be applied to the requests involving the documents of the collection.
 *checkers* is an array of *`checker`* objects. A *checker* object has
 the following format:
 
-``` js
+``` json
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
 
@@ -98,14 +98,14 @@ enforce a schema to the documents of a collection.
 The schema definition is passed via the checker metadata args property
 as an array of conditions. A condition has the following format
 
-``` js
+``` json
 { "path": <json_path>, "type": <property_type>, "regex": <regex>, "nullable": boolean, "optional": boolean }
 ```
 
 If the type is 'object' the properties *mandatoryFields* and
 *optionalFields* apply as well:
 
-``` js
+``` json
 { "path": <json_path>, "type": "object", "mandatoryFields": [ <field_names> ], "optionalFields": [ <field_names>] }
 ```
 
@@ -204,7 +204,7 @@ array.
 
 For example, given the following document:
 
-``` js
+``` json
 {
     "_id": {
         "$oid": "55f6ccf4c2e6be404fdef3dd"
@@ -313,7 +313,7 @@ document to have following fields:
 </tbody>
 </table>
 
-``` js
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/users \
 checkers:='[{\
     "name":"checkContent","args":[\
@@ -337,7 +337,7 @@ limit the maximum size of the uploaded file.
 The following example, creates a file bucket resource, limiting the file
 size from 64 to 32768 bytes:
 
-``` js
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/icons.files descr="icons" \
 checkers:='[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
 ```

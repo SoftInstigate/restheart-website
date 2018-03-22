@@ -47,7 +47,7 @@ be applied to the requests involving the collection and its documents.
 
 `hooks` is an array of objects with the following format:
 
-``` js
+``` json
 { "hooks": [ 
     { "name": <hook_name>, "args": <arguments> }, 
     ...

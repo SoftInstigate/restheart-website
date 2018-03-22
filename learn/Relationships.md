@@ -31,7 +31,7 @@ format. HAL builds up on 2 simple concepts: **Resources** and **Links**
 
 Let's see the following simple example, a GET on a document resource:
 
-``` js
+``` bash
 $ http -a a:a GET 127.0.0.1:8080/test/coll/doc
 HTTP/1.1 200 OK
 ...
@@ -75,7 +75,7 @@ HAL `_link` property
 
 `rels` is an array of `rel` objects having the following format:
 
-``` js
+``` json
 {
   "real": "<relid>",
   "type": "<type>",
@@ -148,7 +148,7 @@ Let's create a collection, declaring a **many-to-one** relationship
 called **`parent`**, so that documents can refer a *parent document* in
 the collection itself.
 
-``` plain
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/parentcoll rels:='[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]'
 HTTP/1.1 201 CREATED
 ...
@@ -158,7 +158,7 @@ HTTP/1.1 201 CREATED
 
 Let's now create few documents, specifying the `parent` property:
 
-``` plain
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/parentcoll/root parent=root
 HTTP/1.1 201 CREATED
 ...
@@ -182,8 +182,8 @@ If we now get the document `/test/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
 document `/test/parentcoll/1`
 
-``` js
-$ (develop) http -a a:a GET 127.0.0.1:8080/test/parentcoll/1.2
+``` bash
+$ http -a a:a GET 127.0.0.1:8080/test/parentcoll/1.2
 HTTP/1.1 200 OK
 ...
 {
@@ -207,7 +207,7 @@ HTTP/1.1 200 OK
 In this example, we create two collections: `bands` and `albums`; of
 course, each band has a **1:N** relationship to albums.
 
-``` plain
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/bands rels:='[{"rel":"albums","type":"ONE_TO_MANY","role":"OWNING","target-coll":"albums","ref-field":"albums"}]' descr="music bands"
 HTTP/1.1 201 CREATED
 ...
@@ -221,7 +221,7 @@ HTTP/1.1 201 CREATED
 
 Let's now create few albums:
 
-``` plain
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/albums/Disintegration year:=1989
 HTTP/1.1 201 CREATED
 ...
@@ -256,7 +256,7 @@ If we now get The Cure document, we can notice the `albums` link:
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
 
-``` js
+``` bash
 $ http -a a:a GET "127.0.0.1:8080/test/bands/The Cure"
 HTTP/1.1 200 OK
 ...
@@ -330,7 +330,7 @@ HTTP/1.1 201 CREATED
 
 Now we create the band referred by these albums:
 
-``` plain
+``` bash
 $ http -a a:a PUT "127.0.0.1:8080/test/bandsi/The Cure" descr="The Cure are an English rock band formed in Crawley, West Sussex, in 1976"
 HTTP/1.1 201 CREATED
 ...
@@ -342,7 +342,7 @@ If we now get "The Cure" document, we can notice the `albums` link:
 
     /test/albumsi?filter={'band':'The Cure'}
 
-``` js
+``` bash
 $ http -a a:a GET "127.0.0.1:8080/test/bandsi/The Cure"
 HTTP/1.1 200 OK
 ...

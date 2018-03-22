@@ -34,7 +34,7 @@ creates the collection *coll* in the database *db* setting its state as
 follows (the property *\_etag *is automatically added by RESTHeart,
 see [ETag](ETag) for more information):
 
-``` js
+``` json
 {
   "_id": "coll",
   "description": "my first collection"
@@ -158,7 +158,7 @@ Update operators can be used in PUT, PATCH and POST verbs.
 
 Consider the following document
 
-``` js
+``` json
 {
     "_id": "docid",
     "timestamp": { "$date": 1460708338344 },
@@ -189,7 +189,7 @@ The following request will:
 
   
 
-``` js
+``` bash
 PATCH /db/coll/docid { 
     "pi": 3.14,
     "$inc": { "count": 1 }, 
@@ -201,7 +201,7 @@ PATCH /db/coll/docid { 
 
 After the request completes, the resource state is updated to:
 
-``` js
+``` json
 {
     "_id": "doccia",
     "pi": 3.14,
@@ -244,7 +244,7 @@ POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
 
 **response**
 
-``` js
+``` json
 {
   "_embedded": {
     "rh:result": [
@@ -315,7 +315,7 @@ PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
 
 **response**
 
-``` js
+``` json
 {
   "_embedded": {
     "rh:result": [
@@ -364,7 +364,7 @@ DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
 
 **response**
 
-``` js
+``` json
 {
   "_embedded": {
     "rh:result": [

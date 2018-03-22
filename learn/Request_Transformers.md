@@ -143,14 +143,14 @@ the REQUEST phase. Looking at the *args* argument we can figure out that
 the request json data will be transformed adding the *log* object with
 the username of authenticated user and its remote ip.
 
-``` js
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/rtsexample rts:='[{"name":"addRequestProperties","phase":"REQUEST","scope":"CHILDREN","args":{"log": ["userName","remoteIp"]}}]'
 ```
 
 If we now create a document, we can see the *log* property stored in the
 document because it was injected by RESTHeart in the request data.
 
-``` js
+``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/rts/mydoc a:=1
 HTTP/1.1 201 Created
 ...
@@ -187,8 +187,8 @@ Let's say that the user collection is called *userbase*; we can remove
 the password to be sent back to clients with the following
 filterProperties transformer.
 
-``` js
-http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties", "phase":"RESPONSE", "scope":"CHILDREN", "args":["password"]}]'
+``` bash
+$ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties", "phase":"RESPONSE", "scope":"CHILDREN", "args":["password"]}]'
 ```
 
 ## Custom Transformers

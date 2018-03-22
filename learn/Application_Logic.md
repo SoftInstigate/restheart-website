@@ -183,7 +183,7 @@ Given the */test/bands* collection, where each document is supposed to
 have the *albums* array property (listing the albums of the band), it
 returns the number of albums by band:
 
-``` plain
+``` bash
 $ http -a a:a GET 127.0.0.1:8080/_logic/aggregate
 HTTP/1.1 200 OK
 ...

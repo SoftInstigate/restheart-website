@@ -19,13 +19,13 @@ collection.
 
 To list the collection indexes use the following request:
 
-``` plain
+``` bash
  GET /db/coll/_indexes
 ```
 
 **Example**
 
-``` js
+``` bash
 GET 127.0.0.1:8080/db/coll/_indexes 
 
 HTTP/1.1 200 OK
@@ -69,7 +69,7 @@ HTTP/1.1 200 OK
 
 To create an index use the following request:
 
-``` plain
+``` bash
 PUT /db/coll/_indexes/<index_id> { "keys":  <keys>, "ops": <options> }
 ```
 
@@ -80,7 +80,7 @@ Indexes in MongoDB documentation
 
 **Example - create an unique, sparse index on property *name***
 
-``` js
+``` bash
 PUT /db/coll/_indexes/index1 {"keys": {"name":1}, "ops": {"unique": true, "sparse": true }}
 HTTP/1.1 201 Created
 ...
@@ -88,7 +88,7 @@ HTTP/1.1 201 Created
 
 ****Example - create a text index on property *title*****
 
-``` js
+``` bash
 PUT /db/coll/_indexes/text {"keys": {"title": "text }}
 HTTP/1.1 201 Created
 ...
@@ -98,7 +98,7 @@ HTTP/1.1 201 Created
 
 To delete an index use the following request:
 
-``` plain
+``` bash
 DELETE /db/coll/_indexes/<index_id>
 ```
 
@@ -112,7 +112,7 @@ An example of invalid options is specifying the attribute *unique* on a
 property that is not actually unique; in this case the response will
 be 406:
 
-``` js
+``` bash
 HTTP/1.1 406 Not Acceptable
  
 {
@@ -135,7 +135,7 @@ HTTP/1.1 406 Not Acceptable
 
 **To update an index, it must be deleted and recreated:**
 
-``` js
+``` bash
 DELETE /db/coll/_indexes/index
 HTTP/1.1 204 No Content
 
@@ -145,7 +145,7 @@ HTTP/1.1 201 Created
 
 Trying to update an existing index returns 406 Not Acceptable:
 
-``` js
+``` bash
 HTTP/1.1 406 Not Acceptable
  
 {

@@ -52,7 +52,7 @@ GET /test/coll?pagesize=100&np
 
 **Response (headers omitted)**
 
-``` js
+``` bash
 HTTP/1.1 200 OK
 ...
 
@@ -119,7 +119,7 @@ with title value that starts with the string "STAR TREK".
 
 #### Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM
 
-``` js
+``` bash
 GET /test/coll?filter={'$and':[{'title':{'$regex':'(?i)^STAR TREK.*'},{'publishing_date':{'$gte':{'$date':'2015-09-04T08:00:00Z'}}}]}
  
 or
@@ -190,7 +190,7 @@ GET /test/coll?count&page=3&pagesize=10&hal=f&np
 
 **Response (headers omitted)**
 
-``` js
+``` bash
 HTTP/1.1 200 OK
 ...
 {
@@ -244,7 +244,7 @@ sort={"field": 1}
 
 ### Sort by the *date* ascending
 
-``` plain
+``` bash
 GET /test/coll?sort=date
 
 GET /test/coll?sort={"date":1}
@@ -252,7 +252,7 @@ GET /test/coll?sort={"date":1}
 
 #### Sort by the *date* descending
 
-``` js
+``` bash
 GET /test/coll?sort=-date
 
 GET /test/coll?sort={"date":-1}
@@ -260,7 +260,7 @@ GET /test/coll?sort={"date":-1}
 
 #### Sort by the *date* descending and title ascending 
 
-``` js
+``` bash
 GET /test/coll?sort=-date&sort=title
 
 GET /test/coll?sort={"date":-1, "title":1}
@@ -270,7 +270,7 @@ GET /test/coll?sort={"date":-1, "title":1}
 
 This is only possible with json expression format
 
-``` js
+``` bash
 // create a text index
 PUT /test/coll/_indexes/text {"keys": {"title": "text }}
  
@@ -296,19 +296,19 @@ managed automatically by RESTHeart) are not affected by this option.
 
 #### Only return the property title
 
-``` js
+``` bash
 GET /test/coll?keys={'title':1}
 ```
 
 #### Return all but the property *title*
 
-``` js
+``` bash
 GET /test/coll?keys={'title':0}
 ```
 
 #### Only return the properties *title* and *summary*
 
-``` js
+``` bash
 GET /test/coll?keys={'title':1}&keys={'summary':1}
 ```
 
@@ -316,6 +316,6 @@ It's possible to use the "dot notation" to specify fields within an
 object, for example, let's say that both **title** and **summary** are
 part of an **header** object:
 
-``` js
+``` bash
 GET /test/coll?keys={'header.title':1}&keys={'header.summary':1}
 ```

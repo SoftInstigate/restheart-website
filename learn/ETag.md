@@ -30,7 +30,7 @@ can note that any response includes the header ETag (other response
 headers are omitted for simplicity) and this is valid for any type of
 resource, included file resources.
 
-``` plain
+``` bash
 PUT /test descr="a db for testing"
 HTTP/1.1 201 Created
 ...
@@ -65,7 +65,7 @@ request.
 Let's try to update the document at URI /test/coll/doc forcing the ETag
 check with the `checkEtag` query parameter.
 
-``` plain
+``` bash
 PUT 127.0.0.1:8080/test/coll/doc?checkEtag  { "descry": "a document for testing but modified" }
 HTTP/1.1 409 Conflict
 ...
@@ -79,7 +79,7 @@ Note that the *ETag* header is present in the response. 
 
 Let's try to pass now a wrong ETag via the *If-Match* request header
 
-``` plain
+``` bash
 PUT 127.0.0.1:8080/test/coll/doccheckEtag descr="a document for testing but modified" If-Match:wrong_etag
 HTTP/1.1 412 Precondition Failed
 ...
@@ -93,7 +93,7 @@ Again the correct ETag header is present in the response. 
 
 Let's try to pass now the correct ETag via the *If-Match* request header
 
-``` plain
+``` bash
 PUT /test/coll/doc?checkEtag descr="a document for testing but modified" If-Match:55e84c0ac2e66d1e0a8e46b4
 HTTP/1.1 200 OK
 ...
@@ -114,7 +114,7 @@ request header. In case the resource state has not been modified
 Not Modified*, without passing back the data and thus saving bandwidth.
 This is especially useful for file resources.
 
-``` plain
+``` bash
 $ http -a a:a GET 127.0.0.1:8080/test/coll/doc
 HTTP/1.1 200 OK
 ...
@@ -138,7 +138,7 @@ policy:
 
 It defines when the ETag check is mandatory.
 
-``` plain
+``` yml
 etag-check-policy:
    db: REQUIRED_FOR_DELETE
    coll: REQUIRED_FOR_DELETE

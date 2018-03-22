@@ -107,7 +107,7 @@ a file if you want to create multiple users at ht e same time:
 
 **users.js**
 
-``` js
+``` bash
 use auth; 
 db.users.insert({ _id: "admin", password: "temp", roles: ['ADMIN'] });
 ...
@@ -137,7 +137,7 @@ connecting to: 192.168.99.100:27017/auth
 For example with the following two shell commands it's possible to check
 database names and list the users collection of the auth database:
 
-``` js
+``` bash
 $ mongo --host 192.168.99.100 --eval "printjson(db.adminCommand('listDatabases'))"
 {
     "databases" : [
@@ -193,7 +193,7 @@ Start RESTHeart as you would usually do. Logs must be clean, like below:
 For example with the [httpie](http://httpie.org) client, get
 the `/_logic/roles/admin` resource which shows user's roles
 
-``` js
+``` bash
 $ http -a admin:temp 192.168.99.100/_logic/roles/admin
  
 HTTP/1.1 200 OK
@@ -228,7 +228,7 @@ The "temp" password in the users.js file is really temporary, just set a
 better one. Say for example "12345", which is actually not much better,
 but it's an example :)
 
-``` js
+``` bash
 $ http -a admin:temp -j PATCH 192.168.99.100/auth/users/admin password=12345
 
 HTTP/1.1 409 Conflict
@@ -262,7 +262,7 @@ X-Powered-By: restheart.org
 Don't forget to authenticate now using the **new password**! Check that
 the output is similar to below and you have a proper ETag ("\_etag" key)
 
-``` js
+``` bash
 $ http -a admin:12345 192.168.99.100/auth/users/admin
 
 HTTP/1.1 200 OK
@@ -317,7 +317,7 @@ HTTP/1.1 201 Created
 
 Get the `/auth/users/johnsmith` resource
 
-``` js
+``` bash
 $ http -a admin:temp 192.168.99.100/auth/users/johnsmith
 
 HTTP/1.1 200 OK

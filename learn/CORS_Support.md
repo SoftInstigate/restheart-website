@@ -50,7 +50,7 @@ OPTIONS /test/coll
 
 **Response**
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Headers: Accept, Accept-Encoding, Authorization, Content-Length, Content-Type, Host, If-Match, Origin, X-Requested-With, User-Agent, No-Auth-Challenge

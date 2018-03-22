@@ -413,7 +413,7 @@ Edit the following line in the file app/scripts/app.js
 
 **Set the RESTHEART\_URL variable**
 
-``` js
+``` bash
 var RESTHEART_URL = "http://192.168.59.103:8080";
 ```
 
@@ -548,7 +548,7 @@ The possible responses to GET `/_logic/roles/<userid>` requests are:
 
 **Roles**
 
-``` js
+``` json
 {
     "_embedded": {}, 
     "_links": {

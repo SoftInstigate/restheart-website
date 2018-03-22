@@ -115,9 +115,7 @@ are:
 -   **200 OK** credentials match; the following response document is
     sent back:
 
-  
-
-``` js
+``` json
  {
     "_embedded": {}, 
     "_links": {

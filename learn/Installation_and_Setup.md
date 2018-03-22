@@ -135,7 +135,7 @@ options in the configuration file following the *convention over
 configuration* approach.
 
 For more information about the configuration file format refer to [Default
-Configuration File](/docs3/Default_Configuration_File) section.
+Configuration File](/learn/Default_Configuration_File) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
 process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.
@@ -216,7 +216,7 @@ permissions](#auth-with-jep)section.
 Create the *admin* user. The procedure is different depending on MongoDB
 version.
 
-``` js
+``` bash
 > use admin
 > db.createUser({
     user: "admin",
@@ -316,7 +316,7 @@ In order to achieve it, the best practice is:
 The following example, creates a mongodb user with appropriate roles to
 expose the databases *db1*, *db2* and *db3* in read only mode.
 
-``` js
+``` bash
 > use admin
 > db.createUser({user: "mongousr",
     pwd: "secret",

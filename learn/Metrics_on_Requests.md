@@ -310,7 +310,7 @@ http_response_timers_DOCUMENT_rate_units{method="GET"} calls/second 151003926398
 
 **JSON example response**  Expand source
 
-``` js
+``` json
 {
   "version": "3.0.0",
   "gauges": {},

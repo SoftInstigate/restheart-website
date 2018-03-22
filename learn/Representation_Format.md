@@ -48,7 +48,7 @@ For instance, the following JSON document includes an ObjectId and a
 Date. These types are supported by BSON and represented with JSON
 according to the ‘strict mode’.
 
-``` js
+``` json
 {
     "_id": {
         "$oid": "546b2dcdef863f5121fc91f3"
@@ -102,7 +102,7 @@ GET 127.0.0.1:8080/db/coll?count
 
 **Response**  Expand source
 
-``` js
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -168,7 +168,7 @@ by RESTHeart for you); these always starts with \_:
 | `_total_pages` | the number of the pages (only returned if the count query parameter is specified)                       |
 | `_returned`    | the number of the documents embedded in this representation                                             |
 
-``` js
+``` json
 {
     "_etag": {
         "$oid": "56ded2b22d174c2a08cdee83"
@@ -186,13 +186,9 @@ by RESTHeart for you); these always starts with \_:
 Collection's embedded resources are the collection documents,
 recursively represented as HAL documents.
 
-  
-
 The `_embedded property looks like:`
 
-  
-
-``` js
+``` json
 "_embedded": {
         "rh:doc": [
             {
@@ -285,13 +281,9 @@ data.
 </tbody>
 </table>
 
-  
-
 The `_links property looks like:`
 
-  
-
-``` js
+``` json
 "_links": {
         "curies": [
             {

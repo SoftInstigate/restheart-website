@@ -108,7 +108,7 @@ curl -v -u user:password -X POST -F "file=@picture.png;filename=picture.png" 127
 
 You'll see an HTTP response header like below, returning a 201 Created:
 
-``` plain
+``` bash
 * Trying 127.0.0.1...
 * Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
 * Server auth using Basic with user 'a'
@@ -171,7 +171,7 @@ If we GET the resulting resource, here is the full HTTP response:
 
   Expand source
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -259,7 +259,7 @@ code block):
 
   Expand source
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *

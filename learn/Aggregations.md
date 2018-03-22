@@ -45,7 +45,7 @@ operations but only those defined (and tested) by the developers.
 
 **pipeline object format**
 
-``` js
+``` json
 {
     "type":"pipeline",
     "uri": <uri>,
@@ -108,7 +108,7 @@ not needed anymore.
 
 **mapReduce object format**
 
-``` js
+``` json
 {
     "type":"mapReduce",
     "uri":"<uri>",
@@ -170,7 +170,7 @@ operations:
 
      
 
-``` js
+``` bash
 PUT /db/ao_test { "aggrs" : [ 
       { "stages" : [ { "_$match" : { "name" : { "_$var" : "n" } } },
             { "_$group" : { "_id" : "$name",
@@ -192,7 +192,7 @@ PUT /db/ao_test { "aggrs" : [ 
 Note between the `_links` collection property the URIs of the
 aggregation operations.
 
-``` js
+``` bash
 GET /db/ao_test
  
 HTTP/1.1 200 OK
@@ -220,7 +220,7 @@ For example, the previous example aggregations both use a variable named
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
-``` js
+``` bash
 GET /test/ao_test/_aggrs/test_ap
 
 HTTP/1.1 400 Bad Request
@@ -238,7 +238,7 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds: 
 
-``` plain
+``` bash
 GET /test/ao_test/_aggrs/test_ap?avars={"n":1}
 
 HTTP/1.1 200 OK
@@ -270,7 +270,7 @@ variable *n:*
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
-``` js
+``` bash
 PUT /db/ao_test { "aggrs" : [ 
      {  "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
         "reduce" : "function(key, values) { return Array.avg(values) } }",

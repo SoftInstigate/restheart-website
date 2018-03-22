@@ -66,7 +66,7 @@ $ http PUT 127.0.0.1:8080/db desc='this is my first db created with restheart'
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -82,13 +82,13 @@ X-Powered-By: restheart.org
 
 **request**
 
-``` plain
+``` bash
 $ http PUT 127.0.0.1:8080/db/coll desc='this is my first collection created with restheart'
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -104,13 +104,13 @@ X-Powered-By: restheart.org
 
 **request**
 
-``` plain
+``` bash
 $ http POST 127.0.0.1:8080/db/coll name='restheart' rating='super cool'
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -127,13 +127,13 @@ X-Powered-By: restheart.org 
 
 **request**
 
-``` plain
+``` bash
 $ http POST 127.0.0.1:8080/db/coll name='mongodb' rating='hyper cool'
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -150,13 +150,13 @@ X-Powered-By: restheart.org
 
 **request**
 
-``` plain
+``` bash
 $ http GET 127.0.0.1:8080/db/coll
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -206,7 +206,7 @@ X-Powered-By: restheart.org
 The interesting part of the returned HAL+JSON object is the \_embedded
 object:
 
-``` js
+``` json
 {
     "rh:doc": [
         {
@@ -237,13 +237,13 @@ object:
 
 **request**
 
-``` plain
+``` bash
 $ http GET 127.0.0.1:8080/db/coll/56ded2eead66b2a1e741c054
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -271,13 +271,13 @@ X-Powered-By: restheart.org
 
 **request**
 
-``` plain
+``` bash
 $ http GET 127.0.0.1:8080/db/coll?filter="{'name':'restheart'}"
 ```
 
 **response**
 
-``` plain
+``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
