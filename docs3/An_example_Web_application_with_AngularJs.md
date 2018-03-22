@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: docs
 ---
 
 # An example Web application with AngularJS

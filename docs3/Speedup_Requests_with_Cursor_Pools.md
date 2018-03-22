@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: docs
 ---
 
 # Speedup Requests with Cursor Pools

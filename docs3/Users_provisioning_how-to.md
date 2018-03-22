@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: docs
 ---
 
 # Users provisioning how-to

@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: docs
 ---
 
 # ActiveDirectory and LDAP authentication

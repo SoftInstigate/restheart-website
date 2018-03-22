@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: docs
 ---
 
 # Metrics on Requests
