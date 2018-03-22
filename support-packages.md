@@ -2,6 +2,7 @@
 layout: page
 title: Support packages
 permalink: /support-packages.html
+hidden: true
 ---
 
 <section class="pricing slice color1" style="padding:0">
