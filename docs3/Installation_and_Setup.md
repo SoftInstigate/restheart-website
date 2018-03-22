@@ -4,20 +4,20 @@ layout: page
 
 # Installation and Setup
 
--   [Quick-start](#Quick-start)
-    -   [Docker](#Docker)
-    -   [Vagrant](#Vagrant)
-    -   [Bare metal](#Baremetal)
--   [Run it on your host - what you need](#Runitonyourhost-whatyouneed)
-    -   [1. Install Java and MongoDB](#1.InstallJavaandMongoDB)
-    -   [2. Install RESTHeart](#2.InstallRESTHeart)
-    -   [3. Start MongoDB](#3.StartMongoDB)
-    -   [4. Start the RESTHeart server](#4.StarttheRESTHeartserver)
-    -   [5. Enable MongoDB authentication](#5.EnableMongoDBauthentication)
-        -   [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#5.1ConnectRESTHearttoMongoDBoverTLS/SSL)
-        -   [5.2. MongoDB authentication with just enough permissions ](#5.2.MongoDBauthenticationwithjustenoughpermissionsauth-with-jep)
-    -   [6. Clients Authentication and Authorization](#6.ClientsAuthenticationandAuthorization)
--   [Additional resources for beginners](#Additionalresourcesforbeginners)
+-   [Quick-start](#quick-start)
+    -   [Docker](#docker)
+    -   [Vagrant](#vagrant)
+    -   [Bare metal](#baremetal)
+-   [Run it on your host - what you need](#run-it-on-your-host)
+    -   [1. Install Java and MongoDB](#1-install-java-and-mongoDB)
+    -   [2. Install RESTHeart](#2-install-restheart)
+    -   [3. Start MongoDB](#3-start-mongodb)
+    -   [4. Start the RESTHeart server](#4-start-the-restheart-server)
+    -   [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
+        -   [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
+        -   [5.2. MongoDB authentication with just enough permissions ](#52-mongodb-authentication-with-just-enough-permissions)
+    -   [6. Clients Authentication and Authorization](#6-clients-authentication-and-authorization)
+-   [Additional resources for beginners](#additional-resources-for-beginners)
 
 # Quick-start
 
@@ -49,7 +49,7 @@ you to update it to fit your purpose. Pull requests are welcome.
 
 Please follow the next sections for a full local installation.
 
-# Run it on your host - what you need
+# Run it on your host
 
 If you don’t have them already, please download the following packages:
 
