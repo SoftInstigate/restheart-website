@@ -4,28 +4,20 @@ layout: page
 
 # Installation and Setup
 
--   [Quick-start](#InstallationandSetup-Quick-start)
-    -   [Docker](#InstallationandSetup-Docker)
-    -   [Vagrant](#InstallationandSetup-Vagrant)
-    -   [Bare metal](#InstallationandSetup-Baremetal)
--   [Run it on your host - what you
-    need](#InstallationandSetup-Runitonyourhost-whatyouneed)
-    -   [1. Install Java and
-        MongoDB](#InstallationandSetup-1.InstallJavaandMongoDB)
-    -   [2. Install RESTHeart](#InstallationandSetup-2.InstallRESTHeart)
-    -   [3. Start MongoDB](#InstallationandSetup-3.StartMongoDB)
-    -   [4. Start the RESTHeart
-        server](#InstallationandSetup-4.StarttheRESTHeartserver)
-    -   [5. Enable MongoDB
-        authentication](#InstallationandSetup-5.EnableMongoDBauthentication)
-        -   [5.1 Connect RESTHeart to MongoDB over
-            TLS/SSL](#InstallationandSetup-5.1ConnectRESTHearttoMongoDBoverTLS/SSL)
-        -   [5.2. MongoDB authentication with just enough
-            permissions ](#InstallationandSetup-5.2.MongoDBauthenticationwithjustenoughpermissionsauth-with-jep)
-    -   [6. Clients Authentication and
-        Authorization](#InstallationandSetup-6.ClientsAuthenticationandAuthorization)
--   [Additional resources for
-    beginners](#InstallationandSetup-Additionalresourcesforbeginners)
+-   [Quick-start](#Quick-start)
+    -   [Docker](#Docker)
+    -   [Vagrant](#Vagrant)
+    -   [Bare metal](#Baremetal)
+-   [Run it on your host - what you need](#Runitonyourhost-whatyouneed)
+    -   [1. Install Java and MongoDB](#1.InstallJavaandMongoDB)
+    -   [2. Install RESTHeart](#2.InstallRESTHeart)
+    -   [3. Start MongoDB](#3.StartMongoDB)
+    -   [4. Start the RESTHeart server](#4.StarttheRESTHeartserver)
+    -   [5. Enable MongoDB authentication](#5.EnableMongoDBauthentication)
+        -   [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#5.1ConnectRESTHearttoMongoDBoverTLS/SSL)
+        -   [5.2. MongoDB authentication with just enough permissions ](#5.2.MongoDBauthenticationwithjustenoughpermissionsauth-with-jep)
+    -   [6. Clients Authentication and Authorization](#6.ClientsAuthenticationandAuthorization)
+-   [Additional resources for beginners](#Additionalresourcesforbeginners)
 
 # Quick-start
 
@@ -221,7 +213,7 @@ However the best practice is to use a MongoDB user with
 restricted access. For instance, it could be restricted to use only a
 single DB in read only mode. For more information refer to [MongoDB
 authentication with just enough
-permissions](#InstallationandSetup-auth-with-jep)section.
+permissions](#auth-with-jep)section.
 
 Create the *admin* user. The procedure is different depending on MongoDB
 version.
@@ -361,11 +353,3 @@ There are some introductory articles about RESTHeart from
     Compose](https://www.compose.com/articles/building-secure-instant-apis-with-restheart-and-compose/)
 3.  [Launching RESTHeart into
     Production](https://www.compose.com/articles/launching-restheart-into-production/)
-
-  
-
-     
-
-  
-
-     
