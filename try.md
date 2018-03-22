@@ -6,32 +6,24 @@ permalink: /try.html
 
 <section class="slice" id="questions" style="padding-top: 30px">
     <div class="container">
-        <article class="col-sm-12 col-md-4">
+        <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">From the command line</h3>
                 <p>Use <strong>curl</strong> or <strong>httpie</strong> to play with our demo instance.</p>
                 <p>See below for a step by step tutorial.</p>
             </section>
         </article>
-        <article class="col-sm-12 col-md-4">
+        <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
                 <p>RESTHeart uses the <strong>H</strong>ypertext <strong>A</strong>pplication <strong>L</strong>anguage json representation format and embeds the <strong>HAL browser</strong>.</p>
                 <p>Go and play with it on our demo instance at <a href="http://dbapi.io/browser/#/db/coll" target="_blank"><code>dbapi.io</code></a>.</p>
             </section>
         </article>
-        <article class="col-sm-12 col-md-4">
-            <section>
-                <h3 style="text-align:center; margin-bottom: 25px;">Looking the Notes example web application</h3>
-                <p>You can preview the notes web application at <a href="http://dbapi.io/notes" target="_blank">dbapi.io/notes</a>.</p>
-                <p>The code is available on <a href="https://github.com/softinstigate/restheart-notes-example" target="_blank">github</a>.</p>
-                <p>The application is described in the <a href="https://softinstigate.atlassian.net/wiki/x/AoBu" target="_blank">documentation</a>.</p>
-            </section>
-        </article>
     </div>
 </section>
 
-# Angular 2 Example
+# Angular Example
 
 <iframe style="width: 100%; height: 600px" src="http://embed.plnkr.co/LmWwyj" frameborder="0" allowfullscren="allowfullscren"></iframe>
 
