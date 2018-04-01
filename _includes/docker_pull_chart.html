@@ -1,0 +1,134 @@
+<div class="container mt40 mb15">
+    <h1>Widely Adopted</h1>
+    <h3 class="text-center">RESTHeart Docker Image Pulls</h3>
+</div>
+
+<canvas id="dockerPullChart"></canvas>
+
+<script>
+    // Chartjs custom plugin to always show last tooltip
+    // got from https://stackoverflow.com/questions/36992922/chart-js-v2-how-to-make-tooltips-always-appear-on-pie-chart
+    Chart.pluginService.register({
+        beforeRender: function (chart) {
+            if (chart.config.options.showLastTooltip) {
+                // create an array of tooltips
+                // we can't use the chart tooltip because there is only one tooltip per chart
+                chart.pluginTooltips = [];
+                chart.config.data.datasets.forEach(function (dataset, i) {
+                    var last = chart.getDatasetMeta(i).data.length - 1;
+                    var idx = 0;
+
+                    chart.getDatasetMeta(i).data.forEach(function (sector, j) {
+                        if (idx === last) {
+                            chart.pluginTooltips.push(new Chart.Tooltip({
+                                _chart: chart.chart,
+                                _chartInstance: chart,
+                                _data: chart.data,
+                                _options: chart.options.tooltips,
+                                _active: [sector]
+                            }, chart));
+                        }
+
+                        idx++;
+                    });
+                });
+
+                // turn off normal tooltips
+                //chart.options.tooltips.enabled = false;
+            }
+        },
+        afterDraw: function (chart, easing) {
+            if (chart.config.options.showLastTooltip) {
+                // we don't want the permanent tooltips to animate, so don't do anything till the animation runs atleast once
+                if (!chart.allTooltipsOnce) {
+                    if (easing !== 1)
+                        return;
+                    chart.allTooltipsOnce = true;
+                }
+
+                // turn on tooltips
+                chart.options.tooltips.enabled = true;
+                Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
+                    tooltip.initialize();
+                    tooltip.update();
+                    // we don't actually need this since we are not animating tooltips
+                    tooltip.pivot();
+                    tooltip.transition(easing).draw();
+                });
+                // chart.options.tooltips.enabled = false;
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "http://dbapi.io/db/stats?np&limit=10", success: function (result) {
+                if (result && result.reverse && result.map) {
+                    result.reverse();
+
+                    var data = result.map(function (x) {
+                        return x.pull_count;
+                    });
+
+
+                    var max = 0;
+                    data.forEach(function (x) { if (x > max) { max = x } });
+                    max = +max + 100;
+
+                    var labels = result.map(function (x) {
+                        var date = new Date(x.timestamp.$date);
+                        return new Date(date.setDate(date.getDate()-1)).toISOString().substring(0, 10);
+                    });
+
+                    var ctx = $("#dockerPullChart");
+                    var dockerPullChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: data,
+                                borderColor: 'rgba(54, 162, 235, 0.2)',
+                                borderWidth: 20,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            showLastTooltip: true,
+                            legend: { display: false },
+                            scales: {
+                                yAxes: [{
+                                    display: false,
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        display: false,
+                                        suggestedMax: max
+                                    }
+                                }],
+                                xAxes: [{
+                                    display: false
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 20,
+                                    right: 20,
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
+                            animation: {
+                                duration: 500
+                            },
+                            tooltips: {
+                                displayColors: false,
+                                bodyFontSize: 18
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
