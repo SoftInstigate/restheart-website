@@ -25,6 +25,6 @@ The **commercial license** grants using and embedding the latest major version o
 
 Our **development support services** aim to help the proper configuration, customization and deployment of RESTHeart in a production environment.
 
-Please [send us an email](mailto:info@softinstigate.com?subject=RESTHeart commercial license and support) with any question related to the commercial offerings.
+Please [send us an email](mailto:info@softinstigate.com?subject=RESTHeart commercial license and support) with any specific question related to commercial support and licensing.
 
 Thank you.
