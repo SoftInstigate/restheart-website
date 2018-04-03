@@ -14,7 +14,7 @@ To get support for the open-source edition (under the terms of AGPL v3) here are
 
 ### Commercial edition
 
-Due to the increment in companies asking to buy commercial services around RESTHeart, We are renewing our support offering and licensing scheme.
+Due to the increment in companies asking to buy commercial services around RESTHeart, we are renewing our support offering and licensing scheme.
 
 The **commercial license** grants using and embedding the latest major version of RESTHeart in commercial products, without the following limitations of the AGPL:
 
