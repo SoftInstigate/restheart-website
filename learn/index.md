@@ -3,8 +3,9 @@ layout: docs
 title: Documentation
 ---
 
--   [Installation and Setup](/learn/Installation_and_Setup)
+-   [Setup](/learn/setup)
 -   [API tutorial](/learn/API_tutorial)
+-   [Quick Rererence](/learn/quick-reference)
 -   [Resource URI](/learn/Resource_URI)
 -   [Representation Format](/learn/Representation_Format)
 -   [Reference sheet](/learn/Reference_sheet)
@@ -28,3 +29,4 @@ title: Documentation
 -   [Performances](/learn/Performances)
 -   [An example Web application with AngularJs](/learn/An_example_Web_application_with_AngularJs)
 -   [How to package custom code](/learn/How_to_package_custom_code)
+-   [Third parties resources](/learn/third-parties-resources)

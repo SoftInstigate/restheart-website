@@ -19,7 +19,7 @@ couple of documents in MongoDB.
 RESTHeart represents resources as HAL+JSON documents. Before going
 further you might want to check:
 
--   [Installation and Setup](Installation_and_Setup)
+-   [Setup](setup)
 -   [Resource Representation Format](Representation_Format)
 -   the [HAL specification](http://stateless.co/hal_specification.html)
 

@@ -1,13 +1,12 @@
 ---
 layout: docs
-title: Installation and Setup
+title: Setup
 ---
 
-* [Quick-start](#quick-start)
-    * [Docker](#docker)
-    * [Vagrant](#vagrant)
-    * [Bare metal](#bare-metal)
-* [Run it on your host](#run-it-on-your-host)
+* [Run RESTHeart With Docker](#run-restheart-with-docker)
+    * [Quick Start with Docker Compose](#quick-start-with-docker-compose)
+    * [Docker Image](#docker-image)
+* [Installation](#installation)
     * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
     * [2. Install RESTHeart](#2-install-restheart)
     * [3. Start MongoDB](#3-start-mongodb)
@@ -16,39 +15,166 @@ title: Installation and Setup
     * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
     * [5.2. MongoDB authentication with just enough permissions ](#52-mongodb-authentication-with-just-enough-permissions)
     * [6. Clients Authentication and Authorization](#6-clients-authentication-and-authorization)
-* [Additional resources for beginners](#additional-resources-for-beginners)
 
-## Quick-start
 
-### Docker
+## Run RESTHeart with Docker
 
-RESTHeart fits naturally a microservices architecture and a [Docker
-image](https://hub.docker.com/r/softinstigate/restheart/) is available
-and fully maintained by us. Docker should be considered the best and
-easiest way to create a development or production environment with
-RESTHeart. The source code contains a docker-compose configuration which
-makes things straightforward. Please have a look at the [Docker
-folder](https://github.com/SoftInstigate/restheart/tree/master/Docker)
-in the source code distribution. We are using RESTHeart running within
-Docker in production since a long time now, so we recommend it as the
-way to go.
+> Docker is the best way to run RESTHeart.
 
-### Vagrant
+[![Docker Stars](https://img.shields.io/docker/stars/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/) [![Docker Pulls](https://img.shields.io/docker/pulls/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/)
 
-Before switching to Docker we used Vagrant. A [Vagrant
-box](https://github.com/SoftInstigate/restheart-vagrant) is available
-for creating a complete virtual development environment, using a Ubuntu
-14.04 image with JDK 8, MongoDB 3 and the latest RESTHeart server. You
-can then skip section 2 to 6 and jump directly to section 7, in case you
-want to know how to change the default security settings. Unfortunately
-we don't fully maintain the Vagrant repository anymore, so it's up to
-you to update it to fit your purpose. Pull requests are welcome.
+## Quick Start with Docker Compose
 
-### Bare metal
+Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/Docker/docker-compose.yml)
 
-Please follow the next sections for a full local installation.
+```
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/docker-compose.yml --output docker-compose.yml
+```
 
-## Run it on your host
+The file `docker-compose.yml` defines a single microservice made of a RESTHeart and MongoDB instance configured to work together.
+Start both services just typying:
+
+```
+$ docker-compose up -d
+```
+
+Check that everything is fine:
+
+```
+$ docker-compose ps
+
+       Name                      Command               State                Ports               
+-----------------------------------------------------------------------------------------------
+restheart-dev         ./entrypoint.sh etc/resthe ...   Up      4443/tcp, 0.0.0.0:8080->8080/tcp 
+restheart-dev-mongo   /entrypoint.sh mongod            Up      27017/tcp   
+```
+
+Tail the logs of both services:
+
+```
+$ docker-compose logs -f
+```
+
+Open the HAL browser [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
+
+The RESTHeart default admin credentials are
+
+    username: admin
+    password: changeit
+
+## Docker Image
+
+### Tags
+
+The `latest` tag is automatically associated with `SNAPSHOT` maven builds on `master` branch. If you really want to run a stable docker image, please always pull a exact version number, like
+```
+docker pull softinstigate/restheart:3.2.2
+```
+
+### Dockerfile
+
+ * The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/Docker/Dockerfile).
+
+### How to Run
+
+This section is useful if you want to run RESTHeart with docker but you already have an existing MongoDB container to connect to. Note that if instead you want to connect to a remote MongoDB instance then you must edit the restheart.yml configuration file and change the mongouri.
+
+`mongo-uri: mongodb://<remote-host>`
+
+You can then decide to rebuild the container itself with your version of this file or mount the folder as a volume, so that you can override the default configuration files. For example:
+
+``` bash
+$ docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro softinstigate/restheart`
+```
+
+*We strongly recommend to always add the tag to the image (e.g. `softinstigate/restheart:3.2.2`), so that you are sure which version of RESTHeart you are running.*
+
+### 1) Pull the MongoDB and RESTHeart images
+
+ 1. `docker pull mongo:3.6`
+ 1. `docker pull softinstigate/restheart:3.2.2`
+
+*We recommend to pull a specific MongoDB image, for example `docker pull mongo:3.6`. RESTHeart has been tested so far with MongoDB 2.6, 3.0, 3.2, 3.4 and 3.6.*
+
+### 2) Run the MongoDB container
+
+```
+docker run -d --name mongodb mongo:3.6
+```
+
+To make it accessible from your host and add a [persistent data volume](https://docs.docker.com/userguide/dockervolumes/):
+
+```
+docker run -d -p 27017:27017 --name mongodb -v <db-dir>:/data/db mongo:3.6
+```
+
+The `<db-dir>` must be a folder in your host, such as `/var/data/db` or whatever you like. If you don't attach a volume then your data will be lost when you delete the container.
+
+### 3) Run RESTHeart interactively
+
+Run in **foreground**, linking to the `mongodb` instance, mapping the container's 8080 port to the 80 port on host:
+
+```
+docker run --rm -i -t -p 80:8080 --name restheart --link mongodb softinstigate/restheart
+```
+
+However, you will usually run it in **background**:
+
+```
+docker run -d -p 80:8080 --name restheart --link mongodb softinstigate/restheart
+```
+
+### 4) Check that is working:
+
+If it's running in background, you can open the RESTHeart's logs:
+
+```
+docker logs restheart
+```
+
+### 5) Pass arguments to RESTHeart and JVM
+
+You can append arguments to *docker run* command to provide RESTHeart and the JVM with arguments.
+
+For example you can mount an alternate configuration file and specify it as an argument
+
+```
+docker run --rm -i -t -p 80:8080 -v my-conf-file.yml:/opt/restheart/etc/my-conf-file.yml:ro --name restheart --link mongodb:mongodb softinstigate/restheart my-conf-file.yml
+```
+
+If you want to pass system properties to the JVM, just specify -D or -X arguments. Note that in this case you **need** to provide the configuration file as well.
+
+```
+docker run --rm -i -t -p 80:8080 --name restheart --link mongodb:mongodb softinstigate/restheart etc/restheart.yml -Dkey=value
+```
+
+## Stop and start again
+
+To stop the RESTHeart background daemon just issue
+
+    docker stop restheart
+
+or simply press `CTRL-C` if it was running in foreground.
+
+You can start it again with
+
+    docker start restheart
+
+but it's **not recommended**: RESTHeart is a stateless service, best Docker practices would suggest to just delete the stopped container with `docker rm restheart` or to run it in foreground with the `--rm` parameter, so that it will be automatically removed when it exits.
+
+The MongoDB container instead is stateful, so if you delete it then you'll lose all data unless you attached to it a persistent volume. In this case you might prefer to start it again, so that your data is preserved, or ypu might prefer to attach a local [Docker Volume](https://docs.docker.com/userguide/dockervolumes/) to it.
+
+To stop MongoDb issue
+
+    docker stop mongodb
+
+To start MongoDb again
+
+    docker start mongodb
+
+Note that you must **always stop RESTHeart before MongoDB**, or you might experience data losses.
+
+## Installation
 
 If you don’t have them already, please download the following packages:
 
@@ -84,9 +210,7 @@ RESTHeart has been tested with MongoDB version 3.2, 3.0, 2.6 and 2.4.
 
 ### 2. Install RESTHeart
 
-To *install* RESTHeart just extract the content of
-the [dowloaded](https://github.com/SoftInstigate/RESTHeart/releases) package
-in the desired directory.
+To *install* RESTHeart download the latest stable release package from [github](https://github.com/SoftInstigate/RESTHeart/releases) and just extract its the content in the desired directory.
 
 You are interested in two files:
 
@@ -188,7 +312,7 @@ at: [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
 
 ### 5. Enable MongoDB authentication
 
-This section assumes using MongoDB 3.2. For other versions, the security
+This section assumes using MongoDB 3.2 or later. For other versions, the security
 configuration is similar but different. Rrefer to the [MongoDB
 documentation](http://docs.mongodb.org/manual/tutorial/enable-authentication/)
 for more information.
@@ -308,8 +432,7 @@ On production environments a strong security isolation is mandatory.
 In order to achieve it, the best practice is:
 
 1.  use the
-    [mongo-mounts](https://softinstigate.atlassian.net/wiki/display/RH/Advanced+Configuration#AdvancedConfiguration-MongoDB)
-    configuration option to restrict the resources exposed by RESTHeart;
+    mongo-mounts configuration option to restrict the resources exposed by RESTHeart;
 2.  use a mongodb user with just enough roles: *read* or *readWrite* on
     mounted databases 
 
@@ -339,15 +462,3 @@ custom role.
 Refert to [Security](Security) section for detailed information about
 how enable, configure and customize clients authentication and
 authorization.
-
-## Additional resources for beginners
-
-There are some introductory articles about RESTHeart from
-[Compose.io](https://www.compose.com):
-
-1.  [Building Instant RESTFul API's with MongoDB and
-    RESTHeart](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/)
-2.  [Building Secure Instant API's with RESTHeart and
-    Compose](https://www.compose.com/articles/building-secure-instant-apis-with-restheart-and-compose/)
-3.  [Launching RESTHeart into
-    Production](https://www.compose.com/articles/launching-restheart-into-production/)

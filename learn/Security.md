@@ -12,5 +12,5 @@ title: Security
 
 This section is about client authentication and authorization. If you
 are looking for how to secure the connection between RESTHeart and
-MongoDB refer to [Installation and Setup](/learn/Installation_and_Setup)
+MongoDB refer to [Setup](/learn/setup)
 section.
