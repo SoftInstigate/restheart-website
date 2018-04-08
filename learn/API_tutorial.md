@@ -27,7 +27,7 @@ We’ll use [httpie](http://httpie.org/), a brilliant command line HTTP
 client (you can also use curl of course!).
 
 If you just want to play with RESTHeart without installing it, you can
-use our [online test instance](http://restheart.org/try.html). This
+use our [online test instance](http://restheart.org/try). This
 instance is constrained to document-related operations on the collection
 */db/coll*, you can't create databases or collections there.
 
