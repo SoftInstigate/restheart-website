@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Default Conf File
+title: Configuration File
 ---
 
 ``` bash

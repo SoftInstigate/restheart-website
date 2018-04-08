@@ -257,7 +257,7 @@ options in the configuration file following the *convention over
 configuration* approach.
 
 For more information about the configuration file format refer to [Default
-Configuration File](/learn/Default_Configuration_File) section.
+Configuration File](/learn/configuration-file) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
 process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.
@@ -442,6 +442,6 @@ custom role.
 
 ### 6. Clients Authentication and Authorization
 
-Refert to [Security](/learn/Security) section for detailed information about
+Refert to [Security](/learn/security) section for detailed information about
 how enable, configure and customize clients authentication and
 authorization.

@@ -3,12 +3,12 @@ layout: docs
 title: Security
 ---
 
--   [Enable and Configure Security](/learn/Enable_and_Configure_Security)
--   [How Clients authenticate](/learn/How_Clients_authenticate)
--   [Custom Identity Manager](/learn/Custom_Identity_Manager)
--   [Custom Access Manager](/learn/Custom_Access_Manager)
--   [Users provisioning how-to](/learn/Users_provisioning_how-to)
--   [ActiveDirectory and LDAP authentication](/learn/ActiveDirectory_and_LDAP_authentication)
+-   [Enable and Configure Security](/learn/configure-security)
+-   [How Clients authenticate](/learn/clients-authentication)
+-   [Custom Identity Manager](/learn/custom-identity-manager)
+-   [Custom Access Manager](/learn/custom-access-manager)
+-   [Users provisioning how-to](/learn/users-provisioning)
+-   [ActiveDirectory and LDAP authentication](/learn/ldap-authentication)
 
 This section is about client authentication and authorization. If you
 are looking for how to secure the connection between RESTHeart and
