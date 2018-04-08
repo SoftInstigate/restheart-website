@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: API tutorial
+title: Tutorial
 ---
 
 * [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
@@ -16,12 +16,11 @@ title: API tutorial
 In this tutorial we’ll use RESTHeart to create a db, a collection and a
 couple of documents in MongoDB.
 
-RESTHeart represents resources as HAL+JSON documents. Before going
-further you might want to check:
+Before going further you might want to check:
 
--   [Setup](setup)
--   [Resource Representation Format](Representation_Format)
--   the [HAL specification](http://stateless.co/hal_specification.html)
+-   [Setup](/learn/setup)
+-   [Resource URI](/learn/resource-uri)
+-   [Resource Representation Format](/learn/representation-format)
 
 We’ll use [httpie](http://httpie.org/), a brilliant command line HTTP
 client (you can also use curl of course!).
@@ -36,24 +35,27 @@ instance is constrained to document-related operations on the collection
 ``` plain
 $ mongod --fork --syslog
 $ java -jar restheart.jar
-14:21:54.854 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart
-14:21:54.857 [main] INFO  org.restheart.Bootstrapper - version 2.0.0
-14:21:54.862 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart.log with level INFO
-14:21:54.862 [main] INFO  org.restheart.Bootstrapper - Logging to console with level INFO
-14:21:55.080 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
-14:21:55.080 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.2.0
-14:21:55.080 [main] WARN  org.restheart.Bootstrapper - ***** No Identity Manager specified. Authentication disabled.
-14:21:55.080 [main] WARN  org.restheart.Bootstrapper - ***** No access manager specified. users can do anything.
-14:21:55.081 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
-14:21:55.302 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
-14:21:55.303 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-14:21:55.304 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
-14:21:55.304 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores not enabled
-14:21:55.428 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
-14:21:55.560 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart-1979968565115069356
-14:21:55.577 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources browser. Access Manager: false
-14:21:55.783 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart-0.pid
-14:21:55.783 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+22:59:05.134 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
+22:59:05.156 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance default
+22:59:05.156 [main] INFO  org.restheart.Bootstrapper - version 3.2.2
+22:59:05.163 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart.log with level INFO
+22:59:05.163 [main] INFO  org.restheart.Bootstrapper - Logging to console with level INFO
+22:59:05.582 [main] WARN  o.r.db.MongoDBClientSingleton - Cannot get the MongoDb version.
+22:59:05.582 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
+22:59:05.582 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.6
+22:59:05.582 [main] WARN  org.restheart.Bootstrapper - ***** No Identity Manager specified. Authentication disabled.
+22:59:05.582 [main] WARN  org.restheart.Bootstrapper - ***** No access manager specified. users can do anything.
+22:59:05.583 [main] INFO  org.restheart.Bootstrapper - Authentication Mechanism io.undertow.security.impl.BasicAuthenticationMechanism enabled
+22:59:05.583 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
+22:59:05.592 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
+22:59:05.592 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+22:59:05.593 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
+22:59:05.593 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores not enabled
+22:59:05.803 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
+22:59:05.900 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-8544339744923828070
+22:59:05.912 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-8544339744923828070. Access Manager: false
+22:59:06.216 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-0.pid
+22:59:06.216 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
 ## Create a Database 
@@ -73,7 +75,7 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
 Connection: keep-alive
 Content-Length: 0
-Date: Tue, 08 Mar 2016 13:24:31 GMT
+Date: Sun, 08 Apr 2018 21:01:12 GMT
 ETag: 56ded28e2d174c2a08cdee81
 X-Powered-By: restheart.org
 ```
@@ -83,7 +85,7 @@ X-Powered-By: restheart.org
 **request**
 
 ``` bash
-$ http PUT 127.0.0.1:8080/db/coll desc='this is my first collection created with restheart'
+$ http PUT 127.0.0.1:8080/db/coll desc='my first collection created with restheart'
 ```
 
 **response**
@@ -95,7 +97,7 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
 Connection: keep-alive
 Content-Length: 0
-Date: Tue, 08 Mar 2016 13:25:06 GMT
+Date: Sun, 08 Apr 5aca8368634459000711d92a 21:02:44 GMT
 ETag: 56ded2b22d174c2a08cdee83
 X-Powered-By: restheart.org
 ```
@@ -105,7 +107,7 @@ X-Powered-By: restheart.org
 **request**
 
 ``` bash
-$ http POST 127.0.0.1:8080/db/coll name='restheart' rating='super cool'
+$ http POST 127.0.0.1:8080/db/coll name='RESTHeart' rating='cool'
 ```
 
 **response**
@@ -117,9 +119,9 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
 Connection: keep-alive
 Content-Length: 0
-Date: Tue, 08 Mar 2016 13:25:40 GMT
-ETag: 56ded2d42d174c2a08cdee84
-Location: http://127.0.0.1:8080/db/coll/56ded2d4ad66b2a1e741c053
+Date: Sun, 08 Apr 2018 21:03:04 GMT
+ETag: 5aca83c9634459000711d92e
+Location: http://127.0.0.1:8080/db/coll/5aca83c968a635bcd711d794
 X-Powered-By: restheart.org 
 ```
 
@@ -128,7 +130,7 @@ X-Powered-By: restheart.org 
 **request**
 
 ``` bash
-$ http POST 127.0.0.1:8080/db/coll name='mongodb' rating='hyper cool'
+$ http POST 127.0.0.1:8080/db/coll name='MongoDB' rating='super cool'
 ```
 
 **response**
@@ -140,9 +142,9 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
 Connection: keep-alive
 Content-Length: 0
-Date: Tue, 08 Mar 2016 13:26:06 GMT
-ETag: 56ded2ee2d174c2a08cdee85
-Location: http://127.0.0.1:8080/db/coll/56ded2eead66b2a1e741c054
+Date: Sun, 08 Apr 2018 21:03:24 GMT
+ETag: 5aca83d8634459000711d92f
+Location: http://127.0.0.1:8080/db/coll/5aca83d868a635bcd711d79b
 X-Powered-By: restheart.org
 ```
 
@@ -163,71 +165,68 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
 Connection: keep-alive
 Content-Encoding: gzip
-Content-Length: 235
-Content-Type: application/hal+json
-Date: Tue, 08 Mar 2016 13:26:29 GMT
-ETag: 56ded2b22d174c2a08cdee83
+Content-Length: 227
+Content-Type: application/json
+Date: Sun, 08 Apr 2018 21:04:44 GMT
+ETag: 5aca8368634459000711d92a
 X-Powered-By: restheart.org
 
 {
-    "_embedded": {
-        "rh:doc": [
-            {
-                "_etag": {
-                    "$oid": "56ded2ee2d174c2a08cdee85"
-                }, 
-                "_id": {
-                    "$oid": "56ded2eead66b2a1e741c054"
-                }, 
-                "name": "mongodb", 
-                "rating": "hyper cool"
-            }, 
-            {
-                "_etag": {
-                    "$oid": "56ded2d42d174c2a08cdee84"
-                }, 
-                "_id": {
-                    "$oid": "56ded2d4ad66b2a1e741c053"
-                }, 
-                "name": "restheart", 
-                "rating": "super cool"
-            }
-        ]
-    }, 
+    "_embedded": [
+        {
+            "_etag": {
+                "$oid": "5aca83d8634459000711d92f"
+            },
+            "_id": {
+                "$oid": "5aca83d868a635bcd711d79b"
+            },
+            "name": "MongoDB",
+            "rating": "super cool"
+        },
+        {
+            "_etag": {
+                "$oid": "5aca83c9634459000711d92e"
+            },
+            "_id": {
+                "$oid": "5aca83c968a635bcd711d794"
+            },
+            "name": "RESTHeart",
+            "rating": "cool"
+        }
+    ],
     "_etag": {
-        "$oid": "56ded2b22d174c2a08cdee83"
-    }, 
-    "_id": "coll", 
-    "_returned": 2, 
-    "desc": "this is my first collection created with restheart"
+        "$oid": "5aca8368634459000711d92a"
+    },
+    "_id": "coll",
+    "_returned": 2,
+    "desc": "my first collection created with restheart"
 }
 ```
 
-The interesting part of the returned HAL+JSON object is the \_embedded
-object:
+The interesting part is the \_embedded array:
 
 ``` json
 {
-    "rh:doc": [
+    "_embedded": [
         {
             "_etag": {
-                "$oid": "56ded2ee2d174c2a08cdee85"
-            }, 
+                "$oid": "5aca83d8634459000711d92f"
+            },
             "_id": {
-                "$oid": "56ded2eead66b2a1e741c054"
-            }, 
-            "name": "mongodb", 
-            "rating": "hyper cool"
-        }, 
-        {
-            "_etag": {
-                "$oid": "56ded2d42d174c2a08cdee84"
-            }, 
-            "_id": {
-                "$oid": "56ded2d4ad66b2a1e741c053"
-            }, 
-            "name": "restheart", 
+                "$oid": "5aca83d868a635bcd711d79b"
+            },
+            "name": "MongoDB",
             "rating": "super cool"
+        },
+        {
+            "_etag": {
+                "$oid": "5aca83c9634459000711d92e"
+            },
+            "_id": {
+                "$oid": "5aca83c968a635bcd711d794"
+            },
+            "name": "RESTHeart",
+            "rating": "cool"
         }
     ]
 }
@@ -238,7 +237,7 @@ object:
 **request**
 
 ``` bash
-$ http GET 127.0.0.1:8080/db/coll/56ded2eead66b2a1e741c054
+$ http GET 127.0.0.1:8080/db/coll/5aca83c968a635bcd711d794
 ```
 
 **response**
@@ -251,19 +250,20 @@ Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Unti
 Connection: keep-alive
 Content-Encoding: gzip
 Content-Length: 123
-Content-Type: application/hal+json
-Date: Tue, 08 Mar 2016 13:27:34 GMT
+Content-Type: application/json
+Date: Sun, 08 Apr 2018 21:05:44 GMT
+ETag: 5aca83c968a635bcd711d794
 X-Powered-By: restheart.org
 
 {
     "_etag": {
-        "$oid": "56ded2ee2d174c2a08cdee85"
+        "$oid": "5aca83c968a635bcd711d794"
     }, 
     "_id": {
-        "$oid": "56ded2eead66b2a1e741c054"
+        "$oid": "5aca83c9634459000711d92e"
     }, 
-    "name": "mongodb", 
-    "rating": "hyper cool"
+    "name": "RESTHeart", 
+    "rating": "cool"
 }
 ```
 
@@ -272,7 +272,7 @@ X-Powered-By: restheart.org
 **request**
 
 ``` bash
-$ http GET 127.0.0.1:8080/db/coll?filter="{'name':'restheart'}"
+$ http GET 127.0.0.1:8080/db/coll?filter="{'name':'MongoDB'}"
 ```
 
 **response**
@@ -285,32 +285,32 @@ Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Unti
 Connection: keep-alive
 Content-Encoding: gzip
 Content-Length: 204
-Content-Type: application/hal+json
-Date: Tue, 08 Mar 2016 13:28:18 GMT
-ETag: 56ded2b22d174c2a08cdee83
+Content-Type: application/json
+Date: Sun, 08 Apr 2018 21:05:59 GMT
+ETag: 5aca8368634459000711d92a
 X-Powered-By: restheart.org
 
 {
     "_embedded": {
-        "rh:doc": [
+        "_embedded": [
             {
                 "_etag": {
-                    "$oid": "56ded2d42d174c2a08cdee84"
-                }, 
+                    "$oid": "5aca83d8634459000711d92f"
+                },
                 "_id": {
-                    "$oid": "56ded2d4ad66b2a1e741c053"
-                }, 
-                "name": "restheart", 
+                    "$oid": "5aca83d868a635bcd711d79b"
+                },
+                "name": "MongoDB",
                 "rating": "super cool"
             }
         ]
     }, 
     "_etag": {
-        "$oid": "56ded2b22d174c2a08cdee83"
+        "$oid": "5aca8368634459000711d92a"
     }, 
     "_id": "coll", 
     "_returned": 1, 
-    "desc": "this is my first collection created with restheart"
+    "desc": "my first collection created with restheart"
 }
 ```
 

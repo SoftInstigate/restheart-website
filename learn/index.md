@@ -11,7 +11,7 @@ title: Documentation
 
 ## API
 
--   [API tutorial](/learn/tutorial)
+-   [Tutorial](/learn/tutorial)
 -   [Resource URIs](/learn/resource-uri)
 -   [Representation Format](/learn/representation-format)
 -   [Quick Rererence](/learn/quick-reference)
