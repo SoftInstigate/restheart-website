@@ -69,7 +69,7 @@ application-logic-mounts:
 
 The following table describes the configuration options:
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

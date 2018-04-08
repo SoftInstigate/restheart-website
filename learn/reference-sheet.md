@@ -49,7 +49,7 @@ Manage MongoDB Collections. 
 
 **Allowed Methods**
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -120,7 +120,7 @@ The Document resource allows you to manage your documents.
 
 **Allowed Methods**
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -180,7 +180,7 @@ version 3.2 the json properties of a file can be modified.
 
 **Allowed Methods**
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th>Method</th>
@@ -249,7 +249,7 @@ More information in [Request Checkers](Request_Checkers) section.
 
 **Allowed Methods**
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

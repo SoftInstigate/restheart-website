@@ -71,7 +71,7 @@ the configuration file.
 The interface *org.restheart.security.AccessManager* mandates to
 implement 2 methods:
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

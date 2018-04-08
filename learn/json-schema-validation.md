@@ -97,7 +97,7 @@ metadata property as follows:
 { "checkers": [ { "name": "jsonSchema", "args": { "schemaId": <schema_id>, "schemaStoreDb": <schema_store_db> } } ] }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>

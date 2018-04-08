@@ -83,7 +83,7 @@ configuration file.
 The interface *io.undertow.security.idm.IdentityManager* mandates to
 implement 3 *verify* methods:
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
