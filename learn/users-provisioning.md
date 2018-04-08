@@ -57,7 +57,7 @@ access-manager:
 ### 2. Configure the mandatory `security.yml` file
 
 Create some roles as needed. In this case users will be stored under the
-"`users`" collection of the "`auth`" database, but names are arbitrary.
+`users` collection of the `auth` database, but names are arbitrary.
 
 **security.yml**
 

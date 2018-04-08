@@ -54,9 +54,7 @@ upload files, RESTHeart's clients must strictly follow the Internet
 Media Type multipart/form-data as defined in [RFC
 7578](http://tools.ietf.org/html/rfc7578).
 
-[HAL doesn't specify
-forms](https://tools.ietf.org/html/draft-kelly-json-hal-07#appendix-B.5)
-but the **multipart/form-data** specification allow a form to upload
+The **multipart/form-data** specification allow a form to upload
 multiple files at the same time. RESTHeart prohibits this: while it's
 possibile to POST / PUT several different non-binary parts for each
 file, it's mandatory to upload one single binary file per each POST /
@@ -85,9 +83,7 @@ port 8080, but of course your setup can be different.
 
 ``` plain
 $ curl -u user:password -X PUT -H "Content-Type: application/json" 127.0.0.1:8080/testdb
-```
-
- 
+``` 
 
 2) Create the collection for hosting files. It must end with `.files` to
 mark this as a special collection for files:
@@ -96,44 +92,43 @@ mark this as a special collection for files:
 curl -v -u user:password -X PUT -H "Content-Type: application/json" 127.0.0.1:8080/testdb/mybucket.files
 ```
 
- 
-
 3) POST the file. Set the **file** parameter to the actual binary file,
-using the =@ curl syntax. The **filename** must be explicitly set
-(`"file=@picture.png;filename=picture.png"`):
+using the =@ curl syntax.
 
 ``` plain
-curl -v -u user:password -X POST -F "file=@picture.png;filename=picture.png" 127.0.0.1:8080/testdb/mybucket.files
+curl -v -u user:password -X POST -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files
 ```
 
 You'll see an HTTP response header like below, returning a 201 Created:
 
 ``` bash
-* Trying 127.0.0.1...
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
 * Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
-* Server auth using Basic with user 'a'
-> POST /testdb/mybucket.files HTTP/1.1
-> Authorization: Basic YTph
-> User-Agent: curl/7.37.1
+* Server auth using Basic with user 'admin'
+> PUT /testdb/mybucket.files/picture.png HTTP/1.1
 > Host: 127.0.0.1:8080
+> Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
+> User-Agent: curl/7.54.0
 > Accept: */*
-> Content-Length: 29324
+> Content-Length: 221176
 > Expect: 100-continue
-> Content-Type: multipart/form-data; boundary=------------------------895c08ced0e0f00b
+> Content-Type: multipart/form-data; boundary=------------------------d2d164f1076f1b8b
 > 
 < HTTP/1.1 100 Continue
 < Content-Length: 0
 < HTTP/1.1 201 Created
-< Auth-Token-Location: /_authtokens/a
-< Location: http://127.0.0.1:8080/testdb/mybucket.files/552e1e89e4b019b2fa790f3f
-< Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
-< Date: Wed, 15 Apr 2015 08:17:13 GMT
-< Auth-Token: e3a68770-3096-4032-ab86-cf31d3f887da
+< X-Powered-By: restheart.org
+< Auth-Token-Location: /_authtokens/admin
+< Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+< Date: Sun, 08 Apr 2018 21:26:14 GMT
+< Auth-Token: 4tplfhpu5uy5hq1ih4r2tg2f1b9kygp4sypr1oe7yvr3fby43d
 < Connection: keep-alive
 < Access-Control-Allow-Origin: *
-< Auth-Token-Valid-Until: 2015-04-15T08:32:13.774Z
+< Auth-Token-Valid-Until: 2018-04-08T21:41:13.951Z
 < Access-Control-Allow-Credentials: true
 < Content-Length: 0
+< Content-Type: application/json
 < 
 * Connection #0 to host 127.0.0.1 left intact
 ```
@@ -162,66 +157,47 @@ files a resource name coming from MongoDB. If we want to decide for a
 meaningful name then we just need to send a PUT, like this:
 
 ``` plain
-curl -v -u user:password -X PUT -F "file=@picture.png;filename=picture.png" 127.0.0.1:8080/testdb/mybucket.files/picture.png
+curl -v -u user:password -X PUT -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files/picture.png
 ```
 
- 
-
 If we GET the resulting resource, here is the full HTTP response:
-
-  Expand source
 
 ``` bash
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
-Auth-Token: aaac99c8-acf7-4311-91ee-4d4a554f1d00
-Auth-Token-Location: /_authtokens/a
-Auth-Token-Valid-Until: 2015-10-13T16:59:10.673Z
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 4tplfhpu5uy5hq1ih4r2tg2f1b9kygp4sypr1oe7yvr3fby43d
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-08T21:41:33.169Z
 Connection: keep-alive
 Content-Encoding: gzip
-Content-Length: 396
-Content-Type: application/hal+json
-Date: Tue, 13 Oct 2015 16:44:10 GMT
-ETag: 561d320f300467fb2103584e
+Content-Length: 249
+Content-Type: application/json
+Date: Sun, 08 Apr 2018 21:26:33 GMT
+ETag: 5aca88f5634459000711d931
+X-Powered-By: restheart.org
 {
-    "_etag": {
-        "$oid": "561d320f300467fb2103584e"
-    }, 
-    "_id": "mypicture.png", 
-    "_lastupdated_on": "2015-10-13T16:32:15Z", 
+    "_id": "picture.png",
     "_links": {
-        "curies": [
-            {
-                "href": "http://restheart.org/curies/1.0/{rel}.html", 
-                "name": "rh", 
-                "templated": true
-            }
-        ], 
-        "rh:bucket": {
-            "href": "/testdb/mybucket.files"
-        }, 
         "rh:data": {
-            "href": "/testdb/mybucket.files/mypicture.png/binary"
-        }, 
-        "rh:file": {
-            "href": "/testdb/mybucket.files/{fileid}?id_type={type}", 
-            "templated": true
-        }, 
-        "self": {
-            "href": "/testdb/mybucket.files/mypicture.png"
+            "href": "/db/mybucket.files/picture.png/binary"
         }
-    }, 
-    "_type": "FILE", 
-    "aliases": null, 
-    "chunkSize": 261120, 
-    "contentType": "image/png", 
-    "filename": "picture.png", 
-    "length": 2798161, 
-    "md5": "ad3aeb5907a1a0069fcf87e3c273fb54", 
+    },
+    "chunkSize": 261120,
+    "filename": "file",
+    "length": {
+        "$numberLong": "220973"
+    },
+    "md5": "0f289f7447e9db7af996e112e8fe3de1",
+    "metadata": {
+        "_etag": {
+            "$oid": "5aca88f5634459000711d931"
+        },
+        "contentType": "image/png"
+    },
     "uploadDate": {
-        "$date": 1444753935079
+        "$date": 1523222774054
     }
 }
 ```
@@ -235,8 +211,6 @@ Note that in this case the resource shows a much nicer representation: 
 Which is easier to read and link than the automatically generated name
 (but requires a little more work on your side).
 
- 
-
 If you want to better understand the theoretical difference between POST
 and PUT verbs in terms of  the Hypertext Transfer Protocol – HTTP/1.1,
 this blog post might be useful: [RESTful API memo: PUT and POST
@@ -249,97 +223,68 @@ the **properties** field name. The content of this field is
 automatically parsed as JSON data, so **it must be valid JSON**:
 
 ``` plain
-$ curl -v -u user:password -X POST -F 'properties={"name":"Maurizio", "surname":"Turatti"}' -F "file=@picture.png;filename=picture.png" 127.0.0.1:8080/testdb/mybucket.files
+$ curl -v -u user:password -X POST -F 'properties={"name":"Maurizio", "surname":"Turatti"}' -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files
 ```
-
- 
-
 The JSON will be merged into the file document (look at the end of the
 code block):
 
   Expand source
 
 ``` bash
-HTTP/1.1 200 OK
+TTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
-Auth-Token: 45b78cbb-8eb2-45da-8195-c37ba803f8fc
-Auth-Token-Location: /_authtokens/a
-Auth-Token-Valid-Until: 2015-10-12T01:43:14.668Z
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 4tplfhpu5uy5hq1ih4r2tg2f1b9kygp4sypr1oe7yvr3fby43d
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-08T21:44:08.928Z
 Connection: keep-alive
 Content-Encoding: gzip
-Content-Length: 423
-Content-Type: application/hal+json
-Date: Mon, 12 Oct 2015 01:28:14 GMT
-ETag: 561b0ca3321e0befef09343e
+Content-Length: 270
+Content-Type: application/json
+Date: Sun, 08 Apr 2018 21:29:08 GMT
+ETag: 5aca899f634459000711d933
+X-Powered-By: restheart.org
+
 {
-    "_created_on": "2015-10-12T01:28:03Z", 
-    "_embedded": {}, 
-    "_etag": {
-        "$oid": "561b0ca3321e0befef09343e"
-    }, 
     "_id": {
-        "$oid": "561b0ca3321e0befef09343c"
-    }, 
-    "_lastupdated_on": "2015-10-12T01:28:03Z", 
+        "$oid": "552e1e89e4b019b2fa790f3f" 
+    },
     "_links": {
-        "curies": [
-            {
-                "href": "http://restheart.org/curies/1.0/{rel}.html", 
-                "name": "rh", 
-                "templated": true
-            }
-        ], 
-        "rh:bucket": {
-            "href": "/testdb/mybucket.files"
-        }, 
         "rh:data": {
-            "href": "/testdb/mybucket.files/561b0ca3321e0befef09343c/binary"
-        }, 
-        "rh:file": {
-            "href": "/testdb/mybucket.files/{fileid}?id_type={type}", 
-            "templated": true
-        }, 
-        "self": {
-            "href": "/testdb/mybucket.files/561b0ca3321e0befef09343c"
+            "href": "/db/mybucket.files/552e1e89e4b019b2fa790f3f/binary"
         }
-    }, 
-    "_type": "FILE", 
-    "aliases": null, 
-    "chunkSize": 261120, 
-    "contentType": "image/png", 
-    "filename": "maurizio.png", 
-    "length": 28994, 
-    "md5": "6540feba51851416b7b737bed584a80a", 
-    "name": "Maurizio", 
-    "surname": "Turatti", 
+    },
+    "chunkSize": 261120,
+    "filename": "file",
+    "length": {
+        "$numberLong": "220973"
+    },
+    "md5": "0f289f7447e9db7af996e112e8fe3de1",
+    "metadata": {
+        "_etag": {
+            "$oid": "5aca899f634459000711d933"
+        },
+        "contentType": "image/png",
+        "name": "Maurizio",
+        "surname": "Turatti"
+    },
     "uploadDate": {
-        "$date": 1444613283563
+        "$date": 1523222943247
     }
 }
 ```
 
-If the "properties" part contains a "filename" key then this overrides
-the filename coming from the file part.
-
-For example, if the filename was defined by
-
-`"file=@picture.png; filename=picture.png"`
+If the "properties" part contains a "filename" this sets
+the filename.
 
 then passing the following part
 
 `'properties={"filename":"different_filename.png"}'`
 
-will override the name "picture.png" with "different\_filename.png".
-
-This way it would be possibile to specify a different filename on the
-fly but it could also be a source of side effects, so handle it with
-care.
-
 ### GET a binary file with curl
 
-GET the HAL representation (metadata only) for the newly created file:
+GET the representation (metadata only) for the newly created file:
 
 ``` plain
 $ curl -u user:password http://127.0.0.1:8080/testdb/mybucket.files/552e1e89e4b019b2fa790f3f
@@ -358,7 +303,7 @@ If we paste this URL to a browser's address bar then the image is
 displayed. This allows RESTHeart to serve as a very basic but powerful
 digital asset management system.
 
-![](attachments/11567174/13107220.png?width=800){width="800"}
+![](/images/attachments/11567174/13107220.png?width=800){width="800"}
 
 As explained, the underlying storage mechanism is MongoDB's GridFS,
 which is an extremely powerful abstraction over a filesystem, without
@@ -394,14 +339,12 @@ love [httpie](https://github.com/jakubroztocil/httpie). This little
 Python program allows to indent and colorize the output of HTTP
 responses, making it more readable than curl.
 
-Let's say we already have a db called "`testdb`", exactly as with curl,
+Let's say we already have a db called `testdb`, exactly as with curl,
 first create the `.files` collection, if it doesn't exist yet:
 
 ``` plain
 $ http -a user:password -j PUT 127.0.0.1:8080/testdb/mybucket.files
 ```
-
- 
 
 Then POST a file named "picture.png":
 
@@ -409,16 +352,8 @@ Then POST a file named "picture.png":
 http -a user:password -f POST 127.0.0.1:8080/testdb/mybucket.files file@picture.png;filename=picture.png
 ```
 
- 
-
 For example, to upload a file named "mypicture.png" with PUT:
 
 ``` plain
-http -a user:password -f PUT 127.0.0.1:8080/testdb/mybucket.files/mypicture.png file@"~/Desktop/mypicture.png" properties='{"author":"Maurizio Turati"}'
+http -a user:password -f PUT 127.0.0.1:8080/testdb/mybucket.files/mypicture.png file@"~/Desktop/mypicture.png" properties='{"author":"Maurizio Turatti"}'
 ```
-
-## Attachments:
-
-![](images/icons/bullet_blue.gif){width="8" height="8"} [Schermata
-2015-10-13 alle 19.26.10.png](attachments/11567174/13107220.png)
-(image/png)  

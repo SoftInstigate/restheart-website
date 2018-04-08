@@ -186,7 +186,7 @@ own *properties*, *embedded resources* (in this case, documents) and
 GET 127.0.0.1:8080/db/coll?count
 ```
 
-**Response**  Expand source
+**Response** 
 
 ``` bash
 HTTP/1.1 200 OK

@@ -87,7 +87,7 @@ to the type of the query (e.g. `METRICS`, `DATABASE`, `COLLECTION`,
 first digit, full). The examples are calls to the root `/_metrics` after
 a few calls to an empty database (thus the 404s).
 
-**Prometheus example response**  Expand source
+**Prometheus example response** 
 
 ``` plain
 http_response_timers_METRICS_count{method="GET",code="2xx"} 13 1510039263986
@@ -308,7 +308,7 @@ http_response_timers_DOCUMENT_rate_units{method="GET"} calls/second 151003926398
 
 ```
 
-**JSON example response**  Expand source
+**JSON example response**
 
 ``` json
 {
