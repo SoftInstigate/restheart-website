@@ -3,7 +3,93 @@ layout: docs
 title: Representation Format
 ---
 
-**WORK IN PROGRESS**
+## Introduction
+
+Each resource has its **properties** and **embedded** resources.
+Dbs embed collections that embed documents.
+
+RESTHeart has two different options for representing the resources: `plain JSON` and `HAL`. The default representation is controlled with `default-representation-format` configuration option.
+
+``` yml
+#### default representation format (PLAIN_JSON or HAL)
+default-representation-format: PLAIN_JSON
+```
+
+The `rep` query parameter can also be used.
+
+``` plain
+GET /db/coll?rep=hal
+GET /db/coll?rep=pj
+```
+
+## Plain JSON Representation
+
+In the following response the collection /db/coll has the properties *_id*, *_etag* *prop* and two embedded documents and the special property *_returned*
+
+``` bash
+GET /db/coll
+HTTP/1.1 200 OK
+```
+``` json
+{
+    "_embedded": [
+        {
+            "_etag": {
+                "$oid": "5ac9f96063445900062144ac"
+            },
+            "_id": {
+                "$oid": "5ac9f960913b07543c0085ec"
+            },
+            "a": 2
+        },
+        {
+            "_etag": {
+                "$oid": "5ac9f95f63445900062144ab"
+            },
+            "_id": {
+                "$oid": "5ac9f95f913b07543c0085e7"
+            },
+            "a": 1
+        }
+    ],
+    "_id": "coll",
+    "prop": "foo",
+    "_etag": {
+        "$oid": "5aca45626344590007ecbda5"
+    },
+    "_returned": 2
+}
+```
+
+When the request specifies the `np` query parameter (that stands for **N**o **P**roperties), the response body is the array of embedded resources and does not include the resource properties.
+
+``` plain
+GET /db/coll?np
+
+[
+    {
+        "_etag": {
+            "$oid": "5ac9f96063445900062144ac"
+        },
+        "_id": {
+            "$oid": "5ac9f960913b07543c0085ec"
+        },
+        "a": 2
+    },
+    {
+        "_etag": {
+            "$oid": "5ac9f95f63445900062144ab"
+        },
+        "_id": {
+            "$oid": "5ac9f95f913b07543c0085e7"
+        },
+        "a": 1
+    }
+]
+
+```
+
+## HAL Representation
 
 * [Hypermedia Application Language](#hypermedia-application-language)
 * [Strict mode representations of BSON](#strict-mode-representations-of-bson)
@@ -19,7 +105,7 @@ forth by the means of *representations*.
 This section introduces you with the resource **representation** format
 used by RESTHeart.
 
-## Hypermedia Application Language
+### Hypermedia Application Language
 
 RESTHeart uses
 the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
@@ -77,7 +163,7 @@ The correct request is: 
 GET /db/coll?filter={'_id':{'$oid':'546b2dcdef863f5121fc91f3'}}
 ```
 
-## Hal mode
+### Hal mode
 
 HAL mode is available starting version 1.1
 
@@ -89,7 +175,7 @@ When hal=f is specified, the representation is more verbose and includes
 special properties (such as *\_type* and *\_lastupdated\_on*), link
 templates and curies (links to API documentation).
 
-## Examples
+### Examples
 
 We’ll get a collection resource and analyze it. As any other in
 RESTHeart, a collection resource is represented with HAL; thus has its
@@ -151,7 +237,7 @@ X-Powered-By: restheart.org
 }
 ```
 
-## Properties
+### Properties
 
 In this case, the collection properties comprise the field *desc*; this
 is user defined.
@@ -215,7 +301,7 @@ The `_embedded property looks like:`
     }
 ```
 
-## Links
+### Links
 
 \_links are only returned on hal full mode. The only exception are with
 [relationships](Relationships). If a collection defines a relationship,
