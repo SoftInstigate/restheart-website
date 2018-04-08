@@ -6,9 +6,8 @@ title: Collection Indexes
 * [Introduction](#introduction)
 * [List the collection indexes](#list-the-collection-indexes)
 * [Create an index](#create-an-index)
-* [<strong>Delete an index</strong>](#delete-an-index)
-* [<strong>Notes</strong>](#notes)
-    * [**Invalid options **](#invalid-options)
+* [Delete an index](#delete-an-index)
+* [Notes](#notes)
 
 ## Introduction
 
@@ -102,7 +101,7 @@ DELETE /db/coll/_indexes/<index_id>
 
 ## **Notes**
 
-### **Invalid options **
+### Invalid options
 
 When creating an index the index options must be valid.
 
@@ -127,7 +126,7 @@ HTTP/1.1 406 Not Acceptable
 }
 ```
 
-**Indexes cannot be updated**
+### Indexes cannot be updated
 
 **To update an index, it must be deleted and recreated:**
 
