@@ -94,8 +94,6 @@ $ docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro 
  1. `docker pull mongo:3.6`
  1. `docker pull softinstigate/restheart:3.2.2`
 
-*We recommend to pull a specific MongoDB image, for example `docker pull mongo:3.6`. RESTHeart has been tested so far with MongoDB 2.6, 3.0, 3.2, 3.4 and 3.6.*
-
 ### 2) Run the MongoDB container
 
 ```
@@ -176,7 +174,7 @@ Note that you must **always stop RESTHeart before MongoDB**, or you might experi
 
 ## Installation
 
-If you don’t have them already, please download the following packages:
+If you don’t have them already, download the following packages:
 
 -   [Java 8](index)
 -   [MongoDB](http://www.mongodb.org/downloads)
@@ -206,7 +204,7 @@ $ mongod --version
 db version v3.0.7
 ```
 
-RESTHeart has been tested with MongoDB version 3.2, 3.0, 2.6 and 2.4.
+RESTHeart has been tested with MongoDB version 3.6, 3.4, 3.2, 3.0, 2.6 and 2.4.
 
 ### 2. Install RESTHeart
 
@@ -231,7 +229,7 @@ the `--dbpath` option: `mongod --dbpath <path to data directory>`. You
 might prefer to run the MongoDB process in background, using
 the `--fork` parameter: `mongod --fork --syslog`:
 
-``` text
+``` bash
 $ mongod --fork --syslog
 about to fork child process, waiting until server is ready for connections.
 forked process: 11471
@@ -247,7 +245,7 @@ Run the RESTHeart server by typing `java -server -jar restheart.jar`.
 This starts it with the default configuration, which is fine for MongoDB
 running on localhost, on default port and without authentication.
 
-Convention over configuration
+#### Convention over configuration
 
 Different configuration options can be specified passing a configuration
 file as argument. Note that the configuration file path is either
@@ -269,7 +267,7 @@ configuration options.
 
 For example:
 
-``` plain
+``` bash
 $ java -jar restheart.jar 
 14:01:09.968 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart
 14:01:09.971 [main] INFO  org.restheart.Bootstrapper - version 2.0.0
@@ -291,21 +289,7 @@ $ java -jar restheart.jar
 14:01:11.246 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
-We’ll now use
-the [HAL](http://stateless.co/hal_specification.html) format and the
-embedded [HAL browser](https://github.com/mikekelly/hal-browser) to
-check that everything is fine. The HAL browser allows you to surf the
-DATA API with your regular Web browser.
-
-[HAL](http://stateless.co/hal_specification.html) is a simple format
-that gives a consistent and easy way to hyperlink between resources in
-your API. *Adopting HAL will make your API explorable, and its
-documentation easily discoverable from within the API itself. In short,
-it will make your API easier to work with and therefore more attractive
-to client developers. APIs that adopt HAL can be easily served and
-consumed using open source libraries available for most major
-programming languages. It’s also simple enough that you can just deal
-with it as you would any other JSON*.
+We’ll now use the embedded [HAL browser](https://github.com/mikekelly/hal-browser) to check that everything is fine. The HAL browser allows you to surf the DATA API with your regular Web browser.
 
 To see the HAL user interface, now open your browser
 at: [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
@@ -322,7 +306,7 @@ from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
 process in background, using the `--fork `parameter.
 
-``` plain
+``` bash
 $ mongod --fork --syslog --auth
 $ mongo
 ```
@@ -354,7 +338,7 @@ version.
 We’ll use the restheart.yml example configuration file that comes with
 RESTHeart download package (you find it in the etc directory)
 
-``` plain
+``` bash
 $ vi etc/restheart.yml
 ```
 
@@ -368,7 +352,7 @@ mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 
 Now start RESTHeart specifying the configuration file:
 
-``` plain
+``` bash
 $ java -server -jar restheart.jar etc/restheart.yml
 ```
 
@@ -422,8 +406,7 @@ $ java -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStor
 
 #### 5.2. MongoDB authentication with just enough permissions 
 
-In the previous examples we used a mongodb user with *root *role (or
-*clusterAdmin* and *dbAdminAnyDatabase* roles for version 2.4) for the
+In the previous examples we used a mongodb user with *root *role for the
 sake of simplicity. This allows RESTHeart to execute any command on any
 mongodb resource.
 
