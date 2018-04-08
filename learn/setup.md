@@ -459,6 +459,6 @@ custom role.
 
 ### 6. Clients Authentication and Authorization
 
-Refert to [Security](Security) section for detailed information about
+Refert to [Security](/learn/Security) section for detailed information about
 how enable, configure and customize clients authentication and
 authorization.
