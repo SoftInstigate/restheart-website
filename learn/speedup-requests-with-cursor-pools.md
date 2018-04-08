@@ -142,7 +142,7 @@ width="640"}
 The engine is controlled by the *eager* query parameter. Possible values
 are:
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 33%" />
 <col style="width: 33%" />
@@ -202,7 +202,7 @@ eager-cursor-allocation-random-max-cursors: 20
 eager-cursor-allocation-random-slice-min-width: 1000
 ```
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />

@@ -55,7 +55,7 @@ be applied to the requests involving the collection and its documents.
 }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>
@@ -128,7 +128,7 @@ public boolean doesSupportRequests(RequestContext rc) {
 
 Note the following useful `RequestContext` getters:
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><br />

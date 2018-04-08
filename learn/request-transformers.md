@@ -47,7 +47,7 @@ The metadata property *rts* is an array of *transformer* objects. A
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>

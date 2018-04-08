@@ -32,33 +32,31 @@ HTTP/1.1 200 OK
 ...
 
 {
-    "_embedded": {
-        "rh:index": [
-            {
-                "_id": "_id_", 
-                "key": {
-                    "_id": 1
-                }, 
-                "ns": "db.coll", 
-                "v": 1
+    "_embedded": [
+        {
+            "_id": "_id_", 
+            "key": {
+                "_id": 1
             }, 
-            {
-                "_id": "text", 
-                "default_language": "english", 
-                "key": {
-                    "_fts": "text", 
-                    "_ftsx": 1
-                }, 
-                "language_override": "language", 
-                "ns": "db.coll", 
-                "textIndexVersion": 3, 
-                "v": 1, 
-                "weights": {
-                    "title": 1
-                }
+            "ns": "db.coll", 
+            "v": 1
+        }, 
+        {
+            "_id": "text", 
+            "default_language": "english", 
+            "key": {
+                "_fts": "text", 
+                "_ftsx": 1
+            }, 
+            "language_override": "language", 
+            "ns": "db.coll", 
+            "textIndexVersion": 3, 
+            "v": 1, 
+            "weights": {
+                "title": 1
             }
-        ]
-    }, 
+        }
+    ], 
     "_returned": 2, 
     "_size": 2,
     ...
@@ -116,14 +114,12 @@ be 406:
 HTTP/1.1 406 Not Acceptable
  
 {
-    "_embedded": {
-        "rh:exception": [
-            {
-                "exception": "com.mongodb.DuplicateKeyException", 
-                "exception message": "Write failed with error code 11000 and error message 'E11000 duplicate key error index: test.coll.$name2 dup key: ...."
-            }
-        ]
-    },
+    "_exceptions": [
+        {
+            "exception": "com.mongodb.DuplicateKeyException", 
+            "exception message": "Write failed with error code 11000 and error message 'E11000 duplicate key error index: test.coll.$name2 dup key: ...."
+        }
+    ],
     "http status code": 406, 
     "http status description": "Not Acceptable", 
     "message": "error creating the index",
@@ -149,14 +145,12 @@ Trying to update an existing index returns 406 Not Acceptable:
 HTTP/1.1 406 Not Acceptable
  
 {
-    "_embedded": {
-        "rh:exception": [
-            {
-                "exception": "com.mongodb.MongoCommandException", 
-                "exception message": "Command failed with error 86: 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }' on server 127.0.0.1:27017. The full response is { 'ok' : 0.0, 'errmsg' : 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }', 'code' : 86 }"
-            }
-        ]
-    }, 
+    "_exceptions": [
+        {
+            "exception": "com.mongodb.MongoCommandException", 
+            "exception message": "Command failed with error 86: 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }' on server 127.0.0.1:27017. The full response is { 'ok' : 0.0, 'errmsg' : 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }', 'code' : 86 }"
+        }
+    ],
     "http status code": 406, 
     "http status description": "Not Acceptable", 
     "message": "error creating the index",

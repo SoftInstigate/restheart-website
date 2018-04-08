@@ -57,7 +57,7 @@ operations but only those defined (and tested) by the developers.
 }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th>Property</th>
@@ -118,7 +118,7 @@ not needed anymore.
 }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th>Property</th>
@@ -226,13 +226,13 @@ GET /test/ao_test/_aggrs/test_ap
 HTTP/1.1 400 Bad Request
 ...
 {
-    "_embedded": {
-        "rh:exception": [
-            {
-                "exception": "org.restheart.hal.metadata.QueryVariableNotBoundException", 
-                "exception message": "variable n not bound", 
-                ...
-            }]}
+    "_exceptions": [
+        {
+            "exception": "org.restheart.hal.metadata.QueryVariableNotBoundException", 
+            "exception message": "variable n not bound", 
+            ...
+        }
+    ]
 }
 ```
 

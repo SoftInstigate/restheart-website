@@ -50,7 +50,7 @@ apply to any resource type, such as databases and collections.
 
 The following table summarizes the semantic of the write verbs:
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -246,33 +246,25 @@ POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
 
 ``` json
 {
-  "_embedded": {
-    "rh:result": [
+  "_embedded": [
       {
-        "_links": {
-          "rh:newdoc": [
-            {
-              "href": "/xxx/yyy/5716560a2d174cac010daf17"
-            },
-            {
-              "href": "/xxx/yyy/5716560a2d174cac010daf18"
-            },
-            {
-              "href": "/xxx/yyy/5716560a2d174cac010daf19"
-            },
-            {
-              "href": "/xxx/yyy/5716560a2d174cac010daf1a"
-            }
-          ]
-        },
-        "inserted": 4,
-        "deleted": 0,
-        "modified": 0,
-        "matched": 0
+        "href": "/xxx/yyy/5716560a2d174cac010daf17"
+      },
+      {
+        "href": "/xxx/yyy/5716560a2d174cac010daf18"
+      },
+      {
+        "href": "/xxx/yyy/5716560a2d174cac010daf19"
+      },
+      {
+        "href": "/xxx/yyy/5716560a2d174cac010daf1a"
       }
-    ]
-  }
-}
+    ],
+  "inserted": 4,
+  "deleted": 0,
+  "modified": 0,
+  "matched": 0
+} 
 ```
 
 ### PATCH multiple documents using the wildcard document id
@@ -317,16 +309,10 @@ PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
 
 ``` json
 {
-  "_embedded": {
-    "rh:result": [
-      {
-        "inserted": 0,
-        "deleted": 0,
-        "modified": 9,
-        "matched": 9
-      }
-    ]
-  }
+  "inserted": 0,
+  "deleted": 0,
+  "modified": 9,
+  "matched": 9
 }
 ```
 
@@ -366,15 +352,9 @@ DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
 
 ``` json
 {
-  "_embedded": {
-    "rh:result": [
-      {
-        "inserted": 0,
-        "deleted": 23,
-        "modified": 0,
-        "matched": 0
-      }
-    ]
-  }
+  "inserted": 0,
+  "deleted": 23,
+  "modified": 0,
+  "matched": 0
 }
 ```

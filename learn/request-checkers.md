@@ -42,7 +42,7 @@ the following format:
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>
@@ -109,7 +109,7 @@ If the type is 'object' the properties *mandatoryFields* and
 { "path": <json_path>, "type": "object", "mandatoryFields": [ <field_names> ], "optionalFields": [ <field_names>] }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>
@@ -221,7 +221,7 @@ For example, given the following document:
 The following table shows what document parts, different json path
 expressions select:
 
-<table>
+<table  class="ts">
 <thead>
 <tr class="header">
 <th>json pat expr</th>
@@ -266,7 +266,7 @@ expressions select:
 The following example creates the collection *user* enforcing its
 document to have following fields:
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th>name</th>

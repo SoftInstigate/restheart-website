@@ -40,24 +40,9 @@ HTTP/1.1 200 OK
         "$oid": "55e84f5ac2e66d1e0a8e46b8"
     }, 
     "_id": "doc", 
-    "_links": {
-        "curies": [], 
-        "self": {
-            "href": "/test/coll/doc"
-        }
-    }, 
     "descr": "a document for testing but modified"
 }
 ```
-
-The representation of the document resource includes
-the `_links `property. In this case it has three nested properties:
-
--   `self` whose `href` property is the URI of the document itself;
--   `rh:coll `whose `href` property is the URI of the parent collection
-    of the document;
--   `curies `that is an array of named links, pointing to the API
-    documentation.
 
 **Declaring a relationship will add to the `_links` property the related
 documents links.**
@@ -86,7 +71,7 @@ HAL `_link` property
 }
 ```
 
-<table>
+<table class="ts">
 <thead>
 <tr class="header">
 <th><div>
