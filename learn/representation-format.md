@@ -245,6 +245,7 @@ is user defined.
 The other fields are reserved properties (i.e. are managed automatically
 by RESTHeart for you); these always starts with \_:
 
+{: .ts}
 | Property       | Description                                                                                             |
 |----------------|---------------------------------------------------------------------------------------------------------|
 | `_type`        | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode)                   |
@@ -308,7 +309,7 @@ The `_embedded property looks like:`
 the representation of the documents always include the links to related
 data.
 
-<table>
+<table class="ts">
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -333,11 +334,11 @@ data.
 <td>link to the last page</td>
 </tr>
 <tr class="even">
-<td><pre><code>rh:db</code></pre></td>
+<td><code>rh:db</code></td>
 <td>templated link for db</td>
 </tr>
 <tr class="odd">
-<td><pre><code>rh:coll</code></pre></td>
+<td><code>rh:coll</code></td>
 <td>templated link for collection</td>
 </tr>
 <tr class="even">
@@ -367,7 +368,7 @@ data.
 </tbody>
 </table>
 
-The `_links property looks like:`
+The `_links` property looks like:
 
 ``` json
 "_links": {

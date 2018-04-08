@@ -38,11 +38,9 @@ $ http -a a:a GET "127.0.0.1:8080/test/coll?count&page=3&pagesize=10"
 HTTP/1.1 200 OK
 ...
 {
-    "_embedded": {
-        "rh:doc": [
-            { <DOC30> }, { <DOC31> }, ... { <DOC39> }
-        ]
-    },
+    "_embedded": [
+        { <DOC30> }, { <DOC31> }, ... { <DOC39> }
+    ],
     ...
 }
 ```

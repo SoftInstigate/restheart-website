@@ -57,11 +57,9 @@ HTTP/1.1 200 OK
 ...
 
 {
-    "_embedded": {
-        "rh:doc": [
-            { <DOC1> }, { <DOC2> }, { <DOC3> }, ..., { <DOC100> }
-        ]
-    }, 
+    "_embedded": [
+        { <DOC1> }, { <DOC2> }, { <DOC3> }, ..., { <DOC100> }
+    ], 
     "_returned": 100
 }
 ```
@@ -194,11 +192,9 @@ GET /test/coll?count&page=3&pagesize=10&hal=f&np
 HTTP/1.1 200 OK
 ...
 {
-    "_embedded": {
-        "rh:doc": [
-            { <DOC30> }, { <DOC31> }, ... { <DOC39> }
-        ]
-    }
+    "_embedded": [
+        { <DOC30> }, { <DOC31> }, ... { <DOC39> }
+    ],
     "_returned": 10,
     "_size": 343
     "_total_pages": 35

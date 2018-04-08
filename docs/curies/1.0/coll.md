@@ -64,7 +64,7 @@ Note the Location response header. This is the URL of the created document.
 
 ### get the collection <code>/test/coll</code> which includes its documents as _embedded resources.
 
-{% highlight bash %}
+``` bash
 $ http GET 127.0.0.1:8080/test/coll
 HTTP/1.1 200 OK
 ...
@@ -81,29 +81,27 @@ HTTP/1.1 200 OK
         },
         ...
     },
-    "_embedded": {
-        "rh:doc": [
-            {
-                ...
-                "array": [
-                    1, 
-                    2, 
-                    3
-                ], 
-                "number": 1, 
-                "object": {
-                    "a": 1, 
-                    "b": 2
-                }, 
-                "string": "whatever"
-            }
-        ]
-    }, 
+    "_embedded": [
+        {
+            ...
+            "array": [
+                1, 
+                2, 
+                3
+            ], 
+            "number": 1, 
+            "object": {
+                "a": 1, 
+                "b": 2
+            }, 
+            "string": "whatever"
+        }
+    ], 
     ...
     "_returned": 1, 
     "descr": "a collection for testing"
 }
-{% endhighlight %}
+```
 
 {: .bs-callout .bs-callout-info }
 Note between the _links, the URI of its parent resource, in this case the database /test and of the collection [indexes](indexes.html).
