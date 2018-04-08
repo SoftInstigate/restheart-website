@@ -25,10 +25,10 @@ title: Setup
 
 ## Quick Start with Docker Compose
 
-Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/Docker/docker-compose.yml)
+Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
 ```
-$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/docker-compose.yml --output docker-compose.yml
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 ```
 
 The file `docker-compose.yml` defines a single microservice made of a RESTHeart and MongoDB instance configured to work together.
@@ -73,7 +73,7 @@ docker pull softinstigate/restheart:3.2.2
 
 ### Dockerfile
 
- * The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/Docker/Dockerfile).
+ * The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/Dockerfile).
 
 ### How to Run
 
