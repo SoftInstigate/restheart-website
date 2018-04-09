@@ -6,7 +6,7 @@ title: Request Transformers
 * [Introduction](#introduction)
 * [The <em>rts</em> collection metadata](#thertscollection-metadata)
 * [Available and Custom Transformers](#available-and-custom-transformers)
-* [Inject properties with add RequestProperties transformer](#inject-properties-with-addrequestproperties-transformer)
+* [Inject properties with add RequestProperties transformer](#inject-properties-withaddrequestproperties-transformer)
 * [Filter out properties with <em>filterProperties</em> transformer](#filter-out-properties-withfilterproperties-transformer)
 * [Custom Transformers](#custom-transformers)
 
@@ -97,7 +97,7 @@ Mandatory
 
 RESTHeart comes with 4 ready-to-be-used transformers:
 
--   [addRequestProperties](#inject-properties-with-addrequestproperties-transformer) to
+-   [addRequestProperties](#inject-properties-withaddrequestproperties-transformer) to
     add properties.
 -   [filterProperties](#filter-out-properties-withfilterproperties-transformer) to filter
     out properties.
