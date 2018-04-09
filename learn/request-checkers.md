@@ -394,7 +394,7 @@ The following is the default configuration file section declaring the
 two off-the-shelf checkers provided with RESTHeart (checkContent and
 checkContentSize) and a third, custom one.
 
-``` text
+``` yml
 metadata-named-singletons:
     - group: checkers
       interface: org.restheart.hal.metadata.singletons.Checker
@@ -413,8 +413,9 @@ classpath.
 For example, RESTHeart could be started with the following command:
 
   
-
-    $ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml
+``` bash
+$ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml
+```
 
 The following code, is an example checker that checks if the
 *number* property is an integer between 0 and 10.

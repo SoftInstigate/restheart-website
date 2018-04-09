@@ -175,7 +175,7 @@ hook ](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org
 just logs resource status before and after request db operation
 execution).
 
-``` text
+``` yml
 metadata-named-singletons:
     - group: hooks
       interface: org.restheart.hal.metadata.singletons.Hook

@@ -43,7 +43,7 @@ requests or responses.
 The metadata property *rts* is an array of *transformer* objects. A
 *transformer* object has the following format:
 
-``` js
+``` json
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
 ```
 
@@ -241,7 +241,7 @@ classpath.
 
 For example, RESTHeart could be started with the following command:
 
- ``` bash
+``` bash
 $ java -server -classpath restheart.jar:custom-transformer.jar org.restheart.Bootstrapper restheart.yml
 ```
 
@@ -258,7 +258,7 @@ package com.whatever;
 
 public class MyTransformer implements Transformer {
     tranform(final HttpServerExchange exchange, final RequestContext context, DBObject contentToTransform, final DBObject args) {
-        contentToTransform.put("_timestamp", System.currentTimeMillis());
+        contentToTransform.put("_timestamp", System.currentTimeMillis());
     }
 }
 ```
