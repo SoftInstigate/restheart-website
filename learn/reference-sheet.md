@@ -243,7 +243,7 @@ Example
 PATCH /db/coll { "checkers": [ { "name": "jsonSchema", "args": { "schemaId": "<schema_id>" } } ] }
 ```
 
-More information in [Request Checkers](Request_Checkers) section.
+More information in [Request Checkers](/learn/request-checkers) section.
 
 **URI** `/<dbname>/_schemas/<schemaid>`
 

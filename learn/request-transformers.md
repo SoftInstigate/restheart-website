@@ -15,8 +15,8 @@ title: Request Transformers
 Transformers allow to change the json document representing the resource
 state, for instance adding, modifying or filtering out some properties.
 
-Resources data flows in and out of RESTHeart in HAL+json format (see
-[Representation Format](Representation_Format) section), where the state
+Resources data flows in and out of RESTHeart in json format (see
+[Representation Format](/learn/representation-format) section), where the state
 is represented as a json document.
 
 A transformer can be applied either in the REQUEST or RESPONSE phases:
@@ -178,7 +178,7 @@ transformer metadata object.
 The usual application of this transformer is hiding sensitive data to
 clients.
 
-In [Security](Security) section, the *DbIdentityManager* is described.
+In [Security](/learn/security) section, the *DbIdentityManager* is described.
 It allows to authenticate users defined in a mongodb collection
 that must have the following fields: \_id as the userid, password
 (string) and roles (an array of strings).

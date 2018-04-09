@@ -6,8 +6,8 @@ layout: docs
 ## Introduction
 
 You can extend RESTHeart by implementing custom extensions, such as
-[Application Logic Handlers](Application_Logic) and [Request
-Hooks](Request_Hooks). As RESTHeart is a Java application, to package
+[Application Logic Handlers](/learn/application-logic) and [Request
+Hooks](/learn/request-hooks). As RESTHeart is a Java application, to package
 custom code you usually use Maven or any Maven-compatible tool, such as
 Gradle.
 

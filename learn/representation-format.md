@@ -305,7 +305,7 @@ The `_embedded property looks like:`
 ### Links
 
 \_links are only returned on hal full mode. The only exception are with
-[relationships](Relationships). If a collection defines a relationship,
+[relationships](/learn/relationships). If a collection defines a relationship,
 the representation of the documents always include the links to related
 data.
 

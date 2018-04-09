@@ -34,7 +34,7 @@ Another option is packaging the classes with RESTHeart in a single jar
 using the [maven shade
 plugin](https://maven.apache.org/plugins/maven-shade-plugin/). For more
 information refer to the [How to package custom
-code](How_to_package_custom_code) section.
+code](/learn/custom-code-packaging-howto) section.
 
 ## The *hooks* collection metadata
 

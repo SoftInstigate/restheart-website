@@ -79,15 +79,15 @@ Mandatory
 
 RESTHeart comes with 3 ready-to-be-used checkers:
 
--   [checkContent](#RequestCheckers-checkContent) to enforce a structure
+-   [checkContent](#schema-validation-with-checkcontent-checker) to enforce a structure
     to documents using json path expressions
--   [checkContentSize](#RequestCheckers-checkContentSize) to check the
+-   [checkContentSize](#limiting-file-size-with-checkcontentsize) to check the
     request size
 -   **jsonSchemaChecker** to enforce a structure to documents using json
     schema; more information at [Document validation with JSON
-    schema](Document_validation_with_JSON_schema)
+    schema](/learn/json-schema-validation)
 
-[Custom checkers](#RequestCheckers-customCheckers) can also be
+[Custom checkers](#custom-checkers) can also be
 implemented.
 
 ## Schema validation with checkContent checker

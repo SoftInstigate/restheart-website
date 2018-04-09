@@ -211,7 +211,7 @@ Note that you must **always stop RESTHeart before MongoDB**, or you might experi
 
 If you don’t have them already, download the following packages:
 
--   [Java 8](index)
+-   [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 -   [MongoDB](http://www.mongodb.org/downloads)
 -   [RESTHeart](https://github.com/softinstigate/restheart)
 
@@ -220,7 +220,7 @@ Most of the work must be done using a command line interface. 
 ### 1. Install Java and MongoDB
 
 Install [Java
-8](index) and [MongoDB](http://docs.mongodb.org/manual/installation/) following
+8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and [MongoDB](http://docs.mongodb.org/manual/installation/) following
 the instructions for your specific operating system and make sure that
 their binaries are actually executable (so they are in your PATH env
 variable).

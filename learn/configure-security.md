@@ -45,7 +45,7 @@ Once security is enabled, requests undergo the following process:
     eventually returns the response code *200 OK* (this depends on the
     request type and execution result)
 
-![](attachments/13369378/13729831.png?height=400){.image-center
+![](/images/attachments/13369378/13729831.png?height=400){.image-center
 height="400"}
 
 The configuration sections to setup are:
@@ -66,7 +66,7 @@ authentication mechanism.
 RESTHeart is stateless: there isn't any authentication session and
 credentials must be sent on every request.
 
-Refer to [How Clients authenticate](How_Clients_authenticate) for more
+Refer to [How Clients authenticate](/learn/clients_authentication) for more
 information.
 
 The HTTPS listener
@@ -162,7 +162,7 @@ If the client credentials are not valid the response will be **HTTP/1.1
 
 The IDM is pluggable: the actual IDM implementation to use can be
 configured. Please refer to [Custom Identity
-Manager](Custom_Identity_Manager) section for more information on how to
+Manager](/learn/custom-identity-manager) section for more information on how to
 develop and configure a custom IDM.
 
 The **idm** section of the yaml configuration file is:
@@ -237,7 +237,7 @@ sensitive data; for this you have several options, including:
 1.  defining an appropriate access policy enforced by the Access Manager
     so that users can only access their own data
 2.  filter out the *password* property from responses with
-    a [representation transformer](Request_Transformers).
+    a [representation transformer](/learn/request-transformers).
 
 **Access Manager**
 
@@ -330,5 +330,5 @@ permissions:
 
 ## Attachments:
 
-![](images/icons/bullet_blue.gif){width="8" height="8"} [restheart
-security image.png](attachments/13369378/13729831.png) (image/png)  
+[restheart
+security image.png](/images/attachments/13369378/13729831.png) (image/png)  

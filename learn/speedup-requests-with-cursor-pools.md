@@ -24,12 +24,12 @@ In common scenarios, RESTHeart's db cursor pre-allocation engine allows
 to deliver brilliant performances, even up to a 1000% increase over
 querying MongoDB directly with its Java driver.
 
-Refer to the [Performances](Performances) section for more information
+Refer to the [Performances](/learn/performances) section for more information
 and real case results.
 
 Let's first clarify the issue addressed by the engine.
 
-RESTHeart allows to [query documents](Query_Documents) via GET requests
+RESTHeart allows to [query documents](/learn/query-documents) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 
@@ -117,7 +117,7 @@ The following images depicts how it works, in the LINEAR case:**
     RESTHeart finds cursor in the pool that has been already skipped. In
     this case, only 3 more skips are needed.
 
-![](attachments/9207943/12058633.png?width=640){.image-center
+![](/images/attachments/9207943/12058633.png?width=640){.image-center
 width="640" height="400"}
 
 The following images depicts how it works, in the RANDOM case:
@@ -132,7 +132,7 @@ The following images depicts how it works, in the RANDOM case:
     in the pool that has been already skipped. In the worst case only
     *slice width* skips are needed.
 
-![](attachments/9207943/12058637.png?width=640){.image-center
+![](/images/attachments/9207943/12058637.png?width=640){.image-center
 width="640"}
 
  
@@ -258,15 +258,3 @@ collection is big, sorting by properties that are not indexed is not a
 good idea and will probably lead to a MongoDB error anyway.
 
 In this case, the **eager=none** parameter can be specified.
-
-## Attachments:
-
-![](images/icons/bullet_blue.gif){width="8" height="8"} [Schermata
-2015-09-21 alle 16.10.40.png](attachments/9207943/12058632.png)
-(image/png)  
-![](images/icons/bullet_blue.gif){width="8" height="8"} [dbcursor
-preallocation linear policy.png](attachments/9207943/12058633.png)
-(image/png)  
-![](images/icons/bullet_blue.gif){width="8" height="8"} [dbcursor
-preallocation random policy.png](attachments/9207943/12058637.png)
-(image/png)  

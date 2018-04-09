@@ -32,10 +32,8 @@ In RESTHeart, `GET` collection resource requests
 (`GET /db/coll`) retrieve documents from the collection as embedded
 resources.
 
-RESTHeart represents resources with the [HAL
-format](Representation_Format) where resources have state, links and
-**embedded resources**. Refer to [Representation
-Format](Representation_Format) for more information about HAL.
+Refer to [Representation
+Format](/learn/representation-format) for more information about the representation format.
 
 This section also applies to File Bucket and Schema Store resources,
 that embed File and JSON schema resources respectively.
