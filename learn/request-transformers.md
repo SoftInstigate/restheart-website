@@ -6,7 +6,7 @@ title: Request Transformers
 * [Introduction](#introduction)
 * [The <em>rts</em> collection metadata](#thertscollection-metadata)
 * [Available and Custom Transformers](#available-and-custom-transformers)
-* [Inject properties with addRequestProperties transformer](#inject-properties-withaddrequestproperties-transformer)
+* [Inject properties with add RequestProperties transformer](#inject-properties-with-addrequestproperties-transformer)
 * [Filter out properties with <em>filterProperties</em> transformer](#filter-out-properties-withfilterproperties-transformer)
 * [Custom Transformers](#custom-transformers)
 
@@ -97,14 +97,14 @@ Mandatory
 
 RESTHeart comes with 4 ready-to-be-used transformers:
 
--   [addRequestProperties](#RequestTransformers-addRequestProperties) to
+-   [addRequestProperties](#inject-properties-with-addrequestproperties-transformer) to
     add properties.
--   [filterProperties](#RequestTransformers-filterProperties) to filter
+-   [filterProperties](#filter-out-properties-withfilterproperties-transformer) to filter
     out properties.
 -   stringsToOids and oidsToStrings to convert strings to ObjectIds and
     vice versa (usually from requests and responses the respectively).
 
-[Custom transformers](#RequestTransformers-customTransformers) can also
+[Custom transformers](#custom-transformers) can also
 be implemented.
 
 ## Inject properties with addRequestProperties transformer
@@ -221,7 +221,7 @@ configuration file.
 The following is the default configuration file section declaring the
 off-the-shelf transformers provided with RESTHeart plus custom one.
 
-``` plain
+``` yml
 - group: transformers
       interface: org.restheart.hal.metadata.singletons.Transformer
       singletons:
@@ -241,9 +241,9 @@ classpath.
 
 For example, RESTHeart could be started with the following command:
 
- 
-
-    $ java -server -classpath restheart.jar:custom-transformer.jar org.restheart.Bootstrapper restheart.yml
+ ``` bash
+$ java -server -classpath restheart.jar:custom-transformer.jar org.restheart.Bootstrapper restheart.yml
+```
 
 The following code, is an example transformer that adds to the content
 the property *timestamp*.
@@ -253,9 +253,9 @@ import org.restheart.hal.metadata.singletons.Transformer;
 import io.undertow.server.HttpServerExchange;
 import org.restheart.handlers.RequestContext;
 import com.mongodb.DBObject;
- 
+
 package com.whatever;
- 
+
 public class MyTransformer implements Transformer {
     tranform(final HttpServerExchange exchange, final RequestContext context, DBObject contentToTransform, final DBObject args) {
         contentToTransform.put("_timestamp", System.currentTimeMillis());
