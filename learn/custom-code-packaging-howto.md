@@ -27,3 +27,61 @@ To add RESTHeart dependency to your pom.xml, just add this:
     <version>3.2.0</version>
 </dependency>
 ```
+
+## Create a Uber jar
+
+The Maven [Shade](http://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifact in an uber-jar, including its dependencies.
+
+The following configuration will produce a single jar file whose name is the artifactId, for instance `foo.jar`. This jar will include both your custon code and RESTHeart. You can start the customized RESTHeart with:
+
+``` bash
+$ java -server -jar foo.jar conf.yml
+```
+
+**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itslef. SoftInstigate sells commercial licenses that overcome this limitation.
+
+
+``` xml
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+          <finalName>${project.artifactId}</finalName>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.restheart.Bootstrapper</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  ...
+</project>
+```
