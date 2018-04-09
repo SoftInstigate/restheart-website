@@ -28,6 +28,8 @@ title: Setup
 Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
 ```
+$ mkdir restheart
+$ cd restheart
 $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 ```
 
@@ -62,6 +64,39 @@ The RESTHeart default admin credentials are
     username: admin
     password: changeit
 
+### Modify the configuration for the RESTHeart container 
+
+Download the configuration files `restheart.yml` and `security.yml` in the `etc` directory.
+
+``` bash
+$ mkdir etc
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/restheart.yml --output etc/restheart.yml
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/security.yml --output etc/security.yml
+```
+
+Edit the configuration files as needed. For instance, to change the `admin` user password edit `etc/security.yml` as follows:
+
+``` yml
+    - userid: admin
+      password: <your-password-here>
+      roles: [users, admins]
+```
+
+Uncomment the following line in `docker-compose.yml`
+
+``` yml
+      ### Uncoment below if you want to mount a local configuration folder
+      ### to overwrite default restheart.yml and/or security.yml
+      volumes:
+         - ./etc:/opt/restheart/etc:ro
+```
+
+Restart the containers:
+
+``` bash
+$ docker-compose stop
+$ docker-compose up -d
+```
 ## Docker Image
 
 ### Tags
