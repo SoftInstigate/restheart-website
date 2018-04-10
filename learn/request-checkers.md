@@ -402,12 +402,10 @@ metadata-named-singletons:
           class: com.whatever.MyChecker
 ```
 
-Or course, the class of the custom checker must be added to the java
+The class of the custom checker must be added to the java
 classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
-
-
   
 ``` bash
 $ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml

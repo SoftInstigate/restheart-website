@@ -18,29 +18,12 @@ For example, request hooks can be used:
 -   to send push notifications when a resource is updated so that its
     properties satisfy a given condition.
 
-Request Hooks are implemented in java and declared in the RESTHeart
-configuration file; once they are ready, they can be bound to resources
-via the `hooks` collection metadata.
-
-The class(es) that implements the Hook must be added to the java
-classpath.
-
-For example, if the hook is packaged in the *myhook.jar* file, start
-RESTHeart with the following command:
-
-    $ java -server -classpath restheart.jar:myhook.jar org.restheart.Bootstrapper restheart.yml
-
-Another option is packaging the classes with RESTHeart in a single jar
-using the [maven shade
-plugin](https://maven.apache.org/plugins/maven-shade-plugin/). For more
-information refer to the [How to package custom
-code](/learn/custom-code-packaging-howto) section.
-
 ## The *hooks* collection metadata
 
-With RESTHeart, not only documents but also dbs and collections have
-properties. Some properties are *metadata*, i.e. they have a special
-meaning for RESTheart that influences its behavior.
+In RESTHeart, not only documents but also dbs and collections 
+(and files buckets, schema stores, etc.) have properties. 
+Some properties are metadata, i.e. have a special meaning
+for RESTheart that controls its behavior.
 
 The collection metadata property `hooks` allows to declare the hooks to
 be applied to the requests involving the collection and its documents.
@@ -48,11 +31,7 @@ be applied to the requests involving the collection and its documents.
 `hooks` is an array of objects with the following format:
 
 ``` json
-{ "hooks": [ 
-    { "name": <hook_name>, "args": <arguments> }, 
-    ...
-   ]
-}
+{ "name": <hook_name>, "args": <arguments> }
 ```
 
 <table class="ts">
@@ -85,8 +64,22 @@ Mandatory
 
 ## How to develop an Hook
 
+Request Hooks are implemented in java and declared in the RESTHeart
+configuration file; once the are configured, they can be bound to 
+collections via the `hooks` collection metadata.
+
+Of course, the class(es) that implements the Hook must be added to the java
+classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
+
+For example, if the hook is packaged in the *myhook.jar* file, start
+RESTHeart with the following command:
+
+``` bash
+$ java -server -classpath restheart.jar:myhook.jar org.restheart.Bootstrapper restheart.yml
+```
+
 Hooks are developed implementing the java
-interface [org.restheart.hal.metadata.singletons.Hook](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/hal/metadata/singletons/Hook.java).
+interface [org.restheart.metadata.hooks.Hook](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/hooks/Hook.java).
 
 To add a dependency on RESTHeart using Maven, use the following:
 
@@ -98,13 +91,53 @@ To add a dependency on RESTHeart using Maven, use the following:
 </dependency>
 ```
 
-The Hook interface requires to implement two methods:
+The Hook interface requires to implement the following interface:
 
--   `doesSupportRequests(RequestContext context)`
--   `hook(HttpServerExchange exchange, RequestContext context, BsonValue args);`
 
-The method `doesSupportRequests()` determines if the* *`hook()` method
-should be executed checking the `RequestContext` object that
+``` java
+public interface Hook {
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @return true if completed successfully
+     */
+    default boolean hook(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue args) {
+        return hook(exchange, context, args, null);
+    }
+        
+
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs args specified in the configuration file via args property
+     * @return true if completed successfully
+     */
+    default boolean hook(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue args,
+            BsonDocument confArgs) {
+        return hook(exchange, context, args);
+    }
+
+    /**
+     *
+     * @param context
+     * @return true if the hook supports the requests
+     */
+    boolean doesSupportRequests(RequestContext context);
+}
+```
+
+The method `doesSupportRequests()` determines if the `hook()` method
+should be against the `RequestContext` object that
 encapsulates all information about the request.
 
 For instance, the following implementation returns `true` if the request
@@ -121,8 +154,8 @@ public boolean doesSupportRequests(RequestContext rc) {
     int status = rc.getDbOperationResult().getHttpCode();
 
     return (status == HttpStatus.SC_CREATED
-            && (rc.getType() == RequestContext.TYPE.COLLECTION && rc.getMethod() == POST
-            || rc.getType() == RequestContext.TYPE.DOCUMENT && rc.getMethod() == PUT));
+            && (rc.isCollection() && rc.isPost()
+            || rc.isDocument()  && rc.isPut());
 }
 ```
 
@@ -155,31 +188,31 @@ Note the following useful `RequestContext` getters:
 
 The `hook()` method is where the custom logic is defined.
 
-It has three arguments:
+It has four arguments:
 
--   the HttpServerExchange and the RequestContext that give information
+-   the `HttpServerExchange` and the `RequestContext` that give information
     about the request
--   the optional json args object specified in the hook collection
+-   the optional json `args` object specified in the hook collection
     metadata.
+-   the optional json `confArgs` object specified in the definition of the hook in the configuration file 
 
 ## How to declare an Hook in the configuration file
 
 The metadata-named-singletons section of the configuration file defines,
 among others, the *hooks* group: here hook implementation classes can be
-bound to logical names that can be used in the hooks collection
-metadata.
+given names that can be used in the _hooks_ collection metadata property.
 
 The following is the default hooks configuration that declares the
 example [snooper
-hook ](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/metadata/hooks/SnooperHook.java)(that
+hook](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/metadata/hooks/SnooperHook.java)(that
 just logs resource status before and after request db operation
 execution).
 
 ``` yml
 metadata-named-singletons:
     - group: hooks
-      interface: org.restheart.hal.metadata.singletons.Hook
+      interface: org.restheart.metadata.hooks.Hook
       singletons:
         - name: snooper
-          class: org.restheart.hal.metadata.singletons.SnooperHook
+          class: org.restheart.metadata.hooks.SnooperHook
 ```
