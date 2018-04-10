@@ -21,12 +21,19 @@ is represented as a json document.
 
 ## The *rts* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections have
-properties. Some properties are metadata, i.e. they have a special
-meaning for RESTheart that influences its behavior.
+In RESTHeart, not only documents but also dbs and collections 
+(and files buckets, schema stores, etc.) have properties. 
+Some properties are metadata, i.e. they have a special meaning
+for RESTheart that influences its behavior.
 
-The metadata property *rts* allows to declare transformers; *rts* 
-is an array of *transformer* objects. 
+The metadata property *rts* allows to declare transformers:
+* when *rts* is a metadata propery of a db, transformers
+apply to requests involving the db and its resources 
+(collections, documents, file buckets, schema stores, etc.).
+* when *rts* is a metadata propery of a collection (or file bucket, schema store, etc.), 
+transformers apply to requests involving the collection and its documents.
+
+*rts* is an array of *transformer* objects. 
 A *transformer* object has the following format:
 
 ``` json
