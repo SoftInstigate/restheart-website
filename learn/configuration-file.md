@@ -134,7 +134,7 @@ application-logic-mounts:
 # singleton factory #org.restheart.metadata.NamedSingletonsFactory
 
 metadata-named-singletons:
-    # Checkers group used by handler:
+    # checkers group used by handler:
     # org.restheart.handlers.metadata.CheckMetadataHandler
     # More information in checkers javadoc
     - group: checkers
@@ -147,7 +147,7 @@ metadata-named-singletons:
         - name: checkContentSize
           class: org.restheart.metadata.checkers.ContentSizeChecker
 
-    # Checkers group used by handlers:
+    # transformers group used by handlers:
     # org.restheart.handlers.metadata.RequestTransformerMetadataHandler and
     # org.restheart.handlers.metadata.ResponseTransformerMetadataHandler
     # More information in transformers javadoc
@@ -167,7 +167,7 @@ metadata-named-singletons:
         - name: hashProperties
           class: org.restheart.metadata.transformers.HashTransformer
           
-    # Hook group used by handler:
+    # hooks group used by handler:
     # org.restheart.handlers.metadata.HookHandler
     # More information in hook javadoc
     - group: hooks
