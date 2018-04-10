@@ -4,7 +4,7 @@ title: How Clients authenticate
 ---
 
 * [Introduction](#introduction)
-* [Some examples** **](#some-examples-)
+* [Some examples](#some-examples-)
 * [Basic Authentication for dummies](#basic-authentication-for-dummies)
 * [Authentication Token](#authentication-token)
     * [Suggested way to check credentials and obtain user’s roles](#suggested-way-to-check-credentials-and-obtain-users-roles)
