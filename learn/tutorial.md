@@ -11,8 +11,6 @@ title: Tutorial
 * [GET Document by URL (by id)](#get-document-by-url-by-id)
 * [Query documents by name property (using Collection filter) ](#query-documents-by-name-property-using-collection-filter)
 
- 
-
 In this tutorial we’ll use RESTHeart to create a db, a collection and a
 couple of documents in MongoDB.
 
