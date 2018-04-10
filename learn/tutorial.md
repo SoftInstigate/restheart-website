@@ -38,7 +38,6 @@ $ java -jar restheart.jar
 22:59:05.156 [main] INFO  org.restheart.Bootstrapper - version 3.2.2
 22:59:05.163 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart.log with level INFO
 22:59:05.163 [main] INFO  org.restheart.Bootstrapper - Logging to console with level INFO
-22:59:05.582 [main] WARN  o.r.db.MongoDBClientSingleton - Cannot get the MongoDb version.
 22:59:05.582 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
 22:59:05.582 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.6
 22:59:05.582 [main] WARN  org.restheart.Bootstrapper - ***** No Identity Manager specified. Authentication disabled.
