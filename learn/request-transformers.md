@@ -12,21 +12,12 @@ title: Request Transformers
 
 ## Introduction
 
-Transformers allow to change the json document representing the resource
-state, for instance adding, modifying or filtering out some properties.
+Transformers allow to change the request or the response, for instance adding, modifying or filtering out some properties in the body.
+A Transformer can also be used to modify the request in other ways such as adding a query parameter. An example would be adding the `filter={"visibility":"public"}` query parameter to the request `GET /db/coll` in order to limit the client visibility on the collection documents.
 
 Resources data flows in and out of RESTHeart in json format (see
 [Representation Format](/learn/representation-format) section), where the state
 is represented as a json document.
-
-A transformer can be applied either in the REQUEST or RESPONSE phases:
-
--   Applying it in the REQUEST phase makes sense only for PUT, POST and
-    PATCH requests (when data is sent from the client). In these cases,
-    the incoming data is first transformed and then stored in MongoDB
--   Applying it in the RESPONSE phase, makes sense only for GET requests
-    (when data is sent back to clients). The data is first retrieved
-    from MongoDB, than transformed and passed back to the client.
 
 ## The *rts* collection metadata
 
@@ -34,14 +25,9 @@ In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
-The metadata property *rts* allows to declare a transformer. The
-transformer can apply either to the resource itself or its children (for
-instance, a transformer declared to a collection resource, can be
-applied to the collection resource itself or to its documents) and to
-requests or responses.
-
-The metadata property *rts* is an array of *transformer* objects. A
-*transformer* object has the following format:
+The metadata property *rts* allows to declare transformers; *rts* 
+is an array of *transformer* objects. 
+A *transformer* object has the following format:
 
 ``` json
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
@@ -63,26 +49,26 @@ Mandatory
 </thead>
 <tbody>
 <tr class="odd">
-<td><p><code>name</code></p></td>
+<td><code>name</code></td>
 <td><p>The name of the transformer to apply.</p></td>
 <td>Yes</td>
 </tr>
 <tr class="even">
-<td><strong><code>phase</code><br />
-</strong></td>
+<td><code>phase</code></td>
 <td><p>Defines if the transformer is to be applied to the request or to the response</p>
-<p>Valid values are &quot;REQUEST&quot; or &quot;RESPONSE&quot;.</p></td>
+    <p>Valid values are <code>REQUEST</code> or <code>RESPONSE</code></p></td>
 <td>Yes</td>
 </tr>
 <tr class="odd">
-<td><strong>scope</strong></td>
-<td><p>The scope applies to RESPONSE transformers; with SCOPE=&quot;THIS&quot; transformer is executed once on the whole response, with SCOPE=&quot;children&quot; it is executed once per each children resource.</p>
-<p>For instance, with scope=&quot;THIS&quot;</p>
-<pre><code>GET /db/coll is executed once</code></pre>
-<pre><code>GET /db/coll/docid is executed once</code></pre>
-<p>with scope=&quot;CHILDREN&quot;</p>
-<pre><code>GET /db/coll is executed once per each embedded document</code></pre>
-<pre><code>GET /db/coll/docid is executed once</code></pre></td>
+<td><code>scope</code></td>
+    <td><p>The scope applies only to RESPONSE transformers; with <code>"scope": "THIS"</code> the transformer is executed once on the whole response, with <coder>"scope":"CHILDREN"</code> it is executed once per embedded document.</p>
+<p>For instance, with <code>"scope": "THIS"</code></p>
+<code>GET /db/coll is executed once</code>
+<code>GET /db/coll/docid is executed once</code>
+<p>For instance, with <code>"scope": "CHILDREN"</code></p>
+<code>GET /db/coll is executed once per each embedded document</code>
+<code>GET /db/coll/docid is executed once</code>
+</td>
 <td>Yes</td>
 </tr>
 <tr class="even">
@@ -194,46 +180,72 @@ $ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties"
 ## Custom Transformers
 
 A transformer is a java class that implements the
-interface [org.restheart.hal.metadata.singletons.Transformer](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/hal/metadata/singletons/Transformer.java).
+interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/metadata/transformers/Transformer.java).
 
-It requires to implement the method tranform() with 4 arguments:
+It requires to implement the method tranform() with 5 arguments:
 
 1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exachange
 2.  [RequestContext](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
-3.  DBObject contentToTransform (the json document to transform)
-4.  DBObject args (that is the arguments passed via the *args* property
-    of the transformer metadata object).
-
+3.  BsonValue contentToTransform (the json document to transform)
+4.  BsonValue args (the arguments passed via the *args* property
+    of the transformer metadata object)
+5.  BsonValue confArgs (the arguments passed via the *args* property
+    specified in the configuration file)
  
 
 ``` java
-public interface Transformer {
-    void tranform(final HttpServerExchange exchange, final RequestContext context, DBObject contentToTransform, final DBObject args);
+    /**
+     * 
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToTransform the content data to transform
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs the args specified in the configuration file via args property
+     * @return true if completed successfully
+     */
+    default void transform(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue contentToTransform,
+            final BsonValue args,
+            BsonValue confArgs)
 }
 ```
 
-Once a transformer has been implemented, it can be given a name (to be
-used as the *name *property of the transformer metadata object) in the
+Once a transformer has been implemented, it can be defined in the
 configuration file.
 
 The following is the default configuration file section declaring the
 off-the-shelf transformers provided with RESTHeart plus custom one.
 
 ``` yml
-- group: transformers
-      interface: org.restheart.hal.metadata.singletons.Transformer
+    # transformers group used by handlers:
+    # org.restheart.handlers.metadata.RequestTransformerMetadataHandler and
+    # org.restheart.handlers.metadata.ResponseTransformerMetadataHandler
+    # More information in transformers javadoc
+    - group: transformers
+      interface: org.restheart.metadata.transformers.Transformer
       singletons:
         - name: addRequestProperties
-          class: org.restheart.hal.metadata.singletons.RequestPropsInjecterTransformer
+          class: org.restheart.metadata.transformers.RequestPropsInjecterTransformer
         - name: filterProperties
-          class: org.restheart.hal.metadata.singletons.FilterTransformer
+          class: org.restheart.metadata.transformers.FilterTransformer
         - name: stringsToOids
-          class: org.restheart.hal.metadata.singletons.ValidOidsStringsAsOidsTransformer
+          class: org.restheart.metadata.transformers.ValidOidsStringsAsOidsTransformer
         - name: oidsToStrings
-          class: com.whatever.MyTransformer
+          class: org.restheart.metadata.transformers.OidsAsStringsTransformer
+        - name: writeResult
+          class: org.restheart.metadata.transformers.WriteResultTransformer
+        - name: hashProperties
+          class: org.restheart.metadata.transformers.HashTransformer
         - name: myTransformer
+          class: com.whatever.MyTransformer
+          args:
+            msg: "foo bar"
+                    
+        
 ```
 
 Or course, the class of the custom transformer must be added to the java
@@ -249,7 +261,7 @@ The following code, is an example transformer that adds to the content
 the property *timestamp*.
 
 ``` java
-import org.restheart.hal.metadata.singletons.Transformer;
+import org.restheart.metadata.transformers.Transformer;
 import io.undertow.server.HttpServerExchange;
 import org.restheart.handlers.RequestContext;
 import com.mongodb.DBObject;
@@ -257,7 +269,12 @@ import com.mongodb.DBObject;
 package com.whatever;
 
 public class MyTransformer implements Transformer {
-    tranform(final HttpServerExchange exchange, final RequestContext context, DBObject contentToTransform, final DBObject args) {
+    tranform(final HttpServerExchange exchange, 
+        final RequestContext context, 
+        BsonValue contentToTransform, 
+        final BsonValue args,
+        BsonValue confArgs) {
+        contentToTransform.put("msg", confArgs.get("msg"));
         contentToTransform.put("_timestamp", System.currentTimeMillis());
     }
 }
