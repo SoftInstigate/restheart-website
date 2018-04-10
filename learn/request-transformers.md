@@ -61,15 +61,10 @@ Mandatory
 </tr>
 <tr class="odd">
 <td><code>scope</code></td>
-    <td><p>The scope applies only to RESPONSE transformers; with <code>"scope": "THIS"</code> the transformer is executed once on the whole response, with <coder>"scope":"CHILDREN"</code> it is executed once per embedded document.</p>
-<p>For instance, with <code>"scope": "THIS"</code></p>
-<code>GET /db/coll is executed once</code>
-<code>GET /db/coll/docid is executed once</code>
-<p>For instance, with <code>"scope": "CHILDREN"</code></p>
-<code>GET /db/coll is executed once per each embedded document</code>
-<code>GET /db/coll/docid is executed once</code>
+<td>
+<p>The scope applies only to RESPONSE transformers; with <code>"scope": "THIS"</code> the transformer is executed once on the whole response, with <code>"scope":"CHILDREN"</code> it is executed once per embedded document.</p>
 </td>
-<td>Yes</td>
+<td>When <code>"phase": "RESPONSE"</code></td>
 </tr>
 <tr class="even">
 <td><code>args</code></td>
@@ -81,14 +76,16 @@ Mandatory
 
 ## Available and Custom Transformers
 
-RESTHeart comes with 4 ready-to-be-used transformers:
+RESTHeart comes with some ready-to-be-used transformers:
 
 -   [addRequestProperties](#inject-properties-withaddrequestproperties-transformer) to
     add properties.
 -   [filterProperties](#filter-out-properties-withfilterproperties-transformer) to filter
     out properties.
--   stringsToOids and oidsToStrings to convert strings to ObjectIds and
+-   __stringsToOids__ and __oidsToStrings__ to convert strings to ObjectIds and
     vice versa (usually from requests and responses the respectively).
+-   __writeResult__ that uses `context.getDbOperationResult()` to add to the response body the old and the new version of the modified document on write requests
+-   __hashProperties__ that allows to hash properties using bcrypt on write requests
 
 [Custom transformers](#custom-transformers) can also
 be implemented.
