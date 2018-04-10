@@ -12,26 +12,27 @@ title: Request Transformers
 
 ## Introduction
 
-Transformers allow to change the request or the response, for instance adding, modifying or filtering out some properties in the body.
-A Transformer can also be used to modify the request in other ways such as adding a query parameter. An example would be adding the `filter={"visibility":"public"}` query parameter to the request `GET /db/coll` in order to limit the client visibility on the collection documents.
-
-Resources data flows in and out of RESTHeart in json format (see
-[Representation Format](/learn/representation-format) section), where the state
-is represented as a json document.
+Transformers allow to transform the request or the response. 
+For instance, Transformers can be used to:
+- filtering out from the response the *password* property of the `/db/users` resource
+- adding the `filter={"visibility":"public"}` query parameter
+to requests limiting the client visibility on documents.
 
 ## The *rts* collection metadata
 
 In RESTHeart, not only documents but also dbs and collections 
 (and files buckets, schema stores, etc.) have properties. 
-Some properties are metadata, i.e. they have a special meaning
-for RESTheart that influences its behavior.
+Some properties are metadata, i.e. have a special meaning
+for RESTheart that controls its behavior.
 
-The metadata property *rts* allows to declare transformers:
-* when *rts* is a metadata propery of a db, transformers
-apply to requests involving the db and its resources 
+The metadata *rts* allows to declare transformers.
+*  a transformer declared in the *rts* db property, 
+gets executed to any requests that involves the db 
+and its children resources 
 (collections, documents, file buckets, schema stores, etc.).
-* when *rts* is a metadata propery of a collection (or file bucket, schema store, etc.), 
-transformers apply to requests involving the collection and its documents.
+* a transformer declared in the *rts* collaction property,
+gets executed to any requests that involves the collection 
+and its documents.
 
 *rts* is an array of *transformer* objects. 
 A *transformer* object has the following format:
@@ -57,19 +58,19 @@ Mandatory
 <tbody>
 <tr class="odd">
 <td><code>name</code></td>
-<td><p>The name of the transformer to apply.</p></td>
+<td><p>The name of the transformer</p></td>
 <td>Yes</td>
 </tr>
 <tr class="even">
 <td><code>phase</code></td>
-<td><p>Defines if the transformer is to be applied to the request or to the response</p>
+<td><p>specifies to transform either the request or the response.</p>
     <p>Valid values are <code>REQUEST</code> or <code>RESPONSE</code></p></td>
 <td>Yes</td>
 </tr>
 <tr class="odd">
 <td><code>scope</code></td>
 <td>
-<p>The scope applies only to RESPONSE transformers; with <code>"scope": "THIS"</code> the transformer is executed once on the whole response, with <code>"scope":"CHILDREN"</code> it is executed once per embedded document.</p>
+<p>Only applicable to RESPONSE transformers; with <code>"scope": "THIS"</code> the transformer is executed once on the whole response, with <code>"scope":"CHILDREN"</code> it is executed once per embedded document.</p>
 </td>
 <td>When <code>"phase": "RESPONSE"</code></td>
 </tr>
