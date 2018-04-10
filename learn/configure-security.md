@@ -3,8 +3,6 @@ layout: docs
 title: Enable and Configure Security
 ---
 
-# Enable and Configure Security
-
 * [Introduction](#introduction)
     * [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
     * [How to use a valid certificate](#how-to-use-a-valid-certificate)

@@ -14,26 +14,19 @@ title: Request Checkers
 
 ## Introduction
 
-Data in MongoDB has a flexible schema. There is no way to enforce a
-structure to documents: as long as json is used to pass data to a write
-operation, it is stored in the database despite its actual format.
-
-This is not always desirable and RESTHeart comes into rescue with the
-Request Checkers feature. This allows to check the request so that, if
+Request Checkers feature allows to check the request so that, if
 it does not fulfill some conditions, it returns *400 BAD REQUEST*
-response code.
-
-Request Checkers allow to enforce document structure and constraints to
-data.
+response code thus enforcing a well defined structure to documents.
 
 ## The *checkers* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections have
-properties. Some properties are metadata, i.e. they have a special
-meaning for RESTheart that influences its behavior.
+In RESTHeart, not only documents but also dbs and collections 
+(and files buckets, schema stores, etc.) have properties. 
+Some properties are metadata, i.e. have a special meaning
+for RESTheart that controls its behavior.
 
-The collection metadata property `checkers` allows to declare a checker
-to be applied to the requests involving the documents of the collection.
+The collection metadata property `checkers` allows to declare checkers
+to be applied to write requests.
 
 *checkers* is an array of *`checker`* objects. A *checker* object has
 the following format:
@@ -68,7 +61,7 @@ Mandatory
 <td>no</td>
 </tr>
 <tr class="odd">
-<td><strong>skipNotSupported</strong></td>
+<td><code>skipNotSupported</code></td>
 <td><p>if true, skip the checking if this checker does not support the request (Checker.doesSupportRequests())</p></td>
 <td>no</td>
 </tr>
@@ -155,32 +148,32 @@ Mandatory
 </td>
 </tr>
 <tr class="odd">
-<td><strong>regex</strong></td>
+<td><code>regex</code></td>
 <td>If specified, this regular expression must match the property (or its string representation).</td>
 <td>No</td>
 <td>null</td>
 </tr>
 <tr class="even">
-<td><strong>nullable</strong></td>
+<td><code>nullable</code></td>
 <td>If true, no check will be performed if the value of the selected property is null.</td>
 <td>No</td>
 <td>false</td>
 </tr>
 <tr class="odd">
-<td><strong>optional</strong></td>
+<td><code>optional</code></td>
 <td>If true, no check will be performed if the property is missing.</td>
 <td>No</td>
 <td>false</td>
 </tr>
 <tr class="even">
-<td><p><strong>mandatoryFields</strong></p></td>
+<td><p><code>mandatoryFields</code></p></td>
 <td><p>If the property type is 'object', this is the array of the properties that the object <strong>must</strong> have.</p>
 <p>If specified, the object cannot have any other field, as long as they are not listed in the <em>optionalFields</em> array.</p></td>
 <td>No</td>
 <td>null</td>
 </tr>
 <tr class="odd">
-<td><strong>optionalFields</strong></td>
+<td><code>optionalFields</code></td>
 <td><p>If the property type is 'object', this is the arrayof the properties that the object <strong>is allowed</strong> optionally to have.</p>
 <p>If specified, the object cannot have any other field, as long as they are not listed in the <em>mandatoryFields</em> array.</p></td>
 <td>No</td>
@@ -240,7 +233,7 @@ expressions select:
 <tr class="odd">
 <td>$.object</td>
 <td><p>the object with value:</p>
-<p><code>{ </code><code>&quot;pi&quot;: 3.14, </code><code>&quot;href&quot;: &quot;https://en.wikipedia.org/wiki/Pi&quot; </code><code>}</code></p></td>
+<p><code>{ "pi": 3.14, "href": "https://en.wikipedia.org/wiki/Pi"}</code></p></td>
 </tr>
 <tr class="even">
 <td>$.object.*</td>
@@ -345,16 +338,18 @@ checkers:='[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
 ## Custom Checkers
 
 A checker is a java class that implements the
-interface [org.restheart.hal.metadata.singletons.Checker](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/hal/metadata/singletons/Checker.java).
+interface [org.restheart.metadata.checkers.Checker](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/checkers/Checker.java).
 
 It only requires to implement the method check() with 3 arguments:
 
 1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exachange
-2.  [RequestContext](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/handlers/RequestContext.java) context
+2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
-3.  DBObject args (that is the arguments passed via the *args* property
-    of the checker metadata object).
+4.  BsonValue args (the arguments passed via the *args* property
+    of the transformer metadata object)
+5.  BsonValue confArgs (the arguments passed via the *args* property
+    specified in the configuration file)
 
   
 
@@ -362,7 +357,7 @@ It only requires to implement the method check() with 3 arguments:
     boolean check(
             HttpServerExchange exchange,
             RequestContext context,
-            BsonDocument contentToCheck,
+            BsonValue contentToCheck,
             BsonValue args);
 
     /**
@@ -408,9 +403,10 @@ metadata-named-singletons:
 ```
 
 Or course, the class of the custom checker must be added to the java
-classpath.
+classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
+
 
   
 ``` bash
@@ -421,25 +417,20 @@ The following code, is an example checker that checks if the
 *number* property is an integer between 0 and 10.
 
 ``` java
-import org.restheart.hal.metadata.singletons.Checker;
-import io.undertow.server.HttpServerExchange;
-import org.restheart.handlers.RequestContext;
-import com.mongodb.DBObject;
- 
 package com.whatever;
- 
+
 public class MyChecker implements Checker {
-    boolean check(HttpServerExchange exchange, RequestContext context, DBObject args) {
-        DBObject content = context.getContent();
-        Object _value = content.get("number");
+    boolean check(HttpServerExchange exchange, RequestContext context, BsonValue args) {
+        BsonValue content = context.getContent();
+        BsonValue _value = content.get("number");
         if (context.getMethod() == RequestContext.METHOD.PATCH) {
             if (_value == null) {
                 // if this is a PATCH and property value is not in the request, it won't be modified
                 return true;
             }
         }
-        if (_value != null && _value instanceof Integer) {
-            Integer value = (Integer) _value;
+        if (_value != null && _value.isNumber()) {
+            Integer value = _value..asInt32().getValue();
             
             return value < 10 && value > 0;
         } else {

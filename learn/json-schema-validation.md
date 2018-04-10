@@ -3,8 +3,6 @@ layout: docs
 title: Document validation with JSON schema
 ---
 
-# Validation with JSON schema
-
 * [Introduction](#introduction)
 * [The Schema Store and Schema resources](#the-schema-store-and-schema-resources)
 * [Document validation](#document-validation)

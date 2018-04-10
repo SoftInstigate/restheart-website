@@ -185,12 +185,12 @@ $ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties"
 ## Custom Transformers
 
 A transformer is a java class that implements the
-interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/metadata/transformers/Transformer.java).
+interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/transformers/Transformer.java).
 
 It requires to implement the method tranform() with 5 arguments:
 
 1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exachange
-2.  [RequestContext](https://github.com/SoftInstigate/restheart/blob/develop/src/main/java/org/restheart/handlers/RequestContext.java) context
+2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 3.  BsonValue contentToTransform (the json document to transform)
@@ -253,8 +253,8 @@ off-the-shelf transformers provided with RESTHeart plus custom one.
         
 ```
 
-Or course, the class of the custom transformer must be added to the java
-classpath.
+Or course, the class of the custom checker must be added to the java
+classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
 
