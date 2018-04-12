@@ -41,6 +41,3 @@ And therefore exempt from:
     <a href="mailto://info@softinstigate.com?subject=RESTHeart commercial license inquiry" class="btn btn-primary btn-sm">Ask for a quote</a>
 </div>
 </section>
-
-# Open Source License
-
