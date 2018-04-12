@@ -4,7 +4,7 @@ title: Commercial License
 permalink: /license.html
 ---
 
-> RESTHeart is distributed under the Open Source [AGPL](https://github.com/SoftInstigate/restheart/blob/master/LICENSE.txt) and a __Commercial License__ that allows to effectively using it effectively in the Enterprise.
+> RESTHeart is distributed under the Open Source [AGPL](https://github.com/SoftInstigate/restheart/blob/master/LICENSE.txt) and a __Commercial License__ to effectively adopt it in the Enterprise.
 
 # AGPL Conditions
 

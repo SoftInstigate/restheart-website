@@ -16,7 +16,6 @@ permalink: /try.html
         <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
-                <p>RESTHeart uses the <strong>H</strong>ypertext <strong>A</strong>pplication <strong>L</strong>anguage json representation format and embeds the <strong>HAL browser</strong>.</p>
                 <p>Go and play with it on our demo instance at <a href="http://dbapi.io/browser/#/db/coll" target="_blank"><code>dbapi.io</code></a>.</p>
             </section>
         </article>
