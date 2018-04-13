@@ -45,7 +45,7 @@ The service balance will be extended at no charge for the Customer by 8 working 
 
 <section class="slice" id="quote" style="padding-top:0;text-align:center">
 <div class="container">
-    <a href="mailto://info@softinstigate.com?subject=RESTHeart profession services inquiry" class="btn btn-primary btn-sm">Ask for a quote</a>
+    <a href="mailto:info@softinstigate.com?subject=RESTHeart profession services inquiry" class="btn btn-primary btn-sm">Ask for a quote</a>
 </div>
 </section>
 
