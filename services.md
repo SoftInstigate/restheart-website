@@ -25,8 +25,7 @@ Professional Services help you on:
 The service is available on GTM+1 timezone, on Business Hours 9:00 AM-5:00 PM, Monday through Friday.
 
 ### Communication channels
-The Customer ask for takst by using the private RESTHeart Jira Issue Tracker.. 
-The Customer is provided with accounts for the ticketing system to ask for tasks.
+The Customer asks for tasks by using the private RESTHeart Jira Issue Tracker.
 Once the task is requested, communication between SoftInstigate and the Customer goes via JIRA, chat and videoconference when needed.
 
 ### Prepaid model
@@ -36,8 +35,8 @@ The Service follows a prepaid model.
 * As soon as the task is closed, the actual worked time is deducted from the balance. 
 
 At any time the Customer can:
-* top-up the balance, thus extending the service;
-* request the current balance.
+* Top-up the balance, thus extending the service.
+* Request the current balance.
 
 ### Response Goal
 The First Response Goal is 16 working hours.
