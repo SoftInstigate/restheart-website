@@ -42,7 +42,7 @@ must conform to the JSON schema format (specifically to the latest
 version draft-04)
 
 Schema Store are first class citizens in RESTHeart and the format of
-their URIs is `//_schemas`
+their URIs is `/<db>/_schemas`
 
 **Create the db schema store**
 
