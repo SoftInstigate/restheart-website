@@ -57,9 +57,9 @@ The service balance will be extended at no charge for the Customer by 8 working 
 [![Issue Stats](http://issuestats.com/github/SoftInstigate/restheart/badge/issue)](http://issuestats.com/github/SoftInstigate/restheart)
 {: .text-center }
 
-## <a class="btn btn-success btn-small" href="https://softinstigate.atlassian.net/issues/?filter=10403" target="_blank">Check the development status</a> the solution for your need might be already on the road.
+## <a class="btn btn-success btn-small" href="https://softinstigate.atlassian.net/issues/?filter=10403" target="_blank">Check the Roadmap</a> the solution for your need might be already on the road.
 {: .mt30 }
 
-## <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Ask for an improvement or report a bug</a> on github.
+## <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Report an issue</a> on github.
 
-## <a class="btn btn-warning" href="http://stackoverflow.com/questions/tagged/restheart">Ask a question on stackoverflow</a> using the restheart tag.
+## <a class="btn btn-warning" href="http://stackoverflow.com/questions/tagged/restheart">Ask a question</a> on stackoverflow using the tag _restheart_ .
