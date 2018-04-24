@@ -8,6 +8,7 @@ title: Enable and Configure Security
     * [How to use a valid certificate](#how-to-use-a-valid-certificate)
     * [Configuration](#configuration)
     * [SimpleFileIdentityManager](#simplefileidentitymanager)
+    * [Global Security Predicates](#global-security-predicates)
     * [DbIdentityManager](#dbidentitymanager)
     * [Configuration](#configuration-1)
     * [SimpleAccessManager](#simpleaccessmanager)
@@ -195,6 +196,29 @@ users:
    password: changeit
    roles: [users]
 ```
+
+### Global Security Predicates
+
+> Global Security Predicates are applied to all requests.
+
+Global Security Predicates can be defined programmatically as follows:
+
+``` java
+// allow users with role "ADMIN" to GET /
+RequestContextPredicate securityPredicate = new RequestContextPredicate() {
+            @Override
+            public boolean resolve(HttpServerExchange hse, RequestContext context) {
+                return context.isRoot()
+                        && context.isGet()
+                        && context.getAuthenticatedAccount() != null
+                        && context.getAuthenticatedAccount().getRoles().contains("ADMIN");
+            }
+        }
+
+// add the global predicate
+AccessManagerHandler.getGlobalSecurityPredicates().add(securityPredicate);
+```
+You can use an [Initializer](/learn/initializer) to add Global Security Predicates.
 
 ### DbIdentityManager
 

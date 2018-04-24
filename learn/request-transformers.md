@@ -5,6 +5,7 @@ title: Request Transformers
 
 * [Introduction](#introduction)
 * [The <em>rts</em> collection metadata](#thertscollection-metadata)
+* [Global Transformers](#global-transformers)
 * [Available and Custom Transformers](#available-and-custom-transformers)
 * [Inject properties with add RequestProperties transformer](#inject-properties-withaddrequestproperties-transformer)
 * [Filter out properties with <em>filterProperties</em> transformer](#filter-out-properties-withfilterproperties-transformer)
@@ -81,6 +82,22 @@ Mandatory
 </tr>
 </tbody>
 </table>
+
+## Global Transformers
+
+> Global Transformers are applied to all requests.
+
+Global Transformers can be defined programmatically as follows:
+
+``` java
+// transform the request
+RequestTransformerHandler.getGlobalTransformers().add(tranformer);
+
+// transform the response
+ResponseTransformerHandler.getGlobalTransformers().add(tranformer);
+```
+
+You can use an [Initializer](/learn/initializer) to add Global Transformers.
 
 ## Available and Custom Transformers
 

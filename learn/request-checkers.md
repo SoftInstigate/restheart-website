@@ -5,6 +5,7 @@ title: Request Checkers
 
 * [Introduction](#introduction)
 * [The <em>checkers</em> collection metadata](#the-checkerscollection-metadata)
+* [Global Checkers](#global-checkers)
 * [Checkers](#checkers)
 * [Schema validation with checkContent checker](#schema-validation-with-checkcontent-checker)
     * [Json path expressions](#json-path-expressions)
@@ -67,6 +68,19 @@ Mandatory
 </tr>
 </tbody>
 </table>
+
+## Global Checkers
+
+> Global Checkers are applied to all requests.
+
+Global Checkers can be defined programmatically as follows:
+
+``` java
+// check the request
+CheckerHandler.getGlobalCheckers().add(checker);
+```
+
+You can use an [Initializer](/learn/initializer) to add Global Checkers.
 
 ## Checkers
 
