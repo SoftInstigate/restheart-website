@@ -7,7 +7,7 @@ title: Initializer
 
 You can have a preview from the current 3.3.0-SNAPSHOT version, donwload it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
 
-An initializer is a class with the method `init()` that is invoked on RESTHeart startup.
+An initializer is a class with the method `init()` that is invoked at RESTHeart startup.
 
 It can be used to perform initialization code. For instance, it can programmatically add _Transformers_ and _Checkers_ and init the db.
 
