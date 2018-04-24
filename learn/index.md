@@ -29,6 +29,7 @@ title: Documentation
 -   [Request Checkers](/learn/request-checkers)
 -   [Document validation with JSON schema](/learn/json-schema-validation)
 -   [Application Logic](/learn/application-logic)
+-   [Initializer](/learn/initializer)
 -   [Request Hooks](/learn/request-hooks)
 -   [Relationships](/learn/relationships)
 -   [How to package custom code](/learn/custom-code-packaging-howto)
