@@ -87,15 +87,67 @@ Mandatory
 
 > Global Transformers are applied to all requests.
 
-Global Transformers can be defined programmatically as follows:
+Global Transformers can be defined programmatically instantiating `GlobalTransformer` objects:
 
 ``` java
-// transform the request
-RequestTransformerHandler.getGlobalTransformers().add(tranformer);
-
-// transform the response
-ResponseTransformerHandler.getGlobalTransformers().add(tranformer);
+    /**
+     *
+     * @param transformer
+     * @param phase
+     * @param scope
+     * @param predicate transformer is applied only to requests that resolve
+     * the predicate
+     * @param args
+     * @param confArgs
+     */
+    public GlobalTransformer(Transformer transformer,
+            RequestContextPredicate predicate,
+            RequestTransformer.PHASE phase,
+            RequestTransformer.SCOPE scope,
+            BsonValue args,
+            BsonValue confArgs) {
+        this.transformer = transformer;
+        this.predicate = predicate;
+        this.phase = phase;
+        this.scope = scope;
+        this.args = args;
+        this.confArgs = confArgs;
+    }
 ```
+
+and adding them to the list `CheckerHandler.getGlobalCheckers()`
+
+``` java
+// a predicate that resolves GET /db/coll
+RequestContextPredicate predicate = new RequestContextPredicate() {
+            @Override
+            public boolean resolve(HttpServerExchange hse, RequestContext context) {
+                return context.isDb() && context.isGet();
+            }
+        };
+
+// Let's use the predefined FilterTransformer to filter out properties from GET response
+Transformer transformer = new FilterTransformer();
+
+// FilterTransformer requires an array of properties to filter out as argument
+BsonArray args = new BsonArray();
+args.add(new BsonString("propToFilterOut"));
+
+// if the checker requires configuration arguments, define them here
+BsonDocument confArgs = null;
+
+GlobalTransformer globalTransformer = new GlobalTransformer(
+                transformer, 
+                RequestTransformer.PHASE.RESPONSE, 
+                RequestTransformer.SCOPE.CHILDREN, 
+                args, 
+                confArgs)
+
+// finally add it to global checker list
+TransformerHandler.getGlobalTransformers().add(globalTransformer);
+```
+
+You can use an [Initializer](/learn/initializer) to add Global Checkers.
 
 You can use an [Initializer](/learn/initializer) to add Global Transformers.
 

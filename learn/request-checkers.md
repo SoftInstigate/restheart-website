@@ -73,11 +73,50 @@ Mandatory
 
 > Global Checkers are applied to all requests.
 
-Global Checkers can be defined programmatically as follows:
+Global Checkers can be defined programmatically instantiating `GlobalChecker` objects:
 
 ``` java
-// check the request
-CheckerHandler.getGlobalCheckers().add(checker);
+    /**
+     * 
+     * @param checker
+     * @param predicate checker is applied only to requests that resolve
+     * the predicate
+     * @param skipNotSupported
+     * @param args
+     * @param confArgs 
+     */
+public GlobalChecker(Checker checker,
+            RequestContextPredicate predicate,
+            boolean skipNotSupported,
+            BsonValue args,
+            BsonValue confArgs)
+```
+
+and adding them to the list `CheckerHandler.getGlobalCheckers()`
+
+``` java
+// a predicate that resolves POST /db/coll and PUT /db/coll/docid requests
+RequestContextPredicate predicate = new RequestContextPredicate() {
+        @Override
+        public boolean resolve(HttpServerExchange hse, RequestContext context) {
+            return (context.isPost() && context.isCollection())
+            || (context.isPut() && context.isDocument());
+        }
+    };
+
+// Let's use the predefined ContentSizeChecker to limit write requests size
+Checker checker = new ContentSizeChecker(); 
+
+// ContentSizeChecker requires argument max, use 1024 Kbyte
+BsonDocument args = new BsonDocument("max", new BsonInt32(1024*1024));
+
+// if the checker requires configuration arguments, define them here
+BsonDocument confArgs = null;
+
+GlobalChecker globalChecker = new GlobalChecker(checker, predicate, true, args, confArgs);
+
+// finally add it to global checker list
+CheckerHandler.getGlobalCheckers().add(globalChecker);
 ```
 
 You can use an [Initializer](/learn/initializer) to add Global Checkers.
