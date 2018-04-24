@@ -43,7 +43,9 @@ public interface Initializer {
 MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 ```
 
-### Add global tranformers (applied to all requests)
+### Add Global Transformers
+
+> Global Transformers are applied to all requests.
 
 ``` java
 // transform the request
@@ -53,14 +55,18 @@ RequestTransformerHandler.getGlobalTransformers().add(tranformer);
 ResponseTransformerHandler.getGlobalTransformers().add(tranformer);
 ```
 
-### Add global checker (applied to all requests) ###
+### Add Global Checkers
+
+> Global Checkers are applied to all requests.
 
 ``` java
 // check the request
 CheckerHandler.getGlobalCheckers().add(checker);
 ```
 
-### Add global security predicate
+### Add Global Security Predicates
+
+> Global Security Predicates are applied to all requests.
 
 ``` java
 // allow users with role "ADMIN" to GET /
