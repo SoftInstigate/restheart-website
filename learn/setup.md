@@ -69,7 +69,7 @@ The RESTHeart default admin credentials are
     username: admin
     password: changeit
 
-### Modify the configuration for the RESTHeart container 
+### Modify the configuration for the RESTHeart container
 
 Download the configuration files `restheart.yml` and `security.yml` in the `etc` directory.
 
@@ -152,7 +152,7 @@ If you are running RESTHeart 3.3 and above (`latest` tag) then MongoDB authentic
 
     docker run -d -e MONGO_INITDB_ROOT_USERNAME='restheart' -e MONGO_INITDB_ROOT_PASSWORD='R3ste4rt!' --name mongodb mongo:3.6 --bind_ip_all --auth
 
-If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` then you need to change the `mongo-uri` in Docker/etc/restheart.yml accordingly
+If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` then you need to change the `mongo-uri` in `Docker/etc/restheart.yml` accordingly and re-build the Docker image.
 
 ```yml
     mongo-uri: mongodb://restheart:R3ste4rt!@mongodb
@@ -170,7 +170,7 @@ However, you will usually run it in **background**:
 
     docker run -d -p 80:8080 --name restheart --link mongodb softinstigate/restheart
 
-### 4. Check that is working:
+### 4. Check that is working
 
 If it's running in background, you can open the RESTHeart's logs:
 
@@ -348,7 +348,7 @@ for more information.
 Start MongoDB with authentication and connect to the MongoDB instance
 from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
-process in background, using the `--fork `parameter.
+process in background, using the `--fork` parameter.
 
     mongod --fork --syslog --auth
     mongo
