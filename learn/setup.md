@@ -4,18 +4,20 @@ title: Setup
 ---
 
 * [Run RESTHeart with Docker](#run-restheart-with-docker)
-* [Quick Start with Docker Compose](#quick-start-with-docker-compose)
-    * [Modify the configuration for the RESTHeart container](#modify-the-configuration-for-the-restheart-container)
-* [Docker Image](#docker-image)
-    * [Tags](#tags)
-    * [Dockerfile](#dockerfile)
-    * [How to Run](#how-to-run)
-    * [1. Pull the MongoDB and RESTHeart images](#1-pull-the-mongodb-and-restheart-images)
-    * [2. Run the MongoDB container](#2-run-the-mongodb-container)
-    * [3. Run RESTHeart interactively](#3-run-restheart-interactively)
-    * [4. Check that is working:](#4-check-that-is-working)
-    * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
-* [Stop and start again](#stop-and-start-again)
+    * [Quick Start with Docker Compose](#quick-start-with-docker-compose)
+        * [Modify the configuration for the RESTHeart container](#modify-the-configuration-for-the-restheart-container)
+    * [Docker Image](#docker-image)
+        * [Tags](#tags)
+        * [Dockerfile](#dockerfile)
+        * [How to Run](#how-to-run)
+        * [1. Pull the MongoDB and RESTHeart images](#1-pull-the-mongodb-and-restheart-images)
+        * [2. Run the MongoDB container](#2-run-the-mongodb-container)
+            * [2.1 RESTHeart &lt; 3.3](#21-restheart--33)
+            * [2.2 RESTHeart &gt;= 3.3](#22-restheart--33)
+        * [3. Run RESTHeart interactively](#3-run-restheart-interactively)
+        * [4. Check that is working:](#4-check-that-is-working)
+        * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
+    * [Stop and start again](#stop-and-start-again)
 * [Manual installation and configuration](#manual-installation-and-configuration)
     * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
     * [2. Install RESTHeart](#2-install-restheart)
@@ -420,7 +422,7 @@ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
     java -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
 
-#### 5.2 MongoDB authentication with just enough permissions 
+#### 5.2 MongoDB authentication with just enough permissions
 
 In the previous examples we used a mongodb user with *root *role for the
 sake of simplicity. This allows RESTHeart to execute any command on any
