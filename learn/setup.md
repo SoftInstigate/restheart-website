@@ -5,6 +5,7 @@ title: Setup
 
 * [Run RESTHeart with Docker](#run-restheart-with-docker)
     * [Quick Start with Docker Compose](#quick-start-with-docker-compose)
+        * [If something is not working](#if-something-is-not-working)
         * [Modify the configuration for the RESTHeart container](#modify-the-configuration-for-the-restheart-container)
     * [Docker Image](#docker-image)
         * [Tags](#tags)
@@ -18,7 +19,7 @@ title: Setup
         * [4. Check that is working](#4-check-that-is-working)
         * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
     * [Stop and start again](#stop-and-start-again)
-* [Manual installation and configuration](#manual-installation-and-configuration)
+* [Optional - Manual installation and configuration](#manual-installation-and-configuration)
     * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
     * [2. Install RESTHeart](#2-install-restheart)
     * [3. Start MongoDB](#3-start-mongodb)
@@ -37,6 +38,8 @@ title: Setup
 
 ## Quick Start with Docker Compose
 
+Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. However, this is neither a docker nor a docker-compose tutorial, so please refer to the [official documentation](https://docs.docker.com/compose/).
+
 Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
     mkdir restheart
@@ -49,25 +52,40 @@ Start both services just typying:
 
     docker-compose up -d
 
-Check that everything is fine:
-
-    $ docker-compose ps
-
-        Name                      Command               State                Ports
-    -----------------------------------------------------------------------------------------------
-    restheart-dev         ./entrypoint.sh etc/resthe ...   Up      4443/tcp, 0.0.0.0:8080->8080/tcp
-    restheart-dev-mongo   /entrypoint.sh mongod            Up      27017/tcp
-
-Tail the logs of both services:
-
-    docker-compose logs -f
-
-Open the HAL Browser at the following URL: [http://127.0.0.1:8080/browser](http://127.0.0.1:8080/browser)
+Open the the following URL: [localhost:8080/browser](http://localhost:8080/browser) which points to the HAL Browser.
 
 The RESTHeart default admin credentials are
 
     username: admin
     password: changeit
+
+You should see the HAL Browser:
+
+<img src="/images/browser.png" width="100%" height="auto">
+
+Note that by default docker-compose runs the latest RESTHeart release, which usually is a `SNAPSHOT`. If this is not what you want, then edit the `docker-compose.yml` file accordingly.
+
+If everytihng is working as expected, then **you can jump to the [tutorial](/learn/tutorial/)**.
+
+### If something is not working
+
+Check that docker containers are both up and running:
+
+    $ docker-compose ps
+
+        Name                    Command               State                Ports
+    -------------------------------------------------------------------------------------------
+    restheart         ./entrypoint.sh etc/resthe ...   Up      4443/tcp, 0.0.0.0:8080->8080/tcp
+    restheart-mongo   docker-entrypoint.sh --bin ...   Up      27017/tcp
+
+Then you can tail the logs of both services, to spot any error:
+
+    docker-compose logs -f
+
+Or you could tail the logs of individual services:
+
+    docker log -f restheart
+    docker log -f restheart-mongo
 
 ### Modify the configuration for the RESTHeart container
 
