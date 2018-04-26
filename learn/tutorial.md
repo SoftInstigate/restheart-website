@@ -3,263 +3,368 @@ layout: docs
 title: Tutorial
 ---
 
+* [Introduction](#introduction)
 * [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
 * [Create a Database](#create-a-database)
+* [Get the database](#get-the-database)
 * [Create a Collection](#create-a-collection)
+* [Get the collection](#get-the-collection)
 * [Create two Documents](#create-two-documents)
+    * [First document](#first-document)
+    * [Second document](#second-document)
 * [Get all Documents from the Collection](#get-all-documents-from-the-collection)
 * [GET Document by URL (by id)](#get-document-by-url-by-id)
-* [Query documents by name property (using Collection filter)](#query-documents-by-name-property-using-collection-filter)
+* [Query documents by properties](#query-documents-by-properties)
+* [Additional resources](#additional-resources)
 
 ## Introduction
 
-In this tutorial we’ll use RESTHeart to create a db, a collection and a couple of documents in MongoDB.
+In this tutorial we use RESTHeart to create a database, a collection and a couple of documents in MongoDB. Then we show how to perform simple queries. We take for granted that you already have a little basic knowledge of MongoDB, but nothing more.
 
-Before going further you might want to check:
-
-* [Setup](/learn/setup)
-* [Resource URI](/learn/resource-uri)
-* [Resource Representation Format](/learn/representation-format)
-
-We’ll use [httpie](http://httpie.org/), a brilliant command line HTTP client (you can also use curl of course!).
-
-_If you just want to play with RESTHeart without installing it, you can use our [online test instance](http://restheart.org/try). This instance is constrained to document-related operations on the collection */db/coll*, you can't create databases or collections there._
+Here we use [httpie](http://httpie.org/), a brilliant command line HTTP client (you can also use [curl](https://curl.haxx.se) of course, but httpie gives a colorized and formatted output that it's much easier to read).
 
 ## Start MongoDB and RESTHeart
 
-Review to the [setup](/learn/setup/#run-restheart-with-docker) section on how to quickly run RESTHeart with Docker Compose.
+If you have Docker properly installed in your machine, you could just clone the RESTHeart's Github repo and run the docker-compose command:
+
+    git clone git@github.com:SoftInstigate/restheart.git
+    cd restheart
+    docker-compose up -d
+
+That runs RESTHeart and an empty MongoDB container, which we are going to use for the rest of this tutorial.
+
+Optionally, you might want to review to the [setup](/learn/setup/#run-restheart-with-docker) section to get more details on how to run RESTHeart and MongoDB with Docker and Docker Compose, but you can leave it for later. Let's instead jump into some action.
 
 ## Create a Database
 
-### Request
+Now that RESTHeart is up and running and connected to its empty MongoDB instance (just created for you by Docker Compose), the first step is to create a new MongoDB database:
 
-    http PUT 127.0.0.1:8080/db desc='this is my first db created with restheart'
-
-### Response
+    $ http -a 'admin:changeit' PUT localhost:8080/db desc='this is my first db created with restheart'
 
     HTTP/1.1 201 Created
     Access-Control-Allow-Credentials: true
     Access-Control-Allow-Origin: *
     Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+    Auth-Token-Location: /_authtokens/admin
+    Auth-Token-Valid-Until: 2018-04-26T14:09:29.385Z
     Connection: keep-alive
     Content-Length: 0
-    Date: Sun, 08 Apr 2018 21:01:12 GMT
-    ETag: 56ded28e2d174c2a08cdee81
+    Content-Type: application/json
+    Date: Thu, 26 Apr 2018 13:54:29 GMT
+    ETag: 5ae1da15a7b11b0005a3c41d
     X-Powered-By: restheart.org
+
+## Get the database
+
+To get the created database:
+
+```javascript
+$ http -a 'admin:changeit' GET localhost:8080/db
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:19:07.744Z
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 149
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:04:07 GMT
+ETag: 5ae1da15a7b11b0005a3c41d
+X-Powered-By: restheart.org
+
+{
+    "_embedded": [], 
+    "_etag": {
+        "$oid": "5ae1da15a7b11b0005a3c41d"
+    }, 
+    "_id": "db", 
+    "_returned": 0, 
+    "_size": 0, 
+    "_total_pages": 0, 
+    "desc": "this is my first db created with restheart"
+}
+```
 
 ## Create a Collection
 
-### Request
+Now it's possibile to create a collection "coll" in the database "db":
 
-    http PUT 127.0.0.1:8080/db/coll desc='my first collection created with restheart'
-
-### Response
+    $ http -a 'admin:changeit' PUT localhost:8080/db/coll desc='my first collection created with restheart'
 
     HTTP/1.1 201 Created
     Access-Control-Allow-Credentials: true
     Access-Control-Allow-Origin: *
     Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+    Auth-Token-Location: /_authtokens/admin
+    Auth-Token-Valid-Until: 2018-04-26T14:25:39.914Z
     Connection: keep-alive
     Content-Length: 0
-    Date: Sun, 08 Apr 5aca8368634459000711d92a 21:02:44 GMT
-    ETag: 56ded2b22d174c2a08cdee83
+    Content-Type: application/json
+    Date: Thu, 26 Apr 2018 14:10:39 GMT
+    ETag: 5ae1dddfa7b11b0005a3c41f
     X-Powered-By: restheart.org
+
+## Get the collection
+
+To get the created collection:
+
+```javascript
+$ http -a 'admin:changeit' GET 127.0.0.1:8080/db/coll
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:26:43.480Z
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 135
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:11:43 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+
+{
+    "_embedded": [], 
+    "_etag": {
+        "$oid": "5ae1dddfa7b11b0005a3c41f"
+    }, 
+    "_id": "coll", 
+    "_returned": 0, 
+    "desc": "my first collection created with restheart"
+}
+
+```
 
 ## Create two Documents
 
-### Request
+Let's create some documents in MongoDB.
 
-    http POST 127.0.0.1:8080/db/coll name='RESTHeart' rating='cool'
+### First document
 
-### Response
-
-    HTTP/1.1 201 Created
-    Access-Control-Allow-Credentials: true
-    Access-Control-Allow-Origin: *
-    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-    Connection: keep-alive
-    Content-Length: 0
-    Date: Sun, 08 Apr 2018 21:03:04 GMT
-    ETag: 5aca83c9634459000711d92e
-    Location: http://127.0.0.1:8080/db/coll/5aca83c968a635bcd711d794
-    X-Powered-By: restheart.org
-
-### Request
-
-    http POST 127.0.0.1:8080/db/coll name='MongoDB' rating='super cool'
-
-### Response
+    $ http -a 'admin:changeit' POST localhost:8080/db/coll name='RESTHeart' rating='cool'
 
     HTTP/1.1 201 Created
     Access-Control-Allow-Credentials: true
     Access-Control-Allow-Origin: *
     Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+    Auth-Token-Location: /_authtokens/admin
+    Auth-Token-Valid-Until: 2018-04-26T14:28:06.435Z
     Connection: keep-alive
     Content-Length: 0
-    Date: Sun, 08 Apr 2018 21:03:24 GMT
-    ETag: 5aca83d8634459000711d92f
-    Location: http://127.0.0.1:8080/db/coll/5aca83d868a635bcd711d79b
+    Content-Type: application/json
+    Date: Thu, 26 Apr 2018 14:13:06 GMT
+    ETag: 5ae1de72a7b11b0005a3c420
+    Location: http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
     X-Powered-By: restheart.org
 
+Note the `Location` header, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query, like this:
 
-## Get all Documents from the Collection
+```javascript
+$ http -a 'admin:changeit' GET http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
 
-### Request
-
-``` bash
-$ http GET 127.0.0.1:8080/db/coll
-```
-
-### Response
-
-``` javascript
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:38:48.212Z
 Connection: keep-alive
 Content-Encoding: gzip
-Content-Length: 227
+Content-Length: 119
 Content-Type: application/json
-Date: Sun, 08 Apr 2018 21:04:44 GMT
-ETag: 5aca8368634459000711d92a
-X-Powered-By: restheart.org
-
-{
-    "_embedded": [
-        {
-            "_etag": {
-                "$oid": "5aca83d8634459000711d92f"
-            },
-            "_id": {
-                "$oid": "5aca83d868a635bcd711d79b"
-            },
-            "name": "MongoDB",
-            "rating": "super cool"
-        },
-        {
-            "_etag": {
-                "$oid": "5aca83c9634459000711d92e"
-            },
-            "_id": {
-                "$oid": "5aca83c968a635bcd711d794"
-            },
-            "name": "RESTHeart",
-            "rating": "cool"
-        }
-    ],
-    "_etag": {
-        "$oid": "5aca8368634459000711d92a"
-    },
-    "_id": "coll",
-    "_returned": 2,
-    "desc": "my first collection created with restheart"
-}
-```
-
-The interesting part is the \_embedded array:
-
-``` javascript
-{
-    "_embedded": [
-        {
-            "_etag": {
-                "$oid": "5aca83d8634459000711d92f"
-            },
-            "_id": {
-                "$oid": "5aca83d868a635bcd711d79b"
-            },
-            "name": "MongoDB",
-            "rating": "super cool"
-        },
-        {
-            "_etag": {
-                "$oid": "5aca83c9634459000711d92e"
-            },
-            "_id": {
-                "$oid": "5aca83c968a635bcd711d794"
-            },
-            "name": "RESTHeart",
-            "rating": "cool"
-        }
-    ]
-}
-```
-
-## GET Document by URL (by id)
-
-### Request
-
-    http GET 127.0.0.1:8080/db/coll/5aca83c968a635bcd711d794
-
-### Response
-
-``` javascript
-HTTP/1.1 200 OK
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Length: 123
-Content-Type: application/json
-Date: Sun, 08 Apr 2018 21:05:44 GMT
-ETag: 5aca83c968a635bcd711d794
+Date: Thu, 26 Apr 2018 14:23:48 GMT
+ETag: 5ae1de72a7b11b0005a3c420
 X-Powered-By: restheart.org
 
 {
     "_etag": {
-        "$oid": "5aca83c968a635bcd711d794"
-    },
+        "$oid": "5ae1de72a7b11b0005a3c420"
+    }, 
     "_id": {
-        "$oid": "5aca83c9634459000711d92e"
-    },
-    "name": "RESTHeart",
+        "$oid": "5ae1de72586f80fc867131f4"
+    }, 
+    "name": "RESTHeart", 
     "rating": "cool"
 }
 ```
 
-## Query documents by name property (using Collection filter)
+### Second document
 
-### Request
+Cool, now let's create a second document:
 
-    http GET 127.0.0.1:8080/db/coll?filter="{'name':'MongoDB'}"
+    $ http -a 'admin:changeit' POST localhost:8080/db/coll name='MongoDB' rating='super cool'
 
-### Response
+    HTTP/1.1 201 Created
+    Access-Control-Allow-Credentials: true
+    Access-Control-Allow-Origin: *
+    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+    Auth-Token-Location: /_authtokens/admin
+    Auth-Token-Valid-Until: 2018-04-26T14:29:24.215Z
+    Connection: keep-alive
+    Content-Length: 0
+    Content-Type: application/json
+    Date: Thu, 26 Apr 2018 14:14:24 GMT
+    ETag: 5ae1dec0a7b11b0005a3c421
+    Location: http://localhost:8080/db/coll/5ae1dec0586f80fc86713200
+    X-Powered-By: restheart.org
 
-``` javascript
+As before, note the `Location` header. As before, you can GET the newly created document by requesting that link.
+
+## Get all Documents from the Collection
+
+Now let's get all documents in a row. For this, we send a GET request to the whole collection (named "coll" in this example).
+
+```javascript
+$ http -a 'admin:changeit' GET localhost:8080/db/coll
+
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:30:18.109Z
 Connection: keep-alive
 Content-Encoding: gzip
-Content-Length: 204
+Content-Length: 223
 Content-Type: application/json
-Date: Sun, 08 Apr 2018 21:05:59 GMT
-ETag: 5aca8368634459000711d92a
+Date: Thu, 26 Apr 2018 14:15:18 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
 X-Powered-By: restheart.org
 
 {
-    "_embedded": {
-        "_embedded": [
-            {
-                "_etag": {
-                    "$oid": "5aca83d8634459000711d92f"
-                },
-                "_id": {
-                    "$oid": "5aca83d868a635bcd711d79b"
-                },
-                "name": "MongoDB",
-                "rating": "super cool"
-            }
-        ]
-    },
+    "_embedded": [
+        {
+            "_etag": {
+                "$oid": "5ae1dec0a7b11b0005a3c421"
+            }, 
+            "_id": {
+                "$oid": "5ae1dec0586f80fc86713200"
+            }, 
+            "name": "MongoDB", 
+            "rating": "super cool"
+        }, 
+        {
+            "_etag": {
+                "$oid": "5ae1de72a7b11b0005a3c420"
+            }, 
+            "_id": {
+                "$oid": "5ae1de72586f80fc867131f4"
+            }, 
+            "name": "RESTHeart", 
+            "rating": "cool"
+        }
+    ], 
     "_etag": {
-        "$oid": "5aca8368634459000711d92a"
-    },
-    "_id": "coll",
-    "_returned": 1,
+        "$oid": "5ae1dddfa7b11b0005a3c41f"
+    }, 
+    "_id": "coll", 
+    "_returned": 2, 
     "desc": "my first collection created with restheart"
 }
 ```
+
+Note that the two documents are within the `_embedded` array, while the rest is metadata (the meaning of metadata, such as `_etag` and `_returned`, should appear self-explanatory).
+
+Also beware that RESTHeart applies a [pagination algorithm](/learn/query-documents/#paging) to all requests, but by default it works only if the collection contains more than 100 documents, which is not this case.
+
+## GET Document by URL (by id)
+
+If you look into the `_embedded` array and copy the `_id` element, then it's possible to get that single document directly, exactly as we did before by looking at the `Location` header
+
+For example, let's say the `_id` of a document in the `_embedded` array is "5ae1de72586f80fc867131f4" then we can GET it immediately:
+
+``` javascript
+$ http -a 'admin:changeit' GET localhost:8080/db/coll/5ae1de72586f80fc867131f4
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:35:42.549Z
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 119
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:20:42 GMT
+ETag: 5ae1de72a7b11b0005a3c420
+X-Powered-By: restheart.org
+
+{
+    "_etag": {
+        "$oid": "5ae1de72a7b11b0005a3c420"
+    }, 
+    "_id": {
+        "$oid": "5ae1de72586f80fc867131f4"
+    }, 
+    "name": "RESTHeart", 
+    "rating": "cool"
+}
+
+```
+
+## Query documents by properties
+
+Using directly the document `_id` is of course not the only available option. We can actually leverage MongoDB queries with the `filter` query parameter in HTTP calls:
+
+``` javascript
+$ http -a 'admin:changeit' GET localhost:8080/db/coll?filter="{'name':'MongoDB'}"
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:44:29.115Z
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 192
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:29:29 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+
+{
+    "_embedded": [
+        {
+            "_etag": {
+                "$oid": "5ae1dec0a7b11b0005a3c421"
+            }, 
+            "_id": {
+                "$oid": "5ae1dec0586f80fc86713200"
+            }, 
+            "name": "MongoDB", 
+            "rating": "super cool"
+        }
+    ], 
+    "_etag": {
+        "$oid": "5ae1dddfa7b11b0005a3c41f"
+    }, 
+    "_id": "coll", 
+    "_returned": 1, 
+    "desc": "my first collection created with restheart"
+```
+
+Now you could jump to [Queries](/learn/query-documents/) for more complex examples on how to search documents. Remember that you will have all MongoDB's queries power at your disposal.
+
+## Additional resources
+
+* [Setup](/learn/setup)
+* [Resource URI](/learn/resource-uri)
+* [Resource Representation Format](/learn/representation-format)
+* [Queries](/learn/query-documents/)
