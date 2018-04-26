@@ -15,6 +15,7 @@ title: Tutorial
 * [Get all Documents from the Collection](#get-all-documents-from-the-collection)
 * [GET Document by URL (by id)](#get-document-by-url-by-id)
 * [Query documents by properties](#query-documents-by-properties)
+* [Clean-up](#clean-up)
 * [Additional resources](#additional-resources)
 
 ## Introduction
@@ -361,6 +362,18 @@ X-Powered-By: restheart.org
 ```
 
 Now you could jump to [Queries](/learn/query-documents/) for more complex examples on how to search documents. Remember that you will have all MongoDB's queries power at your disposal.
+
+## Clean-up
+
+To stop all containers and clean-up everything, just run the `docker-compose down` command:
+
+    $ docker-compose down
+
+    Stopping restheart       ... done
+    Stopping restheart-mongo ... done
+    Removing restheart       ... done
+    Removing restheart-mongo ... done
+    Removing network restheart_backend
 
 ## Additional resources
 
