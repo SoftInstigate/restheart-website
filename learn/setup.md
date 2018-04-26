@@ -15,7 +15,7 @@ title: Setup
             * [2.1 RESTHeart &lt; 3.3](#21-restheart--33)
             * [2.2 RESTHeart &gt;= 3.3](#22-restheart--33)
         * [3. Run RESTHeart interactively](#3-run-restheart-interactively)
-        * [4. Check that is working:](#4-check-that-is-working)
+        * [4. Check that is working](#4-check-that-is-working)
         * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
     * [Stop and start again](#stop-and-start-again)
 * [Manual installation and configuration](#manual-installation-and-configuration)
