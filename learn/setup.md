@@ -330,7 +330,7 @@ configuration options.
 For example:
 
 ```text
-$ java -jar restheart.jar
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
 14:01:09.968 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart
 14:01:09.971 [main] INFO  org.restheart.Bootstrapper - version 2.0.0
 14:01:09.978 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart.log with level INFO
@@ -408,7 +408,7 @@ case ‘admin’).
 
 Now start RESTHeart specifying the configuration file:
 
-    java -server -jar restheart.jar etc/restheart.yml
+    java -Dfile.encoding=UTF-8 -server -jar restheart.jar etc/restheart.yml
 
 Test the connection opening the HAL browser at `http://127.0.0.1:8080/browser`.
 
@@ -438,7 +438,7 @@ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
 * start restheart with following options:
 
-    java -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
+    java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
 
 #### 5.2 MongoDB authentication with just enough permissions
 
