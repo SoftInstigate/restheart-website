@@ -322,7 +322,7 @@ For more information about the configuration file format refer to [Default
 Configuration File](/learn/configuration-file) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
-process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -server -jar restheart.jar --fork`.
+process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork`.
 Note that this will force the console logging and the file logging to be
 turned off and on respectively, regardless the specified log
 configuration options.
