@@ -302,7 +302,7 @@ child process started successfully, parent exiting
 
 ### 4. Start the RESTHeart server
 
-Run the RESTHeart server by typing `java -server -jar restheart.jar`.
+Run the RESTHeart server by typing `java -Dfile.encoding=UTF-8 -server -jar restheart.jar`.
 
 This starts it with the default configuration, which is fine for MongoDB
 running on localhost, on default port and without authentication.
