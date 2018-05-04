@@ -331,24 +331,30 @@ For example:
 
 ```text
 $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
-14:01:09.968 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart
-14:01:09.971 [main] INFO  org.restheart.Bootstrapper - version 2.0.0
-14:01:09.978 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart.log with level INFO
-14:01:09.978 [main] INFO  org.restheart.Bootstrapper - Logging to console with level INFO
-14:01:10.275 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
-14:01:10.275 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.2.0
-14:01:10.276 [main] WARN  org.restheart.Bootstrapper - ***** No Identity Manager specified. Authentication disabled.
-14:01:10.277 [main] WARN  org.restheart.Bootstrapper - ***** No access manager specified. users can do anything.
-14:01:10.277 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
-14:01:10.593 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
-14:01:10.593 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-14:01:10.595 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
-14:01:10.595 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores not enabled
-14:01:10.766 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
-14:01:10.976 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart-4469244188076444924
-14:01:10.999 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources browser. Access Manager: false
-14:01:11.246 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gn/T/restheart-0.pid
-14:01:11.246 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+15:22:18.518 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
+15:22:18.529 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance develop
+15:22:18.529 [main] INFO  org.restheart.Bootstrapper - version 3.2.2
+15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to file /tmp/restheart.log with level DEBUG
+15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to console with level DEBUG
+15:22:18.812 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
+15:22:18.812 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.6.0
+15:22:18.826 [main] INFO  org.restheart.Bootstrapper - Identity Manager org.restheart.security.impl.SimpleFileIdentityManager enabled
+15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Access Manager org.restheart.security.impl.SimpleAccessManager enabled
+15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Authentication Mechanism io.undertow.security.impl.BasicAuthenticationMechanism enabled
+15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
+15:22:18.891 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
+15:22:18.892 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+15:22:18.893 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
+15:22:18.893 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores enabled  with TTL 60000 msecs
+15:22:19.034 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
+15:22:19.126 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-6853484883019945941
+15:22:19.132 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-6853484883019945941. Access Manager: false
+15:22:19.134 [main] INFO  org.restheart.Bootstrapper - URL /_logic/ping bound to application logic handler org.restheart.handlers.applicationlogic.PingHandler. Access manager: false
+15:22:19.135 [main] INFO  org.restheart.Bootstrapper - URL /_logic/roles bound to application logic handler org.restheart.handlers.applicationlogic.GetRoleHandler. Access manager: false
+15:22:19.135 [main] INFO  org.restheart.Bootstrapper - URL /_logic/ic bound to application logic handler org.restheart.handlers.applicationlogic.CacheInvalidator. Access manager: true
+15:22:19.137 [main] INFO  org.restheart.Bootstrapper - URL /_logic/csv bound to application logic handler org.restheart.handlers.applicationlogic.CsvLoaderHandler. Access manager: true
+15:22:19.322 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-1161966278.pid
+15:22:19.322 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
 We’ll now use the embedded [HAL browser](https://github.com/mikekelly/hal-browser) to check that everything is fine. The HAL browser allows you to surf the DATA API with your regular Web browser.
