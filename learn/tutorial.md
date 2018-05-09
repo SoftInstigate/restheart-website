@@ -28,9 +28,11 @@ Here we use [httpie](http://httpie.org/), a brilliant command line HTTP client 
 
 If you have Docker properly installed in your machine, you could just clone the RESTHeart's Github repo and run the docker-compose command:
 
-    git clone git@github.com:SoftInstigate/restheart.git
-    cd restheart
-    docker-compose up -d
+``` bash
+$ mkdir restheart && cd restheart
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+$ docker-compose up -d
+```
 
 That runs RESTHeart and an empty MongoDB container, which we are going to use for the rest of this tutorial.
 
@@ -40,27 +42,29 @@ Optionally, you might want to review to the [setup](/learn/setup/#run-restheart-
 
 Now that RESTHeart is up and running and connected to its empty MongoDB instance (just created for you by Docker Compose), the first step is to create a new MongoDB database:
 
-    $ http -a 'admin:changeit' PUT localhost:8080/db desc='this is my first db created with restheart'
+``` bash
+$ http -a 'admin:changeit' PUT localhost:8080/db desc='this is my first db created with restheart'
 
-    HTTP/1.1 201 Created
-    Access-Control-Allow-Credentials: true
-    Access-Control-Allow-Origin: *
-    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
-    Auth-Token-Location: /_authtokens/admin
-    Auth-Token-Valid-Until: 2018-04-26T14:09:29.385Z
-    Connection: keep-alive
-    Content-Length: 0
-    Content-Type: application/json
-    Date: Thu, 26 Apr 2018 13:54:29 GMT
-    ETag: 5ae1da15a7b11b0005a3c41d
-    X-Powered-By: restheart.org
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:09:29.385Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 13:54:29 GMT
+ETag: 5ae1da15a7b11b0005a3c41d
+X-Powered-By: restheart.org
+```
 
 ## Get the database
 
 To get the created database:
 
-```javascript
+``` bash
 $ http -a 'admin:changeit' GET localhost:8080/db
 
 HTTP/1.1 200 OK
@@ -77,7 +81,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:04:07 GMT
 ETag: 5ae1da15a7b11b0005a3c41d
 X-Powered-By: restheart.org
-
+```
+```json
 {
     "_embedded": [], 
     "_etag": {
@@ -95,27 +100,29 @@ X-Powered-By: restheart.org
 
 Now it's possibile to create a collection "coll" in the database "db":
 
-    $ http -a 'admin:changeit' PUT localhost:8080/db/coll desc='my first collection created with restheart'
+``` bash
+$ http -a 'admin:changeit' PUT localhost:8080/db/coll desc='my first collection created with restheart'
 
-    HTTP/1.1 201 Created
-    Access-Control-Allow-Credentials: true
-    Access-Control-Allow-Origin: *
-    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
-    Auth-Token-Location: /_authtokens/admin
-    Auth-Token-Valid-Until: 2018-04-26T14:25:39.914Z
-    Connection: keep-alive
-    Content-Length: 0
-    Content-Type: application/json
-    Date: Thu, 26 Apr 2018 14:10:39 GMT
-    ETag: 5ae1dddfa7b11b0005a3c41f
-    X-Powered-By: restheart.org
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:25:39.914Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:10:39 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+```
 
 ## Get the collection
 
 To get the created collection:
 
-```javascript
+``` bash
 $ http -a 'admin:changeit' GET 127.0.0.1:8080/db/coll
 
 HTTP/1.1 200 OK
@@ -132,7 +139,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:11:43 GMT
 ETag: 5ae1dddfa7b11b0005a3c41f
 X-Powered-By: restheart.org
-
+```
+``` json
 {
     "_embedded": [], 
     "_etag": {
@@ -151,26 +159,28 @@ Let's create some documents in MongoDB.
 
 ### First document
 
-    $ http -a 'admin:changeit' POST localhost:8080/db/coll name='RESTHeart' rating='cool'
+``` bash
+$ http -a 'admin:changeit' POST localhost:8080/db/coll name='RESTHeart' rating='cool'
 
-    HTTP/1.1 201 Created
-    Access-Control-Allow-Credentials: true
-    Access-Control-Allow-Origin: *
-    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
-    Auth-Token-Location: /_authtokens/admin
-    Auth-Token-Valid-Until: 2018-04-26T14:28:06.435Z
-    Connection: keep-alive
-    Content-Length: 0
-    Content-Type: application/json
-    Date: Thu, 26 Apr 2018 14:13:06 GMT
-    ETag: 5ae1de72a7b11b0005a3c420
-    Location: http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
-    X-Powered-By: restheart.org
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:28:06.435Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:13:06 GMT
+ETag: 5ae1de72a7b11b0005a3c420
+Location: http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
+X-Powered-By: restheart.org
+```
 
 Note the `Location` header, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query, like this:
 
-```javascript
+``` bash
 $ http -a 'admin:changeit' GET http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
 
 HTTP/1.1 200 OK
@@ -187,7 +197,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:23:48 GMT
 ETag: 5ae1de72a7b11b0005a3c420
 X-Powered-By: restheart.org
-
+```
+``` json
 {
     "_etag": {
         "$oid": "5ae1de72a7b11b0005a3c420"
@@ -204,22 +215,24 @@ X-Powered-By: restheart.org
 
 Cool, now let's create a second document:
 
-    $ http -a 'admin:changeit' POST localhost:8080/db/coll name='MongoDB' rating='super cool'
+``` bash
+$ http -a 'admin:changeit' POST localhost:8080/db/coll name='MongoDB' rating='super cool'
 
-    HTTP/1.1 201 Created
-    Access-Control-Allow-Credentials: true
-    Access-Control-Allow-Origin: *
-    Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-    Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
-    Auth-Token-Location: /_authtokens/admin
-    Auth-Token-Valid-Until: 2018-04-26T14:29:24.215Z
-    Connection: keep-alive
-    Content-Length: 0
-    Content-Type: application/json
-    Date: Thu, 26 Apr 2018 14:14:24 GMT
-    ETag: 5ae1dec0a7b11b0005a3c421
-    Location: http://localhost:8080/db/coll/5ae1dec0586f80fc86713200
-    X-Powered-By: restheart.org
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:29:24.215Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:14:24 GMT
+ETag: 5ae1dec0a7b11b0005a3c421
+Location: http://localhost:8080/db/coll/5ae1dec0586f80fc86713200
+X-Powered-By: restheart.org
+```
 
 As before, note the `Location` header. As before, you can GET the newly created document by requesting that link.
 
@@ -227,7 +240,7 @@ As before, note the `Location` header. As before, you can GET the newly created 
 
 Now let's get all documents in a row. For this, we send a GET request to the whole collection (named "coll" in this example).
 
-```javascript
+```bash
 $ http -a 'admin:changeit' GET localhost:8080/db/coll
 
 HTTP/1.1 200 OK
@@ -244,7 +257,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:15:18 GMT
 ETag: 5ae1dddfa7b11b0005a3c41f
 X-Powered-By: restheart.org
-
+```
+```json
 {
     "_embedded": [
         {
@@ -287,7 +301,7 @@ If you look into the `_embedded` array and copy the `_id` element, then it's pos
 
 For example, let's say the `_id` of a document in the `_embedded` array is "5ae1de72586f80fc867131f4" then we can GET it immediately:
 
-``` javascript
+``` bash
 $ http -a 'admin:changeit' GET localhost:8080/db/coll/5ae1de72586f80fc867131f4
 
 HTTP/1.1 200 OK
@@ -304,7 +318,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:20:42 GMT
 ETag: 5ae1de72a7b11b0005a3c420
 X-Powered-By: restheart.org
-
+```
+```json
 {
     "_etag": {
         "$oid": "5ae1de72a7b11b0005a3c420"
@@ -322,7 +337,7 @@ X-Powered-By: restheart.org
 
 Using directly the document `_id` is of course not the only available option. We can actually leverage MongoDB queries with the `filter` query parameter in HTTP calls:
 
-``` javascript
+``` bash
 $ http -a 'admin:changeit' GET localhost:8080/db/coll?filter="{'name':'MongoDB'}"
 
 HTTP/1.1 200 OK
@@ -339,7 +354,8 @@ Content-Type: application/json
 Date: Thu, 26 Apr 2018 14:29:29 GMT
 ETag: 5ae1dddfa7b11b0005a3c41f
 X-Powered-By: restheart.org
-
+```
+```json
 {
     "_embedded": [
         {
@@ -359,6 +375,7 @@ X-Powered-By: restheart.org
     "_id": "coll", 
     "_returned": 1, 
     "desc": "my first collection created with restheart"
+}
 ```
 
 Now you could jump to [Queries](/learn/query-documents/) for more complex examples on how to search documents. Remember that you will have all MongoDB's queries power at your disposal.
@@ -367,13 +384,15 @@ Now you could jump to [Queries](/learn/query-documents/) for more complex exampl
 
 To stop all containers and clean-up everything, just run the `docker-compose down` command:
 
-    $ docker-compose down
+``` bash
+$ docker-compose down
 
-    Stopping restheart       ... done
-    Stopping restheart-mongo ... done
-    Removing restheart       ... done
-    Removing restheart-mongo ... done
-    Removing network restheart_backend
+Stopping restheart       ... done
+Stopping restheart-mongo ... done
+Removing restheart       ... done
+Removing restheart-mongo ... done
+Removing network restheart_backend
+```
 
 ## Additional resources
 
