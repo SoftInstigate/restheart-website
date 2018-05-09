@@ -336,48 +336,11 @@ child process started successfully, parent exiting
 
 ### 4. Start the RESTHeart server
 
-Run the RESTHeart server by typing 
-
-``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
-```
-
-This starts it with the default configuration, which is fine for MongoDB
-running on localhost, on default port and without authentication.
-
-Configuration options can be specified passing a configuration
-file as argument. 
-
-``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml
-```
-
-The configuration file path is either
-absolute or relative to the restheart.jar file location.
-
-The configuration file can specify any option that will overwrite the
-default value: this way it is not required to specify all the possible
-options in the configuration file following the *convention over
-configuration* approach.
-
-For more information about the configuration file format refer to [Default
-Configuration File](/learn/configuration-file) section.
-
-On Linux, OSX and Solaris you can run RESTHeart as a [daemon
-process](https://en.wikipedia.org/wiki/Daemon_(computing)): 
-
-``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork`
-```
-
-Note that this will force the console logging and the file logging to be
-turned off and on respectively, regardless the specified log
-configuration options.
-
-For example:
+Run the RESTHeart
 
 ```bash
 $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
+
 15:22:18.518 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
 15:22:18.529 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance develop
 15:22:18.529 [main] INFO  org.restheart.Bootstrapper - version 3.2.2
@@ -403,6 +366,38 @@ $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
 15:22:19.322 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-1161966278.pid
 15:22:19.322 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
+
+This starts it with the default configuration, which is fine for MongoDB
+running on localhost, on default port and without authentication.
+
+Configuration options can be specified passing a configuration
+file as argument.
+
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml
+```
+
+The configuration file path is either
+absolute or relative to the restheart.jar file location.
+
+The configuration file can specify any option that will overwrite the
+default value: this way it is not required to specify all the possible
+options in the configuration file following a *convention over
+configuration* approach.
+
+For more information about the configuration file format refer to [Default
+Configuration File](/learn/configuration-file) section.
+
+On Linux, OSX and Solaris you can run RESTHeart as a [daemon
+process](https://en.wikipedia.org/wiki/Daemon_(computing)): 
+
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork
+```
+
+Note that this will force the console logging and the file logging to be
+turned off and on respectively, regardless the specified log
+configuration options.
 
 We’ll now use the embedded [HAL browser](https://github.com/mikekelly/hal-browser) to check that everything is fine. The HAL browser allows you to surf the DATA API with your regular Web browser.
 
