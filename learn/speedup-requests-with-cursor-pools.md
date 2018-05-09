@@ -117,8 +117,8 @@ The following images depicts how it works, in the LINEAR case:**
     RESTHeart finds cursor in the pool that has been already skipped. In
     this case, only 3 more skips are needed.
 
-![](/images/attachments/9207943/12058633.png?width=640){.image-center
-width="640" height="400"}
+![](/images/attachments/9207943/12058633.png?width=640){:
+width="640" height="400" class="image-center img-responsive"}
 
 The following images depicts how it works, in the RANDOM case:
 
@@ -132,10 +132,8 @@ The following images depicts how it works, in the RANDOM case:
     in the pool that has been already skipped. In the worst case only
     *slice width* skips are needed.
 
-![](/images/attachments/9207943/12058637.png?width=640){.image-center
-width="640"}
-
- 
+![](/images/attachments/9207943/12058637.png?width=640){:
+width="640" class="image-center img-responsive"}
 
 ## Request parameters
 

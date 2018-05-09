@@ -62,7 +62,7 @@ The RESTHeart default admin credentials are
 
 You should see the HAL Browser:
 
-<img src="/images/browser.png" width="100%" height="auto">
+<img src="/images/browser.png" width="100%" height="auto" class="img-responsive">
 
 Note that by default docker-compose runs the latest RESTHeart release, which usually is a `SNAPSHOT`. If this is not what you want, then edit the `docker-compose.yml` file accordingly.
 

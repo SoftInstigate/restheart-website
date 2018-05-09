@@ -31,7 +31,7 @@ Measure the execution time to create **1 million documents** with random
 data, using **200 test threads.**
 
 ![test 1 execution
-time](http://restheart.org/images/perftest/test-1-et.png)
+time](http://restheart.org/images/perftest/test-1-et.png){: class="img-responsive"}
 
 In this scenario, RESTHeart introduces just a **2,41% overhead** over
 the total execution time:
@@ -48,9 +48,9 @@ getting 5 documents each time (limit 5) and skipping just 25 documents,
 under different concurrency levels. 
 
 ![test 2 execution
-time](http://restheart.org/images/perftest/test-2-et.png)
+time](http://restheart.org/images/perftest/test-2-et.png){: class="img-responsive"}
 
-![test 2 tps](http://restheart.org/images/perftest/test-2-tps.png)
+![test 2 tps](http://restheart.org/images/perftest/test-2-tps.png){: class="img-responsive"}
 
 RESTHeart delivers better performances under any concurrency level over
 direct access via MongoDB driver:
@@ -67,9 +67,9 @@ getting 5 documents each time (limit 5) and skipping just 250.000
 documents, under different concurrency levels.
 
 ![test 3 execution
-time](http://restheart.org/images/perftest/test-3-et.png)
+time](http://restheart.org/images/perftest/test-3-et.png){: class="img-responsive"}
 
-![test 3 tps](http://restheart.org/images/perftest/test-3-tps.png)
+![test 3 tps](http://restheart.org/images/perftest/test-3-tps.png){: class="img-responsive"}
 
 Thanks to the eager pre-allocation DBCursor engine, queries with
 significant skip parameter executes much faster (50 times in this case)
@@ -87,9 +87,9 @@ Measure the execution time to **query a collection 500 times**, getting
 time, with a concurrency level of 4.
 
 ![test 4 execution
-time](http://restheart.org/images/perftest/test-3-et.png)
+time](http://restheart.org/images/perftest/test-3-et.png){: class="img-responsive"}
 
-![test 4 tps](http://restheart.org/images/perftest/test-3-tps.png)
+![test 4 tps](http://restheart.org/images/perftest/test-3-tps.png){: class="img-responsive"}
 
 Thanks to the eager pre-allocation DBCursor engine, queries with
 significant skip parameter executes much faster (up to 470 times in this

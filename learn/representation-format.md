@@ -117,7 +117,7 @@ HAL builds up on 2 simple concepts: **Resources** and **Links**
 -   **Resources** have state (plain JSON), embedded resources and links
 -   **Links** have target (href URI) and relations (aka rel)
 
-![](http://stateless.co/info-model.png){width="800" height="600"}
+![](http://stateless.co/info-model.png){: width="800" height="600" class="img-responsive"}
 
 ## Strict mode representations of BSON
 

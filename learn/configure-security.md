@@ -44,8 +44,8 @@ Once security is enabled, requests undergo the following process:
     eventually returns the response code *200 OK* (this depends on the
     request type and execution result)
 
-![](/images/attachments/13369378/13729831.png?height=400){.image-center
-height="400"}
+![](/images/attachments/13369378/13729831.png?height=400){:
+height="400" class="image-center img-responsive"}
 
 The configuration sections to setup are:
 
@@ -347,10 +347,3 @@ permissions:
  - role: $unauthenticated
    predicate: path-prefix[path="/coll"] and method[value="GET"]
 ```
-
- 
-
-## Attachments:
-
-[restheart
-security image.png](/images/attachments/13369378/13729831.png) (image/png)  
