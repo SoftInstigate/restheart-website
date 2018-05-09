@@ -37,7 +37,7 @@ see [ETag](/learn/etag) for more information):
 ``` json
 {
   "_id": "coll",
-  "description": "my first collection"
+  "description": "my first collection",
   "created_on": { "$date": 1460708338344 },
   "_etag": { "$oid": "5710a3f12d174c97589e6127" }
 }
@@ -67,7 +67,9 @@ The following table summarizes the semantic of the write verbs:
 <td><p>Upserts the resource identified by the request URL:</p>
 <ul>
 <li>if the resource does not already exist, the PUT request creates it setting its state as specified in the request JSON body;</li>
-<li>if the resource, the PUT request sets the resource state as specified in the request JSON body.</li>
+<li>if the resource alreadyn exists, the PUT request sets the resource state as specified in the request JSON body.</li>
+<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
 </ul></td>
 </tr>
 <tr class="even">
@@ -77,12 +79,22 @@ The following table summarizes the semantic of the write verbs:
 <li>if the resource does not already exist, the POST request creates it setting its state as specified in the request JSON body;</li>
 <li>if the resource exists, the POST sets the resource properties as specified in the request JSON body.</li>
 </ul>
-<p>The resource to upsert is identified by the <em>_id</em> property of the request JSON body. If the request body does not include it, the <em>_id</em> it is auto generated as a new ObjectId and the URL of the new document is returned in the response via the <em>Location</em> header.</p></td>
+<p>The resource to upsert is identified by the <em>_id</em> property of the request JSON body. If the request body does not include it, the <em>_id</em> it is auto generated as a new ObjectId and the URL of the new document is returned in the response via the <em>Location</em> header.</p>
+<ul>
+<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+</ul>
+
+</td>
 </tr>
 <tr class="odd">
 <td>PATCH</td>
-<td><p>Modifies the state of the resource identified by the request URL applying only the properties specified in the request JSON body.</p>
-<p>PUT and POST verbs replace the whole state while PATCH only modifies properties passed with the request JSON body.</p></td>
+<td><p>While PUT and POST verbs replace the whole state of the resource identified by the request URL, PATCH verb only modifies the properties passed with the request JSON body. All write requests, including PATCH, have upsert semantic.</p>
+<ul>
+<li>All update operators are allowed.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+</ul>
+</td>
 </tr>
 <tr class="even">
 <td>DELETE</td>
@@ -116,11 +128,13 @@ index position, and enclose in quotes:
 
 **Example**
 
-``` plain
+``` json 
 { "_id": "docid", "array": [ 1, 2, 3, 4, 5 ], ... } 
- 
+```
+```
 PATCH /db/coll/docid {"array.1": 100 }
- 
+```
+```json
 { "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... } 
 ```
 
@@ -146,13 +160,12 @@ PATCH /db/coll/docid { "name.last": "Ford" }
 
 ## Update operators
 
-RESTHeart allows to use all MongoDB update operators.
+RESTHeart allows to use all MongoDB update operators on PATCH requests. 
+PUT and POST can only use `$currentDate` update operator.
 
 Refer to MongoDB [Update
 Operators](https://docs.mongodb.org/manual/reference/operator/update/) documentation
 for more information.
-
-Update operators can be used in PUT, PATCH and POST verbs.
 
 **Examples**
 
@@ -165,7 +178,6 @@ Consider the following document
     "array": [ {"id":1, "value": 2} ],
     "count": 10,
     "message": "hello world"
-  ...
 }
 ```
 
@@ -190,12 +202,15 @@ The following request will:
   
 
 ``` bash
-PATCH /db/coll/docid { 
+PATCH /db/coll/docid 
+```
+```json
+{
     "pi": 3.14,
-    "$inc": { "count": 1 }, 
-    "$push": { "array": { ("id": 2, "value": 0 } } }, 
-    "$unset": {"message": null}, 
-    "$currentDate": {"timestamp": true} 
+    "$inc": { "count": 1 },
+    "$push": { "array": { "id": 2, "value": 0 } },
+    "$unset": {"message": null},
+    "$currentDate": {"timestamp": true}
 }
 ```
 
@@ -203,12 +218,11 @@ After the request completes, the resource state is updated to:
 
 ``` json
 {
-    "_id": "doccia",
+    "_id": "docid",
     "pi": 3.14,
     "timestamp": { "$date": 1460714673219 },
     "array": [ {"id":1, "value": 3}, {"id": 2, "value": 0 } ],
     "count": 11
-  ...
 }
 ```
 
@@ -288,14 +302,9 @@ reported in the *ETag* response header: to retrive the updated documents
 with a single request GET the collection filtering on
 the *\_etag* property.
 
-wildcard document id
-
-Note the ***\**** document id in the URI:` PATCH /db/coll/*` is a bulk
+Note thewildcard `*` document id in the URI: `PATCH /db/coll/*` is a bulk
 document update, where `PATCH /db/coll` modifies the properties of the
 collection.
-
-**  
-**
 
 **Example - Add the property *num* to all documents missing it.**
 
@@ -331,13 +340,9 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 
 The response contains the number of deleted documents.
 
-wildcard document id
-
-Note the ***\**** document id in the URI`: DELETE /db/coll/*` is a bulk
-document delete, where DELETE /db/coll deletes the collection (for
+Note thewildcard `*` document id in the URI:: `DELETE /db/coll/*` is a bulk
+document delete, where `DELETE /db/coll` deletes the collection (for
 safety, it requires the ETag request header to be specified).
-
-  
 
 **Example - Delete all documents with whose *creation\_date *is before
 1/1/2016.**
