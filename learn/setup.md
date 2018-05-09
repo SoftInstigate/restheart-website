@@ -13,22 +13,19 @@ title: Setup
         * [How to Run](#how-to-run)
         * [1. Pull the MongoDB and RESTHeart images](#1-pull-the-mongodb-and-restheart-images)
         * [2. Run the MongoDB container](#2-run-the-mongodb-container)
-            * [2.1 RESTHeart &lt; 3.3](#21-restheart--33)
-            * [2.2 RESTHeart &gt;= 3.3](#22-restheart--33)
+            * [2.1 RESTHeart &lt; 3.3](#22-restheart--33)
         * [3. Run RESTHeart interactively](#3-run-restheart-interactively)
         * [4. Check that is working](#4-check-that-is-working)
         * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
-    * [Stop and start again](#stop-and-start-again)
-* [Optional - Manual installation and configuration](#manual-installation-and-configuration)
+        * [6. Stop and restart](#stop-and-restart)
+* [Manual installation](#manual-installation)
     * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
     * [2. Install RESTHeart](#2-install-restheart)
     * [3. Start MongoDB](#3-start-mongodb)
     * [4. Start the RESTHeart server](#4-start-the-restheart-server)
-    * [Convention over configuration](#convention-over-configuration)
     * [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
         * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
         * [5.2 MongoDB authentication with just enough permissions](#52-mongodb-authentication-with-just-enough-permissions)
-    * [6. Clients Authentication and Authorization](#6-clients-authentication-and-authorization)
 
 ## Run RESTHeart with Docker
 
@@ -42,15 +39,19 @@ Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. H
 
 Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
-    mkdir restheart
-    cd restheart
-    curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+``` bash
+$ mkdir restheart
+$ cd restheart
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+```
 
 The file `docker-compose.yml` defines a single microservice made of a RESTHeart instance on port `8080` and a MongoDB instance configured to work together.
 
 Start both services just typying:
 
-    docker-compose up -d
+``` bash
+$ docker-compose up -d
+```
 
 Open the the following URL: [localhost:8080/browser](http://localhost:8080/browser) which points to the HAL Browser.
 
@@ -71,30 +72,36 @@ If everytihng is working as expected, then **you can jump to the [tutorial](/lea
 
 Check that docker containers are both up and running:
 
-    $ docker-compose ps
+``` bash
+$ docker-compose ps
 
-        Name                    Command               State                Ports
-    -------------------------------------------------------------------------------------------
-    restheart         ./entrypoint.sh etc/resthe ...   Up      4443/tcp, 0.0.0.0:8080->8080/tcp
-    restheart-mongo   docker-entrypoint.sh --bin ...   Up      27017/tcp
+    Name                    Command               State                Ports
+-------------------------------------------------------------------------------------------
+restheart         ./entrypoint.sh etc/resthe ...   Up      4443/tcp, 0.0.0.0:8080->8080/tcp
+restheart-mongo   docker-entrypoint.sh --bin ...   Up      27017/tcp
+```
 
 Then you can tail the logs of both services, to spot any error:
 
-    docker-compose logs -f
+``` bash
+$ docker-compose logs -f
+```    
 
 Or you could tail the logs of individual services:
 
-    docker log -f restheart
-    docker log -f restheart-mongo
+``` bash
+$ docker log -f restheart
+$ docker log -f restheart-mongo
+```
 
 ### Modify the configuration for the RESTHeart container
 
 Download the configuration files `restheart.yml` and `security.yml` in the `etc` directory.
 
-```text
-mkdir etc
+``` bash
+$ mkdir etc
 curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/restheart.yml --output etc/restheart.yml
-curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/security.yml --output etc/security.yml
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/security.yml --output etc/security.yml
 ```
 
 Edit the configuration files as needed. For instance, to change the `admin` user password edit `etc/security.yml` as follows:
@@ -116,9 +123,9 @@ Uncomment the following line in `docker-compose.yml`
 
 Restart the containers:
 
-```text
-docker-compose stop
-docker-compose up -d
+```bash
+$ docker-compose stop
+$ docker-compose up -d
 ```
 
 ## Docker Image
@@ -127,7 +134,9 @@ docker-compose up -d
 
 The `latest` tag is automatically associated with `SNAPSHOT` maven builds on `master` branch. If you really want to run a stable docker image, please always pull a exact version number, like:
 
-    docker pull softinstigate/restheart:3.2.2
+``` bash
+$ docker pull softinstigate/restheart:3.2.2
+```
 
 ### Dockerfile
 
@@ -141,34 +150,26 @@ This section is useful if you want to run RESTHeart with docker but you already 
 
 You can then decide to rebuild the container itself with your version of this file or mount the folder as a volume, so that you can override the default configuration files. For example:
 
-    docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro softinstigate/restheart`
+``` bash
+$ docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro softinstigate/restheart`
+```
 
 *We strongly recommend to always add the tag to the image (e.g. `softinstigate/restheart:3.2.2`), so that you are sure which version of RESTHeart you are running.*
 
 ### 1. Pull the MongoDB and RESTHeart images
 
-    docker pull mongo:3.6
-    docker pull softinstigate/restheart:3.2.2
+``` bash
+$ docker pull mongo:3.6
+$ docker pull softinstigate/restheart:3.2.2
+```
 
 ### 2. Run the MongoDB container
 
-#### 2.1 RESTHeart < 3.3
-
-If you are running RESTHeart 3.2 or below.
-
-    docker run -d --name mongodb mongo:3.6
-
-To make it accessible from your host and add a [persistent data volume](https://docs.docker.com/userguide/dockervolumes/):
-
-    docker run -d -p 27017:27017 --name mongodb -v <db-dir>:/data/db mongo:3.6
-
-The `<db-dir>` must be a folder in your host, such as `/var/data/db` or whatever you like. If you don't attach a volume then your data will be lost when you delete the container.
-
-#### 2.2 RESTHeart >= 3.3
-
 If you are running RESTHeart 3.3 and above (`latest` tag) then MongoDB authentication is enabled by default and you must start the mongo container passing the admin username and password via command line:
 
-    docker run -d -e MONGO_INITDB_ROOT_USERNAME='restheart' -e MONGO_INITDB_ROOT_PASSWORD='R3ste4rt!' --name mongodb mongo:3.6 --bind_ip_all --auth
+``` bash
+$ docker run -d -e MONGO_INITDB_ROOT_USERNAME='restheart' -e MONGO_INITDB_ROOT_PASSWORD='R3ste4rt!' --name mongodb mongo:3.6 --bind_ip_all --auth
+```
 
 If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` then you need to change the `mongo-uri` in `Docker/etc/restheart.yml` accordingly and re-build the Docker image.
 
@@ -176,23 +177,44 @@ If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` t
     mongo-uri: mongodb://restheart:R3ste4rt!@mongodb
 ```
 
+#### 2.1 RESTHeart < 3.3
+
+If you are running RESTHeart 3.2 or below.
+
+``` bash
+$ docker run -d --name mongodb mongo:3.6
+```
+
+To make it accessible from your host and add a [persistent data volume](https://docs.docker.com/userguide/dockervolumes/):
+
+``` bash
+$ docker run -d -p 27017:27017 --name mongodb -v <db-dir>:/data/db mongo:3.6
+```
+
+The `<db-dir>` must be a folder in your host, such as `/var/data/db` or whatever you like. If you don't attach a volume then your data will be lost when you delete the container.
+
 ### 3. Run RESTHeart interactively
 
 > Remember to add always add an explicit tag to the image, as the `latest` tag is bound to SNAPSHOT releases and could be unstable.
 
 Run in **foreground**, linking to the `mongodb` instance, mapping the container's 8080 port to the 80 port on host:
 
-    docker run --rm -i -t -p 80:8080 --name restheart --link mongodb softinstigate/restheart
+``` bash
+$ docker run --rm -i -t -p 80:8080 --name restheart --link mongodb softinstigate/restheart
+```
 
 However, you will usually run it in **background**:
 
-    docker run -d -p 80:8080 --name restheart --link mongodb softinstigate/restheart
-
+``` bash
+$ docker run -d -p 80:8080 --name restheart --link mongodb softinstigate/restheart
+```
 ### 4. Check that is working
 
 If it's running in background, you can open the RESTHeart's logs:
 
-    docker logs restheart
+``` bash
+$ docker logs restheart
+```
 
 ### 5. Pass arguments to RESTHeart and JVM
 
@@ -200,39 +222,51 @@ You can append arguments to *docker run* command to provide RESTHeart and the JV
 
 For example you can mount an alternate configuration file and specify it as an argument
 
-    docker run --rm -i -t -p 80:8080 -v my-conf-file.yml:/opt/restheart/etc/my-conf-file.yml:ro --name restheart --link mongodb:mongodb softinstigate/restheart my-conf-file.yml
+``` bash
+$ docker run --rm -i -t -p 80:8080 -v my-conf-file.yml:/opt/restheart/etc/my-conf-file.yml:ro --name restheart --link mongodb:mongodb softinstigate/restheart my-conf-file.yml
+```
 
 If you want to pass system properties to the JVM, just specify -D or -X arguments. Note that in this case you **need** to provide the configuration file as well.
 
+``` bash
     docker run --rm -i -t -p 80:8080 --name restheart --link mongodb:mongodb softinstigate/restheart etc/restheart.yml -Dkey=value
+```
 
-## Stop and start again
+## Stop and restart
 
-To stop the RESTHeart background daemon just issue
+To stop the RESTHeart background daemon:
 
-    docker stop restheart
+``` bash
+$ docker stop restheart
+```
 
-or simply press `CTRL-C` if it was running in foreground.
+or simply press `CTRL-C` if it is running in foreground.
 
-You can start it again with
+Restart it with:
 
-    docker start restheart
+``` bash
+$ docker start restheart
+```
 
-but it's **not recommended**: RESTHeart is a stateless service, best Docker practices would suggest to just delete the stopped container with `docker rm restheart` or to run it in foreground with the `--rm` parameter, so that it will be automatically removed when it exits.
+**note**: RESTHeart is a stateless service; best Docker practices suggest to just delete the stopped container with `docker rm restheart` or to run it in foreground with the `--rm` parameter, so that it will be automatically removed when it exits.
 
-The MongoDB container instead is stateful, so if you delete it then you'll lose all data unless you attached to it a persistent volume. In this case you might prefer to start it again, so that your data is preserved, or ypu might prefer to attach a local [Docker Volume](https://docs.docker.com/userguide/dockervolumes/) to it.
+The MongoDB container instead is stateful, so deleting leads to lose all data unless you attached  a persistent [Docker Volume](https://docs.docker.com/userguide/dockervolumes/). 
 
-To stop MongoDb issue
+To stop MongoDb:
 
-    docker stop mongodb
+``` bash
+$ docker stop mongodb
+```
 
-To start MongoDb again
+Restart it with:
 
-    docker start mongodb
+``` bash
+$ docker start mongodb
+```
 
 Note that you must **always stop RESTHeart before MongoDB**, or you might experience data losses.
 
-## Manual installation and configuration
+## Manual installation
 
 > This section is about installing and configuring RESTHeart on _"bare metal"_, without Docker. It's recommended only if you know well RESTHeart already and have very specific requirements.
 
@@ -256,7 +290,7 @@ To check Java and MongoDB, you should execute the following commands and
 you should get *something* like the below (output might vary depending
 on Java version and your OS):
 
-```text
+```bash
 $ java -version
 java version "1.8.0_66"
 Java(TM) SE Runtime Environment (build 1.8.0_66-b17)
@@ -302,15 +336,23 @@ child process started successfully, parent exiting
 
 ### 4. Start the RESTHeart server
 
-Run the RESTHeart server by typing `java -Dfile.encoding=UTF-8 -server -jar restheart.jar`.
+Run the RESTHeart server by typing 
+
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
+```
 
 This starts it with the default configuration, which is fine for MongoDB
 running on localhost, on default port and without authentication.
 
-#### Convention over configuration
+Configuration options can be specified passing a configuration
+file as argument. 
 
-Different configuration options can be specified passing a configuration
-file as argument. Note that the configuration file path is either
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml
+```
+
+The configuration file path is either
 absolute or relative to the restheart.jar file location.
 
 The configuration file can specify any option that will overwrite the
@@ -322,14 +364,19 @@ For more information about the configuration file format refer to [Default
 Configuration File](/learn/configuration-file) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
-process](https://en.wikipedia.org/wiki/Daemon_(computing)): `java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork`.
+process](https://en.wikipedia.org/wiki/Daemon_(computing)): 
+
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork`
+```
+
 Note that this will force the console logging and the file logging to be
 turned off and on respectively, regardless the specified log
 configuration options.
 
 For example:
 
-```text
+```bash
 $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
 15:22:18.518 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
 15:22:18.529 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance develop
@@ -374,8 +421,10 @@ from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
 process in background, using the `--fork` parameter.
 
-    mongod --fork --syslog --auth
-    mongo
+``` bash
+$ mongod --fork --syslog --auth
+$ mongo
+```
 
 In this section we will use the mongodb superuser
 role [root](https://docs.mongodb.org/manual/reference/built-in-roles/#superuser-roles)
@@ -404,17 +453,23 @@ version.
 We’ll use the restheart.yml example configuration file that comes with
 RESTHeart download package (you find it in the etc directory)
 
-    vi etc/restheart.yml
+``` bash
+$ vi etc/restheart.yml
+```
 
 Find and modify the following section providing the user-name, password
 and authentication db (the db where the MongoDB user is defined, in our
 case ‘admin’).
 
+``` yml
     mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
+```
 
 Now start RESTHeart specifying the configuration file:
 
-    java -Dfile.encoding=UTF-8 -server -jar restheart.jar etc/restheart.yml
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar etc/restheart.yml
+```
 
 Test the connection opening the HAL browser at `http://127.0.0.1:8080/browser`.
 
@@ -432,19 +487,22 @@ To configure RESTHeart for TLS/SSL do as follows:
 
 * create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
 
-```text
-keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
+``` bash
+$ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
 # asks for password, use "changeit"
 ```
 
 * specify the ssl option in the mongo-uri in the restheart yml configuration file:
 
+``` yml
     mongo-uri: mongodb://your.mongo-domain.com?ssl=true
-
+```
 * start restheart with following options:
 
-    java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
+```
 
 #### 5.2 MongoDB authentication with just enough permissions
 
@@ -478,9 +536,3 @@ readWriteAnyDatabase role or you can create a custom role.
 To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
-
-### 6. Clients Authentication and Authorization
-
-Refert to [Security](/learn/security) section for detailed information about
-how enable, configure and customize clients authentication and
-authorization.
