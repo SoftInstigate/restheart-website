@@ -135,7 +135,7 @@ $ docker-compose up -d
 The `latest` tag is automatically associated with `SNAPSHOT` maven builds on `master` branch. If you really want to run a stable docker image, please always pull a exact version number, like:
 
 ``` bash
-$ docker pull softinstigate/restheart:3.2.2
+$ docker pull softinstigate/restheart:3.3.1
 ```
 
 ### Dockerfile
@@ -151,16 +151,16 @@ This section is useful if you want to run RESTHeart with docker but you already 
 You can then decide to rebuild the container itself with your version of this file or mount the folder as a volume, so that you can override the default configuration files. For example:
 
 ``` bash
-$ docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro softinstigate/restheart`
+$ docker run -d -p 80:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:ro softinstigate/restheart
 ```
 
-*We strongly recommend to always add the tag to the image (e.g. `softinstigate/restheart:3.2.2`), so that you are sure which version of RESTHeart you are running.*
+*We strongly recommend to always add the tag to the image (e.g. `softinstigate/restheart:3.3.1`), so that you are sure which version of RESTHeart you are running.*
 
 ### 1. Pull the MongoDB and RESTHeart images
 
 ``` bash
 $ docker pull mongo:3.6
-$ docker pull softinstigate/restheart:3.2.2
+$ docker pull softinstigate/restheart:3.3.1
 ```
 
 ### 2. Run the MongoDB container
@@ -343,7 +343,7 @@ $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
 
 15:22:18.518 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
 15:22:18.529 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance develop
-15:22:18.529 [main] INFO  org.restheart.Bootstrapper - version 3.2.2
+15:22:18.529 [main] INFO  org.restheart.Bootstrapper - version 3.3.1
 15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to file /tmp/restheart.log with level DEBUG
 15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to console with level DEBUG
 15:22:18.812 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
