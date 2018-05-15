@@ -24,7 +24,20 @@ permalink: /try.html
 
 # Angular Example
 
-<iframe style="width: 100%; height: 600px" src="http://embed.plnkr.co/LmWwyj" frameborder="0" allowfullscren="allowfullscren"></iframe>
+
+
+<div id="demo"></div>
+
+<script type="text/javascript">
+StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
+  openFile: 'src/app/service.ts',
+  view: 'preview',
+  width: "100%",
+  height: "600px",
+  hideNavigation: true,
+  forceEmbedLayout: true
+});
+</script>
 
 # Try it from the command line
 
