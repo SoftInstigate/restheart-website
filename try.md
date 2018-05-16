@@ -16,7 +16,7 @@ permalink: /try.html
         <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
-                <p>Go and play with it on our demo instance at <a href="http://dbapi.io/browser/#/db/coll" target="_blank"><code>dbapi.io</code></a>.</p>
+                <p>Go and play with it on our demo instance at <a href="http://dev01.mrest.io/browser/#/restheart/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
             </section>
         </article>
     </div>
@@ -41,7 +41,7 @@ StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
 
 # Try it from the command line
 
-The demo database exposes a collection at <a href="http://dbapi.io/browser/#/db/coll"><code>http://dbapi.io/db/coll</code></a> without requiring authentication. Access to any other MongoDB resource is forbidden.
+The demo database exposes a collection at <a href="https://api.mrest.io/dev/browser/#/restheart/demo/messages?hal=f"><code>https://api.mrest.io/dev/browser/#/restheart/demo/messages</code></a> without requiring authentication. Access to any other MongoDB resource is forbidden.
 
 This demo instance is reset on regular basis, so feel free to play with it <b>but don't rely on it for persistent storage of your data</b>.
 {: .bs-callout .bs-callout-info }
@@ -54,7 +54,7 @@ This demo instance is reset on regular basis, so feel free to play with it <b>bu
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PUT http://dbapi.io/db/coll/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "Content-Type: application/json" -X PUT https://api.mrest.io/dev/restheart/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 ...
@@ -70,15 +70,12 @@ HTTP/1.1 201 Created
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl http://dbapi.io/db/coll/docid
+$ curl https://api.mrest.io/dev/restheart/demo/messages/docid
 
 {
 	"_id": "docid",
 	"from": "ujibang",
-	"message": "RESTHeart rocks",
-	"_etag": {
-		"$oid": "57069cb9c9e77c00078dc780"
-	}
+	"message": "RESTHeart rocks"
 }
 
         {% endhighlight %}
@@ -93,7 +90,7 @@ $ curl http://dbapi.io/db/coll/docid
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X POST http://dbapi.io/db/coll -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
+$ curl -i -H "Content-Type: application/json" -X POST curl https://api.mrest.io/dev/restheart/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
 Location: http://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
@@ -111,7 +108,7 @@ Location: http://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PATCH http://dbapi.io/db/coll/docid -d '{"$currentDate": { "header.timestamp": true}}'
+$ curl -i -H "Content-Type: application/json" -X PATCH https://api.mrest.io/dev/restheart/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
@@ -128,7 +125,7 @@ HTTP/1.1 200 OK
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl http://dbapi.io/db/coll/docid
+$ curl https://api.mrest.io/dev/restheart/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -138,9 +135,6 @@ $ curl http://dbapi.io/db/coll/docid
 		"timestamp": {
 			"$date": 1475598488601
 		}
-	},
-	"_etag": {
-		"$oid": "5718d948c9e77c000609f677"
 	}
 }
 
@@ -152,17 +146,17 @@ $ curl http://dbapi.io/db/coll/docid
     <div class="col-md-3" style="padding-top:7px">
         <p><strong>Find</strong> documents via query.</p>
         <p>The <code>filter</code> query parameter allows to specify any MongoDB query.</p>
-        <p>The matching documents are in the <code>_embedded</code> array.</p>
+        <p>
+        <p>This instance of RESTHeart is configured to always add the <code>np</code> query parameter to the request; it gets rid of the collection properties and 
+        returns just an array of documents.</p>
+        <p><code>np</code> stands for No Properties</p>
     </div>
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
+$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://api.mrest.io/dev/restheart/demo/messages
 
-{
-	"_id": "coll",
-	"_returned": 2,
-	"_embedded": [{
+[   {
 		"_id": "docid",
 		"from": "ujibang",
 		"message": "RESTHeart rocks!",
@@ -170,24 +164,15 @@ $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
 			"timestamp": {
 				"$date": 1475598488601
 			}
-		},
-		"_etag": {
-			"$oid": "57069cb9c9e77c00078dc780"
 		}
 	}, {
 		"_id": {
 			"$oid": "563a40d6e4b0ef984cae182b"
 		},
 		"from": "ujibang",
-		"message": "MongoDB rocks as well!",
-		"_etag": {
-			"$oid": "57175e2dc9e77c0006eb9ef4"
-		}
-	}],
-	"_etag": {
-		"$oid": "57f3d7d0c9e77c00075daae9"
-	}
-}
+		"message": "MongoDB rocks as well!"
+	}    
+]
 
         {% endhighlight %}
 
@@ -200,36 +185,5 @@ $ curl http://dbapi.io/db/coll?filter='\{"from":"ujibang"\}'
         <p>The <code>np</code> query parameter allows to get rid of the collection properties.</p>
         <p>In this case, the response body is just an array of documents.</p>
         <p><code>np</code> stands for No Properties</p>
-    </div>
-    <div class="col-md-9">
-        {% highlight bash %}
-
-$ curl http://dbapi.io/db/coll?np
-
-[{
-	"_id": "docid",
-	"from": "ujibang",
-	"message": "RESTHeart rocks!",
-	"header": {
-		"timestamp": {
-			"$date": 1475598488601
-		}
-	},
-	"_etag": {
-		"$oid": "57069cb9c9e77c00078dc780"
-	}
-}, {
-	"_id": {
-		"$oid": "563a40d6e4b0ef984cae182b"
-	},
-	"from": "ujibang",
-	"message": "MongoDB rocks as well!",
-	"_etag": {
-		"$oid": "57175e2dc9e77c0006eb9ef4"
-	}
-}]
-
-        {% endhighlight %}
-
     </div>
 </div>
