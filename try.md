@@ -146,10 +146,8 @@ $ curl https://api.mrest.io/dev/restheart/demo/messages/docid
     <div class="col-md-3" style="padding-top:7px">
         <p><strong>Find</strong> documents via query.</p>
         <p>The <code>filter</code> query parameter allows to specify any MongoDB query.</p>
-        <p>
         <p>This instance of RESTHeart is configured to always add the <code>np</code> query parameter to the request; it gets rid of the collection properties and 
         returns just an array of documents.</p>
-        <p><code>np</code> stands for No Properties</p>
     </div>
     <div class="col-md-9">
         {% highlight bash %}
@@ -176,14 +174,5 @@ $ curl -G --data-urlencode "filter={'from':'ujibang'}" https://api.mrest.io/dev/
 
         {% endhighlight %}
 
-    </div>
-    
-
-    <div class="row" style="margin-top: 20px">
-    <div class="col-md-3" style="padding-top:7px">
-        <p><strong>Get</strong> documents as an array (without the collection properties).</p>
-        <p>The <code>np</code> query parameter allows to get rid of the collection properties.</p>
-        <p>In this case, the response body is just an array of documents.</p>
-        <p><code>np</code> stands for No Properties</p>
     </div>
 </div>
