@@ -10,7 +10,7 @@ permalink: /services.html
 ## __No one can help you better__
 
 {: .text-center }
-### Professional Services are provided by [SoftInstigate](http://www.softinstigate.com), the company behind RESTHeart.
+### Professional Services are provided by [SoftInstigate](https://www.softinstigate.com), the company behind RESTHeart.
 
 Professional Services help you on:
 * Using the RESTHeart standard API
@@ -53,8 +53,8 @@ The service balance will be extended at no charge for the Customer by 8 working 
 > RESTHeart team and the community offers free support via Stackoverflow and Github. Although no SLA or commitment are guaranteed, we are proud of our brilliant results: check below our statistics.
 
 [![Build Status](https://travis-ci.org/SoftInstigate/restheart.svg?branch=develop)](https://travis-ci.org/SoftInstigate/restheart)
-[![Issue Stats](http://issuestats.com/github/SoftInstigate/restheart/badge/pr)](http://issuestats.com/github/SoftInstigate/restheart)
-[![Issue Stats](http://issuestats.com/github/SoftInstigate/restheart/badge/issue)](http://issuestats.com/github/SoftInstigate/restheart)
+[![Issue Stats](https://issuestats.com/github/SoftInstigate/restheart/badge/pr)](https://issuestats.com/github/SoftInstigate/restheart)
+[![Issue Stats](https://issuestats.com/github/SoftInstigate/restheart/badge/issue)](https://issuestats.com/github/SoftInstigate/restheart)
 {: .text-center }
 
 ## <a class="btn btn-success btn-small" href="https://softinstigate.atlassian.net/issues/?filter=10403" target="_blank">Check the Roadmap</a> the solution for your need might be already on the road.
@@ -62,4 +62,4 @@ The service balance will be extended at no charge for the Customer by 8 working 
 
 ## <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Report an issue</a> on github.
 
-## <a class="btn btn-warning" href="http://stackoverflow.com/questions/tagged/restheart">Ask a question</a> on stackoverflow using the tag _restheart_ .
+## <a class="btn btn-warning" href="https://stackoverflow.com/questions/tagged/restheart">Ask a question</a> on stackoverflow using the tag _restheart_ .

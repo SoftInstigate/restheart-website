@@ -190,7 +190,7 @@ Start RESTHeart as you would usually do. Logs must be clean, like below:
 
 ### 7. Check the admin's roles
 
-For example with the [httpie](http://httpie.org) client, get
+For example with the [httpie](https://httpie.org) client, get
 the `/_logic/roles/admin` resource which shows user's roles
 
 ``` bash

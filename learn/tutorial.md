@@ -22,7 +22,7 @@ title: Tutorial
 
 In this tutorial we use RESTHeart to create a database, a collection and a couple of documents in MongoDB. Then we show how to perform simple queries. We take for granted that you already have a little basic knowledge of MongoDB, but nothing more.
 
-Here we use [httpie](http://httpie.org/), a brilliant command line HTTP client (you can also use [curl](https://curl.haxx.se) of course, but httpie gives a colorized and formatted output that it's much easier to read).
+Here we use [httpie](https://httpie.org/), a brilliant command line HTTP client (you can also use [curl](https://curl.haxx.se) of course, but httpie gives a colorized and formatted output that it's much easier to read).
 
 ## Start MongoDB and RESTHeart
 

@@ -14,7 +14,7 @@ title: Relationships
 
 In MongoDB, documents can have relationships with other documents (see
 MongoDB
-[Relationships](http://docs.mongodb.org/master/applications/data-models-relationships/)
+[Relationships](https://docs.mongodb.org/master/applications/data-models-relationships/)
 documentation section). 
 
 **RESTHeart allows to declare the existing relationships in a
@@ -23,7 +23,7 @@ in its representation.**
 
 As discussed in the [Representation Format](/learn/representation-format)
 section, RESTHeart uses
-the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
+the [HAL+json](https://stateless.co/hal_specification.html) hypermedia
 format. HAL builds up on 2 simple concepts: **Resources** and **Links**
 
 -   **Resources** have state (plain JSON), embedded resources and links

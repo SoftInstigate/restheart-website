@@ -313,7 +313,7 @@ permissions:
 
 Permissions are given to roles and are expressed as request predicates
 on http requests. Please refer to [undertow
-documentation](http://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#predicates-attributes-and-handlers) for
+documentation](https://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#predicates-attributes-and-handlers) for
 more information about predicates.
 
 Assign permission to the special role **$unauthenticated** to enable

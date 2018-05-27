@@ -36,7 +36,7 @@ The **keys** property, defines the properties to index and the sort order.
 The optional **ops** property, define the index options.
 
 {: .bs-callout .bs-callout-info }
-Refer to the MongoDB <a href="http://docs.mongodb.org/manual/indexes/" target="_blank">indexes documentation</a> for more information on indexes.
+Refer to the MongoDB <a href="https://docs.mongodb.org/manual/indexes/" target="_blank">indexes documentation</a> for more information on indexes.
 
 {: .bs-callout .bs-callout-info }
 You can use the dot notation to index a nested property, e.g. {"keys":{"a.b":1}}

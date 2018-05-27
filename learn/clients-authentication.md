@@ -92,7 +92,7 @@ deployments (horizontal scalability). In this case, you need to either
 disable it or use a load balancer with the sticky session option or use
 a distributed auth token cache implementation (not yet available in the
 current version but you can ask
-for [support](http://restheart.org/support.html)).
+for [support](https://restheart.org/support.html)).
 
 The auth token are controlled by the following configuration options:
 

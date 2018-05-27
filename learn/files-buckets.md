@@ -45,14 +45,14 @@ GridFS is useful not only for storing files that exceed 16MB but also
 for storing any files for which you want access without having to load
 the entire file into memory.
 
-[Read more](http://docs.mongodb.org/manual/core/gridfs/).
+[Read more](https://docs.mongodb.org/manual/core/gridfs/).
 
 ## Specifications
 
 RESTHeart is committed to adhere to Internet standards. To successfully
 upload files, RESTHeart's clients must strictly follow the Internet
 Media Type multipart/form-data as defined in [RFC
-7578](http://tools.ietf.org/html/rfc7578).
+7578](https://tools.ietf.org/html/rfc7578).
 
 The **multipart/form-data** specification allow a form to upload
 multiple files at the same time. RESTHeart prohibits this: while it's
@@ -72,7 +72,7 @@ data with URL syntax. It's installed by default on all Linux
 distributions, Mac OSX and most Unix systems. A Windows version is also
 available.
 
-[Read more](http://curl.haxx.se).
+[Read more](https://curl.haxx.se).
 
 In this example we assume RESTHeart running on localhost (127.0.0.1),
 port 8080, but of course your setup can be different.
@@ -214,7 +214,7 @@ Which is easier to read and link than the automatically generated name
 If you want to better understand the theoretical difference between POST
 and PUT verbs in terms of  the Hypertext Transfer Protocol – HTTP/1.1,
 this blog post might be useful: [RESTful API memo: PUT and POST
-differences](http://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/).
+differences](https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/).
 
 ### The "properties" part
 
@@ -330,7 +330,7 @@ MongoDB database than on a system-level filesystem.
     memory.
 
 [Read
-More](http://docs.mongodb.org/manual/faq/developers/#faq-developers-when-to-use-gridfs).
+More](https://docs.mongodb.org/manual/faq/developers/#faq-developers-when-to-use-gridfs).
 
 ## Using httpie
 

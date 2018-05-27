@@ -197,7 +197,7 @@ running:
 > ports on a Docker container using standard localhost addressing such
 > as localhost:8000 or 0.0.0.0:8376. In a Windows or OSX installation,
 > the Docker daemon instead is running inside a Linux virtual machine
-> provided by [Boot2Docker](http://boot2docker.io).
+> provided by [Boot2Docker](https://boot2docker.io).
 
 Full Docker setup instructions are available
 at <https://docs.docker.com/installation/>. Please go there and follow
@@ -226,7 +226,7 @@ Boot2Docker will ask you to copy and set some environment variable and
 it indicates the `DOCKER_HOST` variable, which is the IP address of the
 Docker VM running in your system. Usually it should be something like
 `192.168.59.103`, so later you'll point your browser
-to `http://192.168.59.103:8080` to access RESTHeart. But let's go on
+to `https://192.168.59.103:8080` to access RESTHeart. But let's go on
 with our setup for now.
 
 Run the hello-world container to verify your setup:
@@ -349,7 +349,7 @@ RESTHeart linked to the MongoDB network interface, and you can check
 that everything works opening the embedded HAL browser, this way:
 
 If you are running boot2docker, point your browser
-at `http://192.168.59.103:8080/browser` (note that the IP address might
+at `https://192.168.59.103:8080/browser` (note that the IP address might
 be different, to know it issue the `boot2docker ip` command); if you are
 on Linux, simply it is at `http://localhost:8080/browser`. 
 
@@ -369,7 +369,7 @@ documentation section.
 
 ## Creating the data structure
 
-We will be using the RESTHeart API and the [HTTPie](http://httpie.org)
+We will be using the RESTHeart API and the [HTTPie](https://httpie.org)
 (a modern curl replacement) client to create the data structure. The
 main reason is that HTTPie offers a beautifully colorized and indented
 output for HTTP responses, which is especially useful when dealing with
@@ -381,10 +381,10 @@ the notes collection in it.
 **Get up and running**
 
 ``` bash
-$ http -a admin:changeit PUT http://192.168.59.103:8080/rhnedb descr="restheart notes example db"
+$ http -a admin:changeit PUT https://192.168.59.103:8080/rhnedb descr="restheart notes example db"
 HTTP/1.1 201 Created
 ...
-$ http -a admin:changeit PUT http://192.168.59.103:8080/rhnedb/notes descr="notes collection"
+$ http -a admin:changeit PUT https://192.168.59.103:8080/rhnedb/notes descr="notes collection"
 HTTP/1.1 201 Created
 ...
 ```
@@ -414,7 +414,7 @@ Edit the following line in the file app/scripts/app.js
 **Set the RESTHEART\_URL variable**
 
 ``` bash
-var RESTHEART_URL = "http://192.168.59.103:8080";
+var RESTHEART_URL = "https://192.168.59.103:8080";
 ```
 
 We assume you are using Docker, so you need to set it with the IP
@@ -433,7 +433,7 @@ Download the installer for your system
 from [https://nodejs.org](https://nodejs.org/).
 
 The following commands will update npm, install
-the [Grunt](http://gruntjs.com/getting-started) and [Bower](http://bower.io/) tools,
+the [Grunt](https://gruntjs.com/getting-started) and [Bower](https://bower.io/) tools,
 download the required js librearies using bower and start a web server
 for previewing the application .
 
@@ -454,7 +454,7 @@ The Web client is an AngularJS application, a javascript client that
 connects with RESTHeart API to manage data.
 
 The application skeleton has been generated with
-[Yeoman](http://yeoman.io/) using the AngularJS generator with few
+[Yeoman](https://yeoman.io/) using the AngularJS generator with few
 libraries added via bower, notably:
 
 -   [Restangular](https://github.com/mgonto/restangular), an AngularJS
@@ -838,11 +838,11 @@ development funny again.
 
 ## References
 
--   RESTHeart: http://restheart.org
+-   RESTHeart: https://restheart.org
 -   RESTHeart
     documentation: <https://softinstigate.atlassian.net/wiki/display/RH/Documentation>
 -   MongoDB CRUD
-    Introduction: <http://docs.mongodb.org/manual/core/crud-introduction/> 
+    Introduction: <https://docs.mongodb.org/manual/core/crud-introduction/> 
 -   Docker containers for RESTHeart and
     MongoDB: <https://registry.hub.docker.com/u/softinstigate/restheart/>
 -   REST - Representational state
@@ -852,9 +852,9 @@ development funny again.
 -   HAL Browser - API browser for the hal+json media
     type: <https://github.com/mikekelly/hal-browser>
 -   RESTful API Memo: PUT and POST
-    Differences: <http://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/>
+    Differences: <https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/>
 -   Boot2Docker - lightweight Linux distribution made specifically to
-    run Docker containers. http://boot2docker.io
+    run Docker containers. https://boot2docker.io
 -   Linking Docker containers
     together. https://docs.docker.com/userguide/dockerlinks/
 

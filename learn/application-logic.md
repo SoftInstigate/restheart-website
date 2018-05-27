@@ -12,7 +12,7 @@ title: Application Logic
 ## Introduction
 
 RESTHeart has a pipeline architecture where specialized [undertow
-handlers](http://undertow.io/undertow-docs/undertow-docs-2.0.0/undertow-handler-guide.html) are
+handlers](https://undertow.io/undertow-docs/undertow-docs-2.0.0/undertow-handler-guide.html) are
 chained together to serve the requests.
 
 In order to provide additional application logic, custom handlers can be

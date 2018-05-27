@@ -66,7 +66,7 @@ Three default indexes exist in the collection:
 * {"_id": 1, "_etag": 1}
 
 {: .bs-callout .bs-callout-info }
-Refer to the MongoDB <a href="http://docs.mongodb.org/manual/indexes/" target="_blank">indexes documentation</a> for more information.
+Refer to the MongoDB <a href="https://docs.mongodb.org/manual/indexes/" target="_blank">indexes documentation</a> for more information.
 
 {: .bs-callout .bs-callout-info }
 Indexes can be created and deleted via the [Index resource](cindex.html).

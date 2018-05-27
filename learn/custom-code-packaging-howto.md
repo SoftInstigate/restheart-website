@@ -30,7 +30,7 @@ To add RESTHeart dependency to your pom.xml, just add this:
 
 ## Create a Uber jar
 
-The Maven [Shade](http://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifact in an uber-jar, including its dependencies.
+The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifact in an uber-jar, including its dependencies.
 
 The following configuration will produce a single jar file whose name is the artifactId, for instance `foo.jar`. This jar will include both your custon code and RESTHeart. You can start the customized RESTHeart with:
 

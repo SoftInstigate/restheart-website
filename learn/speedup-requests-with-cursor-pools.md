@@ -17,7 +17,7 @@ resources via its **db cursors pre-allocation engine**. 
 
 This applies when several documents need to be read from a big
 collection and moderates the effects of the
-MongoDB [cursor.skip()](http://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip) method
+MongoDB [cursor.skip()](https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip) method
 **that slows downs linearly**.
 
 In common scenarios, RESTHeart's db cursor pre-allocation engine allows
@@ -68,7 +68,7 @@ linearly. As the MongoDB manual says:
 > may become IO bound.
 
 That is why the MongoDB documentation section about
-[skips](http://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip)
+[skips](https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip)
 suggests:
 
 > Consider using range-based pagination for these kinds of tasks. That

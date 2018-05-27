@@ -267,7 +267,7 @@ More information in [Request Checkers](/learn/request-checkers) section.
 </tr>
 <tr class="even">
 <td>PUT</td>
-<td>Creates or updates the schema &lt;schemaid&gt;. It must be a valid JSON schema according to <a href="http://json-schema.org/latest/json-schema-core.html">JSON Schema Core Draft v4</a> specification.</td>
+<td>Creates or updates the schema &lt;schemaid&gt;. It must be a valid JSON schema according to <a href="https://json-schema.org/latest/json-schema-core.html">JSON Schema Core Draft v4</a> specification.</td>
 </tr>
 <tr class="odd">
 <td>PATCH</td>

@@ -29,9 +29,9 @@ that validates the body of write requests against a **JSON schema**.
 > application, and how that data can be modified.
 
 For more information about JSON Schema refer
-to [json-schema.org](http://json-schema.org/); a very good resource
+to [json-schema.org](https://json-schema.org/); a very good resource
 is [understanding json
-schema](http://spacetelescope.github.io/understanding-json-schema) web
+schema](https://spacetelescope.github.io/understanding-json-schema) web
 site too.
 
 ## The Schema Store and Schema resources
@@ -55,7 +55,7 @@ request creates a valid JSON Schema.
 
 ``` bash
 PUT /db/_schemas/address {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "https://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
         "address": { "type": "string" },
@@ -79,8 +79,8 @@ GET /db/_schemas/address
 HTTP/1.1 200 OK
 ...
 {
-    "$schema": "http://json-schema.org/draft-04/schema#", 
-    "id": "http://schema-store/test/address#", 
+    "$schema": "https://json-schema.org/draft-04/schema#", 
+    "id": "https://schema-store/test/address#", 
     "_id": "address",  
     ....
 }

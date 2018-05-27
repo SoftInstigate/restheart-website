@@ -21,7 +21,7 @@ open up possibilities to both monitor these values, and tackle problems
 as well - maybe even automatically.
 
 The metrics endpoints included in restheart use [Dropwizard
-metrics](http://metrics.dropwizard.io) under the hood. The measured
+metrics](https://metrics.dropwizard.io) under the hood. The measured
 values include counts, call rates, as well as timings of the calls and
 their distributions.
 

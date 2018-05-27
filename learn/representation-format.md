@@ -108,7 +108,7 @@ used by RESTHeart.
 ### Hypermedia Application Language
 
 RESTHeart uses
-the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
+the [HAL+json](https://stateless.co/hal_specification.html) hypermedia
 format. HAL stands for *Hypermedia Application Language* and it is
 simple, elegant and powerful.
 
@@ -117,14 +117,14 @@ HAL builds up on 2 simple concepts: **Resources** and **Links**
 -   **Resources** have state (plain JSON), embedded resources and links
 -   **Links** have target (href URI) and relations (aka rel)
 
-![](http://stateless.co/info-model.png){: width="800" height="600" class="img-responsive"}
+![](https://stateless.co/info-model.png){: width="800" height="600" class="img-responsive"}
 
 ## Strict mode representations of BSON
 
 **RESTHeart** represents the state of MongoDb resources using
 the [strict mode representations of
-BSON](http://docs.mongodb.org/manual/reference/mongodb-extended-json/) that
-conforms to the [JSON RFC](http://www.json.org/). 
+BSON](https://docs.mongodb.org/manual/reference/mongodb-extended-json/) that
+conforms to the [JSON RFC](https://www.json.org/). 
 
 MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
 which type system is a superset of JSON’s. To preserve type information,
@@ -363,7 +363,7 @@ data.
 </tr>
 <tr class="odd">
 <td><code>curies</code></td>
-<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="http://restheart.org/curies/2.0/db.html" class="uri">http://restheart.org/curies/2.0/db.html</a></p></td>
+<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="https://restheart.org/curies/2.0/db.html" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -374,7 +374,7 @@ The `_links` property looks like:
 "_links": {
         "curies": [
             {
-                "href": "http://restheart.org/curies/2.0/{rel}.html", 
+                "href": "https://restheart.org/curies/2.0/{rel}.html", 
                 "name": "rh", 
                 "templated": true
             }

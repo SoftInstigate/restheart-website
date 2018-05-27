@@ -16,7 +16,7 @@ permalink: /try.html
         <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
-                <p>Go and play with it on our demo instance at <a href="http://dev01.mrest.io/browser/#/restheart/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
+                <p>Go and play with it on our demo instance at <a href="https://dev01.mrest.io/browser/#/restheart/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
             </section>
         </article>
     </div>
@@ -95,7 +95,7 @@ $ curl https://api.mrest.io/dev/restheart/demo/messages/docid
 $ curl -i -H "Content-Type: application/json" -X POST curl https://api.mrest.io/dev/restheart/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
-Location: http://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
+Location: https://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
 ...
 
         {% endhighlight %}

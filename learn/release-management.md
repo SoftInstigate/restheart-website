@@ -20,6 +20,6 @@ then maintained in their own branches (named `1.0.x`, `1.1.x`, `1.2.x`,
 4.  When 2`.1.0` is final, the process starts again from point \#1.
 
 Releases and their version numbers will strictly follow a [Semantic
-Versioning](http://semver.org/) policy.
+Versioning](https://semver.org/) policy.
 
-Rif: <http://www.softinstigate.com/blog/2015/10/08/better-branching-model/>
+Rif: <https://www.softinstigate.com/blog/2015/10/08/better-branching-model/>

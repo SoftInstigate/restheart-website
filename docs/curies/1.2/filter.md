@@ -9,7 +9,7 @@ permalink: /curies/1.2/filter.html
 To filter the documents (or files) embedded in a collection (or bucket) representation, use the **filter** query parameter.
 
 {: .bs-callout .bs-callout-info }
-The value of the filter query parameter is any * <a href="http://docs.mongodb.org/manual/tutorial/query-documents/" target="_blank">MongoDB query</a>
+The value of the filter query parameter is any * <a href="https://docs.mongodb.org/manual/tutorial/query-documents/" target="_blank">MongoDB query</a>
 
 {: .bs-callout .bs-callout-info }
 RESTHeart use the stric mode representation of BSON: in some cases, notably the ObjectId, the property type must be specified. See example 1.

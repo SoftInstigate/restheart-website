@@ -109,7 +109,7 @@ GET /test/coll?filter={'title':{'$regex':'(?i)^STAR TREK.*'}}
 ```
 
 This query uses the
-mongodb [$regex](http://docs.mongodb.org/manual/reference/operator/query/regex/) operator
+mongodb [$regex](https://docs.mongodb.org/manual/reference/operator/query/regex/) operator
 where the *i* option performs a case-insensitive match for documents
 with title value that starts with the string "STAR TREK".
 

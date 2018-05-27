@@ -70,7 +70,7 @@ use-embedded-keystore: true
 # The URI option authSource allows to specify the authetication database, example:
 # mongodb://user:secret@127.0.0.1/?authSource=authdb
 #
-# More information at http://api.mongodb.org/java/current/com/mongodb/MongoClientURI.html
+# More information at https://api.mongodb.org/java/current/com/mongodb/MongoClientURI.html
 
 mongo-uri: mongodb://127.0.0.1
 
@@ -197,7 +197,7 @@ access-manager:
 # A different mechanism can be specified via the auth-mechanism configuration option
 # the implementation-class must specify a factory class implementing
 # the interface org.restheart.security.AuthenticationMechanismFactory
-# See http://undertow.io/undertow-docs/undertow-docs-1.4.0/index.html#security 
+# See https://undertow.io/undertow-docs/undertow-docs-1.4.0/index.html#security 
 # JwtAuthenticationManagerFactory and IdentityAuthenticationManagerFactory 
 # for example implementations
 
@@ -319,7 +319,7 @@ buffers-per-region: 20
 direct-buffers: true
 
 #### Connetction Options
-## see http://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#common-listener-options
+## see https://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#common-listener-options
 
 connection-options:
     # The maximum size of a HTTP header block, in bytes. 

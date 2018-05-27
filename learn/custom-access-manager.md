@@ -21,7 +21,7 @@ This section will provide detailed information on how to implement a
 custom Access Manager.
 
 For further help, please refer to the RESTHeart support channels
-<http://restheart.org/support.html>
+<https://restheart.org/support.html>
 
 ## Introduction
 
