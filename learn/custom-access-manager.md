@@ -3,27 +3,24 @@ layout: docs
 title: Custom Access Manager
 ---
 
-* [Introduction](#introduction)
-* [Develop](#develop)
-    * [The AM class](#the-am-class)
-    * [Constructor](#constructor)
-    * [Methods to implement](#methods-to-implement)
-* [How to add the custom classes to the classpath](#how-to-add-the-custom-classes-to-the-classpath)
-    * [Using the java classpath option](#using-the-java-classpath-option)
-    * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
-* [Example](#example)
+- [Introduction](#introduction)
+- [Develop](#develop)
+  * [The AM class](#the-am-class)
+  * [Constructor](#constructor)
+  * [Methods to implement](#methods-to-implement)
+- [Configuration](#configuration)
+- [How to add the custom classes to the classpath](#how-to-add-the-custom-classes-to-the-classpath)
+  * [Using the java classpath option](#using-the-java-classpath-option)
+  * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
+- [Example](#example)
 
-**/\*\*/ Introduction Develop The AM class Constructor Methods to
-implement How to add the custom classes to the classpath Using the java
-classpath option Using the Maven shade plugin Example**
+## Introduction
 
 This section will provide detailed information on how to implement a
 custom Access Manager.
 
 For further help, please refer to the RESTHeart support channels
 <https://restheart.org/support.html>
-
-## Introduction
 
 The Access Manager is responsible of authorizing the users against a
 security policy.
@@ -42,9 +39,9 @@ the github pull request feature.
 
 The steps required to develop and configure an AM are:
 
-1.  develop the AM in Java
-2.  configure RESTHeart to use the new AM via its configuration file
-3.  add the implementation class(es) to the java classpath
+1. develop the AM in Java
+2. configure RESTHeart to use the new AM via its configuration file
+3. add the implementation class(es) to the java classpath
 
 ## Develop
 
@@ -120,16 +117,15 @@ The *context *object is easier to use.
 
 For instance:
 
--   it incapsulates the request json payload as an object resulting form
+* it incapsulates the request json payload as an object resulting form
     the parsing of the json string data, where the exchange gives access
     to it as a an *StreamSourceChannel*
--   In case of a file resource, it incapsulates the file type (e.g.
+* In case of a file resource, it incapsulates the file type (e.g.
     image/png for images)
--   it provides some convenient properties, such as type (resource type,
+* it provides some convenient properties, such as type (resource type,
     such as DOCUMENT or COLLECTION) and method (GET, PUT, POST, etc)
--   etc.
 
-Configuration
+## Configuration
 
 The AM is configured in the *access-manager* section of the yaml
 configuration file.
@@ -141,7 +137,7 @@ is defined or some parameters that control caching).
 For example, if the *access-manager* configuration section is:
 
 ``` plain
-access-manager:    
+access-manager:
     implementation-class: org.restheart.examples.security.MyAccessManager
     arg1: 5
     arg2: hey man!
@@ -152,8 +148,8 @@ access-manager:
 
 Then:
 
--   the AM singleton will be of class *MyAccessManager*
--   its constructor will be invoked passing a Map argument with 4 keys
+* the AM singleton will be of class *MyAccessManager*
+* its constructor will be invoked passing a Map argument with 4 keys
     1.  *implementation-class* of class String
     2.  *arg1* of class *Integer*
     3.  *arg2* of class *String*
@@ -168,8 +164,8 @@ The custom classes must be added to the java classpath.
 
 In order to achieve this, start RESTHeart with the following command:
 
-``` plain
-$ java -server -classpath restheart.jar:custom-classes.jar org.restheart.Bootstrapper restheart.yml
+```plain
+java -server -classpath restheart.jar:custom-classes.jar org.restheart.Bootstrapper restheart.yml
 ```
 
 ### Using the Maven shade plugin
@@ -184,7 +180,7 @@ dependencies.
 custom ones. In this case you can start RESTHeart with
 
 ``` plain
-$ java -server -jar restheart_plus_custom.jar restheart.yml
+java -server -jar restheart_plus_custom.jar restheart.yml
 ```
 
 ## Example
@@ -196,10 +192,10 @@ at [restheart-customization-examples](https://github.com/SoftInstigate/resthear
 It includes the **ExampleAccessManager; **this is a simple AM that
 hardcodes the security policy:
 
--   allow any authenticated user to GET /\_logic/aggregate
--   allow any authenticated user to GET,POST /test/bands
--   allow any authenticated user to GET /test/bands/&lt;bandid&gt;
--   allow users with ROLE admin to GET,PUT,PATCH,DELETE
+* allow any authenticated user to GET /\_logic/aggregate
+* allow any authenticated user to GET,POST /test/bands
+* allow any authenticated user to GET /test/bands/&lt;bandid&gt;
+* allow users with ROLE admin to GET,PUT,PATCH,DELETE
     /test/bands/&lt;bandid&gt;
 
 Any other requests are not allowed.
@@ -324,7 +320,7 @@ public class ExampleAccessManager implements AccessManager {
         // always require authentication
         return true;
     }
-    
+
     private static METHOD selectRequestMethod(HttpString _method) {
         METHOD method;
         if (Methods.GET.equals(_method)) {

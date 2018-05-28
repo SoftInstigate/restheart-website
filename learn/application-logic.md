@@ -3,11 +3,12 @@ layout: docs
 title: Application Logic
 ---
 
-* [Introduction](#introduction)
-* [How to](#how-to)
-* [Examples](#examples)
-    * [PingHandler](#pinghandler)
-    * [Aggregation query](#aggregation-query)
+- [Introduction](#introduction)
+- [How to](#how-to)
+- [Examples](#examples)
+  * [PingHandler](#pinghandler)
+  * [Aggregation query](#aggregation-query)
+- [Configuration](#configuration)
 
 ## Introduction
 
@@ -25,9 +26,9 @@ class `org.restheart.handlers.applicationlogic.ApplicationLogicHandler.`
 
 It requires to override the method handleRequest() with 2 arguments:
 
-1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) the
+1. [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) the
     exachange
-2.  [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) context
+2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 
@@ -42,11 +43,11 @@ The following is the default configuration file section declaring the
 two handlers provided with RESTHeart, that configures 3 application
 logic handlers:
 
--   **PingHandler** bound at /\_logic/ping:  a simple ping service
--   **GetRolehanlder** bound at /\_logic/roles that allows a client to
+* **PingHandler** bound at /\_logic/ping:  a simple ping service
+* **GetRolehanlder** bound at /\_logic/roles that allows a client to
     check the password and in case retrieve the roles of the user.
     Example GET /\_logic/roles/&lt;username&gt;
--   **ChacheInvalidator** bound a /\_logic/ic that allows to invalidate
+* **ChacheInvalidator** bound a /\_logic/ic that allows to invalidate
     a cache db or collection entry. Example POST
     /\_logic/ic?db=&lt;dbnam&gt;&coll=&lt;collname&gt;
 
@@ -200,10 +201,10 @@ HTTP/1.1 200 OK
 
 _Notes_
 
--   the mongo client is obtained via the **MongoDBClientSingleton**;
+* the mongo client is obtained via the **MongoDBClientSingleton**;
     it returns the MongoClient configured with the parameters from the
     configuration file.
--   the query is executed via the lambda expression argument of the
+* the query is executed via the lambda expression argument of the
     class **LoadingCache**: this way, the query is cached and gets
     actually re-executed only after 5 seconds.
 
@@ -298,13 +299,13 @@ public class AggregateHandler extends ApplicationLogicHandler {
                 BasicDBList results = (BasicDBList) _results.get();
                 Representation rep = new Representation("/_logic/aggregate");
                 BasicDBObject properties = new BasicDBObject();
-                
+
                 results.forEach( res -> { 
                     DBObject _res = (DBObject) res;
-                    
+
                     properties.append((String) _res.get("_id"), _res.get("albums")); 
                 });
-                
+
                 rep.addProperties(properties);
                 exchange.setResponseCode(HttpStatus.SC_OK);
                 exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, Representation.JSON_MEDIA_TYPE);
@@ -320,7 +321,7 @@ public class AggregateHandler extends ApplicationLogicHandler {
 }
 ```
 
-**Configuration**
+## Configuration
 
 ``` plain
 application-logic-mounts:

@@ -95,9 +95,9 @@ the dot notation (to refer to properties of subdocuments), RESTHeart
 *automatically* and *transparently* escapes the properties keys as
 follows:
 
--   the $ prefix is "underscore escaped", e.g. `$exists` is stored as
+* the $ prefix is "underscore escaped", e.g. `$exists` is stored as
     `_$exists`
--   if the dot notation has to be used in a key name, dots are replaced
+* if the dot notation has to be used in a key name, dots are replaced
     with **::** e.g. `SD.prop` is stored as `SD::prop`
 
 In RESTHeart 1.x, these escapes are not managed automatically: the
@@ -161,14 +161,10 @@ not needed anymore.
 The following requests upsert a collection  defining two aggregation
 operations:
 
--   aggregation operation *test\_ap* bound at
+* aggregation operation *test\_ap* bound at
     `/db/ao_test/_aggrs/test_ap`
--   map reduce operation *test\_mr* bound at
+* map reduce operation *test\_mr* bound at
     `/db/ao_test/_aggrs/test_mr`
-
-<!-- -->
-
-     
 
 ``` bash
 PUT /db/ao_test { "aggrs" : [ 
@@ -194,7 +190,7 @@ aggregation operations.
 
 ``` bash
 GET /db/ao_test
- 
+
 HTTP/1.1 200 OK
 ...
 {
@@ -202,7 +198,7 @@ HTTP/1.1 200 OK
         ...,
         "test_ap": {
             "href": "/db/ao_test/_aggrs/test_ap"
-        }, 
+        },
         "test_mr": {
             "href": "/db/ao_test/_aggrs/test_mr"
         }
@@ -236,7 +232,7 @@ HTTP/1.1 400 Bad Request
 }
 ```
 
-Passing the variable n, the request succeeds: 
+Passing the variable n, the request succeeds:
 
 ``` bash
 GET /test/ao_test/_aggrs/test_ap?avars={"n":1}
@@ -271,24 +267,24 @@ Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
 ``` bash
-PUT /db/ao_test { "aggrs" : [ 
+PUT /db/ao_test { "aggrs" : [
      {  "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
         "reduce" : "function(key, values) { return Array.avg(values) } }",
         "type" : "mapReduce",
         "uri" : "test_mr"
-      } 
+      }
 ] }
- 
+
 HTTP/1.1 201 Created
 ...
 ```
 
-Note the *map* function;  `JSON.parse($vars) `allows to access the
+Note the *map* function; `JSON.parse($vars)` allows to access the
 variables passed with the query parameter `avars`
 
 ``` js
 function() { 
  var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
- if (this.age > minage ) { emit(this.name, this.age); } 
-}; 
+ if (this.age > minage ) { emit(this.name, this.age); }
+};
 ```

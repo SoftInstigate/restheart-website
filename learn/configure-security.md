@@ -70,12 +70,8 @@ information.
 
 The HTTPS listener
 
-Important!
-
- 
-
-HTTP is not secure: credentials can be sniffed by a man-in-the-middle
-attack. <span class="underline">**It is paramount to use HTTPS**</span>
+**Important!**  HTTP is not secure: credentials can be sniffed by a man-in-the-middle
+attack. **It is paramount to use HTTPS**
 
 There are many ways of enabling HTTS; for instance you can setup a web
 server such as nginx as a reverse proxy in front of RESTHeart or you may
@@ -121,8 +117,6 @@ The only option to specify to use the default, embedded self signed
 certificate is the following:
 
 1.  use-embedded-keystore: true
-
- 
 
 Using the self-signed certificate garantees that data is encrypted and
 protects from man-in-the-middle attacks. However it leads to issues with
@@ -244,8 +238,8 @@ that avoids the IDM to actually sends a mongodb query for each request.
 
 The collection must have the following fields:
 
-1.  **\_id**: the userid 
-2.  **password**: a string 
+1.  **\_id**: the userid
+2.  **password**: a string
 3.  **roles**: an array of strings.
 
 **Note** the \_ prefix of the \_account collection name. RESTHeart
