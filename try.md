@@ -16,7 +16,7 @@ permalink: /try.html
         <article class="col-sm-12 col-md-6">
             <section>
                 <h3 style="text-align:center; margin-bottom: 25px;">Using the HAL browser</h3>
-                <p>Go and play with it on our demo instance at <a href="https://dev01.mrest.io/browser/#/restheart/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
+                <p>Go and play with it on our demo instance at <a href="https://beta.mrest.io/browser/#/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
             </section>
         </article>
     </div>
@@ -41,7 +41,7 @@ StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
 
 # Try it from the command line
 
-The demo database exposes a the messages collection at <a href="https://api.mrest.io/dev/browser/#/restheart/demo/messages?hal=f"><code>https://api.mrest.io</code></a> without requiring authentication. Access to any other MongoDB resource is forbidden.
+The demo database exposes a the messages collection at <a href="https://beta.mrest.io/browser/#/demo/messages?hal=f"><code>https://beta.mrest.io</code></a> without requiring authentication. Access to any other MongoDB resource is forbidden.
 
 <code>mrest.io</code> is an upcoming managed service for RESTHeart.
 
@@ -56,7 +56,7 @@ This demo instance is reset on regular basis, so feel free to play with it <b>bu
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PUT https://api.mrest.io/dev/restheart/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "Content-Type: application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 ...
@@ -72,7 +72,7 @@ HTTP/1.1 201 Created
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl https://api.mrest.io/dev/restheart/demo/messages/docid
+$ curl https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -92,10 +92,10 @@ $ curl https://api.mrest.io/dev/restheart/demo/messages/docid
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X POST curl https://api.mrest.io/dev/restheart/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
+$ curl -i -H "Content-Type: application/json" -X POST curl https://beta.mrest.io/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
-Location: https://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
+Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
 ...
 
         {% endhighlight %}
@@ -110,7 +110,7 @@ Location: https://dbapi.io/db/coll/563a40d6e4b0ef984cae182b
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PATCH https://api.mrest.io/dev/restheart/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
+$ curl -i -H "Content-Type: application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
@@ -127,7 +127,7 @@ HTTP/1.1 200 OK
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl https://api.mrest.io/dev/restheart/demo/messages/docid
+$ curl https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -154,7 +154,7 @@ $ curl https://api.mrest.io/dev/restheart/demo/messages/docid
     <div class="col-md-9">
         {% highlight bash %}
 
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://api.mrest.io/dev/restheart/demo/messages
+$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
 
 [   {
 		"_id": "docid",
