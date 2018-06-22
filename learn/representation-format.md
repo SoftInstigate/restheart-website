@@ -308,7 +308,7 @@ The `_embedded property looks like:`
 [relationships](/learn/relationships). If a collection defines a relationship,
 the representation of the documents always include the links to related
 data.
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
 <col style="width: 50%" />
@@ -367,7 +367,7 @@ data.
 </tr>
 </tbody>
 </table>
-
+</div>
 The `_links` property looks like:
 
 ``` json

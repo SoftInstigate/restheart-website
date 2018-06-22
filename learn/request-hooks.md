@@ -33,7 +33,7 @@ be applied to the requests involving the collection and its documents.
 ``` json
 { "name": <hook_name>, "args": <arguments> }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -61,7 +61,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ## How to develop an Hook
 
 Request Hooks are implemented in java and declared in the RESTHeart
@@ -160,7 +160,7 @@ public boolean doesSupportRequests(RequestContext rc) {
 ```
 
 Note the following useful `RequestContext` getters:
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -185,7 +185,7 @@ Note the following useful `RequestContext` getters:
 </tr>
 </tbody>
 </table>
-
+</div>
 The `hook()` method is where the custom logic is defined.
 
 It has four arguments:

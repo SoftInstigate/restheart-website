@@ -56,7 +56,7 @@ operations but only those defined (and tested) by the developers.
     ]
 }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -84,7 +84,7 @@ operations but only those defined (and tested) by the developers.
 </tr>
 </tbody>
 </table>
-
+</div>
 MongoDB does not allow to store fields with names starting with $ or
 containing *dots* (.), see [Restrictions on Field
 Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-Names)
@@ -117,7 +117,7 @@ not needed anymore.
     "query": "<query>"
 }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -155,7 +155,7 @@ not needed anymore.
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Examples
 
 The following requests upsert a collection  defining two aggregation
