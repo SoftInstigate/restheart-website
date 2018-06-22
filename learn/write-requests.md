@@ -49,7 +49,7 @@ apply to any resource type, such as databases and collections.
 ## Write verbs
 
 The following table summarizes the semantic of the write verbs:
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
 <col style="width: 50%" />
@@ -102,7 +102,7 @@ The following table summarizes the semantic of the write verbs:
 </tr>
 </tbody>
 </table>
-
+</div>
 upsert
 
 The term *upsert* means either to create a resource, if it does not

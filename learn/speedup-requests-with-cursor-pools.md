@@ -139,7 +139,7 @@ width="640" class="image-center img-responsive"}
 
 The engine is controlled by the *eager* query parameter. Possible values
 are:
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
 <col style="width: 33%" />
@@ -177,7 +177,7 @@ default
 </tr>
 </tbody>
 </table>
-
+</div>
 Example
 
 ``` bash
@@ -199,7 +199,7 @@ eager-cursor-allocation-linear-slice-heights: [ 4, 2, 1 ]
 eager-cursor-allocation-random-max-cursors: 20
 eager-cursor-allocation-random-slice-min-width: 1000
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
 <col style="width: 50%" />
@@ -240,7 +240,7 @@ eager-cursor-allocation-random-slice-min-width: 1000
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Consideration on concurrent insertions
 
 When iterating a cursor that uses an index for the sort, then:

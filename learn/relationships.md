@@ -70,7 +70,7 @@ HAL `_link` property
   "ref-field": "<reffieldname>"
 }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -121,7 +121,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Examples
 
 ### Tree of documents

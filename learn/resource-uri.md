@@ -16,7 +16,7 @@ This page explains the resource URI format, i.e. how the resources
 are identified.
 
 ## Resources URIs
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
 <col style="width: 20%" />
@@ -93,7 +93,7 @@ are identified.
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Document id
 
 In MongoDB, the \_id can be of any type. For instance, it can be an
@@ -108,17 +108,52 @@ this reason, only a subset of \_id types are supported.
 
 The following table shows the supported types:
 
-{:.ts}
-| type     | id\_type                    |
-|----------|-----------------------------|
-| ObjectId | OID or STRING\_OID\*        |
-| String   | STRING\*\* or STRING\_OID\* |
-| Number   | NUMBER                      |
-| Date     | DATE                        |
-| MinKey   | MINKEY                      |
-| MaxKey   | MAXKEY                      |
-| Boolean  | BOOLEAN                     |
-| null     | NULL                        |
+<div class="table-responsive">
+<table class="ts">
+  <thead>
+    <tr>
+      <th>type</th>
+      <th>id_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ObjectId</td>
+      <td>OID or STRING_OID*</td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>STRING** or STRING_OID*</td>
+    </tr>
+    <tr>
+      <td>Number</td>
+      <td>NUMBER</td>
+    </tr>
+    <tr>
+      <td>Date</td>
+      <td>DATE</td>
+    </tr>
+    <tr>
+      <td>MinKey</td>
+      <td>MINKEY</td>
+    </tr>
+    <tr>
+      <td>MaxKey</td>
+      <td>MAXKEY</td>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <td>null</td>
+      <td>NULL</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 **\*** The default value of the id\_type query parameter
 is **STRING\_OID**. In this case, the value of the **&lt;doc_id&gt;** is
@@ -128,16 +163,41 @@ value is a valid ObjectId.
 **\*\*** **STRING** is useful if the \_id value would be a valid
 ObjectId and it is actually a String.
 
+
 ### Some examples
 
-{:.ts}
-|                                                       |                                                   |
-|-------------------------------------------------------|---------------------------------------------------|
-| **/db/coll/1**                                        | { "\_id": "1" }                                   |
-| **/db/coll/1?id\_type=NUMBER**                        | { "\_id": 1 }                                     |
-| **/db/coll/1?id\_type=DATE**                          | { "\_id": { "$date": 1} }                         |
-| **/db/coll/54f77f0fc2e6ea386c0752a5**                 | { "\_id": { "$oid": "54f77f0fc2e6ea386c0752a5"} } |
-| **/db/coll/54f77f0fc2e6ea386c0752a5?id\_type=STRING** | { "\_id": "54f77f0fc2e6ea386c0752a5" }            |
+<div class="table-responsive">
+<table class="ts">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>/db/coll/1</strong></td>
+      <td>{&nbsp;”_id”:&nbsp;”1”&nbsp;}</td>
+    </tr>
+    <tr>
+      <td><strong>/db/coll/1?id_type=NUMBER</strong></td>
+      <td>{&nbsp;”_id”:&nbsp;1&nbsp;}</td>
+    </tr>
+    <tr>
+      <td><strong>/db/coll/1?id_type=DATE</strong></td>
+      <td>{&nbsp;”_id”:&nbsp;{&nbsp;”$date”:&nbsp;1}&nbsp;}</td>
+    </tr>
+    <tr>
+      <td><strong>/db/coll/54f77f0fc2e6ea386c0752a5</strong></td>
+      <td>{&nbsp;”_id”:&nbsp;{&nbsp;”$oid”:&nbsp;”54f77f0fc2e6ea386c0752a5”}&nbsp;}</td>
+    </tr>
+    <tr>
+      <td><strong>/db/coll/54f77f0fc2e6ea386c0752a5?id_type=STRING</strong></td>
+      <td>{&nbsp;”_id”:&nbsp;”54f77f0fc2e6ea386c0752a5”&nbsp;}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 ## mongo-mounts
 

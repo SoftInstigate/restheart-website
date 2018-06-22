@@ -94,7 +94,7 @@ metadata property as follows:
 ``` json
 { "checkers": [ { "name": "jsonSchema", "args": { "schemaId": <schema_id>, "schemaStoreDb": <schema_store_db> } } ] }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -122,7 +122,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Example
 
 **Create a collection enforcing the address JSON Schema**
