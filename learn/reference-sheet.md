@@ -51,8 +51,8 @@ Manage MongoDB Collections. 
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -123,8 +123,8 @@ The Document resource allows you to manage your documents.
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -252,8 +252,8 @@ More information in [Request Checkers](/learn/request-checkers) section.
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">

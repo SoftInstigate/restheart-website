@@ -142,9 +142,9 @@ are:
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
+<col class="w-33" />
+<col class="w-33" />
+<col class="w-33" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -202,8 +202,8 @@ eager-cursor-allocation-random-slice-min-width: 1000
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">

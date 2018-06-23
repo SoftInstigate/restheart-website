@@ -72,8 +72,8 @@ The following table describes the configuration options:
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
