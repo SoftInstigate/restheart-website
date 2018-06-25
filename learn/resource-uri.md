@@ -19,9 +19,9 @@ are identified.
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 20%" />
-<col style="width: 40%" />
-<col style="width: 40%" />
+<col class="w-20" />
+<col class="w-40" />
+<col class="w-40" />
 </colgroup>
 <thead>
 <tr class="header">

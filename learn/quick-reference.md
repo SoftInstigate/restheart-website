@@ -15,7 +15,7 @@ features:
 ---
 
 {% for feature in page.features %}
-<div id="{{feature.anchor}}" class="section" style="margin-top: 80px">
+<div id="{{feature.anchor}}" class="section mt-5">
     <h1>{{feature.title}}</h1>
     {% include_relative {{feature.href}} %}
 </div>

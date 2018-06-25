@@ -42,7 +42,7 @@ At any time the Customer can:
 The First Response Goal is 16 working hours.
 The service balance will be extended at no charge for the Customer by 8 working hours every time this SLA term is not met.
 
-<section class="slice" id="quote" style="padding-top:0;text-align:center">
+<section class="slice pt-0 text-center" id="quote">
 <div class="container">
     <a href="mailto:info@softinstigate.com?subject=RESTHeart profession services inquiry" class="btn btn-primary btn-sm">Ask for a quote</a>
 </div>
