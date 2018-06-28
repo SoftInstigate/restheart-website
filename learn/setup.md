@@ -39,9 +39,8 @@ Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. H
 
 Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
-``` bash
-$ mkdir restheart
-$ cd restheart
+```bash
+$ mkdir restheart && cd restheart
 $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 ```
 
