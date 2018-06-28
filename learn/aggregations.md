@@ -53,7 +53,8 @@ operations but only those defined (and tested) by the developers.
         "<stage_1>",
         "<stage_2>",
         ...
-    ]
+    ],
+    "allowDiskUse": boolean
 }
 ```
 <div class="table-responsive">
@@ -76,12 +77,21 @@ operations but only those defined (and tested) by the developers.
 <td>specifies the URI when the operation is bound under the path <code>/&lt;db&gt;/&lt;collection&gt;/_aggrs</code></td>
 <td class="text-center">yes</td>
 </tr>
+
 <tr class="odd">
 <td><strong>stages</strong></td>
 <td><p>the MongoDB aggregation pipeline stages.</p>
 <p>For more information refer to <a href="https://docs.mongodb.org/manual/core/aggregation-pipeline/" class="uri">https://docs.mongodb.org/manual/core/aggregation-pipeline/</a></p></td>
 <td class="text-center">yes</td>
 </tr>
+
+<tr class="event">
+<td><strong>allowDiskUse</strong></td>
+<td>Optional. If set to true, aggregation stages can write data to temporary files. Default to false. Available from RESTHeart v3.3.6
+</td>
+<td class="text-center">no</td>
+</tr>
+
 </tbody>
 </table>
 </div>
