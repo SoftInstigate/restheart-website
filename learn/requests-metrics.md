@@ -60,7 +60,7 @@ collection on a per-database or per-collection level.
 Use config value `metrics-gathering-level`, possible values are
 
 -   `OFF`
--   ROOT (default)
+-   `ROOT (default)`
 -   `DATABASE`
 -   `COLLECTION`
 
