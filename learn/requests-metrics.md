@@ -105,8 +105,6 @@ http_response_timers_METRICS_m15_rate{method="GET",code="2xx"} 0.111975406672444
 http_response_timers_METRICS_m1_rate{method="GET",code="2xx"} 0.02346856889987903 1510039263986
 http_response_timers_METRICS_m5_rate{method="GET",code="2xx"} 0.040980329912974914 1510039263986
 http_response_timers_METRICS_mean_rate{method="GET",code="2xx"} 0.021582478380531817 1510039263986
-http_response_timers_METRICS_duration_units{method="GET",code="2xx"} milliseconds 1510039263986
-http_response_timers_METRICS_rate_units{method="GET",code="2xx"} calls/second 1510039263986
 
 http_response_timers_METRICS_count{method="GET",code="200"} 13 1510039263986
 http_response_timers_METRICS_max{method="GET",code="200"} 101.0 1510039263986
@@ -123,8 +121,6 @@ http_response_timers_METRICS_m15_rate{method="GET",code="200"} 0.111975406672444
 http_response_timers_METRICS_m1_rate{method="GET",code="200"} 0.02346856889987903 1510039263986
 http_response_timers_METRICS_m5_rate{method="GET",code="200"} 0.040980329912974914 1510039263986
 http_response_timers_METRICS_mean_rate{method="GET",code="200"} 0.021582482412705724 1510039263986
-http_response_timers_METRICS_duration_units{method="GET",code="200"} milliseconds 1510039263986
-http_response_timers_METRICS_rate_units{method="GET",code="200"} calls/second 1510039263986
 
 http_response_timers_DOCUMENT_count{method="GET",code="404"} 1 1510039263986
 http_response_timers_DOCUMENT_max{method="GET",code="404"} 12.0 1510039263986
@@ -141,8 +137,6 @@ http_response_timers_DOCUMENT_m15_rate{method="GET",code="404"} 0.19024588490014
 http_response_timers_DOCUMENT_m1_rate{method="GET",code="404"} 0.09447331054820299 1510039263986
 http_response_timers_DOCUMENT_m5_rate{method="GET",code="404"} 0.17214159528501158 1510039263986
 http_response_timers_DOCUMENT_mean_rate{method="GET",code="404"} 0.019699054561810325 1510039263986
-http_response_timers_DOCUMENT_duration_units{method="GET",code="404"} milliseconds 1510039263986
-http_response_timers_DOCUMENT_rate_units{method="GET",code="404"} calls/second 1510039263986
 
 http_response_timers_DOCUMENT_count{method="GET",code="4xx"} 1 1510039263986
 http_response_timers_DOCUMENT_max{method="GET",code="4xx"} 12.0 1510039263986
@@ -159,8 +153,6 @@ http_response_timers_DOCUMENT_m15_rate{method="GET",code="4xx"} 0.19024588490014
 http_response_timers_DOCUMENT_m1_rate{method="GET",code="4xx"} 0.09447331054820299 1510039263986
 http_response_timers_DOCUMENT_m5_rate{method="GET",code="4xx"} 0.17214159528501158 1510039263986
 http_response_timers_DOCUMENT_mean_rate{method="GET",code="4xx"} 0.019699076069657512 1510039263986
-http_response_timers_DOCUMENT_duration_units{method="GET",code="4xx"} milliseconds 1510039263986
-http_response_timers_DOCUMENT_rate_units{method="GET",code="4xx"} calls/second 1510039263986
 
 http_response_timers_METRICS_count{method="GET"} 13 1510039263986
 http_response_timers_METRICS_max{method="GET"} 101.0 1510039263986
@@ -177,8 +169,6 @@ http_response_timers_METRICS_m15_rate{method="GET"} 0.11197540667244438 15100392
 http_response_timers_METRICS_m1_rate{method="GET"} 0.02346856889987903 1510039263986
 http_response_timers_METRICS_m5_rate{method="GET"} 0.040980329912974914 1510039263986
 http_response_timers_METRICS_mean_rate{method="GET"} 0.021582442655335453 1510039263986
-http_response_timers_METRICS_duration_units{method="GET"} milliseconds 1510039263986
-http_response_timers_METRICS_rate_units{method="GET"} calls/second 1510039263986
 
 http_response_timers_DB_count{method="GET",code="4xx"} 2 1510039263986
 http_response_timers_DB_max{method="GET",code="4xx"} 10.0 1510039263986
@@ -195,8 +185,6 @@ http_response_timers_DB_m15_rate{method="GET",code="4xx"} 0.23206560286490113 15
 http_response_timers_DB_m1_rate{method="GET",code="4xx"} 1.1358519356130308E-4 1510039263986
 http_response_timers_DB_m5_rate{method="GET",code="4xx"} 0.07811102513427433 1510039263986
 http_response_timers_DB_mean_rate{method="GET",code="4xx"} 0.004003171495603914 1510039263986
-http_response_timers_DB_duration_units{method="GET",code="4xx"} milliseconds 1510039263986
-http_response_timers_DB_rate_units{method="GET",code="4xx"} calls/second 1510039263986
 
 http_response_timers_COLLECTION_count{method="GET",code="404"} 2 1510039263986
 http_response_timers_COLLECTION_max{method="GET",code="404"} 22.0 1510039263986
@@ -213,8 +201,6 @@ http_response_timers_COLLECTION_m15_rate{method="GET",code="404"} 0.116036382700
 http_response_timers_COLLECTION_m1_rate{method="GET",code="404"} 5.718721810339868E-5 1510039263986
 http_response_timers_COLLECTION_m5_rate{method="GET",code="404"} 0.03906636157175893 1510039263986
 http_response_timers_COLLECTION_mean_rate{method="GET",code="404"} 0.0039626643164382205 1510039263986
-http_response_timers_COLLECTION_duration_units{method="GET",code="404"} milliseconds 1510039263986
-http_response_timers_COLLECTION_rate_units{method="GET",code="404"} calls/second 1510039263986
 
 http_response_timers_DB_count{method="GET"} 2 1510039263986
 http_response_timers_DB_max{method="GET"} 10.0 1510039263986
@@ -231,8 +217,6 @@ http_response_timers_DB_m15_rate{method="GET"} 0.23206560286490113 1510039263986
 http_response_timers_DB_m1_rate{method="GET"} 1.1358519356130308E-4 1510039263986
 http_response_timers_DB_m5_rate{method="GET"} 0.07811102513427433 1510039263986
 http_response_timers_DB_mean_rate{method="GET"} 0.004003171129199612 1510039263986
-http_response_timers_DB_duration_units{method="GET"} milliseconds 1510039263986
-http_response_timers_DB_rate_units{method="GET"} calls/second 1510039263986
 
 http_response_timers_DB_count{method="GET",code="404"} 2 1510039263986
 http_response_timers_DB_max{method="GET",code="404"} 10.0 1510039263986
@@ -249,8 +233,6 @@ http_response_timers_DB_m15_rate{method="GET",code="404"} 0.23206560286490113 15
 http_response_timers_DB_m1_rate{method="GET",code="404"} 1.1358519356130308E-4 1510039263986
 http_response_timers_DB_m5_rate{method="GET",code="404"} 0.07811102513427433 1510039263986
 http_response_timers_DB_mean_rate{method="GET",code="404"} 0.0040031714981198984 1510039263986
-http_response_timers_DB_duration_units{method="GET",code="404"} milliseconds 1510039263986
-http_response_timers_DB_rate_units{method="GET",code="404"} calls/second 1510039263986
 
 http_response_timers_COLLECTION_count{method="GET",code="4xx"} 2 1510039263986
 http_response_timers_COLLECTION_max{method="GET",code="4xx"} 22.0 1510039263986
@@ -267,8 +249,6 @@ http_response_timers_COLLECTION_m15_rate{method="GET",code="4xx"} 0.116036382700
 http_response_timers_COLLECTION_m1_rate{method="GET",code="4xx"} 5.718721810339868E-5 1510039263986
 http_response_timers_COLLECTION_m5_rate{method="GET",code="4xx"} 0.03906636157175893 1510039263986
 http_response_timers_COLLECTION_mean_rate{method="GET",code="4xx"} 0.003962664528990094 1510039263986
-http_response_timers_COLLECTION_duration_units{method="GET",code="4xx"} milliseconds 1510039263986
-http_response_timers_COLLECTION_rate_units{method="GET",code="4xx"} calls/second 1510039263986
 
 http_response_timers_COLLECTION_count{method="GET"} 2 1510039263986
 http_response_timers_COLLECTION_max{method="GET"} 22.0 1510039263986
@@ -285,8 +265,6 @@ http_response_timers_COLLECTION_m15_rate{method="GET"} 0.11603638270096507 15100
 http_response_timers_COLLECTION_m1_rate{method="GET"} 5.718721810339868E-5 1510039263986
 http_response_timers_COLLECTION_m5_rate{method="GET"} 0.03906636157175893 1510039263986
 http_response_timers_COLLECTION_mean_rate{method="GET"} 0.003962663999950156 1510039263986
-http_response_timers_COLLECTION_duration_units{method="GET"} milliseconds 1510039263986
-http_response_timers_COLLECTION_rate_units{method="GET"} calls/second 1510039263986
 
 http_response_timers_DOCUMENT_count{method="GET"} 1 1510039263986
 http_response_timers_DOCUMENT_max{method="GET"} 12.0 1510039263986
@@ -303,9 +281,6 @@ http_response_timers_DOCUMENT_m15_rate{method="GET"} 0.1902458849001428 15100392
 http_response_timers_DOCUMENT_m1_rate{method="GET"} 0.09447331054820299 1510039263986
 http_response_timers_DOCUMENT_m5_rate{method="GET"} 0.17214159528501158 1510039263986
 http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 1510039263986
-http_response_timers_DOCUMENT_duration_units{method="GET"} milliseconds 1510039263986
-http_response_timers_DOCUMENT_rate_units{method="GET"} calls/second 1510039263986
-
 ```
 
 **JSON example response**
