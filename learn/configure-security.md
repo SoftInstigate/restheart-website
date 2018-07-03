@@ -349,16 +349,13 @@ requests on resources without requiring authentication.
 The *mongo-mounts* configuration option allows to map the URI of the
 MongoDB resources.
 
-Rule
-
-When the URI of a resource is remapped via mongo-mounts configuration
-option, the *path* attribute of permissions must be relative to the
-*what *argument of the *mongo-mounts* option.
+Starting from RESTHeart version 3.3, the _path_ attribute of permission 
+are absolute.
 
 Example: With the following configuration, all the collections of the
 db *mydb* are given the path prefix */api*
 
-``` plain
+``` yml
 mongo-mounts:
     - what: /mydb
       where: /api
@@ -367,7 +364,31 @@ mongo-mounts:
 The collection /mydb/coll is therefore remapped to the URI */api/coll*
 and the predicate to allow GET requests on this collection is:
 
-``` plain
+``` yml
+permissions:
+ - role: $unauthenticated
+   predicate: path-prefix[path="/api/coll"] and method[value="GET"]
+```
+
+For versions older than 3.3, the rule is:
+
+When the URI of a resource is remapped via mongo-mounts configuration
+option, the *path* attribute of permissions must be relative to the
+*what *argument of the *mongo-mounts* option.
+
+Example: With the following configuration, all the collections of the
+db *mydb* are given the path prefix */api*
+
+``` yml
+mongo-mounts:
+    - what: /mydb
+      where: /api
+```
+
+The collection /mydb/coll is therefore remapped to the URI */api/coll*
+and the predicate to allow GET requests on this collection is:
+
+``` yml
 permissions:
  - role: $unauthenticated
    predicate: path-prefix[path="/coll"] and method[value="GET"]
