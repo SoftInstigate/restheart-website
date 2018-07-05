@@ -35,7 +35,7 @@ the following format:
 ``` json
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -68,7 +68,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Global Checkers
 
 > Global Checkers are applied to all requests.
@@ -154,7 +154,7 @@ If the type is 'object' the properties *mandatoryFields* and
 ``` json
 { "path": <json_path>, "type": "object", "mandatoryFields": [ <field_names> ], "optionalFields": [ <field_names>] }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -234,7 +234,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ### Json path expressions
 
 A Json path expressions identifies a part of a Json document.
@@ -311,7 +311,7 @@ expressions select:
 
 The following example creates the collection *user* enforcing its
 document to have following fields:
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -358,7 +358,7 @@ document to have following fields:
 </tr>
 </tbody>
 </table>
-
+</div>
 ``` bash
 $ http -a a:a PUT 127.0.0.1:8080/test/users \
 checkers:='[{\

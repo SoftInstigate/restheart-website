@@ -1,7 +1,10 @@
 ---
 layout: docs
 title: Setup
+
 ---
+
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Run RESTHeart with Docker](#run-restheart-with-docker)
     * [Quick Start with Docker Compose](#quick-start-with-docker-compose)
@@ -26,6 +29,12 @@ title: Setup
     * [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
         * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
         * [5.2 MongoDB authentication with just enough permissions](#52-mongodb-authentication-with-just-enough-permissions)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Run RESTHeart with Docker
 
@@ -531,3 +540,6 @@ readWriteAnyDatabase role or you can create a custom role.
 To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
+
+
+</div>

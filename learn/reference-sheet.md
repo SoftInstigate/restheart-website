@@ -48,11 +48,11 @@ Manage Databases. 
 Manage MongoDB Collections. 
 
 **Allowed Methods**
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -84,6 +84,7 @@ Manage MongoDB Collections. 
 </tr>
 </tbody>
 </table>
+</div>
 
 ## Indexes
 
@@ -119,11 +120,11 @@ The Document resource allows you to manage your documents.
 **URI** `/<dbname>/<collname>/<docid>`
 
 **Allowed Methods**
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -152,7 +153,7 @@ The Document resource allows you to manage your documents.
 </tr>
 </tbody>
 </table>
-
+</div>
 ## File buckets
 
 The File bucket resource allows you to manage your files buckets, i.e.
@@ -179,7 +180,7 @@ version 3.2 the json properties of a file can be modified.
 **URI** `/<dbname>/<bucketname>.files/<fileid>`
 
 **Allowed Methods**
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -212,7 +213,7 @@ Creates the file &lt;fileid&gt; in the files bucket &lt;bucketname&gt;</td>
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Schema store
 
 The schema store resource allows you to manage json schemas used in
@@ -248,11 +249,11 @@ More information in [Request Checkers](/learn/request-checkers) section.
 **URI** `/<dbname>/_schemas/<schemaid>`
 
 **Allowed Methods**
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -279,3 +280,4 @@ More information in [Request Checkers](/learn/request-checkers) section.
 </tr>
 </tbody>
 </table>
+</div>

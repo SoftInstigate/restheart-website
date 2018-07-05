@@ -3,6 +3,8 @@ layout: docs
 title: Documentation
 ---
 
+<div markdown="1" class="d-none">
+
 ## Installation and Configuration
 
 -   [Setup](/learn/setup)
@@ -42,3 +44,12 @@ title: Documentation
 -   [Performances](/learn/performances)
 -   [An example AngularJs application](/learn/example-angularjs-app)
 -   [Third parties resources](/learn/third-parties-resources)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+
+{% include docs-head.html %} 
+
+
+
+</div>

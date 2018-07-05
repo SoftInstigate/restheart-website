@@ -56,35 +56,35 @@ operations but only those defined (and tested) by the developers.
     ]
 }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
 <th>Property</th>
 <th>Description</th>
-<th style="text-align: center;">Mandatory</th>
+<th class="text-center">Mandatory</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>type</strong></td>
 <td>for aggregation pipeline operations is &quot;pipeline&quot;</td>
-<td style="text-align: center;">yes</td>
+<td sclass="text-center">yes</td>
 </tr>
 <tr class="even">
 <td><strong>uri</strong></td>
 <td>specifies the URI when the operation is bound under the path <code>/&lt;db&gt;/&lt;collection&gt;/_aggrs</code></td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 <tr class="odd">
 <td><strong>stages</strong></td>
 <td><p>the MongoDB aggregation pipeline stages.</p>
 <p>For more information refer to <a href="https://docs.mongodb.org/manual/core/aggregation-pipeline/" class="uri">https://docs.mongodb.org/manual/core/aggregation-pipeline/</a></p></td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 </tbody>
 </table>
-
+</div>
 MongoDB does not allow to store fields with names starting with $ or
 containing *dots* (.), see [Restrictions on Field
 Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-Names)
@@ -117,45 +117,45 @@ not needed anymore.
     "query": "<query>"
 }
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
 <th>Property</th>
 <th>Description</th>
-<th style="text-align: center;">Mandatory</th>
+<th class="text-center">Mandatory</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>type</strong></td>
 <td>for aggregation pipeline operations is &quot;mapReduce&quot;</td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 <tr class="even">
 <td><strong>uri</strong></td>
 <td>specifies the URI when the operation is bound under /&lt;db&gt;/&lt;collection&gt;/_aggrs path.</td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 <tr class="odd">
 <td><strong>map</strong></td>
 <td><p>the map function</p>
 <p>For more information refer to <a href="https://docs.mongodb.org/manual/core/map-reduce/" class="uri">https://docs.mongodb.org/manual/core/map-reduce/</a></p></td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 <tr class="even">
 <td>reduce</td>
 <td>the reduce function</td>
-<td style="text-align: center;">yes</td>
+<td class="text-center">yes</td>
 </tr>
 <tr class="odd">
 <td>query</td>
 <td>the filter query</td>
-<td style="text-align: center;">no</td>
+<td class="text-center">no</td>
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Examples
 
 The following requests upsert a collection  defining two aggregation

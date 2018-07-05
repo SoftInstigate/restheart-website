@@ -67,11 +67,11 @@ the configuration file.
 
 The interface *org.restheart.security.AccessManager* mandates to
 implement 2 methods:
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -98,7 +98,7 @@ return true if not authenticated user won't be allowed
 </tr>
 </tbody>
 </table>
-
+</div>
 The second method *isAuthenticationRequired()* checks if authentication
 is required. If it returns *true*, then the request is actually checked
 against the first method. If it return *false*, then any user, including

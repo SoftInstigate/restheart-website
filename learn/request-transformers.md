@@ -41,7 +41,7 @@ A *transformer* object has the following format:
 ``` json
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
 ```
-
+<div class="table-responsive">
 <table class="ts">
 <thead>
 <tr class="header">
@@ -82,7 +82,7 @@ Mandatory
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Global Transformers
 
 > Global Transformers are applied to all requests.

@@ -82,11 +82,11 @@ configuration file.
 
 The interface *io.undertow.security.idm.IdentityManager* mandates to
 implement 3 *verify* methods:
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -118,7 +118,7 @@ Verify a supplied <code>Credential</code> against a requested ID.
 </tr>
 </tbody>
 </table>
-
+</div>
 The actual check occurs in the third *verify* method. They can be
 implemented as follows.
 

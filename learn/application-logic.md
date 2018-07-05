@@ -69,11 +69,11 @@ application-logic-mounts:
 ```
 
 The following table describes the configuration options:
-
+<div class="table-responsive">
 <table class="ts">
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col class="w-50" />
+<col class="w-50" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -100,7 +100,7 @@ The following table describes the configuration options:
 </tr>
 </tbody>
 </table>
-
+</div>
 ## Examples
 
 The class(es) that implements the custom ApplicationHandler must be
