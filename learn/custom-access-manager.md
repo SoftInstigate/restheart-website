@@ -3,6 +3,8 @@ layout: docs
 title: Custom Access Manager
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 - [Introduction](#introduction)
 - [Develop](#develop)
   * [The AM class](#the-am-class)
@@ -13,6 +15,12 @@ title: Custom Access Manager
   * [Using the java classpath option](#using-the-java-classpath-option)
   * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
 - [Example](#example)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -342,3 +350,5 @@ public class ExampleAccessManager implements AccessManager {
     }
 }
 ```
+
+</div>

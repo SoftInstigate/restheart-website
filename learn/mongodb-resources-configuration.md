@@ -3,11 +3,19 @@ layout: docs
 title: Resources Configuration
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Data resources](#data-resources)
     * [Some examples](#some-examples)
 * [Static resources](#static-resources)
 * [Application logic](#application-logic)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -162,3 +170,5 @@ application-logic-mounts:
       where: /ic
       secured: true
 ```
+
+</div>

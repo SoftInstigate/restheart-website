@@ -3,6 +3,8 @@ layout: docs
 title: Enable and Configure Security
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
     * [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
     * [How to use a valid certificate](#how-to-use-a-valid-certificate)
@@ -14,6 +16,12 @@ title: Enable and Configure Security
     * [SimpleAccessManager](#simpleaccessmanager)
     * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
 * [Attachments:](#attachments)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -341,3 +349,5 @@ permissions:
  - role: $unauthenticated
    predicate: path-prefix[path="/coll"] and method[value="GET"]
 ```
+
+</div>

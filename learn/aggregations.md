@@ -3,6 +3,8 @@ layout: docs
 title: Aggregations
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The aggrs collection metadata](#theaggrscollection-metadata)
     * [aggragation pipeline metadata object format](#aggragation-pipeline-metadata-object-format)
@@ -11,6 +13,12 @@ title: Aggregations
 * [Passing variables to aggregation operations](#passing-variables-to-aggregation-operations)
     * [Variables in stages or query](#variables-in-stages-or-query)
     * [Variables in map or reduce functions](#variables-in-map-or-reduce-functions)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -288,3 +296,5 @@ function() { 
  if (this.age > minage ) { emit(this.name, this.age); }
 };
 ```
+
+</div>

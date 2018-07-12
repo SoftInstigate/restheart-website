@@ -3,9 +3,11 @@ layout: docs
 title: Performances
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Results](#results)
     * [Test case 1](#test-case-1)
-* [Test case 2](#test-case-2)
+    * [Test case 2](#test-case-2)
     * [Test case 3](#test-case-3)
     * [Test case 4](#test-case-4)
 * [How we tested](#how-we-tested)
@@ -13,6 +15,12 @@ title: Performances
     * [Software](#software)
     * [Configurations](#configurations)
     * [Test cases](#test-cases)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 RESTHeart has been designed and developed with lightness and
 performances as fundamental parameters. On this regards, also thanks to
@@ -41,7 +49,7 @@ the total execution time:
 | **RESTHeart** |      250s      | 3990 tps |
 | **Direct**    |      244s      | 4086 tps |
 
-## Test case 2
+### Test case 2
 
 Measure the execution time to **query a collection 100.000 times**,
 getting 5 documents each time (limit 5) and skipping just 25 documents,
@@ -150,3 +158,4 @@ source code baseline. You can find
 it [here](https://github.com/SoftInstigate/restheart/tree/develop/src/test/java/org/restheart/test/performance).
 
  
+</div>

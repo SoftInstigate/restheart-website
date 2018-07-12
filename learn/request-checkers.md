@@ -3,6 +3,8 @@ layout: docs
 title: Request Checkers
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The <em>checkers</em> collection metadata](#the-checkerscollection-metadata)
 * [Global Checkers](#global-checkers)
@@ -12,6 +14,12 @@ title: Request Checkers
     * [Example](#example)
 * [Limiting file size with checkContentSize](#limiting-file-size-with-checkcontentsize)
 * [Custom Checkers](#custom-checkers)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -490,3 +498,5 @@ public class MyChecker implements Checker {
     }
 }
 ```
+
+</div>

@@ -14,9 +14,16 @@ features:
   anchor: files
 ---
 
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
 {% for feature in page.features %}
 <div id="{{feature.anchor}}" class="section mt-5">
     <h1>{{feature.title}}</h1>
     {% include_relative {{feature.href}} %}
 </div>
 {% endfor %}
+
+</div>

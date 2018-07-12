@@ -49,7 +49,10 @@ title: Documentation
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
 
 {% include docs-head.html %} 
+    
+## Lorem
 
+Lorem lorem lorem
 
 
 </div>

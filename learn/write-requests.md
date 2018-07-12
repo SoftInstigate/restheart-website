@@ -3,6 +3,8 @@ layout: docs
 title: Write Requests
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Write verbs](#write-verbs)
 * [Dot notation](#dot-notation)
@@ -13,6 +15,12 @@ title: Write Requests
     * [POST an array of documents](#post-an-array-of-documents)
     * [PATCH multiple documents using the wildcard document id](#patch-multiple-documents-using-the-wildcard-document-id)
     * [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -363,3 +371,6 @@ DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
   "matched": 0
 }
 ```
+
+
+</div>

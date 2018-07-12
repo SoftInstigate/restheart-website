@@ -3,10 +3,18 @@ layout: docs
 title: Request Hooks
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The <em>hooks</em> collection metadata](#the-hooks-collection-metadata)
 * [How to develop an Hook](#how-to-develop-an-hook)
 * [How to declare an Hook in the configuration file](#how-to-declare-an-hook-in-the-configuration-file)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -216,3 +224,5 @@ metadata-named-singletons:
         - name: snooper
           class: org.restheart.metadata.hooks.SnooperHook
 ```
+
+</div>

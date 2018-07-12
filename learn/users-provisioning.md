@@ -3,19 +3,27 @@ layout: docs
 title: Users provisioning how-to
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction ](#introduction)
 * [Steps](#steps)
-    * [1. Configure RESTHeart to use the DbIdentityManager](#1-configure-restheart-to-use-thedbidentitymanager)
-    * [2. Configure the mandatory security.yml file](#2-configure-the-mandatorysecurityyml-file)
-    * [3. Create the Javascript file](#3-create-the-javascript-file)
-    * [4. Create all the users via mongo shell](#4-create-all-the-users-via-mongo-shell)
-    * [5. Check the database and collection](#5-check-the-database-and-collection)
-    * [6. Start RESTHeart](#6-start-restheart)
-    * [7. Check the admin's roles](#7-check-the-admins-roles)
-    * [8. Replace the temporary password](#8-replace-the-temporary-password)
-    * [9. GET the final document](#9-get-the-final-document)
-    * [10. Create another user](#10-create-another-user)
-    * [11. Check the new user](#11-check-the-new-user)
+    * [1. Configure RESTHeart to use the DbIdentityManager](#configure-restheart-to-use-thedbidentitymanager)
+    * [2. Configure the mandatory security.yml file](#configure-the-mandatorysecurityyml-file)
+    * [3. Create the Javascript file](#create-the-javascript-file)
+    * [4. Create all the users via mongo shell](#create-all-the-users-via-mongo-shell)
+    * [5. Check the database and collection](#check-the-database-and-collection)
+    * [6. Start RESTHeart](#start-restheart)
+    * [7. Check the admin's roles](#check-the-admins-roles)
+    * [8. Replace the temporary password](#replace-the-temporary-password)
+    * [9. GET the final document](#get-the-final-document)
+    * [10. Create another user](#create-another-user)
+    * [11. Check the new user](#check-the-new-user)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction 
 
@@ -352,20 +360,6 @@ X-Powered-By: restheart.org
 }
 ```
 
- 
 
- 
 
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
+</div>

@@ -3,13 +3,15 @@ layout: docs
 title: Queries
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
     * [Example](#example)
     * [Default sorting](#default-sorting)
 * [Filtering](#filtering)
     * [Examples](#examples)
     * [Return documents whose title starts with "Star Trek"](#return-documents-whosetitlestarts-with-star-trek)
-    * [Return documents whose title starts with "Star Trek" and <code>publishing_date </code>is later than 4/9/2015, 8AM](#return-documents-whosetitlestarts-with-star-trek-andpublishing_dateis-later-than-492015-8am)
+    * [Return documents whose title starts with "Star Trek" and <code>publishing_date </code>is later than 4/9/2015, 8AM](#return-documents-whosetitlestarts-with-star-trek-andpublishingdateis-later-than-492015-8am)
 * [Counting](#counting)
 * [Paging](#paging)
 * [Sorting](#sorting)
@@ -25,6 +27,12 @@ title: Queries
     * [Only return the property title](#only-return-the-property-title)
     * [Return all but the property <em>title</em>](#return-all-but-the-propertytitle)
     * [Only return the properties <em>title</em> and <em>summary</em>](#only-return-the-propertiestitle-and-summary)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -313,3 +321,5 @@ part of an **header** object:
 ``` bash
 GET /test/coll?keys={'header.title':1}&keys={'header.summary':1}
 ```
+
+</div>

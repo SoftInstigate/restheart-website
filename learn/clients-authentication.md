@@ -3,12 +3,20 @@ layout: docs
 title: How Clients Authenticate
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Some examples](#some-examples-)
 * [Basic Authentication for dummies](#basic-authentication-for-dummies)
 * [Authentication Token](#authentication-token)
     * [Suggested way to check credentials and obtain user’s roles](#suggested-way-to-check-credentials-and-obtain-users-roles)
 * [How to avoid the basic authentication popup in browsers](#how-to-avoid-the-basic-authentication-popup-in-browsers)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -162,3 +170,5 @@ an example of such implementation.
 
 **  
 **
+
+</div>

@@ -3,6 +3,8 @@ layout: docs
 title: An example Web application with AngularJS
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
 * [Ingredients](#ingredients)
 * [Introduction](#introduction)
@@ -21,6 +23,12 @@ title: An example Web application with AngularJS
 * [Conclusions](#conclusions)
 * [References](#references)
 * [Attachments:](#attachments)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 Please provide us with your feedback, so that we can improve this
 tutorial.
@@ -879,3 +887,5 @@ development funny again.
 ![](/images/icons/bullet_blue.gif)
 [2015-09-30\_Explorative\_Datenanalyse.ipynb](/images/attachments/7241730/18251777.ipynb)
 (application/octet-stream)  
+
+</div>

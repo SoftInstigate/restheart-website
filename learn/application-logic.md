@@ -3,12 +3,20 @@ layout: docs
 title: Application Logic
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 - [Introduction](#introduction)
 - [How to](#how-to)
 - [Examples](#examples)
   * [PingHandler](#pinghandler)
   * [Aggregation query](#aggregation-query)
 - [Configuration](#configuration)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -329,3 +337,5 @@ application-logic-mounts:
       where: /aggregate
       secured: true
 ```
+
+</div>

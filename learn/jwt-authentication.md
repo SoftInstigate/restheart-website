@@ -3,6 +3,11 @@ layout: docs
 title: Json Web Token Authentication
 ---
 
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
 > Json Web Token Authentication Will be part of RESTHeart 3.3
 
 You can have a preview from the current 3.3.0-SNAPSHOT version, donwload it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
@@ -29,3 +34,5 @@ auth-mechanism:
     issuer: myIssuer
     audience: myAudience
 ```
+
+</div>

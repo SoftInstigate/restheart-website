@@ -3,6 +3,8 @@ layout: docs
 title: Reference sheet
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Root resource](#root-resource)
 * [Database](#database)
 * [Collection](#collection)
@@ -13,6 +15,12 @@ title: Reference sheet
 * [File](#file)
 * [Schema store](#schema-store)
 * [Schema](#schema)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Root resource
 
@@ -280,4 +288,6 @@ More information in [Request Checkers](/learn/request-checkers) section.
 </tr>
 </tbody>
 </table>
+</div>
+
 </div>

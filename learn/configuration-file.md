@@ -3,6 +3,11 @@ layout: docs
 title: Configuration File
 ---
 
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
 ``` bash
 ## RESTHeart Configuration File.
 ---
@@ -384,3 +389,5 @@ connection-options:
     # Defaults to true
     ALWAYS_SET_DATE: true
 ```
+
+</div>

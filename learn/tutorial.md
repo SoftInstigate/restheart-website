@@ -3,6 +3,8 @@ layout: docs
 title: Tutorial
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
 * [Create a Database](#create-a-database)
@@ -17,6 +19,12 @@ title: Tutorial
 * [Query documents by properties](#query-documents-by-properties)
 * [Clean-up](#clean-up)
 * [Additional resources](#additional-resources)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -400,3 +408,6 @@ Removing network restheart_backend
 * [Resource URI](/learn/resource-uri)
 * [Resource Representation Format](/learn/representation-format)
 * [Queries](/learn/query-documents/)
+
+
+</div>

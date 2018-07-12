@@ -3,7 +3,7 @@ layout: docs
 title: Binary Data (GridFS)
 ---
 
-Contents:
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
 * [Specifications](#specifications)
@@ -14,6 +14,12 @@ Contents:
     * [GET a binary file with curl](#get-a-binary-file-with-curl)
 * [Using httpie](#using-httpie)
 * [Attachments:](#attachments)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -357,3 +363,5 @@ For example, to upload a file named "mypicture.png" with PUT:
 ``` plain
 http -a user:password -f PUT 127.0.0.1:8080/testdb/mybucket.files/mypicture.png file@"~/Desktop/mypicture.png" properties='{"author":"Maurizio Turatti"}'
 ```
+
+</div>
