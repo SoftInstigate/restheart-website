@@ -6,11 +6,11 @@ title: Enable and Configure Security
 * [Introduction](#introduction)
     * [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
     * [How to use a valid certificate](#how-to-use-a-valid-certificate)
-    * [Configuration](#configuration)
+* [Identity Manager](#identity-manager)
     * [SimpleFileIdentityManager](#simplefileidentitymanager)
     * [Global Security Predicates](#global-security-predicates)
     * [DbIdentityManager](#dbidentitymanager)
-    * [Configuration](#configuration-1)
+* [Access Manager](#access-manager)
     * [SimpleAccessManager](#simpleaccessmanager)
     * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
 * [Attachments:](#attachments)
@@ -142,7 +142,7 @@ more information) and specify the following RESTHeart options:
 3.  **keystore-password** the keystore password
 4.  **certpassword** the certificate password
 
-Identity Manager
+## Identity Manager
 
 ### Configuration
 
@@ -160,7 +160,7 @@ develop and configure a custom IDM.
 
 The **idm** section of the yaml configuration file is:
 
-``` text
+``` yml
 idm:    
     implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
     conf-file: ./etc/security.yml
@@ -181,7 +181,7 @@ users defined in a yaml file.
 
 This is how its straightforward conf-file looks like:
 
-``` text
+``` yml
 users:
  - userid: admim
    password: changeit
@@ -220,42 +220,73 @@ The DbIdentityManager shipped with RESTHeart (class is
 *org.restheart.security.impl.DbIdentityManager*) authenticates users
 defined in a mongodb collection.
 
-This is how the conf-file looks like:
+To use the DbIdentityManager, set the **idm** section of the yaml 
+configuration file as follows:
 
-``` text
+``` yml
+idm:    
+    implementation-class: org.restheart.security.impl.DbIdentityManager
+    conf-file: ./etc/security.yml
+```
+
+This is how the security.yml looks like:
+
+``` yml
 dbim:
     - db: userbase
-      coll: _accounts
+      coll: accounts
+      prop-name-id: _id
+      prop-name-password: password
+      prop-name-roles: roles
+      bcrypt-hashed-password: false
+      create-user: false
+      create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admins"]}'
       cache-enabled: false
       cache-size: 1000
       cache-ttl: 60000
       cache-expire-policy: AFTER_WRITE
 ```
 
-The db and coll properties point to the collection with the users
-(userbase.\_accounts in this case). The other options control the cache
-that avoids the IDM to actually sends a mongodb query for each request.
+The _db_ and _coll_ properties point to the collection with the user documents
+(userbase.accounts in this case).
 
-The collection must have the following fields:
+The _prop-_ prefixed properties define which properties of the user document 
+are used for authentication:
 
-1.  **\_id**: the userid
-2.  **password**: a string
-3.  **roles**: an array of strings.
+1.  **id**: (string) the property holding the userid
+2.  **password**: (string) the property holding the password
+3.  **roles**: (array of strings) the property holding the user roles
 
-**Note** the \_ prefix of the \_account collection name. RESTHeart
-threats collections whose names start with \_ as reserved: they are not
-exposed by the API. Otherwise users can easily read passwords and create
-users.
+The _cache-_ prefixed properties control the cache to avoids the IDM actually
+executing a mongodb query for each request.
 
-If you want to actually expose it, remove the prefix and make sure that
-sensitive data; for this you have several options, including:
+The property _bcrypt-hashed-password_ defines if the password is hased using the bcrypt
+algorithm. Stating RESTHeart 3.3, write requests to the dbim collection automatically
+bcrypt the password property in the request body.
 
-1.  defining an appropriate access policy enforced by the Access Manager
-    so that users can only access their own data
-2.  filter out the *password* property from responses with
+If _create-user_ is set to _true_, RESTHeart check if the _create-user-document_
+exits at startup time, creating it eventually. This is useful to initialize a default user. Note
+the if _bcrypt-hashed-password_ is set to _true_, the _create-user-document_ password must
+be bcryped.
+
+**Note** Starting from RESTHeart v3.3, the _password_ field is always 
+filtered out from the response and read requests with a filter query parameter involving
+the _password_ property are forbidden to avoid snooping passwords.
+
+**Hint** To completely hide the users collection, just specify a underscore prefixed
+collection name (e.g. _\_accounts_). 
+RESTHeart threats collections whose names start with \_ as reserved: they are not
+exposed by the API.
+
+If you actually expose it, make sure to:
+
+1.  define an appropriate access policy enforced by the Access Manager
+    so that users can only access their own data, (e.g. a user cannot modify other users' passwords)
+2.  For RESTHeart versions older than 3.3, filter out the *password* property from responses with
     a [representation transformer](/learn/request-transformers).
+ 
 
-**Access Manager**
+## Access Manager
 
 The Access Manager is responsible of authorizing requests against the
 security policy.
@@ -318,16 +349,13 @@ requests on resources without requiring authentication.
 The *mongo-mounts* configuration option allows to map the URI of the
 MongoDB resources.
 
-Rule
-
-When the URI of a resource is remapped via mongo-mounts configuration
-option, the *path* attribute of permissions must be relative to the
-*what *argument of the *mongo-mounts* option.
+Starting from RESTHeart version 3.3, the _path_ attribute of permission 
+are absolute.
 
 Example: With the following configuration, all the collections of the
 db *mydb* are given the path prefix */api*
 
-``` plain
+``` yml
 mongo-mounts:
     - what: /mydb
       where: /api
@@ -336,7 +364,31 @@ mongo-mounts:
 The collection /mydb/coll is therefore remapped to the URI */api/coll*
 and the predicate to allow GET requests on this collection is:
 
-``` plain
+``` yml
+permissions:
+ - role: $unauthenticated
+   predicate: path-prefix[path="/api/coll"] and method[value="GET"]
+```
+
+For versions older than 3.3, the rule is:
+
+When the URI of a resource is remapped via mongo-mounts configuration
+option, the *path* attribute of permissions must be relative to the
+*what *argument of the *mongo-mounts* option.
+
+Example: With the following configuration, all the collections of the
+db *mydb* are given the path prefix */api*
+
+``` yml
+mongo-mounts:
+    - what: /mydb
+      where: /api
+```
+
+The collection /mydb/coll is therefore remapped to the URI */api/coll*
+and the predicate to allow GET requests on this collection is:
+
+``` yml
 permissions:
  - role: $unauthenticated
    predicate: path-prefix[path="/coll"] and method[value="GET"]
