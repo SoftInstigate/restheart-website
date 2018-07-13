@@ -3,6 +3,8 @@ layout: docs
 title: Metrics on Requests
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Formats](#formats)
     * [using restheart rep query parameter](#using-restheart-rep-query-parameter)
@@ -10,6 +12,12 @@ title: Metrics on Requests
 * [Configuration options](#configuration-options)
 * [Reading data](#reading-data)
 * [Examples](#examples)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 
 ## Introduction
@@ -524,3 +532,6 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
   }
 }
 ```
+
+
+</div>

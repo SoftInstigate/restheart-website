@@ -3,6 +3,8 @@ layout: docs
 title: Aggregations
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The aggrs collection metadata](#theaggrscollection-metadata)
     * [aggragation pipeline metadata object format](#aggragation-pipeline-metadata-object-format)
@@ -11,6 +13,12 @@ title: Aggregations
 * [Passing variables to aggregation operations](#passing-variables-to-aggregation-operations)
     * [Variables in stages or query](#variables-in-stages-or-query)
     * [Variables in map or reduce functions](#variables-in-map-or-reduce-functions)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -77,21 +85,12 @@ operations but only those defined (and tested) by the developers.
 <td>specifies the URI when the operation is bound under the path <code>/&lt;db&gt;/&lt;collection&gt;/_aggrs</code></td>
 <td class="text-center">yes</td>
 </tr>
-
 <tr class="odd">
 <td><strong>stages</strong></td>
 <td><p>the MongoDB aggregation pipeline stages.</p>
 <p>For more information refer to <a href="https://docs.mongodb.org/manual/core/aggregation-pipeline/" class="uri">https://docs.mongodb.org/manual/core/aggregation-pipeline/</a></p></td>
 <td class="text-center">yes</td>
 </tr>
-
-<tr class="event">
-<td><strong>allowDiskUse</strong></td>
-<td>Optional. If set to true, aggregation stages can write data to temporary files. Default to false. Available from RESTHeart v3.3.6
-</td>
-<td class="text-center">no</td>
-</tr>
-
 </tbody>
 </table>
 </div>
@@ -298,3 +297,5 @@ function() { 
  if (this.age > minage ) { emit(this.name, this.age); }
 };
 ```
+
+</div>

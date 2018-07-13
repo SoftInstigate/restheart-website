@@ -1,7 +1,10 @@
 ---
 layout: docs
 title: Setup
+
 ---
+
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Run RESTHeart with Docker](#run-restheart-with-docker)
     * [Quick Start with Docker Compose](#quick-start-with-docker-compose)
@@ -11,21 +14,27 @@ title: Setup
         * [Tags](#tags)
         * [Dockerfile](#dockerfile)
         * [How to Run](#how-to-run)
-        * [1. Pull the MongoDB and RESTHeart images](#1-pull-the-mongodb-and-restheart-images)
-        * [2. Run the MongoDB container](#2-run-the-mongodb-container)
-            * [2.1 RESTHeart &lt; 3.3](#22-restheart--33)
-        * [3. Run RESTHeart interactively](#3-run-restheart-interactively)
-        * [4. Check that is working](#4-check-that-is-working)
-        * [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
+        * [1. Pull the MongoDB and RESTHeart images](#pull-the-mongodb-and-restheart-images)
+        * [2. Run the MongoDB container](#run-the-mongodb-container)
+            * [2.1 RESTHeart &lt; 3.3](#restheart--33)
+        * [3. Run RESTHeart interactively](#run-restheart-interactively)
+        * [4. Check that is working](#check-that-is-working)
+        * [5. Pass arguments to RESTHeart and JVM](#pass-arguments-to-restheart-and-jvm)
         * [6. Stop and restart](#stop-and-restart)
 * [Manual installation](#manual-installation)
-    * [1. Install Java and MongoDB](#1-install-java-and-mongodb)
-    * [2. Install RESTHeart](#2-install-restheart)
-    * [3. Start MongoDB](#3-start-mongodb)
-    * [4. Start the RESTHeart server](#4-start-the-restheart-server)
-    * [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
-        * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
-        * [5.2 MongoDB authentication with just enough permissions](#52-mongodb-authentication-with-just-enough-permissions)
+    * [1. Install Java and MongoDB](#install-java-and-mongodb)
+    * [2. Install RESTHeart](#install-restheart)
+    * [3. Start MongoDB](#start-mongodb)
+    * [4. Start the RESTHeart server](#start-the-restheart-server)
+    * [5. Enable MongoDB authentication](#enable-mongodb-authentication)
+        * [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#connect-restheart-to-mongodb-over-tlsssl)
+        * [5.2 MongoDB authentication with just enough permissions](#mongodb-authentication-with-just-enough-permissions)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Run RESTHeart with Docker
 
@@ -530,3 +539,6 @@ readWriteAnyDatabase role or you can create a custom role.
 To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
+
+
+</div>

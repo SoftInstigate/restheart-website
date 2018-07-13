@@ -3,6 +3,18 @@ title: How to package custom code
 layout: docs
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+* [Introduction](#introduction)
+* [Create a Uber jar](#create-a-uber-jar)
+
+</div>
+
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
 ## Introduction
 
 You can extend RESTHeart by implementing custom extensions, such as
@@ -85,3 +97,5 @@ $ java -server -jar foo.jar conf.yml
   ...
 </project>
 ```
+
+</div>

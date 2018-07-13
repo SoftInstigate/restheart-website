@@ -3,6 +3,8 @@ layout: docs
 title: Custom Identity Manager
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Develop](#develop)
     * [The IDM class](#the-idm-class)
@@ -12,6 +14,12 @@ title: Custom Identity Manager
     * [Using the java classpath option](#using-the-java-classpath-option)
     * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
 * [Example](#example)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 **/\*\*/ Introduction Develop The IDM class Methods to implement
 Configuration Add custom classes to the classpath Using the java
@@ -297,3 +305,5 @@ public class ExampleIdentityManager implements IdentityManager {
     }
 }
 ```
+
+</div>

@@ -3,6 +3,12 @@ layout: docs
 title: Release Management
 ---
 
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
+
 The project has one “master” where all the new code is committed
 (unreleased versions) while released versions are tagged on `master` and
 then maintained in their own branches (named `1.0.x`, `1.1.x`, `1.2.x`,
@@ -23,3 +29,5 @@ Releases and their version numbers will strictly follow a [Semantic
 Versioning](https://semver.org/) policy.
 
 Rif: <https://www.softinstigate.com/blog/2015/10/08/better-branching-model/>
+
+</div>

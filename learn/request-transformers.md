@@ -3,6 +3,8 @@ layout: docs
 title: Request Transformers
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The <em>rts</em> collection metadata](#thertscollection-metadata)
 * [Global Transformers](#global-transformers)
@@ -10,6 +12,12 @@ title: Request Transformers
 * [Inject properties with add RequestProperties transformer](#inject-properties-withaddrequestproperties-transformer)
 * [Filter out properties with <em>filterProperties</em> transformer](#filter-out-properties-withfilterproperties-transformer)
 * [Custom Transformers](#custom-transformers)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -353,3 +361,5 @@ public class MyTransformer implements Transformer {
     }
 }
 ```
+
+</div>

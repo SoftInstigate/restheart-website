@@ -3,6 +3,12 @@ layout: docs
 title: Representation Format
 ---
 
+
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
+
 ## Introduction
 
 Each resource has its **properties** and **embedded** resources.
@@ -416,3 +422,5 @@ The `_links` property looks like:
         }
     }
 ```
+
+</div>

@@ -3,12 +3,20 @@ layout: docs
 title: Speedup Requests with Cursor Pools
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [How it works](#how-it-works)
 * [Request parameters](#request-parameters)
 * [Configuration](#configuration)
 * [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
 * [Attachments:](#attachments)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -256,3 +264,5 @@ collection is big, sorting by properties that are not indexed is not a
 good idea and will probably lead to a MongoDB error anyway.
 
 In this case, the **eager=none** parameter can be specified.
+
+</div>

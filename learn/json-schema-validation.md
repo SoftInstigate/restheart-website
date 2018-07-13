@@ -3,10 +3,18 @@ layout: docs
 title: Document validation with JSON schema
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [The Schema Store and Schema resources](#the-schema-store-and-schema-resources)
 * [Document validation](#document-validation)
 * [Example](#example)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -162,3 +170,5 @@ POST /test/addresses {"address": "Via D'Annunzio, 28", "city": "L'Aquila", "coun
 
 HTTP/1.1 201 Created...
 ```
+
+</div>

@@ -3,11 +3,19 @@ layout: docs
 title: ETag
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [ETag for write requests](#etag-for-write-requests)
 * [ETag for web caching](#etag-for-web-caching)
 * [ETag policy](#etag-policy)
 * [An example with AngularJs](#an-example-with-angularjs)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -209,3 +217,4 @@ it gets back the *412 Precondition Failed* error message. This is the
 ETag based optimistic concurrency control in action.
 
  
+</div>

@@ -3,12 +3,20 @@ layout: docs
 title: Resource URI
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
 * [Introduction](#introduction)
 * [Resources URIs](#resources-uris)
 * [Document id](#document-id)
     * [Some examples](#some-examples)
 * [mongo-mounts](#mongo-mounts)
 * [URL encoding](#url-encoding)
+
+</div>
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -251,3 +259,5 @@ URL-decoded to a + sign. So the request
 
 Have a look at this issue
 <https://github.com/SoftInstigate/restheart/issues/116>
+
+</div>
