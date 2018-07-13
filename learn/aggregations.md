@@ -61,7 +61,8 @@ operations but only those defined (and tested) by the developers.
         "<stage_1>",
         "<stage_2>",
         ...
-    ]
+    ],
+    "allowDiskUse": boolean
 }
 ```
 <div class="table-responsive">

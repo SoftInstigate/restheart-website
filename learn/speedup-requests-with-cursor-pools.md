@@ -169,17 +169,17 @@ default
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong><code>linear </code></strong></td>
+<td><strong><code>linear</code></strong></td>
 <td>LINEAR policy</td>
 <td>√</td>
 </tr>
 <tr class="even">
-<td><strong>random</strong></td>
+<td><strong><code>random</code></strong></td>
 <td>allocate cursors RANDOM policy</td>
 <td> </td>
 </tr>
 <tr class="odd">
-<td><strong>none</strong></td>
+<td><strong><code>none</code></strong></td>
 <td>the cursor pool will not be used</td>
 <td> </td>
 </tr>

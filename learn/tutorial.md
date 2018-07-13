@@ -34,7 +34,7 @@ Here we use [httpie](https://httpie.org/), a brilliant command line HTTP client
 
 ## Start MongoDB and RESTHeart
 
-If you have Docker properly installed in your machine, you could just clone the RESTHeart's Github repo and run the docker-compose command:
+If you have Docker properly installed in your machine, you can start RESTHeart in seconds:
 
 ``` bash
 $ mkdir restheart && cd restheart
