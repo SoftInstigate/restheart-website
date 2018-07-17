@@ -37,7 +37,7 @@ layout: default
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
-                        <svg><use xlink:href="images/sprite.svg#mongodb" /></svg>
+                        <svg><use xlink:href=" ../../../images/sprite.svg#mongodb" /></svg>
                     </div>
                     <h2>MongoDB</h2>
                     <h4>RESTHeart is the
@@ -56,7 +56,7 @@ layout: default
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
-                        <svg><use xlink:href="images/sprite.svg#feather" /></svg>
+                        <svg><use xlink:href="../../../images/sprite.svg#feather" /></svg>
                     </div>
                     <h2>Fast &amp; Light</h2>
                     <h4>
@@ -79,7 +79,7 @@ layout: default
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
-                        <svg><use xlink:href="images/sprite.svg#plane" /></svg>
+                        <svg><use xlink:href="../../../images/sprite.svg#plane" /></svg>
                     </div>
                     <h2>Rapid Dev</h2>
                     <h4>
@@ -100,7 +100,7 @@ layout: default
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
-                        <svg><use xlink:href="images/sprite.svg#torch" /></svg>
+                        <svg><use xlink:href="../../../images/sprite.svg#torch" /></svg>
                     </div>
                     <h2>Prod</h2>
                     <h4>
@@ -226,13 +226,13 @@ $ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/dem
     <div class="container">
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
-                <svg class="call-to-action__icon"><use xlink:href="images/sprite.svg#lamp" /></svg>
+                <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#lamp" /></svg>
                 <h2 class="call-to-action__title">SUPPORTED BY AN ACTIVE COMMUNITY AND PROFESSIONAL SERVICES</h2>
                 <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
                 <a class="btn btn-o" href="#">PROFESSIONAL SERVICES</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
-                <svg class="call-to-action__icon"><use xlink:href="images/sprite.svg#thumb" /></svg>
+                <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#thumb" /></svg>
                 <h2 class="call-to-action__title">AVAILABLE UNDER THE OPEN SOURCE AGPL AND THE COMMERCIAL LICENSE</h2>
                 <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
                 <a class="btn btn-o-white" href="#">Commercial license</a>
