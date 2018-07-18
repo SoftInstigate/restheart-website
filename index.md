@@ -38,7 +38,7 @@ layout: default
                     <h2>MongoDB</h2>
                     <h4>RESTHeart is the
                         <strong>
-                            <a href="https://docs.mongodb.org/ecosystem/tools/http-interfaces/" target="_blank">leading Web API</a>
+                            <a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank">leading Web API</a>
                         </strong> for
                         <strong>MongoDB</strong>. It has been tested with MongoDB from release 2.6 to 3.6</h4>
                     <h4>
