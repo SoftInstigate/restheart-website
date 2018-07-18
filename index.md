@@ -14,10 +14,6 @@ layout: default
     </p>
 </div>
 
-
-
-
-
 <section class="slice" id="what">
     <div class="container-fluid slice__features">
         <div class="row">
@@ -125,102 +121,12 @@ layout: default
             </article>
         </div>
     </div>
-
 </section>
 
-
-<section class="examples">
-    <ul class="nav nav-tabs nav-justified" role="tablist">
-        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#examples__1" role="tab">Example 1</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__2" role="tab">Example 2</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__3" role="tab">Example 3</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__4" role="tab">Example 4</a></li>
-    </ul>
-    <div class="tab-content pt-4 pb-5">
-        <div class="tab-pane fade show active" id="examples__1" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
-                    </div>
-                    <div class="col-md-6">
-        {% highlight bash %}
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
-[   {
-		"_id": "docid",
-		"from": "ujibang",
-		"message": "RESTHeart rocks!",
-		"header": {
-			"timestamp": {
-				"$date": 1475598488601
-			}
-		}
-	}, {
-		"_id": {
-			"$oid": "563a40d6e4b0ef984cae182b"
-		},
-		"from": "ujibang",
-		"message": "MongoDB rocks as well!"
-	}    
-]
-        {% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="examples__2" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
-                    </div>
-                    <div class="col-md-6">
-        {% highlight bash %}
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
-        {% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="examples__3" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
-                    </div>
-                    <div class="col-md-6">
-        {% highlight bash %}
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
-        {% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="examples__4" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
-                    </div>
-                    <div class="col-md-6">
-        {% highlight bash %}
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
-        {% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
+{% comment %}
+Remove the comment tags to include the file
+{% include examples.html %}
+{% endcomment %}
 
 <section class="call-to-action">
     <div class="container">
@@ -239,9 +145,7 @@ $ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/dem
             </div>
         </div>
     </div>
-
 </section>
-
 
 <section class="chart" id="chart">
 
