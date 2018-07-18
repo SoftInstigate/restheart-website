@@ -135,13 +135,13 @@ Remove the comment tags to include the file
                 <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#lamp" /></svg>
                 <h2 class="call-to-action__title">SUPPORTED BY AN ACTIVE COMMUNITY AND PROFESSIONAL SERVICES</h2>
                 <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
-                <a class="btn btn-o" href="#">PROFESSIONAL SERVICES</a>
+                <a class="btn btn-o" href="/services">PROFESSIONAL SERVICES</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#thumb" /></svg>
                 <h2 class="call-to-action__title">AVAILABLE UNDER THE OPEN SOURCE AGPL AND THE COMMERCIAL LICENSE</h2>
                 <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
-                <a class="btn btn-o-white" href="#">Commercial license</a>
+                <a class="btn btn-o-white" href="/license#commercial-license">Commercial license</a>
             </div>
         </div>
     </div>

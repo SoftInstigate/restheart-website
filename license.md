@@ -6,7 +6,7 @@ permalink: /license.html
 
 > RESTHeart is distributed under the Open Source [AGPL](https://github.com/SoftInstigate/restheart/blob/master/LICENSE.txt) and a __Commercial License__ to effectively adopt it in the Enterprise.
 
-# AGPL Conditions
+# <a name="agpl"></a>AGPL Conditions
 
 ###  State changes
 
@@ -24,7 +24,7 @@ Users who interact with the software via network are given the right to receive 
 
 Modifications must be released under the same license when distributing the software. In some cases a similar or related license may be used.
 
-# Commercial License
+# <a name="commercial-license"></a>Commercial License
 
 The Commercial License authorizes to use RESTHeart under the conditions established by the AGPL License with express exemption from:
 * the obligation to give a copy of the source code of RESTHeart linked or embedded into the Software with any subsequent changes in case of distribution and in any case generally dispenses the Licensee from the obligation to make the RESTHeart source code with any subsequent modifications accessible to third parties;
