@@ -134,13 +134,13 @@ Remove the comment tags to include the file
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#lamp" /></svg>
                 <h2 class="call-to-action__title">SUPPORTED BY AN ACTIVE COMMUNITY AND PROFESSIONAL SERVICES</h2>
-                <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
+                <p class="call-to-action__desc">Professional Services help you on using the RESTHeart standard API, developing RESTHeart extensions, customizing RESTHeart, priority bug fixing, configuration, best practices, etc...</p>
                 <a class="btn btn-o" href="/services">PROFESSIONAL SERVICES</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon"><use xlink:href="../../../images/sprite.svg#thumb" /></svg>
                 <h2 class="call-to-action__title">AVAILABLE UNDER THE OPEN SOURCE AGPL AND THE COMMERCIAL LICENSE</h2>
-                <p class="call-to-action__desc">Lorem ipsum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz sum dolor sit ament consecutor adisciplit lorem sine qua non ipse diz</p>
+                <p class="call-to-action__desc">RESTHeart is distributed under the Open Source GNU AGPL v3. If use of our product under the AGPL v3 does not satisfy your organization’s legal department, a commercial licenses is available.</p>
                 <a class="btn btn-o-white" href="/license#commercial-license">Commercial license</a>
             </div>
         </div>
