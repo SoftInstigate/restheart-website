@@ -114,7 +114,7 @@ used by RESTHeart.
 ### Hypermedia Application Language
 
 RESTHeart uses
-the [HAL+json](https://stateless.co/hal_specification.html) hypermedia
+the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
 format. HAL stands for *Hypermedia Application Language* and it is
 simple, elegant and powerful.
 
@@ -123,7 +123,7 @@ HAL builds up on 2 simple concepts: **Resources** and **Links**
 -   **Resources** have state (plain JSON), embedded resources and links
 -   **Links** have target (href URI) and relations (aka rel)
 
-![](https://stateless.co/info-model.png){: width="800" height="600" class="img-responsive"}
+![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
 
 ## Strict mode representations of BSON
 
