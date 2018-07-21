@@ -39,23 +39,23 @@ In summary:
 > RESTHeart leverages MongoDB’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
 
 - Lightweight and fast server, ready to use without any coding;
-- Built on standards, like HTTP, JSON, RESTful, HAL, JSON Schema;
+- Built on standards, like HTTP, JSON, REST, HAL, JSON and JSON Schema;
 - Pluggable Authentication and Authorization, with ready to use Identity Manager and role-based Access Manager;
-- Data operations API, to create, read, update, delete and query documents;
+- Data operations API, to Create, Read, Update, Delete documents;
 - Support for “dot notation” and update operators on every write verb;
 - Bulk operations, with POST, PATCH and DELETE of multiple documents with one single request;
-- GridFS support, for large binary data;
-- Aggregation Operations, for both map-reduce and aggregation pipelines (improved in 2.0);
+- GridFS support, for storing and serving large binary data;
+- Aggregation Operations, for both map-reduce and aggregation pipelines;
 - Data model operations API, to create dbs, collections and indexes via pure RESTful calls;
-- Strict data validation with JSON Schema;
-- WebHooks to call other web resources after request completes;
-- Relationship can be defined so that documents automatically include the hyperlinks to referenced data;
-- Transformation and Checks logic can be easily applied to requests;
+- Optional data validation with JSON Schema;
+- WebHooks to call other Web resources after a request completes;
+- Relationship can be defined so that documents automatically include hyperlinks to referenced data;
+- Transformation and check logic can be easily applied to requests;
 - Serve Static Resources (such as HTML, CSS, images and JavaScript) and custom Application Logic;
-- Supports optimized browser web caching and avoids ghost writes with standard ETag (improved in 2.0);
+- Supports optimized browser Web caching and avoids ghost writes with standard ETag;
 - Cross-origin resource sharing (CORS);
 - Embedded HAL browser to easily navigate your data;
-- Available also as a **[Docker image](https://hub.docker.com/r/softinstigate/restheart/)**;
+- Available also as a [Docker image](https://hub.docker.com/r/softinstigate/restheart/);
 - Ideal as the backend for **Angular**, **React**, **Vue** or any other JavaScript framework;
 - Can be extended by adding Java classes to perform custom tasks.
 
