@@ -2,6 +2,14 @@
 layout: docs
 title: Documentation
 ---
+
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+- [Introduction](#introduction)
+- [What is it](#what-is-it)
+
+</div>
+
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
 
 {% include docs-head.html %}
@@ -10,19 +18,19 @@ title: Documentation
 
 RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB. It embeds the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. It's entirely written in Java 8 and distributed as open source software under the [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
-We started the project for two main reasons:
+We started the project for these main reasons:
 
- 1. We were tired of configuring and maintaining complicated application servers (coming from a Java Enterprise background...);
- 1. Modern applications quite often needs a similar set of basic REST APIs to start with;
- 1. There is a set of recurrent non-functional requrements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once fo all (or, at least, in a vast majority of cases).
+ 1. We were tired of configuring and maintaining complicated application servers (coming from a Java Enterprise background);
+ 2. Modern applications quite often needs a similar set of basic REST APIs to start with;
+ 3. There is a set of recurrent non-functional requrements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once for all (at least in a vast majority of cases).
 
-The main ideas around RESTHeart are:
+The founding ideas around RESTHeart are:
 
-  1. Developepers foremostly need to easily store and retrieve data from a database, uniformly and consistently, as these days Single Page Applications (the ones built with Angular, React or Vue) and Mobile Apps (either native or hybrid) are moving most of the business logic from the server to the client side;
-  1. Modern Apps always consume a REST API and use plain JSON as the only message format (goodbye XML and RPC...);
-  1. MongoDB is the leading database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
-  1. If, say, 80% of the backend functionalities are given, then teams can better focus on building what's matter, which is the User eXperience;
-  1. Docker is becoming the favorite way to package and distribute applications.
+  1. Developers foremostly need to easily store and retrieve contents, uniformly and consistently, as these days Single Page Applications (the ones built with Angular, React or Vue) and Mobile Apps (either native or hybrid) are moving most of the business logic from the server to the client side;
+  2. Modern Apps always consume a REST API and use plain JSON as the only message format (goodbye XML and RPC);
+  3. MongoDB is, at present, the leading database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
+  4. If, say, 80% of the backend's functionalities are given, then we can better focus on what's matter more, which is the User eXperience;
+  5. Docker is becoming the favorite way to package and distribute applications.
 
 ## What is it
 
