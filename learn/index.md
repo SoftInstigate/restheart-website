@@ -8,13 +8,25 @@ title: Documentation
 
 ## Introduction
 
-RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB, built on top of [Undertow](http://undertow.io) non-blocking HTTP server. It's developed and distributed as open source software under the [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
+RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB. It embeds the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. It's entirely written in Java 8 and distributed as open source software under the [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
-Our goal in selecting the AGPL v3.0 as our open source license is to require that enhancements to RESTHeart be released to the community. Traditional GPL often does not achieve this anymore as a huge amount of software runs in the cloud. Besides, the AGPL v3.0 is the same license of MongoDB, so adopting it looks logical to us.
+We started the project for two main reasons:
 
-If use of our product under the AGPL v3 does not satisfy your organization’s legal department (some will not approve GPL in any form), [Commercial licenses](/license#commercial-license) and [professional services](/services) are available. Feel free to **[contact us](mailto:info@softinstigate.com?subject=RESTHeart commercial license inquiry)** for more details.
+ 1. We were tired of configuring and maintaining complicated application servers (coming from a Java Enterprise background...);
+ 1. Modern applications quite often needs a similar set of basic REST APIs to start with;
+ 1. There is a set of recurrent non-functional requrements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once fo all (or, at least, in a vast majority of cases).
+
+The main ideas around RESTHeart are:
+
+  1. Developepers foremostly need to easily store and retrieve data from a database, uniformly and consistently, as these days Single Page Applications (the ones built with Angular, React or Vue) and Mobile Apps (either native or hybrid) are moving most of the business logic from the server to the client side;
+  1. Modern Apps always consume a REST API and use plain JSON as the only message format (goodbye XML and RPC...);
+  1. MongoDB is the leading database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
+  1. If, say, 80% of the backend functionalities are given, then teams can better focus on building what's matter, which is the User eXperience;
+  1. Docker is becoming the favorite way to package and distribute applications.
 
 ## What is it
+
+In summary:
 
 > RESTHeart leverages MongoDB’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
 
