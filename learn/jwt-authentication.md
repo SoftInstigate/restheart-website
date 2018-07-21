@@ -8,9 +8,9 @@ title: Json Web Token Authentication
 {% include docs-head.html %} 
 
 
-> Json Web Token Authentication Will be part of RESTHeart 3.3
+Json Web Token (JWT) Authentication is part of RESTHeart since release 3.3.
 
-You can have a preview from the current 3.3.0-SNAPSHOT version, donwload it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
+To enable it, you have to add the following configuration fragment to the `restheart.yml` file, editing below parameters accordingly to your needs. 
 
 ``` yml
 # Jwt Authentication Manager 
