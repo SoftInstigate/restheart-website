@@ -5,20 +5,20 @@ title: Tutorial
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
-* [Create a Database](#create-a-database)
-* [Get the database](#get-the-database)
-* [Create a Collection](#create-a-collection)
-* [Get the collection](#get-the-collection)
-* [Create two Documents](#create-two-documents)
-    * [First document](#first-document)
-    * [Second document](#second-document)
-* [Get all Documents from the Collection](#get-all-documents-from-the-collection)
-* [GET Document by URL (by id)](#get-document-by-url-by-id)
-* [Query documents by properties](#query-documents-by-properties)
-* [Clean-up](#clean-up)
-* [Additional resources](#additional-resources)
+- [Introduction](#introduction)
+- [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
+- [Create a Database](#create-a-database)
+- [Get the database](#get-the-database)
+- [Create a Collection](#create-a-collection)
+- [Get the collection](#get-the-collection)
+- [Create two Documents](#create-two-documents)
+    - [First document](#first-document)
+    - [Second document](#second-document)
+- [Get all Documents from the Collection](#get-all-documents-from-the-collection)
+- [GET Document by URL (by id)](#get-document-by-url-by-id)
+- [Query documents by properties](#query-documents-by-properties)
+- [Clean-up](#clean-up)
+- [Additional resources](#additional-resources)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -28,9 +28,9 @@ title: Tutorial
 
 ## Introduction
 
-In this tutorial we use RESTHeart to create a database, a collection and a couple of documents in MongoDB. Then we show how to perform simple queries. We take for granted that you already have a little basic knowledge of MongoDB, but nothing more.
+In this tutorial we use RESTHeart to create a **database**, a **collection** and a couple of **documents** in MongoDB. Then we show how to perform simple queries. Here we use **Docker** because it's the easiest way to run RESTHeart and MongoDB together.
 
-Here we use [httpie](https://httpie.org/), a brilliant command line HTTP client (you can also use [curl](https://curl.haxx.se) of course, but httpie gives a colorized and formatted output that it's much easier to read).
+> We use [httpie](https://httpie.org/), a command line HTTP client ([curl](https://curl.haxx.se) is fine, but httpie is easier to use and produces a colorized and formatted output that's easier to read). For a primer read [httpie: A CLI http client that will make you smile](http://radek.io/2015/10/20/httpie/).
 
 ## Start MongoDB and RESTHeart
 
