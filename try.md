@@ -47,6 +47,8 @@ The demo database exposes a the messages collection at <a href="https://beta.mre
 
 <code>mrest.io</code> is an upcoming managed service for RESTHeart.
 
+The demo instance requires an api key, passed via request header <code>key:demo</code>
+
 This demo instance is reset on regular basis, so feel free to play with it <b>but don't rely on it for persistent storage of your data</b>.
 {: .bs-callout .bs-callout-info }
 
@@ -58,7 +60,7 @@ This demo instance is reset on regular basis, so feel free to play with it <b>bu
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "key:demo,Content-Type:application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 ...
@@ -74,7 +76,7 @@ HTTP/1.1 201 Created
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl https://beta.mrest.io/demo/messages/docid
+$ curl -H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -94,7 +96,7 @@ $ curl https://beta.mrest.io/demo/messages/docid
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X POST curl https://beta.mrest.io/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
+$ curl -i -H "key:demo,Content-Type: application/json" -X POST curl https://beta.mrest.io/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
 Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
@@ -112,7 +114,7 @@ Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "Content-Type: application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
+$ curl -i -H "key:demo,Content-Type: application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
@@ -129,7 +131,7 @@ HTTP/1.1 200 OK
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl https://beta.mrest.io/demo/messages/docid
+$ curl -H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -156,7 +158,7 @@ $ curl https://beta.mrest.io/demo/messages/docid
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
+$ curl -H "key:demo" -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
 
 [   {
 		"_id": "docid",

@@ -64,7 +64,9 @@
         // the script /etc/cron.daily/rh-pull-count runs at dbapi.io
         // and POSTs the stats every day to beta.mrest.io/demo/stats
         $.ajax({
-            url: "https://beta.mrest.io/demo/stats?pagesize=10", success: function (result) {
+            url: "https://beta.mrest.io/demo/stats?pagesize=10", 
+            beforeSend: function(xhr){ xhr.setRequestHeader('key', 'demo'); },
+            success: function (result) {
                 if (result && result.reverse && result.map) {
                     result.reverse();
 
