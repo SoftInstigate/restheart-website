@@ -5,24 +5,24 @@ title: An example Web application with AngularJS
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
-* [Ingredients](#ingredients)
-* [Introduction](#introduction)
-* [Goals](#goals)
-* [Getting the servers up and running](#getting-the-servers-up-and-running)
-* [Creating the data structure](#creating-the-data-structure)
-* [The Web client](#the-web-client)
-* [Understanding the Web client](#understanding-the-web-client)
-    * [Application initialization and configuration](#application-initialization-and-configuration)
-    * [Authentication](#authentication)
-    * [Getting, Posting, and Deleting Notes](#getting-posting-and-deleting-notes)
-    * [Notes list](#notes-list)
-    * [Creating a new note](#creating-a-new-note)
-    * [Updating and Deleting a note](#updating-and-deleting-a-note)
-* [Stopping and restarting](#stopping-and-restarting)
-* [Conclusions](#conclusions)
-* [References](#references)
-* [Attachments:](#attachments)
+- [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
+- [Ingredients](#ingredients)
+- [Introduction](#introduction)
+- [Goals](#goals)
+- [Getting the servers up and running](#getting-the-servers-up-and-running)
+- [Creating the data structure](#creating-the-data-structure)
+- [The Web client](#the-web-client)
+- [Understanding the Web client](#understanding-the-web-client)
+    - [Application initialization and configuration](#application-initialization-and-configuration)
+    - [Authentication](#authentication)
+    - [Getting, Posting, and Deleting Notes](#getting-posting-and-deleting-notes)
+        - [Notes list](#notes-list)
+        - [Creating a new note](#creating-a-new-note)
+        - [Updating and Deleting a note](#updating-and-deleting-a-note)
+- [Stopping and restarting](#stopping-and-restarting)
+- [Conclusions](#conclusions)
+- [References](#references)
+- [Attachments:](#attachments)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -188,7 +188,7 @@ We will create a simple notes Web application. 
 ## Getting the servers up and running
 
 You can refer to [Installation and
-Setup](https://softinstigate.atlassian.net/wiki/x/FICM) documentation
+Setup](https://restheart.org/learn/setup/) documentation
 section for detailed instructions on how to install RESTHeart and
 MongoDB. However, the suggested way to get ready is using the official
 [RESTHeart Docker
@@ -616,7 +616,7 @@ the app.notes state.
 reference sheet
 
 Have a look at the RESTHeart documentation [reference
-sheet ](https://softinstigate.atlassian.net/wiki/x/SoCM)to quickly
+sheet](https://restheart.org/learn/quick-reference)to quickly
 understand the semantic of the HTTP verbs on the different resources
 (for instance, a POST to a collection URI creates a document in it).
 
@@ -848,7 +848,7 @@ development funny again.
 
 -   RESTHeart: https://restheart.org
 -   RESTHeart
-    documentation: <https://softinstigate.atlassian.net/wiki/display/RH/Documentation>
+    documentation: <https://restheart.org/learn/>
 -   MongoDB CRUD
     Introduction: <https://docs.mongodb.org/manual/core/crud-introduction/> 
 -   Docker containers for RESTHeart and

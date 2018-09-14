@@ -57,7 +57,7 @@ layout: default
                     <h2>Fast &amp; Light</h2>
                     <h4>
                         <strong>High throughput</strong> check the
-                        <a href="https://softinstigate.atlassian.net/wiki/display/RH/Performances">performance tests</a>.
+                        <a href="https://restheart.org/learn/performances">performance tests</a>.
                     </h4>
                     <h4>
                         <strong>Lightweight</strong> ~10Mb footprint, low RAM usage, starts in ~1 sec.

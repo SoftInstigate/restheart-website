@@ -5,28 +5,28 @@ title: Queries
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-    * [Example](#example)
-    * [Default sorting](#default-sorting)
-* [Filtering](#filtering)
-    * [Examples](#examples)
-    * [Return documents whose title starts with "Star Trek"](#return-documents-whosetitlestarts-with-star-trek)
-    * [Return documents whose title starts with "Star Trek" and <code>publishing_date </code>is later than 4/9/2015, 8AM](#return-documents-whosetitlestarts-with-star-trek-andpublishingdateis-later-than-492015-8am)
-* [Counting](#counting)
-* [Paging](#paging)
-* [Sorting](#sorting)
-    * [Sort simple format](#sort-simple-format)
-    * [Sort JSON expression format](#sort-json-expression-format)
-    * [Examples](#examples-1)
-    * [Sort by the <em>date</em> ascending](#sort-by-thedate-ascending)
-    * [Sort by the <em>date</em> descending](#sort-by-thedatedescending)
-    * [Sort by the <em>date</em> descending and title ascending ](#sort-by-thedatedescending-and-title-ascending)
-    * [Sort by search score](#sort-by-search-score)
-* [Projection](#projection)
-    * [Examples](#examples-2)
-    * [Only return the property title](#only-return-the-property-title)
-    * [Return all but the property <em>title</em>](#return-all-but-the-propertytitle)
-    * [Only return the properties <em>title</em> and <em>summary</em>](#only-return-the-propertiestitle-and-summary)
+- [Introduction](#introduction)
+    - [Example](#example)
+    - [Default sorting](#default-sorting)
+- [Filtering](#filtering)
+    - [Examples](#examples)
+        - [Return documents whose `title` starts with "Star Trek"](#return-documents-whose-title-starts-with-%22star-trek%22)
+        - [Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM](#return-documents-whose-title-starts-with-%22star-trek%22-and-publishingdate-is-later-than-492015-8am)
+- [Counting](#counting)
+- [Paging](#paging)
+- [Sorting](#sorting)
+    - [Sort simple format](#sort-simple-format)
+    - [Sort JSON expression format](#sort-json-expression-format)
+    - [Examples](#examples)
+    - [Sort by the *date* ascending](#sort-by-the-date-ascending)
+        - [Sort by the *date* descending](#sort-by-the-date-descending)
+        - [Sort by the *date* descending and title ascending](#sort-by-the-date-descending-and-title-ascending)
+        - [Sort by search score](#sort-by-search-score)
+- [Projection](#projection)
+    - [Examples](#examples)
+        - [Only return the property title](#only-return-the-property-title)
+        - [Return all but the property *title*](#return-all-but-the-property-title)
+        - [Only return the properties *title* and *summary*](#only-return-the-properties-title-and-summary)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -181,7 +181,7 @@ parameter. Its default value is 100, maximum allowable size is 1000.
 The pages to return is specified with the `page` query parameter. The
 pagination links (first, last, next, previous) are **only returned on
 hal full mode** (`hal=f` query parameter); see [HAL
-mode](https://softinstigate.atlassian.net/wiki/x/UICM#RepresentationFormat-Halmode)
+mode](https://restheart.org/learn/representation-format/)
 for more information.
 
 For instance, to return documents from 20 to 29 (page 3):
