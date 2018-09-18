@@ -99,7 +99,7 @@ HTTP/1.1 201 Created
 ### Example - create a text index on property 'title'
 
 ``` bash
-PUT /db/coll/_indexes/text {"keys": {"title": "text }}
+PUT /db/coll/_indexes/text {"keys": {"title": "text" }}
 HTTP/1.1 201 Created
 ...
 ```
