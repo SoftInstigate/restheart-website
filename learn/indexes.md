@@ -5,11 +5,16 @@ title: Collection Indexes
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [List the collection indexes](#list-the-collection-indexes)
-* [Create an index](#create-an-index)
-* [Delete an index](#delete-an-index)
-* [Notes](#notes)
+- [Introduction](#introduction)
+- [List the collection indexes](#list-the-collection-indexes)
+    - [Example](#example)
+- [Create an index](#create-an-index)
+    - [Example - create an unique, sparse index on property 'name'](#example---create-an-unique-sparse-index-on-property-name)
+    - [Example - create a text index on property 'title'](#example---create-a-text-index-on-property-title)
+- [Delete an index](#delete-an-index)
+- [Notes](#notes)
+    - [Invalid options](#invalid-options)
+    - [Indexes cannot be updated](#indexes-cannot-be-updated)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -30,7 +35,7 @@ To list the collection indexes use the following request:
  GET /db/coll/_indexes
 ```
 
-**Example**
+### Example
 
 ``` bash
 GET 127.0.0.1:8080/db/coll/_indexes 
@@ -83,7 +88,7 @@ See also
 Indexes in MongoDB documentation
 <https://docs.mongodb.com/manual/indexes/>
 
-**Example - create an unique, sparse index on property *name***
+### Example - create an unique, sparse index on property 'name'
 
 ``` bash
 PUT /db/coll/_indexes/index1 {"keys": {"name":1}, "ops": {"unique": true, "sparse": true }}
@@ -91,7 +96,7 @@ HTTP/1.1 201 Created
 ...
 ```
 
-****Example - create a text index on property *title*****
+### Example - create a text index on property 'title'
 
 ``` bash
 PUT /db/coll/_indexes/text {"keys": {"title": "text }}
@@ -99,7 +104,7 @@ HTTP/1.1 201 Created
 ...
 ```
 
-## **Delete an index**
+## Delete an index
 
 To delete an index use the following request:
 
@@ -107,7 +112,7 @@ To delete an index use the following request:
 DELETE /db/coll/_indexes/<index_id>
 ```
 
-## **Notes**
+## Notes
 
 ### Invalid options
 
@@ -136,7 +141,7 @@ HTTP/1.1 406 Not Acceptable
 
 ### Indexes cannot be updated
 
-**To update an index, it must be deleted and recreated:**
+To update an index, it must be **deleted** and **recreated**:
 
 ``` bash
 DELETE /db/coll/_indexes/index
