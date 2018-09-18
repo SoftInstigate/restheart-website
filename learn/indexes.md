@@ -91,7 +91,7 @@ Indexes in MongoDB documentation
 ### Example - create an unique, sparse index on property 'name'
 
 ``` bash
-PUT /db/coll/_indexes/index1 {"keys": {"name":1}, "ops": {"unique": true, "sparse": true }}
+PUT /db/coll/_indexes/index1 { "keys": {"name": 1}, "ops": {"unique": true, "sparse": true } }
 HTTP/1.1 201 Created
 ...
 ```
@@ -99,7 +99,7 @@ HTTP/1.1 201 Created
 ### Example - create a text index on property 'title'
 
 ``` bash
-PUT /db/coll/_indexes/text {"keys": {"title": "text" }}
+PUT /db/coll/_indexes/text { "keys": { "title": "text" } }
 HTTP/1.1 201 Created
 ...
 ```
