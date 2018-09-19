@@ -4,7 +4,7 @@ layout: default
 <div class="container text-center header">
     <img src="{{ " images/rh_logo_vert.png " | prepend: site.baseurl }}" class="img-responsive" width="256">
     <p class="header__desc">The Web API for MongoDB</p>
-    <h2 class="header__title">Build application Faster, no coding is required.</h2>
+    <h2 class="header__title">Build applications faster, zero coding required!</h2>
 
     <a href="/learn/tutorial" class="btn btn-lg">Quickstart</a>
     <p>
