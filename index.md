@@ -4,7 +4,7 @@ layout: default
 <div class="container text-center header">
     <img src="{{ " images/rh_logo_vert.png " | prepend: site.baseurl }}" class="img-responsive" width="256">
     <p class="header__desc">The Web API for MongoDB</p>
-    <h2 class="header__title">RESTHeart connects to MongoDB and opens data to the Web via a simple RESTful API.</h2>
+    <h2 class="header__title">Build application Faster, no coding is required.</h2>
 
     <a href="/learn/tutorial" class="btn btn-lg">Quickstart</a>
     <p>
@@ -14,18 +14,18 @@ layout: default
     </p>
 </div>
 
-<section class="slice" id="what">
+<section class="slice bg-light" id="what">
     <div class="container-fluid slice__features">
         <div class="row">
             <div class="col-sm-6 text-center mb-3">
-                <h3>
+                <h3 class="pt-3">
                     Supported by
                     an active Community and <a href="/services">
                     Professional Services</a>
                 </h3>
             </div>
             <div class="col-sm-6 text-center  mb-3">
-                <h3>
+                <h3 class="pt-3">
                     Available under the Open Source AGPL and the
                     <a href="/license">Commercial License</a>
                 </h3>
@@ -40,13 +40,40 @@ layout: default
                         <strong>
                             <a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank">leading Web API</a>
                         </strong> for
-                        <strong>MongoDB</strong>. It has been tested with MongoDB from release 2.6 to 3.6</h4>
+                        <strong>MongoDB</strong>.
+                    </h4>
                     <h4>
-                        <strong>Just start it</strong> and the REST API is ready to use, opening the
-                        <strong>data</strong> to the Web.</h4>
+                        <strong>Just run it</strong> to open your MongoDb to the Web.
+                    </h4>
                     <h4>
-                        <strong>Web</strong> and
-                        <strong>Mobile applications</strong> can directly use the database via REST HTTP API calls.</h4>
+                        The API unlocks all the features of MongoDb, including 
+                        <strong>queries</strong>,
+                        <strong>bulk updates</strong>,
+                        <strong>GridFs</strong>,
+                        <strong>aggregations</strong>,
+                        <strong>replica sets</strong>,
+                        <strong>sharding</strong> and more...
+                    </h4>
+                </section>
+            </article>
+            <article class="col-lg-3">
+                <section class="newsText">
+                    <div class="newsText__icon">
+                        <svg><use xlink:href="../../../images/sprite.svg#plane" /></svg>
+                    </div>
+                    <h2>Fast Dev</h2>
+                    <h4>
+                        <strong>No server side development</strong> is required and you can <strong>focus on building you application</strong>.
+                    </h4>
+                    <h4>
+                        For complex cases, a simple and modern framework allows <strong>extending the API</strong>.
+                    </h4>
+                    <h4>
+                        RESTHeart provides out-of-the-box <strong>User Authentication</strong> and <strong>Authorization</strong>
+                    </h4>
+                    <h4>
+                        The <strong>Docker Container</strong> is available to get it up and running in minutes.
+                    </h4>
                 </section>
             </article>
             <article class="col-lg-3">
@@ -60,7 +87,7 @@ layout: default
                         <a href="https://restheart.org/learn/performances">performance tests</a>.
                     </h4>
                     <h4>
-                        <strong>Lightweight</strong> ~10Mb footprint, low RAM usage, starts in ~1 sec.
+                        <strong>Lightweight</strong> ~15Mb footprint, low RAM usage, starts instantly.
                     </h4>
                     <h4>
                         <strong>Horizontally Scalable</strong> with
@@ -75,47 +102,26 @@ layout: default
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
-                        <svg><use xlink:href="../../../images/sprite.svg#plane" /></svg>
-                    </div>
-                    <h2>Rapid Dev</h2>
-                    <h4>
-                        <strong>No server side development is required</strong> in most of the cases for your web and mobile applications.
-                    </h4>
-                    <h4>
-                        The
-                        <strong>Setup</strong> is simple with convention over configuration approach;
-                        <strong>Docker Container</strong> and
-                        <strong>Vagrant Box</strong> are available.
-                    </h4>
-                    <h4>
-                        <strong>Access Control</strong> and
-                        <strong>Schema Check</strong> are provided out of the box.
-                    </h4>
-                </section>
-            </article>
-            <article class="col-lg-3">
-                <section class="newsText">
-                    <div class="newsText__icon">
                         <svg><use xlink:href="../../../images/sprite.svg#torch" /></svg>
                     </div>
                     <h2>Prod</h2>
                     <h4>
-                        <strong>Production ready</strong>.
-                    </h4>
-                    <h4>
                         High quality
                         <strong>Documentation</strong> and active development
-                        <strong>community</strong>.
+                        <strong>Community</strong>.
                     </h4>
                     <h4>
                         <a href="/services">
                             <strong>Professional Services</strong>
-                        </a> are available from SoftInstigate, the company behind RESTHeart.
+                        </a>
+                        are available from SoftInstigate, the company behind RESTHeart.
                     </h4>
                     <h4>
+                        For the Enterprise, the
                         <a href="/license">
-                            <strong>A Commercial License</strong>
-                        </a> is available to overcome the conditions of the AGPL.
+                            <strong>Commercial License</strong>
+                        </a> 
+                        overcomes the conditions of the AGPL.
                     </h4>
                 </section>
             </article>
