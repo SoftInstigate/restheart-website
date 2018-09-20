@@ -4,29 +4,7 @@ title: Try
 permalink: /try.html
 ---
 
-<section class="slice pt-4" id="questions">
-    <div class="container">
-        <div class="row">
-            <article class="col-lg-6">
-                <section>
-                    <h3 class="text-center mb-4">From the command line</h3>
-                    <p>Use <strong>curl</strong> or <strong>httpie</strong> to play with our demo instance.</p>
-                    <p>See below for a step by step tutorial.</p>
-                </section>
-            </article>
-            <article class="col-lg-6">
-                <section>
-                    <h3 class="text-center mb-4">Using the HAL browser</h3>
-                    <p>Go and play with it on our demo instance at <a href="https://beta.mrest.io/browser/#/demo/messages?hal=f" target="_blank"><code>mrest.io</code></a></p>
-                </section>
-            </article>
-        </div>
-    </div>
-</section>
-
 # Angular Example
-
-
 
 <div id="demo"></div>
 

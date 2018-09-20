@@ -1,85 +1,222 @@
 <section class="examples">
     <ul class="nav nav-tabs nav-justified" role="tablist">
-        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#examples__1" role="tab">Example 1</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__2" role="tab">Example 2</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__3" role="tab">Example 3</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#examples__4" role="tab">Example 4</a></li>
+        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#httpie" role="tab">httpie</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#curl" role="tab">cURL</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#js" role="tab">JavaScript</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#java" role="tab">Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#swift" role="tab">Swift</a></li>
     </ul>
     <div class="tab-content pt-4 pb-5">
-        <div class="tab-pane fade show active" id="examples__1" role="tabpanel">
+        <div class="tab-pane fade show active" id="httpie" role="tabpanel">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-4">
+                            <h2 class="examples__title">Query documents from the command line with httpie.</h2>
+                            <p class="examples__desc">
+                                The GET request has two query parameters: the query <code>filter</code> and <code>pagesize</code> to limit the response to two documents.
+                                <br/>
+                                Here we use the brilliant <a class="text-danger" href="https://httpie.org" target="_blank">httpie</a>, a modern command line HTTP client.
+                            </p>
+                            <a href="/try" class="btn btn-o-white">More examples</a>
+                        </div>
+                        <div class="col-md-8">
+{% highlight bash %}
+$ http GET https://beta.mrest.io/demo/messages?filter='{"from":"Bob"}'\&pagesize=2 key:demo
+
+HTTP/1.1 200 OK
+# other response headers omitted
+
+[
+    {
+        "_id": {
+            "$oid": "5b90101a198370e1dd7d0110"
+        },
+        "from": "Bob",
+        "message": "was here",
+        "timestamp": {
+            "$date": 1536167962446
+        }
+    },
+    {
+        "_id": {
+            "$oid": "5b49be10d418da78b75c3c2c"
+        },
+        "from": "Bob",
+        "message": "RESTHeart rocks",
+        "timestamp": {
+            "$date": 1531559440350
+        }
+    }
+]
+{% endhighlight %}
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane fade" id="curl" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents from the command line with cURL.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: the query <code>filter</code> (that needs to be encoded with --data-urlencode option since it contains the curly brackets special chars) and <code>pagesize</code> to limit the response to two documents.
+                            <br/>
+                            Here we use the immortal <a target="_blank" class="text-danger" href="https://curl.haxx.se/">cURL</a>!
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
                     </div>
-                    <div class="col-md-6">
-{% highlight bash %}
-$ curl --header "key:demo" -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages
-[   {
-		"_id": "docid",
-		"from": "ujibang",
-		"message": "RESTHeart rocks!",
-		"header": {
-			"timestamp": {
-				"$date": 1475598488601
-			}
-		}
-	}, {
-		"_id": {
-			"$oid": "563a40d6e4b0ef984cae182b"
-		},
-		"from": "ujibang",
-		"message": "MongoDB rocks as well!"
-	}    
+                    <div class="col-md-8">
+{% highlight bash %}    
+$ curl --header "key:demo" -G --data-urlencode 'filter={"from":"Bob"}' https://beta.mrest.io/demo/messages?pagesize=2
+
+[
+    {
+        "_id": {
+            "$oid": "5b90101a198370e1dd7d0110"
+        },
+        "message": "was here",
+        "from": "Bob",
+        "timestamp": {
+            "$date": 1536167962446
+        }
+    },
+    {
+        "_id": {
+            "$oid": "5b49be10d418da78b75c3c2c"
+        },
+        "message": "RESTHeart rocks",
+        "from": "Bob",
+        "timestamp": {
+            "$date": 1531559440350
+        }
+    }
 ]
 {% endhighlight %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="examples__2" role="tabpanel">
+        <div class="tab-pane fade" id="js" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with JavaScript.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: the query <code>filter</code> and <code>pagesize</code> to limit the response to two documents.
+                            <br/>
+                            Here we use the <a target="_blank" class="text-danger" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>.
+                        </p>
+                        <a href="https://stackblitz.com/edit/js-zhzxtl" target="_blank" class="btn btn-o-white">Run it</a>
                     </div>
-                    <div class="col-md-6">
-{% highlight bash %}$ curl --header "key:demo" -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages{% endhighlight %}
+                    <div class="col-md-8">
+{% highlight javascript %}
+const url = encodeURI('https://beta.mrest.io/demo/messages?filter={"from":"Bob"}&pagesize=2');
+
+fetch(url, { headers: {'key':'demo'} })
+  .then(response => response.json())
+  .then(function(data) {
+    console.log(JSON.stringify(data));
+});
+
+{% endhighlight %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="examples__3" role="tabpanel">
+        <div class="tab-pane fade" id="java" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with Java.</h2>
+                        <p class="examples__desc">
+                                The GET request has two query parameters: the query <code>filter</code> and <code>pagesize</code> to limit the response to two documents.
+                                <br/>
+                                Here we use the <a class="text-danger" href="http://unirest.io/java.html" target="_blank">unirest</a> java http library.
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
                     </div>
-                    <div class="col-md-6">
-{% highlight bash %}$ curl --header "key:demo" -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages{% endhighlight %}
+                    <div class="col-md-8">
+{% highlight java %}
+
+public void printOutMessages() throws UnirestException {
+    HttpResponse<JsonNode> resp = Unirest.get("https://beta.mrest.io/demo/messages")
+            .header("key", "demo")
+            .queryString("filter", "{\"from\":\"Bob\"}")
+            .queryString("pagesize", "2")
+            .asJson();
+
+    // get body as JSON array 
+    JSONArray messages = resp.getBody().getArray();
+
+    // print out each message
+    messages.forEach(message -> System.out.println(message.toString()));
+}
+
+{% endhighlight %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="examples__4" role="tabpanel">
+        <div class="tab-pane fade" id="swift" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-4">
-                        <h2 class="examples__title">Lorem ipsum dolor sit ament conscutor adisciplit deonim.</h2>
-                        <p class="examples__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-                        <a href="#" class="btn btn-o-white">Learn</a>
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with Swift.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: the query <code>filter</code> and <code>pagesize</code> to limit the response to two documents.
+                            <br/>
+                            Here we use the JSONSerialization to parse the response body.
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
                     </div>
-                    <div class="col-md-6">
-{% highlight bash %}$ curl --header "key:demo" -G --data-urlencode "filter={'from':'ujibang'}" https://beta.mrest.io/demo/messages{% endhighlight %}
+                    <div class="col-md-8">
+{% highlight swift %}
+
+import UIKit
+import PlaygroundSupport
+
+var urlComponents = URLComponents(string: "https://beta.mrest.io/demo/messages")
+
+// set the query parameters
+var queryItems = [URLQueryItem]()
+queryItems.append(URLQueryItem(name: "pagesize", value: "2"))
+queryItems.append(URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}"))
+urlComponents?.queryItems = queryItems
+
+var urlRequest = URLRequest(url: (urlComponents?.url)!)
+
+// set the key request header
+urlRequest.setValue("demo", forHTTPHeaderField: "key")
+
+// set request method
+urlRequest.httpMethod = "GET"
+
+URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+    guard let dataResponse = data, error == nil
+    else {
+        print(error?.localizedDescription ?? "Response Error")
+        return
+    }
+    
+    do {
+        let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
+        print(jsonResponse)
+    } catch let jsonError {
+        print(jsonError)
+    }
+}.resume()
+
+// only needed in playground
+PlaygroundPage.current.needsIndefiniteExecution = true
+
+{% endhighlight %}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container py-2">
+        <p class="muted">Please note that the examples use the <a class="text-warning" target="_blank" href="https://mrest.io">mrest.io</a> cloud service for RESTHeart. It requires the api <code>key</code> and has a slightly different representation format. See <a class="text-warning" href="/learn/representation-format/">Representation Format</a> for more information.
+        </p>
     </div>
 </section>

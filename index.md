@@ -129,10 +129,7 @@ layout: default
     </div>
 </section>
 
-{% comment %}
-Remove the comment tags to include the file
 {% include examples.html %}
-{% endcomment %}
 
 <section class="call-to-action">
     <div class="container">
