@@ -19,7 +19,7 @@ permalink: /support-packages.html
                         <li><strong>Valid for 1 year</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_ticket_package%20Sales%20Inqury">
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_ticket_package%20Sales%20Inquiry">
                             Email us
                         </a>
                     </p>
@@ -36,7 +36,7 @@ permalink: /support-packages.html
                         <li><strong>10% discount if improvements can be released to the community</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Custom_development%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Custom_development%20Sales%20Inquiry">Email us</a>
                     </p>
                 </div>
             </div>
@@ -52,7 +52,7 @@ permalink: /support-packages.html
                         <li><strong>10% discount for 1 year upfront payment</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_and_priority_maintenance%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Support_and_priority_maintenance%20Sales%20Inquiry">Email us</a>
                     </p>
                 </div>
             </div>
@@ -68,7 +68,7 @@ permalink: /support-packages.html
                         <li><strong>The trainer is a RESTHeart architect</strong></li>
                     </ul>
                     <p class="sign">
-                        <a class="btn" href="mailto:info@softinstigate.com?subject=Training%20Sales%20Inqury">Email us</a>
+                        <a class="btn" href="mailto:info@softinstigate.com?subject=Training%20Sales%20Inquiry">Email us</a>
                     </p>
                 </div>
             </div>
