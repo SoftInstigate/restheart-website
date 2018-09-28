@@ -207,14 +207,14 @@ HTTP/1.1 200 OK
 
 ## Sorting
 
-Sorting is controlled by the `sort `query parameter.
+Sorting is controlled by the `sort` query parameter.
 
 Note that documents cannot be sorted by system properties (properties
 starting with \_ that are managed automatically by RESTHeart).
 
 ### Sort simple format
 
-The `sort `simplified format is :
+The `sort` simplified format is :
 
 ``` plain
 sort=[ |-]<fieldname>
