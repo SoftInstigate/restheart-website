@@ -94,7 +94,7 @@ Default sorting could impact performances for some use cases.
 
 To disable default sorting just add the `sort={}` query parameter 
 
-See the [sorting](#QueryDocuments-sorting) section to know how to
+See the [sorting](#Sorting) section to know how to
 specify different sorting criteria.
 
 ## Filtering
@@ -144,8 +144,6 @@ For instance the following permission can be used with the simple file
 based Access Manager to restrict users to GET a collection only
 specifying a filter on the author property to be equal to their
 username:
-
-  
 
     regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]
 
