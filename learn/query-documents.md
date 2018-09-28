@@ -88,7 +88,7 @@ This means that two requests use different db cursors. A default sorting
 makes sure that requests on different pages returns documents in a well
 defined order.
 
-Disable default sorting
+**Disable default sorting**
 
 Default sorting could impact performances for some use cases.
 
