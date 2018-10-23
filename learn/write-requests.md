@@ -252,7 +252,7 @@ request data will be updated.
 The response contains the URIs of the created documents.
 
 All the upserted documents have the same *\_etag* property value as
-reported in the *ETag* response header: to retrive the upserted
+reported in the *ETag* response header: to retrieve the upserted
 documents with a single request GET the collection filtering on
 the *\_etag* property.
 
@@ -306,11 +306,11 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 The response contains the number of updated documents.
 
 All the updated documents have the same *\_etag* property value as
-reported in the *ETag* response header: to retrive the updated documents
+reported in the *ETag* response header: to retrieve the updated documents
 with a single request GET the collection filtering on
 the *\_etag* property.
 
-Note thewildcard `*` document id in the URI: `PATCH /db/coll/*` is a bulk
+Note the wildcard `*` document id in the URI: `PATCH /db/coll/*` is a bulk
 document update, where `PATCH /db/coll` modifies the properties of the
 collection.
 
@@ -348,7 +348,7 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 
 The response contains the number of deleted documents.
 
-Note thewildcard `*` document id in the URI:: `DELETE /db/coll/*` is a bulk
+Note the wildcard `*` document id in the URI:: `DELETE /db/coll/*` is a bulk
 document delete, where `DELETE /db/coll` deletes the collection (for
 safety, it requires the ETag request header to be specified).
 

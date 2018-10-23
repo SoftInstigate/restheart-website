@@ -49,7 +49,7 @@ Simply add a query parameter `rep` to your request to the metrics
 endpoint. Use `PJ` or `PLAIN_JSON` to request the dropwizard JSON
 format, or omit the parameter to get prometheus.
 
-### using HTTP content negoatiation
+### using HTTP content negotiation
 
 You can also use the `Accept` header. `application/json` will select the
 dropwizard format. `text/plain` (or, if you want to be more specific:

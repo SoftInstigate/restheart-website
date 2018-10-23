@@ -235,7 +235,7 @@ Mandatory
 </tr>
 <tr class="odd">
 <td><code>optionalFields</code></td>
-<td><p>If the property type is 'object', this is the arrayof the properties that the object <strong>is allowed</strong> optionally to have.</p>
+<td><p>If the property type is 'object', this is the array of the properties that the object <strong>is allowed</strong> optionally to have.</p>
 <p>If specified, the object cannot have any other field, as long as they are not listed in the <em>mandatoryFields</em> array.</p></td>
 <td>No</td>
 <td>null</td>
@@ -278,7 +278,7 @@ expressions select:
 <table  class="ts">
 <thead>
 <tr class="header">
-<th>json pat expr</th>
+<th>json path expr</th>
 <th>selected part</th>
 </tr>
 </thead>
@@ -403,7 +403,7 @@ interface [org.restheart.metadata.checkers.Checker](https://github.com/SoftInst
 
 It only requires to implement the method check() with 3 arguments:
 
-1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exachange
+1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exchange
 2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 

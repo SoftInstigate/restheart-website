@@ -44,13 +44,13 @@ To add RESTHeart dependency to your pom.xml, just add this:
 
 The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifact in an uber-jar, including its dependencies.
 
-The following configuration will produce a single jar file whose name is the artifactId, for instance `foo.jar`. This jar will include both your custon code and RESTHeart. You can start the customized RESTHeart with:
+The following configuration will produce a single jar file whose name is the artifactId, for instance `foo.jar`. This jar will include both your custom code and RESTHeart. You can start the customized RESTHeart with:
 
 ``` bash
 $ java -server -jar foo.jar conf.yml
 ```
 
-**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itslef. SoftInstigate sells commercial licenses that overcome this limitation.
+**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itself. SoftInstigate sells commercial licenses that overcome this limitation.
 
 
 ``` xml

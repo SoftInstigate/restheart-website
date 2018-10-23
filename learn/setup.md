@@ -53,9 +53,9 @@ $ mkdir restheart && cd restheart
 $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 ```
 
-The file `docker-compose.yml` defines a single microservice made of a RESTHeart instance on port `8080` and a MongoDB instance configured to work together.
+The file `docker-compose.yml` defines a single micro-service made of a RESTHeart instance on port `8080` and a MongoDB instance configured to work together.
 
-Start both services just typying:
+Start both services just typing:
 
 ``` bash
 $ docker-compose up -d

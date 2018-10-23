@@ -113,7 +113,7 @@ auth-token-ttl: 15 # time to live after last read, in minutes
 The default configuration file sets up the useful GetRoleHandler, bound
 to `/_logic/roles/<userid>`
 
-The possible respose codes of the request GET `/_logic/roles/<userid>`
+The possible response codes of the request GET `/_logic/roles/<userid>`
 are:
 
 -   **401 Unauthorized** =&gt; missing or wrong credentials
@@ -141,8 +141,8 @@ Of course, if the request succeeds, the client gets back the auth token
 as well.
 
 It is easy to check the user credentials from a login form with this
-handler: in case the client getd back 200, they match and the auth token
-can be stored for furhter request; otherwise passed credentials are
+handler: in case the client gets back 200, they match and the auth token
+can be stored for further request; otherwise passed credentials are
 wrong.
 
 ## How to avoid the basic authentication popup in browsers

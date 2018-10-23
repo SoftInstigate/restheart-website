@@ -152,7 +152,7 @@ according to the ‘strict mode’.
 }
 ```
 
-**Note**: the strinct mode is used on both request and response resource
+**Note**: the strict mode is used on both request and response resource
 representation and also on filter query parameters.
 
 This filter request, won’t find the document

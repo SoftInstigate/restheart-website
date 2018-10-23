@@ -8,9 +8,9 @@ title: Initializer
 {% include docs-head.html %} 
 
 
-> Initializer Will be part of RESTHeart 3.3
+> Initializer is available starting from RESTHeart 3.3
 
-You can have a preview from the current 3.3.0-SNAPSHOT version, donwload it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
+You can have a preview from the current 3.3.0-SNAPSHOT version, download it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
 
 An initializer is a class with the method `init()` that is invoked at RESTHeart startup.
 
@@ -30,7 +30,7 @@ initializer-class: org.restheart.init.TestInitializer
 
 For an example look at [org.restheart.init.TestInitializer](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/init/TestInitializer.java)
 
-The class must implement the `Initializer` inferface
+The class must implement the `Initializer` interface
 
 ``` java
 package org.restheart.init;

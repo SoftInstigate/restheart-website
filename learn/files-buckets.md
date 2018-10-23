@@ -24,7 +24,7 @@ title: Binary Data (GridFS)
 ## Introduction
 
 RESTHeart offers complete binary content management in a fully RESTful
-style. It's possibile to insert, read and delete huge binary files by
+style. It's possible to insert, read and delete huge binary files by
 leveraging the underlying **GridFS** store from MongoDB.
 
 Once a file has been created in a bucket, only its json properties can
@@ -62,7 +62,7 @@ Media Type multipart/form-data as defined in [RFC
 
 The **multipart/form-data** specification allow a form to upload
 multiple files at the same time. RESTHeart prohibits this: while it's
-possibile to POST / PUT several different non-binary parts for each
+possible to POST / PUT several different non-binary parts for each
 file, it's mandatory to upload one single binary file per each POST /
 PUT request. This limitation is necessary so that is possible to
 univocally relate all the optional parts to a single file.
@@ -224,7 +224,7 @@ differences](https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-an
 
 ### The "properties" part
 
-It's possibile to add an optional form data part to the request by using
+It's possible to add an optional form data part to the request by using
 the **properties** field name. The content of this field is
 automatically parsed as JSON data, so **it must be valid JSON**:
 

@@ -8,7 +8,7 @@ title: Json Web Token Authentication
 {% include docs-head.html %} 
 
 
-Json Web Token (JWT) Authentication is part of RESTHeart since release 3.3.
+Json Web Token (JWT) Authentication is available starting from RESTHeart 3.3.
 
 To enable it, you have to add the following configuration fragment to the `restheart.yml` file, editing below parameters accordingly to your needs. 
 

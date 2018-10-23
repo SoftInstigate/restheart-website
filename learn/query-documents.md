@@ -285,10 +285,6 @@ specifying the inclusion or the exclusion of fields.
 
 This is done via the `keys` query parameter. 
 
-projecting multiple keys
-
-*S*pecify multiple keys using multiple *keys* query parameters
-
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 

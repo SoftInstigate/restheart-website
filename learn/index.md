@@ -22,7 +22,7 @@ We started the project for these main reasons:
 
  1. We were tired of configuring and maintaining complicated application servers (coming from a Java Enterprise background);
  2. Modern applications quite often needs a similar set of basic REST APIs to start with;
- 3. There is a set of recurrent non-functional requrements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once for all (at least in a vast majority of cases).
+ 3. There is a set of recurrent non-functional requirements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once for all (at least in a vast majority of cases).
 
 The founding ideas around RESTHeart are:
 

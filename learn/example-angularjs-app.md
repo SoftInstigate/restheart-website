@@ -47,7 +47,7 @@ flexibility by developing a REST API; off course there's no much time
 and you must deliver it in few days focusing on the user experience.
 
 You know that a modern MVC javascript framework such as AngularJS can
-help you, it can be used to implement the Web interface and popolate it
+help you, it can be used to implement the Web interface and populate it
 with data using a bunch of AJAX calls to your REST API.
 
 MongoDB will take care of the data, but you still have a missing piece:
@@ -442,7 +442,7 @@ from [https://nodejs.org](https://nodejs.org/).
 
 The following commands will update npm, install
 the [Grunt](https://gruntjs.com/getting-started) and [Bower](https://bower.io/) tools,
-download the required js librearies using bower and start a web server
+download the required js libraries using bower and start a web server
 for previewing the application .
 
 **View the web app**
@@ -491,7 +491,7 @@ These tasks are accomplished by:
 -   **config.router.js** that defines the ui-router states with their
     html templates and controllers.
 
-The following code snippes from config.router.js shows the three states
+The following code snippet from config.router.js shows the three states
 of the application: *signin*, the abstract state *app* and *app.notes*.
 
 **application states**
@@ -606,7 +606,7 @@ Restangular is then configured to:
 Finally, the controller of the app abstract state (that is executed by
 all children states, including app.notes) checks if the authentication
 token has been stored in the session storage, eventually redirecting to
-the signin page.
+the sign-in page.
 
 ### Getting, Posting, and Deleting Notes
 
@@ -865,27 +865,5 @@ development funny again.
     run Docker containers. https://boot2docker.io
 -   Linking Docker containers
     together. https://docs.docker.com/userguide/dockerlinks/
-
-## Attachments:
-
-![](/images/icons/bullet_blue.gif) [image2015-7-6
-11:16:40.png](/images/attachments/7241730/7241732.png) (image/png)  
-![](/images/icons/bullet_blue.gif) [image2015-7-6
-11:22:18.png](/images/attachments/7241730/7241733.png) (image/png)  
-![](/images/icons/bullet_blue.gif) [image2015-7-7
-9:56:10.png](/images/attachments/7241730/7241741.png) (image/png)  
-![](/images/icons/bullet_blue.gif) [Schermata
-2015-07-09 alle 16.52.08.png](/images/attachments/7241730/7241791.png)
-(image/png)  
-![](/images/icons/bullet_blue.gif) [Schermata
-2015-07-10 alle 18.26.44.png](/images/attachments/7241730/7241879.png)
-(image/png)  
-![](/images/icons/bullet_blue.gif) [image2015-7-16
-14:31:55.png](/images/attachments/7241730/7700535.png) (image/png)  
-![](/images//icons/bullet_blue.gif) [image2015-7-16
-14:32:26.png](/images/attachments/7241730/7700536.png) (image/png)  
-![](/images/icons/bullet_blue.gif)
-[2015-09-30\_Explorative\_Datenanalyse.ipynb](/images/attachments/7241730/18251777.ipynb)
-(application/octet-stream)  
 
 </div>

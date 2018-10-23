@@ -7,7 +7,7 @@ title: Aggregations
 
 * [Introduction](#introduction)
 * [The aggrs collection metadata](#theaggrscollection-metadata)
-    * [aggragation pipeline metadata object format](#aggragation-pipeline-metadata-object-format)
+    * [aggregation pipeline metadata object format](#aggragation-pipeline-metadata-object-format)
     * [mapReduce metadata object format](#mapreduce-metadata-object-format)
 * [Examples](#examples)
 * [Passing variables to aggregation operations](#passing-variables-to-aggregation-operations)
@@ -49,7 +49,7 @@ operations but only those defined (and tested) by the developers.
 
 `aggrs` is an array of *pipeline* or *mapReduce *objects.
 
-### aggragation pipeline metadata object format
+### aggregation pipeline metadata object format
 
 **pipeline object format**
 

@@ -90,7 +90,7 @@ In any case, RESTHeart is able to expose directly the HTTS protocol and
 this is done configuring the https listener. This is the suggested
 configuration for small systems.
 
-The followins configuration file except shows the involved options:
+The following configuration file except shows the involved options:
 
 ``` bash
 #### listeners
@@ -126,7 +126,7 @@ certificate is the following:
 
 1.  use-embedded-keystore: true
 
-Using the self-signed certificate garantees that data is encrypted and
+Using the self-signed certificate guarantees that data is encrypted and
 protects from man-in-the-middle attacks. However it leads to issues with
 some clients and all browser because it does not guarantees the client
 about the server identity. For instance:
@@ -139,7 +139,7 @@ about the server identity. For instance:
 1.  ### How to use a valid certificate
 
 Of course you need to get a valid certificate from a Certificate
-Authoritiy; to use it you need to configure you java keystore (refer to
+Authority; to use it you need to configure you java keystore (refer to
 this
 [post](https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores)for
 more information) and specify the following RESTHeart options:
@@ -226,7 +226,7 @@ You can use an [Initializer](/learn/initializer) to add Global Security Predicat
 
 The DbIdentityManager shipped with RESTHeart (class is
 *org.restheart.security.impl.DbIdentityManager*) authenticates users
-defined in a mongodb collection.
+defined in a MongoDb collection.
 
 To use the DbIdentityManager, set the **idm** section of the yaml 
 configuration file as follows:
@@ -266,9 +266,9 @@ are used for authentication:
 3.  **roles**: (array of strings) the property holding the user roles
 
 The _cache-_ prefixed properties control the cache to avoids the IDM actually
-executing a mongodb query for each request.
+executing a MongoDb query for each request.
 
-The property _bcrypt-hashed-password_ defines if the password is hased using the bcrypt
+The property _bcrypt-hashed-password_ defines if the password is hashed using the bcrypt
 algorithm. Stating RESTHeart 3.3, write requests to the dbim collection automatically
 bcrypt the password property in the request body.
 

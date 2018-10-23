@@ -115,7 +115,7 @@ unauthenticated ones, will be allowed.
 The actual security policy check occurs in the method *isAllowed().*
 
 The *RequestContext* context argument easily allows to get information
-about the request. More information is avaialbe in
+about the request. More information is available in
 the HttpServerExchange exchange arguments. In fact, context is derived
 from exchange.
 

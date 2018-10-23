@@ -39,7 +39,7 @@ The metadata *rts* allows to declare transformers.
 gets executed to any requests that involves the db 
 and its children resources 
 (collections, documents, file buckets, schema stores, etc.).
-* a transformer declared in the *rts* collaction property,
+* a transformer declared in the *rts* collection property,
 gets executed to any requests that involves the collection 
 and its documents.
 
@@ -264,9 +264,9 @@ $ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties"
 A transformer is a java class that implements the
 interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/transformers/Transformer.java).
 
-It requires to implement the method tranform() with 5 arguments:
+It requires to implement the method transform() with 5 arguments:
 
-1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exachange
+1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exchange
 2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 

@@ -106,7 +106,7 @@ X-Powered-By: restheart.org
 
 ## Create a Collection
 
-Now it's possibile to create a collection "coll" in the database "db":
+Now it's possible to create a collection "coll" in the database "db":
 
 ``` bash
 $ http -a 'admin:changeit' PUT localhost:8080/db/coll desc='my first collection created with restheart'
