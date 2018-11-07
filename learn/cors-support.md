@@ -39,11 +39,8 @@ server, sending the actual request with the actual HTTP request method. 
 
 ## CORS Support
 
-**RESTHeart always returns CORS headers to allow requests originated
-from different domains.**
-
-A more fine grained configuration of CORS is in the backlog. See  RH-37
-- Getting issue details... STATUS
+RESTHeart always returns CORS headers to allow requests originated
+from different domains.
 
 ## Example
 
