@@ -31,6 +31,8 @@ The founding ideas around RESTHeart are:
   3. MongoDB is, at present, the leading database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
   4. If, say, 80% of the backend's functionalities are given, then we can better focus on what's matter more, which is the User eXperience;
   5. Docker is becoming the favorite way to package and distribute applications.
+  
+  <img src="/images/what.png" width="80%" height="auto" class="image-center img-responsive" />
 
 ## What is it
 
