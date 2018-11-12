@@ -20,11 +20,6 @@ title: Custom Identity Manager
 
 {% include docs-head.html %} 
 
-
-**/\*\*/ Introduction Develop The IDM class Methods to implement
-Configuration Add custom classes to the classpath Using the java
-classpath option Using the Maven shade plugin Example**
-
 This section will provide detailed information on how to implement a
 custom IDM.
 
