@@ -10,7 +10,7 @@ title: Documentation
 
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
 
@@ -60,8 +60,6 @@ In summary:
 - Available also as a [Docker image](https://hub.docker.com/r/softinstigate/restheart/);
 - Ideal as the backend for **Angular**, **React**, **Vue** or any other JavaScript framework;
 - Can be extended by adding Java classes to perform custom tasks.
-
-Please click on any item on the **left menu** or jump to the **[tutorial](/learn/tutorial/)** for more.
 
 <img src="/images/angular-react-vue.jpg" width="60%" height="auto" />
 
