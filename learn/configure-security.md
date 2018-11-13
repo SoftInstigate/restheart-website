@@ -138,8 +138,7 @@ about the server identity. For instance:
 
 Of course you need to get a valid certificate from a Certificate
 Authority; to use it you need to configure you java keystore (refer to
-this
-[post](https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores)for
+this [post](https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores) for
 more information) and specify the following RESTHeart options:
 
 1.  **use-embedded-keystore**: false to disable the default self signed
