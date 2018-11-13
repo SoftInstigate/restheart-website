@@ -15,7 +15,6 @@ title: Enable and Configure Security
 * [Access Manager](#access-manager)
     * [SimpleAccessManager](#simpleaccessmanager)
     * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
-* [Attachments:](#attachments)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">

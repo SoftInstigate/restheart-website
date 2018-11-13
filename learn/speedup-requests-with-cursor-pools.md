@@ -10,7 +10,6 @@ title: Speedup Requests with Cursor Pools
 * [Request parameters](#request-parameters)
 * [Configuration](#configuration)
 * [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
-* [Attachments:](#attachments)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">

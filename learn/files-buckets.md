@@ -13,7 +13,6 @@ title: Binary Data (GridFS)
     * [The "properties" part](#the-properties-part)
     * [GET a binary file with curl](#get-a-binary-file-with-curl)
 * [Using httpie](#using-httpie)
-* [Attachments:](#attachments)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
