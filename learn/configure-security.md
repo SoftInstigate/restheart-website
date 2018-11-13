@@ -64,8 +64,6 @@ The configuration sections to setup are:
     responsible of authorizing a request, i.e. determining if the client
     is given the permission to execute it)
 
- 
-
 The client must send the user id and password credentials via the basic
 authentication mechanism.
 
@@ -118,7 +116,8 @@ listener and there are two options:
 
 1.  use the default RESTHeart self signed certificate
 2.  use your own certificate
-3.  ### How to use the default self signed certificate 
+
+### How to use the default self signed certificate 
 
 The only option to specify to use the default, embedded self signed
 certificate is the following:
@@ -135,7 +134,7 @@ about the server identity. For instance:
 2.  with any browser, the user will get warnings about the server
     identity
 
-1.  ### How to use a valid certificate
+### How to use a valid certificate
 
 Of course you need to get a valid certificate from a Certificate
 Authority; to use it you need to configure you java keystore (refer to
