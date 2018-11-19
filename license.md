@@ -9,9 +9,9 @@ permalink: /license.html
     <thead>
         <tr>
             <th width="20%" class="text-right">&nbsp;</th>
-            <th width="10%"><img class="d-inline mr-2" src="/images/octocat.png" width="20">OSS</th>
-            <th width="35%">PRO</th>
-            <th width="35%">ENTERPRISE</th>
+            <th width="25%"><img class="d-inline mr-2" src="/images/octocat.png" width="20">OSS</th>
+            <th width="25%">PRO</th>
+            <th width="30%">ENTERPRISE</th>
         </tr>
     </thead>
     <tbody>
@@ -34,8 +34,8 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>OEM</strong></td>
-            <td><div>n/a</div></td>
-            <td><div>n/a</div></td>
+            <td><div>You must distribute your product under the AGPL and disclose source code to users interacting via network</div></td>
+            <td><div class="text-muted">n/a</div></td>
             <td>
                 <div>Available as Custom Term</div>
                 <div class="small text-muted">Option to redistribute your product embedding RESTHeart</div>
@@ -43,8 +43,8 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>IP Warranty</strong></td>
-            <td>n/a</td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
+            <td class="text-muted">n/a</td>
             <td>
                 <div>Available as Custom Term</div>
                 <div class="small text-muted">Remediation warranty for IP claims</div>
@@ -52,8 +52,8 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>Liability Insurance</strong></td>
-            <td>n/a</td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
+            <td class="text-muted">n/a</td>
             <td>
                 <div>Available as Custom Term</div>
                 <div class="small text-muted">Protection for direct Liability</div>
@@ -61,7 +61,7 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>Updates</strong></td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
             <td colspan="2" class="text-center">
                 <div>First year included.</div>
                 <div class="small text-muted">Extended by renewing the license at special price.</div>
@@ -69,7 +69,7 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>Priority Bug Fixing</strong></td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
             <td colspan="2" class="text-center">
                 <div>First year included.</div>
                 <div class="small text-muted">Extended by renewing the license at special price.</div>
@@ -77,12 +77,12 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>Professional Services</strong></td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
             <td colspan="2" class="text-center"><a href="/services">Available</a></td>
         </tr>
         <tr>
             <td class="text-right"><strong>Pricing</strong></td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
             <td>
                 <div>$950/year per instance</div>
                 <div class="small text-muted"><i class=" icon-thumbs-up"></i>No limits on development and test instances</div>
@@ -96,7 +96,7 @@ permalink: /license.html
         </tr>
         <tr>
             <td class="text-right"><strong>Purchasing</strong></td>
-            <td>n/a</td>
+            <td class="text-muted">n/a</td>
             <td>Online with Credit Card</td>
             <td>Offer/Purchase Order Process Handling</td>
         </tr>
