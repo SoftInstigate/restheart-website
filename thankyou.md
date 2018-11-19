@@ -13,7 +13,7 @@ Check your email. We sent you an email confirming the order.
 We will process the order and send you the purchased *license keys* by **the next business day**. 
 
 <div class="jumbotron">
-    <i class=" icon-thumbs-up"></i>For help and questions you can contact our [support](mailto:support@softinstigate.com).
+    <i class=" icon-thumbs-up"></i>For help and questions you can contact our <a href="mailto:support@softinstigate.com">support</a>.
     Please take into account that we are at <a href="https://www.timeanddate.com/time/zone/italy/rome" target="_blank">CET timezone</a>
 </div>
 
