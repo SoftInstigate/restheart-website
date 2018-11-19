@@ -29,7 +29,7 @@ permalink: /license.html
                 <div class="small text-muted">No Custom Terms</div></td>
             <td>
                 <div>Commercial</div>
-                <div class="small text-muted">with Custom Terms</div>
+                <div class="small text-muted">with Custom Terms, price may vary depending on requirements</div>
             </td>
         </tr>
         <tr>
@@ -37,8 +37,26 @@ permalink: /license.html
             <td><div>n/a</div></td>
             <td><div>n/a</div></td>
             <td>
-                <div>Possible</div>
+                <div>Available as Custom Term</div>
                 <div class="small text-muted">Option to redistribute your product embedding RESTHeart</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right"><strong>IP Warranty</strong></td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td>
+                <div>Available as Custom Term</div>
+                <div class="small text-muted">Remediation warranty for IP claims</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right"><strong>Liability Insurance</strong></td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td>
+                <div>Available as Custom Term</div>
+                <div class="small text-muted">Protection for direct Liability</div>
             </td>
         </tr>
         <tr>
@@ -61,15 +79,6 @@ permalink: /license.html
             <td class="text-right"><strong>Professional Services</strong></td>
             <td>n/a</td>
             <td colspan="2" class="text-center"><a href="/services">Available</a></td>
-        </tr>
-        <tr>
-            <td class="text-right"><strong>IP Warranty and Liability Insurance</strong></td>
-            <td>n/a</td>
-            <td>n/a</td>
-            <td>
-                <div>Available as Custom Terms</div>
-                <div class="small text-muted">Price may vary depending on requirements</div>
-            </td>
         </tr>
         <tr>
             <td class="text-right"><strong>Pricing</strong></td>
