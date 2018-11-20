@@ -4,9 +4,14 @@ title: Commercial License
 permalink: /license.html
 ---
 
-<div class="my-5">
+<div class="container-fluid bg-dark mt-5">
+    &nbsp;
+</div>
+
+<div class="mb-5">
     {% include licenses-table.html %} 
 </div>
+
 
 <div class="jumbotron mt-5">
     <h3><i class="icon-star-filled mr-1"></i>Licensing Model</h3>

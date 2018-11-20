@@ -5,7 +5,6 @@ layout: default
     <img src="{{ " images/rh_logo_vert.png " | prepend: site.baseurl }}" class="img-responsive" width="256">
     <p class="header__desc">The Web API for MongoDB</p>
     <h2 class="header__title">Build applications faster, zero coding required!</h2>
-
     <a href="/learn/tutorial" class="btn btn-lg">Quickstart</a>
     <p>
         <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
@@ -30,9 +29,14 @@ layout: default
                     <a href="/license">Commercial License</a>
                 </h3>
             </div>
-            <div class="row col-12 my-2">
+            <div class="container-fluid bg-dark">
+                &nbsp;
+            </div>
+            <div class="container">
                 {% include licenses-table.html %} 
             </div>
+        </div>
+        <div class="row">
             <article class="col-lg-3">
                 <section class="newsText">
                     <div class="newsText__icon">
