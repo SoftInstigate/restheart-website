@@ -24,11 +24,14 @@ layout: default
                     Professional Services</a>
                 </h3>
             </div>
-            <div class="col-sm-6 text-center  mb-3">
+            <div class="col-sm-6 text-center mb-3">
                 <h3 class="pt-3">
                     Available under the Open Source AGPL and the
                     <a href="/license">Commercial License</a>
                 </h3>
+            </div>
+            <div class="row col-12 my-2">
+                {% include licenses-table.html %} 
             </div>
             <article class="col-lg-3">
                 <section class="newsText">
