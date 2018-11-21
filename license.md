@@ -26,6 +26,10 @@ permalink: /license.html
 {: .icon-lightbulb}
 ## Frequently Asked Questions
 
+### What is the license?
+
+See [COMM-LICENSE](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt) in the root of the RESTHeart repo.
+
 ### What is a License Key?
 
 A *License Key* is a verifiable file, cryptographically signed by the Licensor, containing additional information on the License (including but not limited to those that specifies how many RESTHeart instances the Licensee is allowed to execute and how) that can purchased by the Licensee in order to acquire the rights to use RESTHeart.
