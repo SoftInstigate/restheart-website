@@ -135,4 +135,4 @@ HTTP/1.1 204 No Content
 
 ## Plugin API changes
 
-The java API for plugins (Transformers, Hooks, Checkers and Initializers) will undergo a refactoring aimed at simplify and clean the API with limited impact on existing implementations.
+The java API for plugins (Transformers, Hooks, Checkers and Initializers) will undergo a refactoring aimed at simplify and cleaning the API with limited impacts on existing implementations.
