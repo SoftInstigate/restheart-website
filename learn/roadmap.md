@@ -15,7 +15,7 @@ Expected release date: Q1 2019
 
 RESTHeart 4.0 will delegate security to uIAM and will not embed security functions anymore. 
 
-[uIAM](https://github.com/softInstigate/uiam) is a spin-off project from RESTHeart. It is a Identity and Access Manager that resembles and extends the security features embedded in RESTHeart 3.x.
+[uIAM](https://github.com/softInstigate/uiam) is a spin-off project from RESTHeart. It is a Identity and Access Manager that includes and extends the security features embedded in RESTHeart 3.x.
 
 > uIAM will only focus on security while RESTHeart 4.0 will just provide a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*. 
 
