@@ -11,13 +11,25 @@ title: Roadmap
 
 Expected release date: Q1 2019
 
-### Representation format
+## Security
 
-We received many feedbacks asking for a simpler representation format.
+RESTHeart 4.0 will delegate security to uIAM and will not embed security functions anymore. 
 
-Starting RESTHeart 4.0 the HAL format will be abandoned.
+[uIAM](https://github.com/softInstigate/uiam) is a spin-off project from RESTHeart. It is a Identity and Access Manager that resembles and extends the security features embedded in RESTHeart 3.x.
 
-#### root
+> uIAM will only focus on security while RESTHeart 4.0 will just provide a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*. 
+
+uIAM follows the same dual licensing scheme of RESTHeart.
+
+## Representation format
+
+We received many feedbacks asking for a simpler representation format and we have worked on it for  [mrest.io](https://mrest.io), the cloud RESTHeart service (currenlty in beta). 
+
+> You can try the new format creating a free account at [mrest.io](https://mrest.io).
+
+Starting with RESTHeart 4.0 the current plain json and HAL formats will be abandoned in favor of the following simpler one:
+
+### root
 
 ```html
 GET /
@@ -28,7 +40,7 @@ GET /
   "db_n" ]
 ```
 
-#### database
+### database
 
 ```html
 GET /db
@@ -39,7 +51,7 @@ GET /db
   "collection_n" ]
 ```
 
-#### collection properties (metadata)
+### collection properties (metadata)
 
 ```html
 GET /db/_meta
@@ -50,7 +62,7 @@ GET /db/_meta
   "feeds": [ ... ] }
 ```
 
-#### collection
+### collection
 
 ```html
 GET /db/coll
@@ -62,7 +74,7 @@ GET /db/coll
 ]
 ```
 
-#### document 
+### document 
 
 ```html
 GET /db/coll/docid
@@ -74,17 +86,7 @@ GET /db/coll/docid
 }
 ```
 
-### Security
-
-[uIAM](https://github.com/softInstigate/uiam) is a spin-off project from RESTHeart. It is a Identity and Access Manager that resembles and extends the security features embedded in RESTHeart 3.x.
-
-uIAM will only focus on security while RESTHeart 4.0 will just provide a Web API for MongoDB in the spirit of having software bricks *that do one thing and do it well*.
-
-uIAM follows the same dual licensing scheme of RESTHeart. Owners of RESTHeart pro and enterprise  licenses will get a commercial license for uIAM at no additional cost.
-
-RESTHeart 4.0 will delegate security to uIAM and will not embed security functions anymore. 
-
-### Changes feeds with Websocket
+## Changes feeds with Websocket
 
 RESTHeart 4.x will fully support [change streams](https://docs.mongodb.com/manual/changeStreams/index.html) introduced by MongoDB 3.6 for replica sets.
 
@@ -92,7 +94,7 @@ A new resource will be available, called `feed`. A feed can be created specifyin
 
 The feed URI endpoint will open a *Websocket* for the client to be notified of updates on the aggregation result.
 
-### Transactions
+## Transactions
 
 RESTHeart 4.x will fully support [multi document transactions](https://docs.mongodb.com/manual/core/write-operations-atomicity/#multi-document-transactions) introduced by MongoDB 4.0 for replica sets.
 
