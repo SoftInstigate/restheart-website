@@ -31,7 +31,7 @@ Starting with RESTHeart 4.0 the current plain json and HAL formats will be aband
 
 ### root
 
-```html
+```js
 GET /
 
 [ "db_1", 
@@ -42,7 +42,7 @@ GET /
 
 ### database
 
-```html
+```js
 GET /db
 
 [ "collection_1", 
@@ -53,7 +53,7 @@ GET /db
 
 ### collection properties (metadata)
 
-```html
+```js
 GET /db/_meta
 
 { "args" : [ ... ] 
@@ -64,7 +64,7 @@ GET /db/_meta
 
 ### collection
 
-```html
+```js
 GET /db/coll
 
 [ { <doc_1> },
@@ -76,7 +76,7 @@ GET /db/coll
 
 ### document 
 
-```html
+```js
 GET /db/coll/docid
 
 { "prop_1": value,
@@ -102,7 +102,7 @@ Following the REST paradigm, the approach to support transactions is modeling th
 
 The client can start a transaction:
 
-```http
+```js
 POST /_transactions
 
 HTTP/1.1 200 OK
@@ -111,8 +111,7 @@ Location: /_transactions/5bf58d909c5d125a2b9f0b86
 
 Once a transaction has been created, requests can be executed under tis scope:
 
-
-```http
+```js
 POST /db/coll?txid=5bf58d909c5d125a2b9f0b86 {"a": 1}
 
 HTTP/1.1 201 Created
@@ -120,14 +119,18 @@ HTTP/1.1 201 Created
 
 The transaction can be committed :
 
-```http
+```js
 PATCH /_transactions/5bf58d909c5d125a2b9f0b86 {"commit": true}
+
+HTTP/1.1 204 No Content
 ```
 
 or rolled back:
 
-```http
+```js
 DELETE /_transactions/5bf58d909c5d125a2b9f0b86
+
+HTTP/1.1 204 No Content
 ```
 
 ## Plugin API changes
