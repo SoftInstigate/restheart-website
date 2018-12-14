@@ -29,55 +29,36 @@ We received many feedbacks asking for a simpler representation format and we hav
 
 Starting with RESTHeart 4.0 the current plain json and HAL formats will be abandoned in favor of the following simpler one:
 
-### root
-
-```js
-GET /
+```bash
+# dbs
 
 [ "db_1", 
   "db_2", 
   ...
   "db_n" ]
-```
 
-### database
-
-```js
-GET /db
+#collections of a db /db
 
 [ "collection_1", 
   "collection_2", 
   ...
   "collection_n" ]
-```
 
-### collection properties (metadata)
-
-```js
-GET /db/_meta
+#collection metadata /db/_meta
 
 { "args" : [ ... ] 
   "checkers": [ ... ], 
   "transformers": [ ... ],
   "feeds": [ ... ] }
-```
 
-### collection
-
-```js
-GET /db/coll
-
+#collecion documents /db/coll
 [ { <doc_1> },
   { <doc_2> },
   ...
   { <doc_n> },
 ]
-```
 
-### document 
-
-```js
-GET /db/coll/docid
+#document /db/coll/docid
 
 { "prop_1": value,
   "prop_2": value,
@@ -102,7 +83,8 @@ Following the REST paradigm, the approach to support transactions is modeling th
 
 The client can start a transaction:
 
-```js
+```bash
+#start a tx
 POST /_transactions
 
 HTTP/1.1 200 OK
@@ -111,23 +93,24 @@ Location: /_transactions/5bf58d909c5d125a2b9f0b86
 
 Once a transaction has been created, requests can be executed under tis scope:
 
-```js
+```bash
+#create a document in the tx scope
 POST /db/coll?txid=5bf58d909c5d125a2b9f0b86 {"a": 1}
 
 HTTP/1.1 201 Created
 ```
 
-The transaction can be committed :
+The transaction can be committed or rolled back:
 
-```js
+```bash
+#commit tx 5bf58d909c5d125a2b9f0b86
 PATCH /_transactions/5bf58d909c5d125a2b9f0b86 {"commit": true}
 
 HTTP/1.1 204 No Content
 ```
 
-or rolled back:
-
-```js
+```bash
+#roll back tx 5bf58d909c5d125a2b9f0b86
 DELETE /_transactions/5bf58d909c5d125a2b9f0b86
 
 HTTP/1.1 204 No Content
