@@ -37,28 +37,28 @@ Starting with RESTHeart 4.0 the current plain json and HAL formats will be aband
   ...
   "db_n" ]
 
-#collections of a db -> GET /db
+# list of collections of a db -> GET /db
 
 [ "collection_1", 
   "collection_2", 
   ...
   "collection_n" ]
 
-#metadata of a collection  -> GET /db/_meta
+# metadata of a collection  -> GET /db/_meta
 
 { "args" : [ ... ] 
   "checkers": [ ... ], 
   "transformers": [ ... ],
   "feeds": [ ... ] }
 
-#the documents of a collection -> GET /db/coll
+# documents of a collection -> GET /db/coll
 [ { <doc_1> },
   { <doc_2> },
   ...
   { <doc_n> },
 ]
 
-#a document -> GET /db/coll/docid
+# a document -> GET /db/coll/docid
 
 { "prop_1": value,
   "prop_2": value,
