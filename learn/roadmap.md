@@ -30,40 +30,48 @@ We received many feedbacks asking for a simpler representation format and we hav
 Starting with RESTHeart 4.0 the current plain json and HAL formats will be abandoned in favor of the following simpler one:
 
 ```bash
-# list of dbs -> GET /db
+# list of dbs -> GET /
 
-[ "db_1", 
-  "db_2", 
-  ...
-  "db_n" ]
+[
+    "db_1", 
+    "db_2", 
+    ...,
+    "db_n"
+]
 
 # list of collections of a db -> GET /db
 
-[ "collection_1", 
-  "collection_2", 
-  ...
-  "collection_n" ]
+[ 
+    "collection_1", 
+    "collection_2", 
+    ...,
+    "collection_n" 
+]
 
 # metadata of a collection  -> GET /db/_meta
 
-{ "args" : [ ... ] 
-  "checkers": [ ... ], 
-  "transformers": [ ... ],
-  "feeds": [ ... ] }
+{
+    "args": [...]
+    "checkers": [...],
+    "transformers": [...],
+    "feeds": [...]
+}
 
 # documents of a collection -> GET /db/coll
-[ { <doc_1> },
-  { <doc_2> },
-  ...
-  { <doc_n> },
+[ 
+    { <doc_1> },
+    { <doc_2> },
+    ...,
+    { <doc_n> }
 ]
 
 # a document -> GET /db/coll/docid
 
-{ "prop_1": value,
-  "prop_2": value,
-  ...,
-  "prop_n": value,
+{ 
+    "prop_1": value,
+    "prop_2": value,
+    ...,
+    "prop_n": value,
 }
 ```
 
