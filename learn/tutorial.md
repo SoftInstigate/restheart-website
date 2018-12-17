@@ -390,16 +390,17 @@ Now you could jump to [Queries](/learn/query-documents/) for more complex exampl
 
 ## Clean-up
 
-To stop all containers and clean-up everything, just run the `docker-compose down` command:
+To stop all containers and clean-up everything, just run the `docker-compose down -v` command:
 
 ``` bash
-$ docker-compose down
+$ docker-compose down -v
 
 Stopping restheart       ... done
 Stopping restheart-mongo ... done
 Removing restheart       ... done
 Removing restheart-mongo ... done
 Removing network restheart_backend
+Removing volume restheart_restheart-datadb
 ```
 
 ## Additional resources
