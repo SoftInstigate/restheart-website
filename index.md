@@ -29,6 +29,19 @@ layout: default
                     <a href="/license">Commercial License</a>
                 </h3>
             </div>
+            <div class="container-fluid my-2">
+                <h3 class="text-center">
+                    Trusted and used by Startups and Corporations
+                </h3>
+                <div class="customer-logos">
+                    <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/aci-infomobility.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/unisys.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/croqqer-logo.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/radiotraffic.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/nativa.png"></div>
+                </div>
+            </div>
             <div class="container-fluid bg-dark">
                 &nbsp;
             </div>
