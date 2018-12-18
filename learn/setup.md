@@ -169,7 +169,7 @@ $ docker run -d -p 8080:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:r
 ### 1. Pull the MongoDB and RESTHeart images
 
 ``` bash
-$ docker pull mongo:4.0
+$ docker pull mongo:3.6
 $ docker pull softinstigate/restheart:<tag>
 ```
 
