@@ -33,11 +33,14 @@ For example, the `dev.properties` file in `etc/` folder contains a single proper
 mongouri = mongodb://127.0.0.1
 ```
 
-The [`restheart-dev.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart-dev.yml) contains a  `mongouri ` parameter, expressed with the following syntax:
+The [`restheart-dev.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart-dev.yml) contains a  `mongouri` parameter, expressed with the following syntax:
 
-```yaml
+{% highlight html%}
+{% raw %}
 mongo-uri: {{mongouri}}
-```
+{% endraw %}
+{% endhighlight %}
+
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
 To start RESTHeart with a properties file use the `--envfile` command line parameter:
