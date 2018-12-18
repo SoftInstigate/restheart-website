@@ -2,415 +2,100 @@
 layout: docs
 title: Configuration File
 ---
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+- [title: Configuration File](#title-configuration-file)
+- [Sample configuration file](#sample-configuration-file)
+- [Configuration options](#configuration-options)
+  - [Properties files](#properties-files)
+  - [Environment variables](#environment-variables)
+  - [Command line parameters](#command-line-parameters)
+    
+</div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
+## Sample configuration file ##
 
-``` bash
-## RESTHeart Configuration File.
----
-#### Listeners
+An example of a complete configuration file is [available here](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml).
 
-# Listeners allow to specify the protocol, ip, port and to use.
-# The supported protocols are: http, https and ajp. You can setup a listener per protocol (up to 3).
+## Configuration options ##
 
-# WARNING: RESTHeart uses basic authentication; usernames and passwords are sent over the net on each request.
-# Using the http listener is not secure: users credentials can be sniffed by a man-in-the-middle attack.
-# Use the http listener only on trusted environments.
+### Properties files ###
 
-https-listener: true
-https-host: 0.0.0.0
-https-port: 4443
+Starting from RESTHeart `3.6.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
 
-http-listener: true
-http-host: 0.0.0.0
-http-port: 8080
+For example, the `dev.properties` file in `etc/` folder contains a single property:
 
-ajp-listener: false
-ajp-host: 0.0.0.0
-ajp-port: 8009
-
-#### Instance name
+```properties
+mongouri = mongodb://127.0.0.1
+```
 
-# The name of this restheart instance. displayed in log, also allows to implement instance specific custom code
-# For instance, an email notifier hook can send emails to a test email address in development environments
+The [`restheart-dev.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart-dev.yml) contains a  `mongouri ` parameter, expressed with the following syntax:
 
-instance-name: default
+```yaml
+mongo-uri: {{mongouri}}
+```
+The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
-#### default representation format (PLAIN_JSON or HAL)
+To start RESTHeart with a properties file use the `--envfile` command line parameter:
 
-default-representation-format: PLAIN_JSON
-
-#### use Ansi console for logging. Default to 'true' if parameter missing, for backward compatibility
-
-ansi-console: true
-
-#### SSL Configuration
-
-# Configure the keystore to enable the https listener.
-
-# RESTHeart comes with a self-signed certificate that makes straightforward enabling https.
-# Specify use-embedded-keystore: true to use it (this is the default setting).
-# Using the self-signed certificate leads to issues with some clients;
-# for instance, with curl you need to specify the "--insecure" option or you'll get an error message.
-
-use-embedded-keystore: true
-
-# To use your own certificate you need to import it (and eventually the CA certificates chain) into a java keystore
-# and specify use-embedded-keystore: false and the keystore-file,keystore-password and certpassword configuration properties.
-# Refer to the java keystore documentation for that.
-
-#keystore-file: /path/to/keystore/file
-#keystore-password: password
-#certpassword: password
-
-#### MongoDB
-
-# Specify the mongodb connection using a Mongo Client URI.
-# The format of the URI is:
-#    mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
-#
-# The URI option authSource allows to specify the authetication database, example:
-# mongodb://user:secret@127.0.0.1/?authSource=authdb
-#
-# More information at https://api.mongodb.org/java/current/com/mongodb/MongoClientURI.html
-
-mongo-uri: mongodb://127.0.0.1
-
-# Use mongo-mounts to bind URls to mongodb resources using the out-of-the-box URL rewrite feature.
-# The where URI can be an absolute path (eg. /api) or path template (eg. /{foo}/bar/*). 
-# The values of the path templates properties are available:
-# - in the what property (e.g. what: /{foo}_db/coll) 
-# - programmatically from RequestContext.getPathTemplateParamenters() method.
-# It is not possible to mix absolute paths and path templates: where URIs need to be either all absolute paths or all path templates.
-mongo-mounts:
-    - what: "*"
-      where: /
-
-#### Static Web Resources
-
-# Static web resources to bind to the specified URL.
-# The 'what' property is the path of the directory containing the resources.
-# The path is either absolute (starting with /) or relative to the restheart.jar directory
-# If embedded is true, the resources are either included in the restheart.jar or in the classpath
-
-static-resources-mounts:
-    - what: browser
-      where: /browser
-      welcome-file: browser.html
-      secured: false
-      embedded: true
-
-#### Application Logic
-
-# RESTHeart has a pipeline architecture where specialized undertow handlers are chained to serve the requests.
-# In order to provide additional application logic, custom hanlders pipes can be bound under the /_logic URL.
-# The custom hanlder must extends the org.restheart.handlers.ApplicationLogicHandler class
-# Use application-logic-mounts to configure custom handlers.
-
-# In the following example two built-in application logic handlers are defined:
-# PingHandler bound to /_logic/ping that implements a simple ping service
-# GetRoleHandler bound to /_logic/roles that returns the current user authentication status and eventually its roles
-# CacheInvalidator bound to /_logic/ic that invalidates a db or collection cache entry
-
-application-logic-mounts:
-    - what: org.restheart.handlers.applicationlogic.PingHandler
-      where: /ping
-      secured: false
-      args:
-          msg: "ciao from the restheart team"
-    - what: org.restheart.handlers.applicationlogic.GetRoleHandler
-      where: /roles
-      secured: false
-      args:
-          url: /_logic/roles
-    - what: org.restheart.handlers.applicationlogic.CacheInvalidator
-      where: /ic
-      secured: true
-    - what: org.restheart.handlers.applicationlogic.CsvLoaderHandler
-      where: /csv
-      secured: true
-
-### Metadata Named Singletons
-
-# Metadata implementation can rely on singletons, this section configures the
-# singleton factory #org.restheart.metadata.NamedSingletonsFactory
-
-metadata-named-singletons:
-    # checkers group used by handler:
-    # org.restheart.handlers.metadata.CheckMetadataHandler
-    # More information in checkers javadoc
-    - group: checkers
-      interface: org.restheart.metadata.checkers.Checker
-      singletons:
-        - name: jsonSchema
-          class: org.restheart.metadata.checkers.JsonSchemaChecker
-        - name: checkContent
-          class: org.restheart.metadata.checkers.JsonPathConditionsChecker
-        - name: checkContentSize
-          class: org.restheart.metadata.checkers.ContentSizeChecker
-
-    # transformers group used by handlers:
-    # org.restheart.handlers.metadata.RequestTransformerMetadataHandler and
-    # org.restheart.handlers.metadata.ResponseTransformerMetadataHandler
-    # More information in transformers javadoc
-    - group: transformers
-      interface: org.restheart.metadata.transformers.Transformer
-      singletons:
-        - name: addRequestProperties
-          class: org.restheart.metadata.transformers.RequestPropsInjecterTransformer
-        - name: filterProperties
-          class: org.restheart.metadata.transformers.FilterTransformer
-        - name: stringsToOids
-          class: org.restheart.metadata.transformers.ValidOidsStringsAsOidsTransformer
-        - name: oidsToStrings
-          class: org.restheart.metadata.transformers.OidsAsStringsTransformer
-        - name: writeResult
-          class: org.restheart.metadata.transformers.WriteResultTransformer
-        - name: hashProperties
-          class: org.restheart.metadata.transformers.HashTransformer
-          
-    # hooks group used by handler:
-    # org.restheart.handlers.metadata.HookHandler
-    # More information in hook javadoc
-    - group: hooks
-      interface: org.restheart.metadata.hooks.Hook
-      singletons:
-        - name: snooper
-          class: org.restheart.metadata.hooks.SnooperHook
-
-### Security
-
-# The security is configured by setting:
-
-# idm: the Identity Manager responsible of authentication
-# access-manager: the Access Manager responsible of authorization
-# The RESTHeart security is pluggable and you can provide you own implementation of both IDM and AM.
-# The provided default implementations of IDM and AM are SimpleFileIdentityManager, DbIdentityManager, ADIdentityManager and SimpleAccessManager.
-# conf-file paths are either absolute (starting with /) or relative to the restheart.jar file path
-
-idm:
-    implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
-    conf-file: ./etc/security.yml
-access-manager:
-    implementation-class: org.restheart.security.impl.SimpleAccessManager
-    conf-file: ./etc/security.yml
-    
-# RESTHeart uses the BasicAuthenticationMechanism by default. 
-# A different mechanism can be specified via the auth-mechanism configuration option
-# the implementation-class must specify a factory class implementing
-# the interface org.restheart.security.AuthenticationMechanismFactory
-# See https://undertow.io/undertow-docs/undertow-docs-1.4.0/index.html#security 
-# JwtAuthenticationManagerFactory and IdentityAuthenticationManagerFactory 
-# for example implementations
-
-# Identity Authentication Manager 
-# All requests are bound to the specified user
-
-#auth-mechanism:
-#    implementation-class: org.restheart.security.impl.IdentityAuthenticationManagerFactory
-#    username: a
-#    pwd: a
-
-# Jwt Authentication Manager 
-# Authentication via Json Web Token https://jwt.io
-
-# algorithm: RSA (RS256 | RS384 |RS512) or HMAC (HS256 | HS384 | HS512)
-# key: for RSA the base64 encoded of the public key; for HMAC, the secret key
-# base64Encoded: set to true if the jwt token is base64 encoded. optional, default valud: false
-# usernameClaim: the claim that holds the username. optional, default value: 'sub' (jwt subject). 
-# rolesClaim: the claim that holds the roles as string or array of strings
-# issuer: verify the issues (iss claim). optional, default value matches: null (don't check iss)
-# audience: verify the audience (aud claim). optional, default value matches: null (don't check aud)
-
-#auth-mechanism:
-#    implementation-class: org.restheart.security.impl.JwtAuthenticationManagerFactory
-#    algorithm: HS256
-#    key: secret
-#    base64Encoded: false
-#    usernameClaim: sub
-#    rolesClaim: roles
-#    issuer: myIssuer
-#    audience: myAudience
-
-# Authentication Token
-
-# Note: you need to pay attention to the authentitcation token in case of multi-node deployments (horizontal scalability).
-# In this case, you need to either disable it or use a load balancer with the sticky session option
-# or use a distributed auth token cache implementation (not provided in the current version).
-
-auth-token-enabled: true
-auth-token-ttl: 15
-
-# Check if aggregation variables use operators. allowing operators in aggregation variables 
-# is risky. requester can inject operators modifying the query
-aggregation-check-operators: true
-
-#### Logging
-
-# enable-log-console: true => log messages to the console (default value: true)
-# enable-log-file: true => log messages to a file (default value: true)
-# log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
-# log-level: to set the log level. Value can be OFF, ERROR, WARN, INFO, DEBUG, TRACE and ALL. (default value is INFO)
-# requests-log-level: log the request-response. 0 => no log, 1 => light log, 2 => detailed dump
-# WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers)
-
-enable-log-file: false
-#log-file-path: /tmp/restheart.log
-enable-log-console: true
-log-level: INFO
-requests-log-level: 1
-
-#### ETag policy
-
-# the following configuration defines the default etag check policy
-# the policy applies for dbs, collections (also applies to file buckets) and documents
-# valid values are REQUIRED, REQUIRED_FOR_DELETE, OPTIONAL
-
-etag-check-policy:
-    db: REQUIRED_FOR_DELETE
-    coll: REQUIRED_FOR_DELETE
-    doc: OPTIONAL
-
-#### Performace Settings
-
-## Read Performance
-
-default-pagesize: 100
-
-# default-pagesize is the number of documents returned when the pagesize query 
-# parameter is not specified
-# see https://restheart.org/learn/query-documents/#paging
-
-max-pagesize: 1000
-
-# max-pagesize sets the maximum allowed value of the pagesize query parameter
-# generally, the greater the pagesize, the more json serializan overhead occurs
-# the rule of thumb is not exeeding 1000
-
-cursor-batch-size: 1000
-
-# cursor-batch-size sets the mongodb cursor batchSize
-# see https://docs.mongodb.com/manual/reference/method/cursor.batchSize/
-# cursor-batch-size should be smaller or equal to the max-pagesize
-# the rule of thumb is setting cursor-batch-size equal to max-pagesize
-# a small cursor-batch-size (e.g. 101, the default mongodb batchSize)
-# speeds up requests with small pagesize
-
-## Eager DB Cursor Preallocation Policy
-# In big collections, reading a far page involves skipping the db cursor for many documents resulting in a performance bottleneck
-# For instance, with default pagesize of 100, a GET with page=50.000 involves 500.000 skips on the db cursor.
-# The eager db cursor preallocation engine boosts up performaces (in some use cases, up to 1000%). the following options control its behavior.
-
-eager-cursor-allocation-pool-size: 100
-
-eager-cursor-allocation-linear-slice-width: 1000
-eager-cursor-allocation-linear-slice-delta: 100
-eager-cursor-allocation-linear-slice-heights: [ 1 ]
-eager-cursor-allocation-random-max-cursors: 20
-eager-cursor-allocation-random-slice-min-width: 1000
-
-# In order to save bandwitdth RESTHeart can force requests to support the giz encoding (if not, requests will be rejected)
-force-gzip-encoding: false
-
-# local-cache allows to cache the db and collection properties to drammatically improve performaces.
-# Without caching, a GET on a document would requires two additional queries to retrieve the db and the collection properties.
-# Pay attention to local caching only in case of multi-node deployments (horizontal scalability).
-# In this case a change in a db or collection properties would reflect on other nodes at worst after the TTL (cache entries time to live).
-# In most of the cases Dbs and collections properties only change at development time.
-
-local-cache-enabled: true
-# TTL in milliseconds; specify a value < 0 to never expire cached entries
-local-cache-ttl: 1000
-
-# Limit for the maximum number of concurrent requests being served
-requests-limit: 1000
-
-# Time limit in milliseconds for processing queries on the server (without network latency). 0 means no time limit
-query-time-limit: 0
-
-# Time limit in milliseconds for processing aggregations on the server (without network latency). 0 means no time limit
-aggregation-time-limit: 0
-
-# Number of I/O threads created for non-blocking tasks. at least 2. suggested value: core*2
-io-threads: 2
-
-# Number of threads created for blocking tasks (such as ones involving db access). suggested value: core*16
-worker-threads: 8
-
-# Use 16k buffers for best performance - as in linux 16k is generally the default amount of data that can be sent in a single write() call
-buffer-size: 16384
-buffers-per-region: 20
-# Should the buffer pool use direct buffers, this instructs the JVM to use native (if possible) I/O operations on the buffers
-direct-buffers: true
-
-#### Connetction Options
-## see https://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#common-listener-options
-
-connection-options:
-    # The maximum size of a HTTP header block, in bytes. 
-    # If a client sends more data that this as part of the request header then the connection will be closed. 
-    # Defaults to 1Mbyte.
-    MAX_HEADER_SIZE: 1048576
-
-    # The default maximum size of a request entity. 
-    # Defaults to unlimited.
-    MAX_ENTITY_SIZE: -1
-    
-     #The default maximum size of the HTTP entity body when using the mutiltipart parser.
-     # Generall this will be larger than MAX_ENTITY_SIZE
-     # If this is not specified it will be the same as MAX_ENTITY_SIZE
-    MULTIPART_MAX_ENTITY_SIZE: -1
-    
-    # The idle timeout in milliseconds after which the channel will be closed.
-    # If the underlying channel already has a read or write timeout set 
-    # the smaller of the two values will be used for read/write timeouts.
-    # Defaults to unlimited (-1).
-    IDLE_TIMEOUT: -1
-    
-    # The maximum allowed time of reading HTTP request in milliseconds.
-    # -1 or missing value disables this functionality.
-    REQUEST_PARSE_TIMEOUT: -1
-    
-    # The amount of time the connection can be idle with no current requests 
-    # before it is closed;
-    # Defaults to unlimited (-1).
-    NO_REQUEST_TIMEOUT: -1
-
-    # The maximum number of query parameters that are permitted in a request. 
-    # If a client sends more than this number the connection will be closed. 
-    # This limit is necessary to protect against hash based denial of service attacks. 
-    # Defaults to 1000.
-    MAX_PARAMETERS: 1000
-
-    # The maximum number of headers that are permitted in a request. 
-    # If a client sends more than this number the connection will be closed. 
-    # This limit is necessary to protect against hash based denial of service attacks. 
-    # Defaults to 200.
-    MAX_HEADERS: 200
-
-    # The maximum number of cookies that are permitted in a request. 
-    # If a client sends more than this number the connection will be closed. 
-    # This limit is necessary to protect against hash based denial of service attacks. 
-    # Defaults to 200.
-    MAX_COOKIES: 200
-
-    # The charset to use to decode the URL and query parameters. 
-    # Defaults to UTF-8.
-    URL_CHARSET: UTF-8
-    
-    # If this is true then a Connection: keep-alive header will be added to responses, 
-    # even when it is not strictly required by the specification.
-    # Defaults to true
-    ALWAYS_SET_KEEP_ALIVE: true
-    
-    # If this is true then a Date header will be added to all responses. 
-    # The HTTP spec says this header should be added to all responses, 
-    # unless the server does not have an accurate clock.
-    # Defaults to true
-    ALWAYS_SET_DATE: true
+```
+java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart-dev.yml --envfile etc/dev.properties
+```
+
+Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
+
+```bash
+$ export RESTHEART_ENVFILE=etc/dev.properties
+$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart-dev.yml
+```
+
+This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart.yml` configuration file.
+
+### Environment variables ###
+
+RESTHeart `3.6.0` introduces also the possibility to override any **primitive type parameter** in `restheart.yml` with an environment variable. Primitive types are:
+
+ - String
+ - Integer
+ - Long
+ - Boolean
+  
+ For example, the parameter `mongo-uri` in the yaml file can be overridden by exporting a `MONGO_URI` environment variable:
+
+```bash
+$ export MONGO_URI="mongodb://127.0.0.1"
+```
+
+The following log entry appears at the very beginning of logs during the startup process:
+
+```bash
+[main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
+```
+
+A shell environment variable is equivalent to a yaml parameter in `restheart.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
+
+__Remember__: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
+
+### Command line parameters ###
+
+To know the available CLI parameters, run RESTHeart with `--help`:
+
+```bash
+$ java -jar target/restheart.jar --help
+Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options] 
+      <Configuration file>
+  Options:
+    --envFile, --envfile, -e
+      Environment file name
+    --fork
+      Fork the process
+      Default: false
+    --help, -?
+      This help message
 ```
 
 </div>
