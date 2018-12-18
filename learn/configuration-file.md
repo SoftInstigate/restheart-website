@@ -25,6 +25,8 @@ An example of a complete configuration file is [available here](https://github.c
 
 ### Properties files ###
 
+__Note__: _RESTHeart 3.6.0 will be released at the end of 2018. At the moment the following capabilities are available in_ [3.6.0-SNAPSHOT](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.6.0-SNAPSHOT/) _or by building the source code directly_.
+
 Starting from RESTHeart `3.6.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
 
 For example, the `dev.properties` file in `etc/` folder contains a single property:
