@@ -23,7 +23,7 @@ An example of a complete configuration file is [available here](https://github.c
 
 ## Configuration options ##
 
-__Note (2018-12-18)__: _The following information relates to RESTHeart 3.6.0 which will be released at the end of 2018. At the moment the following capabilities are available in [3.6.0-SNAPSHOT](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.6.0-SNAPSHOT/) or by building the source code directly. Alternatively, you could pull the latest [Docker image](https://cloud.docker.com/u/softinstigate/repository/docker/softinstigate/restheart)._
+__Note__: The following options are only available starting from RESTHeart version `3.6.0`.
 
 ### Properties files ###
 
