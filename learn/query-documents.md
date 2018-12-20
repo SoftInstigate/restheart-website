@@ -9,24 +9,17 @@ title: Queries
     - [Example](#example)
     - [Default sorting](#default-sorting)
 - [Filtering](#filtering)
-    - [Examples](#examples)
-        - [Return documents whose `title` starts with "Star Trek"](#return-documents-whose-title-starts-with-%22star-trek%22)
-        - [Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM](#return-documents-whose-title-starts-with-%22star-trek%22-and-publishingdate-is-later-than-492015-8am)
+    - [Examples](#filtering-examples)
 - [Counting](#counting)
 - [Paging](#paging)
 - [Sorting](#sorting)
     - [Sort simple format](#sort-simple-format)
     - [Sort JSON expression format](#sort-json-expression-format)
-    - [Examples](#examples)
-    - [Sort by the *date* ascending](#sort-by-the-date-ascending)
-        - [Sort by the *date* descending](#sort-by-the-date-descending)
-        - [Sort by the *date* descending and title ascending](#sort-by-the-date-descending-and-title-ascending)
-        - [Sort by search score](#sort-by-search-score)
+    - [Examples](#sorting-examples)
 - [Projection](#projection)
-    - [Examples](#examples)
-        - [Only return the property title](#only-return-the-property-title)
-        - [Return all but the property *title*](#return-all-but-the-property-title)
-        - [Only return the properties *title* and *summary*](#only-return-the-properties-title-and-summary)
+    - [Examples](#projection-examples)
+- [Hint](#hint)
+    - [Examples](#hint-examples)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -108,7 +101,7 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
-### Examples
+### Filtering Examples
 
 #### Return documents whose `title` starts with "Star Trek"
 
@@ -240,7 +233,7 @@ improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 sort={"field": 1}
 ```
 
-### Examples
+### Sorting Examples
 
 ### Sort by the *date* ascending
 
@@ -288,7 +281,7 @@ This is done via the `keys` query parameter. 
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
-### Examples
+### Projection Examples
 
 #### Only return the property title
 
@@ -314,6 +307,50 @@ part of an **header** object:
 
 ``` bash
 GET /test/coll?keys={'header.title':1}&keys={'header.summary':1}
+```
+
+## Hint
+
+Hint allows overriding MongoDB’s default index selection and query optimization process. See [cursor hint](https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint) on MongoDB documentation.
+
+This is done via the `hint` query parameter.
+
+Specify the index by the index specification document, either using a json document or the compact string representation; specifying the index by name is not supported.
+
+Use `$natural` to force the query to perform a forwards collection scan.
+
+### Hint Examples
+
+#### Use the index on age field
+
+The following example returns all documents in the collection named **coll** using the index on the **age** field.
+
+``` bash
+GET /test/coll?hint={'age':1}
+```
+
+#### Use the compound index on age and timestamp fields using the compact string format
+
+The following example returns the documents in the collection named **coll** using the compound index on the **age** and reverse **timestamp** fields.
+
+``` bash
+GET /test/coll?hint=age&hint=-timestamp
+```
+
+#### Perform a forwards collection scan
+
+The following example returns the documents in the collection named **coll** using aforwards collection scan.
+
+``` bash
+GET /test/coll?hint={'$natural:1'}
+```
+
+#### Perform a reverse collection scan
+
+The following example returns the documents in the collection named **coll** using a reverse collection scan.
+
+``` bash
+GET /test/coll?hint={'$natural:-1'}
 ```
 
 </div>
