@@ -342,7 +342,7 @@ GET /test/coll?hint=age&hint=-timestamp
 The following example returns the documents in the collection named **coll** using aforwards collection scan.
 
 ``` bash
-GET /test/coll?hint={'$natural:1'}
+GET /test/coll?hint={'$natural':1}
 ```
 
 #### Perform a reverse collection scan
@@ -350,7 +350,7 @@ GET /test/coll?hint={'$natural:1'}
 The following example returns the documents in the collection named **coll** using a reverse collection scan.
 
 ``` bash
-GET /test/coll?hint={'$natural:-1'}
+GET /test/coll?hint={'$natural':-1}
 ```
 
 </div>
