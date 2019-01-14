@@ -54,7 +54,7 @@ HTTP/1.1 201 Created
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -isb -H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -109,7 +109,7 @@ HTTP/1.1 200 OK
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i-H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
