@@ -40,6 +40,7 @@ layout: default
                     <div class="slide my-2"><img src="/images/customers/croqqer-logo.png"></div>
                     <div class="slide my-2"><img src="/images/customers/radiotraffic.png"></div>
                     <div class="slide my-2"><img src="/images/customers/nativa.png"></div>
+                    <div class="slide my-2"><img src="/images/customers/conquest.png"></div>
                 </div>
             </div>
             <div class="container-fluid bg-dark">
