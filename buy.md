@@ -328,9 +328,6 @@ permalink: /buy
                     country: form.country.value,
                     zip: form.zip.value
                 };
-                console.log(JSON.stringify(_passthrough));
-                console.log(item().price);
-                console.log(item().description);
                 Paddle.Checkout.open({
                      product: 545348,
                      email: form.email.value,
