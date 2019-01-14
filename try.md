@@ -38,7 +38,7 @@ This demo instance is reset on regular basis, so feel free to play with it <b>bu
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "key:demo,Content-Type:application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "key:demo" -H "Content-Type:application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"ujibang", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 ...
@@ -54,7 +54,7 @@ HTTP/1.1 201 Created
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -isb -H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
@@ -74,7 +74,7 @@ $ curl -H "key:demo" https://beta.mrest.io/demo/messages/docid
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "key:demo,Content-Type: application/json" -X POST curl https://beta.mrest.io/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
+$ curl -i -H "key:demo" -H "Content-Type:application/json" -X POST https://beta.mrest.io/demo/messages -d '{"from":"ujibang", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
 Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
@@ -92,7 +92,7 @@ Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -i -H "key:demo,Content-Type: application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
+$ curl -i -H "key:demo" -H "Content-Type:application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
@@ -109,7 +109,7 @@ HTTP/1.1 200 OK
     <div class="col-lg-9">
         {% highlight bash %}
 
-$ curl -H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -i-H "key:demo" https://beta.mrest.io/demo/messages/docid
 
 {
 	"_id": "docid",
