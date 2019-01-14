@@ -14,21 +14,21 @@ title: Setup
   - [Tags](#tags)
   - [Dockerfile](#dockerfile)
   - [How to Run](#how-to-run)
-  - [1. Pull the MongoDB and RESTHeart images](#1-pull-the-mongodb-and-restheart-images)
-  - [2. Run the MongoDB container](#2-run-the-mongodb-container)
-    - [2.1 RESTHeart < 3.3](#21-restheart--33)
-  - [3. Run RESTHeart interactively](#3-run-restheart-interactively)
-  - [4. Check that is working](#4-check-that-is-working)
-  - [5. Pass arguments to RESTHeart and JVM](#5-pass-arguments-to-restheart-and-jvm)
+  - [Pull the MongoDB and RESTHeart images](#pull-the-mongodb-and-restheart-images)
+  - [Run the MongoDB container](#run-the-mongodb-container)
+    - [RESTHeart < 3.3](#restheart--33)
+  - [Run RESTHeart interactively](#run-restheart-interactively)
+  - [Check that is working](#check-that-is-working)
+  - [Pass arguments to RESTHeart and JVM](#pass-arguments-to-restheart-and-jvm)
 - [Stop and restart](#stop-and-restart)
 - [Manual installation](#manual-installation)
-  - [1. Install Java and MongoDB](#1-install-java-and-mongodb)
-  - [2. Install RESTHeart](#2-install-restheart)
-  - [3. Start MongoDB](#3-start-mongodb)
-  - [4. Start the RESTHeart server](#4-start-the-restheart-server)
-  - [5. Enable MongoDB authentication](#5-enable-mongodb-authentication)
-    - [5.1 Connect RESTHeart to MongoDB over TLS/SSL](#51-connect-restheart-to-mongodb-over-tlsssl)
-    - [5.2 MongoDB authentication with just enough permissions](#52-mongodb-authentication-with-just-enough-permissions)
+  - [Install Java and MongoDB](#install-java-and-mongodb)
+  - [Install RESTHeart](#install-restheart)
+  - [Start MongoDB](#start-mongodb)
+  - [Start RESTHeart](#start-restheart)
+  - [Enable MongoDB authentication](#enable-mongodb-authentication)
+    - [Connect RESTHeart to MongoDB over TLS/SSL](#connect-restheart-to-mongodb-over-tlsssl)
+    - [MongoDB authentication with just enough permissions](#mongodb-authentication-with-just-enough-permissions)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -76,7 +76,7 @@ You should then see the __HAL Browser__:
 
 Note that by default docker-compose runs the latest RESTHeart release, which usually is a `SNAPSHOT`. If this is not what you want, then edit the `docker-compose.yml` file accordingly.
 
-If everytihng is working as expected, then **you can jump to the [tutorial](/learn/tutorial/)**.
+If everything is working as expected, then **you can jump to the [tutorial](/learn/tutorial/)**.
 
 ### If something is not working
 
@@ -166,14 +166,14 @@ $ docker run -d -p 8080:8080 --name restheart -v "$PWD"/etc:/opt/restheart/etc:r
 
 *We strongly recommend to always add the __tag__ to the image (e.g. `softinstigate/restheart:<tag>`), so that you are sure which version of RESTHeart you are running.*
 
-### 1. Pull the MongoDB and RESTHeart images
+### Pull the MongoDB and RESTHeart images
 
 ``` bash
 $ docker pull mongo:3.6
 $ docker pull softinstigate/restheart:<tag>
 ```
 
-### 2. Run the MongoDB container
+### Run the MongoDB container
 
 If you are running RESTHeart 3.3 and above (`latest` tag) then MongoDB authentication is enabled by default and you must start the mongo container passing the admin username and password via command line:
 
@@ -188,7 +188,7 @@ If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` t
     mongo-uri: mongodb://restheart:R3ste4rt!@mongodb
 ```
 
-#### 2.1 RESTHeart < 3.3
+#### RESTHeart < 3.3
 
 If you are running RESTHeart 3.2 or below.
 
@@ -204,7 +204,7 @@ $ docker run -d -p 27017:27017 --name mongodb -v <db-dir>:/data/db mongo:3.6
 
 The `<db-dir>` must be a folder in your host, such as `/var/data/db` or whatever you like. If you don't attach a volume then your data will be lost when you delete the container.
 
-### 3. Run RESTHeart interactively
+### Run RESTHeart interactively
 
 > Remember to add always add an explicit tag to the image, as the `latest` tag is bound to SNAPSHOT releases and could be unstable.
 
@@ -219,7 +219,7 @@ However, you will usually run it in **background**:
 ``` bash
 $ docker run -d -p 80:8080 --name restheart --link mongodb softinstigate/restheart
 ```
-### 4. Check that is working
+### Check that is working
 
 If it's running in background, you can open the RESTHeart's logs:
 
@@ -227,7 +227,7 @@ If it's running in background, you can open the RESTHeart's logs:
 $ docker logs restheart
 ```
 
-### 5. Pass arguments to RESTHeart and JVM
+### Pass arguments to RESTHeart and JVM
 
 You can append arguments to *docker run* command to provide RESTHeart and the JVM with arguments.
 
@@ -289,7 +289,7 @@ If you don’t have them already, download the following packages:
 
 Most of the work must be done using a command line interface. 
 
-### 1. Install Java and MongoDB
+### Install Java and MongoDB
 
 Install [Java
 8](https://www.oracle.com/technetwork/java/javase/downloads/index.html) and [MongoDB](https://docs.mongodb.org/manual/installation/) following
@@ -313,7 +313,7 @@ db version v3.0.7
 
 RESTHeart has been tested with MongoDB version 3.6, 3.4, 3.2, 3.0, 2.6 and 2.4.
 
-### 2. Install RESTHeart
+### Install RESTHeart
 
 To *install* RESTHeart download the latest stable release package from [github](https://github.com/SoftInstigate/RESTHeart/releases) and just extract its the content in the desired directory.
 
@@ -322,7 +322,7 @@ You are interested in two files:
 * `restheart.jar`
 * `etc/restheart.yml` &lt;- an example configuration file
 
-### 3. Start MongoDB
+### Start MongoDB
 
 In pursuit of simplicity we are first going to start MongoDB without
 enabling authentication. We’ll see later how to enable it.
@@ -345,7 +345,7 @@ child process started successfully, parent exiting
 # By default MongoDB starts listening for connections on 127.0.0.1:27017.
 ```
 
-### 4. Start the RESTHeart server
+### Start RESTHeart
 
 Run the RESTHeart
 
@@ -415,10 +415,10 @@ We’ll now use the embedded [HAL browser](https://github.com/mikekelly/hal-bro
 To see the HAL user interface, now open your browser
 at: [`http://127.0.0.1:8080/browser`](http://127.0.0.1:8080/browser)
 
-### 5. Enable MongoDB authentication
+### Enable MongoDB authentication
 
 This section assumes using MongoDB 3.2 or later. For other versions, the security
-configuration is similar but different. Rrefer to the [MongoDB
+configuration is similar but different. Refer to the [MongoDB
 documentation](https://docs.mongodb.org/manual/tutorial/enable-authentication/)
 for more information.
 
@@ -432,7 +432,7 @@ $ mongod --fork --syslog --auth
 $ mongo
 ```
 
-In this section we will use the mongodb superuser
+In this section we will use the MongoDB superuser
 role [root](https://docs.mongodb.org/manual/reference/built-in-roles/#superuser-roles)
 that provides access to the all operations and all the resources.
 
@@ -484,7 +484,7 @@ enables the RESTHeart security. Opening the HAL browser page, you’ll be
 asked to authenticate. You can use of one of the credentials defined
 in `etc/security.yml` file (try username = ‘a’ and password = ‘a’).
 
-#### 5.1 Connect RESTHeart to MongoDB over TLS/SSL
+#### Connect RESTHeart to MongoDB over TLS/SSL
 
 MongoDB clients can use TLS/SSL to encrypt connections to mongod and
 mongos instances.
@@ -510,20 +510,20 @@ $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 $ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
 ```
 
-#### 5.2 MongoDB authentication with just enough permissions
+#### MongoDB authentication with just enough permissions
 
-In the previous examples we used a mongodb user with *root *role for the
+In the previous examples we used a MongoDB user with *root *role for the
 sake of simplicity. This allows RESTHeart to execute any command on any
-mongodb resource.
+MongoDB resource.
 
 On production environments a strong security isolation is mandatory.
 
 In order to achieve it, the best practice is:
 
 1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart;
-2. use a mongodb user with just enough roles: *read* or *readWrite* on mounted databases 
+2. use a MongoDB user with just enough roles: *read* or *readWrite* on mounted databases 
 
-The following example, creates a mongodb user with appropriate roles to expose the databases *db1*, *db2* and *db3* in read only mode.
+The following example, creates a MongoDB user with appropriate roles to expose the databases *db1*, *db2* and *db3* in read only mode.
 
 ```javascript
 > use admin
