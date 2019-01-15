@@ -86,21 +86,21 @@ port 8080, but of course your setup can be different.
 
 1) Create a database, if none exists yet:
 
-``` plain
+```plain
 $ curl -u user:password -X PUT -H "Content-Type: application/json" 127.0.0.1:8080/testdb
-``` 
+```
 
 2) Create the collection for hosting files. It must end with `.files` to
 mark this as a special collection for files:
 
-``` plain
+``` bash
 curl -v -u user:password -X PUT -H "Content-Type: application/json" 127.0.0.1:8080/testdb/mybucket.files
 ```
 
 3) POST the file. Set the **file** parameter to the actual binary file,
 using the =@ curl syntax.
 
-``` plain
+``` bash
 curl -v -u user:password -X POST -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files
 ```
 
@@ -161,7 +161,7 @@ previous examples, the `mybucket.files` owner by default assigned to new
 files a resource name coming from MongoDB. If we want to decide for a
 meaningful name then we just need to send a PUT, like this:
 
-``` plain
+``` bash
 curl -v -u user:password -X PUT -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files/picture.png
 ```
 
@@ -227,7 +227,7 @@ It's possible to add an optional form data part to the request by using
 the **properties** field name. The content of this field is
 automatically parsed as JSON data, so **it must be valid JSON**:
 
-``` plain
+``` bash
 $ curl -v -u user:password -X POST -F 'properties={"name":"Maurizio", "surname":"Turatti"}' -F "file=@picture.png" 127.0.0.1:8080/testdb/mybucket.files
 ```
 The JSON will be merged into the file document (look at the end of the
@@ -291,16 +291,14 @@ then passing the following part
 
 GET the representation (metadata only) for the newly created file:
 
-``` plain
+``` bash
 $ curl -u user:password http://127.0.0.1:8080/testdb/mybucket.files/552e1e89e4b019b2fa790f3f
 ```
-
- 
 
 Appending \``/binary`\` at the end of the above URL makes possible to
 GET the binary content stored into GridFS:
 
-``` plain
+``` bash
 $ curl -u user:password http://127.0.0.1:8080/testdb/mybucket.files/552e1e89e4b019b2fa790f3f/binary
 ```
 
@@ -347,19 +345,19 @@ responses, making it more readable than curl.
 Let's say we already have a db called `testdb`, exactly as with curl,
 first create the `.files` collection, if it doesn't exist yet:
 
-``` plain
-$ http -a user:password -j PUT 127.0.0.1:8080/testdb/mybucket.files
+``` bash
+http -a user:password -j PUT 127.0.0.1:8080/testdb/mybucket.files
 ```
 
 Then POST a file named "picture.png":
 
-``` plain
+``` bash
 http -a user:password -f POST 127.0.0.1:8080/testdb/mybucket.files file@picture.png;filename=picture.png
 ```
 
 For example, to upload a file named "mypicture.png" with PUT:
 
-``` plain
+``` bash
 http -a user:password -f PUT 127.0.0.1:8080/testdb/mybucket.files/mypicture.png file@"~/Desktop/mypicture.png" properties='{"author":"Maurizio Turatti"}'
 ```
 
