@@ -29,13 +29,23 @@ __Note__: The following options are only available starting from RESTHeart versi
 
 Starting from RESTHeart `3.6.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
 
-For example, the `dev.properties` file in `etc/` folder contains a single property:
+For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
 ```properties
+instance-name = development
+default-representation-format = PLAIN_JSON
 mongouri = mongodb://127.0.0.1
+
+idm.conf-file = ../etc/security.yml
+access-manager.conf-file = ../etc/security.yml
+
+log-level = DEBUG
+
+query-time-limit = 0
+aggregation-time-limit = 0
 ```
 
-The [`restheart-dev.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart-dev.yml) contains a  `mongouri` parameter, expressed with the following syntax:
+The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongouri` parameter, expressed with the following syntax:
 
 {% highlight html%}
 {% raw %}
@@ -48,14 +58,14 @@ The implementation uses the [Mustache.java](https://github.com/spullara/mustache
 To start RESTHeart with a properties file use the `--envfile` command line parameter:
 
 ```
-java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart-dev.yml --envfile etc/dev.properties
+java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml --envfile etc/dev.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
 ```bash
 $ export RESTHEART_ENVFILE=etc/dev.properties
-$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart-dev.yml
+$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml
 ```
 
 This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart.yml` configuration file.
