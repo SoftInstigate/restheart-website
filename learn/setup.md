@@ -25,7 +25,7 @@ title: Setup
   - [Install Java and MongoDB](#install-java-and-mongodb)
   - [Install RESTHeart](#install-restheart)
   - [Start MongoDB](#start-mongodb)
-  - [Start RESTHeart](#start-restheart)
+  - [Run RESTHeart](#run-restheart)
   - [Enable MongoDB authentication](#enable-mongodb-authentication)
     - [Connect RESTHeart to MongoDB over TLS/SSL](#connect-restheart-to-mongodb-over-tlsssl)
     - [MongoDB authentication with just enough permissions](#mongodb-authentication-with-just-enough-permissions)
@@ -299,28 +299,29 @@ variable).
 
 To check Java and MongoDB, you should execute the following commands and
 you should get *something* like the below (output might vary depending
-on Java version and your OS):
+on Java, your OS and MongoDB versions):
 
 ```bash
 $ java -version
-java version "1.8.0_66"
-Java(TM) SE Runtime Environment (build 1.8.0_66-b17)
-Java HotSpot(TM) 64-Bit Server VM (build 25.66-b17, mixed mode)
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 
 $ mongod --version
-db version v3.0.7
+db version v3.6.7
 ```
 
-RESTHeart has been tested with MongoDB version 3.6, 3.4, 3.2, 3.0, 2.6 and 2.4.
+RESTHeart has been tested with MongoDB from version 2.4 to 4.0. More recently, integration tests are executed against versions 3.6 and 4.0.
 
 ### Install RESTHeart
 
 To *install* RESTHeart download the latest stable release package from [github](https://github.com/SoftInstigate/RESTHeart/releases) and just extract its the content in the desired directory.
 
-You are interested in two files:
+You are interested in three files:
 
 * `restheart.jar`
 * `etc/restheart.yml` &lt;- an example configuration file
+* `etc/default.properties`
 
 ### Start MongoDB
 
@@ -345,51 +346,53 @@ child process started successfully, parent exiting
 # By default MongoDB starts listening for connections on 127.0.0.1:27017.
 ```
 
-### Start RESTHeart
+### Run RESTHeart
 
-Run the RESTHeart
+As a quick-start, RESTHeart can be run without any external configuration file, only with its own internal default values. That tries connecting to a MongoDB instance running on the `localhost:27017` mongo-uri:
 
 ```bash
 $ java -Dfile.encoding=UTF-8 -server -jar restheart.jar
 
-15:22:18.518 [main] INFO  org.restheart.Bootstrapper - ANSI colored console: true
-15:22:18.529 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance develop
-15:22:18.529 [main] INFO  org.restheart.Bootstrapper - version 3.3.1
-15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to file /tmp/restheart.log with level DEBUG
-15:22:18.533 [main] INFO  org.restheart.Bootstrapper - Logging to console with level DEBUG
-15:22:18.812 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
-15:22:18.812 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.6.0
-15:22:18.826 [main] INFO  org.restheart.Bootstrapper - Identity Manager org.restheart.security.impl.SimpleFileIdentityManager enabled
-15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Access Manager org.restheart.security.impl.SimpleAccessManager enabled
-15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Authentication Mechanism io.undertow.security.impl.BasicAuthenticationMechanism enabled
-15:22:18.883 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
-15:22:18.891 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
-15:22:18.892 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-15:22:18.893 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
-15:22:18.893 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores enabled  with TTL 60000 msecs
-15:22:19.034 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
-15:22:19.126 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-6853484883019945941
-15:22:19.132 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-6853484883019945941. Access Manager: false
-15:22:19.134 [main] INFO  org.restheart.Bootstrapper - URL /_logic/ping bound to application logic handler org.restheart.handlers.applicationlogic.PingHandler. Access manager: false
-15:22:19.135 [main] INFO  org.restheart.Bootstrapper - URL /_logic/roles bound to application logic handler org.restheart.handlers.applicationlogic.GetRoleHandler. Access manager: false
-15:22:19.135 [main] INFO  org.restheart.Bootstrapper - URL /_logic/ic bound to application logic handler org.restheart.handlers.applicationlogic.CacheInvalidator. Access manager: true
-15:22:19.137 [main] INFO  org.restheart.Bootstrapper - URL /_logic/csv bound to application logic handler org.restheart.handlers.applicationlogic.CsvLoaderHandler. Access manager: true
-15:22:19.322 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/yx/mgksqtzn41j41xdnv74snjpc0000gp/T/restheart-1161966278.pid
-15:22:19.322 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+18:51:31.346 [main] WARN  org.restheart.Bootstrapper - No configuration file provided, starting with default values!
+18:51:31.435 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart
+  {
+    "Version": "3.7.0-SNAPSHOT",
+    "Instance-Name": "default",
+    "Configuration": "null",
+    "Environment": "null",
+    "Build-Time": "2019-01-22T17:39:01Z"
+  }
+18:51:31.439 [main] INFO  org.restheart.Bootstrapper - Logging to file /var/folders/pk/56szmnfn5zlfxh2x6tkd5wqw0000gn/T/restheart.log with level INFO
+18:51:31.439 [main] INFO  org.restheart.Bootstrapper - Logging to console with level INFO
+18:51:31.819 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
+18:51:31.819 [main] INFO  org.restheart.Bootstrapper - MongoDB version 3.6.7
+18:51:31.819 [main] WARN  org.restheart.Bootstrapper - MongoDB is a standalone instance, use a replica set in production
+18:51:31.819 [main] WARN  org.restheart.Bootstrapper - ***** No Identity Manager specified. Authentication disabled.
+18:51:31.819 [main] WARN  org.restheart.Bootstrapper - ***** No access manager specified. users can do anything.
+18:51:31.819 [main] INFO  org.restheart.Bootstrapper - Authentication Mechanism io.undertow.security.impl.BasicAuthenticationMechanism enabled
+18:51:31.819 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
+18:51:31.824 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
+18:51:31.824 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+18:51:31.825 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled with TTL 1000 msecs
+18:51:31.826 [main] INFO  org.restheart.Bootstrapper - Local cache for schema stores not enabled
+18:51:31.961 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
+18:51:32.047 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /var/folders/pk/56szmnfn5zlfxh2x6tkd5wqw0000gn/T/restheart-7196941146163994258
+18:51:32.055 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources /var/folders/pk/56szmnfn5zlfxh2x6tkd5wqw0000gn/T/restheart-7196941146163994258. Access Manager: false
+18:51:32.076 [main] INFO  org.restheart.Bootstrapper - Allow unescaped characters in URL: true
+18:51:32.244 [main] INFO  org.restheart.Bootstrapper - Pid file /var/folders/pk/56szmnfn5zlfxh2x6tkd5wqw0000gn/T/restheart-0.pid
+18:51:32.244 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
-This starts it with the default configuration, which is fine for MongoDB
-running on localhost, on default port and without authentication.
+This default configuration is fine for MongoDB running on localhost, on default port and without any authentication.
 
 Configuration options can be specified passing a configuration
-file as argument.
+file and configuration properties as arguments.
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml --envFile default.properties
 ```
 
-The configuration file path is either
-absolute or relative to the restheart.jar file location.
+The configuration file path is either absolute or relative to the restheart.jar file location.
 
 The configuration file can specify any option that will overwrite the
 default value: this way it is not required to specify all the possible
@@ -403,7 +406,7 @@ On Linux, OSX and Solaris you can run RESTHeart as a [daemon
 process](https://en.wikipedia.org/wiki/Daemon_(computing)): 
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar --fork
+$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar restheart.yml --envFile default.properties --fork
 ```
 
 Note that this will force the console logging and the file logging to be
