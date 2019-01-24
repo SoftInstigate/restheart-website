@@ -46,9 +46,9 @@ aggregation-time-limit = 0
 
 The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongo-uri` parameter, expressed with the following syntax:
 
-{% highlight html%}
+{% highlight yaml%}
 {% raw %}
-mongo-uri: {{mongo-uri}}
+mongo-uri: {{{mongo-uri}}}
 {% endraw %}
 {% endhighlight %}
 
