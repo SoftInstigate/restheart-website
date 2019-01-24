@@ -44,17 +44,37 @@ query-time-limit = 0
 aggregation-time-limit = 0
 ```
 
-The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongo-uri` parameter, expressed with the following syntax:
+The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
 {% highlight yaml%}
 {% raw %}
+instance-name: {{{instance-name}}}
+
+default-representation-format: {{{default-representation-format}}}
+
 mongo-uri: {{{mongo-uri}}}
+
+idm:
+  implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
+  conf-file: {{{idm.conf-file}}}
+access-manager:
+  implementation-class: org.restheart.security.impl.SimpleAccessManager
+  conf-file: {{{access-manager.conf-file}}}
+
+log-level: {{{log-level}}}
+
+query-time-limit: {{{query-time-limit}}}
+
+aggregation-time-limit: {{{aggregation-time-limit}}}
 {% endraw %}
 {% endhighlight %}
 
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
-To start RESTHeart with a properties file use the `--envfile` command line parameter:
+Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
+ as before version 3.6, this new configuration with properties is fully optional. 
+
+To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
 ```
 java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml --envfile etc/dev.properties
