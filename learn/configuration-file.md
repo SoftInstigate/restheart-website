@@ -4,7 +4,6 @@ title: Configuration File
 ---
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [title: Configuration File](#title-configuration-file)
 - [Sample configuration file](#sample-configuration-file)
 - [Configuration options](#configuration-options)
   - [Properties files](#properties-files)
@@ -34,7 +33,7 @@ For example, the `dev.properties` file in `etc/` folder contains the following p
 ```properties
 instance-name = development
 default-representation-format = PLAIN_JSON
-mongouri = mongodb://127.0.0.1
+mongo-uri = mongodb://127.0.0.1
 
 idm.conf-file = ../etc/security.yml
 access-manager.conf-file = ../etc/security.yml
@@ -45,11 +44,11 @@ query-time-limit = 0
 aggregation-time-limit = 0
 ```
 
-The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongouri` parameter, expressed with the following syntax:
+The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongo-uri` parameter, expressed with the following syntax:
 
 {% highlight html%}
 {% raw %}
-mongo-uri: {{mongouri}}
+mongo-uri: {{mongo-uri}}
 {% endraw %}
 {% endhighlight %}
 
