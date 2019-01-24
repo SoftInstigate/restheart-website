@@ -46,11 +46,9 @@ aggregation-time-limit = 0
 
 The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains a  `mongo-uri` parameter, expressed with the following syntax:
 
-{% highlight html%}
-{% raw %}
-mongo-uri: {{mongo-uri}}
-{% endraw %}
-{% endhighlight %}
+```yaml
+mongo-uri: {{{mongo-uri}}}
+```
 
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
