@@ -50,57 +50,6 @@ layout: default
                 {% include licenses-table.html %} 
             </div>
         </div>
-        <div class="container-fluid">
-            <h2 class="text-center">
-                Use Cases
-            </h2>
-        </div>
-        <div class="row">
-            <article class="col-lg-3">
-                <section class="newsText">
-                    <div class="newsText__icon">
-                        <svg><use xlink:href=" ../../../images/sprite.svg#mongodb" /></svg>
-                    </div>
-                    <h2>MongoDB</h2>
-                    <h4>
-                        Self-managing MongoDB databases is difficult, time-consuming, and expensive. With Amazon DocumentDB, you can set up, secure, and scale MongoDB-compatible databases in the cloud without worrying about manually setting up and securing database clusters, running cluster management software, configuring backups, and monitoring production workloads.
-                    </h4>
-                </section>
-            </article>
-            <article class="col-lg-3">
-                <section class="newsText">
-                    <div class="newsText__icon">
-                        <svg><use xlink:href="../../../images/sprite.svg#plane" /></svg>
-                    </div>
-                    <h2>Mobile & web applications</h2>
-                    <h4>
-                        Build high-performance mobile & web applications that scale to process millions of user requests per second with millisecond latency. Amazon DocumentDB lowers your operational burden, allowing you to focus on building unique experiences for your customers. Amazon DocumentDB’s flexible document model, data types, and indexing allow you to adapt & iterate on your applications quickly, cutting down development time.
-                    </h4>
-                </section>
-            </article>
-            <article class="col-lg-3">
-                <section class="newsText">
-                    <div class="newsText__icon">
-                        <svg><use xlink:href="../../../images/sprite.svg#torch"/></svg>
-                    </div>
-                    <h2>Profile management</h2>
-                    <h4>
-                        User profile management enables online transactions, user preferences, and user authentication. As the number of users, complexity of user profile data, and user experience expectations grow, so does the demand for scalability, data flexibility, and performance. Amazon DocumentDB’s purpose-built document data model makes storing and querying documents fast and intuitive. You can manage profiles & preferences of millions of users & scale to process millions of user requests per second with millisecond latency.
-                    </h4>
-                </section>
-            </article>
-            <article class="col-lg-3">
-                <section class="newsText">
-                    <div class="newsText__icon">
-                        <svg><use xlink:href="../../../images/sprite.svg#feather"/></svg>
-                    </div>
-                    <h2>Content & catalog management</h2>
-                    <h4>
-                        Shopping sites, online publications, and digital archives, point-of-sale terminals, and self-service kiosks rely on content & catalog management systems to serve their customers. They need fast and reliable access to user reviews, images, ratings, product information, comments, etc. With Amazon DocumentDB’s flexible document model, data types, and indexing, you can store and query content & catalogs quickly and intuitively.
-                    </h4>
-                </section>
-            </article>
-        </div>
         <div class="container-fluid mt-5">
             <h2 class="text-center">
                 Features
