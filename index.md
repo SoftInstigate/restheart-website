@@ -150,6 +150,13 @@ layout: default
     </div>
 </section>
 
+<section class="bg-light">
+    <div class="container-fluid">
+        <h1 class="text-center">Code Examples</h1>
+        <h3>&nbsp;</h3>
+    </div>
+</section>
+
 {% include examples.html %}
 
 <section class="call-to-action">
