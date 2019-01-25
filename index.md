@@ -3,12 +3,12 @@ layout: default
 ---
 <div class="container text-center header">
     <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="256">
-    <p class="header__desc">The Web API for MongoDB</p>
+    <p class="header__desc">The REST API Server for MongoDB</p>
     <h2 class="header__title">Build applications faster, zero coding required!</h2>
     <a href="/learn/tutorial" class="btn btn-lg">Quickstart</a>
     <p>
         <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
-        <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out RESTHeart, the open source Web API Server for MongoDB" data-via="softinstigate" data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate" data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
         <iframe src="https://ghbtns.com/github-btn.html?user=softinstigate&repo=restheart&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160" height="30"></iframe>
     </p>
 </div>
@@ -25,14 +25,14 @@ layout: default
             </div>
             <div class="col-sm-6 text-center mb-3">
                 <h3 class="pt-3">
-                    Available under the Open Source AGPL and the
+                    Available under the Open Source <a href="https://github.com/SoftInstigate/restheart/blob/master/LICENSE.txt">AGPL v3</a> or our
                     <a href="/license">Commercial License</a>
                 </h3>
             </div>
             <div class="container-fluid my-2">
-                <h3 class="text-center">
+                <h2 class="text-center">
                     Trusted and used by Startups and Corporations
-                </h3>
+                </h2>
                 <div class="customer-logos">
                     <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
                     <div class="slide my-2"><img src="/images/customers/aci-infomobility.png"></div>
@@ -43,17 +43,15 @@ layout: default
                     <div class="slide my-2"><img src="/images/customers/conquest.png"></div>
                 </div>
             </div>
-            <div class="container-fluid bg-dark">
-                &nbsp;
-            </div>
-            <div class="container">
-                {% include licenses-table.html %} 
+            <div class="container mt-1 mb-5">
+                <h1 class="text-center">Licenses</h1>
+                {% include licenses-table.html %}
             </div>
         </div>
-        <div class="container-fluid mt-5">
-            <h2 class="text-center">
-                Features
-            </h2>
+        <div class="container-fluid mt-1 mb-5">
+            <h1 class="text-center">
+                Main Features
+            </h1>
         </div>
         <div class="row">
             <article class="col-lg-3">
@@ -61,15 +59,15 @@ layout: default
                     <div class="newsText__icon">
                         <svg><use xlink:href=" ../../../images/sprite.svg#mongodb" /></svg>
                     </div>
-                    <h2>MongoDB</h2>
+                    <h2>RESTful API</h2>
                     <h4>RESTHeart is the
                         <strong>
-                            <a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank">leading Web API</a>
+                            <a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank">leading REST API</a>
                         </strong> for
                         <strong>MongoDB</strong>.
                     </h4>
                     <h4>
-                        <strong>Just run it</strong> to open your MongoDb to the Web.
+                        <strong>Just run it</strong> to open your MongoDb documents to the Web.
                     </h4>
                     <h4>
                         The API unlocks all the features of MongoDb, including 
@@ -87,7 +85,7 @@ layout: default
                     <div class="newsText__icon">
                         <svg><use xlink:href="../../../images/sprite.svg#plane" /></svg>
                     </div>
-                    <h2>Fast Dev</h2>
+                    <h2>Fast Development</h2>
                     <h4>
                         <strong>No server side development</strong> is required and you can <strong>focus on building you application</strong>.
                     </h4>
@@ -98,7 +96,7 @@ layout: default
                         RESTHeart provides out-of-the-box <strong>User Authentication</strong> and <strong>Authorization</strong>
                     </h4>
                     <h4>
-                        The <strong>Docker Container</strong> is available to get it up and running in minutes.
+                        The <strong>Docker Container</strong> is available to get it up and running in few seconds.
                     </h4>
                 </section>
             </article>
@@ -107,21 +105,18 @@ layout: default
                     <div class="newsText__icon">
                         <svg><use xlink:href="../../../images/sprite.svg#feather" /></svg>
                     </div>
-                    <h2>Fast &amp; Light</h2>
+                    <h2>High Performances</h2>
                     <h4>
-                        <strong>High throughput</strong> check the
-                        <a href="https://restheart.org/learn/performances">performance tests</a>.
+                        <strong>High throughput</strong> and
+                        <strong>Lightweight</strong>: ~15Mb footprint, low RAM usage, starts instantly.
                     </h4>
                     <h4>
-                        <strong>Lightweight</strong> ~15Mb footprint, low RAM usage, starts instantly.
-                    </h4>
-                    <h4>
-                        <strong>Horizontally Scalable</strong> with
-                        <strong>Stateless Architecture</strong> and full support for MongoDB
+                        <strong>Scalable</strong> and
+                        <strong>Stateless</strong> Architecture, with full support for MongoDB
                         <strong>replica sets and shards</strong>.
                     </h4>
                     <h4>
-                        <strong>&#181;Service</strong>: it does one thing and it does it well.
+                        Ideal in a <strong>Microservice</strong> architecture, where you need a fast <strong>Data and Content API</strong> on top of MongoDB.
                     </h4>
                 </section>
             </article>
@@ -130,7 +125,7 @@ layout: default
                     <div class="newsText__icon">
                         <svg><use xlink:href="../../../images/sprite.svg#torch" /></svg>
                     </div>
-                    <h2>Prod</h2>
+                    <h2>Production Ready</h2>
                     <h4>
                         High quality
                         <strong>Documentation</strong> and active development
@@ -143,11 +138,11 @@ layout: default
                         are available from SoftInstigate, the company behind RESTHeart.
                     </h4>
                     <h4>
-                        For the Enterprise, the
+                        For the Enterprise, a business friendly
                         <a href="/license">
                             <strong>Commercial License</strong>
                         </a> 
-                        overcomes the conditions of the AGPL.
+                        overcomes the limitations of the AGPL.
                     </h4>
                 </section>
             </article>
