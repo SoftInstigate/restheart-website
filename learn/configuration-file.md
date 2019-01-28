@@ -22,11 +22,11 @@ An example of a complete configuration file is [available here](https://github.c
 
 ## Configuration options ##
 
-__Note__: The following options are only available starting from RESTHeart version `3.6.0`.
+__Note__: The following options are fully available from RESTHeart [version 3.7.0](https://github.com/SoftInstigate/restheart/releases/tag/3.7.0).
 
 ### Properties files ###
 
-Starting from RESTHeart `3.6.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
+Starting from RESTHeart `3.7.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
 
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
@@ -72,7 +72,7 @@ aggregation-time-limit: {{{aggregation-time-limit}}}
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
 Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
- as before version 3.6, this new configuration with properties is fully optional. 
+ as before version 3.7, this new configuration with properties is fully optional. 
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
@@ -91,7 +91,7 @@ This approach allows to share one single configuration file among several enviro
 
 ### Environment variables ###
 
-RESTHeart `3.6.0` introduces also the possibility to override any **primitive type parameter** in `restheart.yml` with an environment variable. Primitive types are:
+RESTHeart `3.7.0` introduces also the possibility to override any **primitive type parameter** in `restheart.yml` with an environment variable. Primitive types are:
 
  - String
  - Integer
