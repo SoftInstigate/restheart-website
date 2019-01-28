@@ -18,9 +18,7 @@ layout: default
         <div class="row">
             <div class="col-sm-6 text-center mb-3">
                 <h3 class="pt-3">
-                    Supported by
-                    an active Community and <a href="/services">
-                    Professional Services</a>
+                    Supported by an active Community and <a href="/services">Professional Services</a>
                 </h3>
             </div>
             <div class="col-sm-6 text-center mb-3">
@@ -31,7 +29,7 @@ layout: default
             </div>
             <div class="container-fluid my-2">
                 <h2 class="text-center">
-                    Trusted and used by Startups and Corporations
+                    Trusted by Startups and Corporations
                 </h2>
                 <div class="customer-logos">
                     <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
@@ -43,7 +41,7 @@ layout: default
                     <div class="slide my-2"><img src="/images/customers/conquest.png"></div>
                 </div>
             </div>
-            <div class="container mt-1 mb-5">
+            <div id="licenses" class="container mt-1 mb-5">
                 <h1 class="text-center">Licenses</h1>
                 {% include licenses-table.html %}
             </div>
@@ -60,11 +58,7 @@ layout: default
                         <svg><use xlink:href=" ../../../images/sprite.svg#mongodb" /></svg>
                     </div>
                     <h2>RESTful API</h2>
-                    <h4>RESTHeart is the
-                        <strong>
-                            <a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank">leading REST API</a>
-                        </strong> for
-                        <strong>MongoDB</strong>.
+                    <h4>RESTHeart is the <strong><a href="https://docs.mongodb.com/ecosystem/tools/http-interfaces/#restheart-java" target="_blank"> leading REST API</a></strong> for<strong>MongoDB</strong>.
                     </h4>
                     <h4>
                         <strong>Just run it</strong> to open your MongoDb documents to the Web.
