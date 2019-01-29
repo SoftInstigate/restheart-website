@@ -21,7 +21,7 @@
                         </div>
                         <div class="col-md-8">
 {% highlight bash %}
-$ http GET https://beta.mrest.io/demo/messages?pagesize=2 key:demo
+$ http GET https://beta.mrest.io/demo/messages?filter='{"from":"Bob"}'\&pagesize=2 key:demo
 
 HTTP/1.1 200 OK
 # other response headers omitted
@@ -29,22 +29,22 @@ HTTP/1.1 200 OK
 [
     {
         "_id": {
-            "$oid": "5b90101a198370e1dd7d0110"
-        },
-        "from": "Bob",
-        "message": "was here",
+            "$oid": "5c50963e477870eb8258fa68"
+        }, 
+        "from": "Bob", 
+        "message": "was here", 
         "timestamp": {
-            "$date": 1536167962446
+            "$date": 1548785214114
         }
-    },
+    }, 
     {
         "_id": {
-            "$oid": "5b49be10d418da78b75c3c2c"
-        },
-        "from": "Bob",
-        "message": "RESTHeart rocks",
+            "$oid": "5c50962f477870eb8258fa54"
+        }, 
+        "from": "Bob", 
+        "message": "RESTHeart rocks", 
         "timestamp": {
-            "$date": 1531559440350
+            "$date": 1548785199983
         }
     }
 ]
@@ -67,27 +67,27 @@ HTTP/1.1 200 OK
                     </div>
                     <div class="col-md-8">
 {% highlight bash %}    
-$ curl --header "key:demo" -G --data-urlencode https://beta.mrest.io/demo/messages?pagesize=2
+$ curl --header "key:demo" -G --data-urlencode 'filter={"from":"Bob"}' https://beta.mrest.io/demo/messages?pagesize=2
 
 [
     {
         "_id": {
-            "$oid": "5b90101a198370e1dd7d0110"
-        },
-        "message": "was here",
-        "from": "Bob",
+            "$oid": "5c50963e477870eb8258fa68"
+        }, 
+        "from": "Bob", 
+        "message": "was here", 
         "timestamp": {
-            "$date": 1536167962446
+            "$date": 1548785214114
         }
-    },
+    }, 
     {
         "_id": {
-            "$oid": "5b49be10d418da78b75c3c2c"
-        },
-        "message": "RESTHeart rocks",
-        "from": "Bob",
+            "$oid": "5c50962f477870eb8258fa54"
+        }, 
+        "from": "Bob", 
+        "message": "RESTHeart rocks", 
         "timestamp": {
-            "$date": 1531559440350
+            "$date": 1548785199983
         }
     }
 ]
@@ -110,7 +110,7 @@ $ curl --header "key:demo" -G --data-urlencode https://beta.mrest.io/demo/messag
                     </div>
                     <div class="col-md-8">
 {% highlight javascript %}
-const url = encodeURI('https://beta.mrest.io/demo/messages?pagesize=2');
+const url = encodeURI('https://beta.mrest.io/demo/messages?filter={"from":"Bob"}&pagesize=2');
 
 fetch(url, { headers: {'key':'demo'} })
   .then(response => response.json())
@@ -141,6 +141,7 @@ fetch(url, { headers: {'key':'demo'} })
 public void printOutMessages() throws UnirestException {
     HttpResponse<JsonNode> resp = Unirest.get("https://beta.mrest.io/demo/messages")
             .header("key", "demo")
+            .queryString("filter", "{\"from\":\"Bob\"}")
             .queryString("pagesize", "2")
             .asJson();
 
@@ -179,6 +180,7 @@ var urlComponents = URLComponents(string: "https://beta.mrest.io/demo/messages")
 // set the query parameters
 var queryItems = [URLQueryItem]()
 queryItems.append(URLQueryItem(name: "pagesize", value: "2"))
+queryItems.append(URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}"))
 urlComponents?.queryItems = queryItems
 
 var urlRequest = URLRequest(url: (urlComponents?.url)!)
