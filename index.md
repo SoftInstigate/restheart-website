@@ -5,7 +5,8 @@ layout: default
     <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="256">
     <p class="header__desc">The REST API Server for MongoDB</p>
     <h2 class="header__title">Build applications faster, zero coding required!</h2>
-    <a href="/learn/tutorial" class="btn btn-lg">Quickstart</a>
+    <a href="/learn/tutorial" class="btn btn-md">Quickstart</a>
+    <a href="https://github.com/SoftInstigate/restheart/" class="btn btn-md">Sources</a>
     <p>
         <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
         <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate" data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
