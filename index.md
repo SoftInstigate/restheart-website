@@ -67,7 +67,7 @@ layout: default
                     You can <strong>design geometries</strong> (points, lines, polygons) and make them available to <strong>Google Maps</strong> clients via API: a perfect fit for <strong>Open Data</strong> solutions.
                     </h3>
                     <h3>
-                    RESTHeart handles the <a href="https://developers.google.com/transit/gtfs/"><strong>GTFS</strong></a> format for <strong>public transportation schedules</strong> and associated geographic information. Geospatial data can then be uploaded to RESTHeart via JSON or <strong>CVS files</strong>
+                    RESTHeart handles the <a href="https://developers.google.com/transit/gtfs/"><strong>GTFS</strong></a> format for <strong>public transportation schedules</strong> and associated geographic information. Geospatial data can then be uploaded to RESTHeart via JSON or <strong>CVS</strong> files.
                     </h3>
                 </section>
             </article>
