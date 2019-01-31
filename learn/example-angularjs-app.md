@@ -73,7 +73,7 @@ application built using AngularJS and MongoDB, without any server-side
 code. This is possible by exposing MongoDB as set of REST services via
 RESTHeart, the RESTful API Data Server for MongoDB.
 
-RESTHeart is an open-source project written in Java 8, distributed under
+RESTHeart is an open-source project written in Java, distributed under
 the same license as MongoDB (GNU AGPL v3.0). It uses internally the
 blazing fast Undertow HTTP server, which is at the core of the latest
 JBoss Application Server.

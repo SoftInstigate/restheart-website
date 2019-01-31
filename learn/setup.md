@@ -283,16 +283,18 @@ Note that you must **always stop RESTHeart before MongoDB**, or you might experi
 
 If you don’t have them already, download the following packages:
 
-* [Java 8](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Java 8](https://jdk.java.net/8/)
 * [MongoDB](https://www.mongodb.org/downloads)
 * [RESTHeart](https://github.com/softinstigate/restheart)
 
-Most of the work must be done using a command line interface. 
+Most of the work must be done using a command line interface.
+
+RESTHeart works with Java versions from 8 to 11.
 
 ### Install Java and MongoDB
 
 Install [Java
-8](https://www.oracle.com/technetwork/java/javase/downloads/index.html) and [MongoDB](https://docs.mongodb.org/manual/installation/) following
+8](https://jdk.java.net/8/) and [MongoDB](https://docs.mongodb.org/manual/installation/) following
 the instructions for your specific operating system and make sure that
 their binaries are actually executable (so they are in your PATH env
 variable).
@@ -308,7 +310,7 @@ Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 
 $ mongod --version
-db version v3.6.7
+db version v4.0.4
 ```
 
 RESTHeart has been tested with MongoDB from version 2.4 to 4.0. More recently, integration tests are executed against versions 3.6 and 4.0.
