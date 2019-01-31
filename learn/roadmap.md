@@ -21,6 +21,16 @@ RESTHeart 4.0 will delegate security to uIAM and will not embed security functio
 
 uIAM follows the same dual licensing scheme of RESTHeart.
 
+### Development status
+
+- <span style="color:green">**done**</span> in branch *next*
+- security features removed 
+- all original RH security test works with uIAM in front of RH4
+
+### TODOs
+
+- add documentation about running RH with uIAM
+
 ## Representation format
 
 We received many feedbacks asking for a simpler representation format and we have worked on it for  [mrest.io](https://mrest.io), the cloud RESTHeart service (currenlty in beta). 
@@ -75,6 +85,16 @@ Starting with RESTHeart 4.0 the current plain json and HAL formats will be aband
 }
 ```
 
+### Development status
+
+- <span style="color:green">**done**</span> in branch [https://github.com/SoftInstigate/restheart/tree/next](next)
+- added new representation format called STANDARD
+- add integration tests using karate
+
+### TODOs
+
+- updated documentation about representation format
+
 ## Changes feeds with Websocket
 
 RESTHeart 4.x will fully support [change streams](https://docs.mongodb.com/manual/changeStreams/index.html) introduced by MongoDB 3.6 for replica sets.
@@ -82,6 +102,16 @@ RESTHeart 4.x will fully support [change streams](https://docs.mongodb.com/manua
 A new resource will be available, called `feed`. A feed can be created specifying a collection metadata that defines an aggregation and a URI in a similar way than an aggregation resource is currently defined.
 
 The feed URI endpoint will open a *Websocket* for the client to be notified of updates on the aggregation result.
+
+### Development status
+
+- <span style="color:orange">**work in progress**</span> in fork [https://github.com/OmarTrasatti/restheart](github.com/OmarTrasatti/restheart)
+
+### TODOs
+
+- write documentation about feeds
+- add feeds to use hooks
+- add integration test
 
 ## Transactions
 
@@ -124,6 +154,14 @@ DELETE /_transactions/5bf58d909c5d125a2b9f0b86
 HTTP/1.1 204 No Content
 ```
 
+### Development status
+
+- <span style="color:red">**not yet started**</span>
+
 ## Plugin API changes
 
 The java API for plugins (Transformers, Hooks, Checkers and Initializers) will undergo a refactoring aimed at simplify and cleaning the API with limited impacts on existing implementations.
+
+### Development status
+
+- <span style="color:red">**not yet started**</span>
