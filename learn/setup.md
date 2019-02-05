@@ -38,11 +38,13 @@ title: Setup
 
 ## Run RESTHeart with Docker
 
+Note that you need to know a bit of [Docker](https://docs.docker.com) and [Docker Compose](https://docs.docker.com/compose/) to follow these instructions. Alternatively, you can scroll down and read how to run RESTHeart directly on a server.
+
 > Docker is the best way to run RESTHeart.
 
 [![Docker Stars](https://img.shields.io/docker/stars/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/) [![Docker Pulls](https://img.shields.io/docker/pulls/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/)
 
-__PLease help to improve this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to open a issue. You could also open a PR to directly fix the documentation on Github, if you want.  
+__PLease help us improving this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to ask a question. You could also open a PR to directly fix the documentation on Github, if you want.  
 
 ## Quick Start with Docker Compose
 
