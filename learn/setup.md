@@ -9,6 +9,7 @@ title: Setup
 - [Run RESTHeart with Docker](#run-restheart-with-docker)
 - [Quick Start with Docker Compose](#quick-start-with-docker-compose)
   - [If something is not working](#if-something-is-not-working)
+  - [Modify the configuration for the RESTHeart container](#modify-the-configuration-for-the-restheart-container)
 - [Docker Image](#docker-image)
   - [Tags](#tags)
   - [Dockerfile](#dockerfile)
@@ -37,13 +38,17 @@ title: Setup
 
 ## Run RESTHeart with Docker
 
-Docker is the best way to run RESTHeart, but of course you need to know a bit of [Docker](https://docs.docker.com) and [Docker Compose](https://docs.docker.com/compose/) by yourself to follow these instructions. Alternatively, you can scroll down and read how to run RESTHeart directly on a server.
+Note that you need to know a bit of [Docker](https://docs.docker.com) and [Docker Compose](https://docs.docker.com/compose/) to follow these instructions. Alternatively, you can scroll down and read how to run RESTHeart directly on a server.
+
+> Docker is the best way to run RESTHeart.
 
 [![Docker Stars](https://img.shields.io/docker/stars/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/) [![Docker Pulls](https://img.shields.io/docker/pulls/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/)
 
 __PLease help us improving this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to ask a question. You could also open a PR to directly fix the documentation on Github, if you want.  
 
 ## Quick Start with Docker Compose
+
+Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. However, this is neither a docker nor a docker-compose tutorial, so please refer to the [official documentation](https://docs.docker.com/compose/).
 
 Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
 
@@ -52,7 +57,7 @@ $ mkdir restheart && cd restheart
 $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 ```
 
-The file `docker-compose.yml` defines a single micro-service made of a RESTHeart instance on port `8080` and a empty MongoDB instance configured to work together.
+The file `docker-compose.yml` defines a single micro-service made of a RESTHeart instance on port `8080` and a MongoDB instance configured to work together.
 
 Start both services just typing:
 
@@ -103,11 +108,45 @@ $ docker log -f restheart
 $ docker log -f restheart-mongo
 ```
 
+### Modify the configuration for the RESTHeart container
+
+Download the configuration files `restheart.yml` and `security.yml` in the `etc` directory.
+
+``` bash
+$ mkdir etc
+curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/restheart.yml --output etc/restheart.yml
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/Docker/etc/security.yml --output etc/security.yml
+```
+
+Edit the configuration files as needed. For instance, to change the `admin` user password edit `etc/security.yml` as follows:
+
+```yml
+    - userid: admin
+      password: <your-password-here>
+      roles: [users, admins]
+```
+
+Uncomment the following line in `docker-compose.yml`
+
+```yml
+      ### Uncoment below if you want to mount a local configuration folder
+      ### to overwrite default restheart.yml and/or security.yml
+      volumes:
+         - ./etc:/opt/restheart/etc:ro
+```
+
+Restart the containers:
+
+```bash
+$ docker-compose stop
+$ docker-compose up -d
+```
+
 ## Docker Image
 
 ### Tags
 
-The `latest` tag is automatically associated with `SNAPSHOT` maven builds on `master` branch. If you want to run a stable docker image, please always pull a exact tag, like:
+The `latest` tag is automatically associated with `SNAPSHOT` maven builds on `master` branch. If you really want to run a stable docker image, please always pull a exact tag, like:
 
 ``` bash
 $ docker pull softinstigate/restheart:<tag>
