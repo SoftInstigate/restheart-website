@@ -42,6 +42,8 @@ title: Setup
 
 [![Docker Stars](https://img.shields.io/docker/stars/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/) [![Docker Pulls](https://img.shields.io/docker/pulls/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/)
 
+__PLease help to improve this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to open a issue. You could also open a PR to directly fix the documentation on Github, if you want.  
+
 ## Quick Start with Docker Compose
 
 Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. However, this is neither a docker nor a docker-compose tutorial, so please refer to the [official documentation](https://docs.docker.com/compose/).
