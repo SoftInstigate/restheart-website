@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  console.log("piupp");
   $('.customer-logos').slick({
     slidesToShow: 5,
     slidesToScroll: 1,
