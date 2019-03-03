@@ -156,7 +156,7 @@ HTTP/1.1 204 No Content
 
 ### Development status
 
-- <span style="color:red">**not yet started**</span>
+- <span style="color:orange">**Work in progress in brach [next](https://github.com/SoftInstigate/restheart/tree/next/src/main/java/org/restheart/handlers/txns)**</span>
 
 ## Plugin API changes
 
