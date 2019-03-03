@@ -123,17 +123,17 @@ The client can start a transaction:
 
 ```bash
 #start a tx
-POST /_transactions
+POST /_txns
 
 HTTP/1.1 200 OK
-Location: /_transactions/5bf58d909c5d125a2b9f0b86
+Location: /_txns/53874250-874f-4f48-84e2-145428e9af7b
 ```
 
 Once a transaction has been created, requests can be executed under tis scope:
 
 ```bash
 #create a document in the tx scope
-POST /db/coll?txid=5bf58d909c5d125a2b9f0b86 {"a": 1}
+POST /db/coll?txid=53874250-874f-4f48-84e2-145428e9af7b {"a": 1}
 
 HTTP/1.1 201 Created
 ```
@@ -141,15 +141,15 @@ HTTP/1.1 201 Created
 The transaction can be committed or rolled back:
 
 ```bash
-#commit tx 5bf58d909c5d125a2b9f0b86
-PATCH /_transactions/5bf58d909c5d125a2b9f0b86 {"commit": true}
+#commit tx 53874250-874f-4f48-84e2-145428e9af7b
+PATCH /_txns/53874250-874f-4f48-84e2-145428e9af7b {"commit": true}
 
 HTTP/1.1 204 No Content
 ```
 
 ```bash
-#roll back tx 5bf58d909c5d125a2b9f0b86
-DELETE /_transactions/5bf58d909c5d125a2b9f0b86
+#roll back tx 53874250-874f-4f48-84e2-145428e9af7b
+DELETE /_txns/53874250-874f-4f48-84e2-145428e9af7b
 
 HTTP/1.1 204 No Content
 ```
