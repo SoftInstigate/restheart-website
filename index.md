@@ -30,7 +30,7 @@ layout: default
                     <h2>REST API for MongoDB</h2>
                     <h3>RESTHeart unlocks <strong>all the features</strong> of MongoDb via HTTP. Queries, Bulk Updates, GridFs, Aggregations, Map-reduce functions, Replica Sets, Shards, Indexing and many more are accessible via a simple <strong>RESTful API</strong>.</h3>
                     <h3>
-                        <strong>No server-side development</strong> is required so you can focus on building your <strong>Web</strong> or <strong>Mobile apps</strong>, as all the mandatory <strong>database</strong> logic is available out of the box.
+                        <strong>No server-side development</strong> is required so you can focus on building your <strong>Web</strong> or <strong>Mobile apps</strong> or <strong>Enterprise Integration System</strong>, as all the <strong>database</strong> logic is available out of the box.
                     </h3>
                     <h3>
                         RESTHeart also provides strong <strong>API & Web Security</strong> models for <strong>User Authentication</strong>, <strong>Authorization</strong> and <strong>Caching</strong>.
@@ -47,10 +47,10 @@ layout: default
                     RESTHeart allows to effectively manage and aggregate content and its metadata, such as <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>, <strong>categories</strong>, <strong>geolocalized data</strong>, <strong>audios</strong> and <strong>videos</strong>, delivering it via a solid <strong>REST API</strong>.
                     </h3>
                     <h3>
-                    Single Page Applications with <strong>Angular</strong>, <strong>React</strong> or <strong>Vue</strong> and <strong>iOS</strong> or <strong>Android</strong> Mobile applications can be built much faster, because you can focus on the User Interface.
+                    You can build Single Page Applications with <strong>Angular</strong>, <strong>React</strong>, <strong>Vue</strong> frameworks and <strong>iOS</strong> and <strong>Android</strong> Mobile apps much effectively, because you can focus on creating <strong>beautiful</strong> User Interfaces for your users.
                     </h3>
                     <h3>
-                    RESTHeart is a perfect <strong>API provider for <a href="https://jamstack.org">JAMstack</a></strong> Web architectures, where it fits much more naturally that any WordPress customisation.
+                    RESTHeart is a perfect <strong>API provider for <a href="https://jamstack.org">JAMstack</a></strong> Web architectures, where it fits much more naturally that any WordPress customization.
                     </h3>
                 </section>
             </article>
@@ -59,15 +59,15 @@ layout: default
                     <div class="newsText__icon">
                         <svg><use xlink:href="/images/sprite.svg#plane" /></svg>
                     </div>
-                    <h2>Geospatial Data</h2>
-                    <h3>
-                    RESTHeart extends <strong>MongoDb's Geospatial support</strong>. It stores <a href="https://en.wikipedia.org/wiki/GeoJSON"><strong>GeoJSON</strong></a> objects without the need to write complicated server-side code.
+                    <h2>Open Data and IoT</h2>
+                    <h3>RESTHeart is a perfect fit for <strong>Open Data</strong> and <strong> Internet of Things</strong> solutions.
+                    Data can be uploaded to RESTHeart via <strong>JSON</strong> calls or <strong>CVS</strong> files and made immediately available through the <strong>REST API</strong>.
                     </h3>
                     <h3>
-                    You can <strong>design geometries</strong> (points, lines, polygons) and make them available to <strong>Google Maps</strong> clients via API: a perfect fit for <strong>Open Data</strong> solutions.
+                    RESTHeart also leverages <strong>MongoDb's Geospatial support</strong> and stores <a href="https://en.wikipedia.org/wiki/GeoJSON"><strong>GeoJSON</strong></a> objects without the need to write complicated server-side code: <strong>geometries</strong> are then available to clients such as <strong>Google Maps</strong> via its API.
                     </h3>
                     <h3>
-                    RESTHeart handles the <a href="https://developers.google.com/transit/gtfs/"><strong>GTFS</strong></a> format for <strong>public transportation schedules</strong> and associated geographic information. Geospatial data can then be uploaded to RESTHeart via JSON or <strong>CVS</strong> files.
+                    RESTHeart also handles the <a href="https://developers.google.com/transit/gtfs/"><strong>GTFS</strong></a> format for <strong>public transportation schedules</strong> thanks to a <a href="mailto:info@softinstigate.com?subject=GTFS%20plugin%20Inquiry">commercial plugin</a>.
                     </h3>
                 </section>
             </article>
