@@ -80,15 +80,15 @@ layout: default
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#lamp" /></svg>
-                <h2 class="call-to-action__title">SUPPORTED BY AN ACTIVE COMMUNITY AND PROFESSIONAL SERVICES</h2>
-                <p class="call-to-action__desc">Professional Services help you on using the RESTHeart standard API, developing RESTHeart extensions, customizing RESTHeart, priority bug fixing, configuration, best practices, etc...</p>
+                <h2 class="call-to-action__title">SUPPORTED BY THE COMMUNITY OR BY OUR PROFESSIONAL SERVICES</h2>
+                <p class="call-to-action__desc">Our Professional Services can help you building RESTful APIs, data models, query optimizations, customizations and extensions, bug fixing, on cloud and on premises deployments, security and HA configurations.</p>
                 <a class="btn btn-o" href="/services">PROFESSIONAL SERVICES</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#thumb" /></svg>
-                <h2 class="call-to-action__title">AVAILABLE UNDER THE OPEN SOURCE AGPL AND THE COMMERCIAL LICENSE</h2>
-                <p class="call-to-action__desc">RESTHeart is distributed under the Open Source GNU AGPL v3. If use of our product under the AGPL v3 does not satisfy your organization’s legal department, a commercial licenses is available.</p>
-                <a class="btn btn-o-white" href="/license">Commercial license</a>
+                <h2 class="call-to-action__title">AVAILABLE UNDER OPEN SOURCE OR COMMERCIAL LICENSES</h2>
+                <p class="call-to-action__desc">RESTHeart is distributed under the Open Source GNU AGPL v3 license. If the usage of our product under the AGPL does not satisfy your organization’s legal requirements, business-friendly commercial licenses are also available.</p>
+                <a class="btn btn-o-white" href="/license">Commercial licenses</a>
             </div>
         </div>
         <div class="row">
