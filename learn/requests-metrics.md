@@ -5,13 +5,15 @@ title: Metrics on Requests
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Formats](#formats)
-    * [using restheart rep query parameter](#using-restheart-rep-query-parameter)
-    * [using HTTP content negoatiation](#using-http-content-negoatiation)
-* [Configuration options](#configuration-options)
-* [Reading data](#reading-data)
-* [Examples](#examples)
+- [Introduction](#introduction)
+- [Formats](#formats)
+  - [using restheart `rep` query parameter](#using-restheart-rep-query-parameter)
+  - [using HTTP content negotiation](#using-http-content-negotiation)
+- [Configuration options](#configuration-options)
+- [Reading data](#reading-data)
+- [Examples](#examples)
+- [What's new in 3.9](#whats-new-in-39)
+  - [Prometheus database and collection labels for request to root metrics](#prometheus-database-and-collection-labels-for-request-to-root-metrics)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -78,7 +80,7 @@ DATABASE.
 ## Reading data
 
 | Endpoint                            | Purpose                                                       |
-|-------------------------------------|---------------------------------------------------------------|
+| ----------------------------------- | ------------------------------------------------------------- |
 | `/_metrics`                         | for generic over-all values.                                  |
 | `/$DBNAME/_metrics`                 | for values tied to this specific database.                    |
 | `/$DBNAME/$COLLECTIONNAME/_metrics` | for values tied to this specific collection of this database. |
