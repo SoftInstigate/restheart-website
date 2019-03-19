@@ -533,5 +533,78 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 }
 ```
 
+## What's new in 3.9 ##
+
+### Prometheus database and collection labels for request to root metrics ###
+
+The Prometheus metrics requested on endpoint `/ _metrics` no longer include only
+the aggregated parent metrics, but all metrics collected. To distinguish metrics
+per database and collection there are two new prometheus labels `database` and
+`collection` containing the corresponding database and collection names.
+
+The following example demonstrates the new label values requesting `/_metrics` using
+the prometheus format. The data contains an existing database named mydatabase
+including a single collection named mycollection. All aggregated metrics contain the
+value \_all\_, i.e. metrics for database mydatabase and all contained collections,
+which is equivalent to requesting `/mydatabase/_metrics`.
+
+The prometheus metrics look as follows:
+
+```
+http_response_timers_count{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3 1510039263986
+http_response_timers_max{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 5.666666666666666 1510039263986
+http_response_timers_min{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 2.0 1510039263986
+http_response_timers_p50{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 5.0 1510039263986
+http_response_timers_p75{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3.299831645537221 1510039263986
+http_response_timers_m15_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+
+http_response_timers_count{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 2 1510039263986
+http_response_timers_max{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 7.5 1510039263986
+http_response_timers_min{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 5.0 1510039263986
+http_response_timers_p50{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p75{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 2.5 1510039263986
+http_response_timers_m15_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+
+http_response_timers_count{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 1 1510039263986
+http_response_timers_max{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_min{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p50{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p75{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m15_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+```
+
+Prometheus metrics requested for `/mydatabase/_metrics` or
+`/mydatabase/mycollection/_metrics` do not contain this labels.
+
+In case of using prometheus it's recommended to only use the
+single endpoint `/_metrics`, allowing to scrape all metrics at
+once and do filtering based on label values.
 
 </div>
