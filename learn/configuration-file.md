@@ -26,7 +26,7 @@ __Note__: The following options are fully available from RESTHeart [version 3.7.
 
 ### Properties files ###
 
-Starting from RESTHeart `3.7.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) as a startup parameter or via a environment variable:
+Starting from RESTHeart `3.7.0` it is possibile to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or, starting with RESTHeart 3.9, via a Java property (which you can pass to the JVM with the "-D" command line parameter). This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the yaml configuration files, but now you can have a single parametric yaml file, with a set of small, different properties files for each environment.
 
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
@@ -34,12 +34,9 @@ For example, the `dev.properties` file in `etc/` folder contains the following p
 instance-name = development
 default-representation-format = PLAIN_JSON
 mongo-uri = mongodb://127.0.0.1
-
 idm.conf-file = ../etc/security.yml
 access-manager.conf-file = ../etc/security.yml
-
 log-level = DEBUG
-
 query-time-limit = 0
 aggregation-time-limit = 0
 ```
@@ -85,6 +82,12 @@ Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variabl
 ```bash
 $ export RESTHEART_ENVFILE=etc/dev.properties
 $ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml
+```
+
+__Note__: starting with release 3.9 it's possibile to pass also the main RESTHeart's configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
+
+```bash
+$ export RESTHEART_CONFFILE=etc/restheart.yml
 ```
 
 This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart.yml` configuration file.
