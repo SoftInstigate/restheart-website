@@ -13,6 +13,7 @@ title: Aggregations
 * [Passing variables to aggregation operations](#passing-variables-to-aggregation-operations)
     * [Variables in stages or query](#variables-in-stages-or-query)
     * [Variables in map or reduce functions](#variables-in-map-or-reduce-functions)
+* [Security information](#security-informations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -298,4 +299,22 @@ function() { 
 };
 ```
 
+### Security Informations
+By default RESTHeart makes sure that the aggregation variables passed as query parameters hasn't got inside MongoDB operators. 
+
+This behaviour is required to protect data from undesiderable malicious query injection. 
+
+Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
+
+```properties
+### Security
+
+# Check if aggregation variables use operators. allowing operators in aggregation variables 
+# is risky. requester can inject operators modifying the query
+
+aggregation-check-operators: true
+
+```
 </div>
+
+
