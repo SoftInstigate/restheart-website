@@ -30,28 +30,19 @@ RESTHeart is available as a Maven artifact and so it can be included in
 your own custom POM. Here you can see examples of how to configure
 dependencies with different build tools.
 
-To add RESTHeart dependency to your pom.xml, just add this:
+To add RESTHeart JAR as a dependency to your pom.xml, add this fragment:
 
 ``` xml
 <dependency>
     <groupId>org.restheart</groupId>
     <artifactId>restheart</artifactId>
-    <version>3.2.0</version>
+    <version>3.10.0</version>
 </dependency>
 ```
 
 ## Create a Uber jar
 
-The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifact in an uber-jar, including its dependencies.
-
-The following configuration will produce a single jar file whose name is the artifactId, for instance `foo.jar`. This jar will include both your custom code and RESTHeart. You can start the customized RESTHeart with:
-
-``` bash
-$ java -server -jar foo.jar conf.yml
-```
-
-**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itself. SoftInstigate sells commercial licenses that overcome this limitation.
-
+The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package the artifacts in an single, self-executable JAR file, which includes all necessary dependencies.
 
 ``` xml
 <project>
@@ -61,7 +52,7 @@ $ java -server -jar foo.jar conf.yml
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.1</version>
         <configuration>
           <finalName>${project.artifactId}</finalName>
           <createDependencyReducedPom>true</createDependencyReducedPom>
@@ -96,6 +87,16 @@ $ java -server -jar foo.jar conf.yml
   </build>
   ...
 </project>
+```
+
+Now you can run `mvn package` or `mvn install`. 
+
+> Remember that if you have written any integration test, you'll probably need a running MongoDB instance on `localhost:27017` to exceute them succesfully. To create and run end to end tests, from the REST API down to the database, we recommend having a look at [Karate DSL](https://intuit.github.io/karate/).
+
+The above configuration will produce a single JAR file whose name is the `artifactId`, for instance `foo.jar`. This jar will include both your custom code and RESTHeart. You can start the customized RESTHeart with:
+
+``` bash
+$ java -server -jar foo.jar conf.yml
 ```
 
 </div>
