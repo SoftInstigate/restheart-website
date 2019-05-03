@@ -19,6 +19,11 @@ title: Change Streams
 
 {% include docs-head.html %} 
 
+<div class="jumbotron">
+  <h1 class="display-4">Coming soon!</h1>
+  <hr class="my-4">
+  <p>We are currently working on this feature and will launch into upcoming <strong>RESTHeart PRO 4.x</strong>!</p>
+</div>
 
 ## Introduction
 Modern web applications needs to react with promptness and efficency to data changes in many contexts.
