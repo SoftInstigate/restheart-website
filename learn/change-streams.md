@@ -19,10 +19,21 @@ title: Change Streams
 
 {% include docs-head.html %} 
 
-<div class="jumbotron">
-  <h1 class="display-4">Coming soon!</h1>
-  <hr class="my-4">
-  <p>We are currently working on this feature and will launch into upcoming <strong>RESTHeart PRO 4.x</strong>!</p>
+<div class="d-block d-md-none alert alert-warning" role="alert">
+    <div class="d-flex justify-content-center">
+    This feature is available on
+    </div>
+    <div class="d-flex justify-content-center">
+        <strong>RESTHeart PRO 4.x.</strong>
+    </div>
+    <div class="d-flex justify-content-center mt-2">
+        <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
+    </div>
+</div>
+
+<div class="d-none d-md-block alert alert-warning" role="alert">
+    This feature is available on <strong>RESTHeart PRO 4.x.</strong>
+    <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
 </div>
 
 ## Introduction
