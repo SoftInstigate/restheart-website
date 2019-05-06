@@ -6,6 +6,7 @@ title: Setup
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
+- [Run with Docker](#run-with-docker)
 - [Manual installation](#manual-installation)
   - [Install Java and MongoDB](#install-java-and-mongodb)
   - [Install RESTHeart](#install-restheart)
@@ -20,7 +21,7 @@ title: Setup
 
 {% include docs-head.html %} 
 
-### Run with Docker
+## Run with Docker
 
 Please refer to [How to run RESTHeart with Docker](/learn/docker).
 
