@@ -61,6 +61,8 @@ In summary:
 - Ideal as the backend for **Angular**, **React**, **Vue** or any other JavaScript framework;
 - Can be extended by adding Java classes to perform custom tasks.
 
+**Next**: How to [Setup](/lear/setup) the product.
+
 <img src="/images/angular-react-vue.jpg" width="60%" height="auto" />
 
 </div>
