@@ -23,6 +23,8 @@ title: Setup
 
 ## Run with Docker
 
+Docker is the simpliest way to run RESTHeart. There's a public repository on [Docker Hub](https://hub.docker.com/r/softinstigate/restheart).
+
 Please refer to [How to run RESTHeart with Docker](/learn/docker).
 
 ## Manual installation
