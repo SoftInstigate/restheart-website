@@ -94,8 +94,8 @@ $ docker-compose logs -f
 Or you could tail the logs of individual services:
 
 ``` bash
-$ docker log -f restheart
-$ docker log -f restheart-mongo
+$ docker logs -f restheart
+$ docker logs -f restheart-mongo
 ```
 
 ### Modify the configuration for the RESTHeart container
