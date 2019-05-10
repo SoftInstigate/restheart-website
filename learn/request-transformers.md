@@ -113,17 +113,10 @@ Global Transformers can be defined programmatically instantiating `GlobalTransfo
             RequestTransformer.PHASE phase,
             RequestTransformer.SCOPE scope,
             BsonValue args,
-            BsonValue confArgs) {
-        this.transformer = transformer;
-        this.predicate = predicate;
-        this.phase = phase;
-        this.scope = scope;
-        this.args = args;
-        this.confArgs = confArgs;
-    }
+            BsonValue confArgs)
 ```
 
-and adding them to the list `CheckerHandler.getGlobalCheckers()`
+and adding them to the list `TransformerHandler.getGlobalTransformers()`
 
 ``` java
 // a predicate that resolves GET /db/coll
@@ -154,8 +147,6 @@ GlobalTransformer globalTransformer = new GlobalTransformer(
 // finally add it to global checker list
 TransformerHandler.getGlobalTransformers().add(globalTransformer);
 ```
-
-You can use an [Initializer](/learn/initializer) to add Global Checkers.
 
 You can use an [Initializer](/learn/initializer) to add Global Transformers.
 
