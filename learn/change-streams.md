@@ -21,19 +21,16 @@ title: Change Streams
 
 <div class="d-block d-md-none alert alert-warning" role="alert">
     <div class="d-flex justify-content-center">
-    This feature is available on
-    </div>
-    <div class="d-flex justify-content-center">
-        <strong>RESTHeart PRO 4.x.</strong>
+    This is a <strong class="ml-1 mr-1">PRO only</strong> feature.
     </div>
     <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
+        <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try RESTHeart PRO for free!</a></span>
     </div>
 </div>
 
 <div class="d-none d-md-block alert alert-warning" role="alert">
-    This feature is available on <strong>RESTHeart PRO 4.x.</strong>
-    <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
+    This is a <strong>PRO only</strong> feature.
+    <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try RESTHeart PRO for free!</a></span>
 </div>
 
 ## Introduction
