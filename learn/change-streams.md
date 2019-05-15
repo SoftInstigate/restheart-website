@@ -27,13 +27,13 @@ title: Change Streams
         <strong>RESTHeart PRO 4.x.</strong>
     </div>
     <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
+        <span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Try it now for free!</a></span>
     </div>
 </div>
 
 <div class="d-none d-md-block alert alert-warning" role="alert">
     This feature is available on <strong>RESTHeart PRO 4.x.</strong>
-    <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try it now for free!</a></span>
+    <span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Try it now for free!</a></span>
 </div>
 
 ## Introduction
