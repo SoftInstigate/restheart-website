@@ -37,17 +37,15 @@ title: Change Streams
 </div>
 
 ## Introduction
-Modern web applications needs to react with promptness and efficency to data changes in many contexts.
+Modern web applications needs to react to data modifications in many contexts.
 
-RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal.
+RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal. Exposing a websocket server endpoint, every [JSR-356-compliant Websocket client](https://www.oracle.com/technetwork/articles/java/jsr356-1937161.html) can be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
 
 > "Change streams allow applications to access real-time data changes. [...]  Because change streams use the aggregation framework, applications can also filter for specific changes." 
 
 <img src="/images/changes-stream.png" width="80%" height="auto" class="image-center img-responsive" />
 
-Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
-
-*IMPORTANT: to use Change Streams is mandatory to enable MongoDB's [replica sets](https://docs.mongodb.com/manual/replication/).*
+*IMPORTANT: to use this feature is mandatory to enable MongoDB's [replica sets](https://docs.mongodb.com/manual/replication/).*
 
 ## The *streams* collection metadata
 
