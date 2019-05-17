@@ -39,7 +39,7 @@ title: Change Streams
 ## Introduction
 Modern web applications needs to react to data modifications in many contexts.
 
-RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal. Exposing a websocket server endpoint, every [JSR-356-compliant Websocket client](https://www.oracle.com/technetwork/articles/java/jsr356-1937161.html) can be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
+RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal. Exposing a websocket server endpoint, every [RFC 6455-compliant](https://tools.ietf.org/html/rfc6455) or [JSR-356-compliant](https://www.oracle.com/technetwork/articles/java/jsr356-1937161.html) Websocket client can be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
 
 > "Change streams allow applications to access real-time data changes. [...]  Because change streams use the aggregation framework, applications can also filter for specific changes." 
 
