@@ -5,8 +5,8 @@ title: Articles
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Official](#official)
-* [External](#external)
+* [From the Team](#from-the-team)
+* [From the Comunity](#from-the-comunity)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -39,7 +39,7 @@ title: Articles
     </div>
 </div>
 
-## Official
+## From the Team
 * [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database. 
 
 * [**JSON Schema — Form Validation, with Angular & RESTHeart**](https://medium.com/softinstigate-team/json-schema-validazione-e-salvataggio-di-un-form-con-angular-restheart-ec13cbdb5872): The **JSON Schema** makes the creation and the validation of a Form activities relatively simple and fast. The functionality of RESTHeart allows us to have an efficient server-side validation system controlled by the JSON Schema, while the **Angular** Angular6-json-schema-form library transform the JSON Schema in a Form very easily.
@@ -48,7 +48,7 @@ title: Articles
 
 * [**RESTHeart, the REST API Server for MongoDB**](https://medium.com/softinstigate-team/restheart-the-rest-api-server-for-mongodb-4d84ca3376bc): **RESTHeart** leverages **MongoDB**’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
 
-## External
+## From the Comunity
 
 *  [**Building Instant RESTFul API's with MongoDB and RESTHeart**](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/):When you need to turn your Mongo database into a RESTFul API, RESTHeart can get you up-and-running quickly. In this article, we'll explore using RESTHeart to expose a RESTFUL API directly from a Mongo database on Compose.
 
