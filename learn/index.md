@@ -6,7 +6,6 @@ title: Documentation
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-- [What is it](#what-is-it)
 - [Features](#features)
 
 </div>
@@ -17,9 +16,11 @@ title: Documentation
 
 ## Introduction
 
-RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB. It embeds the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. It's written in Java and 
+> RESTHeart connects to MongoDB and securely exposes a clean REST API to read and write data via HTTP requests. You don't need to write a single line of backend code for **Mobile Apps** and  **Angular**, **React**, **Vue** or other Single Page Application frameworks.
 
 RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](/license).
+
+RESTHeart is written in Java and is build on top of the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. 
 
 We created RESTHeat because:
 
@@ -36,10 +37,6 @@ The founding ideas around RESTHeart are:
   5. Docker is the best way to package and distribute applications.
   
   <img src="/images/what.png" width="80%" height="auto" class="image-center img-responsive" />
-
-## What is it
-
-> RESTHeart connects to MongoDB and securely exposes a clean REST API to read and write data via HTTP requests. You don't need to write a single line of backend code for **Mobile Apps** and  **Angular**, **React**, **Vue** or other Single Page Application frameworks.
 
 ## Features
 
