@@ -7,6 +7,7 @@ title: Documentation
 
 - [Introduction](#introduction)
 - [What is it](#what-is-it)
+- [Features](#features)
 
 </div>
 
@@ -16,50 +17,47 @@ title: Documentation
 
 ## Introduction
 
-RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB. It embeds the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. It's entirely written in Java 8 and distributed as open source software under the [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
+RESTHeart is the [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API server for MongoDB. It embeds the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. It's written in Java and 
 
-We started the project for these main reasons:
+RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](/license).
 
- 1. We were tired of configuring and maintaining complicated application servers (coming from a Java Enterprise background);
- 2. Modern applications quite often needs a similar set of basic REST APIs to start with;
- 3. There is a set of recurrent non-functional requirements, like CRUD, pagination, security, authentication authorization, etc... which probably could be solved once for all (at least in a vast majority of cases).
+We created RESTHeat because:
+
+ 1. We were tired of configuring and maintaining complicated application servers;
+ 2. All modern applications require a similar set of basic REST APIs to start with;
+ 3. There is a set of recurrent non-functional requirements, like authentication authorization, HTTP protocol support, etc... that can be solved once for all.
 
 The founding ideas around RESTHeart are:
 
-  1. Developers foremostly need to easily store and retrieve contents, uniformly and consistently, as these days Single Page Applications (the ones built with Angular, React or Vue) and Mobile Apps (either native or hybrid) are moving most of the business logic from the server to the client side;
-  2. Modern Apps always consume a REST API and use plain JSON as the only message format (goodbye XML and RPC);
-  3. MongoDB is, at present, the leading database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
-  4. If, say, 80% of the backend's functionalities are given, then we can better focus on what's matter more, which is the User eXperience;
-  5. Docker is becoming the favorite way to package and distribute applications.
+  1. Developers foremostly need to easily store and retrieve contents, uniformly and consistently, as these days Single Page Applications (built with Angular, React, Vue, etc) and Mobile Apps are moving most of the business logic from the server to the client side;
+  2. Modern Apps wants consuming a REST API and use plain JSON as the message format (goodbye XML and RPC);
+  3. MongoDB is the leading NoSQL database for Web and Mobile apps, because it's lightweight, schemaless, fast and you can directly store JSON into it.
+  4. With 80% of the backend's functionalities given out-of-the-box, you can better focus on what's matter more: the User eXperience;
+  5. Docker is the best way to package and distribute applications.
   
   <img src="/images/what.png" width="80%" height="auto" class="image-center img-responsive" />
 
 ## What is it
 
-In summary:
+> RESTHeart connects to MongoDB and securely exposes a clean REST API to read and write data via HTTP requests. You don't need to write a single line of backend code for **Mobile Apps** and  **Angular**, **React**, **Vue** or other Single Page Application frameworks.
 
-> RESTHeart leverages MongoDB’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
+## Features
 
-- Lightweight and fast server, ready to use without any coding;
-- Built on standards, like HTTP, JSON, REST, HAL, JSON and JSON Schema;
-- Pluggable Authentication and Authorization, with ready to use Identity Manager and role-based Access Manager;
-- Data operations API, to Create, Read, Update, Delete documents;
-- Support for “dot notation” and update operators on every write verb;
-- Bulk operations, with POST, PATCH and DELETE of multiple documents with one single request;
-- GridFS support, for storing and serving large binary data;
-- Aggregation Operations, for both map-reduce and aggregation pipelines;
-- Data model operations API, to create dbs, collections and indexes via pure RESTful calls;
-- Optional data validation with JSON Schema;
-- WebHooks to call other Web resources after a request completes;
-- Relationship can be defined so that documents automatically include hyperlinks to referenced data;
-- Transformation and check logic can be easily applied to requests;
-- Serve Static Resources (such as HTML, CSS, images and JavaScript) and custom Application Logic;
-- Supports optimized browser Web caching and avoids ghost writes with standard ETag;
-- Cross-origin resource sharing (CORS);
-- Embedded HAL browser to easily navigate your data;
-- Available also as a [Docker image](https://hub.docker.com/r/softinstigate/restheart/);
-- Ideal as the backend for **Angular**, **React**, **Vue** or any other JavaScript framework;
-- Can be extended by adding Java classes to perform custom tasks.
+- **Lightweight** and **fast** microservice architecture; simple setup with support for **MongoDB** and **AWS DocumentDB**; available also as a [Docker image](https://hub.docker.com/r/softinstigate/restheart/)
+- **Built on standards**, like HTTP, JSON, REST, JSON and JSON Schema
+- **Read JSON documents** with GET requests, optionally specifying MongoDB queries and projection options; deal with large result sets with pagination
+- **Create, modify and delete JSON documents** with POST, PUT, PATCH and DELETE requests. Supports **bulk requests** to deal with multiple documents with one request
+- Out-of-the-box User **Authentication** and **Authorization**
+- Store and serve binary data with **GridFS** support
+- Define and execute **Aggregations**, supporting both map-reduce and aggregation pipelines
+- Execute requests in multi-document **ACID transactions**
+- Access real-time data changes via Websocket **Change Streams**
+- Create dbs, collections and indexes with **Data Model API**
+- Validate requests with **JSON Schema**
+- Extend RESTHeart via **Plugins**: **transform**, **check** requests and responses, executes **WebHooks** after a request completes, implement **Web Services** in minutes, serve **Static Resources** (such as HTML, CSS, images and JavaScript)
+- Define **Relationships** so that documents automatically include hyperlinks to referenced data
+- Supports **Cross-origin resource sharing** (CORS), **Web caching** and avoids **ghost writes** with HTTP ETag
+- Embeds a **browser web app** to navigate your data
 
 <img src="/images/angular-react-vue.jpg" width="60%" height="auto" />
 
