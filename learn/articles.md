@@ -48,6 +48,8 @@ title: Articles
 
 * [**RESTHeart, the REST API Server for MongoDB**](https://medium.com/softinstigate-team/restheart-the-rest-api-server-for-mongodb-4d84ca3376bc): **RESTHeart** leverages **MongoDB**’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
 
+* [**RESTHeart Performances**](/learn/performances): **RESTHeart** has been designed and developed with lightness and performances as fundamental parameters. On this regards, also thanks to its caching capabilities, RESTHeart often overcomes the results that can be achieved accessing MongoDB directly via its Java driver. This article includes the performance test results gathered by the SoftInstigate’s development team.
+
 ## From the Community
 
 *  [**Building Instant RESTFul API's with MongoDB and RESTHeart**](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/):When you need to turn your Mongo database into a RESTFul API, RESTHeart can get you up-and-running quickly. In this article, we'll explore using RESTHeart to expose a RESTFUL API directly from a Mongo database on Compose.
