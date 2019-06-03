@@ -9,9 +9,9 @@ layout: default
         <a href="/learn/tutorial" class="btn btn-md">Quickstart</a>
         <a href="https://github.com/SoftInstigate/restheart/" class="btn btn-md">Source code</a>
         <p>
+            <img height="28" class="align-top rounded" alt="Docker Pulls" src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=flat-square">
             <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
             <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate" data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
-            <iframe src="https://ghbtns.com/github-btn.html?user=softinstigate&repo=restheart&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160" height="30"></iframe>
         </p>
     </div>
 </section>
