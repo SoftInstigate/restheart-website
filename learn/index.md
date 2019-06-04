@@ -24,7 +24,7 @@ RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu
 
 RESTHeart is written in Java and is build on top of the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. 
 
-We created RESTHeat because:
+We created RESTHeart because:
 
  1. All modern applications require a common set of basic REST APIs;
  2. Many recurrent non-functional requirements, like authentication and authorization, HTTP protocol support, etc... can be solved once for all;
@@ -32,11 +32,11 @@ We created RESTHeat because:
 
 The founding ideas around RESTHeart are:
 
-  1. The key architectural trends in software development are micro services architecture and NoSQL databases 
-  2. Developers foremostly need a backend to easily store and retrieve content, as these days Single Page Applications and Mobile Apps are moving the business logic to the client side;
-  3. Modern Apps wants consuming a REST API and use plain JSON as the message format (goodbye XML and RPC);
+  1. The key architectural trends in software development are microservices architecture and NoSQL databases 
+  2. Developers primarily need a backend to easily store and retrieve content, as these days Single Page Applications and Mobile Apps are moving the business logic to the client side;
+  3. Modern Apps want consuming a REST API and use JSON as the message format (goodbye XML and RPC);
   4. MongoDB is the leading NoSQL database for Web and Mobile apps; it's lightweight, fast, schema-less and uses JSON.
-  5. Having an out-of-the-box backend, we can better focus on what's matter the most: the User eXperience;
+  5. Having an out-of-the-box backend, we can better focus on what matter the most: the User Experience;
   6. Docker is emerging as the de facto standard to package and distribute applications.
 
 ## Features
