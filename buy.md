@@ -18,6 +18,7 @@ permalink: /buy
                 <option value="2">RESTHeart Pro 5 Instances Pack</option>
                 <option value="3">RESTHeart Pro 10 Instances Pack</option>
                 <option value="4">RESTHeart Pro Renewal</option>
+                <option value="5">RESTHeart Platform Free Trial</option>
             </select>
         </div>
          <div class="col-md-4">
@@ -329,7 +330,7 @@ permalink: /buy
                     zip: form.zip.value
                 };
                 Paddle.Checkout.open({
-                     product: 545348,
+                     product: item().productId,
                      email: form.email.value,
                      passthrough: JSON.stringify(_passthrough),
                      country: form.country.value,
@@ -364,6 +365,8 @@ permalink: /buy
                         return { price: 5200.00, description: "RESTHeart Pro 10 Instances Pack", productId: 545416 };
                     case 3:
                         return { price: 600.00, description: "RESTHeart Pro Renewal", productId: 545419 };
+                    case 4:
+                        return { price: 0.00, description: "RESTHeart Platform Free Trial", productId: 562478 };
                     default:
                         return { price: 950.00, description: "RESTHeart Pro Single Instance", productId: 545348 }; 
                         break;
