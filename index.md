@@ -118,13 +118,6 @@ layout: default
 {% include examples.html %}
 </section>
 
-<section id="licenses">
-    <div class="container mt-1 mb-5">
-        <h1 class="text-center">Licenses</h1>
-        {% include licenses-table.html %}
-    </div>
-</section>
-
 <section class="chart" id="chart">
 
 {% include docker_pull_chart.html %}
