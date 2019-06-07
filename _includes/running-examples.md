@@ -31,26 +31,3 @@ POST /inventory [
 ```
 
 <a href="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Execute on rest ninja
-</button>
-
-<!-- Modal -->
-<div class="modal modal-fullscreen fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Execute request with REST Ninja title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <iframe width="1000px" height="800px" frameborder="0" src="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0">
-        </iframe>
-      </div>
-    </div>
-  </div>
-</div>
