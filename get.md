@@ -8,22 +8,21 @@ permalink: /get
 
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row">
-        <h2 class="text-info">Purchase Options</h2>
+        <h2 class="text-info">Get RESTHeart Platform</h2>
     </div>
+    <hr class="my-4">
     <div class="form-row">
-        <div class="col-md-8">
-            <label for="item">Item</label>
-            <select id="item" class="form-control form-control-lg custom-select" required>
+        <div class="col-md-10">
+            <select id="item" class="form-control form-control-lg" required>
                 <option value="0">RESTHeart Platform 30 Days Trial</option>
                 <option value="1">RESTHeart Platform Professional Edition</option>
             </select>
         </div>
-         <div class="col-md-4">
-            <label for="price">Price</label>
-            <input class="form-control form-control-lg" id="price" aria-describedby="price" disabled value="Free">
+         <div class="col-md-2">
+            <input class="form-control-plaintext form-control-lg text-right" id="price" aria-describedby="price" disabled value="Free">
         </div>
-        <div class="col-12 my-0">
-            <div class="hint mt-2 text-muted"><small>You specify quantities during checkout.</small></div>
+        <div class="col-12 my-0 d-none" id="qtn-tip">
+            <div class="hint mt-2 text-muted"><small>Specify quantities during checkout.</small></div>
         </div>
     </div>
     <hr class="my-4">
@@ -46,8 +45,8 @@ permalink: /get
             <div class="invalid-feedback">Invalid email address</div>
         </div>
     </div>
-    <hr class="my-4">
     <div id="billing" class="d-none">
+        <hr class="my-4">
         <div class="form-row mt-2">
             <h2 class="text-info">Billing Address</h2>
         </div>
@@ -308,7 +307,7 @@ permalink: /get
                 </select>
             </div>
             <div class="col-12 my-0">
-                <div class="hint mt-2 text-muted"><small>You can add the VAT code when downloading your invoice.</small></div>
+                <div class="hint mt-2 text-muted"><small>You can add the VAT code when downloading the invoice.</small></div>
             </div>
         </div>
     </div>
@@ -321,21 +320,22 @@ permalink: /get
         <script>
             function openCheckout() {
                 var form = document.getElementById('pre-checkout');
+                var it = item();
                 var _passthrough = {
                     organization: form.organization.value,
                     email: form.email.value,
-                    address: form.address.value,
-                    country: form.country.value,
-                    zip: form.zip.value
+                    address: it.free ? null: form.address.value,
+                    country: it.free ? "US": form.country.value,
+                    zip: it.free ? null: form.zip.value
                 };
                 Paddle.Checkout.open({
-                     product: item().productId,
+                     product: it.productId,
                      email: form.email.value,
                      passthrough: JSON.stringify(_passthrough),
-                     country: form.country.value,
-                     postcode: form.zip.value,
+                     country: it.free ? "US": form.country.value,
+                     postcode: it.free ? null: form.zip.value,
                      quantity: 1,
-                     title: item().description,
+                     title: it.description,
                      locale: 'en'
                 });
             }
@@ -355,6 +355,7 @@ permalink: /get
             }
             function item() {
                 var idx = document.querySelector('#item').selectedIndex;
+                var qtnTip = document.querySelector('#qtn-tip');
                 var billing = document.querySelector('#billing');
                 var address = document.querySelector('#address');
                 var zip = document.querySelector('#zip');
@@ -365,18 +366,20 @@ permalink: /get
                         zip.removeAttribute('required');
                         country.removeAttribute('required');
                         billing.classList.add("d-none");
-                        return { idx:0, price: 'Free', description: "RESTHeart Platform 30 Days Trial", productId: 562478 };
+                        qtnTip.classList.add("d-none");
+                        return { idx:0, free: true, description: "RESTHeart Platform 30 Days Trial", productId: 562478 };
                     default:
                         billing.classList.remove("d-none");
+                        qtnTip.classList.remove("d-none");
                         address.setAttribute('required','');
                         zip.setAttribute('required','');
                         country.setAttribute('required','');
-                        return { idx:1, price: '$ 499', description: "RESTHeart Platform Professional Edition", productId: 545348 }; 
+                        return { idx:1, free: false, price: '$ 499', description: "RESTHeart Platform Professional Edition", productId: 545348 }; 
                 }
             }
             function recalculate() {
                 var it = item();
-                document.querySelector('#price').value = it.price;
+                document.querySelector('#price').value = it.free ? "Free" : it.price;
                 document.querySelector('#item').value = it.idx;
                 toggleButton();              
             }
