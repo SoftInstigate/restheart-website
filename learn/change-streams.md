@@ -33,6 +33,13 @@ title: Change Streams
     <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try RESTHeart PRO for free!</a></span>
 </div>
 
+<div class="jumbotron">
+    <h2><strong>Lightweigth and fast.</strong> Up to thousand hundred clients getting notified with high performance!</h2>
+    <div>
+    Check our tests results <a href="http://localhost:4000/learn/change-streams">here</a>!
+    </div>
+</div>
+
 ## Introduction
 Modern web applications needs to react with promptness and efficency to data changes in many contexts.
 
