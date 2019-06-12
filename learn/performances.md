@@ -31,15 +31,15 @@ RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every c
 
 Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
 
-|  Clients     |              TPS             |
-|:-------------|-----------------------------:|
-| **10**       |      27                      |
-| **100**      |      278                     |
-| **1000**     |      2790                    |
-| **10000**    |      27909                   |
-| **15000**    |      41812                   |
-| **20000**    |      54125                   |
-| **25000**    |      61995                   |
+|  Clients     |              TPS             | Mean Notification Time (333ms = Real Time) |
+|:-------------|-----------------------------:|-------------------------------------------:|
+| **10**       |      27                      |             357ms                          |
+| **100**      |      278                     |             359ms                          |                       
+| **1000**     |      2790                    |             358ms                          |
+| **10000**    |      27909                   |             358ms                          |
+| **15000**    |      41812                   |             358ms                          |
+| **20000**    |      54125                   |             369ms                          |
+| **25000**    |      61995                   |             403ms                          |
 
 
 ### How we tested
