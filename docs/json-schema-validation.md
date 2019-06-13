@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Document validation with JSON schema
+title: JSON Schema Validation 
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
