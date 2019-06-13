@@ -9,27 +9,19 @@ title: Roadmap
 
 ## RESTHeart 4.0
 
-Expected release date: May 24, 2019
-
 ## Security
 
-RESTHeart 4.0 delegates security to uIAM and does not embed security functions anymore.
+RESTHeart 4.0 is split in two modules, restheart-core and restheart-security.
 
-[uIAM](https://github.com/softInstigate/uiam) is a spin-off project from RESTHeart. It is a Identity and Access Manager that includes and extends the security features embedded in RESTHeart 3.x.
+[restheart-security](https://github.com/softInstigate/restheart-security) is a spin-off project from RESTHeart. It is a Identity and Access Manager that includes and extends the security features embedded in RESTHeart 3.x.
 
-> uIAM only focus on security while RESTHeart 4.0 just provides a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*. 
+> restheart-security only focus on security while restheart-core just provides a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*. 
 
-uIAM follows the same dual licensing scheme of RESTHeart.
+restheart-security follows the same dual licensing scheme of RESTHeart.
 
 ### Development status
 
-- <span style="color:green">**done**</span> in branch *next*
-- security features removed 
-- all original RH security test works with uIAM in front of RH4
-
-### TODOs
-
-- add documentation about running RH with uIAM
+- <span style="color:green">**done**</span>
 
 ## Representation format
 
@@ -77,6 +69,10 @@ The new format, called STANDARD, is as follows:
     { <doc_n> }
 ]
 
+# cound documents of a collection -> GET /db/coll/_size
+
+{ "_size": n }
+
 # a document -> GET /db/coll/docid
 
 { 
@@ -95,13 +91,13 @@ The new format, called STANDARD, is as follows:
 
 ### TODOs
 
-- updated documentation about the new STANDARD representation format
+- <span style="color:green">**done**</span>
 
 ## Changes Streams with Websocket
 
-RESTHeart Pro 4.0 fully supports [change streams](https://docs.mongodb.com/manual/changeStreams/index.html) introduced by MongoDB 3.6 for replica sets.
+RESTHeart Platform 4.0 fully supports [change streams](https://docs.mongodb.com/manual/changeStreams/index.html) introduced by MongoDB 3.6 for replica sets.
 
-> note: this feature is only available with RESTHeart Pro.
+> note: this feature is only available with RESTHeart Platform.
 
 A new resource is available, called `stream`. A stream can be created specifying a collection metadata that defines an aggregation and a URI in a similar way than an aggregation resource is currently defined.
 
@@ -109,13 +105,7 @@ The stream URI endpoint will open a *Websocket* for the client to be notified of
 
 ### Development status
 
-- <span style="color:green">**done**</span> in branch *next*
-
-### TODOs
-
-- add documentation about change streams.
-- write documentation about streams
-- add stream to use hooks
+- <span style="color:green">**done**</span>
 
 ## Sessions
 
@@ -123,17 +113,13 @@ RESTHeart 4.0 fully supports [sessions](https://docs.mongodb.com/manual/changeSt
 
 ### Development status
 
-- <span style="color:green">**done**</span> in branch *next*
-
-### TODOs
-
-- add documentation about change streams.
+- <span style="color:green">**done**</span>
 
 ## Transactions
 
-RESTHeart Pro 4.0 fully supports [multi document transactions](https://docs.mongodb.com/manual/core/write-operations-atomicity/#multi-document-transactions) introduced by MongoDB 4.0 for replica sets.
+RESTHeart Platform 4.0 fully supports [multi document transactions](https://docs.mongodb.com/manual/core/write-operations-atomicity/#multi-document-transactions) introduced by MongoDB 4.0 for replica sets.
 
-> note: this feature is only available with RESTHeart Pro.
+> note: this feature is only available with RESTHeart Platform.
 
 Following the REST paradigm, the approach to support transactions is modeling them as first class resources. 
 
@@ -177,7 +163,7 @@ HTTP/1.1 204 No Content
 
 ### Development status
 
-- <span style="color:orange">**Work in progress in branch [next](https://github.com/SoftInstigate/restheart/tree/next/src/main/java/org/restheart/handlers/txns)**</span>
+- <span style="color:green">**done**</span>
 
 ## Plugin API changes
 
@@ -185,4 +171,4 @@ The java API for plugins (Transformers, Hooks, Checkers and Initializers) will u
 
 ### Development status
 
-- <span style="color:red">**not yet started**</span>
+- <span style="color:green">**done**</span>
