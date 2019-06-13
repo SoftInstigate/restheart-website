@@ -13,7 +13,6 @@ title: Performances
 
 {% include docs-head.html %} 
 
-
 RESTHeart has been designed and developed with lightness and
 performances as fundamental parameters.
 

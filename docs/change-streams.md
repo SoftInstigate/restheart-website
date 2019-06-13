@@ -21,23 +21,26 @@ title: Change Streams
 
 <div class="d-block d-md-none alert alert-warning" role="alert">
     <div class="d-flex justify-content-center">
-    This is a <strong class="ml-1 mr-1">PRO only</strong> feature.
+    This is a <strong class="ml-1 mr-1">RESTHeart Platform only</strong> feature.
     </div>
     <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try RESTHeart PRO for free!</a></span>
+        <span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span>
     </div>
 </div>
 
-<div class="d-none d-md-block alert alert-warning" role="alert">
-    This is a <strong>PRO only</strong> feature.
-    <span class="badge badge-pill badge-light p-1"><a href="https://restheart.org/buy" class="uri">Try RESTHeart PRO for free!</a></span>
+<div class="alert alert-info" role="alert">
+    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <hr class="my-2">
+    <p>Change Streams are available only on RESTHeart Platform.</p>
+    <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
+    <p><span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span></p>
 </div>
 
-<div class="jumbotron">
-    <h2><strong>Lightweigth and fast.</strong> Up to thousand hundred clients getting notified with high performance!</h2>
-    <div>
-    Check our tests results <a href="http://localhost:4000/docs/change-streams">here</a>!
-    </div>
+<div class="alert alert-success" role="alert">
+    <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
+    <hr class="my-2">
+    <p>Handle hundreds of thousands of concurrent clients.</p>
+    <p>Check the <a class="alert-link" href="/docs/performances">performance tests</a>!</p>
 </div>
 
 ## Introduction

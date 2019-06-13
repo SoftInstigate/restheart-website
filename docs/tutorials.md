@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Articles
+title: Tutorials
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -12,7 +12,6 @@ title: Articles
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
-
 
 <div class="d-block d-md-none alert alert-warning" role="alert">
     <div class="d-flex justify-content-center">
