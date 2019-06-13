@@ -36,7 +36,7 @@ title: Change Streams
 <div class="jumbotron">
     <h2><strong>Lightweigth and fast.</strong> Up to thousand hundred clients getting notified with high performance!</h2>
     <div>
-    Check our tests results <a href="http://localhost:4000/learn/change-streams">here</a>!
+    Check our tests results <a href="http://localhost:4000/docs/change-streams">here</a>!
     </div>
 </div>
 
