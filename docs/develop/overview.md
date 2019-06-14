@@ -16,4 +16,5 @@ title: Plugins Development Overview
 
 ## Introduction 
 
-> Work in progress
+{:.alert.alert-warning}
+Work in progress

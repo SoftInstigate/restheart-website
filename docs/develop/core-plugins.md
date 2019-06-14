@@ -16,4 +16,5 @@ title: Develop Core Plugins
 
 ## Introduction 
 
-> Work in progress
+{:.alert.alert-warning}
+Work in progress

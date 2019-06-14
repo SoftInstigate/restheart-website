@@ -16,4 +16,5 @@ title: Upgrade to RESTHeart v4
 
 ## Introduction 
 
-> Work in progress
+{:.alert.alert-warning}
+Work in progress

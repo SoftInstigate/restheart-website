@@ -16,4 +16,5 @@ title: Databases and Collections
 
 ## Introduction 
 
-> Work in progress
+{:.alert.alert-warning}
+Work in progress
