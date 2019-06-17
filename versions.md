@@ -302,6 +302,19 @@ title: Versions
         <td>Company Purchase Order</td>
         <td>Company Purchase Order</td>
       </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td colspan="4">Obtain</td>
+      </tr>
+      <tr>
+        <td>Obtain</td>
+        <td><a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">GitHub Repository</a></td>
+        <td>
+          <a href="{{ "/get" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
+        </td>
+        <td>n/a</td>
+        <td>n/a</td>
+      </tr>
     </tbody>
   </table>
 
