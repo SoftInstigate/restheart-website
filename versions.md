@@ -19,16 +19,20 @@ title: Versions
       <tr>
         <th class="tl"></th>
         <th class="compare-heading p-3">
-          OSS
+          <div class="d-flex flex-column flex-md-row justify-content-center mb-2 w-100">
+            <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
+            <a class="mt-auto" href="{{ "/faq" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
+          </div>
+          <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform PE
+          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform EE
+          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform OEM
+          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
         </th>
       </tr>
     </thead>
@@ -243,16 +247,20 @@ title: Versions
       <tr>
         <th class="tl"></th>
         <th class="compare-heading restheart-version p-3">
-          OSS
+          <div class="d-flex flex-column flex-md-row justify-content-center mb-2 w-100">
+            <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
+            <a class="mt-auto" href="{{ "/faq" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
+          </div>
+          <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform PE
+          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform EE
+          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          Platform OEM
+          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
         </th>
       </tr>
     </thead>
