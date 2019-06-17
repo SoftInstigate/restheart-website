@@ -32,7 +32,7 @@ Measure RESTHeart's notification throughput while _n_ Websockets are listening f
 RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every client will wait until all notification have been received.
 
 
-![change stream test](http://localhost:4000/images/perftest/change-stream-test.png){: class="img-responsive"}
+![change stream test](../../images/perftest/change-stream-test.png){: class="img-responsive"}
 
 Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
 

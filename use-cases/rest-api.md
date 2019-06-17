@@ -18,11 +18,7 @@ RESTHeart provides a strong security module for authentication, authorization, a
 
 In most scenarios, RESTHeart can be the perfect server-side backend for mobile and web applications, so that frontend developers can focus on building user Interfaces.
 
-Development Cost Savings Using RESTHeart
-
-Based on the experience of developing scores of application development projects, RESTHeart usually saves approximately 30% of the total cost of application development because it usually eliminates the backend configuration and maintenance costs of the application servers and frameworks. Many RESTHeart users tell us that they had their mobile or web applications up and running in a single day!
-
-To see an estimate of how much money you will save using RESTHeart for your development project, go to the RESTHeart ROI Calculator.
+To see an estimate of how much money you will save using RESTHeart for your development project, go to the [RESTHeart ROI Calculator](../../versions#roi-calculator).
  
 For a detailed description of setting up an API to MongoDB using RESTHeart see [Building Instant RESTFul API’s with MongoDB and RESTHeart](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/?utm_content=buffere473f&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer).
  
