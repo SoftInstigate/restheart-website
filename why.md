@@ -2,9 +2,10 @@
 layout: page-notitle
 title: Why RESTHeart
 ---
-{: .pt-3}
+{: .mt-5}
 # Why RESTHeart?
 
+{: .mt-5}
 In 2014 we had long realized that both application servers and frameworks force people to invest a lot of time in their configuration and maintenance, comparing to what is usually invested in the implementation of actual functionalities.
 
 For these reasons, at SoftInstigate we started developing an open-source product called **RESTHeart**, in order to investigate more rational ways to build applications. It was born as a summer experiment and it became an increasingly focused and robust product in the following years.
