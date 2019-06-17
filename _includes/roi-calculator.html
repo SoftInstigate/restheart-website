@@ -1,0 +1,77 @@
+<div class="alert alert-info mt-5" role="alert">
+    <h2 class="alert-heading"><strong>Development Cost Savings Using RESTHeart</strong>.</h2>
+    <hr class="my-2">
+    <p>Based on the experience of developing scores of application development projects, RESTHeart usually saves approximately 30% of the total cost of application development because it usually eliminates the backend configuration and maintenance costs of the application servers and frameworks. Many RESTHeart users tell us that they had their mobile or web applications up and running in a single day!</p>
+    <p>To calculate the development cost savings using RESTHeart just enter the average daily cost of a developer for your organization and the total developer-days of your project.</p>
+</div>
+
+<div class="jumbotron bg-light pb-3">
+
+    <form id="pre-checkout" novalidate class="was-validated">
+        <div class="form-row">
+            <h2 class="text-info">RESTHeart ROI Calculator *</h2>
+        </div>
+        <hr class="my-4">
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <label for="averageCostLabel">Average Daily Developer Cost in Your Organization</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="emailPrepend">USD</span>
+                    </div>
+                    <input type="number" min="1" step="0.01" class="form-control form-control-lg" id="averageCost" required>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="devsNumberLabel">Total Number of Developer Days for Your Project</label>
+                <div class="input-group">
+                    <input type="number" min="1" step="0.01" class="form-control form-control-lg" id="devsNumber" aria-describedby="email" required>
+                </div>
+                <div class="invalid-feedback">Invalid email address</div>
+            </div>
+        </div>
+        <div id="roiResult" class="form-row d-flex justify-content-end p-2">
+            
+        </div>
+    </form>
+    <p class="text-info mt-3" style="font-size: 14px">*This ROI calculator is based on the average cost savings experienced measured over scores of typical mobile or web application development projects using RESTHeart. It is only meant to provide a rough estimate of cost savings. If your project requires extensive backend development costs even with using RESTHeart, it is possible that you won’t have cost savings.</p>
+
+</div>
+
+<script>
+    avgCost = document.getElementById("averageCost");
+    devsNumber = document.getElementById("devsNumber");
+    roiResult = document.getElementById("roiResult");
+
+    var calculateROI = function() {
+        var savings = (avgCost.value * devsNumber.value * 30) / 100;
+        
+        var child = roiResult.lastElementChild;  
+        while (child) { 
+            roiResult.removeChild(child); 
+            child = roiResult.lastElementChild; 
+        } 
+
+        var newElem = document.createElement('span');
+        var htmlString;
+        if(!isNaN(savings) && savings > 0) {
+            htmlString = "<p>Your Estimated Project Cost Savings Using RESTHeart: <strong class=\"ml-2\">" + 
+                savings +
+                " USD/day</strong></p>"
+        } else if (savings == 0){
+            htmlString = "<p class=\"text-danger\">Compile all fields with non-zero values</p>"
+        } else {
+            htmlString = "<p class=\"text-danger\">Cannot calculate ROI: invalid input!</p>"
+        }
+        
+        newElem.innerHTML = htmlString;
+
+        roiResult.appendChild(newElem.firstChild);
+        
+    }
+
+    avgCost.addEventListener("keyup", function(event) { calculateROI()} );
+    devsNumber.addEventListener("keyup", function(event) { calculateROI()} );
+
+    
+</script>
