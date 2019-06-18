@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Open Data and IoT
+title: "Use Case: Open Data and IoT"
 ---
 
 <style type="text/css">

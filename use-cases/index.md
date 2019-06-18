@@ -1,4 +1,8 @@
 ---
-layout: default 
+layout: page 
+title: Use Cases
 ---
-{% include use-cases.html %}
+
+<section id="usecases" class="slice bg-light">
+    {% include use-cases.html %}
+</section>

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: REST API for MongoDB and MongoDB Compatible Databases (like Amazon’s DocumentDB) 
+title: "Use Case: REST API for MongoDB"
 ---
 
 <style type="text/css">

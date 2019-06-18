@@ -17,7 +17,13 @@ layout: default
     </div>
 </section>
 
-{% include use-cases.html %}
+<section id="usecases" class="slice bg-light">
+    <div class="container-fluid">
+        <h1 class="text-center">Use Cases</h1>
+    </div>
+
+    {% include use-cases.html %}
+</section>
 
 <section id="call-to-action" class="call-to-action">
     <div class="container">

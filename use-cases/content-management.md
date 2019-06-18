@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Content Management
+title: "Use Case: Content Management"
 ---
 
 <style type="text/css">
