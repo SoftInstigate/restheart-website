@@ -9,7 +9,7 @@ title: Upgrade to RESTHeart v4
 * [New features](#new-features)
 * [Default configuration](#default-configuration)
 * [Representation Format](#representation-format)
-* [Plugins](#plugins)
+* [Plugins Development](#plugins-development)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
