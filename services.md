@@ -1,56 +1,62 @@
 ---
-layout: page-notitle
+layout: page
 title: Professional Services
 permalink: /services.html
 ---
 
-# Professional Services
-
-{: .text-center }
-## __No one can help you better__
-
-{: .text-center }
-### Professional Services are provided by [SoftInstigate](https://www.softinstigate.com), the company behind RESTHeart.
-
-Professional Services can help you on:
-
-* Using RESTHeart' standard API (create resources, insert, update and query data)
-* Developing RESTHeart extensions
-* Customizing RESTHeart
-* Priority bug fixing
-* Validating architectural choices against best practices;
-* integrations with other systems;
-* Security configurations.
-* Highly available deployments on cloud or on premises.
-
-### Prepaid model
-
-The Service can be delivered through a prepaid model.
-
-* The service starts with a 80 working hours balance, valid for 12 months.
-* When a task request is received, our team estimates the effort and, after customer's approval, executes the task.
-* As soon as the task is resolved, the worked time is deducted from the balance.
-
-At any time the Customer can:
-
-* Top-up the balance, extending the service beyond 80 hours.
-* Renew for additional 12 months.
-* Request the current balance.
-
-### T&M model 
-
-We offer tailored T&M activities, for very specific needs, delivered in chunks of minimum 4 hours each.
-
-<section class="slice pt-0 text-center" id="quote">
-<div class="container">
-    <a href="mailto:info@softinstigate.com?subject=RESTHeart profession services inquiry" class="btn btn-primary btn-sm">Ask our sales</a>
+<div class="alert" role="alert">
+    <h2 class="display-4">First class Service</h2>
+    <p class="lead">
+        Dedicated support for production environments
+    </p>
+    <hr class="mt-1 mb-5">
+    <p class="lead mt-4">
+        <a href="mailto:sales@restheart.org?subject=RESTHeart profession services inquiry" class="btn btn-primary mr-3">Ask our sales</a>
+        No one can help you better.
+    </p>
 </div>
-</section>
 
-# Community Support
+<div class="row jumbotron bg-red text-white">
+    <div class="col-6 lead">
+        <div class="mb-1">Using RESTHeart API</div>
+        <div class="mb-1">Developing Core Plugins</div>
+        <div class="mb-1">Developing Security Plugins</div>
+        <div class="mb-1">Customizing RESTHeart</div>
+        <div>Validating architectural choices against best practices</div>
+    </div>
+    <div class="col-6 lead">
+        <div class="mb-1">Priority support</div>
+        <div class="mb-1">Priority bug fixing</div>
+        <div class="mb-1">Integrations with other systems</div>
+        <div class="mb-1">Highly available deployments</div>
+        <div>Deploy on cloud or on premises</div>
+    </div>
+</div>
 
-> RESTHeart team and the community offer free support via Stackoverflow and Github.
+<div class="row jumbotron bg-white">
+    <div class="col-6">
+        <h2>Prepaid model</h2> 
+        <div class="mb-1">Service starts with a 80 hours balance, valid for 12 months.</div>
+        <div class="mb-1">When a task request is resolved, the worked time is deducted from the balance.</div>
+        <div>At any time the customer can top up the balance thus extending the service.</div>
+    </div>
+    <div class="col-6">
+        <h2>On demand</h2>
+        <p class="mb-1">We offer tailored T&M activities for special needs.</p>
+        <p>Delivered in chunks of minimum 8 hours.</p>
+    </div>
+</div>
 
-## <a class="btn btn-info" href="https://github.com/SoftInstigate/restheart/issues/new">Report an issue</a> on github.
-
-## <a class="btn btn-warning" href="https://stackoverflow.com/questions/tagged/restheart">Ask a question</a> on stackoverflow using the tag _restheart_ .
+<div class="alert" role="alert">
+    <h2 class="display-4">Free support</h2>
+    <p class="lead">
+        RESTHeart team offers free support via Stackoverflow and Github
+    </p>
+    <hr class="mt-1 mb-5">
+    <h2>
+        <a href="https://github.com/SoftInstigate/restheart/issues/new" class="btn btn-primary mr-3">Report an issue</a> on github
+    </h2>
+    <h2>
+        <a href="https://stackoverflow.com/questions/tagged/restheart" class="btn btn-primary mr-3">Ask a question</a> on StackOverflow using the tag <i>restheart</i>
+    </h2>
+</div>
