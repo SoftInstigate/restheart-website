@@ -19,13 +19,13 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="emailPrepend">USD</span>
                     </div>
-                    <input type="number" min="1" step="0.01" class="form-control form-control-lg" id="averageCost" required>
+                    <input type="number" value="120" min="100" step="0.01" class="form-control form-control-lg" id="averageCost" required>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
-                <label for="devsNumberLabel">Total Number of Developer Days for Your Project</label>
+                <label for="daysLabel">Total Number of Developer Days for Your Project</label>
                 <div class="input-group">
-                    <input type="number" min="1" step="0.01" class="form-control form-control-lg" id="devsNumber" aria-describedby="email" required>
+                    <input type="number" value="14" min="5" step="0.01" class="form-control form-control-lg" id="days" aria-describedby="email" required>
                 </div>
                 <div class="invalid-feedback">Invalid email address</div>
             </div>
@@ -40,11 +40,11 @@
 
 <script>
     avgCost = document.getElementById("averageCost");
-    devsNumber = document.getElementById("devsNumber");
+    days = document.getElementById("days");
     roiResult = document.getElementById("roiResult");
 
     var calculateROI = function() {
-        var savings = (avgCost.value * devsNumber.value * 30) / 100;
+        var savings = ((avgCost.value * days.value * 30) / 100) - 499;
         
         var child = roiResult.lastElementChild;  
         while (child) { 
@@ -52,16 +52,17 @@
             child = roiResult.lastElementChild; 
         } 
 
+
         var newElem = document.createElement('span');
         var htmlString;
         if(!isNaN(savings) && savings > 0) {
             htmlString = "<p>Your Estimated Project Cost Savings Using RESTHeart: <strong class=\"ml-2\">" + 
                 savings +
-                " USD/day</strong></p>"
-        } else if (savings == 0){
-            htmlString = "<p class=\"text-danger\">Compile all fields with non-zero values</p>"
-        } else {
+                " USD</strong></p>"
+        } else if (isNaN(savings)){
             htmlString = "<p class=\"text-danger\">Cannot calculate ROI: invalid input!</p>"
+        } else {
+            htmlString = "<p class=\"text-danger\">No savings for given input values</p>"
         }
         
         newElem.innerHTML = htmlString;
@@ -69,7 +70,11 @@
         roiResult.appendChild(newElem.firstChild);
         
     }
+    $("#averageCost").on('change', function(event) {calculateROI()});
+    $("#days").on('change', function(event) {calculateROI()});
 
-    avgCost.addEventListener("keyup", function(event) { calculateROI()} );
-    devsNumber.addEventListener("keyup", function(event) { calculateROI()} );  
+    avgCost.addEventListener("keyup", function(event) { $("#averageCost").change()} );
+    days.addEventListener("keyup", function(event) { $("#days").change()} );
+
+    calculateROI();
 </script>
