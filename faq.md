@@ -1,18 +1,30 @@
 ---
-layout: docs
+layout: default
 title: Frequently Asked Questions
 ---
+<div class="container-fluid imgHover">
+    <div class="row flex-xl-nowrap">
 
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+<div markdown="1" class="d-none d-lg-block col-lg-4 order-first faq-toc">
 
 * [OS vs Professional Edition](#os-vs-pe)
+* [What is the license?](#license)
+* [What is a License Key?](#license-key)
+* [What is a RESTHeart instance?](#rh-instance)
+* [What is the License Key Activation process?](#license-key-activation)
+* [What is a Derivative Work?](#derivative-work)
+* [Derivative Work distribution](#distribute-derivative-work)
+* [*Disclose source* AGPL condition over Commercial License](#commercial-license-overcome-disclose-source)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-lg-7 py-md-3 bf-content">
 
 {% include docs-head.html %} 
 
-{: #os-vs-pe .icon-lightbulb.alert.alert-info}
+<div class="anchor-offset" id="os-vs-pe">
+</div>
+
+{: .mt-3 .alert .alert-info}
 I’m not sure which version of RESTHeart to get—the open source version or the professional edition version. What are the basic differences?
 
 If you are a student or researcher and plan to use RESTHeart for study, research or in-house development (not a commercial deployment) and are comfortable with the AGSL Open Source license regime governing the RESTHeart open source version then the open source version is likely to be best for you.
@@ -33,25 +45,45 @@ However, if you are a commercial developer and plan to deploy a project for a cl
 
 6. **Priority bug fixes:** the support team for RESTHeart prioritizes support/bug fixes for those with paid versions. Users of the PE version of the RESTHeart Platform will get their bugs fixed with higher priority and those with the open source version will get attention for bug fixes – just at a lower level of speed and priority.
 
+
+<div class="anchor-offset" id="license">
+</div>
+
 {: .alert.alert-info.mt-4}
 What is the license?
 
 See [COMM-LICENSE](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt) in the root of the RESTHeart repo.
 
-{: .alert.alert-info.mt-4}
+
+<div class="anchor-offset" id="license-key">
+</div>
+
+{: #license-key .alert.alert-info.mt-4}
 What is a License Key?
 
 A *License Key* is a verifiable file, cryptographically signed by the Licensor, containing additional information on the License (including but not limited to those that specifies how many RESTHeart instances the Licensee is allowed to execute and how) that can purchased by the Licensee in order to acquire the rights to use RESTHeart.
+
+
+<div class="anchor-offset" id="rh-instance">
+</div>
 
 {: .alert.alert-info.mt-4}
 What is a RESTHeart instance?
 
 A *RESTHeart instance* is any installation of RESTHeart and Derivative Works of RESTHeart capable of being executed as a single process in a production execution environment regardless the used technology, including but not limited to bare metal servers, virtual machines or containers. Installations made for testing or development purposes don’t constitute RESTHeart instances.
 
+
+<div class="anchor-offset" id="license-key-activation">
+</div>
+
 {: .alert.alert-info.mt-4}
 What is the License Key Activation process?
 
 The License Key Activation is the technical process by which the Licensee accepts the Terms and Conditions of the License and binds the License Key to a RESTHeart Instance. RESTHeart instances with activated license keys run under the Commercial License and are not affected by AGPL restrictions.
+
+
+<div class="anchor-offset" id="derivative-work">
+</div>
 
 {: .alert.alert-info.mt-4}
 What is a Derivative Work?
@@ -60,6 +92,10 @@ A Derivative Work is the work or software that could be created by the Licensee,
 
 **Important**: A Software that interacts with RESTHeart only via its REST API is not considered as a Derivative Work.
 
+
+<div class="anchor-offset" id="distribute-derivative-work">
+</div>
+
 {: .alert.alert-info.mt-4}
 Can I distribute a Derivative Work with my own License?
 
@@ -67,10 +103,14 @@ With the Commercial License you can distribute your Derivative Work under your T
 
 You can buy as many license keys as the instance you need to distribute or even have an OEM license. In the latter case the License Key is not bound to RESTHeart instances and can only be used together with your product.
 
+
+<div class="anchor-offset" id="commercial-license-overcome-disclose-source">
+</div>
+
 {: .alert.alert-info.mt-4}
-Does the Commercial License overcome the *Disclose source* AGPL condition?
+Does the Commercial License overcome the *Disclose Source* AGPL condition?
 
 Yes, With the Commercial License you don't have to make the Source Code available when distributing your Derivative Work. 
 
 <div class="mb-5">&nbsp;</div>
-<div class="mb-5">&nbsp;</div>
+</div>
