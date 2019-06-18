@@ -283,7 +283,7 @@ title: Versions
       <tr>
         <td>Pricing</td>
         <td>Free</td>
-        <td>30-Day Free Trial then USD 500 per Deployment Instance per Year. VAT applies for EU customers</td>
+        <td>30-Day Free Trial then USD 499 per Deployment Instance per Year. VAT applies for EU customers</td>
         <td>Negotiable<br>
         <a href="mailto:EE@restheart.org">Contact</a>
         </td>
