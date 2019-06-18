@@ -24,11 +24,11 @@ title: Security Overview
 
 It acts as a reverse proxy for HTTP resources, providing __Authentication__ and __Authorization__ services. 
 
-**restheart-security** enables developers to configure security policies in standardized micro-gateway instances that are external to API and microservices implementations, avoiding coding security functions and a centralized gateway where scalability is a key concern.
+**restheart-security** enables developers to configure security policies in standardized micro-gateway instances that are external to API and micro-services implementations, avoiding coding security functions and a centralized gateway where scalability is a key concern.
 
-**restheart-security** can also be used as a micro-gateway for **Identity and Access Management**  in any HTTP-based microservices architecture. 
+**restheart-security** can also be used as a micro-gateway for **Identity and Access Management**  in any HTTP-based micro-services architecture. 
 
-> Think about restheart-security as the "brick" that you put in front of your API and microservices to protect them. 
+> Think about restheart-security as the "brick" that you put in front of your API and micro-services to protect them. 
 
 **restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins. 
 
@@ -53,19 +53,19 @@ It acts as a reverse proxy for HTTP resources, providing __Authentication__ and 
 
 The following diagram shows a single instance of **restheart-security** placed on the network layer, in front of the resources to be protected. It acts as a centralized __security policy enforcer__.
 
-![restheart-security on the network layer](/images/restheart-security-on-network-layer.png?raw=true "restheart-security on the network layer")
+![restheart-security on the network layer](/images/restheart-security-on-network-layer.png "restheart-security on the network layer")
 
 ### **restheart-security** within containers
 
-The following diagram shows **restheart-security** used as a sidecar proxy within each container pod. Each microservice is protected by an instance of **restheart-security** with its own dedicated security policy.
+The following diagram shows **restheart-security** used as a sidecar proxy within each container pod. Each micro-service is protected by an instance of **restheart-security** with its own dedicated security policy.
 
-![restheart-security within containers](/images/restheart-security-within-containers.png?raw=true "restheart-security within containers")
+![restheart-security within containers](/images/restheart-security-within-containers.png "restheart-security within containers")
 
 ### **restheart-security** embedded
 
-The following diagram shows **restheart-security** used to implement a simple microservice using service extensions.
+The following diagram shows **restheart-security** used to implement a simple micro-service using service extensions.
 
-![restheart-security embedded](/images/restheart-security-embedded.png?raw=true "restheart-security embedded")
+![restheart-security embedded](/images/restheart-security-embedded.png "restheart-security embedded")
 
 ## How it works
 
@@ -105,7 +105,7 @@ GET https://domain.io/api
 HTTP/1.1 401 Unauthorized
 ```
 
-With the default configuration **restheart-secuirty** uses the Basic Authentication with credentials and permission defined in `users.yml` and `acl.yml` configuration files respectively:
+With the default configuration **restheart-security** uses the Basic Authentication with credentials and permission defined in `users.yml` and `acl.yml` configuration files respectively:
 
 #### users.yml
 
@@ -116,7 +116,7 @@ users:
       roles: [web,api]
 ```
 
-##à# acl.yml
+### acl.yml
 
 ```
 permissions:
@@ -365,7 +365,7 @@ We can note that **restheart-security**:
 
 In **restheart-security** everything is a plugin including Authentication Mechanisms, Authenticators, Authorizers, Token Managers and Services.
 
-![restheart-security explained](/images/restheart-security-explained.png?raw=true "restheart-security explained")
+![restheart-security explained](/images/restheart-security-explained.png "restheart-security explained")
 
 Different **Authentication Mechanism** manage different authentication schemes. 
 An example is *BasicAuthMechanism* that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
