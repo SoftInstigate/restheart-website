@@ -14,18 +14,18 @@
         <hr class="my-4">
         <div class="form-row">
             <div class="col-md-6 mb-3">
-                <label for="averageCostLabel">Average Daily Developer Cost in Your Organization</label>
+                <label for="averageCostLabel">Average Developer Salary in Your Organization (per year)</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="emailPrepend">USD</span>
                     </div>
-                    <input type="number" value="120" min="100" step="1" class="form-control form-control-lg" id="averageCost" required>
+                    <input type="number" value="55000" min="100" step="1" class="form-control form-control-lg" id="averageCost" required>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="daysLabel">Total Number of Developer Days for Your Project</label>
                 <div class="input-group">
-                    <input type="number" value="14" min="5" step="1" class="form-control form-control-lg" id="days" aria-describedby="email" required>
+                    <input type="number" value="50" min="5" step="1" class="form-control form-control-lg" id="days" aria-describedby="email" required>
                 </div>
                 <div class="invalid-feedback">Invalid email address</div>
             </div>
@@ -44,7 +44,7 @@
     roiResult = document.getElementById("roiResult");
 
     var calculateROI = function() {
-        var savings = ((avgCost.value * days.value * 30) / 100) - 499;
+        var savings = (((avgCost.value/200) * days.value * 30) / 100) - 499;
         
         var child = roiResult.lastElementChild;  
         while (child) { 
@@ -62,7 +62,7 @@
         } else if (isNaN(savings)){
             htmlString = "<p class=\"text-danger\">Cannot calculate ROI: invalid input!</p>"
         } else {
-            htmlString = "<p class=\"text-danger\">No savings for given input values</p>"
+            htmlString = "<p class=\"text-danger\">No savings in this scenario.</p>"
         }
         
         newElem.innerHTML = htmlString;
