@@ -32,7 +32,7 @@ title: Transactions
 <div class="alert alert-success" role="alert">
     <h2 class="alert-heading"><strong>Stay consistent!</strong></h2>
     <hr class="my-2">
-    <p>Enforce <strong>A</strong>tomicity, <strong>C</strong>onsistency, <strong>I</strong>solation and <strong>D</strong>urability on multi-document transactions.</p>
+    <p>Enforce <strong>A</strong>tomicity, <strong>C</strong>onsistency, <strong>I</strong>solation and <strong>D</strong>urability with multi-document transactions.</p>
 </div>
 
 ## Introduction 
@@ -41,7 +41,7 @@ An operation on a single document is atomic. This is enough in most use cases si
 
 However, for situations that require atomicity for multiple write requests or  consistency between multiple read requests, multi-document transactions must be used.
 
-{: .alert.alert-info }
+{: .bs-callout.bs-callout-info }
 Multi-document transaction requires at least MongoDB v4.0 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
 
 ## Sessions
@@ -52,7 +52,7 @@ MongoDB v3.6 introduced *sessions*, defined as follows:
 
 Sessions allows to enforce <a href="https://docs.mongodb.com/manual/core/read-isolation-consistency-recency/#causal-consistency" target="_blank">casual consistency</a> and are the foundation for transactions.
 
-{: .alert.alert-success }
+{: .bs-callout.bs-callout-success }
 Sessions are available also in the OS version of RESTHeart. RESTHeart Platform adds support for multi-document transactions on top of sessions.
 
 ### Start a session
@@ -111,7 +111,7 @@ The following tables lists all possible transactions status.
 
 ### Error handling
 
-{: .alert.alert-warning }
+{: .bs-callout.bs-callout-warning }
 The client is responsible of handling the following errors when executing requests inside a transaction and incorporate retry logic.
 
 The following table shows the most important error status that should be handled.
@@ -122,7 +122,7 @@ The following table shows the most important error status that should be handled
 |The given transaction is not in-progress|406|A request is executed in a transaction whose status is not IN|
 |Write conflict inside transaction|409|This error occurs when a transaction updating one of more documents tries to commit after a second transaction have been successfully committed updating the same data.|
 
-{: .alert.alert-warning }
+{: .bs-callout.bs-callout-warning }
 By default, a transaction must have a runtime of less than one minute. After that, the transaction is automatically ABORTED. 
 Check 
 <a href="https://docs.mongodb.com/manual/core/transactions-production-consideration/#runtime-limit" target="_blank">MongoDB Documentation</a> for more information.
