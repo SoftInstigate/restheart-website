@@ -1,13 +1,7 @@
 ---
-layout: page
+layout: article
 title: "Use Case: Open Data and IoT"
 ---
-
-<style type="text/css">
-  p {
-    font-size: 24px;
-  }
-</style>
 
 
 {: .text-justify .mt-5}

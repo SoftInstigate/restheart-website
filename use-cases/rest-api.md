@@ -1,17 +1,8 @@
 ---
-layout: page
+layout: article
 title: "Use Case: REST API for MongoDB"
 ---
 
-<style type="text/css">
-  p {
-    font-size: 24px;
-  }
-
-  h1 {
-    font-size: 36px;
-  }
-</style>
 
 # Significant Development Cost Savings Using RESTHeart
 
@@ -37,4 +28,3 @@ For a detailed description of setting up an API to MongoDB using RESTHeart see [
 
 {: .text-justify .mt-5 .mb-5} 
 For a detailed description of setting up an API to Amazon’s DocumentDB using RESTHeart see [How to Create a Web API for AWS DocumentDB (using RESTHeart)](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).
-

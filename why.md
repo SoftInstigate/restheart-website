@@ -1,17 +1,7 @@
 ---
-layout: page
+layout: article
 title: Why RESTHeart
 ---
-
-<style type="text/css">
-  p {
-    font-size: 24px;
-  }
-
-  h1 {
-      font-size: 36px;
-  }
-</style>
 
 {: .mt-5}
 In 2014 we had long realized that both application servers and frameworks force people to invest a lot of time in their configuration and maintenance, comparing to what is usually invested in the implementation of actual functionalities.
