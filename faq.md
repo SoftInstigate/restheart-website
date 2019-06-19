@@ -5,7 +5,7 @@ title: Frequently Asked Questions
 <div class="container-fluid imgHover">
     <div class="row flex-xl-nowrap">
 
-<div markdown="1" class="d-none d-lg-block col-lg-4 order-first faq-toc">
+<div markdown="1" class="d-none d-lg-block col-lg-3 order-first faq-toc">
 
 * [OS vs Professional Edition](#os-vs-pe)
 * [What is the license?](#license)
