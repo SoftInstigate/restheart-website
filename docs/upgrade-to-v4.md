@@ -120,7 +120,7 @@ Examples follows:
     ...,
     { <doc_n> }
 ],
-    "args": [...]
+    "aggrs": [...]
     "checkers": [...],
     "transformers": [...],
     "streams": [...]
@@ -146,7 +146,7 @@ Examples follows:
 # read metadata of collection restheart.coll -> GET /coll/_meta
 
 {
-    "args": [...]
+    "aggrs": [...]
     "checkers": [...],
     "transformers": [...],
     "streams": [...]
