@@ -19,15 +19,6 @@ title: Change Streams
 
 {% include docs-head.html %} 
 
-<div class="d-block d-md-none alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center">
-    This is a <strong class="ml-1 mr-1">RESTHeart Platform only</strong> feature.
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span>
-    </div>
-</div>
-
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
