@@ -17,11 +17,22 @@ layout: default
     </div>
 </section>
 
+<div class="d-flex w-100 justify-content-center mb-2">
+    <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem;">
+    <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4 is out!</strong></h5>
+        <div class="card-body">
+            <div class="d-flex w-100 justify-content-center">
+                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn w-50 mt-2 mr-2 btn-md">GET</a>
+                <a href="{{ "/docs/upgrade-to-v4" | prepend: site.baseurl }}" class="btn w-50 mt-2 ml-2 btn-md">UPGRADE</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section id="usecases" class="slice bg-light">
     <div class="container-fluid">
         <h1 class="text-center">Use Cases</h1>
     </div>
-
     {% include use-cases.html %}
 </section>
 
