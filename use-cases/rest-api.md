@@ -33,7 +33,7 @@ In most scenarios, RESTHeart can be the perfect server-side backend for mobile a
 To see an estimate of how much money you will save using RESTHeart for your development project, go to the [RESTHeart ROI Calculator](../../versions#roi-calculator).
  
 {: .text-justify .mt-5 .mb-5}
-For a detailed description of setting up an API to MongoDB using RESTHeart see [Building Instant RESTFul API’s with MongoDB and RESTHeart](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/?utm_content=buffere473f&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer).
+For a detailed description of setting up an API to MongoDB using RESTHeart see [Building Instant RESTFul API’s with MongoDB and RESTHeart](../../docs/setup).
 
 {: .text-justify .mt-5 .mb-5} 
 For a detailed description of setting up an API to Amazon’s DocumentDB using RESTHeart see [How to Create a Web API for AWS DocumentDB (using RESTHeart)](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).
