@@ -3,13 +3,7 @@ layout: page-notitle
 title: Get RESTHeart Platform
 permalink: /get
 ---
-<div class="alert alert-info mt-5 mb-2">
-    Searching for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security">RESTHeart Security</a> GitHub repositories!
-</div>
-<div class="alert alert-warning">
-    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}">FAQs</a> to learn more about the main differences between versions.
-</div>
-<div class="jumbotron bg-light">
+<div class="jumbotron bg-light mt-4">
 
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row">
@@ -24,7 +18,7 @@ permalink: /get
             </select>
         </div>
          <div class="col-md-2">
-            <input class="form-control-plaintext form-control-lg text-right" id="price" aria-describedby="price" disabled value="Free">
+            <input class="text-strong text-center form-control-plaintext form-control-lg text-right" id="price" aria-describedby="price" disabled value="Free">
         </div>
         <div class="col-12 my-0 d-none" id="qtn-tip">
             <div class="hint mt-2 text-muted"><small>Specify quantities during checkout.</small></div>
@@ -407,3 +401,14 @@ permalink: /get
 </form>
 
 </div>
+<hr>
+
+<div class="alert alert-info mb-5">
+    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}">FAQs</a> to learn more about the main differences between versions.
+</div>
+<div class="alert mt-5 mb-2 text-muted">
+    Searching for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories!
+</div>
+
+
+<hr class="mb-5">
