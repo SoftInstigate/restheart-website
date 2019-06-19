@@ -3,8 +3,13 @@ layout: page-notitle
 title: Get RESTHeart Platform
 permalink: /get
 ---
-
-<div class="jumbotron mt-5 bg-light">
+<div class="alert alert-info mt-5 mb-2">
+    Searching for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security">RESTHeart Security</a> GitHub repositories!
+</div>
+<div class="alert alert-warning">
+    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}">FAQs</a> to learn more about the main differences between versions.
+</div>
+<div class="jumbotron bg-light">
 
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row">
