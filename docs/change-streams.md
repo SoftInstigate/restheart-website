@@ -35,7 +35,7 @@ title: Change Streams
 </div>
 
 ## Introduction
-Modern web applications needs to react with promptness and efficency to data changes in many contexts.
+Modern web applications needs to react with promptness and efficiency to data changes in many contexts.
 
 RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal.
 
@@ -45,7 +45,8 @@ RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal.
 
 Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
 
-*IMPORTANT: to use Change Streams is mandatory to enable MongoDB's [replica sets](https://docs.mongodb.com/manual/replication/).*
+{: .alert.alert-info }
+Multi-document transaction requires at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/). 
 
 ## The *streams* collection metadata
 
