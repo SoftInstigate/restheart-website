@@ -63,7 +63,7 @@ RESTHeart Platform v4 introduces two main new features:
     <hr class="my-2">
     <p><strong>Change Streams</strong> and <strong>Transactions</strong> are available only on RESTHeart Platform.</p>
     <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
-    <p><span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span></p>
+    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
 ## Default configuration

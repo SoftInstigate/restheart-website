@@ -39,7 +39,7 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
     <hr class="my-2">
     <p>JWT Authentication is available only on RESTHeart Platform.</p>
     <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
-    <p><span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span></p>
+    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
 JWT Authentication manages the authentication following the <a href="https://jwt.io" target="_blank">JSON Web Token standard</a>.
@@ -199,7 +199,7 @@ auth-mechanisms:
     <hr class="my-2">
     <p>RESTHeart Authenticator is available only on RESTHeart Platform.</p>
     <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
-    <p><span class="badge badge-pill badge-light p-1"><a href="/get" class="uri">Get a free Trial License to evaluate it!</a></span></p>
+    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
 *RESTHeart Authenticator* authenticates users defined in a MongoDB collection, seamlessly connecting restheart-security with restheart-core.
