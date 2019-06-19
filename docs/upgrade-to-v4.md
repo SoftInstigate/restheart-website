@@ -102,7 +102,7 @@ The following tables summarize the different default configuration values.
 
 ## Representation Format
 
-Following several community feedbacks and given, RESTHeart Platform v4 introduces a new default representation format that is more compact, easy to use and effective.
+Following several community feedbacks, RESTHeart Platform v4 introduces a new default representation format that is more compact, easy to use and effective.
 
 {: .alert.alert-info}
 Read more at [Representation Format](/docs/representation-format)
@@ -112,7 +112,7 @@ Examples follows:
 ### RESTHeart v3
 
 ```
-# read metadata and documents of collection restheart.coll -> GET /coll
+# read metadata and documents of collection restheart.coll -> GET /restheart/coll
 
 { "_embedded": [ 
     { <doc_1> },
@@ -166,7 +166,7 @@ The new Java API to extend RESTHeart has been improved in such a way that it is 
 
 *Transformers*, *Hooks*, *Checkers* and *Services* (aka *Logic Handlers*) are implemented extending interfaces that are identical to the legacy ones, with the exceptions that they were moved to the more meaningful package `org.restheart.plugins`.
 
-The configuration of custom plugins has been simplified. Rather that declaring the implementation classes in the configuration file, plugins are registered using the `@RegisterPlugin` annotation. Plugins can optionally have a options specified in the configuration file. An example follows.
+The configuration of custom plugins has been simplified. Rather that declaring the implementation classes in the configuration file, plugins are registered using the `@RegisterPlugin` annotation. Plugins can optionally have a options set in the configuration file. An example follows.
 
 **Ping service implementation**
 
@@ -226,10 +226,10 @@ public class PingService extends Service {
 
 ### Security Plugins
 
-Security can be extended much easier and more types of security plugins are available: *Authentication Mechanisms*, *Authenticators*, *Authorizers*, *Token Managers*, *Services*, *Initializers* and *Interceptors*.
+Security can be extended much easier compared to v3 and more types of security plugins are available: *Authentication Mechanisms*, *Authenticators*, *Authorizers*, *Token Managers*, *Services*, *Initializers* and *Interceptors*.
 
 {: .jumbotron}
-> restheart-security allows implementing a security layer so easily and it is so complete that we expect it to be used in other projects other than restheart.
+> it is so easy implementing the security layer with restheart-security and it is so complete that we expect it to be used by other projects
 *Andrea Di Cesare*
 
 {: .alert.alert-info}
