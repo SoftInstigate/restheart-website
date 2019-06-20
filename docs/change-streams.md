@@ -66,7 +66,7 @@ by design: clients are not able to open up arbitrary change streams but only tho
 
 **stream object format**
 
-``` json
+```
 {
     "uri": <uri>,
     "stages": [
@@ -135,7 +135,7 @@ The following requests upsert a collection defining two change streams:
 * *test\_stream\_with\_stage\_params* bound at
     `/db/cs_test/_streams/test_stream_with_stage_params`
 
-``` bash
+```
 PUT /db/cs_test { "streams" : [ 
       { "stages" : [],
         "uri" : "test_stream"
@@ -154,7 +154,7 @@ PUT /db/cs_test { "streams" : [ 
 Note between the `_links` collection property the URIs of the
 change streams.
 
-``` bash
+```
 GET /db/cs_test
 
 HTTP/1.1 200 OK
@@ -181,7 +181,7 @@ For example, the previous example *test_stream_with_stage_params* use a variable
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
-``` bash
+```
 GET /test/cs_test/_streams/test_stream_with_stage_params
 
 HTTP/1.1 400 Bad Request
@@ -199,7 +199,7 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-``` bash
+```
 GET /test/cs_test/_streams/test_ap?avars={"n":1}
 
 HTTP/1.1 101 Switching Protocols
@@ -210,7 +210,7 @@ HTTP/1.1 101 Switching Protocols
 
 Variables can be used in change streams query as follows:
 
-``` js
+```
 { "$var": "<var_name>" }
 ```
 
@@ -218,7 +218,7 @@ In case of change stream with stage parameter previous example, the variable was
 to restrinct notifications only to changes on documents with a property *name* matching the
 variable *n:*
 
-``` js
+```
 {
   ...
     { "_$match" : { "fullDocument.name" : { "_$var" : "n" } } }
@@ -233,7 +233,7 @@ This behaviour is required to protect data from undesiderable malicious query in
 
 Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
 
-```properties
+```
 ### Security
 
 # Check if aggregation variables use operators. allowing operators in aggregation variables 
