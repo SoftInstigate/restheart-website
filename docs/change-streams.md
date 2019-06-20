@@ -45,7 +45,7 @@ RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal.
 
 Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
 
-{: .alert.alert-info }
+{: .bs-callout.bs-callout-info }
 Multi-document transaction requires at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/). 
 
 ## The *streams* collection metadata

@@ -80,7 +80,7 @@ a GET request to obtain information about token or a DELETE request to
 invalidate it. Of course clients can only request their own tokens
 (otherwise response code will be 403 Forbidden).
 
-{:.alert.alert-info}
+{: .bs-callout.bs-callout-info }
 The Authentication Token is a very important feature when you are
 developing a web application. Since every request needs to include the
 credentials, you need to store them either in a cookie or (better) in
@@ -88,7 +88,7 @@ the session storage. The sign-in form can check the credentials using
 the actual password; if it succeeds, the auth token can be stored and
 used.
 
-{:.alert.alert-warning}
+{: .bs-callout.bs-callout-warning }
 Pay attention to the authentication token in case of multi-node
 deployments (horizontal scalability). In this case, you need to either
 disable it or use a load balancer with the sticky session option or a different Token Manager implementation.
@@ -129,7 +129,7 @@ are:
 Of course, if the request succeeds, the client gets back the auth token
 as well.
 
-{:.alert.alert-info}
+{: .bs-callout.bs-callout-info }
 It is easy to check the user credentials from a login form with this
 handler: in case the client gets back 200, they match and the auth token
 can be stored for further request; otherwise passed credentials are
@@ -150,7 +150,7 @@ the `noauthchallenge` query parameter. In this case, RESTHeart will just
 respond with **401 Unauthorized** in case of missing or wrong
 credentials.
 
-{:.alert.alert-info}
+{: .bs-callout.bs-callout-info }
 This feature together with the authentication token, allows you to
 implement a form based authentication experience on top of the simple
 and effective basic authentication mechanism. You can refer to the [blog
