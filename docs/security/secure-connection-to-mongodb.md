@@ -58,13 +58,12 @@ version.
 })
 ```
 
-    We need to provide the MongoDB user authentication credentials in the RESTHeart configuration file: see docs. 
+    We need to provide the MongoDB user authentication credentials in the RESTHeart Platform Core configuration file: see docs. 
 
-We’ll use the restheart.yml example configuration file that comes with
-RESTHeart download package (you find it in the etc directory)
+We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart Platform download package (you find it in the etc directory)
 
 ``` bash
-$ vi etc/restheart.yml
+$ vi etc/restheart-platform-core.yml
 ```
 
 Find and modify the following section providing the user-name, password
@@ -72,27 +71,22 @@ and authentication db (the db where the MongoDB user is defined, in our
 case ‘admin’).
 
 ``` yml
-    mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
+mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 ```
 
-Now start RESTHeart specifying the configuration file:
+Now start RESTHeart Platform Core specifying the configuration file:
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar restheart.jar etc/restheart.yml
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
 
-Test the connection opening the HAL browser at `http://127.0.0.1:8080/browser`.
-
-Note that the example configuration file `etc/restheart.yml` also
-enables the RESTHeart security. Opening the HAL browser page, you’ll be
-asked to authenticate. You can use of one of the credentials defined
-in `etc/security.yml` file (try username = ‘a’ and password = ‘a’).
+Test the connection opening the HAL browser at `http://localhost:8080/browser`.
 
 ## Connect to MongoDB over TLS
 
 MongoDB clients can use TLS/SSL to encrypt connections to mongod and mongos instances.
 
-To configure RESTHeart for TLS/SSL do as follows:
+To configure RESTHeart Platform for TLS/SSL do as follows:
 
 * create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
 
@@ -105,23 +99,23 @@ $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 * specify the ssl option in the mongo-uri in the restheart yml configuration file:
 
 ``` yml
-    mongo-uri: mongodb://your.mongo-domain.com?ssl=true
+mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 ```
 * start restheart with following options:
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar restheart.yml
+$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
 
 ## Restrict permissions of MongoDB user
 
-In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart to execute any command on any MongoDB resource.
+In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart Platform Core to execute any command on any MongoDB resource.
 
 On production environments a strong security isolation is mandatory.
 
 In order to achieve it, the best practice is:
 
-1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart;
+1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Platform Core;
 2. use a MongoDB user with just enough permission: *read* or *readWrite* on mounted databases 
 
 The following example, creates a MongoDB user with appropriate roles to expose the databases *db1*, *db2* and *db3* in read only mode.
@@ -136,13 +130,11 @@ The following example, creates a MongoDB user with appropriate roles to expose t
 ]})
 ```
 
-To list the databases (i.e. GET /, the root resource) the listDatabases
-permission is needed. This permission is granted by the
+To list the databases (i.e. GET /, the root resource) the listDatabases permission is needed. This permission is granted by the
 readWriteAnyDatabase role or you can create a custom role.
 
 To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
-
 
 </div>
