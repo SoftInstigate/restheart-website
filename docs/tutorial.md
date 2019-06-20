@@ -25,11 +25,9 @@ title: Tutorial
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 {% include running-examples.md %}
 
-## GET all Documents from the Collection
+## GET Documents from the Collection
 
 Now let’s get all documents in a row. For this, we send a GET request to the whole collection:
 
