@@ -10,6 +10,7 @@ title: Upgrade to RESTHeart v4
 * [Default configuration](#default-configuration)
 * [Representation Format](#representation-format)
 * [Plugins Development](#plugins-development)
+* [HAL browser removed](#hal-browser-removed)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -236,3 +237,12 @@ Security can be extended much easier compared to v3 and more types of security p
 The main reason behind the RESTHeart Platform being split in two micro-services versus the monolithic architecture of RESTHeart 3 was simplifying and hardening the implementation of the security layer.
 
 Refer to [Develop Security Plugins](/docs/develop/security-plugins/) for more information.
+
+## HAL browser removed
+
+The HAL browser has been removed, since the project is no longer maintained.
+
+{: .bs-callout.bs-callout-info }
+RESTHeart Platform v5 will include an Admin Web application that will replace it.
+
+An online alternative that we suggest is <a href="http://restninja.io" target="_blank">http://restninja.io</a> 
