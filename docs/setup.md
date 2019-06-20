@@ -24,19 +24,28 @@ Clicking on the download link in the email, you get the RESTHeart Platform zip p
 Unzip it to get the following directory. 
 
 ``` plain
-├── Dockerfile-core
-├── Dockerfile-security
+├── Docker/
+│   ├── Dockerfile-core
+│   ├── Dockerfile-security
+│   └── etc/
+│       ├── acl.yml
+│       ├── core.properties
+│       ├── restheart-platform-core.yml
+│       ├── restheart-platform-security.yml
+│       └── users.yml
+├── core.log
 ├── docker-compose.yml
 ├── etc/
-│   ├── acl.yml
-│   ├── config.properties
+│   ├── bwcv3.properties
+│   ├── default.properties
 │   ├── restheart-platform-core.yml
 │   ├── restheart-platform-security.yml
-│   └── users.yml
+│   └── standalone.properties
 ├── lickey/
 │   └── COMM-LICENSE.txt
 ├── restheart-platform-core.jar
-└── restheart-platform-security.jar
+├── restheart-platform-security.jar
+└── security.log
 ```
 
 ### Open Source Version
