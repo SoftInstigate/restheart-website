@@ -208,7 +208,8 @@ This is a *multipart* request
 {: .table.table-responsive }
 |qparam|description|example|
 |-|-|
-|`page` and `pagesize`|control pagination|`?page=1&pagesize=5`
+|`page` and `pagesize`|control pagination|`?page=1&pagesize=5`|
+|`sort`|control sorting|`?sort={"n":-1}`|
 |`filter`|apply a query|`?filter={"n":{"$gt":5}}`|
 |`keys`|controls projection, i.e. the properties to return|`?keys={"a":1, "obj.prop":1}`
 |`id_type`|specifies the type of the _id|`/coll/1`&rarr;`{"_id":"1"}` vs `/coll/1?id_type=number`&rarr;`{"_id":1}`|
