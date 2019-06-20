@@ -5,89 +5,66 @@ title: Setup
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Run with Docker](#run-with-docker)
-- [Run manually](#run-manually)
+- [Get RESTHeart Platform PE](#get-restheart-platform-pe)
+- [Run](#run)
+- [Accept License](#accept-license)
+- [Troubleshooting](#troubleshooting)
+- [Run without Docker](#run-without-docker)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
 
-## Download RESTHeart Platform
+<div class="alert alert-info" role="alert">
+    <h2 class="alert-heading">This page applies RESTHeart Platform Profession Edition</h2>
+    <hr class="my-2">
+    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}" class="alert-link">FAQs</a> to learn more about the main differences between versions.
+    <p class="mt-2">
+        To setup the Open Source version refer to the README files in the github repositories <a target="_blank" href="https://github.com/softInstigate/restheart" class="alert-link">restheart</a> and <a  target="_blank" href="https://github.com/softInstigate/restheart-security" class="alert-link">restheart-security</a>
+    </p>
+</div>
 
-Download the RESTHeart Platform at <a href="http://restheart.org/get" target="_blank">http://restheart.org/get</a>
+## 1 - Get RESTHeart Platform PE
 
-Choose the free **RESTHeart Platform 30 days Trial** and fill the form providing a valid email address. You will receive and email from our online reseller Paddle.com with the download link and a Trial License Key.
+1. go to <a href="/get" target="_blank">https://restheart.org/get</a>
+1. fill the form choosing the **free** **RESTHeart Platform 30 days Trial**
+1. in few minutes you will receive an email with the **download link** and a **Trial License Key**
+1. click on the link in the email and download `restheart-platform-<version>.zip`
+1. unzip the package and cd into it:
 
-Clicking on the download link in the email, you get the RESTHeart Platform zip package `restheart-platform-<version>.zip`
-
-Unzip it to get the following directory. 
-
-``` plain
-├── Docker/
-│   ├── Dockerfile-core
-│   ├── Dockerfile-security
-│   └── etc/
-│       ├── acl.yml
-│       ├── core.properties
-│       ├── restheart-platform-core.yml
-│       ├── restheart-platform-security.yml
-│       └── users.yml
-├── core.log
-├── docker-compose.yml
-├── etc/
-│   ├── bwcv3.properties
-│   ├── default.properties
-│   ├── restheart-platform-core.yml
-│   ├── restheart-platform-security.yml
-│   └── standalone.properties
-├── lickey/
-│   └── COMM-LICENSE.txt
-├── restheart-platform-core.jar
-├── restheart-platform-security.jar
-└── security.log
+``` bash
+$ unzip restheart-platform-<version>.zip
+$ cd restheart-platform-<version>
 ```
 
-### Open Source Version
-You can also use the Open Source version. 
-
-{: .text-muted }
-Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}">FAQs</a> to learn more about the main differences between versions.
-
-{: .bs-callout.bs-callout-info}
-For setup instructions of the OS version, please refer to README files in the github repositories.
-
-## Run with Docker
-
-> Docker is the best way to run RESTHeart Platform
-
-### Requirements
-
-- Docker v1.13 and later
-
-### Run RESTHeart Platform
-
-Start the RESTHeart Platform stack comprising restheart-platform-core, restheart-platform-security and MongoDB configured as a Replica Set, executing the following command:
+## 2 - Run
 
 ``` bash
 $ docker-compose up -d
 ```
+<div class="alert alert-info" role="alert">
+    <h2 class="alert-heading">Docker is required</h2>
+    <hr class="my-2">
+    <p class="small">You need <a class="alert-link" href="https://www.docker.com/get-started" target="_blank">Docker</a> v1.13 and later</p>
+    <p>Can't use Docker? Check <a class="alert-link" href="#run-without-docker">Run without Docker</a></p>
+</div>
 
-### Accept License
+## 3 - Accept License
 
-At the first run, you must accept the license.
+{: .bs-callout.bs-callout-info}
+This step is only required once on the first execution.
 
-Open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a>
-
-You need to add the license key, copying it from the email received from our online reseller Paddle.com and pasting it in the *License Key* field:
+1. open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a>
+2. add the license key copying it from the email and and pasting it in the *License Key* field.
 
 <img src="/images/license-form-add-key.png" width="50%" height="auto" class="img-responsive">
 
-The following screenshot shows the email with the License Key.
+The following image shows the email with the License Key.
 
 <img src="/images/paddle-email.png" width="50%" height="auto" class="img-responsive">
 
-In this case, the license key to paste is:
+In this case, the license key to copy and paste is:
 
 ``` plain
 eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJsaWNlbnNlZSI6IlhYWCIsImxpY2Vuc29yIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiYWRkaXRpb25hbENvbmRpdGlvbnMiOiJUaGlzIGxpY2Vuc2Uga2V5IGNhbiBvbmx5IGJlIHVzZWQgZm9yIGRldmVsb3BtZW50IHB1cnBvc2VzIiwiaXNzIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiY29uY3VycmVudCI6ZmFsc2UsIm1heE1hY2hpbmVzIjoxLCJsaWNlbnNlSGFzaCI6ImM1ZWQ4MDczZTYxMzFiZDU0ZTI0MTEyNjE1OGI5NGQ3MTI3OGU5YmIyZjU4NGFkNzMzZDllYjBiNWM4MzNhYzYiLCJ0eXBlIjoiVHJpYWwgbGljZW5zZSIsInN1YnNjcmlwdGlvblBlcmlvZCI6ImZyb20gMDYvMTAvMjAxOSB0byAwNy8xMC8yMDE5IiwiZmxvYXRpbmciOmZhbHNlLCJleHAiOjE1NjI3MTY4MDAsImlhdCI6MTU2MDEyNDgwMCwianRpIjoiZDZlOTE2ZTItZDJkMy00ZjRkLWIxN2MtZjA0MDA2NDJlZTQ2In0.jiK-gCTho5O66v8FpKKebiSltas39jKgm9OmBnG1fBM-6kYBQQ7dX79cvhY6R3Ea3hVyrDc0URoHLSfjlUB3gcFqBcDrltYtPhHa27HmEfVdhqK6Itu2hbth-J-A1xpWNRjmIeUzPoGYR58QA10F4Zh0rrSLE1Zh4sXWXrX7vvlKxSirg7x48MEV0SeGNehxuQMjKwgsKQinwvq5PlkNQHx72mOgeUrhpNrQwFYmcAC8XnzliQ8cAJGX9ql3IhxHtTIfkPi3nE49wewiQWHe_kDRJJDSJsrk99FN2YjUQ-mqjpLdZCI4iyNhw0Z-iOkT1BGhTNL6SVaMrU0XiQ
@@ -100,7 +77,9 @@ Once the license key has been added, you can accept it by checking the two check
 
 <img src="/images/license-form-accept.png" width="70%" height="auto" class="img-responsive">
 
-### Check that it is running
+## Troubleshooting
+
+### Check if the service is up
 
 Open <a href="http://localhost:8080/roles/admin" target="_blank">http://localhost:8080/roles/admin</a>
 
@@ -114,24 +93,14 @@ You should then see the following json in your browser:
 ```json
 {"authenticated":true,"roles":["admin"]}
 ```
+### Log files
 
-### Troubleshooting
+You find the log files in the `restheart-platform-<version>` directory:
 
-To view the logs of the services of the RESTHeart Platform stack:
+- core.log
+- security.log
 
-``` bash
-$ docker logs restheart-platform-core
-```
-
-``` bash
-$ docker logs restheart-platform-security
-```
-
-``` bash
-$ docker logs restheart-platform-mongodb
-```
-
-## Run manually
+## Run without Docker
 
 ### Requirements
 
@@ -143,10 +112,7 @@ $ docker logs restheart-platform-mongodb
 
 ### Run MongoDB as a Replica Set
 
-This section describes how to run MongoDB standalone configured as a Replica Set.
-
-{: .bs-callout.bs-callout-info }
-Refer to the [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/convert-standalone-to-replica-set/) for more information.
+This section describes how to run MongoDB standalone configured as a Replica Set. Refer to the [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/convert-standalone-to-replica-set/) for more information.
 
 **Start MongoDb** passing the `replSet` option.
 
@@ -154,27 +120,25 @@ Refer to the [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/co
 $ mongodb --fork --syslog --replSet foo 
 ```
 
-At the first run, the replica set must be initiated.
-
-Connect to MongoDB using the mongo shell:
+At the first run, the replica set must be initiated. Connect to MongoDB using the mongo shell:
 
 ```
 $ mongo
 ```
 
-And initiate the replica set as follows:
+Initiate the replica set as follows:
 
 ```
 > rs.initiate()
 ```
 
-### Start RESTHeart Core
+### Start restheart-platform-core
 
 ``` bash
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/default.properties
 ```
 
-### Start RESTHeart Security
+### Start  restheart-platform-security
 
 ``` bash
 $ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml
@@ -182,6 +146,6 @@ $ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml
 
 ### Accept License
 
-At the first run, you must accept the license as described [above](#accept-license).
+During the first execution you must accept the license as described [above](#accept-license).
 
 </div>
