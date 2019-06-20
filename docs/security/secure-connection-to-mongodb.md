@@ -80,7 +80,7 @@ Now start RESTHeart Platform Core specifying the configuration file:
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
 
-Test the connection opening the HAL browser at `http://localhost:8080/browser`.
+Test the connection open `http://localhost:8080/roles/admin`
 
 ## Connect to MongoDB over TLS
 
