@@ -373,7 +373,7 @@ permalink: /get
                         address.setAttribute('required','');
                         zip.setAttribute('required','');
                         country.setAttribute('required','');
-                        return { idx:1, free: false, price: '$ 499', description: "RESTHeart Platform Professional Edition", productId: 545348 }; 
+                        return { idx:1, free: false, price: '$ 499', description: "RESTHeart Platform Professional Edition", productId: 563538 }; 
                 }
             }
             function recalculate() {
