@@ -324,7 +324,7 @@ permalink: /get
                     organization: form.organization.value,
                     email: form.email.value,
                     address: it.free ? null: form.address.value,
-                    country: it.free ? "US": form.country.value,
+                    country: it.free ? null: form.country.value,
                     zip: it.free ? null: form.zip.value
                 };
                 Paddle.Checkout.open({
@@ -332,7 +332,7 @@ permalink: /get
                      email: form.email.value,
                      passthrough: JSON.stringify(_passthrough),
                      country: it.free ? "US": form.country.value,
-                     postcode: it.free ? null: form.zip.value,
+                     postcode: it.free ? "10001": form.zip.value,
                      quantity: 1,
                      title: it.description,
                      locale: 'en'
