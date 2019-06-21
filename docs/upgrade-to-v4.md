@@ -5,6 +5,7 @@ title: Upgrade to RESTHeart v4
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
+* [Introduction](#introduction)
 * [Architecture](#architecture)
 * [New features](#new-features)
 * [Default configuration](#default-configuration)
@@ -16,6 +17,15 @@ title: Upgrade to RESTHeart v4
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
+
+## Introduction
+
+This page highlights the main differences between RESTHeart Platform v4 and RESTHeart v3 and provides guidelines for upgrading.
+
+The RESTHeart team has worked hard to improve RESTHeart while keeping upgrading as simple as possible. The upgrade process has been tested successfully in complex installations.
+
+{: .bs-callout.bs-callout-success }
+The RESTHeart team supports you. Check our [Services](/services) for free and professional support options.
 
 ## Architecture
 
