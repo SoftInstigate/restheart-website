@@ -11,20 +11,19 @@ layout: default
         <a class="trial-btn write-us-btn btn btn-lg" title="" href="mailto:info@restheart.org?subject=I Want More Informations About RESTHeart" target="blank"> <i style="font-size:18px" class="icon-mail"></i> Write us! </a>
         </div>
     </div>
-        <div class="d-flex justify-content-center">
-            <div class="mt-4 mx-auto rounded p-2 bg-white">
-                <h2 class="text-center m-0"><strong>RESTHeart</strong> is a division of <span class="softinstigate-color">
-                <strong><a href="https://softinstigate.com">SoftInstigate Srl</a></strong></span></h2>
-            </div>
-        </div>
+
 </div>
 
 <div class="mb-5">
-    <div class="m-5">
-        <p><strong>Registered office:</strong> SoftInstigate srl - Via G. D'Annunzio 28, 67100 L'Aquila (Italy)</p>
+        <div class="d-flex justify-content-center">
+            <div class="mt-4 mx-auto rounded p-2 bg-white">
+                <h2 class="text-center m-0"><strong>RESTHeart</strong> is a division of <span class="softinstigate-color">
+                <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></span></h2>
+            </div>
+        </div>
+    <div class="m-5 text-center">
         <p><strong>Head office:</strong> SoftInstigate srl - Via Copernico 38, 20125 Milano (Italy)</p>
         <p><strong>Email:</strong> <a href="mailto:info@softinstigate.com">info@softinstigate.com</a></p>
-        <p><strong>Certified electronic mail:</strong> <a href="mailto:andrea.dicesare@ingpec.eu">andrea.dicesare@ingpec.eu</a></p>
-        <p>P.IVA: 01664640669 - SDI: SUBM70N - CCIAA AQ - n. REA: AQ 0111007 - Cap. soc. i.v. €10.000</p>
+        <p><strong>VAT code:</strong> 01664640669</p>
     </div>
 </div>
