@@ -8,7 +8,7 @@ layout: default
     </div>
     <div class="d-flex justify-content-center align-content-end w-100 h-100">
         <div>
-            <a class="trial-btn write-us-btn btn btn-lg" title="" href="mailto:sales@restheart.com?subject=I Want More Informations About RESTHeart" target="blank"> <i style="font-size:18px" class="icon-mail"></i> Write us! </a>
+            <a class="trial-btn write-us-btn btn btn-lg" title="" href="mailto:info@restheart.org?subject=I Want More Informations About RESTHeart" target="blank"> <i style="font-size:18px" class="icon-mail"></i> Write us! </a>
         </div>
     </div>
 </div>

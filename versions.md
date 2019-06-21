@@ -21,18 +21,18 @@ title: Versions
         <th class="compare-heading p-3">
           <div class="d-flex flex-column flex-md-row justify-content-center mb-2 w-100">
             <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
-            <a class="mt-auto" href="{{ "/faq" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
+            <a class="mt-auto" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
           </div>
           <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
+          <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
+          <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
+          <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
         </th>
       </tr>
     </thead>
@@ -249,18 +249,18 @@ title: Versions
         <th class="compare-heading restheart-version p-3">
           <div class="d-flex flex-column flex-md-row justify-content-center mb-2 w-100">
             <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
-            <a class="mt-auto" href="{{ "/faq" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
+            <a class="mt-auto" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
           </div>
           <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
+          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
+          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "/faq" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
+          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
         </th>
       </tr>
     </thead>
@@ -284,12 +284,8 @@ title: Versions
         <td>Pricing</td>
         <td>Free</td>
         <td>30-Day Free Trial then USD 499 per Deployment Instance per Year. VAT applies for EU customers</td>
-        <td>Negotiable<br>
-        <a href="mailto:EE@restheart.org">Contact</a>
-        </td>
-        <td>Negotiable<br>
-        <a href="mailto:OEM@restheart.org">Contact</a>
-        </td>
+        <td>Negotiable</td>
+        <td>Negotiable</td>
       </tr>
       <tr>
         <td>&nbsp;</td>
@@ -308,12 +304,12 @@ title: Versions
       </tr>
       <tr>
         <td>Obtain</td>
-        <td><a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">GitHub Repository</a></td>
+        <td><a style="font-weight: 100" href="https://github.com/SoftInstigate/restheart">GitHub Repository</a></td>
         <td>
           <a href="{{ "/get" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
         </td>
-        <td>n/a</td>
-        <td>n/a</td>
+        <td><a href="mailto:info@restheart.org?subject=RESTHeart EE">Contact</a></td>
+        <td><a href="mailto:info@restheart.org?subject=RESTHeart OEM">Contact</a></td>
       </tr>
     </tbody>
   </table>
