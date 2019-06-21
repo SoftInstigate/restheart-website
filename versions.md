@@ -308,8 +308,8 @@ title: Versions
         <td>
           <a href="{{ "/get" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
         </td>
-        <td><a href="mailto:info@restheart.org?subject=RESTHeart EE">Contact</a></td>
-        <td><a href="mailto:info@restheart.org?subject=RESTHeart OEM">Contact</a></td>
+        <td><a href="mailto:ask@restheart.org?subject=RESTHeart EE">Contact</a></td>
+        <td><a href="mailto:ask@restheart.org?subject=RESTHeart OEM">Contact</a></td>
       </tr>
     </tbody>
   </table>
