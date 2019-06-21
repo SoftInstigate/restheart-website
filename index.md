@@ -6,8 +6,6 @@ layout: default
         <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="256">
         <p class="header__desc">The REST API Server for MongoDB</p>
         <h2 class="header__title">Build applications faster, zero coding required!</h2>
-        <a href="/docs/tutorial" class="btn btn-md">Quickstart</a>
-        <a href="https://github.com/SoftInstigate/restheart/" class="btn btn-md">Source code</a>
         <p>
             <img height="27" class="align-top rounded" alt="Docker Pulls" src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
             <img height="27" class="align-top rounded" alt="GitHub All Releases" src="https://img.shields.io/github/downloads/softinstigate/restheart/total.svg?style=for-the-badge">   
