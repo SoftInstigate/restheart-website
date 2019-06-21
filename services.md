@@ -11,7 +11,7 @@ permalink: /services.html
     </p>
     <hr class="mt-1 mb-5">
     <p class="lead mt-4">
-        <a href="mailto:sales@restheart.org?subject=RESTHeart professional services inquiry" class="btn btn-primary mr-3">Ask our sales</a>
+        <a href="mailto:info@restheart.org?subject=RESTHeart professional services inquiry" class="btn btn-primary mr-3">Ask our sales</a>
         No one can help you better.
     </p>
 </div>
