@@ -18,11 +18,12 @@ layout: default
 </section>
 
 <div class="d-flex w-100 justify-content-center mb-2">
-    <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem;">
-    <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4 is out!</strong></h5>
+    <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem">
+        <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4 is out!</strong></h5>
+        <img class="mx-auto mt-4 d-block" src="/images/4.png" alt="RESTHeart 4" width="80px">
         <div class="card-body">
-            <div class="d-flex w-100 justify-content-center">
-                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn w-50 mt-2 mr-2 btn-md">GET</a>
+            <div class="d-flex justify-content-center">
+                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn w-50 mt-2 mr-2 btn-m">GET</a>
                 <a href="{{ "/docs/upgrade-to-v4" | prepend: site.baseurl }}" class="btn w-50 mt-2 ml-2 btn-md">UPGRADE</a>
             </div>
         </div>
