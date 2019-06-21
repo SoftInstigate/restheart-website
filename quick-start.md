@@ -1,5 +1,5 @@
 ---
 layout: redirect
-redirectUrl: /learn/setup
+redirectUrl: /docs/setup
 permalink: /quick-start.html
 ---

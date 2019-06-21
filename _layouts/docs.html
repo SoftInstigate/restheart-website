@@ -1,8 +1,6 @@
 --- 
 layout: default 
 ---
-
-
 <!--<div class="container mt-4">-->
     <!--<h1 class="text-center">-->
         <!--<a href="/learn" class="btn btn-success btn-docs">-->
@@ -14,6 +12,31 @@ layout: default
     <div class="row flex-xl-nowrap">
         <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
             <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if page.old_docs %}
+                        v3
+                        {% else %}
+                        v4
+                        {% endif %}
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                        {% if page.old_docs %}
+                        v4
+                        {% else %}
+                        <strong>v4</strong>
+                        {% endif %}
+                    </a>
+                      <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
+                        {% if page.old_docs %}
+                        <strong>v3</strong>
+                        {% else %}
+                        v3
+                        {% endif %}
+                    </a>
+                    </div>
+                  </div>
                 <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get" name="searchform" target="_blank">
                     <input name="sitesearch" type="hidden" value="restheart.org/learn">
                     <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q" placeholder="Search" required="required" type="text">
@@ -35,7 +58,11 @@ layout: default
             </div>
 
             <div class="bd-sidebar__menu collapse" id="bd-sidebar__menu">
+                {% if page.old_docs %}
+                {% include old-docs-sidebar.html %}
+                {% else %}
                 {% include docs-sidebar.html %}
+                {% endif %}
             </div>
 
         </div>
