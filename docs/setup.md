@@ -55,7 +55,7 @@ $ docker-compose up -d
 {: .bs-callout.bs-callout-info}
 This step is only required once on the first execution.
 
-1. Wait few seconds for startup and open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a>
+1. open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a> (If you don't get any response wait few seconds for startup and retry)
 2. add the license key copying it from the email and and pasting it in the *License Key* field.
 
 <img src="/images/license-form-add-key.png" width="50%" height="auto" class="img-responsive">
@@ -99,6 +99,20 @@ You find the log files in the `restheart-platform-<version>` directory:
 
 - core.log
 - security.log
+
+### Restart docker containers
+
+For restarting the running docker containers:
+
+1. Shut down running docker containers
+``` bash
+$ docker-compose down
+```
+
+2. Run the docker containers:
+``` bash
+$ docker-compose up -d
+```
 
 ## Run without Docker
 
