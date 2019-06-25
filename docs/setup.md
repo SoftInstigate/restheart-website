@@ -55,7 +55,7 @@ $ docker-compose up -d
 {: .bs-callout.bs-callout-info}
 This step is only required once on the first execution.
 
-1. open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a>
+1. Wait few seconds for startup and open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a>
 2. add the license key copying it from the email and and pasting it in the *License Key* field.
 
 <img src="/images/license-form-add-key.png" width="50%" height="auto" class="img-responsive">
