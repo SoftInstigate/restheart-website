@@ -2,10 +2,7 @@
 layout: default 
 ---
 <div class="h-100 pb-5 jumbotron jumbotron-fluid bg-red">
-    <h1 class="display-4 mt-5 text-center text-white">Get in touch!</h1>
-    <div class="text-center text-center">
-        <h2 class="text-white">For any questions</h2>
-    </div>
+    <h1 class="my-5 text-center text-white">For any questions</h1>
     <div class="d-flex justify-content-center align-content-end w-100 h-100">
     <div>
         <a class="write-us-btn btn btn-lg" title="" href="mailto:ask@restheart.org?subject=About RESTHeart Platform" target="blank"> <i style="font-size:18px" class="icon-mail"></i> ask@restheart.org </a>
