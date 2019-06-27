@@ -86,18 +86,6 @@ default-representation-format: {{{default-representation-format}}}
 
 mongo-uri: {{{mongo-uri}}}
 
-idm:
-  implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
-  conf-file: {{{idm.conf-file}}}
-access-manager:
-  implementation-class: org.restheart.security.impl.SimpleAccessManager
-  conf-file: {{{access-manager.conf-file}}}
-
-log-level: {{{log-level}}}
-
-query-time-limit: {{{query-time-limit}}}
-
-aggregation-time-limit: {{{aggregation-time-limit}}}
 {% endraw %}
 {% endhighlight %}
 
