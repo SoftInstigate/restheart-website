@@ -64,7 +64,7 @@ io-threads: 4
 worker-threads: 16
 ```
 
-The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
+The [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
 {% highlight yaml%}
 {% raw %}
