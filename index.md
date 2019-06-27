@@ -10,7 +10,9 @@ layout: default
             <a href="https://hub.docker.com/r/softinstigate/restheart">
              <img height="27" class="align-top rounded" alt="Docker Pulls" src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
             </a>
-            <a href="https://github.com/SoftInstigate/restheart/releases"><img height="27" class="align-top rounded" alt="GitHub All Releases" src="https://img.shields.io/github/downloads/softinstigate/restheart/total.svg?style=for-the-badge">   </a>
+            <a href="https://github.com/SoftInstigate/restheart/releases">
+            <img height="27" class="align-top rounded" alt="GitHub All Releases" src="https://img.shields.io/github/downloads/softinstigate/restheart/total.svg?style=for-the-badge">
+            </a>
             <!-- <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
             <a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate" data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a> -->
         </p>
