@@ -37,13 +37,13 @@ However, if you are a commercial developer and plan to deploy a project for a cl
 
 3. **Security:** even though the open source version of RESTHeart does have some basic authentication and security features, the security feature set of the PE version of the RESTHeart Platform including automatic encryption of passwords can help you with your compliance with the GDPR laws of Europe and its module architecture enables agnostic support of other security platforms. 
 
-4. **Documentation:** the documentation for the open source version is available on Github and only covers the limited feature set of the open source version. The documentation for all features of all commercial versions of the RESTHeart Platform is available on the RESTHeart website and covers the advanced feature set of the RESTHeart Platform.
+4. **Documentation:** the documentation for the open source version is available on Github and only covers the limited feature set of the open source version. The documentation for all features of all commercial editions of the RESTHeart Platform is available on the RESTHeart website and covers the advanced feature set of the RESTHeart Platform.
 
 5. **Extensibility:** while the open source version of RESTHeart is extensible, the PE version of the RESTHeart Platform is more elegantly architected for greater ease of extensibility.
 
 
 
-6. **Priority bug fixes:** the support team for RESTHeart prioritizes support/bug fixes for those with paid versions. Users of the PE version of the RESTHeart Platform will get their bugs fixed with higher priority and those with the open source version will get attention for bug fixes – just at a lower level of speed and priority.
+6. **Priority bug fixes:** the support team for RESTHeart prioritizes support/bug fixes for those with paid editions. Users of the PE version of the RESTHeart Platform will get their bugs fixed with higher priority and those with the open source version will get attention for bug fixes – just at a lower level of speed and priority.
 
 
 <div class="anchor-offset" id="license">

@@ -19,7 +19,7 @@ title: Setup
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading">This page applies RESTHeart Platform Profession Edition</h2>
     <hr class="my-2">
-    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}" class="alert-link">FAQs</a> to learn more about the main differences between versions.
+    Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}" class="alert-link">FAQs</a> to learn more about the main differences between editions.
     <p class="mt-2">
         To setup the Open Source version refer to the README files in the github repositories <a target="_blank" href="https://github.com/softInstigate/restheart" class="alert-link">restheart</a> and <a  target="_blank" href="https://github.com/softInstigate/restheart-security" class="alert-link">restheart-security</a>
     </p>

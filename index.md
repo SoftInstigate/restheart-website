@@ -52,7 +52,7 @@ layout: default
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#thumb" /></svg>
                 <h2 class="call-to-action__title">AVAILABLE UNDER OPEN SOURCE OR COMMERCIAL LICENSES</h2>
                 <p class="call-to-action__desc">RESTHeart is distributed under the Open Source GNU AGPL v3 license. If the usage of our product under the AGPL does not satisfy your organization’s legal requirements, business-friendly commercial licenses are also available.</p>
-                <a class="btn btn-o-white" href="/versions">Commercial licenses</a>
+                <a class="btn btn-o-white" href="/editions">Commercial licenses</a>
             </div>
         </div>
         <div class="row">

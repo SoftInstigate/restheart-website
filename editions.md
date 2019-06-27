@@ -1,9 +1,9 @@
 ---
 layout: page-notitle
-title: Versions
+title: Editions
 ---
 
-<div class="versions-matrix mt-5">
+<div class="editions-matrix mt-5">
     <div class="comparison">
 
   <table>
@@ -231,7 +231,7 @@ title: Versions
 </div>
 
 
-<div class="versions-matrix mt-5">
+<div class="editions-matrix mt-5">
     <div class="comparison">
 
   <table>

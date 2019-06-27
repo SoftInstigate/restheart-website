@@ -5,19 +5,19 @@ title: Authentication
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Authentication Mechanisms](#authentication-mechanisms)
-    * [JWT Authentication](#jwt-authentication)
-    * [Basic Authentication](#basic-authentication)
-        * [Avoid browsers to open the login popup window](#avoid-browsers-to-open-the-login-popup-window)
-    * [Digest Authentication](#digest-authentication)
-    * [Token Authentication](#token-authentication)
-    * [Identity Authentication](#identity-authentication)
-* [Authenticators](#authenticators)
-    * [RESTHeart Authenticator](#restheart-authenticator)
-    * [Simple File Authenticator](#simple-file-authenticator)
-* [Token Managers](#token-managers)
-    * [Random Token Manager](#random-token-manager)
+- [Introduction](#Introduction)
+- [Authentication Mechanisms](#Authentication-Mechanisms)
+  - [JWT Authentication](#JWT-Authentication)
+  - [Basic Authentication](#Basic-Authentication)
+  - [Avoid browsers to open the login popup window](#Avoid-browsers-to-open-the-login-popup-window)
+  - [Digest Authentication](#Digest-Authentication)
+  - [Token Authentication](#Token-Authentication)
+  - [Identity Authentication](#Identity-Authentication)
+- [Authenticators](#Authenticators)
+  - [RESTHeart Authenticator](#RESTHeart-Authenticator)
+  - [Simple File Authenticator](#Simple-File-Authenticator)
+- [Token Managers](#Token-Managers)
+  - [Random Token Manager](#Random-Token-Manager)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -38,7 +38,7 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
     <p>JWT Authentication is available only on RESTHeart Platform.</p>
-    <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
+    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
@@ -198,7 +198,7 @@ auth-mechanisms:
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
     <p>RESTHeart Authenticator is available only on RESTHeart Platform.</p>
-    <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
+    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 

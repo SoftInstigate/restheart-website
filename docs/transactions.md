@@ -5,16 +5,18 @@ title: Transactions
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Sessions](#sessions)
-* [Transactions](#transactions)
-    * [Transaction status](#transaction-status)
-    * [Error handling](#error-handling)
-    * [Start the transaction](#start-the-transaction)
-    * [Get the current transaction status](#get-the-current-transaction-status)
-    * [Execute requests in the transaction](#execute-requests-in-the-transaction)
-    * [Commit the transaction](#commit-the-transaction)
-    * [Abort the transaction](#abort-the-transaction)
+- [Introduction](#Introduction)
+- [Sessions](#Sessions)
+  - [Start a session](#Start-a-session)
+  - [Execute a request in a session](#Execute-a-request-in-a-session)
+- [Transactions](#Transactions)
+  - [Transaction Status](#Transaction-Status)
+  - [Error handling](#Error-handling)
+  - [Start the transaction](#Start-the-transaction)
+  - [Get the current transaction status](#Get-the-current-transaction-status)
+  - [Execute requests in the transaction](#Execute-requests-in-the-transaction)
+  - [Commit the transaction](#Commit-the-transaction)
+  - [Abort the transaction](#Abort-the-transaction)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -25,7 +27,7 @@ title: Transactions
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
     <p>Transactions are available only on RESTHeart Platform.</p>
-    <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
+    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 

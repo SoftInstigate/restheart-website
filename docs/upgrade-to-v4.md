@@ -5,13 +5,19 @@ title: Upgrade to RESTHeart v4
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Architecture](#architecture)
-* [New features](#new-features)
-* [Default configuration](#default-configuration)
-* [Representation Format](#representation-format)
-* [Plugins Development](#plugins-development)
-* [HAL browser removed](#hal-browser-removed)
+- [Introduction](#Introduction)
+- [Architecture](#Architecture)
+- [New features](#New-features)
+- [Default configuration](#Default-configuration)
+  - [core](#core)
+  - [security](#security)
+- [Representation Format](#Representation-Format)
+  - [RESTHeart v3](#RESTHeart-v3)
+  - [RESTHeart Platform v4](#RESTHeart-Platform-v4)
+- [Plugins Development](#Plugins-Development)
+  - [Core Plugins](#Core-Plugins)
+  - [Security Plugins](#Security-Plugins)
+- [HAL browser removed](#HAL-browser-removed)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -73,7 +79,7 @@ RESTHeart Platform v4 introduces two main new features:
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
     <p><strong>Change Streams</strong> and <strong>Transactions</strong> are available only on RESTHeart Platform.</p>
-    <p class="small">Confused about versions? Check the <a class="alert-link" href="/versions">versions matrix</a>.</p>
+    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
