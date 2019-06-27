@@ -4,11 +4,11 @@ title: Configuration File
 ---
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Sample configuration file](#sample-configuration-file)
-- [Configuration options](#configuration-options)
-  - [Properties files](#properties-files)
-  - [Environment variables](#environment-variables)
-  - [Command line parameters](#command-line-parameters)
+- [Default configuration file](#Default-configuration-file)
+- [Configuration options](#Configuration-options)
+  - [Properties files](#Properties-files)
+  - [Environment variables](#Environment-variables)
+  - [Command line parameters](#Command-line-parameters)
     
 </div>
 
@@ -31,14 +31,37 @@ It is possible to pass an optional [properties file](https://docs.oracle.com/jav
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
 ```properties
+https-listener = true
+https-host = localhost
+https-port = 4443
+
+http-listener = true
+http-host = localhost
+http-port = 8080
+
+ajp-listener = true
+ajp-host = localhost
+ajp-port = 8009
+
 instance-name = development
+
 default-representation-format = STANDARD
+
 mongo-uri = mongodb://127.0.0.1
-idm.conf-file = ../etc/security.yml
-access-manager.conf-file = ../etc/security.yml
+
+# The MongoDb resource to bind to the root URI / 
+# The format is /db[/coll[/docid]] or '*' to expose all dbs
+root-mongo-resource = /restheart
+
 log-level = DEBUG
+
 query-time-limit = 0
 aggregation-time-limit = 0
+
+#suggested value: core*2
+io-threads: 4
+#suggested value: core*16
+worker-threads: 16
 ```
 
 The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
@@ -46,6 +69,18 @@ The [`restheart.yml`](https://github.com/SoftInstigate/restheart/blob/master/etc
 {% highlight yaml%}
 {% raw %}
 instance-name: {{{instance-name}}}
+
+https-listener: {{{https-listener}}}
+https-host: {{{https-host}}}
+https-port: {{{https-port}}}
+
+http-listener: {{{http-listener}}}
+http-host: {{{http-host}}}
+http-port: {{{http-port}}}
+
+ajp-listener: {{{ajp-listener}}}
+ajp-host: {{{ajp-host}}}
+ajp-port: {{{ajp-port}}}
 
 default-representation-format: {{{default-representation-format}}}
 
@@ -67,6 +102,14 @@ aggregation-time-limit: {{{aggregation-time-limit}}}
 {% endhighlight %}
 
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
+
+> __NOTE__: for security reasons RESTHeart by default binds only on `localhost`, so it won't be reacheable from external systems unless you edit the configuration. To accept connections from everywhere, you must set at least the http listener in the `etc/dev.properties` file to bind to `0.0.0.0` like this:
+
+```
+http-listener = 0.0.0.0
+```
+
+> Beware that you must stop and run RESTHeart again to reload a new configuration.
 
 Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
  as before version 3.7, this new configuration with properties is fully optional. 
