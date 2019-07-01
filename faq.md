@@ -25,11 +25,11 @@ title: Frequently Asked Questions
 </div>
 
 {: .mt-3 .alert .alert-info}
-I’m not sure which version of RESTHeart to get—the open source version or the professional edition version. What are the basic differences?
+I’m not sure which version of RESTHeart to get — the open source version or the professional edition version. What are the basic differences?
 
-If you are a student or researcher and plan to use RESTHeart for study, research or in-house development (not a commercial deployment) and are comfortable with the AGSL Open Source license regime governing the RESTHeart open source version then the open source version is likely to be best for you.
+If you are a student or researcher and plan to use RESTHeart for study, research or in-house development (not a commercial deployment) and are comfortable with the AGPL Open Source license regime governing the RESTHeart open source version then the open source version is likely to be best for you.
 
-However, if you are a commercial developer and plan to deploy a project for a client and aren’t comfortable with the AGSL Open Source License (i.e. need a commercial license) or if one of the following features/attributes is important to you, then you probably should consider getting the professional edition version (PE version) of the RESTHeart Platform:
+However, if you are a commercial developer and plan to deploy a project for a client and aren’t comfortable with the AGPL Open Source License (i.e. need a commercial license) or if one of the following features/attributes is important to you, then you probably should consider getting the professional edition version (PE version) of the RESTHeart Platform:
 
 1. **Multi-documented transactions:** MongoDB doesn’t currently support multi-documented transactions but the PE version of the RESTHeart Platform through its REST API does.
 
@@ -41,9 +41,9 @@ However, if you are a commercial developer and plan to deploy a project for a cl
 
 5. **Extensibility:** while the open source version of RESTHeart is extensible, the PE version of the RESTHeart Platform is more elegantly architected for greater ease of extensibility.
 
+6. **Clustering** Enterprise and OEM Editions implements a native clustering machanism, and they come with support for this deployment option.
 
-
-6. **Priority bug fixes:** the support team for RESTHeart prioritizes support/bug fixes for those with paid editions. Users of the PE version of the RESTHeart Platform will get their bugs fixed with higher priority and those with the open source version will get attention for bug fixes – just at a lower level of speed and priority.
+7. **Priority bug fixes:** the support team for RESTHeart prioritizes support/bug fixes for those with paid editions. Users of the PE version of the RESTHeart Platform will get their bugs fixed with higher priority and those with the open source version will get attention for bug fixes – just at a lower level of speed and priority.
 
 
 <div class="anchor-offset" id="license">
