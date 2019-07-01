@@ -5,14 +5,14 @@ title: Change Streams
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#Introduction)
-- [The *streams* collection metadata](#The-streams-collection-metadata)
-  - [Stream metadata object format](#Stream-metadata-object-format)
-  - [Escape stage properties informations](#Escape-stage-properties-informations)
-- [Examples](#Examples)
-- [Passing variables to change streams](#Passing-variables-to-change-streams)
-  - [Variables in stages or query](#Variables-in-stages-or-query)
-  - [Security Informations](#Security-Informations)
+- [Introduction](#introduction)
+- [The *streams* collection metadata](#the-streams-collection-metadata)
+  - [Stream metadata object format](#stream-metadata-object-format)
+  - [Escape stage properties informations](#escape-stage-properties-informations)
+- [Examples](#examples)
+- [Passing variables to change streams](#passing-variables-to-change-streams)
+  - [Variables in stages or query](#variables-in-stages-or-query)
+  - [Security Informations](#security-Informations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">

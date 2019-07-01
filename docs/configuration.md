@@ -4,11 +4,11 @@ title: Configuration File
 ---
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Default configuration file](#Default-configuration-file)
-- [Configuration options](#Configuration-options)
-  - [Properties files](#Properties-files)
-  - [Environment variables](#Environment-variables)
-  - [Command line parameters](#Command-line-parameters)
+- [Default configuration file](#default-configuration-file)
+- [Configuration options](#configuration-options)
+  - [Properties files](#properties-files)
+  - [Environment variables](#environment-variables)
+  - [Command line parameters](#command-line-parameters)
     
 </div>
 

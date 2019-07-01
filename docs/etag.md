@@ -5,11 +5,11 @@ title: ETag
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#Introduction)
-- [ETag for write requests](#ETag-for-write-requests)
-- [ETag for web caching](#ETag-for-web-caching)
-- [ETag policy](#ETag-policy)
-- [An example with AngularJs](#An-example-with-AngularJs)
+- [Introduction](#introduction)
+- [ETag for write requests](#etag-for-write-requests)
+- [ETag for web caching](#etag-for-web-caching)
+- [ETag policy](#etag-policy)
+- [An example with AngularJs](#an-example-with-angularjs)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">

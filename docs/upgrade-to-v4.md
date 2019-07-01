@@ -5,19 +5,19 @@ title: Upgrade to RESTHeart v4
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#Introduction)
-- [Architecture](#Architecture)
-- [New features](#New-features)
-- [Default configuration](#Default-configuration)
+- [Introduction](#introduction)
+- [Architecture](#architecture)
+- [New features](#new-features)
+- [Default configuration](#default-configuration)
   - [core](#core)
   - [security](#security)
-- [Representation Format](#Representation-Format)
-  - [RESTHeart v3](#RESTHeart-v3)
-  - [RESTHeart Platform v4](#RESTHeart-Platform-v4)
-- [Plugins Development](#Plugins-Development)
-  - [Core Plugins](#Core-Plugins)
-  - [Security Plugins](#Security-Plugins)
-- [HAL browser removed](#HAL-browser-removed)
+- [Representation Format](#representation-format)
+  - [RESTHeart v3](#restheart-v3)
+  - [RESTHeart Platform v4](#restheart-platform-v4)
+- [Plugins Development](#plugins-Development)
+  - [Core Plugins](#core-Plugins)
+  - [Security Plugins](#security-Plugins)
+- [HAL browser removed](#hal-browser-removed)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">

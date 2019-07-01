@@ -5,18 +5,18 @@ title: Transactions
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#Introduction)
-- [Sessions](#Sessions)
-  - [Start a session](#Start-a-session)
-  - [Execute a request in a session](#Execute-a-request-in-a-session)
-- [Transactions](#Transactions)
-  - [Transaction Status](#Transaction-Status)
-  - [Error handling](#Error-handling)
-  - [Start the transaction](#Start-the-transaction)
-  - [Get the current transaction status](#Get-the-current-transaction-status)
-  - [Execute requests in the transaction](#Execute-requests-in-the-transaction)
-  - [Commit the transaction](#Commit-the-transaction)
-  - [Abort the transaction](#Abort-the-transaction)
+- [Introduction](#introduction)
+- [Sessions](#sessions)
+  - [Start a session](#start-a-session)
+  - [Execute a request in a session](#execute-a-request-in-a-session)
+- [Transactions](#transactions)
+  - [Transaction Status](#transaction-Status)
+  - [Error handling](#error-handling)
+  - [Start the transaction](#start-the-transaction)
+  - [Get the current transaction status](#get-the-current-transaction-status)
+  - [Execute requests in the transaction](#execute-requests-in-the-transaction)
+  - [Commit the transaction](#commit-the-transaction)
+  - [Abort the transaction](#abort-the-transaction)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
