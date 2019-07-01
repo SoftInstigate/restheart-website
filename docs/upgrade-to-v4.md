@@ -14,9 +14,9 @@ title: Upgrade to RESTHeart v4
 - [Representation Format](#representation-format)
   - [RESTHeart v3](#restheart-v3)
   - [RESTHeart Platform v4](#restheart-platform-v4)
-- [Plugins Development](#plugins-Development)
-  - [Core Plugins](#core-Plugins)
-  - [Security Plugins](#security-Plugins)
+- [Plugins Development](#plugins-development)
+  - [Core Plugins](#core-plugins)
+  - [Security Plugins](#security-plugins)
 - [HAL browser removed](#hal-browser-removed)
 
 </div>
