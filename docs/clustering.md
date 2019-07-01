@@ -4,10 +4,12 @@ title: Clustering and Load Balancing
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-- [What are Clustering and Load Balancing](#What-are-Clustering-and-Load-Balancing)
-- [How it used to work](#How-it-used-to-work)
-- [RESTHeart v4 new capabilities](#RESTHeart-v4-new-capabilities)
-- [References](#References)
+
+- [What are Clustering and Load Balancing](#what-are-clustering-and-load-balancing)
+- [How it used to work](#how-it-used-to-work)
+- [RESTHeart v4 new capabilities](#restheart-v4-new-capabilities)
+- [References](#references)
+
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
