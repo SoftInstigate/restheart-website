@@ -128,7 +128,7 @@ Yes, RESTHeart is and will always be open source software. RESTHeart is distribu
 
 _"The GNU Affero General Public License is designed specifically to ensure that, in such cases, the modified source code becomes available to the community. It requires the operator of a network server to provide the source code of the modified version running there to the users of that server. Therefore, public use of a modified version, on a publicly accessible server, gives the public access to the source code of the modified version."_
 
-There are [editions](/editions) of RESTHeart that are distribute under a commercial license. The reason is to offer additional, paid-only features which, usually, interests a specialized minority of users, to help financing the development of this product.
+There are [editions](/editions) of RESTHeart that are distributed under a commercial license. The reason is to offer additional, paid-only features which, usually, interests a minority of users, to help financing the development of this project.
 
 <div class="mb-5">&nbsp;</div>
 </div>
