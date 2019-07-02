@@ -21,13 +21,13 @@ __Server Clustering__ is a method of turning multiple computer servers into a cl
 
 __Load Balancing__ is about the distribution of workloads across multiple computing resources, such as computers, server clusters, network links, etc. Load balancing aims to optimize resource usage, maximize throughput, minimize response time, and avoid overload of any single resource.
 
-A __MongoDB Replica Set__ is a group of mongod processes that maintain the same data set. Replica sets provide redundancy and high availability, and are the basis for all production deployments.
+A __MongoDB Replica Set__ is a group of `mongod` processes that maintain the same data set. Replica sets provide redundancy and high availability, and are the basis for all production deployments.
 
 __High availability (HA)__ is a general characteristic of a system, which aims to ensure an agreed level of operational performance, usually uptime, for a higher than normal period.
 
 ![MongDB Replica Set](/images/mongodb_replicaset.png){: width="50%" height="auto" class="mx-auto d-block img-responsive" style="padding: 20px"}
 
-RESTHeart has alwasy been a very good fit for Microservices and other styles of distributed architecture. It has been deployed successfully with clustering technologies such as __AWS ECS__ and __Fargate__, __Kubernetes__ and many others. 
+RESTHeart has always been a very good fit for Microservices and other styles of distributed architecture. It has been deployed successfully with clustering technologies such as __AWS ECS__ and __Fargate__, __Kubernetes__ and many others. 
 
 ## How it used to work
 
@@ -49,7 +49,7 @@ RESTHeart v4, in fact, comes with a specialized Token Manager which creates cryp
 
 The Enterprise license is actually cluster based: it allows by default to create a single production cluster with up to two nodes. For OEM licenses, as they are volume-based, we need to have a chat with potential customers about their estimated volumes, so that we can package the best possibile option.
 
-Besides, customers will receive dedicated support and documentation for clustering and load balancing RESTHeart with MongoDB in higly demanding environments. For example, we illustrate how to setup our __RESTHeart Platform Security__ component (which comes with any commercial license) as a super-ligthweight load balancer, __without the need to use any external product__.
+Besides, customers will receive dedicated support and documentation for clustering and load balancing RESTHeart with MongoDB in higly demanding environments. For example, we illustrate how to setup our __RESTHeart Platform Security__ component (which comes with any commercial license) as a super-lightweight load balancer, __without the need to use any external product__.
 
 In summary, the top level steps for a highly available RESTHeart + MongoDB configuration are:
 
