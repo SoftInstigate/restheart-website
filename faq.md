@@ -15,6 +15,7 @@ title: Frequently Asked Questions
 * [What is a Derivative Work?](#derivative-work)
 * [Derivative Work distribution](#distribute-derivative-work)
 * [*Disclose source* AGPL condition over Commercial License](#commercial-license-overcome-disclose-source)
+* [Is RESTHeart fully open source?](#letter-to-os-users)
 
 </div>
 <div markdown="1" class="col-12 col-lg-7 py-md-3 bf-content">
@@ -111,6 +112,23 @@ You can buy as many license keys as the instance you need to distribute or even 
 Does the Commercial License overcome the *Disclose Source* AGPL condition?
 
 Yes, With the Commercial License you don't have to make the Source Code available when distributing your Derivative Work. 
+
+
+<div class="anchor-offset" id="letter-to-os-users">
+</div>
+
+{: .alert.alert-info.mt-4}
+Is RESTHeart fully open source?
+
+Yes, RESTHeart is and will always be open source software. RESTHeart is distributed under the GNU Affero General Public License, which is
+
+ _"a free, copyleft license for software and other kinds of works, specifically designed to ensure cooperation with the community in the case of network server software."_
+
+ So the AGPL is a dedicated GPL extension, valid also in the case of software used on network servers: 
+
+_"The GNU Affero General Public License is designed specifically to ensure that, in such cases, the modified source code becomes available to the community. It requires the operator of a network server to provide the source code of the modified version running there to the users of that server. Therefore, public use of a modified version, on a publicly accessible server, gives the public access to the source code of the modified version."_
+
+There are [editions](/editions) of RESTHeart that are distribute under a commercial license. The reason is to offer additional, paid-only features which, usually, interests a specialized minority of users, to help financing the development of this product.
 
 <div class="mb-5">&nbsp;</div>
 </div>
