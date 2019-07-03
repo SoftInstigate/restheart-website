@@ -23,7 +23,7 @@ title: Editions
             <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
             <a class="mt-auto" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
           </div>
-          <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
+          <a style="font-weight: 100" href="{{ "/faq/#letter-to-os-users" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
           <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
