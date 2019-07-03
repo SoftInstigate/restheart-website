@@ -143,7 +143,7 @@ Examples follows:
     "streams": [...]
 }
 
-# count documents of collection restheart.col -> GET /restheart/coll/?count&np
+# count documents of collection restheart.coll -> GET /restheart/coll/?count&np
 
 { "_embedded": [], "_size": n }
 ```
@@ -169,7 +169,7 @@ Examples follows:
     "streams": [...]
 }
 
-# count documents of collection restheart.col -> GET /coll/_size
+# count documents of collection restheart.coll -> GET /coll/_size
 
 { "_size": n }
 ```

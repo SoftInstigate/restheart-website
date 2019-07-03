@@ -8,8 +8,6 @@ title: Representation Format
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 Each resource has its **properties** and **embedded** resources.
