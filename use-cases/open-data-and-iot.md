@@ -5,7 +5,7 @@ title: "Use Case: Open Data and IoT"
 
 
 {: .text-justify .mt-5}
-RESTHeart is a perfect fit for real-time data, open data and solutions for the Internet of Things (IoT). Data can be uploaded to RESTHeart via JSON calls or CVS files and made immediately available through the REST API. Because RESTHeart eliminates the need for time-consuming integrations, in most cases you can set up your real-time data, open data or IoT application without coding—saving significant development cost.
+RESTHeart is a perfect fit for real-time data, open data and solutions for the Internet of Things (IoT). Data can be uploaded to RESTHeart via JSON calls or Excel's CSV files and made immediately available through the REST API. Because RESTHeart eliminates the need for time-consuming integrations, in most cases you can set up your real-time data, open data or IoT application without coding—saving significant development cost.
 
 <img src="/images/restheart-open-data-and-iot.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
 
