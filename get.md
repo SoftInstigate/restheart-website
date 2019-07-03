@@ -41,8 +41,11 @@ permalink: /get
                 </div>
                 <input type="email" class="form-control form-control-lg" id="email" aria-describedby="email" required pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
             </div>
-            <div class="invalid-feedback">Invalid email address</div>
+            <div class="hint mt-2 text-muted text-center">
+                <small>We'll send the license key to this email and never share it with anyone else.</small>
+            </div>
         </div>
+        <div class="invalid-feedback">Invalid email address</div>
     </div>
     <div id="billing" class="d-none">
         <hr class="my-4">
