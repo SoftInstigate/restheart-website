@@ -5,20 +5,14 @@ title: Tutorial
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
-- [Start MongoDB and RESTHeart](#start-mongodb-and-restheart)
-- [Create a Database](#create-a-database)
-- [Get the database](#get-the-database)
-- [Create a Collection](#create-a-collection)
-- [Get the collection](#get-the-collection)
-- [Create two Documents](#create-two-documents)
-    - [First document](#first-document)
-    - [Second document](#second-document)
-- [Get all Documents from the Collection](#get-all-documents-from-the-collection)
-- [GET Document by URL (by id)](#get-document-by-url-by-id)
-- [Query documents by properties](#query-documents-by-properties)
-- [Clean-up](#clean-up)
-- [Additional resources](#additional-resources)
+- [Running the example requests](#running-the-example-requests)
+- [GET Documents from the Collection](#get-documents-from-the-collection)
+- [GET filtered Documents from the Collection](#get-filtered-documents-from-the-collection)
+- [POST a new document](#post-a-new-document)
+- [PUT a new document](#put-a-new-document)
+- [PATCH a document](#patch-a-document)
+- [DELETE a document](#delete-a-document)
+
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
