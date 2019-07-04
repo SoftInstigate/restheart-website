@@ -394,7 +394,20 @@ Specify the index by the index specification document, either using a json docum
 Use `$natural` to force the query to perform a forwards collection scan.
 
 ### Hint Examples
-
+<div class="bs-callout bs-callout-info mt-3 pb-5" role="alert">
+    <p>
+        Before running the following examples create the following indexes:
+    </p>
+    <p>
+        <pre><code>PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre>
+        <a href="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+    </p>
+    <p>
+        <pre class="mt-5"><code>PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre>
+        <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+    </p>
+    
+</div>
 #### Use the index on item field
 
 The following example returns all documents in the collection named **coll** using the index on the **item** field.
