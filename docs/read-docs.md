@@ -38,66 +38,16 @@ You will also learn hot to get a single document knowing its _id.
 
 {% include running-examples.md %}
 
-## Select All Documents in a Collection
+## GETting Documents from a Collection
 
-To GET all documents in the collection, , run the following:
-
-```
-GET /inventory?page=1&pagesize=2
-```
-
-Note the *page* and *pagesize* query parameters.
-
-### Default sorting
-
-The default sorting of the documents is by the *_id* descending.
-
-In the usual case, where the type of the ids of the documents is
-ObjectId, this makes the documents sorted by creation time by default
-(ObjectId have a timestamp in the most significant bits).
-
-RESTHeart returns data in pages (default being 100) and it is stateless.
-This means that two requests use different db cursors. A default sorting
-makes sure that requests on different pages returns documents in a well
-defined order.
-
-#### Disable default sorting
-
-Default sorting could impact performances for some use cases.
-
-To disable default sorting just add the `sort={}` query parameter 
-
-See the [sorting](#Sorting) section to know how to
-specify different sorting criteria.
-
-### Example
-
-To retrieve the first 100 documents of a collection:
-
-**Request**
-
-``` plain
-GET /test/coll?pagesize=100&np
-```
-
-**Response (headers omitted)**
+To GET documents in the collection, run the following:
 
 ```
-HTTP/1.1 200 OK
-...
-
-{
-    "_embedded": [
-        { <DOC1> }, { <DOC2> }, { <DOC3> }, ..., { <DOC100> }
-    ], 
-    "_returned": 100
-}
+GET /inventory
 ```
 
-Excluding collection properties
+<a href="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
-The query parameter **`np`** (No Properties) excludes the collection
-properties from the response.
 
 ## Filtering
 
@@ -110,48 +60,57 @@ query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
+
+<div class="bs-callout bs-callout-info">
+    <h4 id="multifilter-qparams">Multifilter qparams</h4>
+    <hr class="my-2">
+    <p>
+    Note the second form of the last example. If multiple filter query
+    parameters are specified, they are logically composed with the AND
+    operator.
+    </p>
+    <p>
+    This can be very useful in conjunction with path based security
+    permission.
+    </p>
+    <p>
+    For instance the following permission can be used with the simple file
+    based Access Manager to restrict users to GET a collection only
+    specifying a filter on the author property to be equal to their
+    username:
+    </p>
+    <code>regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]</code>
+</div>
+
 ### Filtering Examples
 
-#### Return documents whose `title` starts with "Star Trek"
+#### Return documents whose `quantity` is more than 50
 
 ``` plain
-GET /test/coll?filter={'title':{'$regex':'(?i)^STAR TREK.*'}}
+GET /inventory?filter={"qty": {"$gt": 50}}
 ```
 
-This query uses the
-mongodb [$regex](https://docs.mongodb.org/manual/reference/operator/query/regex/) operator
-where the *i* option performs a case-insensitive match for documents
-with title value that starts with the string "STAR TREK".
+<a href="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
-#### Return documents whose `title` starts with "Star Trek" and `publishing_date `is later than 4/9/2015, 8AM
+#### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
-``` bash
-GET /test/coll?filter={'$and':[{'title':{'$regex':'(?i)^STAR TREK.*'},{'publishing_date':{'$gte':{'$date':'2015-09-04T08:00:00Z'}}}]}
- 
-or
- 
-GET /test/coll?filter={'title':{'$regex':'(?i)^STAR TREK.*'}&filter={'publishing_date':{'$gte':{'$date':'2015-09-04T08:00:00Z'}}}
+``` plain
+GET /inventory?filter={"$and": [{"qty": {"$gt": 75}}, {"status": "D"}]}
 ```
 
-multifilter qparams
+<a href="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
-Note the second form of the last example. If multiple filter query
-parameters are specified, they are logically composed with the AND
-operator.
+or equivalently:
 
-This can be very useful in conjunction with path based security
-permission.
-
-For instance the following permission can be used with the simple file
-based Access Manager to restrict users to GET a collection only
-specifying a filter on the author property to be equal to their
-username:
-
-    regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]
+{: .mt-2 }
+``` plain
+GET /inventory?filter={"qty": {"$gt": 75}}&filter={"status": "D"}
+```
+<a href="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Counting
 
-Specifying the *count* query parameter (e.g. `?count=true` ), RESTHeart
+Specifying the *count* query parameter (e.g. `?count=true` ) in HAL full mode (hal=f query parameter), RESTHeart
 returns:
 
 -   the total number of documents in the collection with the
@@ -162,13 +121,53 @@ returns:
     last, next, previous) are only returned on hal full mode (hal=f
     query parameter); see HAL mode for more information.
 
-  
+To count the number of documents stored into a collection do as follows:
 
-Impact on performances
+```
+GET /<collection-name>/_size
+```
 
-**`count`** involves querying the collection twice: once for counting
-and once of actually retrieving the data; this has performance
-implications!
+
+<div class="bs-callout bs-callout-info">
+    <h4 id="impact-on-performances">Count qparam</h4>
+    <hr class="my-2">
+    <p>
+    Specifying the <strong>count</strong> query parameter (e.g. <code>?count=true</code> ) in HAL full mode (hal=f query parameter), RESTHeart
+    returns:
+    </p>
+    <p>
+    <ul>
+        <li>the total number of documents in the collection with the
+        <code class="highlighter-rouge">_size</code><em>&nbsp;</em>parameter</li>
+        <li>the total number of available pages with
+        the&nbsp;<code class="highlighter-rouge">_total_pages</code>&nbsp;parameter. It also add the&nbsp;<code class="highlighter-rouge">last</code>&nbsp;link, i.e. the
+        link to the last page, to the _links; The pagination links (first,
+        last, next, previous) are only returned on hal full mode (hal=f
+        query parameter);&nbsp;see HAL mode for more information.</li>
+    </ul>
+    </p>
+</div>
+
+<div class="bs-callout bs-callout-info">
+    <h4 id="impact-on-performances">Impact on performances</h4>
+    <hr class="my-2">
+    <p>
+    <code><strong>count</strong></code> involves querying the collection twice: once for counting
+    and once of actually retrieving the data; this has performance
+    implications!
+    </p>
+</div>
+
+### Counting Examples
+
+#### Return the number of documents into "inventory" collection 
+
+
+``` plain
+GET /inventory/_size
+```
+
+<a href="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Paging
 
@@ -184,28 +183,15 @@ hal full mode** (`hal=f` query parameter); see [HAL
 mode](https://restheart.org/docs/representation-format/)
 for more information.
 
-For instance, to return documents from 20 to 29 (page 3):
+### Paging Examples
 
-**Request**
+#### Return documents on second page when pagesize is 3 
 
 ``` plain
-GET /test/coll?count&page=3&pagesize=10&hal=f&np
+GET /inventory?count&page=2&pagesize=3&hal=f
 ```
 
-**Response (headers omitted)**
-
-``` bash
-HTTP/1.1 200 OK
-...
-{
-    "_embedded": [
-        { <DOC30> }, { <DOC31> }, ... { <DOC39> }
-    ],
-    "_returned": 10,
-    "_size": 343
-    "_total_pages": 35
-}
-```
+<a href="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/2" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Sorting
 
@@ -214,20 +200,23 @@ Sorting is controlled by the `sort` query parameter.
 Note that documents cannot be sorted by system properties (properties
 starting with \_ that are managed automatically by RESTHeart).
 
+<div class="bs-callout bs-callout-info">
+    <h4 id="multifilter-qparams">Multiple sort properties</h4>
+    <hr class="my-2">
+    <p>
+    Specify multiple sort options using multiple `sort` query parameters
+    </p>
+    <pre><code class="language-plain">GET /db/coll?sort=name&amp;sort=-age
+    </code></pre>
+
+</div>
+
 ### Sort simple format
 
 The `sort` simplified format is :
 
 ``` plain
 sort=[ |-]<fieldname>
-```
-
-multiple sort properties
-
-Specify multiple sort options using multiple `sort` query parameters
-
-``` plain
-GET /db/coll?sort=name&sort=-age
 ```
 
 ### Sort JSON expression format
@@ -242,43 +231,109 @@ improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 sort={"field": 1}
 ```
 
+<div class="bs-callout bs-callout-info mt-5" role="alert">
+    <h4 id="default-sorting">Default sorting</h4>
+    <hr class="my-2">
+    <p>
+    The default sorting of the documents is by the <strong>_id descending</strong>.
+    </p>
+    <p>
+    In the usual case, where the type of the ids of the documents is
+    ObjectId, this makes the documents sorted by creation time by default
+    (ObjectId have a timestamp in the most significant bits).
+    </p>
+    <p>
+    RESTHeart returns data in pages (default being 100) and it is stateless.
+    This means that two requests use different db cursors. A default sorting
+    makes sure that requests on different pages returns documents in a well
+    defined order.
+    </p>
+    <div class="alert alert-warning" role="alert">
+        <h2 class="alert-heading">Disable default sorting</h2>
+        <hr class="my-2">
+        <p>
+        Default sorting could impact performances for some use cases.
+        </p>
+        <p>
+        To disable default sorting just add the <strong>"sort={}"</strong> query parameter 
+        </p>
+        <p>
+        See the <a href="#sorting">sorting</a> section to know how to
+        specify different sorting criteria.
+        </p>
+    </div>
+</div>
+
 ### Sorting Examples
 
-### Sort by the *date* ascending
+### Sort by *status* ascending
 
 ``` bash
-GET /test/coll?sort=date
-
-GET /test/coll?sort={"date":1}
+GET /inventory?sort=status
 ```
+<a href="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+or equivalently:
 
-#### Sort by the *date* descending
+{: .mt-2 }
+```
+GET /inventory?sort={"status":1}
+```
+<a href="http://restninja.io/share/dd99c056f88e5ac9f990ffcd3f2a18032007d639/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+{: .mt-4 }
+#### Sort by *status* descending
 
 ``` bash
-GET /test/coll?sort=-date
-
-GET /test/coll?sort={"date":-1}
+GET /inventory?sort=-status
 ```
 
-#### Sort by the *date* descending and title ascending 
+<a href="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+
+or equivalently:
+
+{: .mt-2 }
+```
+GET /inventory?sort={"status":-1}
+```
+
+<a href="http://restninja.io/share/e6fe674153926f9834c1aa10e156b0792dc35bc5/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+{: .mt-4 }
+#### Sort by *status* ascending and *qty* descending
 
 ``` bash
-GET /test/coll?sort=-date&sort=title
+GET /inventory?sort=status&sort=-qty
+```
+<a href="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
-GET /test/coll?sort={"date":-1, "title":1}
+or equivalently:
+
+{: .mt-2 }
+```
+GET /inventory?sort={"status":1, "qty":-1}
 ```
 
+<a href="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+{: .mt-4 }
 #### Sort by search score
 
+{: .bs-callout.bs-callout-info }
 This is only possible with json expression format
 
-``` bash
-// create a text index
-PUT /test/coll/_indexes/text {"keys": {"title": "text }}
- 
-// sort by {"$meta": "textScore"}
-GET /test/coll?filter={"$text":{"$search":"a search string"}}&keys={"title":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
 ```
+// create a text index
+PUT /inventory/_indexes/text {"keys": {"item": "text" }}
+```
+<a href="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+{: .mt-5 }
+```
+// sort by {"$meta": "textScore"}
+GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
+```
+<a href="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Projection
 
@@ -290,33 +345,43 @@ This is done via the `keys` query parameter. 
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
+<div class="bs-callout bs-callout-info mt-3" role="alert">
+    <h4 id="default-sorting">Dot Notation</h4>
+    <hr class="my-2">
+    <p>
+    It's possible to use the "dot notation" to specify fields within an
+    object, for example, let's say that both <strong>item</strong> and <strong>status</strong> are
+    part of an <strong>header</strong> object:
+    </p>
+    <pre><code>GET /inventory?keys<span class="o">={</span><span class="s1">'header.item'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.status'</span>:1<span class="o">}</span>
+    </code></pre>
+</div>
+
 ### Projection Examples
 
-#### Only return the property title
+#### Only return the property *item*
 
 ``` bash
-GET /test/coll?keys={'title':1}
+GET /inventory?keys={'item':1}
 ```
 
-#### Return all but the property *title*
+<a href="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+#### Return all but the property *item*
 
 ``` bash
-GET /test/coll?keys={'title':0}
+GET /inventory?keys={'item':0}
 ```
 
-#### Only return the properties *title* and *summary*
+<a href="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
+#### Only return the properties *item* and *qty*
 
 ``` bash
-GET /test/coll?keys={'title':1}&keys={'summary':1}
+GET /inventory?keys={'item':1}&keys={'qty':1}
 ```
 
-It's possible to use the "dot notation" to specify fields within an
-object, for example, let's say that both **title** and **summary** are
-part of an **header** object:
-
-``` bash
-GET /test/coll?keys={'header.title':1}&keys={'header.summary':1}
-```
+<a href="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Hint
 
@@ -330,36 +395,44 @@ Use `$natural` to force the query to perform a forwards collection scan.
 
 ### Hint Examples
 
-#### Use the index on age field
+#### Use the index on item field
 
-The following example returns all documents in the collection named **coll** using the index on the **age** field.
+The following example returns all documents in the collection named **coll** using the index on the **item** field.
 
 ``` bash
-GET /test/coll?hint={'age':1}
+GET /inventory?hint={'item':1}
 ```
+<a href="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 #### Use the compound index on age and timestamp fields using the compact string format
 
-The following example returns the documents in the collection named **coll** using the compound index on the **age** and reverse **timestamp** fields.
+The following example returns the documents using the compound index on the **item** and reverse **status** fields.
 
 ``` bash
-GET /test/coll?hint=age&hint=-timestamp
+GET /inventory?hint=item&hint=-status
 ```
+
+<a href="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 #### Perform a forwards collection scan
 
-The following example returns the documents in the collection named **coll** using aforwards collection scan.
+The following example returns the documents using a forwards collection scan.
 
 ``` bash
-GET /test/coll?hint={'$natural':1}
+GET /inventory?hint={'$natural':1}
 ```
+
+<a href="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 #### Perform a reverse collection scan
 
-The following example returns the documents in the collection named **coll** using a reverse collection scan.
+The following example returns the documents using a reverse collection scan.
 
 ``` bash
-GET /test/coll?hint={'$natural':-1}
-```
+GET /inventory?hint={'$natural':-1}
+``` 
+
+<a href="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+
 
 </div>
