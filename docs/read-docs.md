@@ -6,17 +6,22 @@ title: Read JSON Documents
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-    - [Example](#example)
-    - [Default sorting](#default-sorting)
+    
 - [Filtering](#filtering)
+    - [Multifilter qparams](#multifilter-qparams)
     - [Examples](#filtering-examples)
 - [Counting](#counting)
+    - [Count qparam](#count-qparam)
+    - [Examples](#counting-examples)
 - [Paging](#paging)
+    - [Examples](#paging-examples)
 - [Sorting](#sorting)
     - [Sort simple format](#sort-simple-format)
     - [Sort JSON expression format](#sort-json-expression-format)
+    - [Default sorting](#default-sorting)
     - [Examples](#sorting-examples)
 - [Projection](#projection)
+    - [Dot Notation](#dot-notation)
     - [Examples](#projection-examples)
 - [Hint](#hint)
     - [Examples](#hint-examples)
@@ -61,8 +66,11 @@ Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
 
+<div class="anchor-offset" id="multifilter-qparams">
+</div>
+
 <div class="bs-callout bs-callout-info">
-    <h4 id="multifilter-qparams">Multifilter qparams</h4>
+    <h4>Multifilter qparams</h4>
     <hr class="my-2">
     <p>
     Note the second form of the last example. If multiple filter query
@@ -127,9 +135,11 @@ To count the number of documents stored into a collection do as follows:
 GET /<collection-name>/_size
 ```
 
+<div class="anchor-offset" id="count-qparam">
+</div>
 
 <div class="bs-callout bs-callout-info">
-    <h4 id="impact-on-performances">Count qparam</h4>
+    <h4>Count qparam</h4>
     <hr class="my-2">
     <p>
     Specifying the <strong>count</strong> query parameter (e.g. <code>?count=true</code> ) in HAL full mode (hal=f query parameter), RESTHeart
@@ -231,8 +241,11 @@ improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 sort={"field": 1}
 ```
 
+<div class="anchor-offset" id="default-sorting">
+</div>
+
 <div class="bs-callout bs-callout-info mt-5" role="alert">
-    <h4 id="default-sorting">Default sorting</h4>
+    <h4>Default sorting</h4>
     <hr class="my-2">
     <p>
     The default sorting of the documents is by the <strong>_id descending</strong>.
@@ -345,8 +358,11 @@ This is done via the `keys` query parameter. 
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
 
+<div class="anchor-offset" id="dot-notation">
+</div>
+
 <div class="bs-callout bs-callout-info mt-3" role="alert">
-    <h4 id="default-sorting">Dot Notation</h4>
+    <h4>Dot Notation</h4>
     <hr class="my-2">
     <p>
     It's possible to use the "dot notation" to specify fields within an
