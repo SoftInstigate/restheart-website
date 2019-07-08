@@ -7,14 +7,13 @@ title: Read JSON Documents
 
 - [Introduction](#introduction)
     
+- [Paging](#paging)
+    - [Examples](#paging-examples)
 - [Filtering](#filtering)
     - [Multifilter qparams](#multifilter-qparams)
     - [Examples](#filtering-examples)
 - [Counting](#counting)
-    - [Count qparam](#count-qparam)
     - [Examples](#counting-examples)
-- [Paging](#paging)
-    - [Examples](#paging-examples)
 - [Sorting](#sorting)
     - [Sort simple format](#sort-simple-format)
     - [Sort JSON expression format](#sort-json-expression-format)
@@ -48,11 +47,34 @@ You will also learn hot to get a single document knowing its _id.
 To GET documents in the collection, run the following:
 
 ```
-GET /inventory
+> GET /inventory
 ```
 
 <a href="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
+
+## Paging
+
+The response is paginated,  i..e. only a subset of the collection’s document is returned in the response array.
+
+The number of documents to return is controlled via the `pagesize` query
+parameter. Its default value is 100, maximum allowable size is 1000.
+
+The pages to return is specified with the `page` query parameter. The
+pagination links (first, last, next, previous) are **only returned on
+hal full mode** (`hal=f` query parameter); see [HAL
+mode](https://restheart.org/docs/representation-format/)
+for more information.
+
+### Paging Examples
+
+#### Return documents on second page when pagesize is 3 
+
+``` plain
+> GET /inventory?page=2&pagesize=3
+```
+
+<a href="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/3" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Filtering
 
@@ -95,7 +117,7 @@ managed automatically by RESTHeart) are not affected by this option.
 #### Return documents whose `quantity` is more than 50
 
 ``` plain
-GET /inventory?filter={"qty": {"$gt": 50}}
+> GET /inventory?filter={"qty": {"$gt": 50}}
 ```
 
 <a href="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -103,7 +125,7 @@ GET /inventory?filter={"qty": {"$gt": 50}}
 #### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
 ``` plain
-GET /inventory?filter={"$and": [{"qty": {"$gt": 75}}, {"status": "D"}]}
+> GET /inventory?filter={"$and": [{"qty": {"$gt": 75}}, {"status": "D"}]}
 ```
 
 <a href="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -112,51 +134,13 @@ or equivalently:
 
 {: .mt-2 }
 ``` plain
-GET /inventory?filter={"qty": {"$gt": 75}}&filter={"status": "D"}
+> GET /inventory?filter={"qty": {"$gt": 75}}&filter={"status": "D"}
 ```
 <a href="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Counting
 
-Specifying the *count* query parameter (e.g. `?count=true` ) in HAL full mode (hal=f query parameter), RESTHeart
-returns:
-
--   the total number of documents in the collection with the
-    `_size`* *parameter
--   the total number of available pages with
-    the `_total_pages` parameter. It also add the `last` link, i.e. the
-    link to the last page, to the \_links; The pagination links (first,
-    last, next, previous) are only returned on hal full mode (hal=f
-    query parameter); see HAL mode for more information.
-
-To count the number of documents stored into a collection do as follows:
-
-```
-GET /<collection-name>/_size
-```
-
-<div class="anchor-offset" id="count-qparam">
-</div>
-
-<div class="bs-callout bs-callout-info">
-    <h4>Count qparam</h4>
-    <hr class="my-2">
-    <p>
-    Specifying the <strong>count</strong> query parameter (e.g. <code>?count=true</code> ) in HAL full mode (hal=f query parameter), RESTHeart
-    returns:
-    </p>
-    <p>
-    <ul>
-        <li>the total number of documents in the collection with the
-        <code class="highlighter-rouge">_size</code><em>&nbsp;</em>parameter</li>
-        <li>the total number of available pages with
-        the&nbsp;<code class="highlighter-rouge">_total_pages</code>&nbsp;parameter. It also add the&nbsp;<code class="highlighter-rouge">last</code>&nbsp;link, i.e. the
-        link to the last page, to the _links; The pagination links (first,
-        last, next, previous) are only returned on hal full mode (hal=f
-        query parameter);&nbsp;see HAL mode for more information.</li>
-    </ul>
-    </p>
-</div>
+Use `_size` keyword after the collection path to retrieve the number of documents that meets the filter condition (if present).
 
 <div class="bs-callout bs-callout-info">
     <h4 id="impact-on-performances">Impact on performances</h4>
@@ -172,36 +156,11 @@ GET /<collection-name>/_size
 
 #### Return the number of documents into "inventory" collection 
 
-
 ``` plain
-GET /inventory/_size
+> GET /inventory/_size?filter={"status": "A"}
 ```
 
-<a href="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
-
-## Paging
-
-Embedded documents are always paginated, i.e. only a subset of the
-collection's document is returned on each request.
-
-The number of documents to return is controlled via the `pagesize` query
-parameter. Its default value is 100, maximum allowable size is 1000.
-
-The pages to return is specified with the `page` query parameter. The
-pagination links (first, last, next, previous) are **only returned on
-hal full mode** (`hal=f` query parameter); see [HAL
-mode](https://restheart.org/docs/representation-format/)
-for more information.
-
-### Paging Examples
-
-#### Return documents on second page when pagesize is 3 
-
-``` plain
-GET /inventory?count&page=2&pagesize=3&hal=f
-```
-
-<a href="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/2" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+<a href="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/1" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## Sorting
 
@@ -216,7 +175,7 @@ starting with \_ that are managed automatically by RESTHeart).
     <p>
     Specify multiple sort options using multiple `sort` query parameters
     </p>
-    <pre><code class="language-plain">GET /db/coll?sort=name&amp;sort=-age
+    <pre><code class="language-plain">> GET /inventory?sort=qty&amp;sort=-status
     </code></pre>
 
 </div>
@@ -282,14 +241,14 @@ sort={"field": 1}
 ### Sort by *status* ascending
 
 ``` bash
-GET /inventory?sort=status
+> GET /inventory?sort=status
 ```
 <a href="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 or equivalently:
 
 {: .mt-2 }
 ```
-GET /inventory?sort={"status":1}
+> GET /inventory?sort={"status":1}
 ```
 <a href="http://restninja.io/share/dd99c056f88e5ac9f990ffcd3f2a18032007d639/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
@@ -297,7 +256,7 @@ GET /inventory?sort={"status":1}
 #### Sort by *status* descending
 
 ``` bash
-GET /inventory?sort=-status
+> GET /inventory?sort=-status
 ```
 
 <a href="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -307,7 +266,7 @@ or equivalently:
 
 {: .mt-2 }
 ```
-GET /inventory?sort={"status":-1}
+> GET /inventory?sort={"status":-1}
 ```
 
 <a href="http://restninja.io/share/e6fe674153926f9834c1aa10e156b0792dc35bc5/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -316,7 +275,7 @@ GET /inventory?sort={"status":-1}
 #### Sort by *status* ascending and *qty* descending
 
 ``` bash
-GET /inventory?sort=status&sort=-qty
+> GET /inventory?sort=status&sort=-qty
 ```
 <a href="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
@@ -324,7 +283,7 @@ or equivalently:
 
 {: .mt-2 }
 ```
-GET /inventory?sort={"status":1, "qty":-1}
+> GET /inventory?sort={"status":1, "qty":-1}
 ```
 
 <a href="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -337,14 +296,14 @@ This is only possible with json expression format
 
 ```
 // create a text index
-PUT /inventory/_indexes/text {"keys": {"item": "text" }}
+> PUT /inventory/_indexes/text {"keys": {"item": "text" }}
 ```
 <a href="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 {: .mt-5 }
 ```
 // sort by {"$meta": "textScore"}
-GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
+> GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
 ```
 <a href="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
@@ -369,7 +328,7 @@ managed automatically by RESTHeart) are not affected by this option.
     object, for example, let's say that both <strong>item</strong> and <strong>status</strong> are
     part of an <strong>header</strong> object:
     </p>
-    <pre><code>GET /inventory?keys<span class="o">={</span><span class="s1">'header.item'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.status'</span>:1<span class="o">}</span>
+    <pre><code>> GET /inventory?keys<span class="o">={</span><span class="s1">'header.item'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.status'</span>:1<span class="o">}</span>
     </code></pre>
 </div>
 
@@ -378,7 +337,7 @@ managed automatically by RESTHeart) are not affected by this option.
 #### Only return the property *item*
 
 ``` bash
-GET /inventory?keys={'item':1}
+> GET /inventory?keys={'item':1}
 ```
 
 <a href="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -386,7 +345,7 @@ GET /inventory?keys={'item':1}
 #### Return all but the property *item*
 
 ``` bash
-GET /inventory?keys={'item':0}
+> GET /inventory?keys={'item':0}
 ```
 
 <a href="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -394,7 +353,7 @@ GET /inventory?keys={'item':0}
 #### Only return the properties *item* and *qty*
 
 ``` bash
-GET /inventory?keys={'item':1}&keys={'qty':1}
+> GET /inventory?keys={'item':1}&keys={'qty':1}
 ```
 
 <a href="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -415,11 +374,11 @@ Use `$natural` to force the query to perform a forwards collection scan.
         Before running the following examples create the following indexes:
     </p>
     <p>
-        <pre><code>PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre>
+        <pre><code>> PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre>
         <a href="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
     <p>
-        <pre class="mt-5"><code>PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre>
+        <pre class="mt-5"><code>> PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre>
         <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
     
@@ -429,7 +388,7 @@ Use `$natural` to force the query to perform a forwards collection scan.
 The following example returns all documents in the collection named **coll** using the index on the **item** field.
 
 ``` bash
-GET /inventory?hint={'item':1}
+> GET /inventory?hint={'item':1}
 ```
 <a href="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
@@ -438,7 +397,7 @@ GET /inventory?hint={'item':1}
 The following example returns the documents using the compound index on the **item** and reverse **status** fields.
 
 ``` bash
-GET /inventory?hint=item&hint=-status
+> GET /inventory?hint=item&hint=-status
 ```
 
 <a href="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -448,7 +407,7 @@ GET /inventory?hint=item&hint=-status
 The following example returns the documents using a forwards collection scan.
 
 ``` bash
-GET /inventory?hint={'$natural':1}
+> GET /inventory?hint={'$natural':1}
 ```
 
 <a href="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -458,7 +417,7 @@ GET /inventory?hint={'$natural':1}
 The following example returns the documents using a reverse collection scan.
 
 ``` bash
-GET /inventory?hint={'$natural':-1}
+> GET /inventory?hint={'$natural':-1}
 ``` 
 
 <a href="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
