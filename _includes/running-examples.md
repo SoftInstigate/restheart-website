@@ -5,7 +5,7 @@ The following examples assume RESTHeart Platform running on the localhost with t
 To create the *restheart* db, run the following:
 
 ```
-PUT /
+> PUT /
 ```
 
 <a href="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -13,7 +13,7 @@ PUT /
 The examples on this page use the *inventory* collection. To create the *inventory* collection, run the following:
 
 ```
-PUT /inventory
+> PUT /inventory
 ```
 
 <a href="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -21,7 +21,7 @@ PUT /inventory
 To populate the *inventory* collection, run the following:
 
 ```
-POST /inventory [
+> POST /inventory [
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
    { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
