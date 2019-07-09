@@ -46,7 +46,7 @@ You will also learn hot to get a single document knowing its _id.
 
 To GET documents in the collection, run the following:
 
-```
+``` bash
 > GET /inventory
 ```
 
@@ -70,7 +70,7 @@ for more information.
 
 #### Return documents on second page when pagesize is 3 
 
-``` plain
+``` bash
 > GET /inventory?page=2&pagesize=3
 ```
 
@@ -116,7 +116,7 @@ managed automatically by RESTHeart) are not affected by this option.
 
 #### Return documents whose `quantity` is more than 50
 
-``` plain
+``` bash
 > GET /inventory?filter={"qty": {"$gt": 50}}
 ```
 
@@ -124,7 +124,7 @@ managed automatically by RESTHeart) are not affected by this option.
 
 #### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
-``` plain
+``` bash
 > GET /inventory?filter={"$and": [{"qty": {"$gt": 75}}, {"status": "D"}]}
 ```
 
@@ -133,7 +133,7 @@ managed automatically by RESTHeart) are not affected by this option.
 or equivalently:
 
 {: .mt-2 }
-``` plain
+``` bash
 > GET /inventory?filter={"qty": {"$gt": 75}}&filter={"status": "D"}
 ```
 <a href="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -156,7 +156,7 @@ Use `_size` keyword after the collection path to retrieve the number of document
 
 #### Return the number of documents into "inventory" collection 
 
-``` plain
+``` bash
 > GET /inventory/_size?filter={"status": "A"}
 ```
 
@@ -175,16 +175,14 @@ starting with \_ that are managed automatically by RESTHeart).
     <p>
     Specify multiple sort options using multiple `sort` query parameters
     </p>
-    <pre><code class="language-plain">> GET /inventory?sort=qty&amp;sort=-status
-    </code></pre>
-
+    <pre><code class="language-bash">> GET /inventory?sort=qty&amp;sort=-status</code></pre>
 </div>
 
 ### Sort simple format
 
 The `sort` simplified format is :
 
-``` plain
+``` bash
 sort=[ |-]<fieldname>
 ```
 
@@ -196,7 +194,7 @@ expression](https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor
 JSON expression format is available starting from version 2.0.1. See
 improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 
-``` plain
+``` bash
 sort={"field": 1}
 ```
 
@@ -265,7 +263,7 @@ or equivalently:
 or equivalently:
 
 {: .mt-2 }
-```
+``` bash
 > GET /inventory?sort={"status":-1}
 ```
 
@@ -282,7 +280,7 @@ or equivalently:
 or equivalently:
 
 {: .mt-2 }
-```
+``` bash
 > GET /inventory?sort={"status":1, "qty":-1}
 ```
 
@@ -294,15 +292,17 @@ or equivalently:
 {: .bs-callout.bs-callout-info }
 This is only possible with json expression format
 
-```
-// create a text index
+**create a text index**
+
+``` bash 
 > PUT /inventory/_indexes/text {"keys": {"item": "text" }}
 ```
 <a href="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
-{: .mt-5 }
-```
-// sort by {"$meta": "textScore"}
+{: .mt-3 }
+**sort by score**
+
+``` bash
 > GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}}
 ```
 <a href="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
@@ -328,8 +328,7 @@ managed automatically by RESTHeart) are not affected by this option.
     object, for example, let's say that both <strong>item</strong> and <strong>status</strong> are
     part of an <strong>header</strong> object:
     </p>
-    <pre><code>> GET /inventory?keys<span class="o">={</span><span class="s1">'header.item'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.status'</span>:1<span class="o">}</span>
-    </code></pre>
+    <pre><code>> GET /inventory?keys<span class="o">={</span><span class="s1">'header.item'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.status'</span>:1<span class="o">}</span></code></pre>
 </div>
 
 ### Projection Examples
@@ -374,11 +373,11 @@ Use `$natural` to force the query to perform a forwards collection scan.
         Before running the following examples create the following indexes:
     </p>
     <p>
-        <pre><code>> PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre>
+        <pre><code class="language-bash">> PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre>
         <a href="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
     <p>
-        <pre class="mt-5"><code>> PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre>
+        <pre class="mt-5"><code class="language-bash">> PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre>
         <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
     
@@ -421,6 +420,5 @@ The following example returns the documents using a reverse collection scan.
 ``` 
 
 <a href="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
-
 
 </div>
