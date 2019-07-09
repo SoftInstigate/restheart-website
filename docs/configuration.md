@@ -31,6 +31,12 @@ $ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file
 $ java -jar restheart-platform-security.jar <configuration-file>
 ```
 
+It's possible to pass also the `restheart-platform-core`'s configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
+
+```bash
+$ export RESTHEART_CONFFILE=etc/restheart-platform-core.yml
+```
+
 The `etc` directory contains the following configuration files:
 
 {: .table.table-responsive }
@@ -140,7 +146,7 @@ io-threads: 4
 worker-threads: 16
 ```
 
-The [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
+The [restheart-platform-core.yml](https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
 {% highlight yaml%}
 {% raw %}
@@ -165,38 +171,29 @@ mongo-uri: {{{mongo-uri}}}
 {% endraw %}
 {% endhighlight %}
 
-The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
-
 {: .bs-callout.bs-callout-info}
 Beware that you must stop and run RESTHeart again to reload a new configuration.
 
-Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
- as before version 3.7, this new configuration with properties is fully optional. 
+Of course, you can decide which values in ``restheart-platform-core.yml` you want to become parametric or you can just use a static file.
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml --envfile etc/dev.properties
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/dev.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
 ```bash
 $ export RESTHEART_ENVFILE=etc/dev.properties
-$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml
 ```
 
-__Note__: starting with release 3.9 it's possible to pass also the main RESTHeart's configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
-
-```bash
-$ export RESTHEART_CONFFILE=etc/restheart.yml
-```
-
-This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart.yml` configuration file.
+This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart-platform-core.yml` configuration file.
 
 ### Environment variables ###
 
-RESTHeart `3.7.0` introduces also the possibility to override any **primitive type parameter** in `restheart.yml` with an environment variable. Primitive types are:
+Is is possible to override any **primitive type parameter** in `restheart-platform-core.yml` with an environment variable. Primitive types are:
 
  - String
  - Integer
@@ -215,7 +212,7 @@ The following log entry appears at the very beginning of logs during the startup
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
-A shell environment variable is equivalent to a yaml parameter in `restheart.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
+A shell environment variable is equivalent to a yaml parameter in `restheart-platform-core.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
 
 __Remember__: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
 
