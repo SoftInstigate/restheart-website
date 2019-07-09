@@ -7,16 +7,16 @@ title: Representation Format
 
 - [Introduction](#introduction)
 - [Standard Representation](#standard-representation)
-    - [GET request on Database](#get-on-db)
-- [SHAL Representation](#simplified-hal-json-representation)
+- [Representation of BSON](#representation-of-bson)
+- [Get the names of existing collections](#get-the-names-of-existing-collections)
+- [Example](#example)
 - [HAL Representation](#hal-representation)
     - [Hypermedia Application Language](#hypermedia-application-language)
-    - [Strict mode representations of BSON](#strict-mode-representations-of-bson)
     - [Hal mode](#hal-mode)
-    - [Examples](#examples)
     - [Properties](#properties)
     - [Embedded resources](#embedded-resources)
     - [Links](#links)
+- [SHAL Representation](#simplified-hal-json-representation)
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -101,115 +101,8 @@ HTTP/1.1 200 OK
 
 ```
 
-<div class="anchor-offset" id="get-on-db">
-</div>
 
-<div class="bs-callout bs-callout-info mt-3" role="alert">
-    <h4>GET request on a Database</h4>
-    <hr class="my-2">
-    <p>
-        Performing a GET request to the root path <code>/</code> results in a response with an array of strings containing a list of ids associated to the stored collections into the DB.
-    </p>
-    <pre><code class="language-plain">&gt; GET /
-
-&lt;
-HTTP/1.1 200 OK
-...
-
-[
-  "inventory",
-  "chat",
-  "service_1",
-  ...
-]
-
-</code></pre>
-<p class="alert alert-info">
-    If RESTHeart is not mounted to the <code>restheart</code> db (done by default), the query above will return an array of string with an id list of all databases on the server.
-</p>
-
-</div>
-
-## Simplified HAL JSON Representation
-
-In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
-
-``` plain
-> GET /inventory
-
-<
-HTTP/1.1 200 OK
-...
-
-{
-  "_embedded": [
-    {
-      "_id": {
-        "$oid": "5d0b4dff2ec9ff0d92ddc2b7"
-      },
-      "_etag": {
-        "$oid": "5d0b4dff2ec9ff0d92ddc2b2"
-      },
-      "item": "postcard",
-      "qty": 45,
-      "size": {
-        "h": 10,
-        "w": 15.25,
-        "uom": "cm"
-      },
-      "status": "A"
-    },
-    ...
-  ],
-  "_id": "inventory",
-  "_etag": {
-    "$oid": "5d1e13dbdde87c62e98a4595"
-  },
-  "metadata_field": "metadata_value",
-  "_returned": 6
-}
-```
-
-## HAL Representation
-
-Following the REST mantra, you *transfer* resource *states* back and
-forth by the means of *representations*.
-
-This section introduces you with the resource **representation** format
-used by RESTHeart.
-
-### Hypermedia Application Language
-
-RESTHeart uses
-the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
-format. HAL stands for *Hypermedia Application Language* and it is
-simple, elegant and powerful.
-
-HAL builds up on 2 simple concepts: **Resources** and **Links**
-
--   **Resources** have state (plain JSON), embedded resources and links
--   **Links** have target (href URI) and relations (aka rel)
-
-![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
-
-<div class="anchor-offset" id="hal-mode">
-</div>
-
-<div class="bs-callout bs-callout-info" role="alert">
-    <h4>Hal Mode</h4>
-    <hr class="my-2">
-    <p>
-    The query parameter <i>hal</i> controls the verbosity of HAL representation.
-    Valid values are <code>hal=c</code> (for compact) and <code>hal=f</code> (for full); the default value
-    (if the param is omitted) is compact mode.
-    </p>
-    <p>
-    When <code>hal=f</code> is specified, the representation is more verbose and includes
-    special properties (such as links).
-    </p>
-</div>
-
-## Strict mode representations of BSON
+## Representation of BSON
 
 **RESTHeart** represents the state of MongoDb resources using
 the [strict mode representations of
@@ -253,10 +146,45 @@ These types are supported by BSON and represented with JSON according to the ‘
 </code></pre>
 </div>
 
-### Examples
+
+## Get the names of existing collections
+The default configuration binds `/` to the database `restheart`.
+
+Performing a GET request to the root path `/` results in a response with an array of strings containing a list of ids associated to the stored collections into the DB.
+
+``` plain
+> GET /
+
+<
+HTTP/1.1 200 OK
+...
+
+[
+  "inventory",
+  "chat",
+  "service_1",
+  ...
+]
+
+```
+
+<div class="bs-callout bs-callout-info mt-3" role="alert">
+    <p>
+      The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
+    </p>
+    <pre><code class="language-plain"># The MongoDb resource to bind to the root URI / 
+# The format is /db[/coll[/docid]] or '*' to expose all dbs
+root-mongo-resource = /restheart
+</code></pre>
+    <p>
+      When exposing all dbs with <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> returns an array of the names of databases.
+    </p>
+</div>
+
+## Example
 
 We’ll get the `inventory` collection resource and analyze it. 
-As any other in RESTHeart, a collection resource is represented with HAL; thus has its
+As any other in RESTHeart, a collection resource is represented with `HAL`; thus has its
 own *properties*, *embedded resources* (in this case, documents) and
 *link templates* (for pagination, sorting, etc).
 
@@ -306,6 +234,45 @@ X-Powered-By: restheart.org
    }
 }
 ```
+
+## HAL Representation
+
+Following the REST mantra, you *transfer* resource *states* back and
+forth by the means of *representations*.
+
+This section introduces you with the resource **representation** format
+used by RESTHeart.
+
+### Hypermedia Application Language
+
+RESTHeart uses
+the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
+format. HAL stands for *Hypermedia Application Language* and it is
+simple, elegant and powerful.
+
+HAL builds up on 2 simple concepts: **Resources** and **Links**
+
+-   **Resources** have state (plain JSON), embedded resources and links
+-   **Links** have target (href URI) and relations (aka rel)
+
+![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
+
+<div class="anchor-offset" id="hal-mode">
+</div>
+
+<div class="bs-callout bs-callout-info" role="alert">
+    <h4>Hal Mode</h4>
+    <hr class="my-2">
+    <p>
+    The query parameter <i>hal</i> controls the verbosity of HAL representation.
+    Valid values are <code>hal=c</code> (for compact) and <code>hal=f</code> (for full); the default value
+    (if the param is omitted) is compact mode.
+    </p>
+    <p>
+    When <code>hal=f</code> is specified, the representation is more verbose and includes
+    special properties (such as links).
+    </p>
+</div>
 
 ### Properties
 
@@ -484,4 +451,48 @@ The `_links` property looks like:
    }
 ```
 
+## Simplified HAL JSON Representation
+
+{: .bs-callout.bs-callout-info }
+Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
+
+In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
+
+``` plain
+> GET /inventory
+
+<
+HTTP/1.1 200 OK
+...
+
+{
+  "_embedded": [
+    {
+      "_id": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b7"
+      },
+      "_etag": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b2"
+      },
+      "item": "postcard",
+      "qty": 45,
+      "size": {
+        "h": 10,
+        "w": 15.25,
+        "uom": "cm"
+      },
+      "status": "A"
+    },
+    ...
+  ],
+  "_id": "inventory",
+  "_etag": {
+    "$oid": "5d1e13dbdde87c62e98a4595"
+  },
+  "metadata_field": "metadata_value",
+  "_returned": 6
+}
+```
+
 </div>
+
