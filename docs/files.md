@@ -259,7 +259,7 @@ To add optional form data parts to the request it is necessary to embed the data
 In the following example, we set the "author" and the "filename":
 
 ```bash
-$ http -a admin:secret -f PUT :8080/mybucket.files/dataflow.png @images/dataflow.png properties='{"author":"SoftInstigate", "filename":"dataflow"}'
+$ http -a admin:secret -f PUT :8080/mybucket.files/dataflow.png @dataflow.png properties='{"author":"SoftInstigate", "filename":"dataflow"}'
 
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
