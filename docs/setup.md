@@ -100,19 +100,28 @@ You find the log files in the `restheart-platform-<version>` directory:
 - core.log
 - security.log
 
-### Restart docker containers
+### Stop amnd restart Docker containers
 
-For restarting the running docker containers:
+1. Stop running Docker containers
 
-1. Shut down running docker containers
 ``` bash
-$ docker-compose down
+$ docker-compose stop
 ```
 
-2. Run the docker containers:
+2. Run again the existing Docker containers
+
 ``` bash
-$ docker-compose up -d
+$ docker-compose start
 ```
+
+3. Check the logs
+
+```bash
+$ docker-compose logs -f
+```
+
+Please refer to the [docker-compose official documentation](https://docs.docker.com/compose/reference/overview/) for more.
+
 
 ## Run without Docker
 
