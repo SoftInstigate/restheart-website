@@ -34,10 +34,10 @@ default-representation-format: STANDARD
 
 The `rep` query parameter can also be used for switching between representations.
 
-``` plain
-GET /inventory?rep=s
-GET /inventory?rep=hal
-GET /inventory?rep=shal
+``` bash
+> GET /inventory?rep=s
+> GET /inventory?rep=hal
+> GET /inventory?rep=shal
 ```
 
 ## Standard Representation
@@ -47,7 +47,7 @@ Starting with RESTHeart v4 this is the default representation format.
 
 In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
 
-``` plain
+``` bash
 > GET /inventory
 
 <
@@ -77,7 +77,7 @@ HTTP/1.1 200 OK
 
  Execute the following query to retrieve the metadata of the collection *inventory*:
 
-``` plain
+``` bash
 > GET /inventory/_meta
 
 <
@@ -119,21 +119,21 @@ The strict mode is used on both request and response resource representation and
 
 The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
 
-``` plain
-GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}
+``` bash
+> GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}
 ```
 
 The correct request is: 
 
-``` plain
-GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}
+``` bash
+> GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}
 ```
 
 ## Get the names of existing collections
 
 To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
 
-``` plain
+``` bash
 > GET /
 
 <
@@ -173,7 +173,7 @@ With <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> retu
 We’ll get the `inventory` collection resource and analyze it. 
 A collection represented with `HAL` has its own *properties*, *embedded resources* (in this case, documents) and *link templates* (for pagination, sorting, etc).
 
-``` plain
+``` bash
 > GET /inventory?rep=hal
 
 <
@@ -412,7 +412,7 @@ Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-``` plain
+``` bash
 > GET /inventory?rep=shal
 
 <
