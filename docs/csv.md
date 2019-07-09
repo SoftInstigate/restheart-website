@@ -29,12 +29,14 @@ title: Upload CSV files
 
   
 
-The CSV Uploader service allows you to import data from a CSV file into a given collection.
+The CSV Uploader Service allows you to import data from a CSV file into a given collection.
 
+In the examples of this page we will use  <a href="https://httpie.org" target= "_blank"> httpie</a>
+{: .bs-callout.bs-callout-info}
 
 ## Running the example requests
 
-  
+
 
 The following examples assume RESTHeart Platform running on the localhost with the default configuration: notably the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
 
@@ -65,11 +67,14 @@ id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 ```
-To import the csv data into the collection *poi*, run the following:
+To import the *POI.csv* into the collection *poi*, run the following:
 
 ```bash
 http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" < POI.csv
 ```
+
+The */csv* path is a reserved path, used by the RESTHeart CSV Uploader Service 
+{: .bs-callout.bs-callout-info}
 
 Getting the following response:
 
@@ -155,7 +160,7 @@ If the *id* paramenter is not specified, documents are created with a new Object
 
 ```
 ## Update documents from CSV
-If the CSV lines are changed or new ones are added, you can update your collection with the parameters *update* and *upsert*;
+If the CSV lines are changed or new ones are added, you can update your collection with the *update* and *upsert* parameters;
 
 To update your collection use the *update* parameter, new lines in the CSV will *NOT* be added, run the following:
 ```bash
