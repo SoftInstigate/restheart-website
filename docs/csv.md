@@ -177,6 +177,6 @@ http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" 
 To add the new CSV lines and update your collection use the *update* and the *upsert* together:
 ```bash
 
-http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" "upsert"=="true" < POI.csv
+http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
 
 ```
