@@ -58,14 +58,14 @@ http -a admin:secret PUT http://localhost:8080/poi
 
 ## Upload CSV
 
-Let's take as an example the following file * POI.csv *:
+Let's take as an example the following file *POI.csv*:
 
 ```
 id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 ```
-To import the csv data into the collection * then *, run the following:
+To import the csv data into the collection *poi*, run the following:
 
 ```bash
 http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" < POI.csv
@@ -101,7 +101,7 @@ Getting the following response:
 
 ```
 
-The parameters * db * and * coll * are mandatory and are used to specify the name of the database and the collection in which you want to import the data.
+The parameters *db* and *coll* are mandatory and are used to specify the name of the database and the collection in which you want to import the data.
 
 The optional parameters are:
 
