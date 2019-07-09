@@ -64,7 +64,7 @@ Let's take as an example the following file *POI.csv*:
 
 ```
 id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,also known as the Flavian Amphitheatre
+1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 ```
 To import the *POI.csv* into the collection *poi*, run the following:
@@ -100,7 +100,7 @@ Getting the following response:
 		"lat": 41.8902614,
 		"lon": 12.4930871,
 		"name": "Coliseum",
-		"note": "also known as the Flavian Amphitheatre"
+		"note": "Also known as the Flavian Amphitheatre"
 	}
 ]
 
@@ -154,7 +154,7 @@ If the *id* paramenter is not specified, documents are created with a new Object
         "lat": 41.8902614,
         "lon": 12.4930871,
         "name": "Coliseum",
-        "note": "aka the Flavian Amphitheatre"
+        "note": "Also known as the Flavian Amphitheatre"
     }
 ]
 
