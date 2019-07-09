@@ -332,6 +332,7 @@ Appending \``/binary`\` at the end of the above URL makes returns the actual bin
 
 If we paste this URL to a browser's address bar then the image is displayed. This allows RESTHeart to serve as a very basic but powerful digital asset management system.
 
-![](/images/dataflow.png)
+![](/images/dataflow.png){:
+width="640" height="auto" class="image-center img-responsive"}
 
 </div>
