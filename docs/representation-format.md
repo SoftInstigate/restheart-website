@@ -7,39 +7,35 @@ title: Representation Format
 
 - [Introduction](#introduction)
 - [Standard Representation](#standard-representation)
-- [Representation of BSON](#representation-of-bson)
+- [BSON types](#bson-types)
 - [Get the names of existing collections](#get-the-names-of-existing-collections)
-- [Example](#example)
-- [HAL Representation](#hal-representation)
-    - [Hypermedia Application Language](#hypermedia-application-language)
-    - [Hal mode](#hal-mode)
+- [HAL](#hal)
+    - [Example](#example)
     - [Properties](#properties)
-    - [Embedded resources](#embedded-resources)
+    - [Documents as embedded resources](#documents-as-embedded-resources)
     - [Links](#links)
-- [SHAL Representation](#simplified-hal-json-representation)
+    - [Hal mode](#hal-mode)
+- [Simplified HAL](#simplified-hal)
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
-
-
 ## Introduction
 
-RESTHeart has three different options for representing the resources:`STANDARD`, `HAL` and `Simplified-HAL`. The default representation is controlled with `default-representation-format` configuration option.
+RESTHeart has three different options for representing the resources:`STANDARD`, `HAL` and `SHAL` (Simplified HAL). 
+
+The default representation is controlled by the configuration option `default-representation-format` .
 
 ``` yml
-## PLAIN_JSON or HAL are aliases for SHAL
-## S is an alias for STANDARD
 default-representation-format: STANDARD
 ```
 
 The `rep` query parameter can also be used for switching between representations.
 
 ``` plain
+GET /inventory?rep=s
 GET /inventory?rep=hal
 GET /inventory?rep=shal
 ```
@@ -47,9 +43,9 @@ GET /inventory?rep=shal
 ## Standard Representation
 
 {: .bs-callout.bs-callout-warning }
-RESTHeart adopts this representation format by default
+Starting with RESTHeart v4 this is the default representation format.
 
-In the following response the collection's documents are returned as an array of JSON objects.
+In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
 
 ``` plain
 > GET /inventory
@@ -75,13 +71,11 @@ HTTP/1.1 200 OK
     },
     "status": "A"
   },
-  
   ...
-
 ]
 ```
 
-For retrieving metadata associated to the collection perform the following query:
+ Execute the following query to retrieve the metadata of the collection *inventory*:
 
 ``` plain
 > GET /inventory/_meta
@@ -101,20 +95,13 @@ HTTP/1.1 200 OK
 
 ```
 
-
-## Representation of BSON
-
-**RESTHeart** represents the state of MongoDb resources using
-the [strict mode representations of
-BSON](https://docs.mongodb.org/manual/reference/mongodb-extended-json/) that
-conforms to the [JSON RFC](https://www.json.org/). 
+## BSON types
 
 MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
 which type system is a superset of JSON’s. To preserve type information,
 MongoDB adds this extension to the JSON.
 
-For instance, the following JSON document includes an ObjectId. 
-These types are supported by BSON and represented with JSON according to the ‘strict mode’.
+For instance, the `_id` of the following JSON document is an ObjectId.
 
 ``` plain
   {
@@ -127,30 +114,24 @@ These types are supported by BSON and represented with JSON according to the ‘
   }
 ```
 
-<div class="bs-callout bs-callout-info mt-3" role="alert">
-    <p>
-    <strong>The strict mode is used on both request and response resource
-    representation and also on filter query parameters.</strong>
-    </p>
-    <p>
-    This filter request, won’t find the document
-    <code>/inventory/5d0b4e325beb2029a8d1bd5e</code> since the <code>_id</code> field is an ObjectId
-    and not a String.
-    </p>
-    <pre><code class="language-plain">&gt; GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}
-</code></pre>
-    <p>
-    The correct request is: 
-    </p>
-    <pre><code class="language-plain">&gt; GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}
-</code></pre>
-</div>
+{: .bs-callout.bs-callout-info }
+The strict mode is used on both request and response resource representation and also on the query parameter `filter`
 
+The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
+
+``` plain
+GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}
+```
+
+The correct request is: 
+
+``` plain
+GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}
+```
 
 ## Get the names of existing collections
-The default configuration binds `/` to the database `restheart`.
 
-Performing a GET request to the root path `/` results in a response with an array of strings containing a list of ids associated to the stored collections into the DB.
+To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
 
 ``` plain
 > GET /
@@ -159,37 +140,41 @@ Performing a GET request to the root path `/` results in a response with an arra
 HTTP/1.1 200 OK
 ...
 
-[
+[ 
   "inventory",
   "chat",
-  "service_1",
-  ...
+  "files.bucket" 
 ]
-
 ```
 
-<div class="bs-callout bs-callout-info mt-3" role="alert">
-    <p>
-      The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
-    </p>
-    <pre><code class="language-plain"># The MongoDb resource to bind to the root URI / 
+<div class="bs-callout bs-callout-info">
+<p>
+The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
+</p>
+
+<pre><code># The MongoDb resource to bind to the root URI / 
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
-root-mongo-resource = /restheart
-</code></pre>
-    <p>
-      When exposing all dbs with <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> returns an array of the names of databases.
-    </p>
+root-mongo-resource = /restheart</code></pre>
+
+With <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> returns the names of existing <i>databases</i>.
 </div>
+
+## HAL
+
+[HAL](http://stateless.co/hal_specification.html) up on 2 simple concepts: **Resources** and **Links**
+
+-   **Resources** have state (plain JSON), embedded resources and links
+-   **Links** have target (href URI) and relations (aka rel)
+
+![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
 
 ## Example
 
 We’ll get the `inventory` collection resource and analyze it. 
-As any other in RESTHeart, a collection resource is represented with `HAL`; thus has its
-own *properties*, *embedded resources* (in this case, documents) and
-*link templates* (for pagination, sorting, etc).
+A collection represented with `HAL` has its own *properties*, *embedded resources* (in this case, documents) and *link templates* (for pagination, sorting, etc).
 
 ``` plain
-> GET /inventory
+> GET /inventory?rep=hal
 
 <
 HTTP/1.1 200 OK
@@ -235,45 +220,6 @@ X-Powered-By: restheart.org
 }
 ```
 
-## HAL Representation
-
-Following the REST mantra, you *transfer* resource *states* back and
-forth by the means of *representations*.
-
-This section introduces you with the resource **representation** format
-used by RESTHeart.
-
-### Hypermedia Application Language
-
-RESTHeart uses
-the [HAL+json](http://stateless.co/hal_specification.html) hypermedia
-format. HAL stands for *Hypermedia Application Language* and it is
-simple, elegant and powerful.
-
-HAL builds up on 2 simple concepts: **Resources** and **Links**
-
--   **Resources** have state (plain JSON), embedded resources and links
--   **Links** have target (href URI) and relations (aka rel)
-
-![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
-
-<div class="anchor-offset" id="hal-mode">
-</div>
-
-<div class="bs-callout bs-callout-info" role="alert">
-    <h4>Hal Mode</h4>
-    <hr class="my-2">
-    <p>
-    The query parameter <i>hal</i> controls the verbosity of HAL representation.
-    Valid values are <code>hal=c</code> (for compact) and <code>hal=f</code> (for full); the default value
-    (if the param is omitted) is compact mode.
-    </p>
-    <p>
-    When <code>hal=f</code> is specified, the representation is more verbose and includes
-    special properties (such as links).
-    </p>
-</div>
-
 ### Properties
 
 In this case, the collection properties comprise the field *metadata_field*; this
@@ -282,7 +228,7 @@ is user defined.
 The other fields are reserved properties (i.e. are managed automatically
 by RESTHeart for you); these always starts with \_:
 
-{: .ts}
+{: .table.table-responsive}
 | Property       | Description                                                                                             |
 |----------------|---------------------------------------------------------------------------------------------------------|
 | `_type`        | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode)                   |
@@ -290,8 +236,7 @@ by RESTHeart for you); these always starts with \_:
 | `_etag`        | entity tag, used for caching and to avoid ghost writes.                                                 |
 | `_returned`    | the number of the documents embedded in this representation                                             |
 
-
-## Embedded resources
+## Documents as embedded resources
 
 Collection's embedded resources are the collection documents,
 recursively represented as HAL documents.
@@ -299,43 +244,41 @@ recursively represented as HAL documents.
 The `_embedded` property looks like:
 
 ``` json
-"_embedded": {
-        "rh:doc": [
-         {
-            "_id":{
-               "$oid":"5d233aeb93dc53162739e172"
-            },
-            "_etag":{
-               "$oid":"5d233aeb93dc53162739e16d"
-            },
-            "item":"postcard",
-            "qty":45,
-            "size":{
-               "h":10,
-               "w":15.25,
-               "uom":"cm"
-            },
-            "status":"A"
-         },
-         {
-            "_id":{
-               "$oid":"5d233aeb93dc53162739e171"
-            },
-            "_etag":{
-               "$oid":"5d233aeb93dc53162739e16d"
-            },
-            "item":"planner",
-            "qty":75,
-            "size":{
-               "h":22.85,
-               "w":30,
-               "uom":"cm"
-            },
-            "status":"D"
-         },
-         ...
-        ]
+{ "_embedded": 
+  { "rh:doc": [{
+      "_id": {
+        "$oid": "5d233aeb93dc53162739e172"
+      },
+      "_etag": {
+        "$oid": "5d233aeb93dc53162739e16d"
+      },
+      "item": "postcard",
+      "qty": 45,
+      "size": {
+        "h": 10,
+        "w": 15.25,
+        "uom": "cm"
+      },
+      "status": "A"
+    },
+    {
+      "_id": {
+        "$oid": "5d233aeb93dc53162739e171"
+      },
+      "_etag": {
+        "$oid": "5d233aeb93dc53162739e16d"
+      },
+      "item": "planner",
+      "qty": 75,
+      "size": {
+        "h": 22.85,
+        "w": 30,
+        "uom": "cm"
+      },
+      "status": "D"
     }
+  ]}
+}
 ```
 
 ### Links
@@ -415,43 +358,54 @@ The `_embedded` property looks like:
 The `_links` property looks like:
 
 ``` json
-"_links":   {  
-        "self":{  
-            "href":"/inventory?hal=f"
-        },
-        "first":{  
-            "href":"/inventory?pagesize=100&hal=f"
-        },
-        "next":{  
-            "href":"/inventory?page=2&pagesize=100&hal=f"
-        },
-        "rh:coll":{  
-            "href":"//{collname}",
-            "templated":true
-        },
-        "rh:document":{  
-            "href":"/inventory/{docid}{?id_type}",
-            "templated":true
-        },
-        "rh:indexes":{  
-            "href":"/inventory/_indexes"
-        },
-        "rh:filter":{  
-            "href":"/inventory{?filter}",
-            "templated":true
-        },
-        "rh:sort":{  
-            "href":"/inventory{?sort_by}",
-            "templated":true
-        },
-        "rh:paging":{  
-            "href":"/inventory{?page}{&pagesize}",
-            "templated":true
-        }
-   }
+{ "_links": { 
+  "self": {
+    "href": "/inventory?hal=f"
+  },
+  "first": {
+    "href": "/inventory?pagesize=100&hal=f"
+  },
+  "next": {
+    "href": "/inventory?page=2&pagesize=100&hal=f"
+  },
+  "rh:coll": {
+    "href": "//{collname}",
+    "templated": true
+  },
+  "rh:document": {
+    "href": "/inventory/{docid}{?id_type}",
+    "templated": true
+  },
+  "rh:indexes": {
+    "href": "/inventory/_indexes"
+  },
+  "rh:filter": {
+    "href": "/inventory{?filter}",
+    "templated": true
+  },
+  "rh:sort": {
+    "href": "/inventory{?sort_by}",
+    "templated": true
+  },
+  "rh:paging": {
+    "href": "/inventory{?page}{&pagesize}",
+    "templated": true
+  }
+}
 ```
 
-## Simplified HAL JSON Representation
+<div class="anchor-offset" id="hal-mode">
+</div>
+
+### HAL Mode
+
+The query parameter `hal` controls the verbosity of HAL representation.
+Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
+(if the param is omitted) is compact mode.
+
+When `hal=f` is specified, the representation is more verbose and includes special properties (such as links).
+
+## Simplified HAL
 
 {: .bs-callout.bs-callout-info }
 Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
@@ -459,7 +413,7 @@ Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
 ``` plain
-> GET /inventory
+> GET /inventory?rep=shal
 
 <
 HTTP/1.1 200 OK
@@ -482,8 +436,7 @@ HTTP/1.1 200 OK
         "uom": "cm"
       },
       "status": "A"
-    },
-    ...
+    }
   ],
   "_id": "inventory",
   "_etag": {
@@ -493,6 +446,4 @@ HTTP/1.1 200 OK
   "_returned": 6
 }
 ```
-
 </div>
-
