@@ -8,8 +8,7 @@ title: Resource URI
 * [Introduction](#introduction)
 * [Resources URIs](#resources-uris)
 * [Document id](#document-id)
-    * [Some examples](#some-examples)
-* [mongo-mounts](#mongo-mounts)
+    * [Examples](#examples)
 * [URL encoding](#url-encoding)
 
 </div>
@@ -19,10 +18,22 @@ title: Resource URI
 
 {% include doc-in-progress.html %}
 
-## Introduction cc
+## Introduction
 
 This page explains the resource URI format, i.e. how the resources
 are identified.
+
+<div class="bs-callout bs-callout-info mt-3" role="alert">
+    <p>
+      Default RESTHeart configuration binds <code>/</code> to the database <code>restheart</code>.
+    </p>
+    <p>
+      Being the most general case, the following table refers to a situation where <code>root-mongo-resource</code> is set to <code>'*'</code>.
+    </p>
+    <p>
+      <i>Refer to the <a href="{{ "../configuration" | prepend: site.baseurl }}">Configuration Section</a> for further information about this topic.</i>
+    </p>
+</div>
 
 ## Resources URIs
 <div class="table-responsive">
@@ -51,9 +62,19 @@ are identified.
 <td><code>&lt;db&gt;</code> is the database name.</td>
 </tr>
 <tr class="odd">
+<td>Database Metadata</td>
+<td>/&lt;db&gt;/_meta</td>
+<td>Metadata associated to the database named <code>&lt;db&gt;</code>.</td>
+</tr>
+<tr class="even">
 <td>Collection</td>
 <td>/&lt;db&gt;/&lt;coll&gt;</td>
 <td><code>&lt;coll&gt;</code> is the collection name.</td>
+</tr>
+<tr class="odd">
+<td>Collection Metadata</td>
+<td>/&lt;db&gt;/&lt;coll&gt;/_meta</td>
+<td>Metadata associated to the collection named <code>&lt;coll&gt;</code>.</td>
 </tr>
 <tr class="even">
 <td>Document</td>
@@ -168,26 +189,21 @@ The following table shows the supported types:
 </div>
 
 
-
+{: .bs-callout.bs-callout-info }
 **\*** The default value of the id\_type query parameter
 is **STRING\_OID**. In this case, the value of the **&lt;doc_id&gt;** is
 interpreted either as an ObjectId or a String. The former applies if the
 value is a valid ObjectId.
 
+{: .bs-callout.bs-callout-info }
 **\*\*** **STRING** is useful if the \_id value would be a valid
 ObjectId and it is actually a String.
 
 
-### Some examples
+### Examples
 
 <div class="table-responsive">
 <table class="ts">
-  <thead>
-    <tr>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
       <td><strong>/db/coll/1</strong></td>
@@ -212,40 +228,6 @@ ObjectId and it is actually a String.
   </tbody>
 </table>
 </div>
-
-## mongo-mounts
-
-The `mongo-mounts` configuration options allows to bind MongoDB
-resources to URIs. The default configuration binds all MongoDB resource
-below the root URI:
-
-``` plain
-mongo-mounts:
-    - what: "*"
-      where: /
-```
-
-In this case the URI /db/coll/doc identifies the document with
-id `doc` of the collection `coll` of the database `db`.
-
-Different mongo-mounts settings result in different resource URIs.
-Examples:
-
-``` plain
-mongo-mounts:
-    - what: "*"
-      where: /api
-```
-
-In this case the URI of the document is /api/db/coll/doc
-
-``` plain
-mongo-mounts:
-    - what: "/db/coll"
-      where: /
-```
-
-In this case the URI of the document is /doc
 
 ## URL encoding
 
