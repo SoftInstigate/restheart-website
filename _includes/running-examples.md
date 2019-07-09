@@ -4,7 +4,7 @@ The following examples assume RESTHeart Platform running on the localhost with t
 
 To create the *restheart* db, run the following:
 
-```
+``` bash
 > PUT /
 ```
 
@@ -12,7 +12,7 @@ To create the *restheart* db, run the following:
 
 The examples on this page use the *inventory* collection. To create the *inventory* collection, run the following:
 
-```
+``` bash
 > PUT /inventory
 ```
 
@@ -20,7 +20,7 @@ The examples on this page use the *inventory* collection. To create the *invento
 
 To populate the *inventory* collection, run the following:
 
-```
+``` bash
 > POST /inventory [
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },

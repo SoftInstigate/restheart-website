@@ -30,8 +30,6 @@ title: Read JSON Documents
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 This page provides examples of query operations using the `GET` method.
