@@ -125,7 +125,10 @@ The optional parameters are:
 
 7.  *upsert* = create new document if no documents match the row (default: false)
 
-If the *id* paramenter is not specified, documents are created with a new ObjectId,  for example:
+{: .bs-callout.bs-callout-info}
+If the *id* paramenter is not specified, documents are created with a new ObjectId
+
+Example of uploaded file without specifing *id* :
 ```json
 [
     {
