@@ -18,8 +18,6 @@ title: Binary Files
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 RESTHeart is a very good fit for **headless CMS** use cases, as it allows to effectively manage and aggregate content and its metadata, such as images, audios and videos, delivering them via a REST API.
