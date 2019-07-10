@@ -16,8 +16,6 @@ title: Resource URI
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 This page explains the resource URI format, i.e. how the resources
@@ -28,7 +26,7 @@ are identified.
       Default RESTHeart configuration binds <code>/</code> to the database <code>restheart</code>.
     </p>
     <p>
-      Being the most general case, the following table refers to a situation where <code>root-mongo-resource</code> is set to <code>'*'</code>.
+      Being the most general case, the following table refers to the configuration exposing all MongoDB resources (<code>root-mongo-resource='*'</code>)
     </p>
     <p>
       <i>Refer to the <a href="{{ "../configuration" | prepend: site.baseurl }}">Configuration Section</a> for further information about this topic.</i>
@@ -37,7 +35,7 @@ are identified.
 
 ## Resources URIs
 <div class="table-responsive">
-<table class="ts">
+<table class="table table-responsive">
 <colgroup>
 <col class="w-20" />
 <col class="w-40" />
@@ -45,85 +43,85 @@ are identified.
 </colgroup>
 <thead>
 <tr class="header">
-<th>resource</th>
+<th>Resource</th>
 <th>URI</th>
-<th>notes</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><p>Root</p></td>
-<td>/</td>
+<td><code>/</code></td>
 <td>The <strong>root resource</strong> is the API entry point.</td>
 </tr>
 <tr class="even">
 <td>Database</td>
-<td>/&lt;db&gt;</td>
+<td><code>/&lt;db&gt;</code></td>
 <td><code>&lt;db&gt;</code> is the database name.</td>
 </tr>
 <tr class="odd">
 <td>Database Metadata</td>
-<td>/&lt;db&gt;/_meta</td>
+<td><code>/&lt;db&gt;/_meta</code></td>
 <td>Metadata associated to the database named <code>&lt;db&gt;</code>.</td>
 </tr>
 <tr class="even">
 <td>Collection</td>
-<td>/&lt;db&gt;/&lt;coll&gt;</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;</code></td>
 <td><code>&lt;coll&gt;</code> is the collection name.</td>
 </tr>
 <tr class="odd">
 <td>Collection Metadata</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_meta</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_meta</code></td>
 <td>Metadata associated to the collection named <code>&lt;coll&gt;</code>.</td>
 </tr>
 <tr class="even">
 <td>Document</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/&lt;doc_id&gt;[?id_type=TYPE]</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/&lt;doc_id&gt;[?id_type=TYPE]</code></td>
 <td><p><code>&lt;doc_id&gt;</code> is the <code>_id</code> of the document and the optional <code>id_type</code> query parameter is its type (default is &quot;STRING_OID&quot;).</p></td>
 </tr>
 <tr class="odd">
 <td>Bulk Documents</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/*?filter=[filter expression]</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/*?filter=[filter expression]</code></td>
 <td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/learn/write-requests">Write Requests</a>.</td>
 </tr>
 <tr class="even">
 <td>Indexes</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_indexes</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_indexes</code></td>
 <td><p> </p></td>
 </tr>
 <tr class="odd">
 <td>Index</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_indexes/&lt;idx_id&gt;</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_indexes/&lt;idx_id&gt;</code></td>
 <td><p><code>idx_id</code> is the _id of the index and must be a string (other types of index _id are not supported).</p></td>
 </tr>
 <tr class="even">
 <td>File bucket</td>
-<td>/&lt;db&gt;/&lt;bucket&gt;/.files</td>
+<td><code>/&lt;db&gt;/&lt;bucket&gt;/.files</code></td>
 <td><p><code>&lt;bucket&gt;</code> is the file bucket name and it is a string (suffix .files is mandatory).</p></td>
 </tr>
 <tr class="odd">
 <td>File</td>
-<td>/&lt;db&gt;/&lt;bucket&gt;.files/&lt;file_id&gt;[?id_type=TYPE]</td>
+<td><code>/&lt;db&gt;/&lt;bucket&gt;.files/&lt;file_id&gt;[?id_type=TYPE]</code></td>
 <td><p><code>&lt;file_id&gt;</code> is the value of the _id the file and the optional <code>id_type</code> query parameter is its type (default is &quot;STRING_OID&quot;).</p></td>
 </tr>
 <tr class="even">
 <td>Schema Store</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_schemas</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_schemas</code></td>
 <td> </td>
 </tr>
 <tr class="odd">
 <td>Schema</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_schemas/&lt;schema_id&gt;</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_schemas/&lt;schema_id&gt;</code></td>
 <td><code>&lt;schema_id&gt;</code> is the <code>_id</code> of the schema.</td>
 </tr>
 <tr class="even">
 <td>Aggregation</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_aggrs/&lt;aggr_name&gt;</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_aggrs/&lt;aggr_name&gt;</code></td>
 <td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/learn/aggregations">Aggregations</a>).</td>
 </tr>
 <tr class="odd">
 <td>Change Stream</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</td>
+<td><code>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</code></td>
 <td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/learn/change-streams">Change Streams</a>).</td>
 </tr>
 </tbody>
@@ -143,8 +141,8 @@ this reason, only a subset of \_id types are supported.
 
 The following table shows the supported types:
 
-<div class="table-responsive">
-<table class="ts">
+<div>
+<table class="table table-responsive">
   <thead>
     <tr>
       <th>type</th>
@@ -202,8 +200,8 @@ ObjectId and it is actually a String.
 
 ### Examples
 
-<div class="table-responsive">
-<table class="ts">
+<div>
+<table class="table table-responsive">
   <tbody>
     <tr>
       <td><strong>/db/coll/1</strong></td>
