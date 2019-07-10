@@ -62,7 +62,7 @@ $ java -server -jar foo.jar conf.yml
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.1</version>
         <configuration>
           <finalName>${project.artifactId}</finalName>
           <createDependencyReducedPom>true</createDependencyReducedPom>

@@ -97,7 +97,7 @@ proxies:
 
 As a result, the URLs `https://domain.io` and `https://domain.io/api` are proxied to the resources specified by the `proxy-pass` URLs. All requests from the external network pass through **restheart-security** that enforces authentication and authorization.
 
-```http
+``` bash
 GET https://domain.io/index.html
 HTTP/1.1 401 Unauthorized
 
@@ -118,7 +118,7 @@ users:
 
 ### acl.yml
 
-```
+``` yml
 permissions:
     # Users with role 'web' can GET web resources 
     - role: web
@@ -129,7 +129,7 @@ permissions:
       predicate: path-prefix[path=/api] and (method[GET] or method[POST])
 ```
 
-```http
+``` bash
 GET https://domain.io/index.html Authorization:"Basic dXNlcjpzZWNyZXQ="
 HTTP/1.1 200 OK
 ...
@@ -180,7 +180,7 @@ Run **restheart-security** with the [default configuration file](etc/restheart-s
 
 Below the mentioned configuration's fragment:
 
-```yaml
+``` yml
 proxies:
     - location: /secho
       proxy-pass: 
@@ -193,7 +193,7 @@ proxies:
 
 Let's fist invoke the `/echo` service directly. This is defined in the [configuration file](etc/restheart-security.yml) as follows:
 
-```yaml
+``` yml
 services:
     - implementation-class: org.restheart.security.plugins.services.EchoService
       uri: /echo
@@ -202,7 +202,7 @@ services:
 
 Note that `/echo` is not secured and can be invoked without restrictions.
 
-```bash
+``` bash
 $ http -f 127.0.0.1:8080/echo?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
@@ -261,7 +261,7 @@ X-Powered-By: restheart.org
 
 Let's try now to invoke `/secho` (please note the leading 's') without passing authentication credentials. This will fail with `401 Unauthorized` HTTP response.
 
-```bash
+``` bash
 $ http -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
 HTTP/1.1 401 Unauthorized
 Connection: keep-alive

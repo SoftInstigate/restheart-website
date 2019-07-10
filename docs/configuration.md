@@ -1,12 +1,14 @@
 ---
 layout: docs
-title: Configuration File
+title: Configuration
 ---
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Default configuration file](#default-configuration-file)
-- [Configuration options](#configuration-options)
-  - [Properties files](#properties-files)
+- [Configuration files](#configuration-files)
+- [Updating configuration in Docker containers](#updating-configuration-in-docker-containers)
+- [Important configuration options](#important-configuration-options)
+
+- [Parametric configuration](#parametric-configuration)
   - [Environment variables](#environment-variables)
   - [Command line parameters](#command-line-parameters)
     
@@ -16,21 +18,101 @@ title: Configuration File
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
+## Configuration files
 
-## Default configuration file ##
+{: .bs-callout.bs-callout-info}
+Specifying the configuration files is optional; without them the processes run with the default configuration.
 
-The default configuration file is [available here](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml).
+`restheart-platform-core` and `restheart-platform-security` are configured via  configuration files. 
 
-## Configuration options ##
+``` bash
+$ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file>
 
-### Properties files ###
+$ java -jar restheart-platform-security.jar <configuration-file>
+```
 
-It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter). This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the yaml configuration files, but now you can have a single parametric yaml file, with a set of small, different properties files for each environment.
+It's possible to pass also the `restheart-platform-core`'s configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
+
+```bash
+$ export RESTHEART_CONFFILE=etc/restheart-platform-core.yml
+```
+
+The `etc` directory contains the following configuration files:
+
+{: .table.table-responsive }
+|file|description|
+|-|-|
+|<a href="https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml" target="_blank">restheart-platform-core.yml</a>|configuration file for `restheart-platform-core`|
+|<a href="https://github.com/softInstigate/restheart-security/blob/master/etc/restheart-security.yml" target="_blank">restheart-platform-security.yml</a>|configuration file for `restheart-platform-security`|
+
+and the following properties files for the parametric `restheart-platform-core.yml`:
+
+{: .table.table-responsive }
+|file|description|
+|-|-|
+|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/default.properties" target="_blank">default.properties</a>|default parameters values|
+|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/standalone.properties" target="_blank">standalone.properties</a>|run `restheart-platform-core` without `restheart-platform-security`|
+|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/bwcv3.properties" target="_blank">bwcv3.properties</a>|run `restheart-platform-core` in backward compatible mode|
+
+{: .bs-callout.bs-callout-info}
+The configuration files are documented in details with inline comments.
+
+## Updating configuration in Docker containers
+
+The configuration files used by the Docker containers are in the directory `Docker/etc`. 
+
+If a configuration file is modified, the containers must be rebuilt for changes to take effect:
+
+```
+$ docker-compose up --build
+```
+
+## Important configuration options
+
+The following tables highlights the most important configuration options.
+
+### Core
+
+All the important configuration options of `resthart-platform-core` are defined in the properties file.
+
+{: .table.table-responsive }
+|property|default|description|
+|-|-|-|-|
+|*Listeners section*|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
+|instance-name|default|name of this instance of `resthart-platform-core`|
+|default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query paramters is not specified|
+|mongo-uri|mongodb://127.0.0.1|the <a href="https://docs.mongodb.com/manual/reference/connection-string/" target="_blank">MongoDB connection string</a>|
+|root-mongo-resource|/restheart|MongoDb resource to bind to the root URI `/`|
+|log-level|DEBUG|log level|
+|query-time-limit|0 (no limit)|kill request with slow queries|
+|aggregation-time-limit|0 (no limit)|kill slow aggregations requests|
+|io-threads|4|number of io thread, suggested value: core*2|
+|worker-threads|16|number of worker threads, suggested value: core*16|
+
+{: .bs-callout.bs-callout-warning }
+For security reasons RESTHeart by default binds only on `localhost`, so it won't be reachable from external systems unless you edit the configuration. To accept connections from everywhere, you must set the listeners host to `0.0.0.0`.
+
+### Security
+
+{: .table.table-responsive }
+|section|default value|description|
+|-|-|-|-|
+|Listeners|https at `0.0.0.0:4443` and http at `0.0.0.0:8080` value|Listeners allow to specify the protocol, ip, port and to use|
+|Proxied resources|`ajp://127.0.0.1:8009`|The URL of `restheart-platform-core` and of any other proxied resource|
+|SSL Configuration|Use the **insecure** test self-signed certificate|Allow configuring the certificate to be used by the https listener|
+
+## Parametric configuration
+
+{: .bs-callout.bs-callout-info }
+Only `restheart-platform-core.yml` can make use of parameters. Work is in progress to extend this feature to `restheart-platform-security.yml` as well.
+
+It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter). 
+
+This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the yaml configuration files, but now you can have a single parametric yaml file, with a set of small, different properties files for each environment.
 
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
-```properties
+``` properties
 https-listener = true
 https-host = localhost
 https-port = 4443
@@ -64,7 +146,7 @@ io-threads: 4
 worker-threads: 16
 ```
 
-The [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
+The [restheart-platform-core.yml](https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
 {% highlight yaml%}
 {% raw %}
@@ -89,43 +171,29 @@ mongo-uri: {{{mongo-uri}}}
 {% endraw %}
 {% endhighlight %}
 
-The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
+{: .bs-callout.bs-callout-info}
+Beware that you must stop and run RESTHeart again to reload a new configuration.
 
-> __NOTE__: for security reasons RESTHeart by default binds only on `localhost`, so it won't be reacheable from external systems unless you edit the configuration. To accept connections from everywhere, you must set at least the http listener in the `etc/dev.properties` file to bind to `0.0.0.0` like this:
-
-```
-http-listener = 0.0.0.0
-```
-
-> Beware that you must stop and run RESTHeart again to reload a new configuration.
-
-Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
- as before version 3.7, this new configuration with properties is fully optional. 
+Of course, you can decide which values in ``restheart-platform-core.yml` you want to become parametric or you can just use a static file.
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
-```
-java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml --envfile etc/dev.properties
+``` bash
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/dev.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
 ```bash
 $ export RESTHEART_ENVFILE=etc/dev.properties
-$ java -Dfile.encoding=UTF-8 -server -jar target/restheart.jar etc/restheart.yml
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml
 ```
 
-__Note__: starting with release 3.9 it's possible to pass also the main RESTHeart's configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
-
-```bash
-$ export RESTHEART_CONFFILE=etc/restheart.yml
-```
-
-This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart.yml` configuration file.
+This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart-platform-core.yml` configuration file.
 
 ### Environment variables ###
 
-RESTHeart `3.7.0` introduces also the possibility to override any **primitive type parameter** in `restheart.yml` with an environment variable. Primitive types are:
+Is is possible to override any **primitive type parameter** in `restheart-platform-core.yml` with an environment variable. Primitive types are:
 
  - String
  - Integer
@@ -144,7 +212,7 @@ The following log entry appears at the very beginning of logs during the startup
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
-A shell environment variable is equivalent to a yaml parameter in `restheart.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
+A shell environment variable is equivalent to a yaml parameter in `restheart-platform-core.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
 
 __Remember__: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
 
