@@ -16,7 +16,8 @@ title: Documentation
 
 ## Introduction
 
-> RESTHeart connects to MongoDB and securely exposes a clean REST API to read and write data via HTTP requests. 
+{: .alert.alert-success.text-center }
+RESTHeart connects to MongoDB and securely exposes a clean REST API to read and write data via HTTP requests. 
 
 {: .bs-callout.bs-callout-info }
 You don't need to write a single line of backend code for **Mobile Apps** and  **Angular**, **React**, **Vue** or other Single Page Application frameworks.

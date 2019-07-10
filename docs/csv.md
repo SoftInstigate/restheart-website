@@ -5,8 +5,7 @@ title: Upload CSV files
 
 <div markdown="1"  class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-*  [Introduction ](#introduction)
--  [Running the example requests](#running-the-example-requests)
+-  [Introduction ](#introduction)
 -  [Upload the CSV file](#upload-the-csv-file)
 -  [Update documents from CSV](#update-documents-from-csv)
 
@@ -25,7 +24,7 @@ The service is bound to `/csv` by default.
 {: .bs-callout.bs-callout-info}
 By uploading a csv file you create or update one document per each row of file. 
 
-## Before running the example requests
+### Before running the example requests
 
 The following examples assume RESTHeart Platform running on `localhost` with default configuration: it means, a database named `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
 
@@ -46,7 +45,7 @@ http -a admin:secret PUT http://localhost:8080/poi
   
 ## Upload the CSV file
 
-Let's take as an example the following file `POI.csv`:
+We are going to use the following example file `POI.csv`:
 
 ```
 id,name,city,lat,lon,note
@@ -56,7 +55,7 @@ id,name,city,lat,lon,note
 To import the `POI.csv` into the collection `poi`, run the following:
 
 ```bash
-http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" < POI.csv
+$ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" < POI.csv
 ```
 
 The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service 
