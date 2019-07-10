@@ -108,7 +108,7 @@ The optional parameters are:
 If the `id` parameter is not specified, documents are created with a new `ObjectId`
 
 Example of uploaded file without specifying the `id` :
-```json
+``` bash
 > GET /poi 
 
 <
