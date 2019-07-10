@@ -20,8 +20,8 @@ title: Upload CSV files
 
 The CSV Uploader Service allows you to import data from a CSV file into a given collection.
 
-The examples uses <a href="https://httpie.org" target= "_blank"> httpie</a>
 {: .bs-callout.bs-callout-info}
+The examples in this page use <a href="https://httpie.org" target= "_blank">httpie</a>
 
 ## Running the example requests
 
