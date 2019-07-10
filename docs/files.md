@@ -162,7 +162,7 @@ X-Powered-By: restheart.org
 }
 ```
 
-The axctual binary content is available by appending the `binary` postfix, like this:
+The actual binary content is available by appending the `binary` postfix, like this:
 
 ```
 http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4/binary
