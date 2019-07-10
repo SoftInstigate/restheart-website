@@ -51,7 +51,7 @@ id,name,city,lat,lon,note
 To import the `POI.csv` into the collection `poi`, run the following:
 
 ```bash
-http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" < POI.csv
+http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" < POI.csv
 ```
 
 The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service 
