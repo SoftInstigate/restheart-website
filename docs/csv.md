@@ -57,7 +57,7 @@ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="r
 The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service 
 {: .bs-callout.bs-callout-info}
 
-Response:
+The `/poi` collection now contains the documents:
 
 ```json
 [
@@ -98,7 +98,7 @@ The optional parameters are:
 
 4.  `values` = values of additional props to add to each row (default: no values)
 
-5.  `transformer` = name of a tranformer to apply to imported data (default: no transformer)
+5.  `transformer` = name of a transformer to apply to imported data (default: no transformer)
 
 6.  `update` = use data to update matching documents (default: false)
 
