@@ -105,10 +105,13 @@ The optional parameters are:
 7.  `upsert` = create new document if no documents match the row (default: false)
 
 {: .bs-callout.bs-callout-info}
-If the `id` paramenter is not specified, documents are created with a new `ObjectId`
+If the `id` parameter is not specified, documents are created with a new `ObjectId`
 
-Example of uploaded file without specifing the `id` :
+Example of uploaded file without specifying the `id` :
 ```json
+> GET /poi 
+
+<
 [
     {
         "_etag": {
@@ -151,7 +154,7 @@ To update your collection use the `update` parameter: new lines in the CSV will 
 http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "update"=="true" < POI.csv
 ```
 
-To add new CSV lines use the `upsert` paramenter. Run the following
+To add new CSV lines use the `upsert` parameter. Run the following
 
 ```bash
 http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" < POI.csv
