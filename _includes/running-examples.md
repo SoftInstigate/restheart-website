@@ -1,4 +1,4 @@
-## Running the example requests
+## Before running the example requests
 
 The following examples assume RESTHeart Platform running on the localhost with the default configuration: notably the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
 

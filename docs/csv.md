@@ -25,7 +25,7 @@ The service is bound to `/csv` by default.
 {: .bs-callout.bs-callout-info}
 By uploading a csv file you create or update one document per each row of file. 
 
-## Running the example requests
+## Before running the example requests
 
 The following examples assume RESTHeart Platform running on `localhost` with default configuration: it means, a database named `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
 
