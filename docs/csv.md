@@ -18,14 +18,19 @@ title: Upload CSV files
 
 ## Introduction
 
-The CSV Uploader Service allows you to import data from a CSV file into a given collection.
+The CSV Uploader Service allows importing data from a CSV file into a collection.
+
+The service is bound to `/csv` by default.
 
 {: .bs-callout.bs-callout-info}
-The examples in this page use <a href="https://httpie.org" target= "_blank">httpie</a>
+By uploading a csv file you create or update one document per each row of file. 
 
 ## Running the example requests
 
 The following examples assume RESTHeart Platform running on `localhost` with default configuration: it means, a database named `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
+
+{: .bs-callout.bs-callout-info}
+The examples in this page use <a href="https://httpie.org" target= "_blank">httpie</a>
 
 To create the `restheart` db, run the following:
 
