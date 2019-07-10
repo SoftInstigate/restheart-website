@@ -151,17 +151,17 @@ If the CSV lines are changed or new ones are added, you can update your collecti
 To update your collection use the `update` parameter: new lines in the CSV will *NOT* be added. Run the following:
 
 ```bash
-http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "update"=="true" < POI.csv
+http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" < POI.csv
 ```
 
 To add new CSV lines use the `upsert` parameter. Run the following
 
 ```bash
-http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" < POI.csv
+http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" < POI.csv
 ```
 
 To add the new CSV lines and update your collection use the `update` and the `upsert` together:
 
 ```bash
-http -a admin:secret POST http://localhost:8080/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
+http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
 ```
