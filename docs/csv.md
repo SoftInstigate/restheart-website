@@ -59,31 +59,31 @@ The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service
 
 Now the `/poi` collection contains the documents:
 
-```json
-[
-    {
-		"_etag": {
-			"$oid": "5d249beebb77e333b6dc9c84"
-		},
-		"_id": 2,
-		"city": "Milan",
-		"lat": 45.464278,
-		"lon": 9.190596,
-		"name": "Duomo",
-		"note": "Milan Cathedral"
-	},
-	{
-		"_etag": {
-			"$oid": "5d249beebb77e333b6dc9c83"
-		},
-		"_id": 1,
-		"city": "Rome",
-		"lat": 41.8902614,
-		"lon": 12.4930871,
-		"name": "Coliseum",
-		"note": "Also known as the Flavian Amphitheatre"
-	}
-]
+```bash
+> GET /poi
+
+[{
+    "_id": 2,
+    "city": "Milan",
+    "lat": 45.464278,
+    "lon": 9.190596,
+    "name": "Duomo",
+    "note": "Milan Cathedral",
+    "_etag": {
+        "$oid": "5d249beebb77e333b6dc9c84"
+    }
+},
+{
+    "_id": 1,
+    "city": "Rome",
+    "lat": 41.8902614,
+    "lon": 12.4930871,
+    "name": "Coliseum",
+    "note": "Also known as the Flavian Amphitheatre",
+    "_etag": {
+        "$oid": "5d249beebb77e333b6dc9c83"
+    }
+}]
 ```
 
 The parameters `db` and `coll` are mandatory and are used to specify the name of the database and the collection in which you want to import the data.
@@ -111,37 +111,34 @@ Example of uploaded file without specifying the `id` :
 ``` bash
 > GET /poi 
 
-<
-[
-    {
-        "_etag": {
-            "$oid": "5d24a114bb77e333b6dc9c86"
-        },
-        "_id": {
-            "$oid": "5d24a114bb77e333b6dc9c88"
-        },
-        "city": "Milan",
-        "id": 2,
-        "lat": 45.464278,
-        "lon": 9.190596,
-        "name": "Duomo",
-        "note": "Milan Cathedral"
+[{
+    "_id": {
+        "$oid": "5d24a114bb77e333b6dc9c88"
     },
-    {
-        "_etag": {
-            "$oid": "5d24a114bb77e333b6dc9c85"
-        },
-        "_id": {
-            "$oid": "5d24a114bb77e333b6dc9c87"
-        },
-        "city": "Rome",
-        "id": 1,
-        "lat": 41.8902614,
-        "lon": 12.4930871,
-        "name": "Coliseum",
-        "note": "Also known as the Flavian Amphitheatre"
+    "city": "Milan",
+    "id": 2,
+    "lat": 45.464278,
+    "lon": 9.190596,
+    "name": "Duomo",
+    "note": "Milan Cathedral",
+    "_etag": {
+        "$oid": "5d24a114bb77e333b6dc9c86"
     }
-]
+},
+{
+    "_id": {
+        "$oid": "5d24a114bb77e333b6dc9c87"
+    },
+    "city": "Rome",
+    "id": 1,
+    "lat": 41.8902614,
+    "lon": 12.4930871,
+    "name": "Coliseum",
+    "note": "Also known as the Flavian Amphitheatre",
+    "_etag": {
+        "$oid": "5d24a114bb77e333b6dc9c85"
+    }
+}]
 ```
 
 ## Update documents from CSV
