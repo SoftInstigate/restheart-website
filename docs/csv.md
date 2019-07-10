@@ -57,7 +57,7 @@ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="r
 The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service 
 {: .bs-callout.bs-callout-info}
 
-The `/poi` collection now contains the documents:
+Now the `/poi` collection contains the documents:
 
 ```json
 [
