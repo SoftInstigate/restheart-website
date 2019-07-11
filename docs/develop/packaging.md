@@ -51,7 +51,7 @@ The following configuration will produce a single jar file whose name is the art
 $ java -server -jar foo.jar conf.yml
 ```
 
-**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itself. SoftInstigate sells commercial licenses that overcome this limitation.
+**Important**: RESTHeart is distributed under the AGPL, so you are obliged to distribute the software that use and/or embeds RESTHeart under the AGPL itself. <a target="_blank" href="https://www.softinstigate.com/it/">SoftInstigate</a> sells commercial licenses that overcome this limitation.
 
 
 ``` xml
