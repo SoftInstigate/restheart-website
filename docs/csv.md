@@ -94,19 +94,17 @@ The parameters `db` and `coll` are mandatory and are used to specify the name of
 
 The optional parameters are:
 
-1.  `id` = id column index (default: no id column, each row will get an new ObjectId
+{: .table.table-responsive }
+|qparam|description|default value|
+|-|-|
+|`id`|id column index |no id column|
+|`sep`|column separator |,|
+|`props`|additional props to add to each row |no props|
+|`values`|values of additional props to add to each row |no values|
+|`transformer`|name of a transformer to apply to imported data |no transformer|
+|`update`|use data to update matching documents |false|
+|`upsert`|create new document if no documents match the row |true|
 
-2.  `sep` = column separator (default: ,)
-
-3.  `props` = additional props to add to each row (default: no props)
-
-4.  `values` = values of additional props to add to each row (default: no values)
-
-5.  `transformer` = name of a transformer to apply to imported data (default: no transformer)
-
-6.  `update` = use data to update matching documents (default: false)
-
-7.  `upsert` = create new document if no documents match the row (default: false)
 
 {: .bs-callout.bs-callout-info}
 If the `id` parameter is not specified, documents are created with a new `ObjectId`
