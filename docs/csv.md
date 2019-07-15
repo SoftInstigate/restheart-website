@@ -174,7 +174,7 @@ To apply a transformer use the `transformer` parameter:
 http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" update=="true" transformer=="GeoJSONTransformer" < POI.csv
 ```
 
-The `GeoJSONTransformer` is the name of a registered custom transformer we created that transform the latitude and longitude coordinates in a GeoJson object, and then add the object to the document, this is the code:
+The `GeoJSONTransformer` is the name of a registered custom transformer we created that transform the latitude and longitude coordinates in a <a href="https://geojson.org/" target="_blank">GeoJson</a> object, and then add the object to the document, this is the code:
 
 ```java
 @RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
