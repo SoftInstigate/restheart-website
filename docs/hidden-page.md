@@ -3,7 +3,9 @@ layout: docs
 title: Hidden page
 ---
 
-<link href="../../css/monokai.css" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/solarized-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
@@ -11,21 +13,21 @@ title: Hidden page
 
 
 
-```http
+``` plain
 GET /pippo HTTP/1.1
 ```
 
 ## Parsing log message
 
-{: .black-code}
-``` bash
+{: .p-0}
+```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
 ## Parsing yml
 
-{: .black-code}
-``` yml
+{: .black-code.p-0}
+```
 ## configuration file for requestPredicatesAuthorizer
 permissions:
     # OPTIONS is always allowed
@@ -76,6 +78,21 @@ POST /inventory HTTP/1.1
 ```
 
 {: .black-code}
+``` http
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, X-Powered-By
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 384
+Content-Type: application/hal+json
+Date: Mon, 08 Jul 2019 12:56:14 GMT
+ETag: 5d233840dd860b259a3bad45
+X-Powered-By: restheart.org
+```
+
+{: .black-code}
 ``` json
 [
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
@@ -91,8 +108,9 @@ POST /inventory HTTP/1.1
 ### invece di 
 
 {: .black-code}
-``` http
+```
 POST /inventory HTTP/1.1
+
 [
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
