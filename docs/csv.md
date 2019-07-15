@@ -8,6 +8,7 @@ title: Upload CSV files
 -  [Introduction ](#introduction)
 -  [Upload the CSV file](#upload-the-csv-file)
 -  [Update documents from CSV](#update-documents-from-csv)
+-  [Apply transformer](#apply-transformer)
 
 </div>
 
@@ -164,3 +165,123 @@ To add the new CSV lines and update your collection use the `update` and the `up
 ```bash
 http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
 ```
+
+### Apply transformer
+
+To apply a transformer use the `transformer` parameter:
+
+```bash
+http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" update=="true" transformer=="GeoJSONTransformer" < POI.csv
+```
+
+The `GeoJSONTransformer` is the name of a registered custom transformer we created that transform the latitude and longitude coordinates in a GeoJson object, and then add the object to the document, this is the code:
+
+```java
+@RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
+public class GeoJSONTransformer implements Transformer {
+
+    @Override
+    public void transform(final HttpServerExchange exchange, final RequestContext context, BsonValue contentToTransform,
+            final BsonValue args) {
+        BsonDocument resp = null;
+        resp = contentToTransform.asDocument();
+        // create FeatureCollection
+        BsonDocument bson = new BsonDocument();
+        bson.put("type", new BsonString("FeatureCollection"));
+
+        // create Feature
+        BsonDocument poiFeature = new BsonDocument();
+        poiFeature.put("type", new BsonString("Feature"));
+        
+        // get Coordinates
+        BsonArray coordinates = new BsonArray();
+        coordinates.add(resp.get("lon"));
+        coordinates.add(resp.get("lat"));
+
+        BsonDocument poi = new BsonDocument();
+        
+        poi.put("type", new BsonString("Point"));
+        poi.put("coordinates", coordinates);
+
+        // Create Geometry
+        BsonDocument geometry = new BsonDocument();
+        geometry.append("geometry", poi);
+
+        BsonArray features = new BsonArray();
+        features.add(poiFeature);
+        features.add(geometry);
+
+        bson.put("features", features);
+
+        // Add the object to the document
+        resp.append("GEOJson", bson);
+
+    }
+
+}
+```
+
+Now the documents have the new property `GEOJson` with the GeoJSON object:
+
+```bash
+> GET /poi
+[
+    {
+        "GEOJson": {
+            "features": [
+                {
+                    "type": "Feature"
+                },
+                {
+                    "geometry": {
+                        "coordinates": [
+                            9.190596,
+                            45.464278
+                        ],
+                        "type": "Point"
+                    }
+                }
+            ],
+            "type": "FeatureCollection"
+        },
+        "_etag": {
+            "$oid": "5d2c40021861f94794721285"
+        },
+        "_id": 2,
+        "city": "Milan",
+        "lat": 45.464278,
+        "lon": 9.190596,
+        "name": "Duomo",
+        "note": "Milan Cathedral"
+    },
+    {
+        "GEOJson": {
+            "features": [
+                {
+                    "type": "Feature"
+                },
+                {
+                    "geometry": {
+                        "coordinates": [
+                            12.4930871,
+                            41.8902614
+                        ],
+                        "type": "Point"
+                    }
+                }
+            ],
+            "type": "FeatureCollection"
+        },
+        "_etag": {
+            "$oid": "5d2c40021861f94794721284"
+        },
+        "_id": 1,
+        "city": "Rome",
+        "lat": 41.8902614,
+        "lon": 12.4930871,
+        "name": "Coliseum",
+        "note": "Also known as the Flavian Amphitheatre"
+    }
+]
+```
+
