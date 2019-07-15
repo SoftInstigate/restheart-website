@@ -4,24 +4,41 @@ The following examples assume RESTHeart Platform running on the localhost with t
 
 To create the *restheart* db, run the following:
 
-``` bash
-> PUT /
-```
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
+%}
 
-<a href="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+{: .black-code}
+``` http
+PUT / HTTP/1.1
+```
 
 The examples on this page use the *inventory* collection. To create the *inventory* collection, run the following:
 
-``` bash
-> PUT /inventory
-```
 
-<a href="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
+%}
+
+{: .black-code}
+``` http
+PUT /inventory HTTP/1.1
+```
 
 To populate the *inventory* collection, run the following:
 
-``` bash
-> POST /inventory [
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
+%}
+
+{: .black-code}
+```
+POST /inventory HTTP/1.1
+
+[
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
    { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
@@ -29,5 +46,3 @@ To populate the *inventory* collection, run the following:
    { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
 ]
 ```
-
-<a href="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>

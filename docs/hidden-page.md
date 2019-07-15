@@ -7,26 +7,29 @@ title: Hidden page
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
+
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
 
 
 
-``` plain
+{: .black-code}
+```
 GET /pippo HTTP/1.1
 ```
 
 ## Parsing log message
 
-{: .p-0}
+
+{: .black-code}
 ```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
 ## Parsing yml
 
-{: .black-code.p-0}
+{: .black-code}
 ```
 ## configuration file for requestPredicatesAuthorizer
 permissions:

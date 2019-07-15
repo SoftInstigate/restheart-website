@@ -3,6 +3,10 @@ layout: docs
 title: Tutorial
 ---
 
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/solarized-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Running the example requests](#running-the-example-requests)
@@ -25,13 +29,23 @@ title: Tutorial
 
 Now let’s get all documents in a row. For this, we send a GET request to the whole collection:
 
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/1"
+%}
+
+{: .black-code}
+``` http
+GET /inventory HTTP/1.1
 ```
-GET /inventory
-```
-<a href="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/1" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 Getting the following response:
 
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
 ``` json
 
 [
@@ -66,8 +80,8 @@ Getting the following response:
       "uom": "cm"
     },
     "status": "D"
-  }
-
+  },
+  
   ...
 
 ]
@@ -78,14 +92,24 @@ Getting the following response:
 It's possible to apply a filter at the end of the request to reduce the number of output documents.
 The following request asks for all documents with a "qty" property greather than 75: 
 
-```
-GET /inventory?filter={"qty": {"$gt": 75}}
-```
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/1"
+%}
 
-<a href="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/1" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+{: .black-code}
+``` http
+GET /inventory?filter={"qty":{"$gt":75}} HTTP/1.1
+```
 
 Only the following document meets the filter's condition:
 
+
+{% include restninja-example.html 
+    type="Response"
+%}
+
+{: .black-code}
 ``` json
 [
   {
@@ -111,17 +135,25 @@ Only the following document meets the filter's condition:
 
 Now we are going to insert a new document to the collection.
 
-```
-POST /inventory 
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/0"
+%}
+
+{: .black-code}
+``` http
+POST /inventory HTTP/1.1
 
 { "item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C" }
-
 ```
-
-<a href="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 Note the `Location` header in the response, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query.
 
+{% include restninja-example.html 
+    type="Response"
+%}
+
+{: .black-code}
 ```
 ETag: 5d0b47422ec9ff0d92ddc2ad
 X-Powered-By: restheart.org
@@ -133,34 +165,41 @@ Location: http://localhost:8080/inventory/5d0b47425beb2029a8d1bc72
 
 It's possible to PUT a document into the collection by specifing the document identifier at the end of the request:
 
-```
-PUT /inventory/newDocument 
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/0"
+%}
+
+{: .black-code}
+``` http
+PUT /inventory/newDocument HTTP/1.1
 
 { "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }
-
 ```
-
-<a href="http://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
 
 ## PATCH a document
 
 We are going to change the document created in the previous example:
 
-```
-PATCH /inventory/newDocument 
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/0"
+%}
+
+{: .black-code}
+``` http
+PATCH /inventory/newDocument HTTP/1.1
 
 { "qty": 40, "status": "A", "newProperty": "value" }
-
 ```
-
-
-<div class="w-100">
-    <a href="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
-</div>
 
 The document's properties has been updated successfully:
 
+{% include restninja-example.html 
+    type="Response"
+%}
 
+{: .black-code}
 ``` json
 {
   "_id": "newDocument",
@@ -183,10 +222,14 @@ The document's properties has been updated successfully:
 
 We are going to delete the previously edited document as follows:
 
-```
-DELETE /inventory/newDocument
-```
-<a href="http://restninja.io/share/311d230363a4c073a1e67ef327bd403cadb1238f/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+{% include restninja-example.html 
+    type="Request" 
+    link="http://restninja.io/share/311d230363a4c073a1e67ef327bd403cadb1238f/0"
+%}
 
+{: .black-code}
+``` http
+DELETE /inventory/newDocument HTTP/1.1
+```
 
 </div>
