@@ -160,6 +160,12 @@ $ mvn package
 $ java -jar target/restheart-security.jar etc/restheart-security.yml
 ```
 
+### Maven artifacts
+
+You can find pre-built Maven artifacts on Jitpack.io. That allows to add RESTHeart Security as a dependency on you own POM and build new plugins.
+
+https://jitpack.io/#SoftInstigate/restheart-security
+
 ### With Docker
 
 {:.alert.alert-warning}
