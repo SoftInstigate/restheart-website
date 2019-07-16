@@ -59,7 +59,7 @@ Sessions are available also in the OS version of RESTHeart. RESTHeart Platform a
 
 ### Start a session
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -68,7 +68,7 @@ Sessions are available also in the OS version of RESTHeart. RESTHeart Platform a
 POST /_sessions { "causallyConsistent": true} HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -99,7 +99,7 @@ sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 
 Requests can be executed in a session using the |`sid` query parameter.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -109,7 +109,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 {"foo": "bar"}
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -118,7 +118,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 HTTP/1.1 201 Created
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -127,7 +127,7 @@ HTTP/1.1 201 Created
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -174,7 +174,7 @@ Transaction are started in sessions.
 
 The following POST request starts the transaction in session `11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0`
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -183,7 +183,7 @@ The following POST request starts the transaction in session `11c3ceb6-7b97-4f34
 POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -203,7 +203,7 @@ txn=1
 
 ### Get the current transaction status
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -212,7 +212,7 @@ txn=1
 GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -233,7 +233,7 @@ HTTP/1.1 200 Ok
 
 Requests can be executed in the transaction using the `sid` and `txn` query parameters.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -244,7 +244,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 {"foo": "bar"}
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -253,7 +253,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 HTTP/1.1 201 Created
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -262,7 +262,7 @@ HTTP/1.1 201 Created
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -275,7 +275,7 @@ HTTP/1.1 200 Ok
 
 Use the method PATCH to commit the transaction.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -284,7 +284,7 @@ Use the method PATCH to commit the transaction.
 PATCH /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -297,7 +297,7 @@ HTTP/1.1 200 OK
 
 Use the method DELETE to abort the transaction.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -306,7 +306,7 @@ Use the method DELETE to abort the transaction.
 DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 

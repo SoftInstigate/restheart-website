@@ -4,7 +4,7 @@ The following examples assume RESTHeart Platform running on the localhost with t
 
 To create the *restheart* db, run the following:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
 %}
@@ -17,7 +17,7 @@ PUT / HTTP/1.1
 The examples on this page use the *inventory* collection. To create the *inventory* collection, run the following:
 
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
 %}
@@ -29,7 +29,7 @@ PUT /inventory HTTP/1.1
 
 To populate the *inventory* collection, run the following:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
 %}

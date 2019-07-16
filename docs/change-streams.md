@@ -136,7 +136,7 @@ The following requests upsert a collection defining two change streams:
 * *test\_stream\_with\_stage\_params* bound at
     `/db/cs_test/_streams/test_stream_with_stage_params`
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -163,7 +163,7 @@ PUT /db/cs_test HTTP/1.1
 
 Note between the `_links` collection property the URIs of the
 change streams.
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -173,7 +173,7 @@ change streams.
 GET /db/cs_test HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -209,7 +209,7 @@ For example, the previous example *test_stream_with_stage_params* use a variable
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -218,7 +218,7 @@ fails.
 GET /test/cs_test/_streams/test_stream_with_stage_params HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -241,7 +241,7 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -250,7 +250,7 @@ Passing the variable n, the request succeeds:
 GET /test/cs_test/_streams/test_ap?avars={"n":1} HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 

@@ -41,7 +41,7 @@ In this example we assume RESTHeart is running on `localhost`, port `8080`.
 
 Create the default `restheart` database, if none exists yet:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -50,7 +50,7 @@ Create the default `restheart` database, if none exists yet:
 PUT / HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -74,7 +74,7 @@ X-Powered-By: restheart.org
 Create the collection for hosting files. It must end with `.files` to
 mark this as a special collection for files:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -83,7 +83,7 @@ mark this as a special collection for files:
 PUT /mybucket.files HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -106,7 +106,7 @@ X-Powered-By: restheart.org
 
 Then POST the file:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -117,7 +117,7 @@ POST /mybucket.files HTTP/1.1
 @dataflow.png
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -156,7 +156,7 @@ by using the PUT verb instead of POST. We'll show this later.
 
 If you GET the `Location`, RESTHeart actually returns the file's metadata:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -165,7 +165,7 @@ If you GET the `Location`, RESTHeart actually returns the file's metadata:
 GET http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4 HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -229,7 +229,7 @@ Once a file has been created it becomes **immutable**: only its metadata can be 
 
 In the previous examples, the `mybucket.files` owner by default assigned to new files a resource name coming from MongoDB. If we want to set a meaningful URL then we need to send a PUT, like this:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -241,7 +241,7 @@ PUT /mybucket.files/dataflow.png HTTP/1.1
 @dataflow.png
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -264,7 +264,7 @@ X-Powered-By: restheart.org
 
 If we GET the resulting resource, here is the full HTTP response:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -273,7 +273,7 @@ If we GET the resulting resource, here is the full HTTP response:
 GET /mybucket.files/dataflow.png HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -336,7 +336,7 @@ To add optional form data parts to the request it is necessary to embed the data
 
 In the following example, we set the "author" and the "filename":
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -347,7 +347,7 @@ PUT /mybucket.files/dataflow.png HTTP/1.1
 @dataflow.png properties='{"author":"SoftInstigate", "filename":"dataflow"}'
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -369,7 +369,7 @@ X-Powered-By: restheart.org
 
 The JSON will be merged into in the metadata section:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -378,7 +378,7 @@ The JSON will be merged into in the metadata section:
 GET /mybucket.files/dataflow.png HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 

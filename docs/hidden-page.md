@@ -65,7 +65,7 @@ permissions:
 ## Richieste HTTP: separare body e request/response
 
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
 %}

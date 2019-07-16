@@ -29,7 +29,7 @@ This quick reference assumes the default configuration with the database `resthe
 
 **Read multiple documents**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -38,7 +38,7 @@ This quick reference assumes the default configuration with the database `resthe
 GET /coll?page=1&pagesize=5&filter={query} HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -49,7 +49,7 @@ GET /coll?page=1&pagesize=5&filter={query} HTTP/1.1
 
 **Read a single document**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -58,7 +58,7 @@ GET /coll?page=1&pagesize=5&filter={query} HTTP/1.1
 GET /coll/docid HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -71,48 +71,39 @@ GET /coll/docid HTTP/1.1
 
 **Write a document with POST**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 POST /coll HTTP/1.1
-```
 
-{: .black-code}
-```
 { "_id": "docid", ... }
 ```
 **Write multiple documents with POST**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 POST /coll HTTP/1.1
-```
 
-{: .black-code}
-```
 [ { doc#1 }, { doc#2 }, ... , { doc#n} ]
 ```
 
 **Modify a document with PUT**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 PUT /coll/docid HTTP/1.1
-```
 
-{: .black-code}
-```
 { doc }
 ```
 
@@ -121,17 +112,14 @@ The whole document is replaced with the request body.
 
 **Modify a document with PATCH**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 PATCH /coll/docid HTTP/1.1
-```
 
-{: .black-code}
-```
 { ... }
 ```
 
@@ -140,17 +128,14 @@ Only the parameters in the request body are updated.
 
 **Update multiple documents**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 PATCH /coll/*?filter={query} HTTP/1.1
-```
 
-{: .black-code}
-``` 
 { ... }
 ```
 
@@ -159,7 +144,7 @@ query parameter *filter* is mandatory
 
 **Delete a document**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -170,7 +155,7 @@ DELETE /coll/docid HTTP/1.1
 
 **Delete multiple documents**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -186,23 +171,20 @@ query parameter *filter* is mandatory
 
 **Read multiple file properties**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
 ``` http
 GET /bucket.files?page=1&pagesize=5&filter={query} HTTP/1.1
-```
 
-{: .black-code}
-```
 [ {file#1 }, { file#2 }, ... , { file#5 } ]
 ```
 
 **Read a file properties**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -211,7 +193,7 @@ GET /bucket.files?page=1&pagesize=5&filter={query} HTTP/1.1
 GET /bucket.files/fileid HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -222,7 +204,7 @@ GET /bucket.files/fileid HTTP/1.1
 
 **Read a file content**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -231,7 +213,7 @@ GET /bucket.files/fileid HTTP/1.1
 GET /bucket.files/fileid/binary HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -244,12 +226,12 @@ GET /bucket.files/fileid/binary HTTP/1.1
 
 **Create a file**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
 {: .black-code}
-```
+``` http
 POST  /db/bucket.files properties={"a": 1} file=<binary> HTTP/1.1 
 ```
 
@@ -258,7 +240,7 @@ This is a *multipart* request
 
 **Delete a file**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -271,7 +253,7 @@ DELETE /bucket.files/fileid HTTP/1.1
 
 **List Collections and Files Buckets**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -280,7 +262,7 @@ DELETE /bucket.files/fileid HTTP/1.1
 GET / HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -291,7 +273,7 @@ GET / HTTP/1.1
 
 **Read metadata of a Collection or Files Bucket**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -300,7 +282,7 @@ GET / HTTP/1.1
 GET /coll/_meta HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -311,7 +293,7 @@ GET /coll/_meta HTTP/1.1
 
 **Create a Collection**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -324,7 +306,7 @@ PUT /coll HTTP/1.1
 
 **Create a File Bucket**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -337,7 +319,7 @@ PUT /bucket.files HTTP/1.1
 
 **Update the metadata of a Collection or a File Bucket**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -348,7 +330,7 @@ PUT /bucket.files HTTP/1.1
 { metadata }
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -361,7 +343,7 @@ PATCH /bucket.files HTTP/1.1
 
 **Delete a collection or a File Bucket**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -376,7 +358,7 @@ If-Match: <ETag>
 
 **Create an index**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -389,7 +371,7 @@ PUT /coll/_indexes/idxid HTTP/1.1
 
 **Delete an index**
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 

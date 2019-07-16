@@ -26,7 +26,7 @@ title: Tutorial
 
 Now let’s get all documents in a row. For this, we send a GET request to the whole collection:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/1"
 %}
@@ -36,7 +36,7 @@ Now let’s get all documents in a row. For this, we send a GET request to the w
 GET /inventory HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -87,7 +87,7 @@ GET /inventory HTTP/1.1
 It's possible to apply a filter at the end of the request to reduce the number of output documents.
 The following request asks for all documents with a "qty" property greather than 75: 
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/1"
 %}
@@ -97,7 +97,7 @@ The following request asks for all documents with a "qty" property greather than
 GET /inventory?filter={"qty":{"$gt":75}} HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response"
 %}
 
@@ -130,7 +130,7 @@ Note that only the retrieved document meets the filter's condition.
 
 Now we are going to insert a new document to the collection.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/0"
 %}
@@ -143,12 +143,12 @@ POST /inventory HTTP/1.1
 ```
 
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response"
 %}
 
 {: .black-code}
-```
+``` http
 ETag: 5d0b47422ec9ff0d92ddc2ad
 X-Powered-By: restheart.org
 Content-Type: application/json
@@ -162,7 +162,7 @@ Note the `Location` header in the response, as it contains a link to the newly c
 
 It's possible to PUT a document into the collection by specifing the document identifier at the end of the request:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/0"
 %}
@@ -176,7 +176,7 @@ PUT /inventory/newDocument HTTP/1.1
 
 ## PATCH a document
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/0"
 %}
@@ -188,7 +188,7 @@ PATCH /inventory/newDocument HTTP/1.1
 { "qty": 40, "status": "A", "newProperty": "value" }
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response"
 %}
 
@@ -217,7 +217,7 @@ The previous request changes the document created in the previous example as ind
 
 ## DELETE a document
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
     link="http://restninja.io/share/311d230363a4c073a1e67ef327bd403cadb1238f/0"
 %}

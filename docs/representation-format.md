@@ -49,7 +49,7 @@ Starting with RESTHeart v4 this is the default representation format.
 
 In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -58,7 +58,7 @@ In the following response the documents of the collection `inventory` are return
 GET /inventory HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -93,7 +93,7 @@ HTTP/1.1 200 OK
 
  Execute the following query to retrieve the metadata of the collection *inventory*:
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -102,7 +102,7 @@ HTTP/1.1 200 OK
 GET /inventory/_meta HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -148,7 +148,7 @@ The strict mode is used on both request and response resource representation and
 
 The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -159,7 +159,7 @@ GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
 
 The correct request is: 
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -172,7 +172,7 @@ GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 
 To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -181,7 +181,7 @@ To get the names of the collections of the database `restheart` (the default con
 GET / HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -224,7 +224,7 @@ With <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> retu
 We’ll get the `inventory` collection resource and analyze it. 
 A collection represented with `HAL` has its own *properties*, *embedded resources* (in this case, documents) and *link templates* (for pagination, sorting, etc).
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -232,7 +232,7 @@ A collection represented with `HAL` has its own *properties*, *embedded resourc
 ```
 GET /inventory?rep=hal HTTP/1.1
 ```
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
@@ -475,7 +475,7 @@ Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Request" 
 %}
 
@@ -484,7 +484,7 @@ In the following response the collection /inventory has the properties `_id`, `_
 GET /inventory?rep=shal HTTP/1.1
 ```
 
-{% include restninja-example.html 
+{% include code-header.html 
     type="Response" 
 %}
 
