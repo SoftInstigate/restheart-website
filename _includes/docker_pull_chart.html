@@ -1,6 +1,29 @@
 <div class="container mt-5 mb-5">
     <h1>Widely Adopted</h1>
-    <h3 class="text-center">RESTHeart Docker image's pulls</h3>
+    <div class="container text-center">
+        <p>
+            <a href="https://hub.docker.com/r/softinstigate/restheart">
+                <img height="27" class="align-top rounded" alt="Docker Pulls"
+                    src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
+            </a>
+            <a href="https://github.com/SoftInstigate/restheart/releases">
+                <img height="27" class="align-top rounded" alt="GitHub All Releases"
+                    src="https://img.shields.io/github/downloads/softinstigate/restheart/total.svg?style=for-the-badge">
+            </a>
+            <a href="https://github.com/SoftInstigate/restheart">
+                <img height="27" class="align-top rounded" alt="GitHub stars"
+                    src="https://img.shields.io/github/stars/softinstigate/restheart.svg?color=red&label=GitHub%20stars&style=for-the-badge">
+            </a>
+            <!--
+            <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false"
+                data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
+            <a href="https://twitter.com/share" class="twitter-share-button"
+                data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate"
+                data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
+            -->
+        </p>
+    </div>
+    <h3 class="text-center">Graph of RESTHeart Docker image's pulls</h3>
 </div>
 
 <canvas id="dockerPullChart"></canvas>
@@ -64,8 +87,8 @@
         // the script /etc/cron.daily/rh-pull-count runs at dbapi.io
         // and POSTs the stats every day to beta.mrest.io/demo/stats
         $.ajax({
-            url: "https://beta.mrest.io/demo/stats?pagesize=10", 
-            beforeSend: function(xhr){ xhr.setRequestHeader('key', 'demo'); },
+            url: "https://beta.mrest.io/demo/stats?pagesize=10",
+            beforeSend: function (xhr) { xhr.setRequestHeader('key', 'demo'); },
             success: function (result) {
                 if (result && result.reverse && result.map) {
                     result.reverse();
@@ -80,7 +103,7 @@
 
                     var labels = result.map(function (x) {
                         var date = new Date(x.timestamp.$date);
-                        return new Date(date.setDate(date.getDate()-1)).toISOString().substring(0, 10);
+                        return new Date(date.setDate(date.getDate() - 1)).toISOString().substring(0, 10);
                     });
 
                     var ctx = $("#dockerPullChart");
