@@ -3,10 +3,10 @@ layout: default
 ---
 
 <section id="top">
-    <div class="container text-center header">
+    <div class="container text-center header pb-3">
         <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="256">
-        <p class="header__desc">The REST API Server for MongoDB</p>
-        <h2 class="header__title">Build applications faster, zero coding required!</h2>
+        <p class="header__desc">The REST API for MongoDB</p>
+        <h2 class="header__title">Build applications faster, no coding required.</h2>
     </div>
 </section>
 
