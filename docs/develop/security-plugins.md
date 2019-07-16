@@ -13,8 +13,6 @@ title: Develop Security Plugins
 * [Services](#services)
 * [Initializers](#initializers)
 * [Interceptors](#interceptors)
-* [Package RESTHeart Security plugins](#package-restheart-security-plugins)
-  * [Create a Uber jar](#create-a-uber-jar)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -569,93 +567,3 @@ Please note that, in order to mitigate DoS attacks, the size of the response con
 ### Configuration
 
 Interceptors are configured programmatically with *Initializers*. See [Initializers](#initializers) section for more information.
-
-## Package RESTHeart Security plugins
-
-After downloading the the [RESTHeart Platform](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-security.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
-
-```bash
-$ unzip restheart-platform-4.0.zip
-$ cd restheart-platform-4.0
-$ mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile=restheart-platform-security.jar
-
-...
-
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.608 s
-[INFO] Finished at: 2019-07-15T10:44:14+02:00
-[INFO] ------------------------------------------------------------------------
-```
-
-Then it's possible to use it as a Maven dependency:
-
-```xml
-	<dependency>
-	    <groupId>com.restheart</groupId>
-	    <artifactId>restheart-platform-security</artifactId>
-	    <version>1.0.0</version>
-	</dependency>
-```
-
-### Create a Uber jar
-
-The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package artifacts into a single uber-jar, including all dependencies.
-
-``` xml
-<project>
-
-  ...
-
-  <build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.1</version>
-            <configuration>
-                <finalName>${project.artifactId}</finalName>
-                <createDependencyReducedPom>true</createDependencyReducedPom>
-                <filters>
-                    <filter>
-                        <artifact>*:*</artifact>
-                        <excludes>
-                            <exclude>META-INF/*.SF</exclude>
-                            <exclude>META-INF/*.DSA</exclude>
-                            <exclude>META-INF/*.RSA</exclude>
-                        </excludes>
-                    </filter>
-                    <filter>
-                        <!-- removing overlapping classes, defined also in guava -->
-                        <artifact>com.google.guava:failureaccess</artifact>
-                        <excludes>
-                            <exclude>com/google/common/util/concurrent/internal/InternalFutureFailureAccess.class</exclude>
-                            <exclude>com/google/common/util/concurrent/internal/InternalFutures.class</exclude>
-                        </excludes>
-                    </filter>
-                </filters>
-            </configuration>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                        <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <mainClass>org.restheart.security.Bootstrapper</mainClass>
-                            </transformer>
-                        </transformers>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-  </build>
-
-  ...
-  
-</project>
-```
