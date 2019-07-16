@@ -25,6 +25,7 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
 
 **RequestPredicatesAuthorizer** allows defining roles permissions in a yml configuration file using the [Undertows predicate language](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation). 
 
+{: .black-code}
 ``` yml
 authorizers:
     name: requestPredicatesAuthorizer
@@ -35,6 +36,7 @@ authorizers:
 
 The file [acl.yml](https://github.com/SoftInstigate/restheart-security/blob/master/etc/acl.yml) defines the role based permissions. An example follows:
 
+{: .black-code}
 ``` yml
 ## configuration file for requestPredicatesAuthorizer
 permissions:

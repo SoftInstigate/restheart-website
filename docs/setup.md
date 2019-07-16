@@ -33,14 +33,16 @@ title: Setup
 1. click on the link in the email and download `restheart-platform-<version>.zip`
 1. unzip the package and cd into it:
 
-``` bash
+{: .black-code}
+```
 $ unzip restheart-platform-<version>.zip
 $ cd restheart-platform-<version>
 ```
 
 ## 2 - Run
 
-``` bash
+{: .black-code}
+```
 $ docker-compose up -d
 ```
 <div class="alert alert-info" role="alert">
@@ -66,7 +68,8 @@ The following image shows the email with the License Key.
 
 In this case, the license key to copy and paste is:
 
-``` plain
+{: .black-code}
+```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJsaWNlbnNlZSI6IlhYWCIsImxpY2Vuc29yIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiYWRkaXRpb25hbENvbmRpdGlvbnMiOiJUaGlzIGxpY2Vuc2Uga2V5IGNhbiBvbmx5IGJlIHVzZWQgZm9yIGRldmVsb3BtZW50IHB1cnBvc2VzIiwiaXNzIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiY29uY3VycmVudCI6ZmFsc2UsIm1heE1hY2hpbmVzIjoxLCJsaWNlbnNlSGFzaCI6ImM1ZWQ4MDczZTYxMzFiZDU0ZTI0MTEyNjE1OGI5NGQ3MTI3OGU5YmIyZjU4NGFkNzMzZDllYjBiNWM4MzNhYzYiLCJ0eXBlIjoiVHJpYWwgbGljZW5zZSIsInN1YnNjcmlwdGlvblBlcmlvZCI6ImZyb20gMDYvMTAvMjAxOSB0byAwNy8xMC8yMDE5IiwiZmxvYXRpbmciOmZhbHNlLCJleHAiOjE1NjI3MTY4MDAsImlhdCI6MTU2MDEyNDgwMCwianRpIjoiZDZlOTE2ZTItZDJkMy00ZjRkLWIxN2MtZjA0MDA2NDJlZTQ2In0.jiK-gCTho5O66v8FpKKebiSltas39jKgm9OmBnG1fBM-6kYBQQ7dX79cvhY6R3Ea3hVyrDc0URoHLSfjlUB3gcFqBcDrltYtPhHa27HmEfVdhqK6Itu2hbth-J-A1xpWNRjmIeUzPoGYR58QA10F4Zh0rrSLE1Zh4sXWXrX7vvlKxSirg7x48MEV0SeGNehxuQMjKwgsKQinwvq5PlkNQHx72mOgeUrhpNrQwFYmcAC8XnzliQ8cAJGX9ql3IhxHtTIfkPi3nE49wewiQWHe_kDRJJDSJsrk99FN2YjUQ-mqjpLdZCI4iyNhw0Z-iOkT1BGhTNL6SVaMrU0XiQ
 ```
 
@@ -85,12 +88,16 @@ Open <a href="http://localhost:8080/roles/admin" target="_blank">http://localhos
 
 Insert the default admin credentials, which are:
 
-    username: admin
-    password: secret
+{: .black-code}
+``` properties
+username: admin
+password: secret
+```
 
 You should then see the following json in your browser:
 
-```json
+{: .black-code}
+```
 {"authenticated":true,"roles":["admin"]}
 ```
 ### Log files
@@ -104,13 +111,15 @@ You find the log files in the `restheart-platform-<version>` directory:
 
 1. Stop running Docker containers
 
-``` bash
+{: .black-code}
+```
 $ docker-compose stop
 ```
 
 2. Run again the existing Docker containers
 
-``` bash
+{: .black-code}
+```
 $ docker-compose start
 ```
 
@@ -133,31 +142,36 @@ This section describes how to run MongoDB standalone configured as a Replica Set
 
 **Start MongoDb** passing the `replSet` option.
 
+{: .black-code}
 ```
 $ mongodb --fork --syslog --replSet foo 
 ```
 
 At the first run, the replica set must be initiated. Connect to MongoDB using the mongo shell:
 
+{: .black-code}
 ```
 $ mongo
 ```
 
 Initiate the replica set as follows:
 
+{: .black-code}
 ```
 > rs.initiate()
 ```
 
 ### Start restheart-platform-core
 
-``` bash
+{: .black-code}
+```
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/default.properties
 ```
 
 ### Start  restheart-platform-security
 
-``` bash
+{: .black-code}
+```
 $ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml
 ```
 

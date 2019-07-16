@@ -143,6 +143,7 @@ HTTP/1.1 200 OK
 
 You need __Java 11__ and must download the latest release from [releases page](https://github.com/SoftInstigate/restheart-security/releases).
 
+{: .black-code}
 ```
 $ tar -xzf restheart-security-XX.tar.gz
 $ cd restheart-security
@@ -153,6 +154,7 @@ $ java -jar restheart-security.jar etc/restheart-security.yml
 
 You need Git, Java 11 and Maven.
 
+{: .black-code}
 ```
 $ git clone git@github.com:SoftInstigate/restheart-security.git
 $ cd restheart-security
@@ -185,6 +187,7 @@ Run **restheart-security** with the [default configuration file](etc/restheart-s
 
 Below the mentioned configuration's fragment:
 
+{: .black-code}
 ``` yml
 proxies:
     - location: /secho
@@ -198,6 +201,7 @@ proxies:
 
 Let's fist invoke the `/echo` service directly. This is defined in the [configuration file](etc/restheart-security.yml) as follows:
 
+{: .black-code}
 ``` yml
 services:
     - implementation-class: org.restheart.security.plugins.services.EchoService
@@ -207,6 +211,7 @@ services:
 
 Note that `/echo` is not secured and can be invoked without restrictions.
 
+{: .black-code}
 ``` bash
 $ http -f 127.0.0.1:8080/echo?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK
@@ -266,6 +271,7 @@ X-Powered-By: restheart.org
 
 Let's try now to invoke `/secho` (please note the leading 's') without passing authentication credentials. This will fail with `401 Unauthorized` HTTP response.
 
+{: .black-code}
 ``` bash
 $ http -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
 HTTP/1.1 401 Unauthorized
@@ -278,6 +284,7 @@ WWW-Authenticate: Digest realm="RESTHeart Realm",domain="localhost",nonce="Z+fsw
 
 Let's try now to pass credentials via basic authentication. The user `admin` is defined in the `users.yml` file.
 
+{: .black-code}
 ```bash
 $ http -a admin:changeit -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK

@@ -66,6 +66,7 @@ by design: clients are not able to open up arbitrary change streams but only tho
 
 **stream object format**
 
+{: .black-code }
 ```
 {
     "uri": <uri>,
@@ -135,8 +136,16 @@ The following requests upsert a collection defining two change streams:
 * *test\_stream\_with\_stage\_params* bound at
     `/db/cs_test/_streams/test_stream_with_stage_params`
 
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code }
 ```
-PUT /db/cs_test { "streams" : [ 
+PUT /db/cs_test HTTP/1.1
+
+{ 
+    "streams" : [ 
       { "stages" : [],
         "uri" : "test_stream"
       },
@@ -148,18 +157,35 @@ PUT /db/cs_test { "streams" : [ 
         ],
         "uri" : "test_stream_with_stage_params"
       }
-    ] }
+    ] 
+}
 ```
 
 Note between the `_links` collection property the URIs of the
 change streams.
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+
+{: .black-code }
 ```
-GET /db/cs_test
+GET /db/cs_test HTTP/1.1
+```
 
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 HTTP/1.1 200 OK
+
 ...
+
 {
+    ...
+
     "_links": {
         ...,
         "test_stream": {
@@ -169,7 +195,9 @@ HTTP/1.1 200 OK
             "href": "/db/cs_test/_streams/test_stream_with_stage_params"
         }
     },
-    ....
+
+    ...
+
 }
 ```
 
@@ -181,11 +209,25 @@ For example, the previous example *test_stream_with_stage_params* use a variable
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
-```
-GET /test/cs_test/_streams/test_stream_with_stage_params
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+```
+GET /test/cs_test/_streams/test_stream_with_stage_params HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 HTTP/1.1 400 Bad Request
+
 ...
+
 {
     "_exceptions": [
         {
@@ -199,10 +241,23 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-```
-GET /test/cs_test/_streams/test_ap?avars={"n":1}
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+```
+GET /test/cs_test/_streams/test_ap?avars={"n":1} HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 HTTP/1.1 101 Switching Protocols
+
 ...
 ```
 
@@ -210,6 +265,7 @@ HTTP/1.1 101 Switching Protocols
 
 Variables can be used in change streams query as follows:
 
+{: .black-code }
 ```
 { "$var": "<var_name>" }
 ```
@@ -218,10 +274,13 @@ In case of change stream with stage parameter previous example, the variable was
 to restrinct notifications only to changes on documents with a property *name* matching the
 variable *n:*
 
-```
+{: .black-code }
+``` json
 {
   ...
+
     { "_$match" : { "fullDocument.name" : { "_$var" : "n" } } }
+
   ...
 }
 ```
@@ -233,7 +292,8 @@ This behaviour is required to protect data from undesiderable malicious query in
 
 Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
 
-```
+{: .black-code }
+``` properties
 ### Security
 
 # Check if aggregation variables use operators. allowing operators in aggregation variables 

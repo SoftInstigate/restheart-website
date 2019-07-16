@@ -25,7 +25,8 @@ Specifying the configuration files is optional; without them the processes run w
 
 `restheart-platform-core` and `restheart-platform-security` are configured via  configuration files. 
 
-``` bash
+{: .black-code}
+```
 $ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file>
 
 $ java -jar restheart-platform-security.jar <configuration-file>
@@ -33,7 +34,8 @@ $ java -jar restheart-platform-security.jar <configuration-file>
 
 It's possible to pass also the `restheart-platform-core`'s configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
 
-```bash
+{: .black-code}
+```
 $ export RESTHEART_CONFFILE=etc/restheart-platform-core.yml
 ```
 
@@ -63,6 +65,7 @@ The configuration files used by the Docker containers are in the directory `Dock
 
 If a configuration file is modified, the containers must be rebuilt for changes to take effect:
 
+{: .black-code}
 ```
 $ docker-compose up --build
 ```
@@ -112,6 +115,7 @@ This has proven to be very useful when RESTHeart is deployed in several environm
 
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
+{: .black-code}
 ``` properties
 https-listener = true
 https-host = localhost
@@ -148,7 +152,8 @@ worker-threads: 16
 
 The [restheart-platform-core.yml](https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
-{% highlight yaml%}
+{: .black-code}
+``` properties
 {% raw %}
 instance-name: {{{instance-name}}}
 
@@ -167,9 +172,8 @@ ajp-port: {{{ajp-port}}}
 default-representation-format: {{{default-representation-format}}}
 
 mongo-uri: {{{mongo-uri}}}
-
 {% endraw %}
-{% endhighlight %}
+```
 
 {: .bs-callout.bs-callout-info}
 Beware that you must stop and run RESTHeart again to reload a new configuration.
@@ -178,13 +182,15 @@ Of course, you can decide which values in ``restheart-platform-core.yml` you wan
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
+{: .black-code}
 ``` bash
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/dev.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
-```bash
+{: .black-code}
+``` bash
 $ export RESTHEART_ENVFILE=etc/dev.properties
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml
 ```
@@ -202,13 +208,15 @@ Is is possible to override any **primitive type parameter** in `restheart-platfo
   
  For example, the parameter `mongo-uri` in the yaml file can be overridden by exporting a `MONGO_URI` environment variable:
 
+{: .black-code}
 ```bash
 $ export MONGO_URI="mongodb://127.0.0.1"
 ```
 
 The following log entry appears at the very beginning of logs during the startup process:
 
-```bash
+{: .black-code}
+```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
@@ -220,7 +228,8 @@ __Remember__: _environment variables replacement doesn't work with YAML structur
 
 To know the available CLI parameters, run RESTHeart with `--help`:
 
-```bash
+{: .black-code}
+```
 $ java -jar target/restheart.jar --help
 Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options] 
       <Configuration file>

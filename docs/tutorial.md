@@ -3,9 +3,6 @@ layout: docs
 title: Tutorial
 ---
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/solarized-dark.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
@@ -38,8 +35,6 @@ Now let’s get all documents in a row. For this, we send a GET request to the w
 ``` http
 GET /inventory HTTP/1.1
 ```
-
-Getting the following response:
 
 {% include restninja-example.html 
     type="Response" 
@@ -102,9 +97,6 @@ The following request asks for all documents with a "qty" property greather than
 GET /inventory?filter={"qty":{"$gt":75}} HTTP/1.1
 ```
 
-Only the following document meets the filter's condition:
-
-
 {% include restninja-example.html 
     type="Response"
 %}
@@ -131,6 +123,9 @@ Only the following document meets the filter's condition:
 ]
 ```
 
+{: .bs-callout.bs-callout-info}
+Note that only the retrieved document meets the filter's condition.
+
 ## POST a new document
 
 Now we are going to insert a new document to the collection.
@@ -147,7 +142,6 @@ POST /inventory HTTP/1.1
 { "item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C" }
 ```
 
-Note the `Location` header in the response, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query.
 
 {% include restninja-example.html 
     type="Response"
@@ -160,6 +154,9 @@ X-Powered-By: restheart.org
 Content-Type: application/json
 Location: http://localhost:8080/inventory/5d0b47425beb2029a8d1bc72
 ```
+
+{: .bs-callout.bs-callout-info}
+Note the `Location` header in the response, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query.
 
 ## PUT a new document
 
@@ -179,8 +176,6 @@ PUT /inventory/newDocument HTTP/1.1
 
 ## PATCH a document
 
-We are going to change the document created in the previous example:
-
 {% include restninja-example.html 
     type="Request" 
     link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/0"
@@ -192,8 +187,6 @@ PATCH /inventory/newDocument HTTP/1.1
 
 { "qty": 40, "status": "A", "newProperty": "value" }
 ```
-
-The document's properties has been updated successfully:
 
 {% include restninja-example.html 
     type="Response"
@@ -218,9 +211,11 @@ The document's properties has been updated successfully:
 }
 ```
 
-## DELETE a document
+{: .bs-callout.bs-callout-info}
+The previous request changes the document created in the previous example as indicated in the request body.
 
-We are going to delete the previously edited document as follows:
+
+## DELETE a document
 
 {% include restninja-example.html 
     type="Request" 

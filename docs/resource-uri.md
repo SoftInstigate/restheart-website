@@ -132,7 +132,8 @@ are identified.
 In MongoDB, the \_id can be of any type. For instance, it can be an
 ObjectId, a String or even a JSON object, as in the following document:
 
-``` plain
+{: .black-code}
+```
 { "_id": {"a":1,"b":2} }
 ```
 

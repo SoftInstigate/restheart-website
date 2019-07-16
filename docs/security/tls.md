@@ -30,6 +30,7 @@ In any case, restheart-security and restheart-core are both able to expose direc
 
 The following configuration file except shows the involved options:
 
+{: .black-code}
 ``` bash
 #### listeners
 https-listener: true
@@ -80,6 +81,7 @@ Follow this <a target="_blank" href="https://www.digitalocean.com/community/tuto
 
 Once the certificate has been added, you can configure it as follows:
 
+{: .black-code}
 ``` yml
 use-embedded-keystore: false
 

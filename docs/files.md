@@ -41,9 +41,21 @@ In this example we assume RESTHeart is running on `localhost`, port `8080`.
 
 Create the default `restheart` database, if none exists yet:
 
-```bash
-$ http -a admin:secret PUT :8080/
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+PUT / HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -62,9 +74,21 @@ X-Powered-By: restheart.org
 Create the collection for hosting files. It must end with `.files` to
 mark this as a special collection for files:
 
-```bash
-$ http -a admin:secret PUT :8080/mybucket.files
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+PUT /mybucket.files HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -82,9 +106,23 @@ X-Powered-By: restheart.org
 
 Then POST the file:
 
-```bash
-$  http -a admin:secret -f POST :8080/mybucket.files @dataflow.png
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+POST /mybucket.files HTTP/1.1
+
+@dataflow.png
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -102,7 +140,8 @@ X-Powered-By: restheart.org
 
 The `Location` HTTP header returns the file's location:
 
-```text
+{: .black-code }
+``` http
 Location: http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4
 ```
 
@@ -117,9 +156,21 @@ by using the PUT verb instead of POST. We'll show this later.
 
 If you GET the `Location`, RESTHeart actually returns the file's metadata:
 
-```
-$ http -a admin:secret GET http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+GET http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4 HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -164,6 +215,7 @@ X-Powered-By: restheart.org
 
 The actual binary content is available by appending the `binary` postfix, like this:
 
+{: .black-code }
 ```
 http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4/binary
 ```
@@ -177,9 +229,24 @@ Once a file has been created it becomes **immutable**: only its metadata can be 
 
 In the previous examples, the `mybucket.files` owner by default assigned to new files a resource name coming from MongoDB. If we want to set a meaningful URL then we need to send a PUT, like this:
 
-```bash
-http -a admin:secret -f PUT :8080/mybucket.files/dataflow.png @dataflow.png
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+
+{: .black-code }
+``` http
+PUT /mybucket.files/dataflow.png HTTP/1.1
+
+@dataflow.png
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -197,9 +264,21 @@ X-Powered-By: restheart.org
 
 If we GET the resulting resource, here is the full HTTP response:
 
-```bash
-$ http -a admin:secret GET :8080/mybucket.files/dataflow.png
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+GET /mybucket.files/dataflow.png HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -243,6 +322,7 @@ X-Powered-By: restheart.org
 
 Note that in this case the resource has a much nicer URL:
 
+{: .black-code }
 ```plain
 http://localhost:8080/mybucket.files/dataflow.png
 ```
@@ -256,9 +336,23 @@ To add optional form data parts to the request it is necessary to embed the data
 
 In the following example, we set the "author" and the "filename":
 
-```bash
-$ http -a admin:secret -f PUT :8080/mybucket.files/dataflow.png @dataflow.png properties='{"author":"SoftInstigate", "filename":"dataflow"}'
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code }
+``` http
+PUT /mybucket.files/dataflow.png HTTP/1.1
+
+@dataflow.png properties='{"author":"SoftInstigate", "filename":"dataflow"}'
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -271,15 +365,25 @@ Content-Length: 0
 Content-Type: application/json
 Date: Tue, 09 Jul 2019 11:26:55 GMT
 X-Powered-By: restheart.org
-
 ```
 
 The JSON will be merged into in the metadata section:
 
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-```bash
-$ http -a admin:secret GET :8080/mybucket.files/dataflow.png
+{: .black-code }
+``` http
+GET /mybucket.files/dataflow.png HTTP/1.1
+```
 
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *

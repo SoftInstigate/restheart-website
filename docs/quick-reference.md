@@ -29,17 +29,41 @@ This quick reference assumes the default configuration with the database `resthe
 
 **Read multiple documents**
 
-``` plain
-> GET /coll?page=1&pagesize=5&filter={ query }
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /coll?page=1&pagesize=5&filter={query} HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 [ {doc#1 }, { doc#2 }, ... , { doc#5 } ]
 ```
 
 **Read a single document**
 
-``` plain
-> GET /coll/docid
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /coll/docid HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 { "_id": "docid", ... }
 ```
 
@@ -47,20 +71,49 @@ This quick reference assumes the default configuration with the database `resthe
 
 **Write a document with POST**
 
-``` plain
-> POST /coll { "_id": "docid", ... }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+POST /coll HTTP/1.1
 ```
 
+{: .black-code}
+```
+{ "_id": "docid", ... }
+```
 **Write multiple documents with POST**
 
-``` plain
-> POST /coll [ { doc#1 }, { doc#2 }, ... , { doc#n} ]
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+POST /coll HTTP/1.1
+```
+
+{: .black-code}
+```
+[ { doc#1 }, { doc#2 }, ... , { doc#n} ]
 ```
 
 **Modify a document with PUT**
 
-``` plain
-> PUT /coll/docid { doc }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PUT /coll/docid HTTP/1.1
+```
+
+{: .black-code}
+```
+{ doc }
 ```
 
 {: .bs-callout.bs-callout-info }
@@ -68,8 +121,18 @@ The whole document is replaced with the request body.
 
 **Modify a document with PATCH**
 
-``` plain
-> PATCH /coll/docid { ... }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PATCH /coll/docid HTTP/1.1
+```
+
+{: .black-code}
+```
+{ ... }
 ```
 
 {: .bs-callout.bs-callout-info }
@@ -77,8 +140,18 @@ Only the parameters in the request body are updated.
 
 **Update multiple documents**
 
-``` plain
-> PATCH /coll/*?filter={ query } { ... }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PATCH /coll/*?filter={query} HTTP/1.1
+```
+
+{: .black-code}
+``` 
+{ ... }
 ```
 
 {: .bs-callout.bs-callout-info }
@@ -86,14 +159,24 @@ query parameter *filter* is mandatory
 
 **Delete a document**
 
-``` plain
-> DELETE /coll/docid
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+DELETE /coll/docid HTTP/1.1
 ```
 
 **Delete multiple documents**
 
-``` plain
-> DELETE /coll/*?filter={ query }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+DELETE /coll/*?filter={query} HTTP/1.1
 ```
 
 {: .bs-callout.bs-callout-info }
@@ -103,25 +186,57 @@ query parameter *filter* is mandatory
 
 **Read multiple file properties**
 
-``` plain
-> GET /bucket.files?page=1&pagesize=5&filter={ query }
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /bucket.files?page=1&pagesize=5&filter={query} HTTP/1.1
+```
+
+{: .black-code}
+```
 [ {file#1 }, { file#2 }, ... , { file#5 } ]
 ```
 
 **Read a file properties**
 
-``` plain
-> GET /bucket.files/fileid
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /bucket.files/fileid HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 { "_id": "fileid", "fileType": "application/pdf", ... }
 ```
 
 **Read a file content**
 
-``` plain
-> GET /bucket.files/fileid/binary
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /bucket.files/fileid/binary HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 (file content)
 ```
 
@@ -129,8 +244,13 @@ query parameter *filter* is mandatory
 
 **Create a file**
 
-``` plain
-> POST  /db/bucket.files properties={"a": 1} file=<binary>
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+```
+POST  /db/bucket.files properties={"a": 1} file=<binary> HTTP/1.1 
 ```
 
 {: .bs-callout.bs-callout-info}
@@ -138,54 +258,117 @@ This is a *multipart* request
 
 **Delete a file**
 
-```plain
-> DELETE /bucket.files/fileid
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+DELETE /bucket.files/fileid HTTP/1.1
 ```
 
 ## Collections and File Buckets
 
 **List Collections and Files Buckets**
 
-``` plain
-> GET /
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET / HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 [ "coll1", "coll2", "bucket1.files", "bucket2.files", ... ]
 ```
 
 **Read metadata of a Collection or Files Bucket**
 
-``` plain
-> GET /coll/_meta
+{% include restninja-example.html 
+    type="Request" 
+%}
 
+{: .black-code}
+``` http
+GET /coll/_meta HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 { "aggrs": [...], "checkers": [...], "transformers": [...], "streams": [...] }
 ```
 
 **Create a Collection**
 
-``` plain
-> PUT /coll { metadata }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PUT /coll HTTP/1.1
+
+{ metadata }
 ```
 
 **Create a File Bucket**
 
-``` plain
-> PUT /bucket.files { metadata }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PUT /bucket.files HTTP/1.1
+
+{ metadata }
 ```
 
 **Update the metadata of a Collection or a File Bucket**
 
-``` plain
-> PUT /bucket.files { metadata }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PUT /bucket.files HTTP/1.1
+
+{ metadata }
 ```
 
-``` plain
-> PATCH /bucket.files { metadata }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PATCH /bucket.files HTTP/1.1
+
+{ metadata }
 ```
 
 **Delete a collection or a File Bucket**
 
-``` plain
-> DELETE /coll If-Match:<ETag>
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+DELETE /coll HTTP/1.1
+If-Match: <ETag>
 ```
 
 {: .bs-callout.bs-callout-info}
@@ -193,14 +376,26 @@ This is a *multipart* request
 
 **Create an index**
 
-```plain
-> PUT /coll/_indexes/idxid { "keys": { ... }, "ops": { ... } }
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+PUT /coll/_indexes/idxid HTTP/1.1
+
+{ "keys": { ... }, "ops": { ... } }
 ```
 
 **Delete an index**
 
-```plain
-> DELETE /coll/_indexes/idxid
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+``` http
+DELETE /coll/_indexes/idxid HTTP/1.1
 ```
 
 ## Important Query Parameters

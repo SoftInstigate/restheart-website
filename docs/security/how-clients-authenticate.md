@@ -28,14 +28,16 @@ a standard method for an HTTP user agent to provide a *username* and
 
 With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
 
+{: .black-code}
 ``` text
- http -a userid:password GET 127.0.0.1:8080/
+$ http -a userid:password GET 127.0.0.1:8080/
 ```
 
 With **curl**, use the –user options
 
+{: .black-code}
 ``` text
-curl -i --user userid:password -X GET 127.0.0.1:8080/
+$ curl -i --user userid:password -X GET 127.0.0.1:8080/
 ```
 
 ## Basic Authentication for dummies
@@ -69,7 +71,8 @@ header can either be calculated from the the Auth-Token itself:
 
 Auth token information are passed in the following response headers:
 
-``` text
+{: .black-code}
+```
 Auth-Token: 6a81d622-5e24-4d9e-adc0-e3f7f2d93ac7
 Auth-Token-Location: /tokens/user@si.com
 Auth-Token-Valid-Until: 2015-04-16T13:28:10.749Z
@@ -95,6 +98,7 @@ disable it or use a load balancer with the sticky session option or a different 
 
 The rndTokenManager can be configured as follows (note option `TTL` the auth token Time To Live in minutes):
 
+{: .black-code}
 ``` yml
 token-manager:
     name: rndTokenManager
@@ -117,6 +121,7 @@ are:
 -   **200 OK** credentials match; the following response document is
     sent back:
 
+{: .black-code}
 ``` json
  {
     "authenticated": true, 

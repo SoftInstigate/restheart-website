@@ -28,16 +28,18 @@ RESTHeart has three different options for representing the resources:`STANDARD`,
 
 The default representation is controlled by the configuration option `default-representation-format` .
 
-``` yml
+{: .black-code}
+``` properties
 default-representation-format: STANDARD
 ```
 
 The `rep` query parameter can also be used for switching between representations.
 
-``` bash
-> GET /inventory?rep=s
-> GET /inventory?rep=hal
-> GET /inventory?rep=shal
+{: .black-code}
+```
+GET /inventory?rep=s HTTP/1.1
+GET /inventory?rep=hal HTTP/1.1
+GET /inventory?rep=shal HTTP/1.1
 ```
 
 ## Standard Representation
@@ -47,11 +49,23 @@ Starting with RESTHeart v4 this is the default representation format.
 
 In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
 
-``` bash
-> GET /inventory
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-<
+{: .black-code}
+```
+GET /inventory HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 HTTP/1.1 200 OK
+
 ...
 
 [
@@ -71,17 +85,31 @@ HTTP/1.1 200 OK
     },
     "status": "A"
   },
+
   ...
+
 ]
 ```
 
  Execute the following query to retrieve the metadata of the collection *inventory*:
 
-``` bash
-> GET /inventory/_meta
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-<
+{: .black-code}
+```
+GET /inventory/_meta HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 HTTP/1.1 200 OK
+
 ...
 
 {
@@ -103,7 +131,8 @@ MongoDB adds this extension to the JSON.
 
 For instance, the `_id` of the following JSON document is an ObjectId.
 
-``` plain
+{: .black-code}
+```
   {
     "_id": {
       "$oid": "5d0b4e325beb2029a8d1bd5e"
@@ -119,25 +148,47 @@ The strict mode is used on both request and response resource representation and
 
 The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
 
-``` bash
-> GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+```
+GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
 ```
 
 The correct request is: 
 
-``` bash
-> GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}
+{% include restninja-example.html 
+    type="Request" 
+%}
+
+{: .black-code}
+```
+GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 ```
 
 ## Get the names of existing collections
 
 To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
 
-``` bash
-> GET /
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-<
+{: .black-code}
+```
+GET / HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 HTTP/1.1 200 OK
+
 ...
 
 [ 
@@ -152,7 +203,7 @@ HTTP/1.1 200 OK
 The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
 </p>
 
-<pre><code># The MongoDb resource to bind to the root URI / 
+<pre class="black-code"><code># The MongoDb resource to bind to the root URI / 
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart</code></pre>
 
@@ -173,10 +224,20 @@ With <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> retu
 We’ll get the `inventory` collection resource and analyze it. 
 A collection represented with `HAL` has its own *properties*, *embedded resources* (in this case, documents) and *link templates* (for pagination, sorting, etc).
 
-``` bash
-> GET /inventory?rep=hal
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-<
+{: .black-code}
+```
+GET /inventory?rep=hal HTTP/1.1
+```
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -243,6 +304,7 @@ recursively represented as HAL documents.
 
 The `_embedded` property looks like:
 
+{: .black-code}
 ``` json
 { "_embedded": 
   { "rh:doc": [{
@@ -357,6 +419,7 @@ The `_embedded` property looks like:
 </div>
 The `_links` property looks like:
 
+{: .black-code}
 ``` json
 { "_links": { 
   "self": {
@@ -412,11 +475,23 @@ Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-``` bash
-> GET /inventory?rep=shal
+{% include restninja-example.html 
+    type="Request" 
+%}
 
-<
+{: .black-code}
+```
+GET /inventory?rep=shal HTTP/1.1
+```
+
+{% include restninja-example.html 
+    type="Response" 
+%}
+
+{: .black-code}
+```
 HTTP/1.1 200 OK
+
 ...
 
 {
