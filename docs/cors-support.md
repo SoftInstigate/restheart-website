@@ -50,20 +50,21 @@ RESTHeart, in the case of a collection resource.
 
 **Request**
 
-``` plain
-OPTIONS /test/coll
+{: .black-code}
+```
+OPTIONS /test/coll HTTP/1.1
 ```
 
 **Response**
 
-``` bash
+{: .black-code}
+```
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Headers: Accept, Accept-Encoding, Authorization, Content-Length, Content-Type, Host, If-Match, Origin, X-Requested-With, User-Agent, No-Auth-Challenge
 Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
-...
 ```
 
 </div>

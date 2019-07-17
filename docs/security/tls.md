@@ -64,6 +64,7 @@ The test self signed certificate is provided only for testing purposes. Using it
 
 The only option to specify to use the default, embedded self signed certificate is the following:
 
+{: .black-code}
 ``` yml
 use-embedded-keystore: true
 ```

@@ -57,9 +57,11 @@ In summary, the top level steps for a highly available RESTHeart + MongoDB confi
 2. Create a RESTHeart cluster connected to the MongoDB Replica Set;
 3. Put an HTTP Load Balancer on top of it.
 
-> If you want to know more about clustering, load balancing and high avalability, please [contact us](/services).
+{: .bs-callout.bs-callout-info}
+If you want to know more about clustering, load balancing and high avalability, please [contact us](/services).
 
-> If you want to know more about RESTHeart's Editions, have a look [here](/editions).
+{: .bs-callout.bs-callout-info}
+If you want to know more about RESTHeart's Editions, have a look [here](/editions).
 
 ## References
 

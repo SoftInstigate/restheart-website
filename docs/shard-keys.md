@@ -9,7 +9,8 @@ title: Shard Keys
 
 {% include doc-in-progress.html %}
 
-> The shard key determines the distribution of the collection’s documents among a cluster’s shards.
+{: .bs-callout.bs-callout-info}
+The shard key determines the distribution of the collection’s documents among a cluster’s shards.
 
 When a shared collection has shard key different than _id or a compound shard key, the `shardkey` query parameter must be used.
 

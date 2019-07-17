@@ -66,22 +66,15 @@ method; **
 The issue is that MongoDB queries with a large "skip" slow down
 linearly. As the MongoDB manual says:
 
-> The cursor.skip() method is often expensive because it requires the
-> server to walk from the beginning of the collection or index to get
-> the offset or skip position before beginning to return result. As
-> offset (e.g. pageNumber above) increases, cursor.skip() will become
-> slower and more CPU intensive. With larger collections, cursor.skip()
-> may become IO bound.
+{: .bs-callout.bs-callout-info}
+The cursor.skip() method is often expensive because it requires the server to walk from the beginning of the collection or index to get the offset or skip position before beginning to return result. As offset (e.g. pageNumber above) increases, cursor.skip() will become slower and more CPU intensive. With larger collections, cursor.skip() may become IO bound.
 
 That is why the MongoDB documentation section about
 [skips](https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip)
 suggests:
 
-> Consider using range-based pagination for these kinds of tasks. That
-> is, query for a range of objects, using logic within the application
-> to determine the pagination rather than the database itself. This
-> approach features better index utilization, if you do not need to
-> easily jump to a specific page.
+{: .bs-callout.bs-callout-info}
+Consider using range-based pagination for these kinds of tasks. That is, query for a range of objects, using logic within the application to determine the pagination rather than the database itself. This approach features better index utilization, if you do not need to easily jump to a specific page.
 
 ## How it works
 
@@ -110,8 +103,7 @@ request, following the [principle of
 locality](https://en.wikipedia.org/wiki/Locality_of_reference); in the
 RANDOM case, a configurable number of cursors is allocated uniformly.
 
-The following images depicts how it works, in the LINEAR case:**  
-**
+The following images depicts how it works, in the LINEAR case:
 
 1.  **Request A** asks for 5 documents starting from the 1.000.000th
     document. MongoDB needs to generate a cursor skipping 1.000.000
@@ -221,29 +213,29 @@ eager-cursor-allocation-random-slice-min-width: 1000
 </thead>
 <tbody>
 <tr class="odd">
-<td><pre><code>eager-cursor-allocation-pool-size</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-pool-size</code></pre></td>
 <td>The maximum number of cursors to allocate overall. Note that a pool is generate for each combination of filter, sort_by and key parameters.</td>
 </tr>
 <tr class="even">
-<td><pre><code>eager-cursor-allocation-linear-slice-width</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-linear-slice-width</code></pre></td>
 <td>Applies for the LINEAR policy. It is the width of a pool slice, i.e. the distance between two cursors clusters.</td>
 </tr>
 <tr class="odd">
-<td><pre><code>eager-cursor-allocation-linear-slice-delta</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-linear-slice-delta</code></pre></td>
 <td><p>Applies for the LINEAR policy. Cursors are not preallocated exactly from the first request page, but Delta skips before.</p>
 <p>This allows to cover the case when further requests are actually for a previous pages.</p></td>
 </tr>
 <tr class="even">
-<td><pre><code>eager-cursor-allocation-linear-slice-heights</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-linear-slice-heights</code></pre></td>
 <td><p>Applies for the LINEAR policy. It is the number of clusters to generate and cursors to allocate</p>
 <p>For instance the value [4,2,1] means to create 3 clusters, the first with 4 cursors, the second with 2 and the last with 1.</p></td>
 </tr>
 <tr class="odd">
-<td><pre><code>eager-cursor-allocation-random-max-cursors</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-random-max-cursors</code></pre></td>
 <td>Applies for the RANDOM policy. It is the the maximum number of cursors to allocate for each combination of filter, sort_by and key parameters.</td>
 </tr>
 <tr class="even">
-<td><pre><code>eager-cursor-allocation-random-slice-min-width</code></pre></td>
+<td><pre class="black-code"><code>eager-cursor-allocation-random-slice-min-width</code></pre></td>
 <td>Applies for the RANDOM policy. It is the minimum width of a pool slice, i.e. the minimum distance between two cursors clusters.</td>
 </tr>
 </tbody>

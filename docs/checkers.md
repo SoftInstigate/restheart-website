@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Check Requests
+title: Checkers
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -42,8 +42,10 @@ to be applied to write requests.
 the following format:
 
 {: .black-code}
+```
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
+
 <div class="table-responsive">
 <table class="ts">
 <thead>
@@ -376,18 +378,44 @@ document to have following fields:
 
 {: .black-code}
 ```
-$ http -a a:a PUT 127.0.0.1:8080/test/users \
-checkers:='[{\
-    "name":"checkContent","args":[\
-        {"path":"$", "type":"object", "mandatoryFields": ["_id", "name", "password", "roles"], "optionalFields": ["bio"]},\
-        {"path":"$._id", "type":"string", "regex": "^\\u0022[A-Z0-9._%+-]+@[A-Z0-9.-]+\\u005C.[A-Z]{2,6}\\u0022$"},\
-        {"path":"$.password", "type":"string"},\
-        {"path":"$.roles", "type":"array"},\
-        {"path":"$.roles.[*]", "type":"string"},\
-        {"path":"$.name", "type":"string"},\
-        {"path":"$.bio", "type":"string", "nullable": true}
- ]\
-}]'
+PUT /test/users HTTP/1.1
+
+{ "checkers": [{
+    "name": "checkContent",
+    "args": [{
+            "path": "$",
+            "type": "object",
+            "mandatoryFields": ["_id", "name", "password", "roles"],
+            "optionalFields": ["bio"]
+        },
+        {
+            "path": "$._id",
+            "type": "string",
+            "regex": "^\\u0022[A-Z0-9._%+-]+@[A-Z0-9.-]+\\u005C.[A-Z]{2,6}\\u0022$"
+        },
+        {
+            "path": "$.password",
+            "type": "string"
+        },
+        {
+            "path": "$.roles",
+            "type": "array"
+        },
+        {
+            "path": "$.roles.[*]",
+            "type": "string"
+        },
+        {
+            "path": "$.name",
+            "type": "string"
+        },
+        {
+            "path": "$.bio",
+            "type": "string",
+            "nullable": true
+        }
+    ]
+}]}
 ```
 
 ## Limiting file size with checkContentSize
@@ -401,8 +429,13 @@ size from 64 to 32768 bytes:
 
 {: .black-code}
 ```
-$ http -a a:a PUT 127.0.0.1:8080/test/icons.files descr="icons" \
-checkers:='[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
+PUT /test/icons.files HTTP/1.1
+
+{ "descr":"icons",
+  "checkers": [{
+      "name":"checkContentSize",
+      "args":{"min": 64, "max": 32768}
+}]}
 ```
 
 ## Custom Checkers
@@ -477,7 +510,8 @@ The class of the custom checker must be added to the java
 classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
-  
+
+{: .black-code}
 ``` bash
 $ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml
 ```
