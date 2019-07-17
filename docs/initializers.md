@@ -15,6 +15,7 @@ It can be used to perform initialization code. For instance, it can programmatic
 
 The Initializer class can be specified in the configuration file
 
+{: .black-code}
 ``` yml
 ### Initializer
 
@@ -29,6 +30,7 @@ For an example look at [org.restheart.init.TestInitializer](https://github.com/S
 
 The class must implement the `Initializer` interface
 
+{: .black-code}
 ``` java
 package org.restheart.init;
 
@@ -40,6 +42,7 @@ public interface Initializer {
 
 ### Get the MongoClient
 
+{: .black-code}
 ``` java
 // get the MongoClient
 MongoClient client = MongoDBClientSingleton.getInstance().getClient();
@@ -51,6 +54,7 @@ MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 
 See [Request Transformers](/learn/request-transformers#global-transformers) for more information on `GlobalTransformer`
 
+{: .black-code}
 ``` java
 GlobalTranformer globalTranformer;
 
@@ -67,6 +71,7 @@ ResponseTransformerHandler.getGlobalTransformers().add(globalTranformer);
 
 See [Request Checkers](/learn/request-checkers#global-checkers) for more information on `GlobalChecker`.
 
+{: .black-code}
 ``` java
 // check the request
 GlobalChecker globalChecker;
@@ -78,6 +83,7 @@ CheckerHandler.getGlobalCheckers().add(globalChecker);
 
 > Global Security Predicates are applied to all requests.
 
+{: .black-code}
 ``` java
 // allow users with role "ADMIN" to GET /
 RequestContextPredicate securityPredicate = new RequestContextPredicate() {

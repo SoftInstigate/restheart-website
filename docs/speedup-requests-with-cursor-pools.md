@@ -40,16 +40,15 @@ RESTHeart allows to [query documents](/learn/query-documents) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 
-``` bash
-$ http -a a:a GET "127.0.0.1:8080/test/coll?count&page=3&pagesize=10"
+{: .black-code}
+```
+GET /test/coll?count&page=3&pagesize=10 HTTP/1.1
+
 HTTP/1.1 200 OK
-...
-{
-    "_embedded": [
-        { <DOC30> }, { <DOC31> }, ... { <DOC39> }
-    ],
-    ...
-}
+
+[
+    { <DOC30> }, { <DOC31> }, ... { <DOC39> }
+]
 ```
 
 Of course documents are returned as **paginated** result sets, i.e. each
@@ -187,13 +186,15 @@ default
 </div>
 Example
 
-``` bash
-$ http -a a:a GET "127.0.0.1:8080/test/coll?count&page=1000&pagesize=1000&eager=random"
+{: .black-code}
+```
+GET /test/coll?count&page=1000&pagesize=1000&eager=random HTTP/1.1
 ```
 
 ## Configuration
 
-``` plain
+{: .black-code}
+```
 ## eager db cursor preallocation policy
 # in big collections, reading a far page involves skipping the db cursor for many documents resulting in a performance bottleneck
 # for instance, with default pagesize of 100, a GET with page=50.000 involves 500.000 skips on the db cursor.

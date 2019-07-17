@@ -41,7 +41,8 @@ It requires to override the method handleRequest() with 2 arguments:
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 
-``` plain
+{: .black-code}
+``` java
 public abstract void handleRequest(HttpServerExchange exchange, RequestContext context) throws Exception;
 ```
 
@@ -60,7 +61,8 @@ logic handlers:
     a cache db or collection entry. Example POST
     /\_logic/ic?db=&lt;dbnam&gt;&coll=&lt;collname&gt;
 
-``` plain
+{: .black-code}
+```
 application-logic-mounts:
     - what: org.restheart.handlers.applicationlogic.PingHandler
       where: /ping
@@ -131,6 +133,7 @@ The constructor must have the arguments PipedHttpHandler next and
 Map args. In this way, the latter is set from the args property of the
 configuration file.
 
+{: .black-code}
 ``` java
 package org.restheart.handlers.applicationlogic;
 import org.restheart.handlers.PipedHttpHandler;
@@ -175,7 +178,8 @@ public class PingHandler extends ApplicationLogicHandler {
 
 Configuration:
 
-``` plain
+{: .black-code}
+```
 application-logic-mounts:
     - what: org.restheart.handlers.applicationlogic.PingHandler
       where: /ping
@@ -193,10 +197,11 @@ Given the */test/bands* collection, where each document is supposed to
 have the *albums* array property (listing the albums of the band), it
 returns the number of albums by band:
 
-``` bash
-$ http -a a:a GET 127.0.0.1:8080/_logic/aggregate
+{: .black-code}
+```
+GET /_logic/aggregate HTTP/1.1
+
 HTTP/1.1 200 OK
-...
 
  {
  "The Cure": 13,
@@ -217,6 +222,7 @@ _Notes_
     class **LoadingCache**: this way, the query is cached and gets
     actually re-executed only after 5 seconds.
 
+{: .black-code}
 ``` java
 package org.restheart.example;
 import com.mongodb.AggregationOutput;
@@ -332,7 +338,8 @@ public class AggregateHandler extends ApplicationLogicHandler {
 
 ## Configuration
 
-``` plain
+{: .black-code}
+```
 application-logic-mounts:
     - what: org.restheart.examples.AggregateHandler
       where: /aggregate

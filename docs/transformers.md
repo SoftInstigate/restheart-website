@@ -47,6 +47,7 @@ and its documents.
 *rts* is an array of *transformer* objects. 
 A *transformer* object has the following format:
 
+{: .black-code}
 ``` json
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
 ```
@@ -98,6 +99,7 @@ Mandatory
 
 Global Transformers can be defined programmatically instantiating `GlobalTransformer` objects:
 
+{: .black-code}
 ``` java
     /**
      *
@@ -126,6 +128,7 @@ Global Transformers can be defined programmatically instantiating `GlobalTransfo
 
 and adding them to the list `CheckerHandler.getGlobalCheckers()`
 
+{: .black-code}
 ``` java
 // a predicate that resolves GET /db/coll
 RequestContextPredicate predicate = new RequestContextPredicate() {
@@ -212,21 +215,30 @@ the REQUEST phase. Looking at the *args* argument we can figure out that
 the request json data will be transformed adding the *log* object with
 the username of authenticated user and its remote ip.
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/rtsexample rts:='[{"name":"addRequestProperties","phase":"REQUEST","scope":"CHILDREN","args":{"log": ["userName","remoteIp"]}}]'
+{: .black-code}
+```
+PUT /test/rtsexample HTTP/1.1
+
+{"rts":[{"name":"addRequestProperties","phase":"REQUEST","scope":"CHILDREN","args":{"log": ["userName","remoteIp"]}}]}
 ```
 
 If we now create a document, we can see the *log* property stored in the
 document because it was injected by RESTHeart in the request data.
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/rts/mydoc a:=1
+{: .black-code}
+```
+PUT /test/rts/mydoc 
+
+{"a":1}
+
 HTTP/1.1 201 Created
-...
- 
-$ http -a a:a GET 127.0.0.1:8080/test/rts/mydoc
+```
+
+{: .black-code}
+```
+GET /test/rts/mydoc
+
 HTTP/1.1 200 OK
-...
 {
     "_id": "mydoc", 
     "a": 1, 
@@ -256,8 +268,11 @@ Let's say that the user collection is called *userbase*; we can remove
 the password to be sent back to clients with the following
 filterProperties transformer.
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties", "phase":"RESPONSE", "scope":"CHILDREN", "args":["password"]}]'
+{: .black-code}
+```
+PUT /test/userbase 
+
+{"rts":[{"name":"filterProperties", "phase":"RESPONSE", "scope":"CHILDREN", "args":["password"]}]}
 ```
 
 ## Custom Transformers
@@ -278,6 +293,7 @@ It requires to implement the method transform() with 5 arguments:
     specified in the configuration file)
  
 
+{: .black-code}
 ``` java
     /**
      * 
@@ -303,6 +319,7 @@ configuration file.
 The following is the default configuration file section declaring the
 off-the-shelf transformers provided with RESTHeart plus custom one.
 
+{: .black-code}
 ``` yml
     # transformers group used by handlers:
     # org.restheart.handlers.metadata.RequestTransformerMetadataHandler and
@@ -336,13 +353,15 @@ classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] 
 
 For example, RESTHeart could be started with the following command:
 
-``` bash
+{: .black-code}
+```
 $ java -server -classpath restheart.jar:custom-transformer.jar org.restheart.Bootstrapper restheart.yml
 ```
 
 The following code, is an example transformer that adds to the content
 the property *timestamp*.
 
+{: .black-code}
 ``` java
 import org.restheart.metadata.transformers.Transformer;
 import io.undertow.server.HttpServerExchange;

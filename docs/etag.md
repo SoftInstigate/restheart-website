@@ -39,23 +39,24 @@ can note that any response includes the header ETag (other response
 headers are omitted for simplicity) and this is valid for any type of
 resource, included file resources.
 
+{: .black-code}
 ```bash
-PUT /test descr="a db for testing"
+PUT /test descr="a db for testing" HTTP/1.1
 HTTP/1.1 201 Created
 ...
 ETag: 55e84b95c2e66d1e0a8e46b2
 
-PUT /test/coll descr="a collection for testing"
+PUT /test/coll descr="a collection for testing" HTTP/1.1
 HTTP/1.1 201 Created
 ...
 ETag: 55e84be2c2e66d1e0a8e46b3
  
-PUT /test/coll/doc descr="a document for testing"
+PUT /test/coll/doc descr="a document for testing" HTTP/1.1
 HTTP/1.1 201 Created
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
  
-GET /test/coll/doc
+GET /test/coll/doc HTTP/1.1
 HTTP/1.1 200 OK
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
@@ -74,8 +75,11 @@ request.
 Let's try to update the document at URI /test/coll/doc forcing the ETag
 check with the `checkEtag` query parameter.
 
-```bash
-PUT 127.0.0.1:8080/test/coll/doc?checkEtag  { "descry": "a document for testing but modified" }
+{: .black-code}
+```
+PUT 127.0.0.1:8080/test/coll/doc?checkEtag HTTP/1.1 
+{ "descry": "a document for testing but modified" }
+
 HTTP/1.1 409 Conflict
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
@@ -88,8 +92,12 @@ Note that the _ETag_ header is present in the response.
 
 Let's try to pass now a wrong ETag via the _If-Match_ request header
 
-```bash
-PUT 127.0.0.1:8080/test/coll/doccheckEtag descr="a document for testing but modified" If-Match:wrong_etag
+{: .black-code}
+```
+PUT 127.0.0.1:8080/test/coll/doccheckEtag HTTP/1.1
+If-Match:wrong_etag 
+{ "desc":"a document for testing but modified"} 
+
 HTTP/1.1 412 Precondition Failed
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
@@ -102,8 +110,12 @@ Again the correct ETag header is present in the response.
 
 Let's try to pass now the correct ETag via the *If-Match* request header
 
-```bash
-PUT /test/coll/doc?checkEtag descr="a document for testing but modified" If-Match:55e84c0ac2e66d1e0a8e46b4
+{: .black-code}
+```
+PUT /test/coll/doc?checkEtag HTTP/1.1 
+If-Match:55e84c0ac2e66d1e0a8e46b4
+{"descr":"a document for testing but modified"}
+
 HTTP/1.1 200 OK
 ...
 ETag: 55e84f5ac2e66d1e0a8e46b8
@@ -123,14 +135,17 @@ request header. In case the resource state has not been modified
 Not Modified*, without passing back the data and thus saving bandwidth.
 This is especially useful for file resources.
 
-```bash
-$ http -a a:a GET 127.0.0.1:8080/test/coll/doc
+{: .black-code}
+```
+GET /test/coll/doc HTTP/1.1
 HTTP/1.1 200 OK
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
 ... (data follows)
  
-$ http -a a:a GET 127.0.0.1:8080/test/coll/doc If-None-Match:55e84c0ac2e66d1e0a8e46b4
+GET /test/coll/doc HTTP/1.1
+If-None-Match:55e84c0ac2e66d1e0a8e46b4
+
 HTTP/1.1 304 Not Modified
 ```
 
@@ -147,6 +162,7 @@ policy:
 
 It defines when the ETag check is mandatory.
 
+{: .black-code}
 ```yml
 etag-check-policy:
   db: REQUIRED_FOR_DELETE
@@ -162,7 +178,8 @@ For instance specifying the following collection metadata, the ETag will
 be checked for all write requests on the collection resources and its
 documents.
 
-```plain
+{: .black-code}
+```
 {
   "etagPolicy": "REQUIRED",
   "etagDocPolicy": "REQUIRED"
@@ -176,8 +193,10 @@ If the client wants to make sure that a write request only creates
 documents without updating them, it can send a random ETag; in case the
 resource does not exist, the ETag is not checked anyway.
 
-```plain
-PUT /db/coll/doc?checkEtag If-Match:x
+{: .black-code}
+```
+PUT /db/coll/doc?checkEtag HTTP/1.1
+If-Match:x
 ```
 
 This request leads either to CREATED if the document with id _doc_ was
@@ -194,6 +213,7 @@ It allows to create and edit notes.
 The following is a snippet the controller
 [notes.js ](https://github.com/SoftInstigate/restheart-notes-example/blob/master/app/scripts/controllers/notes.js)
 
+{: .black-code}
 ```js
 $scope.updateNote = function() {
   if (angular.isUndefined($scope.selected)) {

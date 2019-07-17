@@ -211,7 +211,8 @@ auth-mechanisms:
 
 *RESTHeart Authenticator* authenticates users defined in a MongoDB collection, seamlessly connecting restheart-security with restheart-core.
 
-> RESTHeart Authenticator is strong and battle tested and suggested for production use.
+{: .bs-callout.bs-callout-info }
+RESTHeart Authenticator is strong and battle tested and suggested for production use.
 
 The configuration allows:
 

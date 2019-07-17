@@ -28,11 +28,13 @@ It acts as a reverse proxy for HTTP resources, providing __Authentication__ and 
 
 **restheart-security** can also be used as a micro-gateway for **Identity and Access Management**  in any HTTP-based micro-services architecture. 
 
-> Think about restheart-security as the "brick" that you put in front of your API and micro-services to protect them. 
+{: .bs-callout.bs-callout-info }
+Think about restheart-security as the "brick" that you put in front of your API and micro-services to protect them. 
 
 **restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins. 
 
-> Building a plugin is as easy as implementing a simple interface and edit a configuration file. Plugins also allow to quickly implement and deploy secure Web Services.
+{: .bs-callout.bs-callout-info }
+Building a plugin is as easy as implementing a simple interface and edit a configuration file. Plugins also allow to quickly implement and deploy secure Web Services.
 
 ## Features
 
@@ -75,6 +77,7 @@ As an example, we are going to securely expose the resources of a RESTHeart serv
 
 The following options set a HTTPS listener bound to the public ip of `domain.io`.
 
+{: .black-code}
 ```yml
 https-listener: true
 https-host: domain.io
@@ -87,6 +90,7 @@ The two hosts in private network `10.0.1.0/24` are:
 
 We proxy them as follows:
 
+{: .black-code}
 ```yml
 proxies:
     - location: /api
@@ -97,11 +101,31 @@ proxies:
 
 As a result, the URLs `https://domain.io` and `https://domain.io/api` are proxied to the resources specified by the `proxy-pass` URLs. All requests from the external network pass through **restheart-security** that enforces authentication and authorization.
 
-``` bash
-GET https://domain.io/index.html
-HTTP/1.1 401 Unauthorized
+{% include code-header.html type="Request" %}
 
-GET https://domain.io/api
+{: .black-code}
+```
+GET /index.html HTTP/1.1
+```
+
+{% include code-header.html type="Response" %}
+
+{: .black-code}
+```
+HTTP/1.1 401 Unauthorized
+```
+
+{% include code-header.html type="Request" %}
+
+{: .black-code}
+```
+GET https://domain.io/api HTTP/1.1
+```
+
+{% include code-header.html type="Response" %}
+
+{: .black-code}
+```
 HTTP/1.1 401 Unauthorized
 ```
 
@@ -109,6 +133,7 @@ With the default configuration **restheart-security** uses the Basic Authenticat
 
 #### users.yml
 
+{: .black-code}
 ```yml
 users:
     - userid: user
@@ -118,6 +143,7 @@ users:
 
 ### acl.yml
 
+{: .black-code}
 ``` yml
 permissions:
     # Users with role 'web' can GET web resources 
@@ -129,77 +155,55 @@ permissions:
       predicate: path-prefix[path=/api] and (method[GET] or method[POST])
 ```
 
-``` bash
-GET https://domain.io/index.html Authorization:"Basic dXNlcjpzZWNyZXQ="
-HTTP/1.1 200 OK
-...
 
-GET https://domain.io/api Authorization:"Basic dXNlcjpzZWNyZXQ="
-HTTP/1.1 200 OK
-...
-```
-
-## Setup
-
-You need __Java 11__ and must download the latest release from [releases page](https://github.com/SoftInstigate/restheart-security/releases).
+{% include code-header.html type="Request" %}
 
 {: .black-code}
 ```
-$ tar -xzf restheart-security-XX.tar.gz
-$ cd restheart-security
-$ java -jar restheart-security.jar etc/restheart-security.yml
+GET /index.html HTTP/1.1
+Authorization: Basic dXNlcjpzZWNyZXQ=
 ```
 
-### Building from source
-
-You need Git, Java 11 and Maven.
+{% include code-header.html type="Response" %}
 
 {: .black-code}
 ```
-$ git clone git@github.com:SoftInstigate/restheart-security.git
-$ cd restheart-security
-$ mvn package
-$ java -jar target/restheart-security.jar etc/restheart-security.yml
+HTTP/1.1 200 OK
+...
 ```
 
-### Maven artifacts
+{% include code-header.html type="Request" %}
 
-You can find pre-built Maven artifacts on [Jitpack](https://jitpack.io/#SoftInstigate/restheart-security). That allows to add RESTHeart Security as a dependency on you own POM and build new plugins.
+{: .black-code}
+```
+GET /api HTTP/1.1
+Authorization: Basic dXNlcjpzZWNyZXQ=
+```
 
+{% include code-header.html type="Response" %}
 
-### With Docker
-
-{:.alert.alert-warning}
-work in progress
-
-## Configuration
-
-**restheart-security** is configured via the yml configuration file. See the [default configuration file](https://github.com/SoftInstigate/restheart-security/blob/master/etc/restheart-security.yml) for inline help.
+{: .black-code}
+```
+HTTP/1.1 200 OK
+...
+```
 
 ## Tutorial
 
-To follow this tutorial you need [httpie](https://httpie.org), a modern command line HTTP client made in Python which is easy to use and produces a colorized and indented output.
+To follow this tutorial you need <a href="https://httpie.org" target="_blank">httpie</a>, a modern command line HTTP client made in Python which is easy to use and produces a colorized and indented output.
 
-Run **restheart-security** with the [default configuration file](etc/restheart-security.yml). It is bound to port `8080` and proxies two example resources:
-
-- https://restheart.org web site at URI `/restheart`
-- the service `/echo` implemented by **restheart-security** itself and bound to URI `/secho`. It just echoes back the request (URL, query parameters, body and headers).
-
-Below the mentioned configuration's fragment:
+Add to **restheart-platform-security.yml** the following proxy:
 
 {: .black-code}
 ``` yml
 proxies:
     - location: /secho
-      proxy-pass: 
-        - http://127.0.0.1:8080/echo
+      proxy-pass:  
         - http://localhost:8080/echo
-      connections-per-thread: 20
-    - location: /restheart
-      proxy-pass: https://restheart.org
 ```
 
-Let's fist invoke the `/echo` service directly. This is defined in the [configuration file](etc/restheart-security.yml) as follows:
+{: .bs-callout.bs-callout-info}
+the service `/echo` just echoes back the request (URL, query parameters, body and headers). It is defined in the configuration file as follows:
 
 {: .black-code}
 ``` yml
@@ -209,6 +213,7 @@ services:
       secured: false
 ```
 
+{: .bs-callout.bs-callout-info}
 Note that `/echo` is not secured and can be invoked without restrictions.
 
 {: .black-code}

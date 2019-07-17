@@ -32,14 +32,16 @@ collection.
 
 To list the collection indexes use the following request:
 
-``` bash
- GET /db/coll/_indexes
+{: .black-code}
+```
+GET /db/coll/_indexes HTTP/1.1
 ```
 
 ### Example
 
-``` bash
-GET 127.0.0.1:8080/db/coll/_indexes 
+{: .black-code}
+```
+GET 127.0.0.1:8080/db/coll/_indexes HTTP/1.1
 
 HTTP/1.1 200 OK
 ...
@@ -80,8 +82,11 @@ HTTP/1.1 200 OK
 
 To create an index use the following request:
 
-``` bash
-PUT /db/coll/_indexes/<index_id> { "keys":  <keys>, "ops": <options> }
+{: .black-code}
+```
+PUT /db/coll/_indexes/<index_id> HTTP/1.1 
+
+{ "keys":  <keys>, "ops": <options> }
 ```
 
 See also
@@ -91,16 +96,23 @@ Indexes in MongoDB documentation
 
 ### Example - create an unique, sparse index on property 'name'
 
-``` bash
-PUT /db/coll/_indexes/index1 { "keys": {"name": 1}, "ops": {"unique": true, "sparse": true } }
+{: .black-code}
+```
+PUT /db/coll/_indexes/index1 HTTP/1.1
+{ "keys": {"name": 1}, "ops": {"unique": true, "sparse": true } }
+
 HTTP/1.1 201 Created
 ...
 ```
 
 ### Example - create a text index on property 'title'
 
-``` bash
-PUT /db/coll/_indexes/text { "keys": { "title": "text" } }
+{: .black-code}
+```
+PUT /db/coll/_indexes/text HTTP/1.1
+{ "keys": { "title": "text" } }
+
+
 HTTP/1.1 201 Created
 ...
 ```
@@ -109,8 +121,9 @@ HTTP/1.1 201 Created
 
 To delete an index use the following request:
 
-``` bash
-DELETE /db/coll/_indexes/<index_id>
+{: .black-code}
+```
+DELETE /db/coll/_indexes/<index_id> HTTP/1.1
 ```
 
 ## Notes
@@ -123,7 +136,8 @@ An example of invalid options is specifying the attribute *unique* on a
 property that is not actually unique; in this case the response will
 be 406:
 
-``` bash
+{: .black-code}
+```
 HTTP/1.1 406 Not Acceptable
  
 {
@@ -144,17 +158,21 @@ HTTP/1.1 406 Not Acceptable
 
 To update an index, it must be **deleted** and **recreated**:
 
-``` bash
-DELETE /db/coll/_indexes/index
+{: .black-code}
+```
+DELETE /db/coll/_indexes/index HTTP/1.1
 HTTP/1.1 204 No Content
 
-PUT /db/coll/_indexes/index { ... }
+PUT /db/coll/_indexes/index HTTP/1.1 
+{ ... }
+
 HTTP/1.1 201 Created
 ```
 
 Trying to update an existing index returns 406 Not Acceptable:
 
-``` bash
+{: .black-code}
+```
 HTTP/1.1 406 Not Acceptable
  
 {

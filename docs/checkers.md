@@ -41,7 +41,7 @@ to be applied to write requests.
 *checkers* is an array of *`checker`* objects. A *checker* object has
 the following format:
 
-``` json
+{: .black-code}
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
 <div class="table-responsive">
@@ -84,6 +84,7 @@ Mandatory
 
 Global Checkers can be defined programmatically instantiating `GlobalChecker` objects:
 
+{: .black-code}
 ``` java
     /**
      * 
@@ -103,6 +104,7 @@ public GlobalChecker(Checker checker,
 
 and adding them to the list `CheckerHandler.getGlobalCheckers()`
 
+{: .black-code}
 ``` java
 // a predicate that resolves POST /db/coll and PUT /db/coll/docid requests
 RequestContextPredicate predicate = new RequestContextPredicate() {
@@ -153,14 +155,16 @@ enforce a schema to the documents of a collection.
 The schema definition is passed via the checker metadata args property
 as an array of conditions. A condition has the following format
 
-``` json
+{: .black-code}
+```
 { "path": <json_path>, "type": <property_type>, "regex": <regex>, "nullable": boolean, "optional": boolean }
 ```
 
 If the type is 'object' the properties *mandatoryFields* and
 *optionalFields* apply as well:
 
-``` json
+{: .black-code}
+```
 { "path": <json_path>, "type": "object", "mandatoryFields": [ <field_names> ], "optionalFields": [ <field_names>] }
 ```
 <div class="table-responsive">
@@ -259,7 +263,8 @@ array.
 
 For example, given the following document:
 
-``` json
+{: .black-code}
+```
 {
     "_id": {
         "$oid": "55f6ccf4c2e6be404fdef3dd"
@@ -368,7 +373,9 @@ document to have following fields:
 </tbody>
 </table>
 </div>
-``` bash
+
+{: .black-code}
+```
 $ http -a a:a PUT 127.0.0.1:8080/test/users \
 checkers:='[{\
     "name":"checkContent","args":[\
@@ -392,7 +399,8 @@ limit the maximum size of the uploaded file.
 The following example, creates a file bucket resource, limiting the file
 size from 64 to 32768 bytes:
 
-``` bash
+{: .black-code}
+```
 $ http -a a:a PUT 127.0.0.1:8080/test/icons.files descr="icons" \
 checkers:='[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
 ```
@@ -414,7 +422,7 @@ It only requires to implement the method check() with 3 arguments:
     specified in the configuration file)
 
   
-
+{: .black-code}
 ``` java
     boolean check(
             HttpServerExchange exchange,
@@ -451,7 +459,8 @@ The following is the default configuration file section declaring the
 two off-the-shelf checkers provided with RESTHeart (checkContent and
 checkContentSize) and a third, custom one.
 
-``` yml
+{: .black-code}
+```
 metadata-named-singletons:
     - group: checkers
       interface: org.restheart.hal.metadata.singletons.Checker
@@ -476,6 +485,7 @@ $ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstr
 The following code, is an example checker that checks if the
 *number* property is an integer between 0 and 10.
 
+{: .black-code}
 ``` java
 package com.whatever;
 

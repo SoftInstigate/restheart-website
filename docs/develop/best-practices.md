@@ -30,6 +30,7 @@ The helper classes `ByteArrayRequest`, `JsonRequest`, `ByteArrayResponse` and `J
 
 For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`  
 
+{: .black-code}
 ```java
 HttpServerExchange exchange = ...;
 
@@ -44,6 +45,7 @@ if (request.isContentTypeJson()) {
 
 You just set the status code and the response content using helper classes `ByteArrayResponse` or `JsonResponse`. You don't need to send the response explicitly using low level `HttpServerExchange` methods, since the `ResponseSenderHandler` is in the processing chain and will do it for you.
 
+{: .black-code}
 ```java
 @Override
 public void handleRequest(HttpServerExchange exchange) throws Exception {

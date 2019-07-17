@@ -39,6 +39,7 @@ be applied to the requests involving the collection and its documents.
 
 `hooks` is an array of objects with the following format:
 
+{: .black-code}
 ``` json
 { "name": <hook_name>, "args": <arguments> }
 ```
@@ -83,6 +84,7 @@ classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] 
 For example, if the hook is packaged in the *myhook.jar* file, start
 RESTHeart with the following command:
 
+{: .black-code}
 ``` bash
 $ java -server -classpath restheart.jar:myhook.jar org.restheart.Bootstrapper restheart.yml
 ```
@@ -92,6 +94,7 @@ interface [org.restheart.metadata.hooks.Hook](https://github.com/SoftInstigate/
 
 To add a dependency on RESTHeart using Maven, use the following:
 
+{: .black-code}
 ``` xml
 <dependency>
     <groupId>org.restheart</groupId>
@@ -102,7 +105,7 @@ To add a dependency on RESTHeart using Maven, use the following:
 
 The Hook interface requires to implement the following interface:
 
-
+{: .black-code}
 ``` java
 public interface Hook {
     /**
@@ -153,6 +156,7 @@ For instance, the following implementation returns `true` if the request
 actually *created* a document (either POSTing the collection or PUTing
 the document):
 
+{: .black-code}
 ``` java
 @Override
 public boolean doesSupportRequests(RequestContext rc) {
@@ -217,6 +221,7 @@ hook](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/r
 just logs resource status before and after request db operation
 execution).
 
+{: .black-code}
 ``` yml
 metadata-named-singletons:
     - group: hooks

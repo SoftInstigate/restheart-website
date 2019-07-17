@@ -40,8 +40,10 @@ format. HAL builds up on 2 simple concepts: **Resources** and **Links**
 
 Let's see the following simple example, a GET on a document resource:
 
-``` bash
-$ http -a a:a GET 127.0.0.1:8080/test/coll/doc
+{: .black-code}
+```
+$ GET 127.0.0.1:8080/test/coll/doc HTTP/1.1
+
 HTTP/1.1 200 OK
 ...
 {
@@ -69,7 +71,8 @@ HAL `_link` property
 
 `rels` is an array of `rel` objects having the following format:
 
-``` json
+{: .black-code}
+```
 {
   "real": "<relid>",
   "type": "<type>",
@@ -79,6 +82,7 @@ HAL `_link` property
   "ref-field": "<reffieldname>"
 }
 ```
+
 <div class="table-responsive">
 <table class="ts">
 <thead>
@@ -142,44 +146,63 @@ Let's create a collection, declaring a **many-to-one** relationship
 called **`parent`**, so that documents can refer a *parent document* in
 the collection itself.
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/parentcoll rels:='[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]'
-HTTP/1.1 201 CREATED
-...
+{: .black-code}
 ```
+PUT /test/parentcoll HTTP/1.1
 
-  
+{"rels":[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]}
+
+HTTP/1.1 201 CREATED
+```
 
 Let's now create few documents, specifying the `parent` property:
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/parentcoll/root parent=root
+{: .black-code}
+```
+PUT /test/parentcoll/root HTTP/1.1
+
+{"parent":"root"}
+
 HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/parentcoll/1 parent=root
-HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/parentcoll/1.1 parent=1
-HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/parentcoll/1.2 parent=1
-HTTP/1.1 201 CREATED
-...
 ```
 
-  
+{: .black-code}
+```
+PUT /test/parentcoll/1 HTTP/1.1
+
+{"parent":"root"}
+
+HTTP/1.1 201 CREATED
+```
+
+{: .black-code}
+```
+PUT /test/parentcoll/1.1 HTTP/1.1
+
+{"parent":"1"}
+
+HTTP/1.1 201 CREATED
+```
+
+{: .black-code}
+```
+PUT 127.0.0.1:8080/test/parentcoll/1.2 HTTP/1.1
+
+{"parent":"1"}
+
+HTTP/1.1 201 CREATED
+```
 
 If we now get the document `/test/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
 document `/test/parentcoll/1`
 
-``` bash
-$ http -a a:a GET 127.0.0.1:8080/test/parentcoll/1.2
+
+{: .black-code}
+```
+GET /test/parentcoll/1.2 HTTP/1.1
+
 HTTP/1.1 200 OK
-...
 {
     "_etag": {
         "$oid": "55f15b43c2e65448b566d18b"
@@ -201,59 +224,75 @@ HTTP/1.1 200 OK
 In this example, we create two collections: `bands` and `albums`; of
 course, each band has a **1:N** relationship to albums.
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/bands rels:='[{"rel":"albums","type":"ONE_TO_MANY","role":"OWNING","target-coll":"albums","ref-field":"albums"}]' descr="music bands"
+{: .black-code}
+```
+PUT /test/bands HTTP/1.1
+
+{"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"OWNING","target-coll":"albums","ref-field":"albums"}], "descr":"music bands"}
+
 HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albums descr="albums published by music bands"
-HTTP/1.1 201 CREATED
-...
 ```
 
-  
+{: .black-code}
+```
+PUT 127.0.0.1:8080/test/albums HTTP/1.1
+
+{"descr":"albums published by music bands"}
+
+HTTP/1.1 201 CREATED
+```
 
 Let's now create few albums:
 
-``` bash
-$ http -a a:a PUT 127.0.0.1:8080/test/albums/Disintegration year:=1989
+{: .black-code}
+```
+PUT /test/albums/Disintegration HTTP/1.1 
+
+{"year":1989}
+
 HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albums/Wish year:=1992
-HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albums/Bloodflowers year:=2000
-HTTP/1.1 201 CREATED
-...
 ```
 
-  
+{: .black-code}
+```
+PUT /test/albums/Wish HTTP/1.1
+
+{"year":1992}
+HTTP/1.1 201 CREATED
+```
+
+{: .black-code}
+```
+PUT /test/albums/Bloodflowers HTTP/1.1 
+
+{"year":2000}
+
+HTTP/1.1 201 CREATED
+```
 
 Now we create the band referring these albums:
 
-``` plain
-$ http -a a:a PUT "127.0.0.1:8080/test/bands/The Cure" albums:='["Disintegration","Wish","Bloodflowers"]'
+{: .black-code}
+```
+PUT /test/bands/The%20Cure HTTP/1.1 
+
+{"albums":["Disintegration","Wish","Bloodflowers"]}
+
 HTTP/1.1 201 CREATED
-...
 ```
 
-  
+If we now get The Cure document, we can notice the `albums` link: `/test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"`
 
-If we now get The Cure document, we can notice the `albums` link:
-
-    /test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
-
-  
 
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
 
-``` bash
-$ http -a a:a GET "127.0.0.1:8080/test/bands/The Cure"
+{: .black-code}
+```
+$ GET /test/bands/The%20Cure HTTP/1.1
+
 HTTP/1.1 200 OK
-...
+{
     "_embedded": {}, 
     "_etag": {
         "$oid": "55f16029c2e65448b566d191"
@@ -278,9 +317,12 @@ HTTP/1.1 200 OK
 ```
 
 If we want to get the referenced document with httpie (or curl) we need
-to issue the following command:
+to issue the following request:
 
-`http -a a:a GET 127.0.0.1:8080/test/albums?filter="{'_id':{'\$in':['Disintegration','Wish','Bloodflowers']}}"`
+{: .black-code}
+```
+GET /test/albums?filter="{'_id':{'\$in':['Disintegration','Wish','Bloodflowers']}}"` HTTP/1.1
+```
 
 Note the "\\" char prefixing the operator `$in`. This prevents the
 command line interpreter replacing `$in` with an (not existing)
@@ -292,54 +334,72 @@ We'll resemble the previous example, but using an inverse relationship,
 i.e. the filed storing the relationship will be stored in the album
 documents.
 
-``` plain
-$ http -a a:a PUT 127.0.0.1:8080/test/bandsi rels:='[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]' descr="music bands"
+{: .black-code}
+```
+PUT /test/bandsi HTTP/1.1 
+
+{"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]', "descr":"music bands"}
+
 HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albumsi descr="albums published by music bands"
-HTTP/1.1 201 CREATED
-...
 ```
 
-  
+{: .black-code}
+``` 
+PUT /test/albumsi HTTP/1.1
+{"descr":"albums published by music bands"}
+
+HTTP/1.1 201 CREATED
+```
 
 Let's now create few albums:
 
-``` plain
-$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Disintegration year:=1989 band="The Cure"
+{: .black-code}
+```
+PUT /test/albumsi/Disintegration HTTP/1.1
+
+{"year":1989, "band":"The Cure"}
+
 HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Wish year:=1992 band="The Cure"
-HTTP/1.1 201 CREATED
-...
- 
-$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Bloodflowers year:=2000 band="The Cure"
-HTTP/1.1 201 CREATED
-...
 ```
 
-  
+{: .black-code}
+``` 
+PUT /test/albumsi/Wish HTTP/1.1
+
+{"year":1992, "band":"The Cure"}
+HTTP/1.1 201 CREATED
+```
+
+{: .black-code}
+```
+PUT /test/albumsi/Bloodflowers HTTP/1.1
+
+{"year":2000, "band":"The Cure"}
+
+HTTP/1.1 201 CREATED
+```
 
 Now we create the band referred by these albums:
 
-``` bash
-$ http -a a:a PUT "127.0.0.1:8080/test/bandsi/The Cure" descr="The Cure are an English rock band formed in Crawley, West Sussex, in 1976"
-HTTP/1.1 201 CREATED
-...
+{: .black-code}
 ```
+PUT /test/bandsi/The%20Cure HTTP/1.1
 
+{"descr":"The Cure are an English rock band formed in Crawley, West Sussex, in 1976"}
+
+HTTP/1.1 201 CREATED
+```
   
 
-If we now get "The Cure" document, we can notice the `albums` link:
+If we now get "The Cure" document, we can notice the `albums` link: `/test/albumsi?filter={'band':'The Cure'}`
 
-    /test/albumsi?filter={'band':'The Cure'}
+{: .black-code}
+```
+GET /test/bandsi/The%20Cure
 
-``` bash
-$ http -a a:a GET "127.0.0.1:8080/test/bandsi/The Cure"
 HTTP/1.1 200 OK
-...
+
+{
     {
     "_etag": {
         "$oid": "55f19409b8e449c1e1304ec5"

@@ -27,10 +27,8 @@ title: Aggregations
 RESTHeart manages aggregation operations: both *aggregation pipelines*
 and *map reduce functions *are supported.
 
-> "Aggregations operations process data records and return computed
-> results. Aggregation operations group values from multiple documents
-> together, and can perform a variety of operations on the grouped data
-> to return a single result."
+{: .bs-callout.bs-callout-info}
+"Aggregations operations process data records and return computed results. Aggregation operations group values from multiple documents together, and can perform a variety of operations on the grouped data to return a single result."
 
 In both cases only *inline* output type is supported, i.e. no result is
 written to the DB server.    
@@ -55,6 +53,7 @@ operations but only those defined (and tested) by the developers.
 
 **pipeline object format**
 
+{: .black-code}
 ``` json
 {
     "type":"pipeline",
@@ -119,6 +118,7 @@ not needed anymore.
 
 **mapReduce object format**
 
+{: .black-code}
 ``` json
 {
     "type":"mapReduce",
@@ -177,8 +177,11 @@ operations:
 * map reduce operation *test\_mr* bound at
     `/db/ao_test/_aggrs/test_mr`
 
-``` bash
-PUT /db/ao_test { "aggrs" : [ 
+{: .black-code}
+```
+PUT /db/ao_test HTTP/1.1 
+
+{ "aggrs" : [ 
       { "stages" : [ { "_$match" : { "name" : { "_$var" : "n" } } },
             { "_$group" : { "_id" : "$name",
                   "avg_age" : { "_$avg" : "$age" }
@@ -199,8 +202,9 @@ PUT /db/ao_test { "aggrs" : [ 
 Note between the `_links` collection property the URIs of the
 aggregation operations.
 
-``` bash
-GET /db/ao_test
+{: .black-code}
+```
+GET /db/ao_test HTTP/1.1
 
 HTTP/1.1 200 OK
 ...
@@ -227,8 +231,9 @@ For example, the previous example aggregations both use a variable named
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
+{: .black-code}
 ``` bash
-GET /test/ao_test/_aggrs/test_ap
+GET /test/ao_test/_aggrs/test_ap HTTP/1.1
 
 HTTP/1.1 400 Bad Request
 ...
@@ -245,8 +250,9 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-``` bash
-GET /test/ao_test/_aggrs/test_ap?avars={"n":1}
+{: .black-code}
+```
+GET /test/ao_test/_aggrs/test_ap?avars={"n":1} HTTP/1.1
 
 HTTP/1.1 200 OK
 ...
@@ -257,6 +263,7 @@ HTTP/1.1 200 OK
 Variables can be used in aggregation pipeline stages and map reduce
 query as follows:
 
+{: .black-code}
 ``` js
 { "$var": "<var_name>" }
 ```
@@ -265,6 +272,7 @@ In case of map reduce operation previous example, the variable was used
 to filter the documents to have the *name* property matching the
 variable *n:*
 
+{: .black-code}
 ``` js
 {
   "query": { "name": { "$var": "n" } },
@@ -277,8 +285,11 @@ variable *n:*
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
-``` bash
-PUT /db/ao_test { "aggrs" : [
+{: .black-code}
+```
+PUT /db/ao_test HTTP/1.1
+
+{ "aggrs" : [
      {  "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
         "reduce" : "function(key, values) { return Array.avg(values) } }",
         "type" : "mapReduce",
@@ -293,6 +304,7 @@ HTTP/1.1 201 Created
 Note the *map* function; `JSON.parse($vars)` allows to access the
 variables passed with the query parameter `avars`
 
+{: .black-code}
 ``` js
 function() { 
  var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
@@ -307,7 +319,8 @@ This behaviour is required to protect data from undesiderable malicious query in
 
 Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
 
-```properties
+{: .black-code}
+```
 ### Security
 
 # Check if aggregation variables use operators. allowing operators in aggregation variables 

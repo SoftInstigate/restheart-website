@@ -29,14 +29,14 @@ a standard method for an HTTP user agent to provide a *username* and
 With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
 
 {: .black-code}
-``` text
+```
 $ http -a userid:password GET 127.0.0.1:8080/
 ```
 
 With **curl**, use the –user options
 
 {: .black-code}
-``` text
+```
 $ curl -i --user userid:password -X GET 127.0.0.1:8080/
 ```
 

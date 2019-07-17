@@ -15,8 +15,9 @@ When a shared collection has shard key different than _id or a compound shard ke
 
 Example: if the shard key is `X` 
 
-``` plain
-GET /db/coll/5ac9f95563445900062144aa?shardkey={"X":1}
+{: .black-code}
+```
+GET /db/coll/5ac9f95563445900062144aa?shardkey={"X":1} HTTP/1.1
 ```
 
 </div>
