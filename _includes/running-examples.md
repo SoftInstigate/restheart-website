@@ -1,6 +1,6 @@
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on the localhost with the default configuration: notably the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
+The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
 
 To create the *restheart* db, run the following:
 

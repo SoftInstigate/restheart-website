@@ -23,38 +23,52 @@ The CSV Uploader Service allows importing data from a CSV file into a collection
 The service is bound to `/csv` by default.
 
 {: .bs-callout.bs-callout-info}
-By uploading a csv file you create or update one document per each row of file. 
+By uploading a csv file you create or update one document per each row of the file. 
 
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on `localhost` with default configuration: it means, a database named `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
-
-{: .bs-callout.bs-callout-info}
-The examples in this page use <a href="https://httpie.org" target= "_blank">httpie</a>
+The following examples assume RESTHeart Platform running on `localhost` with the default configuration: the database `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
 
 To create the `restheart` db, run the following:
 
-```bash
-http -a admin:secret PUT http://localhost:8080/
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
+%}
+
+{: .black-code}
+``` http
+PUT / HTTP/1.1
 ```
 
 Let's create a `poi` collection, run the following:
 
-```bash
-http -a admin:secret PUT http://localhost:8080/poi
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
+%}
+
+{: .black-code }
+``` http
+PUT /poi HTTP/1.1
 ```
   
 ## Upload the CSV file
 
 We are going to use the following example file `POI.csv`:
 
+{: .black-code }
 ```
 id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 ```
+{: .bs-callout.bs-callout-info}
+The examples in this page use the command line HTTP client <a href="https://httpie.org" target= "_blank">httpie</a> 
+
 To import the `POI.csv` into the collection `poi`, run the following:
 
+{: .black-code }
 ```bash
 $ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" < POI.csv
 ```
@@ -64,9 +78,22 @@ The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service
 
 Now the `/poi` collection contains the documents:
 
-```bash
-> GET /poi
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
+%}
 
+{: .black-code }
+```
+GET /poi HTTP/1.1
+```
+
+{% include code-header.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 [{
     "_id": 2,
     "city": "Milan",
@@ -111,9 +138,23 @@ The optional parameters are:
 If the `id` parameter is not specified, documents are created with a new `ObjectId`
 
 Example of uploaded file without specifying the `id` :
-``` bash
-> GET /poi 
 
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
+%}
+
+{: .black-code }
+```
+GET /poi HTTP/1.1
+```
+
+{% include code-header.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 [{
     "_id": {
         "$oid": "5d24a114bb77e333b6dc9c88"
@@ -150,41 +191,45 @@ If the CSV lines are changed or new ones are added, you can update your collecti
 
 To update your collection use the `update` parameter: new lines in the CSV will *NOT* be added. Run the following:
 
-```bash
-http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" < POI.csv
+{: .black-code }
+```
+$ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" < POI.csv
 ```
 
 To add new CSV lines use the `upsert` parameter. Run the following
 
-```bash
-http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" < POI.csv
+{: .black-code }
+```
+$ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "upsert"=="true" < POI.csv
 ```
 
 To add the new CSV lines and update your collection use the `update` and the `upsert` together:
 
-```bash
-http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
+{: .black-code }
+```
+$ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" "update"=="true" "upsert"=="true" < POI.csv
 ```
 
 ### Apply transformer
 
 To apply a transformer use the `transformer` parameter:
 
-```bash
-http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" update=="true" transformer=="GeoJSONTransformer" < POI.csv
+{: .black-code }
+```
+$ http -a admin:secret POST http://localhost:8080/csv Content-Type:text/csv db=="restheart" coll=="poi" id=="0" update=="true" transformer=="GeoJSONTransformer" < POI.csv
 ```
 
 The `GeoJSONTransformer` is the name of a registered custom transformer we created that transform the latitude and longitude coordinates in a <a href="https://geojson.org/" target="_blank">GeoJson</a> object, and then add the object to the document, this is the code:
 
+{: .black-code }
 ```java
 @RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
 public class GeoJSONTransformer implements Transformer {
 
     @Override
-    public void transform(final HttpServerExchange exchange, final RequestContext context, BsonValue contentToTransform,
-            final BsonValue args) {
-        BsonDocument resp = null;
-        resp = contentToTransform.asDocument();
+    public void transform(final HttpServerExchange exchange, final RequestContext context, BsonValue contentToTransform, final BsonValue args) {
+        var body = contentToTransform.asDocument();
+        
         // create FeatureCollection
         BsonDocument bson = new BsonDocument();
         bson.put("type", new BsonString("FeatureCollection"));
@@ -195,8 +240,8 @@ public class GeoJSONTransformer implements Transformer {
         
         // get Coordinates
         BsonArray coordinates = new BsonArray();
-        coordinates.add(resp.get("lon"));
-        coordinates.add(resp.get("lat"));
+        coordinates.add(body.get("lon"));
+        coordinates.add(body.get("lat"));
 
         BsonDocument poi = new BsonDocument();
         
@@ -214,17 +259,29 @@ public class GeoJSONTransformer implements Transformer {
         bson.put("features", features);
 
         // Add the object to the document
-        resp.append("GEOJson", bson);
-
+        body.append("GEOJson", bson);
     }
-
 }
 ```
 
 Now the documents have the new property `GEOJson` with the GeoJSON object:
 
-```bash
-> GET /poi
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
+%}
+
+{: .black-code }
+```
+GET /poi HTTP/1.1
+```
+
+{% include code-header.html 
+    type="Response" 
+%}
+
+{: .black-code }
+```
 [
     {
         "GEOJson": {
