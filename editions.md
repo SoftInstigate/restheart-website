@@ -39,10 +39,10 @@ title: Editions
     <tbody>
       <tr>
         <td></td>
-        <td colspan="4">REST API for admin operations (manage databases, collections, indexes)</td>
+        <td colspan="4">REST API for admin operations (manage <a href="/docs/mgmt/dbs-collections/" class="text-dark">databases, collections</a>, <a href="/docs/mgmt/indexes/" class="text-dark">indexes</a>, <a href="/docs/mgmt/relationships/" class="text-dark">relationships</a>)</td>
       </tr>
       <tr class="compare-row">
-        <td>REST API for admin operations (manage databases, collections, indexes)</td>
+        <td>REST API for admin operations (manage <a href="/docs/mgmt/dbs-collections/" class="text-dark">databases, collections</a>, <a href="/docs/mgmt/indexes/" class="text-dark">indexes</a>, <a href="/docs/mgmt/relationships/" class="text-dark">relationships</a>)</td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -50,10 +50,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">REST API for Create Read Update Delete</td>
+        <td colspan="4"><a href="/docs/read-docs/" class="text-dark">REST API for Create Read Update Delete</a></td>
       </tr>
       <tr>
-        <td>REST API for Create Read Update Delete</td>
+        <td><a href="/docs/read-docs/" class="text-dark">REST API for Create Read Update Delete</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -61,10 +61,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Bulk write operations</td>
+        <td colspan="4"><a href="/docs/write-docs/#bulk-write-requests" class="text-dark">Bulk write operations</a></td>
       </tr>
       <tr class="compare-row">
-        <td>Bulk write operations</td>
+        <td><a href="/docs/write-docs/#bulk-write-requests" class="text-dark">Bulk write operations</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -72,10 +72,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Aggregations and Map-Reduce operations</td>
+        <td colspan="4"><a href="/docs/aggregations/" class="text-dark">Aggregations and Map-Reduce operations</a></td>
       </tr>
       <tr>
-        <td>Aggregations and Map-Reduce operations</td>
+        <td><a href="/docs/aggregations/" class="text-dark">Aggregations and Map-Reduce operations</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -83,10 +83,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Plugins (Transformers, Checkers and Hooks)</td>
+        <td colspan="4">Plugins (<a href="/docs/services/" class="text-dark">Services</a>, <a href="/docs/transformers/" class="text-dark">Transformers</a>, <a href="/docs/checkers/" class="text-dark">Checkers</a> and <a href="/docs/hooks/" class="text-dark">Hooks</a>)</td>
       </tr>
       <tr class="compare-row">
-        <td>Plugins (Transformers, Checkers and Hooks)</td>
+        <td>Plugins (<a href="/docs/services/" class="text-dark">Services</a>, <a href="/docs/transformers/" class="text-dark">Transformers</a>, <a href="/docs/checkers/" class="text-dark">Checkers</a> and <a href="/docs/hooks/" class="text-dark">Hooks</a>)</td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -94,10 +94,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">JSON Schema data validation and enforcement</td>
+        <td colspan="4"><a href="/docs/json-schema-validation/" class="text-dark">JSON Schema data validation and enforcement</a></td>
       </tr>
       <tr>
-        <td>JSON Schema data validation and enforcement</td>
+        <td><a href="/docs/json-schema-validation/" class="text-dark">JSON Schema data validation and enforcement</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -105,10 +105,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Bulk data import, uploading CSV files from Excel</td>
+        <td colspan="4"><a href="/docs/csv/" class="text-dark">Bulk data import, uploading CSV files from Excel</a></td>
       </tr>
       <tr class="compare-row">
-        <td>Bulk data import, uploading CSV files from Excel</td>
+        <td><a href="/docs/csv/" class="text-dark">Bulk data import, uploading CSV files from Excel</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -116,10 +116,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Support for MongoDB sessions</td>
+        <td colspan="4"><a href="/docs/transactions/#sessions" class="text-dark">Support for MongoDB sessions</a></td>
       </tr>
       <tr>
-        <td>Support for MongoDB sessions</td>
+        <td><a href="/docs/transactions/#sessions" class="text-dark">Support for MongoDB sessions</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -127,10 +127,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Basic Security (authentication and authorization)</td>
+        <td colspan="4"><a href="/docs/security/overview/" class="text-dark">Basic Security (authentication and authorization)</a></td>
       </tr>
       <tr class="compare-row">
-        <td>Basic Security (authentication and authorization)</td>
+        <td><a href="/docs/security/overview/" class="text-dark">Basic Security (authentication and authorization)</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -138,10 +138,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Extended IAM with plugins (LDAP, AD, etc)</td>
+        <td colspan="4"><a href="/docs/develop/security-plugins/" class="text-dark">Extended IAM with plugins (LDAP, AD, etc)</a></td>
       </tr>
       <tr>
-        <td>Extended IAM with plugins (LDAP, AD, etc)</td>
+        <td><a href="/docs/develop/security-plugins/" class="text-dark">Extended IAM with plugins (LDAP, AD, etc)</a></td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -149,10 +149,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Can use in closed source application</td>
+        <td colspan="4"><a href="/faq/#distribute-derivative-work" class="text-dark">Can use in closed source application</a></td>
       </tr>
       <tr class="compare-row">
-        <td>Can use in closed source application</td>
+        <td><a href="/faq/#distribute-derivative-work" class="text-dark">Can use in closed source application</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -160,10 +160,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Identity Manager with users on MongoDB</td>
+        <td colspan="4"><a href="/docs/security/authentication/#restheart-authenticator" class="text-dark">Identity Manager with users on MongoDB</a></td>
       </tr>
       <tr>
-        <td>Identity Manager with users on MongoDB</td>
+        <td><a href="/docs/security/authentication/#restheart-authenticator" class="text-dark">Identity Manager with users on MongoDB</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -171,10 +171,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">JWT Authentication</td>
+        <td colspan="4"><a href="/docs/security/authentication/#jwt-authentication" class="text-dark">JWT Authentication</a></td>
       </tr>
       <tr class="compare-row">
-        <td>JWT Authentication</td>
+        <td><a href="/docs/security/authentication/#jwt-authentication" class="text-dark">JWT Authentication</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -182,10 +182,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Change Streams</td>
+        <td colspan="4"><a href="/docs/change-streams/" class="text-dark">Change Streams</a></td>
       </tr>
       <tr>
-        <td>Change Streams</td>
+        <td><a href="/docs/change-streams/" class="text-dark">Change Streams</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -193,10 +193,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Transactions</td>
+        <td colspan="4"><a href="/docs/transactions/" class="text-dark">Transactions</a></td>
       </tr>
       <tr class="compare-row">
-        <td>Transactions</td>
+        <td><a href="/docs/transactions/" class="text-dark">Transactions</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
@@ -204,10 +204,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Clustering</td>
+        <td colspan="4"><a href="/docs/clustering/" class="text-dark">Clustering</a></td>
       </tr>
       <tr>
-        <td>Clustering</td>
+        <td><a href="/docs/clustering/" class="text-dark">Clustering</a></td>
         <td></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -215,7 +215,7 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Access Manager with DSL permissions on MongoDB</td>
+        <td colspan="4">Access Manager with DSL permissions on MongoDB<</td>
       </tr>
       <tr class="compare-row">
         <td>Access Manager with DSL permissions on MongoDB</td>
@@ -283,7 +283,7 @@ title: Editions
       <tr>
         <td>Pricing</td>
         <td>Free</td>
-        <td>30-Day Free Trial then USD 499 per Deployment Instance per Year. VAT applies for EU customers</td>
+        <td>30-Day Free Trial then USD 499 per Deployment Instance per Year. <div class="small text-muted">VAT applies for EU customers</div></td>
         <td>Negotiable</td>
         <td>Negotiable</td>
       </tr>
