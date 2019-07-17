@@ -7,7 +7,7 @@ title: "Use Case: REST API for MongoDB"
 # Significant Development Cost Savings Using RESTHeart
 
 {: .text-justify .mt-5 .mb-5}
-RESTHeart is a standalone server-side application which connects to MongoDB database (and MongoDB compatible databases) and immediately exposes all of MongoDB’s capabilities through a complete REST API, which allows to read and write JSON message)s and binary data via HTTP.
+RESTHeart is a standalone server-side application which connects to MongoDB database (and MongoDB compatible databases) and immediately exposes all of MongoDB’s capabilities through a complete REST API, which allows to read and write JSON documents and binary data via HTTP.
 
 {: .text-justify .mt-5 .mb-5}
 Developers don’t need to write a single line of backend code to serve data and content to Mobile Apps and Angular, React, Vue or other Single Page Application frameworks.
