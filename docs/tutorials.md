@@ -49,6 +49,8 @@ title: Tutorials
 
 * [**RESTHeart Performances**](/docs/performances): **RESTHeart** has been designed and developed with lightness and performances as fundamental parameters. On this regards, also thanks to its caching capabilities, RESTHeart often overcomes the results that can be achieved accessing MongoDB directly via its Java driver. This article includes the performance test results gathered by the SoftInstigate’s development team.
 
+* [**RESTHeart and NGINX with SSL**](https://github.com/SoftInstigate/nginx-restheart): This repository shows an example of NGINX as a SSL frontend for RESTHeart 4.0. It uses Docker images to setup a complete stack made with NGINX, RESTHeart and MongoDB. NGINX acts as a HTTPS reverse proxy for RESTHeart and it uses a self-signed certificate for the SSL connection.
+
 ## From the Community
 
 *  [**Building Instant RESTFul API's with MongoDB and RESTHeart**](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/):When you need to turn your Mongo database into a RESTFul API, RESTHeart can get you up-and-running quickly. In this article, we'll explore using RESTHeart to expose a RESTFUL API directly from a Mongo database on Compose.
