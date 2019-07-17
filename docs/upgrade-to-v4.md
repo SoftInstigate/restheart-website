@@ -128,6 +128,7 @@ Examples follows:
 
 ### RESTHeart v3
 
+{: .black-code}
 ```
 # read metadata and documents of collection restheart.coll -> GET /restheart/coll
 
@@ -150,6 +151,7 @@ Examples follows:
 
 ### RESTHeart Platform v4
 
+{: .black-code}
 ```
 # read documents of collection restheart.coll -> GET /coll
 
@@ -187,6 +189,7 @@ The configuration of custom plugins has been simplified. Rather that declaring t
 
 **Ping service implementation**
 
+{: .black-code}
 ```java
 @RegisterPlugin(name = "pingService",
         description = "Ping service")
@@ -235,6 +238,7 @@ public class PingService extends Service {
 ```
 **Ping service optional configuration**
 
+{: .black-code}
 ```yml
   pingService:
     #uri: "/hello"
