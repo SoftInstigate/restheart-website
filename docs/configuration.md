@@ -45,7 +45,7 @@ The `etc` directory contains the following configuration files:
 |file|description|
 |-|-|
 |<a href="https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml" target="_blank">restheart-platform-core.yml</a>|configuration file for `restheart-platform-core`|
-|<a href="https://github.com/softInstigate/restheart-security/blob/master/etc/restheart-security.yml" target="_blank">restheart-platform-security.yml</a>|configuration file for `restheart-platform-security`|
+|<a href="https://github.com/softInstigate/restheart-security/blob/master/etc/restheart-platform-security.yml" target="_blank">restheart-platform-security.yml</a>|configuration file for `restheart-platform-security`|
 
 and the following properties files for the parametric `restheart-platform-core.yml`:
 
