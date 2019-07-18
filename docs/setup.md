@@ -5,10 +5,12 @@ title: Setup
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Get RESTHeart Platform PE](#get-restheart-platform-pe)
+- [Get RESTHeart Platform Trial Edition](#get-restheart-platform-trial-edition)
 - [Run](#run)
 - [Accept License](#accept-license)
 - [Troubleshooting](#troubleshooting)
+- [Stop and restart the containers](#stop-and-restart-the-containers)
+- [Clean up everything](#clean-up-everything)
 - [Run without Docker](#run-without-docker)
 
 </div>
@@ -25,7 +27,7 @@ title: Setup
     </p>
 </div>
 
-## 1 - Get RESTHeart Platform PE
+## 1 - Get RESTHeart Platform Trial Edition
 
 1. go to <a href="/get" target="_blank">https://restheart.org/get</a>
 1. fill the form choosing the **free** **RESTHeart Platform 30 days Trial**
@@ -36,6 +38,7 @@ title: Setup
 {: .black-code}
 ```
 $ unzip restheart-platform-<version>.zip
+
 $ cd restheart-platform-<version>
 ```
 
@@ -45,6 +48,7 @@ $ cd restheart-platform-<version>
 ```
 $ docker-compose up -d
 ```
+
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading">Docker is required</h2>
     <hr class="my-2">
@@ -98,7 +102,7 @@ You should then see the following json in your browser:
 
 {: .black-code}
 ```
-{"authenticated":true,"roles":["admin"]}
+{ "authenticated": true, "roles": ["admin"] }
 ```
 ### Log files
 
@@ -107,7 +111,7 @@ You find the log files in the `restheart-platform-<version>` directory:
 - core.log
 - security.log
 
-### Stop and restart the containers
+## Stop and restart the containers
 
 1. Stop running Docker containers
 
@@ -122,6 +126,25 @@ $ docker-compose stop
 ```
 $ docker-compose start
 ```
+
+Complete logs, also of theMongoDB instance, are available using the followong command
+
+{: .black-code}
+```
+$ docker-compose logs -f
+```
+
+## Clean up everything
+
+To stop and __permanently delete__ all services, networks and disk volumes previously created:
+
+{: .black-code}
+```
+$ docker-compose down -v 
+```
+
+{: .bs-callout.bs-callout-warning}
+This command deletes all data in the MongoDB database!
 
 Please refer to the [docker-compose official documentation](https://docs.docker.com/compose/reference/overview/) for more.
 
