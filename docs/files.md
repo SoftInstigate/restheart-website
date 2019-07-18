@@ -11,7 +11,6 @@ title: Binary Files
   - [Uploading files with PUT](#uploading-files-with-put)
   - [The "properties" part](#the-properties-part)
   - [GET a binary file](#get-a-binary-file)
-- [Using httpie](#using-httpie)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
