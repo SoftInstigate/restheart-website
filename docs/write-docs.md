@@ -5,21 +5,21 @@ title: Write Requests
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Write verbs](#write-verbs)
-* [Dot notation](#dot-notation)
-    * [Array](#array)
-    * [Embedded Documents](#embedded-documents)
-* [Update operators](#update-operators)
-* [Bulk Write Requests](#bulk-write-requests)
-    * [POST an array of documents](#post-an-array-of-documents)
-    * [PATCH multiple documents using the wildcard document id](#patch-multiple-documents-using-the-wildcard-document-id)
-    * [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
+- [Introduction](#introduction)
+- [Write verbs](#write-verbs)
+- [Dot notation](#dot-notation)
+  - [Array](#array)
+  - [Embedded Documents](#embedded-documents)
+- [Update operators](#update-operators)
+- [Bulk Write Requests](#bulk-write-requests)
+  - [POST an array of documents](#post-an-array-of-documents)
+  - [PATCH multiple documents using the wildcard document id](#patch-multiple-documents-using-the-wildcard-document-id)
+  - [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
@@ -35,15 +35,17 @@ Format](/learn/representation-format) for more information). Example
 
 The following request:
 
-``` plain
+{: .black-code}
+```plain
 PUT /db/coll {"description": "my first collection", "$currentDate": { "created_on": true }}
 ```
 
-creates the collection *coll* in the database *db* setting its state as
+creates the collection _coll_ in the database *db* setting its state as
 follows (the property *\_etag *is automatically added by RESTHeart,
 see [ETag](/learn/etag) for more information):
 
-``` json
+{: .black-code}
+```json
 {
   "_id": "coll",
   "description": "my first collection",
@@ -58,6 +60,7 @@ apply to any resource type, such as databases and collections.
 ## Write verbs
 
 The following table summarizes the semantic of the write verbs:
+
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
@@ -114,7 +117,7 @@ The following table summarizes the semantic of the write verbs:
 </div>
 upsert
 
-The term *upsert* means either to create a resource, if it does not
+The term _upsert_ means either to create a resource, if it does not
 already exist or to update it, if it does. It comes from joining the
 terms **up**date and in**sert.**
 
@@ -131,20 +134,26 @@ To specify or access an element of an array by the zero-based index
 position, concatenate the array name with the dot (.) and zero-based
 index position, and enclose in quotes:
 
-``` plain
+{: .black-code}
+```plain
 "<array>.<index>"
 ```
 
 **Example**
 
-``` json 
+{: .black-code}
+```json
 { "_id": "docid", "array": [ 1, 2, 3, 4, 5 ], ... } 
 ```
+
+{: .black-code}
 ```
 PATCH /db/coll/docid {"array.1": 100 }
 ```
+
+{: .black-code}
 ```json
-{ "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... } 
+{ "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... }
 ```
 
 ### Embedded Documents
@@ -153,23 +162,25 @@ To specify or access a field of an embedded document with dot notation,
 concatenate the embedded document name with the dot (.) and the field
 name, and enclose in quotes:
 
-``` plain
+{: .black-code}
+```plain
 "<embedded document>.<field>"
 ```
 
 **Example**
 
-``` plain
+{: .black-code}
+```json
 { "_id": "docid", "name": { "first": "Alan", "last": "Turing" }, ... } 
  
 PATCH /db/coll/docid { "name.last": "Ford" }
  
-{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... } 
+{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... }
 ```
 
 ## Update operators
 
-RESTHeart allows to use all MongoDB update operators on PATCH requests. 
+RESTHeart allows to use all MongoDB update operators on PATCH requests.
 PUT and POST can only use `$currentDate` update operator.
 
 Refer to MongoDB [Update
@@ -180,58 +191,60 @@ for more information.
 
 Consider the following document
 
-``` json
+{: .black-code}
+```json
 {
-    "_id": "docid",
-    "timestamp": { "$date": 1460708338344 },
-    "array": [ {"id":1, "value": 2} ],
-    "count": 10,
-    "message": "hello world"
+  "_id": "docid",
+  "timestamp": { "$date": 1460708338344 },
+  "array": [{ "id": 1, "value": 2 }],
+  "count": 10,
+  "message": "hello world"
 }
 ```
 
 The following request will:
 
--   add the *pi* property (if no operator is specified the
-    [$set](https://docs.mongodb.org/manual/reference/operator/update/set/)
-    field operator is applied)
--   increment the properties *count* using the
-    [$inc](https://docs.mongodb.org/manual/reference/operator/update/inc/#up._S_inc) field
-    operator
--   add a new item to the *array *using the
-    [$push](https://docs.mongodb.org/manual/reference/operator/update/push/)
-    array operator
--   remove the property *message *using the
-    [$unset](https://docs.mongodb.org/manual/reference/operator/update/unset/)
-    field operator
--   update the *timestamp* with the current date using the
-    [$currentDate](https://docs.mongodb.org/manual/reference/operator/update/currentDate/)
-    operator
+- add the _pi_ property (if no operator is specified the
+  [\$set](https://docs.mongodb.org/manual/reference/operator/update/set/)
+  field operator is applied)
+- increment the properties *count* using the
+  [\$inc](https://docs.mongodb.org/manual/reference/operator/update/inc/#up._S_inc) field
+  operator
+- add a new item to the *array *using the
+  [\$push](https://docs.mongodb.org/manual/reference/operator/update/push/)
+  array operator
+- remove the property *message *using the
+  [\$unset](https://docs.mongodb.org/manual/reference/operator/update/unset/)
+  field operator
+- update the _timestamp_ with the current date using the
+  [\$currentDate](https://docs.mongodb.org/manual/reference/operator/update/currentDate/)
+  operator
 
-  
-
-``` bash
-PATCH /db/coll/docid 
+```bash
+PATCH /db/coll/docid
 ```
+
+{: .black-code}
 ```json
 {
-    "pi": 3.14,
-    "$inc": { "count": 1 },
-    "$push": { "array": { "id": 2, "value": 0 } },
-    "$unset": {"message": null},
-    "$currentDate": {"timestamp": true}
+  "pi": 3.14,
+  "$inc": { "count": 1 },
+  "$push": { "array": { "id": 2, "value": 0 } },
+  "$unset": { "message": null },
+  "$currentDate": { "timestamp": true }
 }
 ```
 
 After the request completes, the resource state is updated to:
 
-``` json
+{: .black-code}
+```json
 {
-    "_id": "docid",
-    "pi": 3.14,
-    "timestamp": { "$date": 1460714673219 },
-    "array": [ {"id":1, "value": 3}, {"id": 2, "value": 0 } ],
-    "count": 11
+  "_id": "docid",
+  "pi": 3.14,
+  "timestamp": { "$date": 1460714673219 },
+  "array": [{ "id": 1, "value": 3 }, { "id": 2, "value": 0 }],
+  "count": 11
 }
 ```
 
@@ -261,33 +274,35 @@ the *\_etag* property.
 
 **request**
 
-``` plain
+{: .black-code}
+```json
 POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
 ```
 
 **response**
 
-``` json
+{: .black-code}
+```json
 {
   "_embedded": [
-      {
-        "href": "/xxx/yyy/5716560a2d174cac010daf17"
-      },
-      {
-        "href": "/xxx/yyy/5716560a2d174cac010daf18"
-      },
-      {
-        "href": "/xxx/yyy/5716560a2d174cac010daf19"
-      },
-      {
-        "href": "/xxx/yyy/5716560a2d174cac010daf1a"
-      }
-    ],
+    {
+      "href": "/xxx/yyy/5716560a2d174cac010daf17"
+    },
+    {
+      "href": "/xxx/yyy/5716560a2d174cac010daf18"
+    },
+    {
+      "href": "/xxx/yyy/5716560a2d174cac010daf19"
+    },
+    {
+      "href": "/xxx/yyy/5716560a2d174cac010daf1a"
+    }
+  ],
   "inserted": 4,
   "deleted": 0,
   "modified": 0,
   "matched": 0
-} 
+}
 ```
 
 ### PATCH multiple documents using the wildcard document id
@@ -297,7 +312,8 @@ verb as follows:
 
 **PATCH bulk request**
 
-``` plain
+{: .black-code}
+```plain
 PATCH /db/coll/*?filter={<filter_query>}
 ```
 
@@ -319,13 +335,15 @@ collection.
 
 **request**
 
-``` plain
-PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 } 
+{: .black-code}
+```plain
+PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
 ```
 
 **response**
 
-``` json
+{: .black-code}
+```json
 {
   "inserted": 0,
   "deleted": 0,
@@ -340,7 +358,8 @@ In order to delete multiple documents use the PATCH verb as follows:
 
 **PATCH bulk request**
 
-``` plain
+{: .black-code}
+```plain
 DELETE /db/coll/*?filter={<filter_query>}
 ```
 
@@ -353,18 +372,20 @@ Note the wildcard `*` document id in the URI:: `DELETE /db/coll/*` is a bulk
 document delete, where `DELETE /db/coll` deletes the collection (for
 safety, it requires the ETag request header to be specified).
 
-**Example - Delete all documents with whose *creation\_date *is before
+**Example - Delete all documents with whose *creation_date *is before
 1/1/2016.**
 
 **request**
 
-``` plain
+{: .black-code}
+```plain
 DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
 ```
 
 **response**
 
-``` json
+{: .black-code}
+```json
 {
   "inserted": 0,
   "deleted": 23,
@@ -372,6 +393,5 @@ DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
   "matched": 0
 }
 ```
-
 
 </div>
