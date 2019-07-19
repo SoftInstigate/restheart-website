@@ -36,7 +36,7 @@ Format](/learn/representation-format) for more information). Example
 The following request:
 
 {: .black-code}
-```plain
+```json
 PUT /db/coll {"description": "my first collection", "$currentDate": { "created_on": true }}
 ```
 
@@ -135,7 +135,7 @@ position, concatenate the array name with the dot (.) and zero-based
 index position, and enclose in quotes:
 
 {: .black-code}
-```plain
+```bash
 "<array>.<index>"
 ```
 
@@ -163,7 +163,7 @@ concatenate the embedded document name with the dot (.) and the field
 name, and enclose in quotes:
 
 {: .black-code}
-```plain
+```bash
 "<embedded document>.<field>"
 ```
 
@@ -220,6 +220,7 @@ The following request will:
   [\$currentDate](https://docs.mongodb.org/manual/reference/operator/update/currentDate/)
   operator
 
+{: .black-code}
 ```bash
 PATCH /db/coll/docid
 ```
@@ -313,7 +314,7 @@ verb as follows:
 **PATCH bulk request**
 
 {: .black-code}
-```plain
+```bash
 PATCH /db/coll/*?filter={<filter_query>}
 ```
 
@@ -336,7 +337,7 @@ collection.
 **request**
 
 {: .black-code}
-```plain
+```
 PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
 ```
 
@@ -359,7 +360,7 @@ In order to delete multiple documents use the PATCH verb as follows:
 **PATCH bulk request**
 
 {: .black-code}
-```plain
+```bash
 DELETE /db/coll/*?filter={<filter_query>}
 ```
 
@@ -378,7 +379,7 @@ safety, it requires the ETag request header to be specified).
 **request**
 
 {: .black-code}
-```plain
+```json
 DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
 ```
 
