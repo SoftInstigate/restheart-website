@@ -6,7 +6,6 @@ title: Read JSON Documents
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-    
 - [Paging](#paging)
     - [Examples](#paging-examples)
 - [Filtering](#filtering)
@@ -460,7 +459,6 @@ Use `$natural` to force the query to perform a forwards collection scan.
     </p>
     
 </div>
-
 
 #### Use the index on item field
 
