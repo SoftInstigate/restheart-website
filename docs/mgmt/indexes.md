@@ -19,8 +19,6 @@ title: Collection Indexes
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 {% include running-examples.md %}
 
 
