@@ -42,7 +42,7 @@ Configuring RESTHeart to expose all MongoDB resources (`root-mongo-resource='*'`
 The following table summarizes the semantic of the write verbs:
 
 <div class="table-responsive">
-<table class="ts">
+<table class="table">
 <colgroup>
 <col class="w-50" />
 <col class="w-50" />
