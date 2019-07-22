@@ -8,8 +8,8 @@ title: Collection Indexes
 - [List the collection indexes](#list-the-collection-indexes)
     - [Example](#example)
 - [Create an index](#create-an-index)
-    - [Example - create an unique, sparse index on property 'name'](#example---create-an-unique-sparse-index-on-property-name)
-    - [Example - create a text index on property 'title'](#example---create-a-text-index-on-property-title)
+    - [Example - create an unique, sparse index on property 'qty'](#example---create-an-unique-sparse-index-on-property-qty)
+    - [Example - create a text index on property 'item'](#example---create-a-text-index-on-property-item)
 - [Delete an index](#delete-an-index)
 - [Notes](#notes)
     - [Invalid options](#invalid-options)
@@ -64,6 +64,7 @@ To create an index you have to specify the keys and the index options:
 ```
 { "keys":  <keys>, "ops": <options> }
 ```
+### Example - create an unique, sparse index on property 'qty'
 
 To create an unique, sparse index on property `qty` run the following:
 
@@ -85,6 +86,8 @@ See also
 Indexes in MongoDB documentation
 <https://docs.mongodb.com/manual/indexes/>
 
+
+### Example - create a text index on property 'item'
 
 To create a text index on property `item` run the following:
 
