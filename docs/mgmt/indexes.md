@@ -6,7 +6,6 @@ title: Collection Indexes
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [List the collection indexes](#list-the-collection-indexes)
-    - [Example](#example)
 - [Create an index](#create-an-index)
     - [Example - create an unique, sparse index on property 'qty'](#example---create-an-unique-sparse-index-on-property-qty)
     - [Example - create a text index on property 'item'](#example---create-a-text-index-on-property-item)
