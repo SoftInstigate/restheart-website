@@ -5,7 +5,6 @@ title: Collection Indexes
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
 - [List the collection indexes](#list-the-collection-indexes)
     - [Example](#example)
 - [Create an index](#create-an-index)
@@ -23,107 +22,97 @@ title: Collection Indexes
 
 {% include doc-in-progress.html %}
 
-## Introduction
+{% include running-examples.md %}
 
-Use the `/db/coll/_indexes` resource to manage the indexes of the
-collection.
 
 ## List the collection indexes
 
 To list the collection indexes use the following request:
 
-{: .black-code}
-```
-GET /db/coll/_indexes HTTP/1.1
-```
-
-### Example
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/955c6f52f254b504694b8fb1b49b05e881427f8b/0"
+%}
 
 {: .black-code}
 ```
-GET 127.0.0.1:8080/db/coll/_indexes HTTP/1.1
+GET /inventory/_indexes
+```
+{% include code-header.html 
+    type="Response" 
+%}
 
-HTTP/1.1 200 OK
-...
-
-{
-    "_embedded": [
-        {
-            "_id": "_id_", 
-            "key": {
-                "_id": 1
-            }, 
-            "ns": "db.coll", 
-            "v": 1
-        }, 
-        {
-            "_id": "text", 
-            "default_language": "english", 
-            "key": {
-                "_fts": "text", 
-                "_ftsx": 1
-            }, 
-            "language_override": "language", 
-            "ns": "db.coll", 
-            "textIndexVersion": 3, 
-            "v": 1, 
-            "weights": {
-                "title": 1
-            }
-        }
-    ], 
-    "_returned": 2, 
-    "_size": 2,
-    ...
-}
+{: .black-code }
+```
+[
+    {
+        "v": 2,
+        "key": {
+            "_id": 1
+        },
+        "ns": "restheart.inventory",
+        "_id": "_id_"
+    }
+]
 ```
 
 ## Create an index
 
-To create an index use the following request:
+To create an index you have to specify the keys and the index options:
 
 {: .black-code}
 ```
-PUT /db/coll/_indexes/<index_id> HTTP/1.1 
-
-{ "keys":  <keys>, "ops": <options> }
+{ "keys":  <keys>, "ops": <options> }
 ```
 
-See also
+To create an unique, sparse index on property `qty` run the following:
 
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/4e6c63ceba6860a37d53998e6e99be1ad35c226c/1"
+%}
+
+
+{: .black-code}
+```
+PUT /inventory/_indexes/qtyIndex HTTP/1.1
+
+{"keys": {"qty": 1},"ops": {"unique": true, "sparse": true }}
+```
+
+{: .bs-callout.bs-callout-info}
+See also
 Indexes in MongoDB documentation
 <https://docs.mongodb.com/manual/indexes/>
 
-### Example - create an unique, sparse index on property 'name'
+
+To create a text index on property `item` run the following:
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/bb3a7b30ac12ab387586ca41c62de7c257a27fff/1"
+%}
 
 {: .black-code}
 ```
-PUT /db/coll/_indexes/index1 HTTP/1.1
-{ "keys": {"name": 1}, "ops": {"unique": true, "sparse": true } }
+PUT /inventory/_indexes/itemTextIndex HTTP/1.1
 
-HTTP/1.1 201 Created
-...
+{ "keys": { "item": "text" } }
 ```
 
-### Example - create a text index on property 'title'
-
-{: .black-code}
-```
-PUT /db/coll/_indexes/text HTTP/1.1
-{ "keys": { "title": "text" } }
-
-
-HTTP/1.1 201 Created
-...
-```
 
 ## Delete an index
 
 To delete an index use the following request:
 
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/a21462c556fba2279e4ba3071487a2ac271dcbe7/0"
+%}
+
 {: .black-code}
 ```
-DELETE /db/coll/_indexes/<index_id> HTTP/1.1
+DELETE inventory/_indexes/qtyIndex HTTP/1.1
 ```
 
 ## Notes
@@ -158,35 +147,7 @@ HTTP/1.1 406 Not Acceptable
 
 To update an index, it must be **deleted** and **recreated**:
 
-{: .black-code}
-```
-DELETE /db/coll/_indexes/index HTTP/1.1
-HTTP/1.1 204 No Content
+Trying to update an existing index returns 406 Not Acceptable.
 
-PUT /db/coll/_indexes/index HTTP/1.1 
-{ ... }
-
-HTTP/1.1 201 Created
-```
-
-Trying to update an existing index returns 406 Not Acceptable:
-
-{: .black-code}
-```
-HTTP/1.1 406 Not Acceptable
- 
-{
-    "_exceptions": [
-        {
-            "exception": "com.mongodb.MongoCommandException", 
-            "exception message": "Command failed with error 86: 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }' on server 127.0.0.1:27017. The full response is { 'ok' : 0.0, 'errmsg' : 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }', 'code' : 86 }"
-        }
-    ],
-    "http status code": 406, 
-    "http status description": "Not Acceptable", 
-    "message": "error creating the index",
-    ...
-}
-```
 
 </div>
