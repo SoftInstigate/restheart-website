@@ -6,58 +6,38 @@ title: Write Requests
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-- [Write verbs](#write-verbs)
-- [Dot notation](#dot-notation)
-  - [Array](#array)
-  - [Embedded Documents](#embedded-documents)
-- [Update operators](#update-operators)
+- [Write Verbs](#write-verbs)
+- [Basic Examples](#basic-examples)
+- [Dot Notation](#dot-notation)
+  - [Dot Notation Examples](#dot-notation-examples)
+- [Update Operators](#update-operators)
+  - [Update Operators Examples](#update-operators-examples)
 - [Bulk Write Requests](#bulk-write-requests)
-  - [POST an array of documents](#post-an-array-of-documents)
-  - [PATCH multiple documents using the wildcard document id](#patch-multiple-documents-using-the-wildcard-document-id)
-  - [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
+  - [Bulk Write Requests Examples](#bulk-write-requests-examples)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
-This document shows how RESTHeart can use the PUT, POST, PATCH and
-DELETE verbs to create, modify and delete resources within a MongoDB
+This document shows how RESTHeart can use the `PUT`, `POST`, `PATCH` and
+`DELETE` verbs to create, modify and delete resources within a MongoDB
 database, using only the HTTP protocol.
 
-With the exception of the root resource (`/`) which is read-only, all
-resources have a state represented in JSON format (see [Representation
-Format](/learn/representation-format) for more information). Example
-
-The following request:
-
-{: .black-code}
-```json
-PUT /db/coll {"description": "my first collection", "$currentDate": { "created_on": true }}
-```
-
-creates the collection _coll_ in the database *db* setting its state as
-follows (the property *\_etag *is automatically added by RESTHeart,
-see [ETag](/learn/etag) for more information):
-
-{: .black-code}
-```json
-{
-  "_id": "coll",
-  "description": "my first collection",
-  "created_on": { "$date": 1460708338344 },
-  "_etag": { "$oid": "5710a3f12d174c97589e6127" }
-}
-```
+All resources have a state represented in JSON format (see [Representation
+Format](/learn/representation-format) for more information).
 
 This section focuses on the document resource. However the same concepts
 apply to any resource type, such as databases and collections.
 
-## Write verbs
+{: .bs-callout.bs-callout-info}
+Configuring RESTHeart to expose all MongoDB resources (`root-mongo-resource='*'`) the root resource (`/`) is **read-only**.
+
+{% include running-examples.md %}
+
+## Write Verbs
 
 The following table summarizes the semantic of the write verbs:
 
@@ -75,324 +55,254 @@ The following table summarizes the semantic of the write verbs:
 </thead>
 <tbody>
 <tr class="odd">
-<td>PUT</td>
+<td><code>PUT</code></td>
 <td><p>Upserts the resource identified by the request URL:</p>
 <ul>
-<li>if the resource does not already exist, the PUT request creates it setting its state as specified in the request JSON body;</li>
-<li>if the resource alreadyn exists, the PUT request sets the resource state as specified in the request JSON body.</li>
-<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
-<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+<li>if the resource does not already exist, the <code>PUT</code> request creates it setting its state as specified in the request JSON body;</li>
+<li>if the resource alreadyn exists, the <code>PUT</code> request sets the resource state as specified in the request JSON body.</li>
+<li><code>$currentDate</code> update operator is supported. Using any other update operator (such as <code>$min</code>) is not allowed and would result in <code>BAD REQUEST</code> response.</li>
+<li>Properties keys can use the dot notation (such as <code>foo.bar</code>).</li>
 </ul></td>
 </tr>
 <tr class="even">
-<td>POST</td>
+<td><code>POST</code></td>
 <td><p>Upserts a resource under the resource identified by the request URL:</p>
 <ul>
-<li>if the resource does not already exist, the POST request creates it setting its state as specified in the request JSON body;</li>
-<li>if the resource exists, the POST sets the resource properties as specified in the request JSON body.</li>
+<li>if the resource does not already exist, the <code>POST</code> request creates it setting its state as specified in the request JSON body;</li>
+<li>if the resource exists, the <code>POST</code> sets the resource properties as specified in the request JSON body.</li>
 </ul>
 <p>The resource to upsert is identified by the <em>_id</em> property of the request JSON body. If the request body does not include it, the <em>_id</em> it is auto generated as a new ObjectId and the URL of the new document is returned in the response via the <em>Location</em> header.</p>
 <ul>
-<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
-<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+<li><code>$currentDate</code> update operator is supported. Using any other update operator (such as <code>$min</code>) is not allowed and would result in BAD REQUEST response.</li>
+<li>Properties keys can use the dot notation (such as <code>foo.bar</code>).</li>
 </ul>
 
 </td>
 </tr>
 <tr class="odd">
-<td>PATCH</td>
-<td><p>While PUT and POST verbs replace the whole state of the resource identified by the request URL, PATCH verb only modifies the properties passed with the request JSON body. All write requests, including PATCH, have upsert semantic.</p>
+<td><code>PATCH</code></td>
+<td><p>While <code>PUT</code> and <code>POST</code> verbs replace the whole state of the resource identified by the request URL, <code>PATCH</code> verb only modifies the properties passed with the request JSON body. All write requests, including <code>PATCH</code>, have upsert semantic.</p>
 <ul>
 <li>All update operators are allowed.</li>
-<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+<li>Properties keys can use the dot notation (such as <code>foo.bar</code>).</li>
 </ul>
 </td>
 </tr>
 <tr class="even">
-<td>DELETE</td>
+<td><code>DELETE</code></td>
 <td>Deletes the resource identified by the request URL.</td>
 </tr>
 </tbody>
 </table>
 </div>
-upsert
 
-The term _upsert_ means either to create a resource, if it does not
-already exist or to update it, if it does. It comes from joining the
-terms **up**date and in**sert.**
+<div class="bs-callout bs-callout-info">
+    <h4>Upsert</h4>
+    <hr class="my-2">
+    <p>
+    The term <i>upsert</i> means either to create a resource, if it does not already exist or to update it, if it does. It comes from joining the terms <strong>up</strong>date and in<strong>sert</strong>.
+    </p>
+</div>
 
-## Dot notation
+## Basic Examples
 
-RESTHeart uses the dot notation to access the elements of an array and
-to access the fields of an embedded document.
+#### Create a document with a given "newItem" Id
 
-The dot notation can be used in PUT, PATCH and POST verbs.
 
-### Array
-
-To specify or access an element of an array by the zero-based index
-position, concatenate the array name with the dot (.) and zero-based
-index position, and enclose in quotes:
-
-{: .black-code}
-```bash
-"<array>.<index>"
-```
-
-**Example**
-
-{: .black-code}
-```json
-{ "_id": "docid", "array": [ 1, 2, 3, 4, 5 ], ... } 
-```
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/21de47ede7d9e910b80ac0d998184bf992b98895/2"
+%}
 
 {: .black-code}
 ```
-PATCH /db/coll/docid {"array.1": 100 }
+PUT /inventory/newItem HTTP/1.1
+
+{ "item": "pencil", "qty": 55, "size": { "h": 10, "w": 0.5, "uom": "cm" }, "status": "B", "suppliers": ["brand_1", "brand_2", "brand_3"] }
 ```
+
+#### Create a document without a given Id
+
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/fcf2a3da225dc2018581416fee19f96fb105cca3/0"
+%}
 
 {: .black-code}
-```json
-{ "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... }
+```
+POST /inventory HTTP/1.1
+
+{ "item": "rubber", "qty": 15, "size": { "h": 2, "w": 1, "uom": "cm" }, "status": "A" }
 ```
 
-### Embedded Documents
+#### Edit "newItem" document's property "status"
 
-To specify or access a field of an embedded document with dot notation,
-concatenate the embedded document name with the dot (.) and the field
-name, and enclose in quotes:
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/cad8a808b52787063c7544d396d7b4ba30be489f/0"
+%}
 
 {: .black-code}
-```bash
-"<embedded document>.<field>"
+```
+PATCH /inventory/newItem HTTP/1.1
+
+{ "status": "A" }
 ```
 
-**Example**
+## Dot Notation
+
+RESTHeart uses the dot notation to access the elements of an array and to access the fields of an embedded document.
+
+The dot notation can be used in `PUT`, `PATCH` and `POST` verbs.
+
+### Dot Notation Examples
+
+#### Edit "newItem" document's array element "supplier[1]"
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/d891c0dfaf794019f7cebf79dafa895cd9697da7/0"
+%}
 
 {: .black-code}
-```json
-{ "_id": "docid", "name": { "first": "Alan", "last": "Turing" }, ... } 
- 
-PATCH /db/coll/docid { "name.last": "Ford" }
- 
-{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... }
+```
+PATCH /inventory/newItem HTTP/1.1
+
+{"suppliers.1": "new_brand" }
 ```
 
-## Update operators
+#### Edit "newItem.size" embedded document's "h" property 
 
-RESTHeart allows to use all MongoDB update operators on PATCH requests.
-PUT and POST can only use `$currentDate` update operator.
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/fef0424bf8e69d11a7aae35f41a82e67164a1dfc/0"
+%}
+
+{: .black-code}
+```
+PATCH /inventory/newItem HTTP/1.1
+
+{"size.h": 20 }
+```
+## Update Operators
 
 Refer to MongoDB [Update
 Operators](https://docs.mongodb.org/manual/reference/operator/update/) documentation
 for more information.
 
-**Examples**
+{: .bs-callout.bs-callout-info}
+RESTHeart allows to use all MongoDB update operators on `PATCH` requests. 
+`PUT` and `POST` can only use `$currentDate` update operator.
 
-Consider the following document
+### Update Operators Examples
+
+#### Apply given update operators to "newItem" document
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/1f3c2941dc649dfb8a3ba6628451093f83d02fea/0"
+%}
 
 {: .black-code}
-```json
-{
-  "_id": "docid",
-  "timestamp": { "$date": 1460708338344 },
-  "array": [{ "id": 1, "value": 2 }],
-  "count": 10,
-  "message": "hello world"
-}
 ```
+PATCH /inventory/newItem HTTP/1.1
 
-The following request will:
-
-- add the _pi_ property (if no operator is specified the
-  [\$set](https://docs.mongodb.org/manual/reference/operator/update/set/)
-  field operator is applied)
-- increment the properties *count* using the
-  [\$inc](https://docs.mongodb.org/manual/reference/operator/update/inc/#up._S_inc) field
-  operator
-- add a new item to the *array *using the
-  [\$push](https://docs.mongodb.org/manual/reference/operator/update/push/)
-  array operator
-- remove the property *message *using the
-  [\$unset](https://docs.mongodb.org/manual/reference/operator/update/unset/)
-  field operator
-- update the _timestamp_ with the current date using the
-  [\$currentDate](https://docs.mongodb.org/manual/reference/operator/update/currentDate/)
-  operator
-
-{: .black-code}
-```bash
-PATCH /db/coll/docid
-```
-
-{: .black-code}
-```json
 {
-  "pi": 3.14,
-  "$inc": { "count": 1 },
-  "$push": { "array": { "id": 2, "value": 0 } },
-  "$unset": { "message": null },
+  "$inc": { "qty": 1 },
+  "$push": { "suppliers": "pushed_brand" },
+  "$unset": { "status": null },
   "$currentDate": { "timestamp": true }
 }
 ```
 
-After the request completes, the resource state is updated to:
+<div class="bs-callout bs-callout-info">
+<p>The request above will:</p>
 
-{: .black-code}
-```json
-{
-  "_id": "docid",
-  "pi": 3.14,
-  "timestamp": { "$date": 1460714673219 },
-  "array": [{ "id": 1, "value": 3 }, { "id": 2, "value": 0 }],
-  "count": 11
-}
-```
+<ul>
+    <li>increment the properties&nbsp;<em>qty</em>&nbsp;using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/inc/#up._S_inc">$inc</a>&nbsp;field
+operator</li>
+    <li>add a new item to the <em>suppliers</em> using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/push/">$push</a>
+array operator</li>
+    <li>remove the property <em>status</em> using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/unset/">$unset</a>
+field operator</li>
+    <li>update the <em>timestamp</em> with the current date using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">$currentDate</a>
+operator</li>
+  </ul>
+
+</div>
+
 
 ## Bulk Write Requests
 
 Bulk write requests create, update or delete multiple documents with a
 single request.
 
-### POST an array of documents
+A bulk request response contains the URIs of the created documents.
 
-In order to upsert multiple documents pass an array of documents as
-request body.
-
-POST documents containing existing *\_id*s to update them.
-
-The bulk POST has the same behavior of PATCH: only the properties in the
-request data will be updated.
-
-The response contains the URIs of the created documents.
-
+{: .bs-callout.bs-callout-info}
 All the upserted documents have the same *\_etag* property value as
-reported in the *ETag* response header: to retrieve the upserted
+reported in the *ETag* response header. To retrieve the upserted
 documents with a single request GET the collection filtering on
 the *\_etag* property.
 
-**Example**
+### Bulk Write Requests Examples
 
-**request**
+#### POST an array of documents
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
+%}
 
 {: .black-code}
-```json
-POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
+```
+POST /inventory HTTP/1.1
+
+[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+]
 ```
 
-**response**
+{: .bs-callout.bs-callout-info}
+**The bulk POST has the same behavior of PATCH:** *only the properties in the
+request data will be updated*. POSTing documents containing existing *\_id*s will update the them (and not replace the existing onces at all). 
+
+#### PATCH multiple documents with "qty" property greater than (or that equals) 50 using the wildcard document id
+
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/0e5b13f1e048ea373f86c19e8fb48be7c70c7531/0"
+%}
 
 {: .black-code}
-```json
+```
+PATCH /inventory/*?filter={"qty":{"$gte":50}} HTTP/1.1
+
 {
-  "_embedded": [
-    {
-      "href": "/xxx/yyy/5716560a2d174cac010daf17"
-    },
-    {
-      "href": "/xxx/yyy/5716560a2d174cac010daf18"
-    },
-    {
-      "href": "/xxx/yyy/5716560a2d174cac010daf19"
-    },
-    {
-      "href": "/xxx/yyy/5716560a2d174cac010daf1a"
-    }
-  ],
-  "inserted": 4,
-  "deleted": 0,
-  "modified": 0,
-  "matched": 0
+  "qty":1000 
 }
 ```
 
-### PATCH multiple documents using the wildcard document id
+#### DELETE multiple documents with "qty" property less than (or that equals) 50 using the wildcard document id
 
-In order to modify the properties of multiple documents use the PATCH
-verb as follows:
-
-**PATCH bulk request**
-
-{: .black-code}
-```bash
-PATCH /db/coll/*?filter={<filter_query>}
-```
-
-The *filter* query parameter is mandatory and specifies a [mongodb
-query](https://docs.mongodb.org/manual/tutorial/query-documents/).
-
-The response contains the number of updated documents.
-
-All the updated documents have the same *\_etag* property value as
-reported in the *ETag* response header: to retrieve the updated documents
-with a single request GET the collection filtering on
-the *\_etag* property.
-
-Note the wildcard `*` document id in the URI: `PATCH /db/coll/*` is a bulk
-document update, where `PATCH /db/coll` modifies the properties of the
-collection.
-
-**Example - Add the property *num* to all documents missing it.**
-
-**request**
+{% include code-header.html 
+    type="Request" 
+    link="http://restninja.io/share/acba248263a0be8e55ed03d7ff52e79a27449bbd/0"
+%}
 
 {: .black-code}
 ```
-PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
-```
-
-**response**
-
-{: .black-code}
-```json
-{
-  "inserted": 0,
-  "deleted": 0,
-  "modified": 9,
-  "matched": 9
-}
-```
-
-### DELETE multiple documents using the wildcard document id
-
-In order to delete multiple documents use the PATCH verb as follows:
-
-**PATCH bulk request**
-
-{: .black-code}
-```bash
-DELETE /db/coll/*?filter={<filter_query>}
-```
-
-The *filter* query parameter is mandatory and specifies a [mongodb
-query](https://docs.mongodb.org/manual/tutorial/query-documents/).
-
-The response contains the number of deleted documents.
-
-Note the wildcard `*` document id in the URI:: `DELETE /db/coll/*` is a bulk
-document delete, where `DELETE /db/coll` deletes the collection (for
-safety, it requires the ETag request header to be specified).
-
-**Example - Delete all documents with whose *creation_date *is before
-1/1/2016.**
-
-**request**
-
-{: .black-code}
-```json
-DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
-```
-
-**response**
-
-{: .black-code}
-```json
-{
-  "inserted": 0,
-  "deleted": 23,
-  "modified": 0,
-  "matched": 0
-}
+DELETE /inventory/*?filter={"qty":{"$lte":50}} HTTP/1.1
 ```
 
 </div>
