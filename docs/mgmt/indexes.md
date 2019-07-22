@@ -125,6 +125,10 @@ An example of invalid options is specifying the attribute *unique* on a
 property that is not actually unique; in this case the response will
 be 406:
 
+{% include code-header.html 
+    type="Response" 
+%}
+
 {: .black-code}
 ```
 HTTP/1.1 406 Not Acceptable
