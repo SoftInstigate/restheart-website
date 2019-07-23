@@ -26,15 +26,6 @@ This document shows how RESTHeart can use the `PUT`, `POST`, `PATCH` and
 `DELETE` verbs to create, modify and delete resources within a MongoDB
 database, using only the HTTP protocol.
 
-All resources have a state represented in JSON format (see [Representation
-Format](/learn/representation-format) for more information).
-
-This section focuses on the document resource. However the same concepts
-apply to any resource type, such as databases and collections.
-
-{: .bs-callout.bs-callout-info}
-Configuring RESTHeart to expose all MongoDB resources (`root-mongo-resource='*'`) the root resource (`/`) is **read-only**.
-
 {% include running-examples.md %}
 
 ## Write Verbs
