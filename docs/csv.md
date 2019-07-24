@@ -19,12 +19,16 @@ title: Upload CSV files
 
 ## Introduction
 
+A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. A CSV file stores tabular data (numbers and text) in plain text. Each line of the file is a data record. Each record consists of one or more fields, separated by commas. The use of the comma as a field separator is the source of the name for this file format.
+
+The CSV file format is supported by almost all spreadsheets and database management systems, including Microsoft Excel, Apple Numbers, LibreOffice Calc, and Apache OpenOffice Calc.
+
 The CSV Uploader Service allows importing data from a CSV file into a collection.
 
-The service is bound to `/csv` by default.
+This RESTHeart service is bound to the `/csv` API resource by default.
 
 {: .bs-callout.bs-callout-info}
-By uploading a csv file you create or update one document per each row of the file. 
+By uploading a CSV file you create or update one document per each row of the file. 
 
 ### Before running the example requests
 
