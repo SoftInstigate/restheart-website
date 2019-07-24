@@ -23,7 +23,7 @@ A comma-separated values (CSV) file is a delimited text file that uses a comma t
 
 The CSV file format is supported by almost all spreadsheets and database management systems, including Microsoft Excel, Apple Numbers, LibreOffice Calc, and Apache OpenOffice Calc.
 
-The CSV Uploader Service allows importing data from a CSV file into a collection.
+The CSV Uploader Service allows importing data from a CSV file into a MongoDB collection.
 
 This RESTHeart service is bound to the `/csv` API resource by default.
 
@@ -32,7 +32,7 @@ By uploading a CSV file you create or update one document per each row of the fi
 
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on `localhost` with the default configuration: the database `restheart` is bound to `/` and the user *admin* exists with default password *secret*.
+The following examples assume the RESTHeart Platform running on `localhost` with the default configuration: the database `restheart` is bound to `/` and the user `admin` exists with default password `secret`.
 
 To create the `restheart` db, run the following:
 
@@ -81,9 +81,9 @@ To import the `POI.csv` into the collection `poi`, run the following:
 POST /csv?db=restheart&coll=poi&id=0 HTTP/1.1
 Content-Type: text/csv
 
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
+id, name, city, lat, lon, note
+1, Coliseum, Rome, 41.8902614, 12.4930871, Also known as the Flavian Amphitheatre
+2, Duomo, Milan, 45.464278, 9.190596, Milan Cathedral
 ```
 
 {: .bs-callout.bs-callout-info}
@@ -173,10 +173,10 @@ New lines in the CSV will *NOT* be added.
 POST /csv?db=restheart&coll=poi&id=0&update=true HTTP/1.1
 Content-Type: text/csv
 
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre -UPDATED-
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral -UPDATED-
-3,Cattedrale di Santa Maria del Fiore,43.773251,11.255474,Florence Cathedral
+id, name, city, lat, lon, note
+1, Coliseum,Rome, 41.8902614, 12.4930871, Also known as the Flavian Amphitheatre -UPDATED-
+2, Duomo, Milan, 45.464278, 9.190596, Milan Cathedral -UPDATED-
+3, Cattedrale di Santa Maria del Fiore, 43.773251, 11.255474, Florence Cathedral
 ```
 
 To update existing documents *and* add new ones, add the `upsert=true` query parameter:
@@ -191,10 +191,10 @@ To update existing documents *and* add new ones, add the `upsert=true` query par
 POST /csv?db=restheart&coll=poi&id=0&update=true&upsert=true HTTP/1.1
 Content-Type: text/csv
 
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
-3,Cattedrale di Santa Maria del Fiore,43.773251,11.255474,Florence Cathedral
+id, name, city, lat, lon, note
+1, Coliseum, Rome, 41.8902614, 12.4930871, Also known as the Flavian Amphitheatre
+2, Duomo, Milan, 45.464278, 9.190596, Milan Cathedral
+3, Cattedrale di Santa Maria del Fiore, 43.773251, 11.255474, Florence Cathedral
 ```
 
 ### Apply a transformer
@@ -213,9 +213,9 @@ The CSV format allows creating flat documents. The transformer modifies the requ
 POST /csv?db=restheart&coll=poi&id=0&update=true&transformer=GeoJSONTransformer HTTP/1.1
 Content-Type: text/csv
 
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
+id, name, city, lat, lon, note
+1, Coliseum, Rome, 41.8902614, 12.4930871, Also known as the Flavian Amphitheatre
+2, Duomo, Milan, 45.464278, 9.190596, Milan Cathedral
 ```
 
 The `GeoJSONTransformer` is the name of a custom transformer that must me packaged with RESTHeart. It transforms the latitude and longitude coordinates into a <a href="https://geojson.org/" target="_blank">GeoJson</a> object.
