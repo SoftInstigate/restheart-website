@@ -19,7 +19,7 @@ title: Upload CSV files
 
 ## Introduction
 
-A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. A CSV file stores tabular data (numbers and text) in plain text. Each line of the file is a data record. Each record consists of one or more fields, separated by commas. The use of the comma as a field separator is the source of the name for this file format.
+_A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. A CSV file stores tabular data (numbers and text) in plain text. Each line of the file is a data record. Each record consists of one or more fields, separated by commas. The use of the comma as a field separator is the source of the name for this file format._
 
 The CSV file format is supported by almost all spreadsheets and database management systems, including Microsoft Excel, Apple Numbers, LibreOffice Calc, and Apache OpenOffice Calc.
 
