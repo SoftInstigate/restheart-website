@@ -64,9 +64,9 @@ We are going to use the following example file `POI.csv`:
 
 {: .black-code }
 ```
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
+id, name, city, lat, lon, note
+1, Coliseum, Rome, 41.8902614, 12.4930871, Also known as the Flavian Amphitheatre
+2, Duomo, Milan, 45.464278, 9.190596, Milan Cathedral
 ```
 
 To import the `POI.csv` into the collection `poi`, run the following:
