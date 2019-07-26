@@ -127,7 +127,7 @@ $ docker-compose stop
 $ docker-compose start
 ```
 
-Complete logs, also of theMongoDB instance, are available using the followong command
+Complete logs, also of the MongoDB instance, are available using the following command
 
 {: .black-code}
 ```
