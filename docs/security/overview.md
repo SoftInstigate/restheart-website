@@ -9,7 +9,6 @@ title: Security Overview
 * [Features](#features)
 * [Use Cases](#use-cases)
 * [How it works](#how-it-works)
-* [Configuration](#configuration)
 * [Tutorial](#tutorial)
 * [Understanding restheart-security](#understanding-restheart-security)
 
