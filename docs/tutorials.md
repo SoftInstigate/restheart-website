@@ -39,7 +39,7 @@ title: Tutorials
 </div>
 
 ## From the Team
-* [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication and RESTHeart. 
+* [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart. 
 
 * [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database. 
 
