@@ -5,7 +5,7 @@ title: Development Best Practices
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [restheart-core](#rrestheart-core)
+* [restheart-core](#restheart-core)
 * [restheart-security](#restheart-security)
     * [Interacting with the HttpServerExchange object](#interacting-with-the-httpserverexchange-object)
     * [How to send the response](#how-to-send-the-response)
