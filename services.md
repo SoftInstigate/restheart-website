@@ -34,23 +34,28 @@ permalink: /services.html
 </div>
 
 <div class="row jumbotron bg-white">
-    <div class="col-6">
+    <div class="col-4">
         <h2>Prepaid model</h2> 
         <div class="mb-1">Service starts with a 80 hours balance, valid for 12 months.</div>
         <div class="mb-1">When a task request is resolved, the worked time is deducted from the balance.</div>
         <div>At any time the customer can top up the balance thus extending the service.</div>
     </div>
-    <div class="col-6">
+    <div class="col-4">
         <h2>On demand</h2>
         <p class="mb-1">We offer tailored T&M activities for special needs.</p>
-        <p>Delivered in chunks of minimum 8 hours.</p>
+        <p>Delivered in chunks of minimum 4 hours.</p>
+    </div>
+    <div class="col-4">
+        <h2>Special pricing</h2>
+        <p class="mb-1">For educational institutions & non-profits.</p>
+        <p>Contact us if you are an educational institution or a non-profit organization and we can offer discounts on both licenses and services.</p>
     </div>
 </div>
 
 <div class="alert" role="alert">
     <h2 class="display-4">Free support</h2>
     <p class="lead">
-        RESTHeart team offers free support via Stackoverflow and Github
+        RESTHeart team offers free support via StackOverflow and Github
     </p>
     <hr class="mt-1 mb-5">
     <h2>
