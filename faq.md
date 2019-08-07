@@ -16,6 +16,7 @@ title: Frequently Asked Questions
 * [Derivative Work distribution](#distribute-derivative-work)
 * [*Disclose source* AGPL condition over Commercial License](#commercial-license-overcome-disclose-source)
 * [Is RESTHeart fully open source?](#letter-to-os-users)
+* [What about educational institutions and non-profit organization?](#non-profit-customers)
 
 </div>
 <div markdown="1" class="col-12 col-lg-7 py-md-3 bf-content">
@@ -129,6 +130,16 @@ Yes, RESTHeart is and will always be open source software. RESTHeart is distribu
 _"The GNU Affero General Public License is designed specifically to ensure that, in such cases, the modified source code becomes available to the community. It requires the operator of a network server to provide the source code of the modified version running there to the users of that server. Therefore, public use of a modified version, on a publicly accessible server, gives the public access to the source code of the modified version."_
 
 There are [editions](/editions) of RESTHeart that are distributed under a commercial license. The reason is to offer additional, paid-only features which, usually, interests a minority of users, to help financing the development of this project.
+
+<div class="anchor-offset" id="non-profit-customers">
+</div>
+
+{: .alert.alert-info.mt-4}
+Educational institutions and non-profit organizations 
+
+Educational institutions and non-profit organizations are often asked to do a lot with only a small budget. We are happy to help you on this case, please contact us to assess your situation. 
+
+This mean we can assist in using the open source version of the product more effectively, or provide discounts for the commercial editions, if that's what you need.
 
 <div class="mb-5">&nbsp;</div>
 </div>
