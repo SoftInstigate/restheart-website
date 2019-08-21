@@ -59,7 +59,7 @@ permalink: /services.html
     </p>
     <hr class="mt-1 mb-5">
     <h2>
-        <a href="https://github.com/SoftInstigate/restheart/issues/new" class="btn btn-primary mr-3">Report an issue</a> on github
+        <a href="https://github.com/SoftInstigate/restheart/issues/new" class="btn btn-primary mr-3">Report an issue</a> on Github
     </h2>
     <h2>
         <a href="https://stackoverflow.com/questions/tagged/restheart" class="btn btn-primary mr-3">Ask a question</a> on StackOverflow using the tag <i>restheart</i>
