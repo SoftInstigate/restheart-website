@@ -1,12 +1,11 @@
 ---
 layout: docs
 title: Docker
-
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [How to run RESTHeart with Docker](#how-to-run-restheart-with-docker)
+- [How to run RESTHeart 3 with Docker](#how-to-run-restheart-3-with-docker)
 - [Quick Start with Docker Compose](#quick-start-with-docker-compose)
   - [If something is not working](#if-something-is-not-working)
   - [Modify the configuration for the RESTHeart container](#modify-the-configuration-for-the-restheart-container)
@@ -27,8 +26,7 @@ title: Docker
 
 {% include docs-head.html %} 
 
-
-## How to run RESTHeart with Docker
+## How to run RESTHeart 3 with Docker
 
 Note that you need to know a bit of [Docker](https://docs.docker.com) and [Docker Compose](https://docs.docker.com/compose/) to follow these instructions. Alternatively, you can scroll down and read how to run RESTHeart directly on a server.
 
@@ -58,6 +56,8 @@ $ docker-compose up -d
 Open the the following URL: 
 
 __[localhost:8080/browser](http://localhost:8080/browser)__
+
+> **NOTE**: The HAL browser has been removed from RESTHeart 4, these instructions are for RESTHeart 3 only.
 
 Insert the default admin credentials, which are:
 
