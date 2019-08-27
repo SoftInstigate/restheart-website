@@ -276,13 +276,13 @@ title: Editions
           <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
+          <a class="d-block" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
+          <a class="d-block" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform EE</strong></a>
         </th>
         <th class="compare-heading restheart-version p-3">
-          <a class="d-block" href="{{ "faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
+          <a class="d-block" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform OEM</strong></a>
         </th>
       </tr>
     </thead>
