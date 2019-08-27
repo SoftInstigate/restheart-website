@@ -215,6 +215,28 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
+        <td colspan="4"><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
+      </tr>
+      <tr>
+        <td><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
+        <td></td>
+        <td></td>
+        <td><span class="restheart-red">✔</span></td>
+        <td><span class="restheart-red">✔</span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td colspan="4">Azure Cosmos DB support</td>
+      </tr>
+      <tr>
+        <td>Azure Cosmos DB support</td>
+        <td></td>
+        <td></td>
+        <td><span class="restheart-red">✔</span></td>
+        <td><span class="restheart-red">✔</span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
         <td colspan="4">Access Manager with DSL permissions on MongoDB<</td>
       </tr>
       <tr class="compare-row">
