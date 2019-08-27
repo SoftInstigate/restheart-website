@@ -10,7 +10,7 @@ title: Editions
     <thead>
       <tr>
         <th class="tl tl2"></th>
-        <th colspan="3" class="qbse">
+        <th colspan="4" class="qbse">
           <strong>Features</strong>
         </th>
         <th colspan="1" style="border-right: 0; border-top: 0">
@@ -19,11 +19,7 @@ title: Editions
       <tr>
         <th class="tl"></th>
         <th class="compare-heading p-3">
-          <div class="d-flex flex-column flex-md-row justify-content-center mb-2 w-100">
-            <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
             <a class="mt-auto" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
-          </div>
-          <a style="font-weight: 100" href="{{ "/faq/#letter-to-os-users" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
           <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
@@ -252,7 +248,6 @@ title: Editions
 </div>
 </div>
 
-
 <div class="editions-matrix mt-5">
     <div class="comparison">
 
@@ -260,7 +255,7 @@ title: Editions
     <thead>
       <tr>
         <th class="tl tl2"></th>
-        <th colspan="3" class="qbse">
+        <th colspan="4" class="qbse">
           <strong>Licensing, Pricing, Purchase</strong>
         </th>
         <th colspan="1" style="border-right: 0; border-top: 0">
@@ -273,7 +268,6 @@ title: Editions
             <div><a href="https://github.com/SoftInstigate/restheart"><img class="img-fluid mr-md-2" src="/images/octocat.png" width="20"></a></div>
             <a class="mt-auto" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>OSS</strong> </a>
           </div>
-          <a style="font-weight: 100" href="{{ "/faq" | prepend: site.baseurl }}">Letter to OS Users</a>
         </th>
         <th class="compare-heading restheart-version p-3">
           <a class="d-block" href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}"><strong>Platform PE</strong></a>
