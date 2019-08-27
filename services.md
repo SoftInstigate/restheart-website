@@ -52,9 +52,9 @@ permalink: /services.html
 </div>
 
 <div class="alert" role="alert">
-    <h2 class="display-4">Free support</h2>
+    <h2 class="display-4">Open source support</h2>
     <p class="lead">
-        RESTHeart team offers free support via StackOverflow and Github
+        RESTHeart team offers best effort support for the open source edition via StackOverflow and GitHub. Dedicated support is available to paying customers for the Professional and Enterprise editions. 
     </p>
     <hr class="mt-1 mb-5">
     <h2>
