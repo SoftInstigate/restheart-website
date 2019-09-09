@@ -13,7 +13,7 @@ permalink: /support
     </p>
     <ul class="fa-ul">
         <li><span class="fa-li fa fa-dollar-sign font-weight-light"></span>FREE</li>
-        <li><span class="fa-li fa fa-hourglass font-weight-light"></span>Every Monday, 11-12am Eastern Standard Time. <a class="small" href="https://www.thetimezoneconverter.com/?t=11%3A00%20am&tz=Eastern%20Standard%20Time%20(EST)&" target="_black">Check on your local time</a></li>
+        <li><span class="fa-li fa fa-hourglass font-weight-light"></span>Every Monday, 11-12am Eastern Standard Time. <a class="small" href="https://www.thetimezoneconverter.com/?t=11%3A00%20am&tz=Eastern%20Standard%20Time%20(EST)&" target="_black">Start time on your time zone</a></li>
         <li><span class="fa-li fa fa-envelope font-weight-light"></span>Open to the Public, please <a href="mailto:ask@restheart.org?subject=Happy%20Hour%20RSVP">email to confirm</a></li>
         <li><span class="fa-li fa fa-video font-weight-light"></span><a href="https://whereby.com/restheart" target="_blank">Click here</a> to join. Works best in Chrome and Firefox.
         </li>
