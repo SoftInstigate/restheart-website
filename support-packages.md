@@ -1,5 +1,5 @@
 ---
 layout: redirect
-redirectUrl: /services.html
+redirectUrl: /support
 permalink: /support-packages.html
 ---

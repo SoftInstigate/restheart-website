@@ -23,6 +23,11 @@ layout: default
     </div>
 </div>
 
+<div class="jumbotron jumbotron-fluid bg-red text-white text-center mt-5">
+    <div class="lead">Join us on our weekly Happy Hour video chat.</div>
+    <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
+</div>
+
 <section id="usecases" class="slice bg-light">
     <div class="container-fluid">
         <h1 class="text-center">Use Cases</h1>

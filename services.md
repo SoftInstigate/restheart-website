@@ -1,8 +1,9 @@
 ---
-layout: page
-title: Professional Services
-permalink: /services.html
+layout: redirect
+redirectUrl: /support
+permalink: /services
 ---
+<<<<<<< HEAD
 
 <div class="alert" role="alert">
     <h2 class="display-4">First class Service</h2>
@@ -64,3 +65,5 @@ permalink: /services.html
         <a href="https://stackoverflow.com/questions/tagged/restheart" class="btn btn-primary mr-3">Ask a question</a> on StackOverflow using the tag <i>restheart</i>
     </h2>
 </div>
+=======
+>>>>>>> Add happy hour support offer
