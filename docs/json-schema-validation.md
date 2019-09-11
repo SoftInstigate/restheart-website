@@ -26,7 +26,7 @@ documentation](https://docs.mongodb.com/manual/core/document-validation/))
 and this is supported by RESTHeart.
 
 On top of this, RESTHeart provides a more general approach for
-validation based on [Request Checkers](/learn/request-checkers): a Request
+validation based on [Checkers](/docs/checkers/):
 Checker can verify write requests based on any condition.
 
 RESTHeart provides "out of the box" the *jsonSchema* Request Checker

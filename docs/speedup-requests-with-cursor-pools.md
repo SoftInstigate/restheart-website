@@ -31,12 +31,12 @@ In common scenarios, RESTHeart's db cursor pre-allocation engine allows
 to deliver brilliant performances, even up to a 1000% increase over
 querying MongoDB directly with its Java driver.
 
-Refer to the [Performances](/learn/performances) section for more information
+Refer to the [Performances](/docs/performances) section for more information
 and real case results.
 
 Let's first clarify the issue addressed by the engine.
 
-RESTHeart allows to [query documents](/learn/query-documents) via GET requests
+RESTHeart allows to [Read Documents](/docs/read-docs/) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 

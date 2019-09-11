@@ -6,6 +6,7 @@ title: Development Best Practices
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [restheart-core](#restheart-core)
+  * [Get the MongoClient](#get-the-mongoclient)
 * [restheart-security](#restheart-security)
     * [Interacting with the HttpServerExchange object](#interacting-with-the-httpserverexchange-object)
     * [How to send the response](#how-to-send-the-response)
@@ -21,6 +22,14 @@ title: Development Best Practices
 
 {:.alert.alert-warning}
 work in progress
+
+### Get the MongoClient
+
+{: .black-code}
+``` java
+// get the MongoClient
+MongoClient client = MongoDBClientSingleton.getInstance().getClient();
+```
 
 ## restheart-security
 

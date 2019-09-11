@@ -30,7 +30,7 @@ documentation section). 
 collection, so that it automatically adds the links to related documents
 in its representation.**
 
-As discussed in the [Representation Format](/learn/representation-format)
+As discussed in the [Representation Format](/docs/representation-format)
 section, RESTHeart uses
 the [HAL+json](https://stateless.co/hal_specification.html) hypermedia
 format. HAL builds up on 2 simple concepts: **Resources** and **Links**
