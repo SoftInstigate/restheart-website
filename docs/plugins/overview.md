@@ -43,7 +43,7 @@ The following table lists the different types of Plugins of `restheart-platform-
 
 ## Available Plugins
 
-RESTHeart Platform is shipped with some general purpose Plugins. For a complete list of availabe Plugins please refer to [Available Plugins](/docs/plugins/list/).
+RESTHeart Platform is shipped with some general purpose Plugins. For a complete list of available Plugins please refer to [Available Plugins](/docs/plugins/list/).
 
 You can also develop and add your own Plugins. For more information refer to [Develop Core Plugins](/docs/develop/core-plugins/)
 
@@ -63,7 +63,7 @@ Registered service pingService: Ping service
 Registered transformer filterProperties: Filters out a the properties specified by the args property of the transformer metadata object.
 Registered transformer oidsToStrings: Replaces ObjectId with strings.
 Registered transformer addRequestProperties: Adds properties to the request body
-Registered transformer oidsToStrings: Replaces strings that are valid ObjectIds with ObjectIds.
+Registered transformer stringsToOids: Replaces strings that are valid ObjectIds with ObjectIds.
 Registered transformer writeResult: Adds a body to write responses with updated and old version of the written document.
 Registered hook snooper: An example hook that logs request and response info
 Registered checker checkContentSize: Checks the request content length
