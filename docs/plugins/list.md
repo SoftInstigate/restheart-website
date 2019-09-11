@@ -7,6 +7,10 @@ title: List of available Plugins
 
 * [Introduction ](#introduction)
 * [List of plugins](#list-of-plugins)
+* [Inject properties with addRequestProperties](#inject-properties-with-addRequestProperties)
+* [Filter out properties with filterProperties](#Filter-out-properties with-filterProperties)
+* [schema-validation-with-checkContent](#schema-validation-with-checkContent)
+* [Limiting file size with checkContentSize](#limiting-file-size-with-checkContentSize)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -34,7 +38,7 @@ This page lists the plugins available out of the box in RESTHeart Platform.
 |**checkContent**|Checker|Checks the request content by using conditions based on json path expressions|`{ "checkers": [ { "name": "checkContent","args": [ { "path": "$", "type": "object", "mandatoryFields": [ "email", "password", "roles", "description" ], "optionalFields": [ "_id", "_etag" ] } ], "skipNotSupported": true } ]}`|
 |**jsonSchema**|Checker|Checks the request according to the specified JSON schema. More info at [JSON Schema Validation](/docs/json-schema-validation/)|`{ "checkers": [ { "name": "jsonSchema", "args": { "schemaId": "inventory", "schemaStoreDb": "restheart" } } ] }`|
 
-## Inject properties with addRequestProperties transformer
+## Inject properties with addRequestProperties
 
 *addRequestProperties* is a transformer shipped with RESTHeart that
 allows to add some properties to the resource state.
@@ -91,7 +95,7 @@ HTTP/1.1 201 Created
 
 {: .black-code}
 ```
-GET /rtsexample/mydoc
+GET /rtsexample/mydoc HTTP/1.1
 
 HTTP/1.1 200 OK
 {
@@ -103,7 +107,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-## Filter out properties with *filterProperties* transformer
+## Filter out properties with filterProperties
 
 *filterProperties* is a transformer shipped with RESTHeart that allows
 to filter out a the properties specified via the *args* property of the
@@ -123,7 +127,7 @@ PUT /filterExample HTTP/1.1
 {"rts":[{"name":"filterProperties", "phase":"RESPONSE", "scope":"CHILDREN", "args":["secret"]}]}
 ```
 
-## Schema validation with checkContent checker
+## Schema validation with checkContent
 
 *checkContent* is a checker shipped with RESTHeart that allows to
 enforce a schema to the documents of a collection.
