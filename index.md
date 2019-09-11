@@ -5,7 +5,7 @@ layout: default
 <section id="top">
     <div class="container text-center header pb-3">
         <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="256">
-        <p class="header__desc">The REST API for MongoDB</p>
+        <p class="header__desc">The Content REST API for MongoDB</p>
         <h2 class="header__title">Build applications faster, no coding required.</h2>
     </div>
 </section>
@@ -24,7 +24,7 @@ layout: default
 </div>
 
 <div class="jumbotron jumbotron-fluid bg-red text-white text-center mt-5">
-    <div class="lead">Join us on our weekly Happy Hour video chat.</div>
+    <div class="lead">Join us on our weekly <strong>Happy Hour</strong> video chat about RESTHeart.</div>
     <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
 </div>
 
