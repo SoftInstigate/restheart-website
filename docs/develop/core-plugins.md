@@ -262,7 +262,7 @@ For implementation examples refer to the package [org.restheart.plugins.transfor
 {:.alert.alert-warning}
 work in progress
 
-Request Checkers feature allows to check the request so that, if
+Checkers allows to check the request so that, if
 it does not fulfill some conditions, it returns *400 BAD REQUEST*
 response code thus enforcing a well defined structure to documents.
 
