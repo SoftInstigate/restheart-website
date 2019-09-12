@@ -7,6 +7,7 @@ title: Representation Format
 
 - [Introduction](#introduction)
 - [Standard Representation](#standard-representation)
+    - [Json Mode](#json-mode)
 - [BSON types](#bson-types)
 - [Get the names of existing collections](#get-the-names-of-existing-collections)
 - [HAL](#hal)
@@ -121,6 +122,144 @@ HTTP/1.1 200 OK
     ...
 }
 
+```
+
+### JSON Mode
+
+{: .alert.alert-info}
+JSON Mode is available from RESTHeart Platform v4.1
+
+JSON can only directly represent a subset of the types supported by BSON. To preserve type information, RESTHeart adds the following extensions to the JSON format.
+
+The query parameter `jsonMode` allows to specify the JSON Mode
+
+{: .table.table-responsive}
+|jsonMode|Description|
+|-|-|
+|none|Standard RESTHeart representation|
+|STRICT|JSON representation with type information for specific cases|
+|EXTENDED|Extended JSON representation with full type information|
+|RELAXED|Standard relaxed extended JSON representation|
+|SHELL|This output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results|
+
+#### Standard RESTHeart representation
+
+{: .black-code}
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+```
+
+#### Strict representation
+
+{: .black-code}
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+```
+
+#### Extended representation
+
+{: .black-code}
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended HTTP/1.1
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": {
+        "$numberInt": "1"
+    },
+    "b": {
+        "$numberDouble": "1.0"
+    },
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": {
+            "$numberLong": "1568295769260"
+        }
+    }
+}
+```
+
+#### Relaxed representation
+
+{: .black-code}
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed HTTP/1.1
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a6c61bd8a0d69516bbf55"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": "2019-09-12T13:42:49.26Z"
+    }
+}
+```
+
+#### Shell representation
+
+{: .bs-callout.bs-callout-success }
+SHELL JSON Mode is very useful since it **allows to use the response body directly in the mongoshell!**
+
+{: .black-code}
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell HTTP/1.1
+
+HTTP/1.1 200 OK
+
+Content-Type: application/javascript
+
+{"_id":ObjectId("5d7a4b59cf6eeb5fb1686613"),"_etag":ObjectId("5d7a6d13bd8a0d69516bbf56"),"timestamp":ISODate("2019-09-12T13:42:49.260Z"),"a":1,"b":1.0,"big":NumberLong("1568295769260"),"verybig":NumberLong("5887391606")}
 ```
 
 ## BSON types
