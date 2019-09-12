@@ -88,16 +88,19 @@ This will better clarify the legal implications of developing your custom extens
 
 ## RESTHeart Platform 5.0
 
-### Admin Web App
+### RESTHeart Platform Studiop
 
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
-    <p>The admin Web App will be available only on RESTHeart Platform.</p>
+    <p>The RESTHeart Platform Studio Web App will be available only on RESTHeart Platform.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
 </div>
 
-The new service `restheart-platform-admin` will added to RESTHeart Platform. This is a web application to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
+The new service `restheart-platform-studio` will added to RESTHeart Platform. This is a web application:
+
+- for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
+- for users: to manage and publishing content through forms
 
 ![](/images/restheart-platform-admin-preview.png){:
 width="800" height="auto" class="mx-auto d-block img-responsive"}
