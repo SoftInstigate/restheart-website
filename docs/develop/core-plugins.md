@@ -20,8 +20,6 @@ title: Develop Core Plugins
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction 
 
 This page provides detailed information on how to develop core plugins for the [RESTHeart Platform](https://restheart.org/get).
@@ -247,32 +245,217 @@ plugins-args:
 
 ## Transformers
 
-{:.alert.alert-warning}
-work in progress
-
+{: .bs-callout.bs-callout-info}
 Transformers allow to transform the request or the response. 
-For instance, a Transformer can be used to:
-- filtering out from the response the *password* property of the `/db/users` resource
+
+Examples of Transformers are:
+- filtering out from the response sensitive properties;
 - adding the `filter={"visibility":"public"}` query parameter to requests limiting the client visibility on documents.
 
+{: .bs-callout.bs-callout-info}
 For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/transformers)
+
+A transformer is a java class that implements the
+interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Transformer.java). 
+
+{: .black-code}
+``` java
+    /**
+     * contentToTransform can be directly manipulated or
+     * RequestContext.setResponseContent(BsonValue value) for response phase and
+     * RequestContext.setContent(BsonValue value) for request phase can be used
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToTransform the content data to transform
+     * @param args the args sepcified in the collection metadata via args
+     * property property
+     */
+    void transform(
+            final HttpServerExchange exchange,
+            final RequestContext context,
+            BsonValue contentToTransform,
+            final BsonValue args);
+
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToTransform the content data to transform
+     * @param args the args sepcified in the collection metadata via args
+     * property
+     * @param confArgs the args specified in the configuration file via args
+     * property
+     */
+    default void transform(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue contentToTransform,
+            final BsonValue args,
+            BsonValue confArgs) {
+        transform(exchange, context, contentToTransform, args);
+    }
+}
+```
+{: .bs-callout.bs-callout-info}
+The default, 5 arguments, method `transform()` can be used to store the argument `confArgs` in a instance variable when the Transformer needs the arguments specified via the configuration file
+
+The following code, is an example transformer that adds the property *_timestamp* to the response body.
+
+{: .black-code}
+``` java
+import io.undertow.server.HttpServerExchange;
+import org.bson.BsonInt64;
+import org.bson.BsonValue;
+import org.restheart.handlers.RequestContext;
+import org.restheart.plugins.Transformer;
+
+package com.whatever;
+
+@RegisterPlugin(name = "myTransformer",
+        description = "Add _timestamp to the body")
+public class MyTransformer implements Transformer {
+    tranform(final HttpServerExchange exchange, 
+        final RequestContext context, 
+        BsonValue contentToTransform, 
+        final BsonValue args) {
+          if (contentToTransform != null && contentToTransform.isDocument()){
+            contentToTransform.asDocument().put("_timestamp", 
+                  new BsonInt64(System.currentTimeMillis()));
+          }
+    }
+}
+```
 
 ## Checkers
 
-{:.alert.alert-warning}
-work in progress
-
+{: .bs-callout.bs-callout-info}
 Checkers allows to check the request so that, if
 it does not fulfill some conditions, it returns *400 BAD REQUEST*
 response code thus enforcing a well defined structure to documents.
 
+{: .bs-callout.bs-callout-info}
 For implementation examples refer to the package [org.restheart.plugins.checkers](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/checkers)
+
+A checker is a java class that implements the
+interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Checker.java).
+
+  
+{: .black-code}
+``` java
+    public interface Checker extends Plugin {
+    enum PHASE {
+        BEFORE_WRITE,
+        AFTER_WRITE // for optimistic checks, i.e. document is inserted and in case rolled back
+    };
+
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToCheck the contet to check
+     * @param args the args sepcified in the collection metadata via args
+     * @return true if check completes successfully
+     */
+    boolean check(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonDocument contentToCheck,
+            BsonValue args);
+
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs the args specified in the configuration file via args property
+     * @return true if check completes successfully
+     */
+    default boolean check(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonDocument contentToCheck,
+            BsonValue args,
+            BsonValue confArgs) {
+        return check(exchange, context, contentToCheck, args);
+    }
+
+    /**
+     * Specify when the checker should be performed: with BEFORE_WRITE the
+     * checkers gets the request data (that may use the dot notation and update
+     * operators); with AFTER_WRITE the data is optimistically written to the db
+     * and rolled back eventually. Note that AFTER_WRITE helps checking data
+     * with dot notation and update operators since the data to check is
+     * retrieved normalized from the db.
+     *
+     * @param context
+     * @return BEFORE_WRITE or AFTER_WRITE
+     */
+    PHASE getPhase(RequestContext context);
+
+    /**
+     *
+     * @param context
+     * @return true if the checker supports the requests
+     */
+    boolean doesSupportRequests(RequestContext context);
+}
+```
+
+{: .bs-callout.bs-callout-info}
+The default, 5 arguments, method `check()` can be used to store the argument `confArgs` in a instance variable when the Checker needs the arguments specified via the configuration file
+
+If the checker cannot process the request, the method `doesSupportRequests()` should return false. This allows to skip executing the checker. The class `CheckersUtils` provides some helper method to check the type of the request, e.g `CheckersUtils.isBulkRequest()`.
+
+When a checker does not support a request, the outcome depends on the attribute `skipNotSupported` of the checker definition (see [Apply a Checker via metadata](/docs/plugins/apply/#apply-a-checker-via-metadata) and [Apply a Checker programmatically](/docs/plugins/apply/#apply-a-checker-programmatically)); when `skipNotSupported=true`, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.
+
+The following code, is an example checker that checks if the
+*number* property in PATCH request body is between 0 and 10.
+
+{: .black-code}
+``` java
+package com.whatever;
+
+@RegisterPlugin(
+        name = "checkNumber", 
+        description = "Checks if number property is between 0 and 10 on PATCH requests")
+public class MyChecker implements Checker {
+    @Override
+    boolean check(HttpServerExchange exchange, RequestContext context, BsonValue args) {
+        // return true if request is not a PATCH or request body does not contain the property number
+        if (context.getMethod() != RequestContext.METHOD.PATCH
+                || context.getContent() == null
+                || !context.getContent().isDocument()
+                || !context.getContent().asDocument().containsKey("number")) {
+            return true;
+        }
+
+        BsonValue _value = context.getContent().asDocument().get("number");
+        
+        if (_value != null && _value.isNumber()) {
+            Integer value = _value.asInt32().getValue();
+            
+            return value < 10 && value > 0;
+        } else {
+            return false; // BAD REQUEST
+        }
+    }
+
+    @Override
+    public PHASE getPhase(RequestContext context) {
+        return PHASE.BEFORE_WRITE;
+    }
+
+    @Override
+    public boolean doesSupportRequests(RequestContext context) {
+        return true;
+    }
+}
+```
 
 ## Hooks
 
-{:.alert.alert-warning}
-work in progress
-
+{: .bs-callout.bs-callout-info}
 Request Hooks allow to execute custom code after a request completes.
 
 For example, request hooks can be used:
@@ -281,4 +464,108 @@ For example, request hooks can be used:
 -   to send push notifications when a resource is updated so that its
     properties satisfy a given condition.
 
+{: .bs-callout.bs-callout-info}
 For implementation examples refer to the package [org.restheart.plugins.hooks](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/hooks)
+
+Hooks are developed implementing the java
+interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Hook.java).
+
+
+The Hook interface requires to implement the following interface:
+
+{: .black-code}
+``` java
+public interface Hook extends Plugin {
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @return true if completed successfully
+     */
+    default boolean hook(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue args) {
+        return hook(exchange, context, args, null);
+    }
+        
+
+    /**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs args specified in the configuration file via args property
+     * @return true if completed successfully
+     */
+    default boolean hook(
+            HttpServerExchange exchange,
+            RequestContext context,
+            BsonValue args,
+            BsonDocument confArgs) {
+        return hook(exchange, context, args);
+    }
+
+    /**
+     *
+     * @param context
+     * @return true if the hook supports the requests
+     */
+    boolean doesSupportRequests(RequestContext context);
+}
+```
+
+{: .bs-callout.bs-callout-info}
+The default, 4 arguments, method `hook()` can be used to store the argument `confArgs` in a instance variable when the Checker needs the arguments specified via the configuration file
+
+The method `doesSupportRequests()` determines if the `hook()` method
+should be executed against the `RequestContext` object that
+encapsulates all information about the request.
+
+For instance, the following implementation returns `true` if the request
+actually *created* a document (either POSTing the collection or PUTing
+the document):
+
+{: .black-code}
+``` java
+@Override
+public boolean doesSupportRequests(RequestContext rc) {
+    if (rc.getDbOperationResult() == null) {
+            return false;
+        }
+
+    int status = rc.getDbOperationResult().getHttpCode();
+
+    return (status == HttpStatus.SC_CREATED
+            && (rc.isCollection() && rc.isPost())
+            || rc.isDocument() && rc.isPut());
+}
+```
+
+Note the following useful `RequestContext` getters:
+
+<table class="table table-responsive">
+  <thead>
+    <tr class="header">
+      <th><br />
+      </th>
+      <th><br />
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td>getDbOperationResult()</td>
+      <td>returns the <code>OperationResult</code> object that encapsulates the information about the MongoDB operation, including the resource status (properties) <em>before</em> and <em>after</em> the request execution.</td>
+    </tr>
+    <tr class="even">
+      <td>getType()</td>
+      <td>returns the request resource type, e.g. DOCUMENT, COLLECTION, etc.</td>
+      </tr>
+      <tr class="odd">
+      <td>getMethod()</td>
+      <td>returns the request method, e.g. GET, PUT, POST, PATCH, DELETE, etc.</td>
+    </tr>
+  </tbody>
+</table>
