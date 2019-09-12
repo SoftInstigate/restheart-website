@@ -88,7 +88,7 @@ This will better clarify the legal implications of developing your custom extens
 
 ## RESTHeart Platform 5.0
 
-### RESTHeart Platform Studiop
+### RESTHeart Platform Studio
 
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
