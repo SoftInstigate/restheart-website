@@ -20,6 +20,9 @@ title: Roadmap
 
 ## RESTHeart Platform 4.1
 
+{: .alert.alert-warning }
+Expected Release Date End of September / Early October
+
 ### rhAuthorizer 
 
 <div class="alert alert-info" role="alert">
@@ -55,6 +58,18 @@ Allow POST and GET requests on path `/inventory`for users having role `admin` o
 
 {: .bs-callout.bs-callout-info}
 The `filters` properties allow to apply a `filter` (automatically added to the specified filter query parameter) to read and write requests. **This allows to seamlessly partition data depending on user role**.
+
+### JSON_MODE 
+
+Allows specifying the `jsonMode` query parameter the representation between `EXTENDED` (Standard extended JSON representation), `RELAXED` (Standard relaxed extended JSON representation) and `SHELL` (this output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results);
+
+See RESTHeart Core [issue 350](https://github.com/SoftInstigate/restheart/issues/350)
+
+### Support parametric conf file 
+
+Add support of mustache parameters in `resthart-platform-security.yml` just like RESTHeart supports it in `restheart-platform-core.yml`
+
+See RESTHeart Security [feature request 1](https://github.com/SoftInstigate/restheart-security/issues/1)
 
 ## RESTHeart Platform 4.2
 
