@@ -149,10 +149,10 @@ title: Editions
       </tr>
       <tr class="compare-row">
         <td><a href="/support" class="text-dark"><strong>Support</strong></a></td>
-        <td>Only on github</td>
-        <td><span class="restheart-red">Bug fix</span></td>
-        <td><span class="restheart-red">Dedicated</span></td>
-        <td><span class="restheart-red">Custom Terms</span></td>
+        <td>Public, no SLA <a href="/support#free">free support</a></td>
+        <td><a class="restheart-red" href="/support">Priority Bugfixing</a></td>
+        <td><a class="restheart-red" href="/support">Dedicated</a></td>
+        <td><a class="restheart-red" href="/support">Tailored</a></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

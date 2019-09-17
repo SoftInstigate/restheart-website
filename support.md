@@ -57,7 +57,7 @@ permalink: /support
     </div>
 </div>
 
-<div class="alert" role="alert">
+<div id="free" class="alert" role="alert">
     <h1><span class="fab fa-github mr-2"></span>Free support</h1>
     <p class="lead">
         RESTHeart team offers best effort support for the open source edition via StackOverflow and GitHub. Dedicated support is available to paying customers for the Professional and Enterprise editions. 
