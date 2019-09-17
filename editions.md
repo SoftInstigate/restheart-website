@@ -145,6 +145,17 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
+        <td colspan="4"><a href="/support" class="text-dark">Support</a></td>
+      </tr>
+      <tr class="compare-row">
+        <td><a href="/support" class="text-dark"><strong>Support</strong></a></td>
+        <td>Only on github</td>
+        <td><span class="restheart-red">Bug fix</span></td>
+        <td><span class="restheart-red">Dedicated</span></td>
+        <td><span class="restheart-red">Custom Terms</span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
         <td colspan="4"><a href="/faq/#distribute-derivative-work" class="text-dark">Can use in closed source application</a></td>
       </tr>
       <tr class="compare-row">
@@ -213,7 +224,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
         <td></td>
         <td></td>
@@ -233,7 +244,7 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Access Manager with DSL permissions on MongoDB<</td>
+        <td colspan="4">Access Manager with DSL permissions on MongoDB</td>
       </tr>
       <tr class="compare-row">
         <td>Access Manager with DSL permissions on MongoDB</td>

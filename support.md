@@ -23,12 +23,14 @@ permalink: /support
 <div class="alert" role="alert">
     <h1><span class="far fa-check-circle text-success mr-2"></span>First class Support</h1>
     <p class="lead">
-        Dedicated support for production environments
+        Dedicated support for production environments from the RESTHeart Team. No one can help you better.
+    </p>
+    <p class="lead">
+        Included in the Enterprise Edition subscription.
     </p>
     <hr class="mt-1 mb-4">
     <p class="lead">
-        <a href="mailto:ask@restheart.org?subject=RESTHeart professional services inquiry" class="btn btn-primary mr-2">Get a quote</a>
-        No one can help you better.
+        <a href="mailto:ask@restheart.org?subject=RESTHeart support inquiry" class="btn btn-primary mr-2">Contact us</a>
     </p>
 </div>
 
