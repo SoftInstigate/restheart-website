@@ -147,8 +147,8 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/support" class="text-dark">Support</a></td>
       </tr>
-      <tr class="compare-row">
-        <td><a href="/support" class="text-dark"><strong>Support</strong></a></td>
+      <tr class="highlighted-row">
+        <td><a href="/support" class="highlighted-text">Support</a></td>
         <td>Public, no SLA <a href="/support#free">free support</a></td>
         <td><a class="restheart-red" href="/support">Priority Bugfixing</a></td>
         <td><a class="restheart-red" href="/support">Dedicated</a></td>
@@ -158,7 +158,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/faq/#distribute-derivative-work" class="text-dark">Can use in closed source application</a></td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td><a href="/faq/#distribute-derivative-work" class="text-dark">Can use in closed source application</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -169,7 +169,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/docs/security/authentication/#restheart-authenticator" class="text-dark">Identity Manager with users on MongoDB</a></td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td><a href="/docs/security/authentication/#restheart-authenticator" class="text-dark">Identity Manager with users on MongoDB</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -180,7 +180,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/docs/security/authentication/#jwt-authentication" class="text-dark">JWT Authentication</a></td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td><a href="/docs/security/authentication/#jwt-authentication" class="text-dark">JWT Authentication</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -191,7 +191,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/docs/change-streams/" class="text-dark">Change Streams</a></td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td><a href="/docs/change-streams/" class="text-dark">Change Streams</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -202,7 +202,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/docs/transactions/" class="text-dark">Transactions</a></td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td><a href="/docs/transactions/" class="text-dark">Transactions</a></td>
         <td></td>
         <td><span class="restheart-red">✔</span></td>
@@ -213,7 +213,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="/docs/clustering/" class="text-dark">Clustering</a></td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td><a href="/docs/clustering/" class="text-dark">Clustering</a></td>
         <td></td>
         <td></td>
@@ -224,7 +224,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4"><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td><a href="https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced" class="text-dark">Amazon DocumentDB support</a></td>
         <td></td>
         <td></td>
@@ -235,7 +235,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4">Azure Cosmos DB support</td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td>Azure Cosmos DB support</td>
         <td></td>
         <td></td>
@@ -246,7 +246,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4">Access Manager with DSL permissions on MongoDB</td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td>Access Manager with DSL permissions on MongoDB</td>
         <td></td>
         <td></td>
