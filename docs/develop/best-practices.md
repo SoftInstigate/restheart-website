@@ -43,9 +43,7 @@ For instance the following code snipped retrieves the request JSON content from 
 ```java
 HttpServerExchange exchange = ...;
 
-Request request = Request.wrap(exchange);
-
-if (request.isContentTypeJson()) {
+if (Request.isContentTypeJson(exchange)) {
   JsonElement content = JsonRequest.wrap(exchange).readContent();
 }
 ```

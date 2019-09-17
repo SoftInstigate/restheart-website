@@ -514,7 +514,7 @@ GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predica
 
 ## Interceptors
 
-Interceptors allows to snoop and modify request and responses.
+Interceptors allows to snoop and modify requests and responses.
 
 A Request Interceptor applies before the request is proxied or handled by a *Service* thus allowing to modify the request. Its implementation class must implement the interface `org.restheart.security.plugins.RequestInterceptor` .
 
