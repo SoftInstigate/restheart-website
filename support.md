@@ -53,7 +53,7 @@ permalink: /support
     <div class="col-lg-4 col-12 lead">
         <hr class="d-lg-none my-3"/>
         <p class="mb-1">For educational institutions & non-profits.</p>
-        <p>Contact us if you are an educational institution or a non-profit organization and we can offer discounts on both licenses and services.</p>
+        <p><a class="text-warning" href="/contact">Contact us</a> if you are an educational institution or a non-profit organization and we can offer discounts on both licenses and services.</p>
     </div>
 </div>
 
