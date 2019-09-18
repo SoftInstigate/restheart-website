@@ -3,11 +3,11 @@ layout: page-notitle
 title: Get RESTHeart Platform
 permalink: /get
 ---
-<div class="jumbotron bg-light mt-4">
+<div class="jumbotron bg-light mt-4 py-4">
 
 <form id="pre-checkout" novalidate class="was-validated">
-    <div class="form-row">
-        <h2 class="text-info">Get RESTHeart Platform</h2>
+    <div class="form-row text-center">
+        <p class="mx-auto display-4 restheart-red">Get <img width="30%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /> now!</p>
     </div>
     <hr class="my-4">
     <div class="form-row">
