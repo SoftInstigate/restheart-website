@@ -22,6 +22,7 @@ permalink: /get
         </div>
         <div class="col-12 my-0 d-none" id="qtn-tip">
             <div class="hint mt-2 text-muted"><small>Specify quantities during checkout.</small></div>
+            <div class="hint mt-2 text-muted"><small>Educational institution, non-profit organization, or low budget project? <a href="/contact">Get in touch</a> for a discount coupon.</small></div>
         </div>
     </div>
     <hr class="my-4">
