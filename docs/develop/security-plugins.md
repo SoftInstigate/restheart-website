@@ -481,9 +481,9 @@ The `PluginsRegistry` class allows to define Interceptors.
 RequestInterceptor requestInterceptor = ...;
 ResponseInterceptor responseIterceptor = ...;
 
-PluginsRegistry.getRequestInterceptors().add(requestInterceptor);
+PluginsRegistry.getInstance().getRequestInterceptors().add(requestInterceptor);
 
-PluginsRegistry.getResponseInterceptors().add(responseIterceptor);
+PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
 ```
 
 ### Defining Global Permission Predicates
