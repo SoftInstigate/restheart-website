@@ -48,6 +48,8 @@ if (Request.isContentTypeJson(exchange)) {
 }
 ```
 
+If you want to manipulate query parameters with a Request Interceptor, always use the Map `exchange.getQueryParameters()` or the method `exchange.addQueryParamter()` and `exchange.addQueryParamter()`. Do not update the query string directly: after Request Interceptors execution, the query string is rebuilt from the query parameters map, see [QueryStringRebuiler](https://github.com/SoftInstigate/restheart-security/blob/master/src/main/java/org/restheart/security/handlers/QueryStringRebuiler.java)
+
 ### How to send the response
 
 You just set the status code and the response content using helper classes `ByteArrayResponse` or `JsonResponse`. You don't need to send the response explicitly using low level `HttpServerExchange` methods, since the `ResponseSenderHandler` is in the processing chain and will do it for you.
