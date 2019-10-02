@@ -11,6 +11,7 @@ title: User Management
 * [Create a user](#create-a-user)
 * [Update a user](#update-a-user)
 * [Delete a user](#delete-a-user)
+* [Create an ACL document](#create-an-acl-document)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -20,6 +21,8 @@ title: User Management
 ## Introduction 
 
 This section provides instructions on how to create, update and delete users for the default [RESTHeart Authenticator](/docs/security/authentication/#restheart-authenticator).
+
+It also shows how to manage permissions for the default [RESTHeart Authorizer](/docs/security/authorization/#restheart-authorizer).
 
 {: .bs-callout.bs-callout-info}
 **RESTHeart Authenticator** uses the collection `/users` by default.
@@ -122,4 +125,35 @@ PATCH /users/foo HTTP/1.1
 {: .black-code}
 ```
 DELETE /users/foo HTTP/1.1
+```
+
+## Create an ACL document
+
+{% include code-header.html type="Request" 
+    link="http://restninja.io/share/5ee142fbb84071261e56fc7f1904af6430b0495f/0"
+%}
+
+{: .black-code}
+```
+POST /acl HTTP/1.1
+
+{
+  "predicate": "path-prefix[/inventory] and method[GET]",
+  "roles": [ "user" ],
+  "priority": 1,
+  "readFilter": null,
+  "writeFilter": null
+}
+```
+
+{: .bs-callout.bs-callout-info }
+If the /acl collection has not been created before and you get 404 Not Found, create if first with:
+
+{% include code-header.html type="Request" 
+    link="http://restninja.io/share/eff74b1879d09706d2d9a7bdaafb649a4415c9a2/0"
+%}
+
+{: .black-code}
+```
+PUT /acl HTTP/1.1
 ```
