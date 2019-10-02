@@ -209,7 +209,7 @@ auth-mechanisms:
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
-*RESTHeart Authenticator* authenticates users defined in a MongoDB collection, seamlessly connecting restheart-security with restheart-core.
+*RESTHeart Authenticator* authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
 
 {: .bs-callout.bs-callout-info }
 RESTHeart Authenticator is strong and battle tested and suggested for production use.
@@ -219,6 +219,7 @@ The configuration allows:
 - defining the collection to use (`users-collection-uri`), the properties of the user document to use as user id, password  and roles (`prop-id`, `prop-password` and `json-path-roles`).
 - enabling hashed password using the strong bcrypt hashing algorithm (`bcrypt-hashed-password` and `bcrypt-complexity`); note that the password is automatically hashed on write requests and that the password property is automatically removed from responses.
 - allows initializing the users collection and the admin user if not existing. See `create-user` option.
+- allows controlling the users caching.
 
 {: .black-code}
 ``` yml
@@ -242,7 +243,6 @@ authenticators:
         cache-ttl: 60000
         cache-expire-policy: AFTER_WRITE
 ```
-
 
 ### Simple File Authenticator
 
