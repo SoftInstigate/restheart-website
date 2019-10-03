@@ -9,28 +9,32 @@ title: JSON Schema Validation
 * [The Schema Store and Schema resources](#the-schema-store-and-schema-resources)
 * [Document validation](#document-validation)
 * [Example](#example)
+* [Limitations](#limitations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
-MongoDB is *schemaless*, JSON documents of any format can be stored in
-collections. Starting from MongoDB version 3.2 rules-based validation is
-available to enforce a format to documents (more in the  [MongoDB
-documentation](https://docs.mongodb.com/manual/core/document-validation/))
-and this is supported by RESTHeart.
+RESTHeart supports MongoDB schema validation to enforce a format to documents: rules-based validation from MongoDB 3.2 and Json Schema validation from MongoDB 3.6, more in the [MongoDB documentation](https://docs.mongodb.com/manual/core/schema-validation).
 
 On top of this, RESTHeart provides a more general approach for
-validation based on [Checkers](/docs/checkers/):
-Checker can verify write requests based on any condition.
+validation based on [Checkers](/docs/checkers/) that can verify  write requests based on any condition.
 
-RESTHeart provides "out of the box" the *jsonSchema* Request Checker
+RESTHeart provides "out of the box" the *jsonSchema* Checker
 that validates the body of write requests against a **JSON schema**.
+
+Compared to the internal MongoDB Json Schema validation, the *jsonSchema* Checker of RESTHeart provides additional advantages:
+
+- schemas are stored in a special collection, the schema store `/_schemas` and are validated
+- schemas can and can be reused on multiple collections
+- complex schemas can be defined using sub-schemas, i.e. using the [$ref](https://json-schema.org/understanding-json-schema/structuring.html) keyword
+- documents can be validated using schemas that available online
+- schemas are cached
+
+## JSON Schema
 
 > JSON Schema specifies a JSON-based format to define the structure of
 > JSON data for validation, documentation, and interaction control. A
@@ -51,13 +55,13 @@ must conform to the JSON schema format (specifically to the latest
 version draft-04)
 
 Schema Store are first class citizens in RESTHeart and the format of
-their URIs is `/<db>/_schemas`
+their URIs is `/_schemas`
 
 **Create the db schema store**
 
 {: .black-code}
 ```
-PUT /db/_schemas HTTP/1.1
+PUT /_schemas HTTP/1.1
 ```
 
 Schema resources are documents of the Schema Store. The following
@@ -65,7 +69,7 @@ request creates a valid JSON Schema.
 
 {: .black-code}
 ```
-PUT /db/_schemas/address HTTP/1.1
+PUT /_schemas/address HTTP/1.1
 
 {
     "$schema": "https://json-schema.org/draft-04/schema#",
@@ -89,13 +93,13 @@ can be noted in the response of the following GET request.
 
 {: .black-code}
 ```
-GET /db/_schemas/address HTTP/1.1
+GET /_schemas/address HTTP/1.1
 
 HTTP/1.1 200 OK
 
 {
     "$schema": "https://json-schema.org/draft-04/schema#", 
-    "id": "https://schema-store/test/address#", 
+    "id": "https://schema-store/restheart/address#", 
     "_id": "address",  
     ....
 }
@@ -103,12 +107,20 @@ HTTP/1.1 200 OK
 
 ## Document validation
 
-To apply the jsonSchema checker simply define the collection `checkers`
-metadata property as follows:
+To apply the jsonSchema checker simply define the collection 
+metadata property `checkers` as follows:
 
 {: .black-code}
 ``` json
-{ "checkers": [ { "name": "jsonSchema", "args": { "schemaId": <schema_id>, "schemaStoreDb": <schema_store_db> } } ] }
+{
+	"checkers": [{
+		"name": "jsonSchema",
+		"args": {
+			"schemaId": <schema_id> ,
+			"schemaStoreDb": <schema_store_db>
+		}
+	}]
+}
 ```
 <div class="table-responsive">
 <table class="ts">
@@ -145,9 +157,16 @@ Mandatory
 
 {: .black-code}
 ```
-PUT /db/addresses HTTP/1.1
+PUT /addresses HTTP/1.1
 
-{ "checkers": [  { "name": "jsonSchema", "args": { "schemaId": "address" } } ] }
+{
+	"checkers": [{
+		"name": "jsonSchema",
+		"args": {
+			"schemaId": "address"
+		}
+	}]
+}
 ```
 
 Now let's try to create an invalid document.
@@ -156,7 +175,7 @@ Now let's try to create an invalid document.
 
 {: .black-code}
 ```
-POST /db/addresses HTTP/1.1
+POST /addresses HTTP/1.1
 
 { "address": "Via D'Annunzio 28" }
  
@@ -164,14 +183,14 @@ HTTP/1.1 400 Bad Request
 ...
 
 {
-    "_links": {
-        "self": {
-            "href": "/test/addresses"
-        }
-    }, 
-    "http status code": 400, 
-    "http status description": "Bad Request", 
-    "message": "schema check failed, #: 2 schema violations found, #: required key [city] not found, #: required key [country] not found"
+  "_warnings": [
+    "#: 2 schema violations found",
+    "#: required key [city] not found",
+    "#: required key [country] not found"
+  ],
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "request check failed"
 }
 ```
 
@@ -181,11 +200,68 @@ Passing valid data results in the document creation:
 
 {: .black-code}
 ```
-POST /test/addresses HTTP/1.1
+POST /addresses HTTP/1.1
 
-{"address": "Via D'Annunzio, 28", "city": "L'Aquila", "country": "Italy" }
+{
+	"address": "Via D'Annunzio, 28",
+	"city": "L'Aquila",
+	"country": "Italy"
+}
 
-HTTP/1.1 201 Created...
+HTTP/1.1 201 Created
+```
+
+## Limitations
+
+*jsonChecker* does not support the following requests:
+
+- bulk PATCH
+- bulk POST that use update operators
+
+{: .bs-callout.bs-callout-info }
+To handle this requests,  set the checker property [skipNotSupported](/docs/plugins/apply/#apply-a-checker-via-metadata) to `false` and add custom checkers to handle specific requests.
+
+{: .black-code}
+```
+PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
+
+{ "updated": true }
+
+HTTP 1.1 400 Bad Request
+
+{
+  "_warnings": [
+    "the checker JsonSchemaChecker does not support this request and is configured to fail in this case. Note that the request is a bulk operation"
+  ],
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "request check failed"
+}
+```
+
+{: .black-code}
+```
+POST /addresses HTTP/1.1
+
+[{
+	"address": "Via D'Annunzio, 28",
+	"city": "L'Aquila",
+	"country": "Italy"
+   	"$currentDate": {
+   		"timestamp": true
+   	}
+}]
+
+HTTP 1.1 400 Bad Request
+
+{
+  "_warnings": [
+    "the checker JsonSchemaChecker does not support this request and is configured to fail in this case. Note that the request uses update operators and it is a bulk operation"
+  ],
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "request check failed"
+}
 ```
 
 </div>
