@@ -17,46 +17,15 @@ title: Relationships
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 In MongoDB, documents can have relationships with other documents (see
-MongoDB
-[Relationships](https://docs.mongodb.org/master/applications/data-models-relationships/)
+MongoDB [Relationships](https://docs.mongodb.org/master/applications/data-models-relationships/)
 documentation section). 
 
 **RESTHeart allows to declare the existing relationships in a
 collection, so that it automatically adds the links to related documents
 in its representation.**
-
-As discussed in the [Representation Format](/docs/representation-format)
-section, RESTHeart uses
-the [HAL+json](https://stateless.co/hal_specification.html) hypermedia
-format. HAL builds up on 2 simple concepts: **Resources** and **Links**
-
--   **Resources** have state (plain JSON), embedded resources and links
--   **Links** have target (href URI) and relations (aka `rel`)
-
-Let's see the following simple example, a GET on a document resource:
-
-{: .black-code}
-```
-$ GET 127.0.0.1:8080/test/coll/doc HTTP/1.1
-
-HTTP/1.1 200 OK
-...
-{
-    "_etag": {
-        "$oid": "55e84f5ac2e66d1e0a8e46b8"
-    }, 
-    "_id": "doc", 
-    "descr": "a document for testing but modified"
-}
-```
-
-**Declaring a relationship will add to the `_links` property the related
-documents links.**
 
 ## The *rels* collection metadata
 
@@ -64,10 +33,8 @@ In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
-The collection metadata property `rels` allows to declare the existing
-relationship so that the representation of the collection's documents
-auto-magically include the links to the referenced documents between the
-HAL `_link` property
+The collection metadata `rels` allows to declare existing
+relationship so that links to the referenced documents are auto-magically included in the `_link` property
 
 `rels` is an array of `rel` objects having the following format:
 
@@ -148,7 +115,7 @@ the collection itself.
 
 {: .black-code}
 ```
-PUT /test/parentcoll HTTP/1.1
+PUT /parentcoll HTTP/1.1
 
 {"rels":[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]}
 
@@ -159,7 +126,7 @@ Let's now create few documents, specifying the `parent` property:
 
 {: .black-code}
 ```
-PUT /test/parentcoll/root HTTP/1.1
+PUT /parentcoll/root HTTP/1.1
 
 {"parent":"root"}
 
@@ -168,7 +135,7 @@ HTTP/1.1 201 CREATED
 
 {: .black-code}
 ```
-PUT /test/parentcoll/1 HTTP/1.1
+PUT /parentcoll/1 HTTP/1.1
 
 {"parent":"root"}
 
@@ -177,7 +144,7 @@ HTTP/1.1 201 CREATED
 
 {: .black-code}
 ```
-PUT /test/parentcoll/1.1 HTTP/1.1
+PUT /parentcoll/1.1 HTTP/1.1
 
 {"parent":"1"}
 
@@ -186,16 +153,16 @@ HTTP/1.1 201 CREATED
 
 {: .black-code}
 ```
-PUT 127.0.0.1:8080/test/parentcoll/1.2 HTTP/1.1
+PUT /parentcoll/1.2 HTTP/1.1
 
 {"parent":"1"}
 
 HTTP/1.1 201 CREATED
 ```
 
-If we now get the document `/test/parentcoll/1.2`, the `_links` property
+If we now get the document `/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
-document `/test/parentcoll/1`
+document `/parentcoll/1`
 
 
 {: .black-code}
@@ -204,18 +171,13 @@ GET /test/parentcoll/1.2 HTTP/1.1
 
 HTTP/1.1 200 OK
 {
-    "_etag": {
-        "$oid": "55f15b43c2e65448b566d18b"
-    }, 
     "_id": "1.2", 
-    "_lastupdated_on": "2015-09-10T10:28:19Z", 
+    "parent": 1,
     "_links": {
-        "curies": [], 
-        "self": {
-            "href": "/test/parentcoll/1.2"
+        "parent": {
+            "href": "/parentcoll/1"
         }
-    }, 
-    "parent": "1"
+    }
 }
 ```
 
@@ -226,18 +188,36 @@ course, each band has a **1:N** relationship to albums.
 
 {: .black-code}
 ```
-PUT /test/bands HTTP/1.1
+PUT /bands HTTP/1.1
 
-{"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"OWNING","target-coll":"albums","ref-field":"albums"}], "descr":"music bands"}
+{
+	"rels": [{
+		"rel": "albums",
+		"type": "ONE_TO_MANY",
+		"role": "OWNING",
+		"target-coll": "albums",
+		"ref-field": "albums"
+	}],
+	"descr": "music bands"
+}{
+	"rels": [{
+		"rel": "albums",
+		"type": "ONE_TO_MANY",
+		"role": "OWNING",
+		"target-coll": "albums",
+		"ref-field": "albums"
+	}],
+	"descr": "music bands"
+}
 
 HTTP/1.1 201 CREATED
 ```
 
 {: .black-code}
 ```
-PUT 127.0.0.1:8080/test/albums HTTP/1.1
+PUT /albums HTTP/1.1
 
-{"descr":"albums published by music bands"}
+{ "descr":"albums published by music bands" }
 
 HTTP/1.1 201 CREATED
 ```
@@ -246,7 +226,7 @@ Let's now create few albums:
 
 {: .black-code}
 ```
-PUT /test/albums/Disintegration HTTP/1.1 
+PUT /albums/Disintegration HTTP/1.1 
 
 {"year":1989}
 
@@ -255,15 +235,16 @@ HTTP/1.1 201 CREATED
 
 {: .black-code}
 ```
-PUT /test/albums/Wish HTTP/1.1
+PUT /albums/Wish HTTP/1.1
 
 {"year":1992}
+
 HTTP/1.1 201 CREATED
 ```
 
 {: .black-code}
 ```
-PUT /test/albums/Bloodflowers HTTP/1.1 
+PUT /albums/Bloodflowers HTTP/1.1 
 
 {"year":2000}
 
@@ -274,39 +255,29 @@ Now we create the band referring these albums:
 
 {: .black-code}
 ```
-PUT /test/bands/The%20Cure HTTP/1.1 
+PUT /bands/The%20Cure HTTP/1.1 
 
 {"albums":["Disintegration","Wish","Bloodflowers"]}
 
 HTTP/1.1 201 CREATED
 ```
 
-If we now get The Cure document, we can notice the `albums` link: `/test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"`
-
+If we now get The Cure document, we can notice the `albums` link: `/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"`
 
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
 
 {: .black-code}
 ```
-$ GET /test/bands/The%20Cure HTTP/1.1
+$ GET /bands/The%20Cure HTTP/1.1
 
 HTTP/1.1 200 OK
 {
-    "_embedded": {}, 
-    "_etag": {
-        "$oid": "55f16029c2e65448b566d191"
-    }, 
     "_id": "The Cure", 
-    "_lastupdated_on": "2015-09-10T10:49:13Z", 
     "_links": {
         "albums": {
-            "href": "/test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
-        }, 
-        "curies": [], 
-        "self": {
-            "href": "/test/bands/The Cure"
-        }
+            "href": "/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
+        },
     }, 
     "albums": [
         "Disintegration", 
@@ -321,12 +292,8 @@ to issue the following request:
 
 {: .black-code}
 ```
-GET /test/albums?filter="{'_id':{'\$in':['Disintegration','Wish','Bloodflowers']}}"` HTTP/1.1
+GET /albums?filter="{'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"` HTTP/1.1
 ```
-
-Note the "\\" char prefixing the operator `$in`. This prevents the
-command line interpreter replacing `$in` with an (not existing)
-environment variable.
 
 ### One-to-Many, inverse
 
@@ -336,7 +303,7 @@ documents.
 
 {: .black-code}
 ```
-PUT /test/bandsi HTTP/1.1 
+PUT /bandsi HTTP/1.1 
 
 {"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]', "descr":"music bands"}
 
@@ -345,8 +312,8 @@ HTTP/1.1 201 CREATED
 
 {: .black-code}
 ``` 
-PUT /test/albumsi HTTP/1.1
-{"descr":"albums published by music bands"}
+PUT /albumsi HTTP/1.1
+{ "descr":"albums published by music bands" }
 
 HTTP/1.1 201 CREATED
 ```
@@ -355,18 +322,18 @@ Let's now create few albums:
 
 {: .black-code}
 ```
-PUT /test/albumsi/Disintegration HTTP/1.1
+PUT /albumsi/Disintegration HTTP/1.1
 
-{"year":1989, "band":"The Cure"}
+{ "year":1989, "band":"The Cure" }
 
 HTTP/1.1 201 CREATED
 ```
 
 {: .black-code}
 ``` 
-PUT /test/albumsi/Wish HTTP/1.1
+PUT /albumsi/Wish HTTP/1.1
 
-{"year":1992, "band":"The Cure"}
+{ "year":1992, "band":"The Cure" }
 HTTP/1.1 201 CREATED
 ```
 
@@ -374,7 +341,7 @@ HTTP/1.1 201 CREATED
 ```
 PUT /test/albumsi/Bloodflowers HTTP/1.1
 
-{"year":2000, "band":"The Cure"}
+{ "year":2000, "band":"The Cure" }
 
 HTTP/1.1 201 CREATED
 ```
@@ -383,15 +350,14 @@ Now we create the band referred by these albums:
 
 {: .black-code}
 ```
-PUT /test/bandsi/The%20Cure HTTP/1.1
+PUT /bandsi/The%20Cure HTTP/1.1
 
 {"descr":"The Cure are an English rock band formed in Crawley, West Sussex, in 1976"}
 
 HTTP/1.1 201 CREATED
 ```
   
-
-If we now get "The Cure" document, we can notice the `albums` link: `/test/albumsi?filter={'band':'The Cure'}`
+If we now get "The Cure" document, we can notice the `albums` link: `/albumsi?filter={'band':'The Cure'}`
 
 {: .black-code}
 ```
@@ -400,18 +366,10 @@ GET /test/bandsi/The%20Cure
 HTTP/1.1 200 OK
 
 {
-    {
-    "_etag": {
-        "$oid": "55f19409b8e449c1e1304ec5"
-    }, 
     "_id": "The Cure", 
     "_links": {
         "albums": {
             "href": "/test/albums?filter={'band':'The Cure'}"
-        }, 
-        "curies": [], 
-        "self": {
-            "href": "/test/bandsi/The Cure"
         }
     }, 
     "descr": "The Cure are an English rock band formed in Crawley, West Sussex, in 1976"
