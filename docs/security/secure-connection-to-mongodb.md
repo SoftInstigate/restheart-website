@@ -131,11 +131,10 @@ The following example, creates a MongoDB user with appropriate roles to expose t
 {: .black-code}
 ```javascript
 > use admin
-> db.createUser({user: "mongousr",
-    pwd: "secret",
-    roles: [{role: "readWrite", db: "db1"},
-            {role: "readWrite", db: "db2"},
-            {role: "read", db: "db3"}
+> db.createUser({user: "restheart",
+    pwd: <password>,
+    roles: [{role: "readWrite", db: "restheart"},
+            {role: "clusterMonitor", db: "admin"}
 ]})
 ```
 
