@@ -126,7 +126,7 @@ In order to achieve it, the best practice is:
 1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Platform Core;
 2. use a MongoDB user with just enough permission: *read* or *readWrite* on mounted databases 
 
-The following example, creates a MongoDB user with appropriate roles to expose the databases *db1*, *db2* and *db3* in read only mode.
+The following example, creates a MongoDB user with appropriate roles to expose the databases *restheart.
 
 {: .black-code}
 ```javascript
@@ -137,6 +137,8 @@ The following example, creates a MongoDB user with appropriate roles to expose t
             {role: "clusterMonitor", db: "admin"}
 ]})
 ```
+
+The built-in role `clusterMonitor` is needed to check the replica set status of MongoDB.
 
 To list the databases (i.e. GET /, the root resource) the listDatabases permission is needed. This permission is granted by the
 readWriteAnyDatabase role or you can create a custom role.
