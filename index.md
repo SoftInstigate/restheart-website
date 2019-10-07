@@ -12,8 +12,9 @@ layout: default
 
 <div class="d-flex w-100 justify-content-center mb-2">
     <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem">
-        <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4 is out!</strong></h5>
-        <img class="mx-auto mt-4 d-block" src="/images/4.png" alt="RESTHeart 4" width="80px">
+        <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4.1 is out!</strong></h5>
+        <!-- http://avtanski.net/projects/lcd/ -->
+        <img class="mx-auto mt-4 d-block" src="/images/4.1.png" alt="RESTHeart 4.1">
         <div class="card-body">
             <div class="d-flex justify-content-center">
                 <a href="{{ "/get" | prepend: site.baseurl }}" class="btn w-50 mt-2 mr-2 btn-m">GET</a>
