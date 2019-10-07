@@ -23,38 +23,51 @@ title: Configuration
 {: .bs-callout.bs-callout-info}
 Specifying the configuration files is optional; without them the processes run with the default configuration.
 
-`restheart-platform-core` and `restheart-platform-security` are configured via  configuration files. 
+`restheart-platform-core` and `restheart-platform-security` are configured via configuration and properties files. Configuration files can be parametric and merged with a set of properties to get the final values.
 
 {: .black-code}
 ```
 $ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file>
 
-$ java -jar restheart-platform-security.jar <configuration-file>
+$ java -jar restheart-platform-security.jar <configuration-file> -e <properties-file>
 ```
 
-It's possible to pass also the `restheart-platform-core`'s configuration file via the `RESTHEART_CONFFILE` environment variable, for example:
+> __Note__:: properties files for `restheart-platform-security` are available starting from Platform release 4.1.
+
+It's also possible to pass both the `restheart-platform-core`'s environment properties and configuration file respectively via the `RESTHEART_ENVFILE` and `RESTHEART_CONFFILE` environment variables or Java properties, for example:
 
 {: .black-code}
 ```
-$ export RESTHEART_CONFFILE=etc/restheart-platform-core.yml
+$ export RESTHEART_ENVFILE=etc/restheart-platform-core.yml
+$ export RESTHEART_CONFFILE=etc/default.properties
 ```
 
-The `etc` directory contains the following configuration files:
+For RESTHeart security use the equivalent `RESTHEART_SECURITY_CONFFILE` environment variable or Java property.
+
+If you either download the RESTHeart Platform Trial or clone the open source projects, the configuration files are always under the `etc/` folder.
+
+__Core configuration__
+
+Either `restheart` (OSS) or `restheart-platform-core` (trial) folder:
 
 {: .table.table-responsive }
 |file|description|
 |-|-|
-|<a href="https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml" target="_blank">restheart-platform-core.yml</a>|configuration file for `restheart-platform-core`|
-|<a href="https://github.com/softInstigate/restheart-security/blob/master/etc/restheart-platform-security.yml" target="_blank">restheart-platform-security.yml</a>|configuration file for `restheart-platform-security`|
+|`etc/restheart-platform-core.yml`|parametric configuration file|
+|`etc/default.properties`|default parameters values|
+|`etc/standalone.properties`|run restheart-platform-core without restheart-platform-security|
+|`etc/bwcv3.properties`|run restheart-platform-core in backward compatibility mode|
 
-and the following properties files for the parametric `restheart-platform-core.yml`:
+
+__Security configuration__
+
+Either `restheart-security` (OSS) or `restheart-platform-security` (trial) folder:
 
 {: .table.table-responsive }
 |file|description|
 |-|-|
-|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/default.properties" target="_blank">default.properties</a>|default parameters values|
-|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/standalone.properties" target="_blank">standalone.properties</a>|run `restheart-platform-core` without `restheart-platform-security`|
-|<a href="https://github.com/SoftInstigate/restheart/blob/master/etc/bwcv3.properties" target="_blank">bwcv3.properties</a>|run `restheart-platform-core` in backward compatible mode|
+|`etc/restheart-platform-security.yml`|parametric configuration file|
+|`etc/default.properties`|default parameters values|
 
 {: .bs-callout.bs-callout-info}
 The configuration files are documented in details with inline comments.
@@ -70,6 +83,7 @@ If a configuration file is modified, the containers must be rebuilt for changes 
 $ docker-compose up --build
 ```
 
+
 ## Important configuration options
 
 The following tables highlights the most important configuration options.
@@ -83,7 +97,7 @@ All the important configuration options of `resthart-platform-core` are defined 
 |-|-|-|-|
 |*Listeners section*|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
 |instance-name|default|name of this instance of `resthart-platform-core`|
-|default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query paramters is not specified|
+|default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query parameters is not specified|
 |mongo-uri|mongodb://127.0.0.1|the <a href="https://docs.mongodb.com/manual/reference/connection-string/" target="_blank">MongoDB connection string</a>|
 |root-mongo-resource|/restheart|MongoDb resource to bind to the root URI `/`|
 |log-level|DEBUG|log level|
@@ -107,7 +121,7 @@ For security reasons RESTHeart by default binds only on `localhost`, so it won't
 ## Parametric configuration
 
 {: .bs-callout.bs-callout-info }
-Only `restheart-platform-core.yml` can make use of parameters. Work is in progress to extend this feature to `restheart-platform-security.yml` as well.
+Until version 4.0, only `restheart-platform-core.yml` can make use of parameters. This feature has also been extended to `restheart-platform-security.yml` starting from version 4.1.
 
 It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter). 
 
