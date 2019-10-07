@@ -20,8 +20,8 @@ title: Roadmap
 
 ## RESTHeart Platform 4.1
 
-{: .alert.alert-warning }
-Expected Release Date End of September / Early October
+{: .alert.alert-success }
+Released 7 October 2019
 
 ### rhAuthorizer 
 
