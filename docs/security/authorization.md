@@ -6,9 +6,8 @@ title: Authorization
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction ](#introduction)
-* [Authorizers](#authorizers)
-  * [RESTHeart Authorizer](#restheart-authorizer)
-  * [Request Predicates Authorizer](#request-predicates-authorizer)
+* [RESTHeart Authorizer](#restheart-authorizer)
+* [Request Predicates Authorizer](#request-predicates-authorizer)
   
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -19,11 +18,16 @@ title: Authorization
 
 See [Understanding RESTHeart Security](/docs/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
-**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authorizers available out-of-the-box. You can also develop your own authorizers. Refer to [Develop Security Plugins](/docs/develop/security-plugins) section for more information.
+**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authorizers available out-of-the-box.
 
-## Authorizers
+RESTHeart by default offers two types of authorizers:
 
-### RESTHeart Authorizer
+1. RESTHeart Authorizer (commercial editions only).
+1. Request Predicates Authorizer (any edition).
+
+However, it's even possible to develop __custom authorizers__. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
+
+## RESTHeart Authorizer 
 
 {: .bs-callout.bs-callout-info}
 Available since RESTHeart Platform v4.1
@@ -31,15 +35,15 @@ Available since RESTHeart Platform v4.1
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
     <hr class="my-2">
-    <p>RESTHeart Authorizer is available only on RESTHeart Platform.</p>
+    <p>RESTHeart Authorizer is available only on RESTHeart Platform (Professional, Enterprise and OEM editions)</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
+    <a href="/get"><button class="btn trial-btn">Free Trial</button></a>
 </div>
 
-*RESTHeart Authorizer* authorizes requests according to the *Access Control List*  defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
+*RESTHeart Authorizer* authorizes requests according to the *Access Control List*  defined in a __MongoDB collection__, seamlessly connecting `restheart-platform-security` with `restheart-platform-core`.
 
 {: .bs-callout.bs-callout-info }
-RESTHeart Authorizer is strong and battle tested and suggested for production use.
+RESTHeart Authorizer is robust, battle-tested and suggested for production use.
 
 The configuration allows:
 
@@ -61,7 +65,7 @@ authorizers:
         cache-expire-policy: AFTER_WRITE
 ```
 
-#### Format of an ACL document
+### Format of an ACL document
 
 An example ACL document follows:
 
@@ -88,7 +92,7 @@ The properties of the ACL document are:
 |**readFilter**|`null` or JSON object|An optional [filter](/docs/read-docs/#filtering) that is added to GET requests when authorized by this ACL document.|
 |**writeFilter**|`null` oe JSON object|An optional filter that is added to write requests when authorized by this ACL document.|
 
-#### Using readFilter and writeFilter
+### Using readFilter and writeFilter
 
 {: .bs-callout.bs-callout-info }
 `readFilter` and `writeFilter` allows to partition data by roles.
@@ -111,9 +115,9 @@ The example ACL document applies to users with `editor` role. A user with this r
 |%ROLES|the roles array of the authenticated user|match documents with `roles` array property containing any role of the authenticated user `{"roles": {"_$in": %ROLES }`|
 |%NOW|the current date as `{"$date": 1570027863000 }`|match documents with `timestamp` date property less than (before) the current date `{"timestamp":{"_$lt": "%NOW"}}`|
 
-### Request Predicates Authorizer
+## Request Predicates Authorizer
 
-**RequestPredicatesAuthorizer** allows defining roles permissions in a yml configuration file using the [Undertow predicate language](http://http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation). 
+**RequestPredicatesAuthorizer** allows defining roles permissions in a YAML configuration file using the [Undertow predicate language](http://http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation). 
 
 {: .black-code}
 ``` yml
