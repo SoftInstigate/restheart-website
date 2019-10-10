@@ -125,7 +125,7 @@ Until version 4.0, only `restheart-platform-core.yml` can make use of parameters
 
 It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter). 
 
-This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the yaml configuration files, but now you can have a single parametric yaml file, with a set of small, different properties files for each environment.
+This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the YAML configuration files, but now you can have a single parametric YAML file, with a set of small, different properties files for each environment.
 
 For example, the `dev.properties` file in `etc/` folder contains the following properties:
 
@@ -220,7 +220,7 @@ Is is possible to override any **primitive type parameter** in `restheart-platfo
  - Long
  - Boolean
   
- For example, the parameter `mongo-uri` in the yaml file can be overridden by exporting a `MONGO_URI` environment variable:
+ For example, the parameter `mongo-uri` in the YAML file can be overridden by exporting a `MONGO_URI` environment variable:
 
 {: .black-code}
 ```bash
@@ -234,7 +234,7 @@ The following log entry appears at the very beginning of logs during the startup
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
-A shell environment variable is equivalent to a yaml parameter in `restheart-platform-core.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
+A shell environment variable is equivalent to a YAML parameter in `restheart-platform-core.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
 
 __Remember__: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
 
