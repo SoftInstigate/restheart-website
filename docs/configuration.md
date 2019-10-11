@@ -32,7 +32,8 @@ $ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file
 $ java -jar restheart-platform-security.jar <configuration-file> -e <properties-file>
 ```
 
-> __Note__:: properties files for `restheart-platform-security` are available starting from Platform release 4.1.
+{: .bs-callout.bs-callout-warning }
+__Note__: properties files for `restheart-platform-security` are available starting from Platform release 4.1.
 
 It's also possible to pass both the `restheart-platform-core`'s environment properties and configuration file respectively via the `RESTHEART_ENVFILE` and `RESTHEART_CONFFILE` environment variables or Java properties, for example:
 
