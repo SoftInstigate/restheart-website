@@ -90,7 +90,7 @@ The properties of the ACL document are:
 |**roles**|JSON array of strings|The roles that are applied the ACL document. The special role `$unauthenticated` applies to requests that are not authenticated.|
 |**priority**|number|A request might fulfill several predicates; an ACL document with higher priority has higher evaluation precedence.|
 |**readFilter**|`null` or JSON object|An optional [filter](/docs/read-docs/#filtering) that is added to GET requests when authorized by this ACL document.|
-|**writeFilter**|`null` oe JSON object|An optional filter that is added to write requests when authorized by this ACL document.|
+|**writeFilter**|`null` or JSON object|An optional filter that is added to write requests when authorized by this ACL document.|
 
 ### Using readFilter and writeFilter
 
