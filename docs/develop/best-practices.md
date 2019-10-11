@@ -110,7 +110,7 @@ You might want to:
 {: .bs-callout.bs-callout-warning }
 `filterProperties` can only filter out root properties. Avoid using it to filter nested properties.
 
-In the following example, we add the Transformer `filterProperties` to Response to filter out the nested property `secret`, and apply it on read requests on collection `/coll`. We will filter out the property to all users but for `ADMIN`.
+In the following example, we add the Transformer `filterProperties` to Response to filter out the nested property `secret`, and apply it on read requests on collection `/coll`. We will filter out the property to all users but for `admin`.
 
 In order to apply the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/develop/core-plugins/#initializers)
 
@@ -121,11 +121,11 @@ In order to apply the Transformer we are going to programmatically apply it defi
         priority = 100,
         description = "adds a GlobalTranformer to filter out the property 'secret' "
         + "from the response on 'GET /coll' "
-        + "when the user does not have the role 'ADMIN'")
+        + "when the user does not have the role 'admin'")
 public class SecretHider implements Initializer {
     @Override
     public void init(Map<String, Object> confArgs) {
-        // a predicate that resolves GET /coll and !roles.contains("ADMIN")
+        // a predicate that resolves GET /coll and !roles.contains("admin")
         var predicate = new RequestContextPredicate() {
             @Override
             public boolean resolve(HttpServerExchange hse, RequestContext context) {
