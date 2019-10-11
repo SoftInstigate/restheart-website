@@ -140,8 +140,9 @@ BsonDocument confArgs = null;
 
 GlobalTransformer globalTransformer = new GlobalTransformer(
                 transformer, 
-                RequestTransformer.PHASE.RESPONSE, 
-                RequestTransformer.SCOPE.CHILDREN, 
+                predicate,
+                TransformerMetadata.PHASE.RESPONSE, 
+                TransformerMetadata.SCOPE.CHILDREN, 
                 args, 
                 confArgs)
 
