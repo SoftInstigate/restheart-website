@@ -84,7 +84,7 @@ An initializer is a class with the method `init()` that is invoked at RESTHeart 
 
 It can be used to perform initialization logic. For instance, it can programmatically add _Transformers_ and _Checkers_ or initialize the db.
 
-The Initializer class must implement the `org.restheart.plugins.Initializer` interface.
+The Initializer class must implement the `org.restheart.plugins.Initializer` interface and use the `ResiterPlugin` annotation.
 
 The `Initializer` interface:
 
