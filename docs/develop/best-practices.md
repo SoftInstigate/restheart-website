@@ -5,10 +5,13 @@ title: Development Best Practices
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [restheart-core](#restheart-core)
-  * [Get the MongoClient](#get-the-mongoclient)
-* [restheart-security](#restheart-security)
-    * [Interacting with the HttpServerExchange object](#interacting-with-the-httpserverexchange-object)
+* [RESTHeart Platform Core](#restheart-platform-core)
+    * [Get the MongoClient](#get-the-mongoclient)
+    * [Interact with Request and Response](#interact-with-request-and-response)
+    * [Get user id and roles from restheart-platform-security](#get-user-id-and-roles-from-restheart-platform-security)
+    * [Filter out properties from Request or Response](#filter-out-properties-from-request-or-response)
+* [RESTHeart Platform Security](#restheart-platform-security)
+    * [Interact with the HttpServerExchange object](#interact-with-the-httpserverexchange-object)
     * [How to send the response](#how-to-send-the-response)
 
 </div>
@@ -18,10 +21,7 @@ title: Development Best Practices
 
 {% include doc-in-progress.html %}
 
-## restheart-core
-
-{:.alert.alert-warning}
-work in progress
+## RESTHeart Platform Core
 
 ### Get the MongoClient
 
@@ -31,9 +31,141 @@ work in progress
 MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 ```
 
-## restheart-security
+### Interact with Request and Response
 
-### Interacting with the HttpServerExchange object
+The plugins's methods of `restheart-platform-core` accept two arguments that allow to interact (read or modify) the request and the response:
+
+{: .black-code}
+``` java
+
+public void handleRequest(HttpServerExchange exchange, RequestContext context) {
+  ...
+}
+```
+
+Both `HttpServerExchange exchange` and `RequestContext context` can be used to read and modify the request and the response.
+
+- [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) is the generic, low-level Undertow class to interact with the exchange;
+- [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) is the specialized RESTHeart helper class that simplifies the most common operations.
+
+{: .bs-callout.bs-callout-info }
+As a general rule, always prefer using `RequestContext`. Only use `HttpServerExchange` for low-level operations not directly supported by `RequestContext`.
+
+As an example, the filter query parameter can be retrieved as follows:
+
+{: .black-code}
+``` java
+// RequestContext helper method to access the filter query parameter
+Deque<String>  filterQParam1 = context.getFilter();
+
+// RequestContext helper method that returns the filter as a BsonDocument
+// note that multiple values of the parameters are composed with the $and operator
+// ?filter={'a':1}&filter={'b':1} ->  { "$and": [ {'a':1}, {'b':1} ] } 
+BsonDocument filters = context.getFiltersDocument();
+ filters = context.getFiltersDocument();
+
+// Undertow low-level method to access query paramers
+Deque<String> filterQParam2 = exchange.getQueryParameters().get(RequestContext.FILTER_QPARAM_KEY);
+```
+
+### Get user id and roles from restheart-platform-security
+
+When the request is authenticated by `restheart-platform-security` the user id and roles are passed to `restheart-platform-core` via the following request headers:
+
+- `X-Forwarded-Account-Id`
+- `X-Forwarded-Account-Roles`
+
+Note that for unauthenticated request these headers are not set.
+
+{: .black-code }
+``` java
+var headers =  exchange.getRequestHeaders();
+
+var id = headers.getFirst(HttpString.tryFromString("X-Forwarded-Account-Id"));
+var _roles = hse.getRequestHeaders().get(HttpString.tryFromString("X-Forwarded-Account-Roles"));
+
+var roles = new ArrayList<String>();
+
+if (_roles != null) {
+    _roles.forEach(role -> roles.add(role));
+}
+
+// check if authenticated user has role 'admin'
+
+if (roles.contains("admin")) {
+  ...
+} else {
+  ...
+}
+```
+
+### Filter out properties from Request or Response
+
+RESTHeart includes the Transformer `filterProperties` that allows to filter out properties from both the Request and the Response.
+
+You might want to:
+- filter out properties from the request body in write requests (`POST`, `PUT` and `PATCH` verbs)
+- filter out properties from the response body in read requests (`GET` verb)
+
+{: .bs-callout.bs-callout-warning }
+`filterProperties` can only filter out root properties. Avoid using it to filter nested properties.
+
+In the following example, we add the Transformer `filterProperties` to Response to filter out the nested property `secret`, and apply it on read requests on collection `/coll`. We will filter out the property to all users but for `ADMIN`.
+
+In order to apply the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/develop/core-plugins/#initializers)
+
+{: .black-code }
+``` java
+@RegisterPlugin(
+        name = "secretHider",
+        priority = 100,
+        description = "adds a GlobalTranformer to filter out the property 'secret' "
+        + "from the response on 'GET /coll' "
+        + "when the user does not have the role 'ADMIN'")
+public class SecretHider implements Initializer {
+    @Override
+    public void init(Map<String, Object> confArgs) {
+        // a predicate that resolves GET /coll and !roles.contains("ADMIN")
+        var predicate = new RequestContextPredicate() {
+            @Override
+            public boolean resolve(HttpServerExchange hse, RequestContext context) {
+                var _roles = hse.getRequestHeaders()
+                        .get(HttpString.tryFromString("X-Forwarded-Account-Roles"));
+
+                var roles = new ArrayList<String>();
+                
+                if (_roles != null) {
+                    _roles.forEach(role -> roles.add(role));
+                }
+
+                return context.isGet()
+                        && "coll".equals(context.getCollectionName())
+                        && (roles == null || !roles.contains("admin"));
+            }
+        };
+
+        // Let's use filterTransformer to filter out properties from GET response
+        var filterTransformer = new FilterTransformer();
+
+        var filterTransformerArgs = new BsonArray();
+        filterTransformerArgs.add(new BsonString("secret"));
+
+        var globalTransformer = new GlobalTransformer(
+                filterTransformer,
+                predicate,
+                TransformerMetadata.PHASE.RESPONSE,
+                TransformerMetadata.SCOPE.CHILDREN,
+                filterTransformerArgs,
+                null); // finally add it to global checker list
+
+        TransformerHandler.getGlobalTransformers().add(globalTransformer);
+    }
+}
+```
+
+## RESTHeart Platform Security
+
+### Interact with the HttpServerExchange object
 
 The helper classes `ByteArrayRequest`, `JsonRequest`, `ByteArrayResponse` and `JsonResponse` are available to make easy interacting the `HttpServerExchange` object. As a general rule, always prefer using the helper classes if the functionality you need is available.
 
