@@ -20,8 +20,6 @@ title: Development Best Practices
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## RESTHeart Platform Core
 
 ### Get the MongoClient
