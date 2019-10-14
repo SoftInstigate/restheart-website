@@ -218,9 +218,7 @@ In order to enable the Interceptor we are going to programmatically apply it usi
         + "on 'GET /coll' "
         + "containing the property 'secret' "
         + "to users without the role 'admin'")
-public class SecretHider implements Initializer {
-  static final Logger LOGGER = LoggerFactory.getLogger(SecretHider.class);
-
+public class OnlyAdminCanWriteSecrets implements Initializer {
   @Override
   public void init() {
 

@@ -546,16 +546,31 @@ The `handleRequest()` method is invoked only if the `resolve()` method returns t
 
 Example interceptor implementations can be found in the package``org.restheart.security.plugins.interceptors`.
 
-### Accessing the Content in Request Interceptors
+If the request is errored, than it is not processed further and the response eventually set is returned.
 
-In some cases, you need to access the request content. For example you want to modify request content with a `RequestInterceptor` or to implement an `Authorizer` that checks the content to authorize the request.
+{: .black-code}
+```java
+var request = ByteArrayRequest.wrap(hse);
 
-The Request Interceptor can be executed before or after the authentication and authorization phases defining the intercept point optionally overriding the method `interceptPoint()`; default behavior is executing the interceptor before them.
+response.setInError(true);
+
+// or using the helper mehtod endExchangeWithMessage()
+
+response.endExchangeWithMessage(HttpStatus.SC_FORBIDDEN, "you can't do that");
+```
+
+### Intercept Point
+
+The Request Interceptor can be executed before or after the authentication and authorization phases. This is controlled defining the intercept point by optionally overriding the method `interceptPoint()` which default behavior is returning `BEFORE_AUTH`.
 
 {: bs-callout.bs-callout-info}
 `interceptPoint()` is available from RESTHeart Platform 4.1.
 
-If the Interceptor needs to deal with the `SecurityContext`, for instance needs to check the user roles as in `ByteArrayRequest.wrap(echange).isAccountInRole("admin")`, then the intercept point must be `AFTER_AUTH`.
+If the Interceptor needs to deal with the `SecurityContext`, for instance it needs to check the user roles as in `ByteArrayRequest.wrap(echange).isAccountInRole("admin")`, then the Request Interceptor must be executed the authentication and authorization phases after intercept point must be `AFTER_AUTH`.
+
+### Accessing the Content in Request Interceptors
+
+In some cases, you need to access the request content. For example you want to modify request content with a `RequestInterceptor` or to implement an `Authorizer` that checks the content to authorize the request.
 
  Accessing the content from the *HttpServerExchange* object using the exchange *InputStream* in proxied requests leads to an error because Undertow allows reading the content just once. 
 
