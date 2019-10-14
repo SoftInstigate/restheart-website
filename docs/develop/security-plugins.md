@@ -550,23 +550,40 @@ Example interceptor implementations can be found in the package``org.restheart.s
 
 In some cases, you need to access the request content. For example you want to modify request content with a `RequestInterceptor` or to implement an `Authorizer` that checks the content to authorize the request.
 
+The Request Interceptor can be executed before or after the authentication and authorization phases defining the intercept point optionally overriding the method `interceptPoint()`; default behavior is executing the interceptor before them.
+
+{: bs-callout.bs-callout-info}
+`interceptPoint()` is available from RESTHeart Platform 4.1.
+
+If the Interceptor needs to deal with the `SecurityContext`, for instance needs to check the user roles as in `ByteArrayRequest.wrap(echange).isAccountInRole("admin")`, then the intercept point must be `AFTER_AUTH`.
+
  Accessing the content from the *HttpServerExchange* object using the exchange *InputStream* in proxied requests leads to an error because Undertow allows reading the content just once. 
 
  In order to simplify accessing the content, the `ByteArrayRequest.wrap(exchange).readContent()` and `JsonRequest.wrap(exchange).readContent()` helper methods are available. They are very efficient since they use the non blocking `RequestBufferingHandler` under to hood.
  However, since accessing the request content might lead to significant performance overhead, a *RequestInterceptor* that resolves the request and overrides the `requiresContent()` to return true must be implemented to make data available.
 
- `RequestInterceptor` defines the following method with a default implementation that returns false:
+ `RequestInterceptor` defines the following methods with a default implementation.
 
 {: .black-code}
 ```java
-public interfaceRequestInterceptor extends Interceptor {
-  /**
-   *
-   * @return true if the Interceptor requires to access the request content
-   */
-  default boolean requiresContent() {
-      return false;
-  }
+public interface RequestInterceptor extends Interceptor {
+  public enum IPOINT { BEFORE_AUTH, AFTER_AUTH }
+    
+    /**
+     *
+     * @return true if the Interceptor requires to access the request content
+     */
+    default boolean requiresContent() {
+        return false;
+    }
+    
+    /**
+     *
+     * @return the intecept point
+     */
+    default IPOINT interceptPoint() {
+        return BEFORE_AUTH;
+    }
 }
 ```
 

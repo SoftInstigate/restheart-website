@@ -202,8 +202,6 @@ Mandatory
 
 ## Apply a Checker programmatically
 
-> Global Checkers are applied to all requests.
-
 Global Checkers can be defined programmatically instantiating `GlobalChecker` objects:
 
 {: .black-code}

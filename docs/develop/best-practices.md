@@ -13,6 +13,7 @@ title: Development Best Practices
 * [RESTHeart Platform Security](#restheart-platform-security)
     * [Interact with the HttpServerExchange object](#interact-with-the-httpserverexchange-object)
     * [How to send the response](#how-to-send-the-response)
+    * [Forbid write requests containing specific properties to all roles but admin](#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -110,9 +111,12 @@ You might want to:
 {: .bs-callout.bs-callout-warning }
 `filterProperties` can only filter out root properties. Avoid using it to filter nested properties.
 
+{: .bs-callout.bs-callout-warning }
+It is difficult to filter out properties from a write request because it can use the dot notation and update operators, so that properties to filter out could be in a complex structure as `{"$set": "sub.secret": true }}`. The suggested way is checking the request using an Interceptor of `restheart-platform-security` to forbid request containing them. See [Forbid write requests containing specific properties to all roles but admin](#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin) for an example.
+
 In the following example, we add the Transformer `filterProperties` to Response to filter out the nested property `secret`, and apply it on read requests on collection `/coll`. We will filter out the property to all users but for `admin`.
 
-In order to apply the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/develop/core-plugins/#initializers)
+In order to enable the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/develop/core-plugins/#initializers)
 
 {: .black-code }
 ``` java
@@ -200,3 +204,94 @@ public void handleRequest(HttpServerExchange exchange) throws Exception {
   response.setStatusCode(HttpStatus.SC_OK);
 }
 ```
+
+### Forbid write requests containing specific properties to all roles but *admin*
+
+In the following example, we add a Request Interceptor that forbids write requests to `/coll` when executed by a user that does not have to role *admin*.
+
+In order to enable the Interceptor we are going to programmatically apply it using an [Initializer](/docs/develop/security-plugins/#initializers)
+
+{: .black-code}
+``` java
+@RegisterPlugin(
+        name = "onlyAdminCanWriteSecrets",
+        priority = 100,
+        description = "adds an Interceptor that forbis write requests "
+        + "on 'GET /coll' "
+        + "containing the property 'secret' "
+        + "to users without the role 'admin'")
+public class SecretHider implements Initializer {
+  static final Logger LOGGER = LoggerFactory.getLogger(SecretHider.class);
+
+  @Override
+  public void init() {
+
+      PluginsRegistry.getInstance()
+              .getRequestInterceptors()
+              .add(new RequestInterceptor() {
+                  @Override
+                  public boolean requiresContent() {
+                      return true;
+                  }
+
+                  @Override
+                  public RequestInterceptor.IPOINT interceptPoint() {
+                      return RequestInterceptor.IPOINT.AFTER_AUTH;
+                  }
+
+                  @Override
+                  public void handleRequest(HttpServerExchange hse) throws Exception {
+                      var content = JsonRequest.wrap(hse).readContent();
+
+                      if (keys(content).stream()
+                              .anyMatch(k -> "secret".equals(k)
+                              || k.endsWith(".secret"))) {
+                          var response = ByteArrayResponse.wrap(hse);
+
+                          response.endExchangeWithMessage(HttpStatus.SC_FORBIDDEN, "cannot write secret");
+                      };
+                  }
+
+                  @Override
+                  public boolean resolve(HttpServerExchange hse) {
+                      var req = ByteArrayRequest.wrap(hse);
+
+                      return req.isContentTypeJson(hse)
+                              && !req.isAccountInRole("admin")
+                              && hse.getRequestPath().startsWith("/coll")
+                              && (req.isPost() || req.isPatch() || req.isPut());
+                  }
+
+                  /**
+                   * @return the keys of the JSON
+                   */
+                  private ArrayList<String> keys(JsonElement val) {
+                      var keys = new ArrayList<String>();
+
+                      if (val == null) {
+                          return keys;
+                      } else if (val.isJsonObject()) {
+                          val.getAsJsonObject().keySet().forEach(k -> {
+                              keys.add(k);
+                              keys.addAll(keys(val.getAsJsonObject().get(k)));
+                          });
+                      } else if (val.isJsonArray()) {
+                          val.getAsJsonArray().forEach(v -> keys.addAll(keys(v)));
+                      }
+
+                      return keys;
+                  }
+              });
+  }
+}
+```
+
+This interceptor is executed (see method `resolve()`):
+
+- to write requests: `(req.isPost() || req.isPatch() || req.isPut()`
+- that are executed by authenticated users without the role *admin*: `!req.isAccountInRole("admin")`
+- on URI starting with `/coll`: `hse.getRequestPath().startsWith("/coll")`
+
+The interceptor needs the request body (`requiresContent()` returns `true`) and must be executed after authorization and authentication phases (`interceptPoint()` returns `AFTER_AUTH`)
+
+In order to check that the request body does not contain the property `secret`, the helper method `keys()` collects all the JSON keys (name of the properties) in the request, and finally `handleRequest()` checks that those keys don't contain the value `secret` or a key that ends with `.secret` (with restheart keys can use the dot notation).
