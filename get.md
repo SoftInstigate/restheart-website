@@ -21,8 +21,9 @@ permalink: /get
             <input class="text-strong text-center form-control-plaintext form-control-lg text-right" id="price" aria-describedby="price" disabled value="Free">
         </div>
         <div class="col-12 my-0 d-none" id="qtn-tip">
-            <div class="hint mt-2 text-muted"><small>Specify quantities during checkout.</small></div>
+            <div class="hint mt-2 text-muted"><small>You can specify quantities during checkout.</small></div>
             <div class="hint mt-2 text-muted"><small>Educational institution, non-profit organization or low budget project? <a href="/contact">Get in touch</a> for a discount coupon.</small></div>
+            <div class="hint mt-2 text-muted"><small>Shown prices don't include VAT or other sales taxes, where applicable.</small></div>
         </div>
     </div>
     <hr class="my-4">
