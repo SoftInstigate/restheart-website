@@ -39,6 +39,8 @@ layout: default
                 <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
                 <div class="slide my-2"><img src="/images/customers/aci-infomobility.png"></div>
                 <div class="slide my-2"><img src="/images/customers/unisys.png"></div>
+                <div class="slide my-2"><img src="/images/customers/e-spirit.png"></div>
+                <div class="slide my-2"><img src="/images/customers/autoinrete.png"></div>
                 <div class="slide my-2"><img src="/images/customers/croqqer-logo.png"></div>
                 <div class="slide my-2"><img src="/images/customers/radiotraffic.png"></div>
                 <div class="slide my-2"><img src="/images/customers/nativa.png"></div>
