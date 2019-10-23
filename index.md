@@ -29,53 +29,56 @@ layout: default
     <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
 </div>
 
-<section id="usecases" class="slice bg-light">
-    <div class="container-fluid">
-        <h1 class="text-center">Use Cases</h1>
+<section id="trusted-by">
+    <div class="row">
+        <div id="customers" class="container-fluid my-2">
+            <h2 class="text-center restheart-red">
+                Trusted by Startups and Corporations
+            </h2>
+            <div class="customer-logos">
+                <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
+                <div class="slide my-2"><img src="/images/customers/aci-infomobility.png"></div>
+                <div class="slide my-2"><img src="/images/customers/unisys.png"></div>
+                <div class="slide my-2"><img src="/images/customers/croqqer-logo.png"></div>
+                <div class="slide my-2"><img src="/images/customers/radiotraffic.png"></div>
+                <div class="slide my-2"><img src="/images/customers/nativa.png"></div>
+                <div class="slide my-2"><img src="/images/customers/conquest.png"></div>
+            </div>
+        </div>
     </div>
-    {% include use-cases.html %}
 </section>
 
 <section id="call-to-action" class="call-to-action">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#lamp" /></svg>
-                <h2 class="call-to-action__title">SUPPORTED BY THE COMMUNITY OR BY OUR PROFESSIONAL SERVICES</h2>
-                <p class="call-to-action__desc">Our Professional Services can help you building RESTful APIs, data models, query optimizations, customizations and extensions, bug fixing, on cloud and on premises deployments, security and HA configurations.</p>
-                <a class="btn btn-o" href="/services">PROFESSIONAL SERVICES</a>
+                <h2 class="call-to-action__title">Fully Supported</h2>
+                <p class="call-to-action__desc">Our dedicated support connects you with the engineers that develops RESTHeart to seamlessly run RESTHeart Platform in production environments while RESTHeart OSS is supported by our active community on public channels like github and stackoverflow.</p>
+                <a class="btn btn-o" href="/support">SUPPORT</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#thumb" /></svg>
-                <h2 class="call-to-action__title">AVAILABLE UNDER OPEN SOURCE OR COMMERCIAL LICENSES</h2>
-                <p class="call-to-action__desc">RESTHeart is distributed under the Open Source GNU AGPL v3 license. If the usage of our product under the AGPL does not satisfy your organization’s legal requirements, business-friendly commercial licenses are also available.</p>
-                <a class="btn btn-o-white" href="/editions">Commercial licenses</a>
-            </div>
-        </div>
-        <div class="row">
-            <div id="customers" class="container-fluid my-2">
-                <h2 class="text-center">
-                    Trusted by Startups and Corporations
-                </h2>
-                <div class="customer-logos">
-                    <div class="slide my-2"><img src="/images/customers/ng-logo.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/aci-infomobility.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/unisys.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/croqqer-logo.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/radiotraffic.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/nativa.png"></div>
-                    <div class="slide my-2"><img src="/images/customers/conquest.png"></div>
-                </div>
+                <h2 class="call-to-action__title">RESTHeart OSS and RESTHeart Platform</h2>
+                <p class="call-to-action__desc"><strong>RESTHeart OSS</strong> is distributed under the Open Source GNU AGPL v3 license and <strong>RESTHeart Platform</strong> is shipped with additional enterprise grade features and is available under a business-friendly commercial license.</p>
+                <a class="btn btn-o-white" href="/editions">EDITIONS</a>
             </div>
         </div>
     </div>
 </section>
 
-<section id="examples" class="bg-white">
-    <div class="container-fluid">
-        <h1>&nbsp;</h1>
+<section id="usecases" class="slice bg-white">
+    <div class="container">
+        <h1 class="text-center restheart-red">Use Cases</h1>
+        {% include use-cases.html %}
     </div>
-{% include examples.html %}
+</section>
+
+<section id="examples" class="slice bg-white">
+    <div class="container-fluid">
+        <h1 class="text-center restheart-red">Run anywhere</h1>
+    </div>
+    {% include examples.html %}
 </section>
 
 <section class="chart" id="chart">
