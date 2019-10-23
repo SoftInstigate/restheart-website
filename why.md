@@ -12,7 +12,7 @@ For these reasons, at SoftInstigate we started developing an open-source product
 # What RESTHeart actually does, in a minute
 
 {: .text-justify}
-RESTHeart is a standalone server-side application which connects to **MongoDB** database and immediately exposes all of MongoDB’s capabilities through a complete REST API, which allows to read and write JSON messages and binary data via HTTP.
+RESTHeart is a standalone microservice which connects to **MongoDB** database and immediately exposes all of MongoDB’s capabilities through a complete REST API, which allows to read and write JSON messages and binary data via HTTP.
 
 {: .text-justify}
 > Developers don’t need to write a single line of backend code to serve data and content to Mobile Apps and Angular, React, Vue or other Single Page Application frameworks.
@@ -23,7 +23,7 @@ RESTHeart is a standalone server-side application which connects to **MongoDB** 
 RESTHeart provides a strong security module for authentication, authorization, and data caching. It allows to effectively manage content and its metadata, such as images, tags, categories, geo-localized data, audios and videos, allowing to access them through a clean REST API.
 
 {: .text-justify}
-> In most scenarios RESTHeart can be the perfect server-side backend for Mobile and Web applications, so that frontend developers can focus on building User Interfaces.
+> In most scenarios RESTHeart is the perfect backend microservice for Mobile and Web applications, so that frontend developers can focus on building User Interfaces.
 
 {: .mt-5}
 # A bit of history: the death of SOAP Web Services
