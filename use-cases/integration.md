@@ -12,6 +12,9 @@ RESTHeart is a standalone micro-service which connects to MongoDB database (and 
 In most scenarios, developers don’t need to write a single line of integration code to involve MongoDB in Integration Processes because the Integration Middleware can interact with the RESTHeart API using simple HTTP Connectors.
 
 {: .text-justify .mt-5 .mb-5}
+Not only the Integration processes can be simplified by using simple HTTP requests but it can also leverage the extended functionalities of MongoDB handled by RESTHeart such as transactions, Bulk updates, update operators and the dot notation, Change Streams, just to name few.
+
+{: .text-justify .mt-5 .mb-5}
 In the following example, an integration flow run by **MuleSoft Anypoint** integrates **Salesforce** with **MongoDB** using HTTP Requests to the **RESTHeart** API.
 
 <img src="/images/restheart-integration.svg" width="80%" height="auto" class="mx-auto d-block img-responsive" />
