@@ -21,11 +21,11 @@ StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
 
 # Try it from the command line
 
-The demo database exposes a the messages collection at <a href="https://beta.mrest.io/browser/#/demo/messages?hal=f"><code>https://beta.mrest.io</code></a> without requiring authentication. Access to any other MongoDB resource is forbidden.
+The demo database exposes a the messages collection at `https://beta.mrest.io/demo/messages` without requiring authentication. Access to any other MongoDB resource is forbidden.
 
-<code>mrest.io</code> is an upcoming managed service for RESTHeart.
+`mrest.io` is the managed service for RESTHeart, currently on beta.
 
-The demo instance requires an api key, passed via request header <code>key:demo</code>
+The demo instance requires an api key, passed via request header `key:demo`
 
 This demo instance is reset on regular basis, so feel free to play with it <b>but don't rely on it for persistent storage of your data</b>.
 {: .bs-callout .bs-callout-info }
