@@ -5,8 +5,8 @@ layout: default
 <section id="top">
     <div class="container text-center header pb-3">
         <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="198">
-        <p class="header__desc">The Content REST API for MongoDB</p>
-        <h2 class="header__title">For developers who'd rather spend their time building apps than APIs</h2>
+        <p class="header__desc">REST Microservice for MongoDB.</p>
+        <h2 class="header__title">For Web and Mobile developers with deadlines!</h2>
     </div>
 </section>
 
