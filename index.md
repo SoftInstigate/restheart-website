@@ -5,7 +5,7 @@ layout: default
 <section id="top">
     <div class="container text-center header pb-3">
         <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="198">
-        <p class="header__desc">REST Microservice for MongoDB.</p>
+        <p class="header__desc">REST Microservice for MongoDB</p>
         <h2 class="header__title">For Web and Mobile developers with deadlines!</h2>
     </div>
 </section>
@@ -56,13 +56,13 @@ layout: default
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#lamp" /></svg>
                 <h2 class="call-to-action__title">Fully Supported</h2>
-                <p class="call-to-action__desc">Our dedicated support connects you with the engineers that develops RESTHeart to seamlessly run RESTHeart Platform in production environments while RESTHeart OSS is supported by our active community on public channels like github and stackoverflow.</p>
+                <p class="call-to-action__desc">Our dedicated support connects you with the engineers that develop RESTHeart to seamlessly run production environments. RESTHeart OSS is supported by our active community on public channels like github and stackoverflow.</p>
                 <a class="btn btn-o" href="/support">SUPPORT</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon"><use xlink:href="/images/sprite.svg#thumb" /></svg>
                 <h2 class="call-to-action__title">RESTHeart OSS and RESTHeart Platform</h2>
-                <p class="call-to-action__desc"><strong>RESTHeart OSS</strong> is distributed under the Open Source GNU AGPL v3 license and <strong>RESTHeart Platform</strong> is shipped with additional enterprise grade features and is available under a business-friendly commercial license.</p>
+                <p class="call-to-action__desc"><strong>RESTHeart OSS</strong> is distributed under the Open Source GNU AGPL v3 license. <strong>RESTHeart Platform</strong> is shipped with additional enterprise grade features under a business-friendly commercial license.</p>
                 <a class="btn btn-o-white" href="/editions">EDITIONS</a>
             </div>
         </div>
