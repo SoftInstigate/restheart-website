@@ -10,6 +10,7 @@ title: Aggregations
     * [aggregation pipeline](#aggregation-pipeline)
     * [Map-Reduce](#map-reduce)
 * [Examples](#examples)
+* [Materialized Views](#materialized-views)
 * [Passing variables to aggregations](#passing-variables-to-aggregations)
     * [Variables in stages or query](#variables-in-stages-or-query)
     * [Variables in map reduce functions](#variables-in-map-reduce-functions)
@@ -28,8 +29,8 @@ title: Aggregations
 RESTHeart manages aggregation operations: both *aggregation pipelines*
 and *map reduce functions* are supported.
 
-In both cases only *inline* output type is supported, i.e. no result is
-written to the DB server.    
+In both cases only *inline* output type is supported, i.e. no result is directly
+written to the DB server unless the [Materialized Views](#materialized-views) is used.
 
 ## The *aggrs* collection metadata
 
@@ -51,7 +52,6 @@ GET /coll/_meta HTTP 1.1
         ...,
         { <aggregation_n> }
     ]
-
 }
 ```
 
@@ -159,6 +159,54 @@ Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-N
 </tbody>
 </table>
 </div>
+
+## Materialized Views
+
+The `$merge` stage for the pipelines delivers the ability to create collections based on an aggregation and update those created collections efficiently, i.e. it just updates the generated results collection rather than rebuild it completely (like it would with the `$out` stage).
+
+It's as simple as adding `$merge` as the last stage of the pipeline.
+
+The following example defines the aggregation `/coll/_aggrs/age-by-gender` that computes average ages grouping data by gender. `$merge` is used as the last stage of the pipeline to write computed data to the `avgAgeByGender` collection.
+
+{: .bs-callout.bs-callout-warning }
+Materialized Views are available from MongoDB 4.2.
+
+{: .black-code}
+```
+PUT /coll HTTP/1.1 
+
+{ "aggrs" : [ 
+    { "stages" : [ 
+        { "$group" : { "_id" : "$gender",  "avg_age" : { "$avg" : "$age" } } },
+        { "$merge": { "into": "avgAgeByGender" } }
+        ],
+            "type" : "pipeline",
+            "uri" : "age-by-gender"
+        }
+    ]
+}
+```
+
+Executing the aggregation  request returns no data, but thanks to the `$merge` stage,  the new collection `avgAgeByGender` gets created.
+
+{: .black-code}
+```
+GET /coll/_aggrs/avg-by-city HTTP/1.1 
+
+HTTP/1.1 200 OK
+[]
+```
+
+{: .black-code}
+```
+GET /avgAgeByGender HTTP/1.1 
+
+HTTP/1.1 200 OK
+[ 
+    { "_id": "male", "avg_age": 34.5 }
+    { "_id": "female", "avg_age": 35.6 }
+]
+```
 
 ## Examples
 
