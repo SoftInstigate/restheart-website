@@ -30,7 +30,7 @@ layout: default
 </div>
 
 <section id="trusted-by">
-    <div class="row">
+    <div class="row mx-0">
         <div id="customers" class="container-fluid my-2">
             <h2 class="text-center restheart-red">
                 Trusted by Startups and Corporations
@@ -78,7 +78,7 @@ layout: default
 
 <section id="examples" class="slice bg-white">
     <div class="container-fluid">
-        <h1 class="text-center restheart-red">Run anywhere</h1>
+        <h1 class="text-center restheart-red">Runs anywhere</h1>
     </div>
     {% include examples.html %}
 </section>
