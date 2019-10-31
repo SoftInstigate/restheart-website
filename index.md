@@ -146,7 +146,7 @@ layout: default
     </div>
 </section>
 
-<div class="anchor-offset" id="use">
+<div class="anchor-offset" id="usecases">
 </div>
 <section id="usecases" class="slice bg-white">
     <div class="container">
