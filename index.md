@@ -2,21 +2,15 @@
 layout: default
 ---
 
-
 <section id="top">
-
     <div class="intro-wrapper">
-
         <div class="animated-container">
             <section class="cd-intro">
-
-
                 <div class="intro-logo-wrapper mb-5 d-flex flex-column justify-content-center">
                     <img src="{{ 'images/rh-light-logo.png' | prepend: site.baseurl }}" width="256"
                         class="intro-logo m-auto">
                     <p class="header__desc">REST Microservice for MongoDB</p>
                 </div>
-
                 <h1 class="d-lg-none cd-headline letters type">
                     <span class="cd-words-wrapper waiting">
                         <b class="is-visible">
@@ -58,7 +52,6 @@ layout: default
                 <h1 class="cd-headline letters type">
                     <span>without typing any line of code!</span>
                 </h1>
-
                 <div class="d-flex w-100 justify-content-center">
                     <a href="{{ "/get" | prepend: site.baseurl }}" class="btn mr-1 btn-o-white mt-3 btn-m">GET
                         NOW</a>
@@ -67,12 +60,9 @@ layout: default
                 </div>
             </section>
         </div>
-
-
         <div id="particles-js">
         </div>
     </div>
-
     <div class="container text-center header pb-3">
         <!-- <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="198">
         <p class="header__desc">REST Microservice for MongoDB</p> -->
