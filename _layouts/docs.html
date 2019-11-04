@@ -1,5 +1,5 @@
---- 
-layout: default 
+---
+layout: default
 ---
 
 <script src="/assets/js/highlight.pack.js"></script>
@@ -10,7 +10,8 @@ layout: default
         <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
             <div class="bd-sidebar__head">
                 <div class="dropdown d-flex justify-content-center w-100">
-                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if page.old_docs %}
                         v3
                         {% else %}
@@ -18,35 +19,47 @@ layout: default
                         {% endif %}
                     </button>
                     <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
-                        {% if page.old_docs %}
-                        v4
-                        {% else %}
-                        <strong>v4</strong>
-                        {% endif %}
-                    </a>
-                      <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
-                        {% if page.old_docs %}
-                        <strong>v3</strong>
-                        {% else %}
-                        v3
-                        {% endif %}
-                    </a>
+                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                            {% if page.old_docs %}
+                            v4
+                            {% else %}
+                            <strong>v4</strong>
+                            {% endif %}
+                        </a>
+                        <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
+                            {% if page.old_docs %}
+                            <strong>v3</strong>
+                            {% else %}
+                            v3
+                            {% endif %}
+                        </a>
                     </div>
-                  </div>
-                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get" name="searchform" target="_blank">
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
                     <input name="sitesearch" type="hidden" value="restheart.org/docs">
-                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q" placeholder="Search" required="required" type="text">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
                     <button class="bd-sidebar__submit" type="submit">
-                        <svg width="16" height="16"><use xlink:href="../../../images/sprite.svg#search" /></svg>
+                        <svg width="16" height="16">
+                            <use xlink:href="../../../images/sprite.svg#search" /></svg>
                     </button>
                 </form>
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <a href="https://github.com/SoftInstigate/restheart/issues/new?labels=documentation&title=Suggested+improvements+for+page+%22{{ page.path }}%22&template=" class="btn btn-sm mr-2 mb-1" target="_blank">New issue</a>
-                    <a href="https://github.com/SoftInstigate/restheart-website/edit/gh-pages/{{ page.path }}" class="btn btn-sm btn-link mb-1">Edit On Github</a>
+                    <a href="https://github.com/SoftInstigate/restheart/issues/new?labels=documentation&title=Suggested+improvements+for+page+%22{{ page.path }}%22&template="
+                        class="btn btn-sm mr-2 mb-1" target="_blank">New issue</a>
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/gh-pages/{{ page.path }}"
+                        class="btn btn-sm btn-link mb-1">Edit On Github</a>
 
-                    <button class="btn btn-link bd-sidebar__toggle d-md-none p-0 mb-1" type="button" data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu" aria-expanded="false" aria-label="Toggle docs navigation">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30" focusable="false"><title>Menu</title><path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"/></svg>
+                    <button class="btn btn-link bd-sidebar__toggle d-md-none p-0 mb-1" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
                     </button>
 
                 </div>
@@ -64,7 +77,13 @@ layout: default
 
         </div>
 
-
         {{ content }}
     </div>
 </div>
+
+<script>
+    $("#bd-sidebar__menu").hover(
+        () => $("#bd-sidebar__menu").addClass('scrollable'),
+        () => $("#bd-sidebar__menu").removeClass('scrollable')
+    );
+</script>
