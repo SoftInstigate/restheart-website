@@ -4,8 +4,8 @@ layout: default
 
 <section id="top">
     <section class="my-0">
-        <div class="pt-4 ml-3 ml-md-5 display-fluid-8 text-lightcyan"><strong>REST</strong>HEART</div>
-        <div class="mt-2 ml-3 ml-md-5 display-fluid-2 text-lightcyan">NoCoding and NoSQL Development Platform</div>
+        <div class="pt-4 ml-3 ml-md-5 text-7vh text-lightcyan"><strong>REST</strong>HEART</div>
+        <div class="mt-2 ml-3 ml-md-5 text-2_5vh text-lightcyan">NoCoding and NoSQL Development Platform</div>
     </section>
 </section>
 
