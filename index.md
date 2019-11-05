@@ -13,14 +13,16 @@ layout: default
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
-            <b>Handle data of Mobile Apps</b>
-            <b>Publish Content to the Web</b>
-            <b>Create Open Data solutions in minutes</b>
-            <b>Integrate with MongoDB</b>
-            <b>Handle users, roles and permissions</b>
+            <b>Handle data for Mobile Apps</b>
             <b>Develop Web Services</b>
+            <b>Publish Content to the Web</b>
+            <b>Handle users and permissions</b>
+            <b>Put data access under control</b>
             <b>Stream real-time data with WebSockets</b>
+            <b>Integrate with MongoDB</b>
             <b>Notify clients with Hooks</b>
+            <b>Create Open Data solutions</b>            
+            <b>Threat protection at every layer</b>
         </span>
     </h1>
     <div class="header__desc restheart-red">For developers with deadlines!</div>
