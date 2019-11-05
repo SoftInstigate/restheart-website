@@ -3,83 +3,42 @@ layout: default
 ---
 
 <section id="top">
-    <div class="intro-wrapper">
-        <div class="animated-container">
-            <section class="cd-intro">
-                <div class="intro-logo-wrapper mb-5 d-flex flex-column justify-content-center">
-                    <img src="{{ 'images/rh-light-logo.png' | prepend: site.baseurl }}" width="256"
-                        class="intro-logo m-auto">
-                    <p class="header__desc">REST Microservice for MongoDB</p>
-                </div>
-                <h1 class="d-lg-none cd-headline letters type">
-                    <span class="cd-words-wrapper waiting">
-                        <b class="is-visible">
-                            REST API
-                        </b>
-                        <b>
-                            Security Module
-                        </b>
-                        <b>
-                            Transactions
-                        </b>
-                        <b>
-                            JWT Auth
-                        </b>
-                        <b>
-                            Real-time notifications
-                        </b>
-                    </span>
-                </h1>
-                <h1 class="cd-headline d-none d-lg-block letters type">
-                    <span class="cd-words-wrapper waiting">
-                        <b class="is-visible">
-                            REST API for MongoDB
-                        </b>
-                        <b>
-                            Embeddable state-of-art security module
-                        </b>
-                        <b>
-                            Out-of-the-box JWT authentication
-                        </b>
-                        <b>
-                            Reliability and scalability drafting
-                        </b>
-                        <b>
-                            Real-time notifications system
-                        </b>
-                    </span>
-                </h1>
-                <h1 class="cd-headline letters type">
-                    <span>without typing any line of code!</span>
-                </h1>
-                <div class="d-flex w-100 justify-content-center">
-                    <a href="{{ "/get" | prepend: site.baseurl }}" class="btn mr-1 btn-o-white mt-3 btn-m">GET
-                        NOW</a>
-                    <a href="#usecases" class="btn ml-1 btn-o-white mt-3 btn-m">LEARN
-                        MORE</a>
-                </div>
-            </section>
-        </div>
-        <div id="particles-js">
-        </div>
-    </div>
-    <div class="container text-center header pb-3">
-        <!-- <img src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" class="img-responsive" width="198">
-        <p class="header__desc">REST Microservice for MongoDB</p> -->
-        <h2 class="header__title">For Web and Mobile developers with deadlines!</h2>
+    <section class="my-0">
+        <div class="pt-4 ml-3 ml-md-5 display-fluid-8 text-lightcyan"><strong>REST</strong>HEART</div>
+        <div class="mt-2 ml-3 ml-md-5 display-fluid-2 text-lightcyan">NoCoding and NoSQL Development Platform</div>
+    </section>
+</section>
+
+<section class="cd-intro mt-5 mb-0">
+    <h1 class="cd-headline d-block justify-content-center letters type">
+        <span class="cd-words-wrapper waiting restheart-red">
+            <b class="is-visible">REST microservice for MongoDB</b>
+            <b>Handle data of Mobile Apps</b>
+            <b>Publish Content to the Web</b>
+            <b>Create Open Data solutions in minutes</b>
+            <b>Integrate with MongoDB</b>
+            <b>Handle users, roles and permissions</b>
+            <b>Develop Web Services</b>
+            <b>Stream real-time data with WebSockets</b>
+            <b>Notify clients with Hooks</b>
+        </span>
+    </h1>
+    <div class="header__desc restheart-red">For developers with deadlines!</div>
+    <div class="d-flex justify-content-center">
+        <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
+            MORE</a>
     </div>
 </section>
 
-<div class="d-flex w-100 justify-content-center mb-2">
+<div class="d-flex w-100 justify-content-center mt-5 mb-2">
     <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem">
-        <h5 class="card-header text-center rh4-card-header"><strong>RESTHeart 4.1 is out!</strong></h5>
+        <h5 class="card-header text-center rh4-card-header"><strong>Latest version</strong></h5>
         <!-- http://avtanski.net/projects/lcd/ -->
-        <img class="mx-auto mt-4 d-block" src="/images/4.1.png" alt="RESTHeart 4.1">
+        <img class="mx-auto mt-4 d-block img-responsive" src="/images/4.1.png" alt="RESTHeart 4.1">
         <div class="card-body">
             <div class="d-flex justify-content-center">
-                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn w-50 mt-2 mr-2 btn-m">GET</a>
-                <a href="{{ "/docs/upgrade-to-v4" | prepend: site.baseurl }}"
-                    class="btn w-50 mt-2 ml-2 btn-md">UPGRADE</a>
+                <a href="{{ "/get" | prepend: site.baseurl }}"
+                    class="btn w-50 mt-2 ml-2 btn-md">Download</a>
             </div>
         </div>
     </div>
@@ -158,14 +117,6 @@ layout: default
 
 </section>
 
-<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
 <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->
 <script src="assets/animated-headline/js/modernizr.js"></script> <!-- Modernizr -->
-<script src="assets/animated-headline/js/main.js"></script> <!-- Resource jQuery -->
-
-<script>
-    particlesJS.load('particles-js', '/assets/js/particles.json', function () {
-        console.log('callback - particles.js config loaded');
-    });
-</script>
+<script src="assets/animated-headline/js/main.js"></script>
