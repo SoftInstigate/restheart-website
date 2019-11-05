@@ -3,8 +3,8 @@
 ---
 @charset "utf-8";
 
-body {
-    background: red;
+html {
+    scroll-behavior: smooth
 }
 
 // Our variables
@@ -29,20 +29,11 @@ $content-width: 800px;
 $on-palm: 600px;
 $on-laptop: 800px;
 
-// Using media queries with like this:
-// @include media-query($on-palm) {
-//     .wrapper {
-//         padding-right: $spacing-unit / 2;
-//         padding-left: $spacing-unit / 2;
-//     }
-// }
 @mixin media-query($device) {
     @media screen and (max-width: $device) {
         @content;
     }
 }
-
-// Import partials from `sass_dir` (defaults to `_sass`)
 
 @import "docs";
 @import "infinite-slider";
@@ -51,3 +42,24 @@ $on-laptop: 800px;
 @import "red";
 @import "blog";
 @import "ekko-lightbox";
+
+@media screen and (max-width: 500px) {
+   .mobile-hidden {
+    display: none;
+    }
+}
+
+#top {
+    border:1px solid #9b253a;
+    border-width:0 0 13px 0; 
+    -webkit-border-radius:0% 0% 135% 0% / 0% 0% 25% 0%; 
+    -moz-border-radius:0% 0% 135% 0% / 0% 0% 25% 0%; 
+    border-radius:0% 0% 135% 0% / 0% 0% 25% 0%;
+
+    background-image: url("/images/intro.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: left;
+
+    min-height: 28rem;
+}
