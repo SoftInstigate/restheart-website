@@ -3,7 +3,7 @@ restheart-website
 
 [restheart.org](https://restheart.org) Web site.
 
-RESTHeart is the Content REST API microservice for MongoDB, fork it on [github](https://github.com/SoftInstigate/restheart)
+RESTHeart is the leading Content REST API microservice for MongoDB, fork it on [github](https://github.com/SoftInstigate/restheart)
 
 <hr></hr>
 
