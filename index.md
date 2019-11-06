@@ -5,7 +5,8 @@ layout: default
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 text-7vh text-lightcyan text-break"><strong>REST</strong>HEART</div>
-        <div class="mt-2 ml-3 ml-md-5 text-2_5vh text-lightcyan text-break">NoCoding and NoSQL Development Platform</div>
+        <div class="mt-2 ml-3 ml-md-5 text-2_5vh text-lightcyan text-break">NoCoding and NoSQL Platform</div>
+        <div class="mt-2 ml-3 ml-md-5 text-2vh text-lightcyan text-break">for MongoDB</div>
     </section>
 </section>
 
@@ -13,10 +14,12 @@ layout: default
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
+            <b>NoCoding, it is ready-to-use!</b>
             <b>Handle data for Mobile Apps</b>
             <b>Develop Web Services</b>
             <b>Publish Content to the Web</b>
             <b>Handle users and permissions</b>
+            <b>Available in binary and as Docker image</b>
             <b>Put data access under control</b>
             <b>Stream real-time data with WebSockets</b>
             <b>Integrate with MongoDB</b>
