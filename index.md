@@ -15,11 +15,12 @@ layout: default
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
             <b>NoCoding, it is ready-to-use!</b>
+            <b>Supports all features of MongoDB</b>
             <b>Handle data for Mobile Apps</b>
             <b>Develop Web Services</b>
             <b>Publish Content to the Web</b>
             <b>Handle users and permissions</b>
-            <b>Available in binary and as Docker image</b>
+            <b>Available as binary package and Docker image</b>
             <b>Put data access under control</b>
             <b>Stream real-time data with WebSockets</b>
             <b>Integrate with MongoDB</b>
