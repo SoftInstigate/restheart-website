@@ -14,10 +14,10 @@ layout: default
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
-            <b>NoCoding, it is ready-to-use!</b>
+            <b>Ready-to-use, no server-side coding</b>
             <b>Supports all features of MongoDB</b>
-            <b>Handle data for Mobile Apps</b>
-            <b>Develop Web Services</b>
+            <b>Data API for Mobile Apps</b>
+            <b>Develop REST Web Services</b>
             <b>Publish Content to the Web</b>
             <b>Handle users and permissions</b>
             <b>Available as binary package and Docker image</b>
@@ -29,7 +29,7 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-    <div class="header__desc restheart-red">For developers with deadlines!</div>
+    <div class="header__desc restheart-red">For developers with deadlines.</div>
     <div class="d-flex justify-content-center">
         <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
             MORE</a>
