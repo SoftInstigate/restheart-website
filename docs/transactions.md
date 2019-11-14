@@ -138,7 +138,7 @@ HTTP/1.1 200 OK
 
 ## Transactions
 
-Transactions are handled in sessions; one single transaction can be started per each sessions.
+Transactions are handled in sessions; per each session, one transaction at a time can be started.
 
 ### Transaction Status
 
