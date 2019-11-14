@@ -4,9 +4,9 @@ layout: default
 
 <section id="top">
     <section class="my-0">
-        <div class="pt-4 ml-3 ml-md-5 text-7vh text-lightcyan text-break"><strong>REST</strong>HEART</div>
-        <div class="mt-2 ml-3 ml-md-5 text-2_5vh text-lightcyan text-break">NoCoding and NoSQL Platform</div>
-        <div class="mt-2 ml-3 ml-md-5 text-2vh text-lightcyan text-break">for MongoDB</div>
+        <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
+        <div class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">NoCoding and NoSQL Platform</div>
+        <div class="mt-2 ml-3 ml-md-5 top-3 text-lightcyan text-break">for MongoDB</div>
     </section>
 </section>
 
