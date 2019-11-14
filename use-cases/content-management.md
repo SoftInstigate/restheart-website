@@ -10,7 +10,7 @@ Many RESTHeart users adopt RESTHeart to manage content — whether that content 
 Because RESTHeart eliminates the need for time-consuming integrations, in most cases you can set up your content management application without coding—saving significant development cost.
 
 {: .text-justify .mt-5}
-You can build Single Page Applications with Angular, React, Vue frameworks and iOS and Android Mobile applications much more effectively, because you can focus on creating beautiful experiences for your users.
+You can build Single Page Applications with Angular, React, Vue frameworks and iOS or Android Mobile applications much more effectively, because you can focus on creating beautiful experiences for your users.
 
 <img src="/images/restheart-content-mgmt.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
 
