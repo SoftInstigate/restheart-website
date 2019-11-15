@@ -4,13 +4,37 @@ title: Get RESTHeart Platform
 permalink: /get
 ---
 
+<div class="form-row text-center mt-4">
+    <p class="mx-auto display-4 restheart-red">Try and Purchase <img width="30%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
+</div>
+
+<section class="mt-4 call-to-action">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+                <svg class="call-to-action__icon">
+                    <use xlink:href="/images/sprite.svg#lamp" /></svg>
+                <h2 class="call-to-action__title">Trial</h2>
+                <p class="call-to-action__desc">
+                Get 30 days trial for free.
+                During the trial you can use RESTHeart Platform PE without restrictions.</p>
+            </div>
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
+                <svg class="call-to-action__icon">
+                    <use xlink:href="/images/sprite.svg#thumb" /></svg>
+                <h2 class="call-to-action__title">Full License Key</h2>
+                <p class="call-to-action__desc">Purchase RESTHeart Platform Professional Edition for $499. For other editions please <a class="text-white" href="/contact"><strong>contact</strong></a> us.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div class="jumbotron bg-light mt-4 py-4">
 <form id="pre-checkout" novalidate class="was-validated">
-    <div class="form-row text-center">
-        <p class="mx-auto display-4 restheart-red">Get <img width="30%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /> now!</p>
-    </div>
-    <hr class="my-4">
     <div class="form-row">
+        <div class="col-12 mb-4 text-muted lead">
+            Select <span class="text-white bg-red px-1 py-1">30 Days Trial</span> or <span class="text-white bg-red px-1 py-1">Professional Edition</span> below
+        </div>
         <div class="col-md-10">
             <select id="item" class="form-control form-control-lg" required>
                 <option value="0">RESTHeart Platform 30 Days Trial</option>
