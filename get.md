@@ -454,7 +454,7 @@ permalink: /get
     </div>
 </div>
 
-<div class="jumbotron bg-light">
+<div class="jumbotron bg-light mb-5">
     <h1>Licensing FAQ</h1>
     <div class="row">
         <div class="col-md-6">
@@ -488,5 +488,3 @@ permalink: /get
         </div>
     </div>
 </div>
-
-<hr class="mb-5">
