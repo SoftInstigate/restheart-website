@@ -419,19 +419,21 @@ permalink: /get
     <p>Students and educators at high schools, universities and colleges may use RESTHeart Platform PE free of charge. Students qualify for a one-year subscription each year they are enrolled in classes. Teachers and professors receive licenses to use in classrooms and computer labs.</p>
     <p>We also provide discounts to academic, non-profit, and government organizations for RESTHeart Platform EE licenses purchased by PO.</p>
     <div class="row lead text-center">
-        <div class="col-4">EDUCATIONAL: 60% OFF</div>
-        <div class="col-4">NON-PROFIT: 60% OFF</div>
-        <div class="col-4">GOVERNMENT: 25% OFF</div>
+        <div class="col-md-4">EDUCATIONAL: 60% OFF</div>
+        <div class="col-md-4">NON-PROFIT: 60% OFF</div>
+        <div class="col-md-4">GOVERNMENT: 25% OFF</div>
     </div>
-    <div class="text-center mt-5">
-        <a href="/contact" class="btn btn-md w-50">Request discount</a>
+    <div class="row text-center mt-5">
+        <div class="offset-md-4 col-md-4">
+            <a href="/contact" class="btn btn-md">Request discount</a>
+        </div>
     </div>
 </div>
 
 <div class="jumbotron bg-light">
     <h1>Licensing FAQ</h1>
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
             <div class="lead mb-2 text-primary">Is the the license perpetual?</div>
             <p><span class="text-success">Yes</span> all licenses for RESTHeart Platform are perpetual; RESTHEart Platform can be always used with a license key and there are no time limits.</p>
             <!-- question -->
@@ -450,7 +452,7 @@ permalink: /get
             You can also download an invoice as a PDF to save a copy for your records or ask us a copy at any time.
             </p>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
             <div class="lead mb-2 text-primary">What is the license?</div>
             <p>See <a href="https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt">COMM-LICENSE</a> in the root of the RESTHeart repo.</p>
             <!-- question -->
