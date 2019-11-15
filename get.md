@@ -3,8 +3,8 @@ layout: page-notitle
 title: Get RESTHeart Platform
 permalink: /get
 ---
-<div class="jumbotron bg-light mt-4 py-4">
 
+<div class="jumbotron bg-light mt-4 py-4">
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row text-center">
         <p class="mx-auto display-4 restheart-red">Get <img width="30%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /> now!</p>
@@ -17,12 +17,11 @@ permalink: /get
                 <option value="1">RESTHeart Platform Professional Edition</option>
             </select>
         </div>
-         <div class="col-md-2">
+        <div class="col-md-2">
             <input class="text-strong text-center form-control-plaintext form-control-lg text-right" id="price" aria-describedby="price" disabled value="Free">
         </div>
         <div class="col-12 my-0 d-none" id="qtn-tip">
             <div class="hint mt-2 text-muted"><small>You can specify quantities during checkout.</small></div>
-            <div class="hint mt-2 text-muted"><small>Educational institution, non-profit organization or low budget project? <a href="/contact">Get in touch</a> for a discount coupon.</small></div>
             <div class="hint mt-2 text-muted"><small>Shown prices don't include VAT or other sales taxes, where applicable.</small></div>
         </div>
     </div>
@@ -333,14 +332,14 @@ permalink: /get
                     zip: it.free ? null: form.zip.value
                 };
                 Paddle.Checkout.open({
-                     product: it.productId,
-                     email: form.email.value,
-                     passthrough: JSON.stringify(_passthrough),
-                     country: it.free ? "US": form.country.value,
-                     postcode: it.free ? "10001": form.zip.value,
-                     quantity: 1,
-                     title: it.description,
-                     locale: 'en'
+                    product: it.productId,
+                    email: form.email.value,
+                    passthrough: JSON.stringify(_passthrough),
+                    country: it.free ? "US": form.country.value,
+                    postcode: it.free ? "10001": form.zip.value,
+                    quantity: 1,
+                    title: it.description,
+                    locale: 'en'
                 });
             }
             document.getElementById('payBtn').addEventListener('click', openCheckout, false);
@@ -406,14 +405,62 @@ permalink: /get
 </form>
 
 </div>
-<hr>
+
+<div class="alert text-muted">
+    Looking for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories
+</div>
 
 <div class="alert alert-info mb-5">
     Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}">FAQs</a> to learn more about the main differences between editions.
 </div>
-<div class="alert mt-5 mb-2 text-muted">
-    Searching for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories
+
+<div class="jumbotron bg-light">
+    <h1>Discounts for Education</h1>
+    <p>Students and educators at high schools, universities and colleges may use RESTHeart Platform PE free of charge. Students qualify for a one-year subscription each year they are enrolled in classes. Teachers and professors receive licenses to use in classrooms and computer labs.</p>
+    <p>We also provide discounts to academic, non-profit, and government organizations for RESTHeart Platform EE licenses purchased by PO.</p>
+    <div class="row lead text-center">
+        <div class="col-4">EDUCATIONAL: 60% OFF</div>
+        <div class="col-4">NON-PROFIT: 60% OFF</div>
+        <div class="col-4">GOVERNMENT: 25% OFF</div>
+    </div>
+    <div class="text-center mt-5">
+        <a href="/contact" class="btn btn-md w-50">Request discount</a>
+    </div>
 </div>
 
+<div class="jumbotron bg-light">
+    <h1>Licensing FAQ</h1>
+    <div class="row">
+        <div class="col-6">
+            <div class="lead mb-2 text-primary">Is the the license perpetual?</div>
+            <p><span class="text-success">Yes</span> all licenses for RESTHeart Platform are perpetual; RESTHEart Platform can be always used with a license key and there are no time limits.</p>
+            <!-- question -->
+            <div class="lead mt-4 mb-2 text-primary">What is the subscription?</div>
+            <p>License includes 1 year subscription. During this period
+            you can ask for support and RESTHeart Platform can be upgraded.
+             You cannot ask for support or upgrade RESTHeart Plafrom to releases that are published after the subscription period.</p>
+            <!-- question -->
+            <div class="lead mt-4 mb-2 text-primary">How subscription is renewed?</div>
+            <p>To extend the subscription, you need a new License Key.
+            <a href="/contact">Contact us</a> to get the renewal coupon to apply the 20% renewal discount to the license key price.</p>
+            <!-- question -->
+            <div class="lead mt-4 mb-2 text-primary">How to get the invoice?</div>
+            <p>During checkout you can add your VAT code.
+            The invoice is therefore sent via email, with a copy in the email body and as a PDF attachment.
+            You can also download an invoice as a PDF to save a copy for your records or ask us a copy at any time.
+            </p>
+        </div>
+        <div class="col-6">
+            <div class="lead mb-2 text-primary">What is the license?</div>
+            <p>See <a href="https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt">COMM-LICENSE</a> in the root of the RESTHeart repo.</p>
+            <!-- question -->
+            <div class="lead mt-4 mb-2 text-primary">What is a License Key?</div>
+            <p>A <i>License Key</i> is a verifiable file, cryptographically signed by the Licensor, containing additional information on the License (including but not limited to those that specifies how many RESTHeart instances the Licensee is allowed to execute and how) that can purchased by the Licensee in order to acquire the rights to use RESTHeart.</p>
+            <!-- question -->
+            <div class="lead mt-4 mb-2 text-primary">What is a RESTHeart instance?</div>
+            <p>A <i>RESTHeart instance</i> is any installation of RESTHeart and Derivative Works of RESTHeart capable of being executed as a single process in a production execution environment regardless the used technology, including but not limited to bare metal servers, virtual machines or containers. Installations made for testing or development purposes don’t constitute RESTHeart instances.</p>
+        </div>
+    </div>
+</div>
 
 <hr class="mb-5">
