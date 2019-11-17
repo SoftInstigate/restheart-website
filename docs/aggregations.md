@@ -160,6 +160,38 @@ Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-N
 </table>
 </div>
 
+## Examples
+
+The following requests upsert a collection  defining two aggregation
+operations:
+
+* aggregation operation *test\_ap* bound at
+    `/coll/_aggrs/example-pipeline`
+* map reduce operation *test\_mr* bound at
+    `/coll/_aggrs/example-mapreduce`
+
+{: .black-code}
+```
+PUT /coll HTTP/1.1 
+
+{ "aggrs" : [ 
+      { "stages" : [ { "$match" : { "name" : { "$var" : "n" } } },
+            { "$group" : { "_id" : "$name",
+                  "avg_age" : { "$avg" : "$age" }
+                } }
+          ],
+        "type" : "pipeline",
+        "uri" : "example-pipeline"
+      },
+      { "map" : "function() { emit(this.name, this.age) }",
+        "query" : { "name" : { "$var" : "n" } },
+        "reduce" : "function(key, values) { return Array.avg(values) }",
+        "type" : "mapReduce",
+        "uri" : "example-mapreduce"
+      }
+    ] }
+```
+
 ## Materialized Views
 
 The `$merge` stage for the pipelines delivers the ability to create collections based on an aggregation and update those created collections efficiently, i.e. it just updates the generated results collection rather than rebuild it completely (like it would with the `$out` stage).
@@ -206,38 +238,6 @@ HTTP/1.1 200 OK
     { "_id": "male", "avg_age": 34.5 }
     { "_id": "female", "avg_age": 35.6 }
 ]
-```
-
-## Examples
-
-The following requests upsert a collection  defining two aggregation
-operations:
-
-* aggregation operation *test\_ap* bound at
-    `/coll/_aggrs/example-pipeline`
-* map reduce operation *test\_mr* bound at
-    `/coll/_aggrs/example-mapreduce`
-
-{: .black-code}
-```
-PUT /coll HTTP/1.1 
-
-{ "aggrs" : [ 
-      { "stages" : [ { "$match" : { "name" : { "$var" : "n" } } },
-            { "$group" : { "_id" : "$name",
-                  "avg_age" : { "$avg" : "$age" }
-                } }
-          ],
-        "type" : "pipeline",
-        "uri" : "example-pipeline"
-      },
-      { "map" : "function() { emit(this.name, this.age) }",
-        "query" : { "name" : { "$var" : "n" } },
-        "reduce" : "function(key, values) { return Array.avg(values) }",
-        "type" : "mapReduce",
-        "uri" : "example-mapreduce"
-      }
-    ] }
 ```
 
 ## Passing variables to aggregations
