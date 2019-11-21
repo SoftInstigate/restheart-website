@@ -321,7 +321,6 @@ X-Powered-By: restheart.org
 
 Note that in this case the resource has a much nicer URL:
 
-{: .black-code }
 ```plain
 http://localhost:8080/mybucket.files/dataflow.png
 ```
