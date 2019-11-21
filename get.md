@@ -33,7 +33,7 @@ permalink: /get
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row">
         <div class="col-12 mb-4 text-muted lead">
-            Select <span class="text-white bg-red px-1 py-1">30 Days Trial</span> or <span class="text-white bg-red px-1 py-1">Professional Edition</span> below
+            Select <span class="text-white bg-dark px-1 py-1">30 Days Trial</span> or <span class="text-white bg-dark px-1 py-1">Professional Edition</span> below
         </div>
         <div class="col-md-10">
             <select id="item" class="form-control form-control-lg" required>
@@ -338,6 +338,81 @@ permalink: /get
             </div>
         </div>
     </div>
+    <div id="need">
+        <hr class="my-4">
+        <div class="form-row mt-2">
+            <h2 class="text-info">Describe your need</h2><span class="text-sm text-info">&nbsp;&nbsp;optional</span>
+        </div>
+        <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <h3 class="text-info">Scenario</h3>
+        </div>
+        <div class="col-md-6 mb-3">
+            <h3 class="text-info">Use case</h3>
+        </div>
+            <div class="col-md-6 mb-3">
+                <div class="form-check">
+                <input class="form-check-input" type="radio" name="needs" id="needOSS">
+                <label class="form-check-label lead" for="needOSS">Experimenting or personal use</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="needs" id="needRef">
+                <label class="form-check-label lead text-red" for="needRef">Developing a solution for your customer</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="needs" id="needEnt">
+                <label class="form-check-label lead" for="needEnt">Developing an Enterprise Application</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="needs" id="needOEM">
+                <label class="form-check-label lead" for="needOEM">Embed RESTHeart Platform in your product or service</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="needs" id="needOth">
+                <label class="form-check-label lead" for="needOth">Other</label>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseWebMobileApp">
+                <label class="form-check-label lead text-red" for="usecaseWebMobileApp">Backend for Mobile or Web App</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseCMS">
+                <label class="form-check-label lead" for="usecaseCMS">Content Management and Delivery</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseAPI">
+                <label class="form-check-label lead" for="usecaseAPI">Add an API to an service that uses MongoDB</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseIntegration">
+                <label class="form-check-label lead" for="usecaseIntegration">Integrate with MongoDB via REST API</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseOpenDataIoT">
+                <label class="form-check-label lead" for="usecaseOpenDataIoT">Open Data or Internet of Things</label>
+                </div>
+                <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="usecases" id="usecaseOther">
+                <label class="form-check-label lead" for="usecaseOther">Other</label>
+                </div>
+            </div>
+            <div class="col-md-12 mb-3">
+                <p id="tipOSS" class="d-none lead">You might want to try the free OSS version.</p>
+                <div id="tipRef" class="d-none lead">
+                    <strong>You are eligible for 25% of the license price according to our referral program.</strong> 
+                    <p><a href="/contact">Contact us</a> to register your deal.</p>
+                </div>
+                <p id="tipEnt" class="d-none lead"><a href="/contact">Contact us</a> for a tailored offer for RESTHeart Platform Enterprise Edition</p>
+                <p id="tipOEM" class="d-none lead"><a href="/contact">Contact us</a> for a tailored offer for RESTHeart Platform OEM Edition</p>
+                <div id="tipOth" class="d-none lead">
+                <p>We'd love to better know your needs to help us improving RESTHeart.</p>
+                <p>You can provide feedback <a href="/contact">contacting us</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="form-row">
         <a id="payBtn" href="#!" class="paddle_button" class="btn mt-3 ml-auto pay-disabled">Get</a>
         <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
@@ -353,8 +428,11 @@ permalink: /get
                     email: form.email.value,
                     address: it.free ? null: form.address.value,
                     country: it.free ? null: form.country.value,
-                    zip: it.free ? null: form.zip.value
+                    zip: it.free ? null: form.zip.value,
+                    need: need(),
+                    useCases: useCases()
                 };
+                console.log(_passthrough);
                 Paddle.Checkout.open({
                     product: it.productId,
                     email: form.email.value,
@@ -372,9 +450,11 @@ permalink: /get
                         recalculate();
                     });
                     Paddle.Setup({ vendor: 37055 });
-                    //toggleButton();
                     onChangeForm(function() {
                         toggleButton();
+                    });
+                    onChangeNeed(function() {
+                        showNeedTip();
                     });
             }, false);
             function onChangeItem(handler) {
@@ -423,6 +503,65 @@ permalink: /get
             }
             function onChangeForm(handler) {
                 document.querySelector('#pre-checkout').addEventListener('input', handler);
+            }
+            function onChangeNeed(handler) {
+                document.querySelector('#need').addEventListener('change', handler);
+            }
+            function needIdx() {
+                var needs = [ '#needOSS', '#needRef', '#needEnt', '#needOEM', '#needOth' ];
+                var idx = 0;
+                while (idx < needs.length) {
+                    if (document.querySelector(needs[idx]).checked) {
+                        return idx;
+                    }
+                    idx++;
+                }
+                return -1;
+            }
+            function showNeedTip() {
+                var checkedIdx = needIdx();
+                var tips = [ '#tipOSS', '#tipRef', '#tipEnt', '#tipOEM', '#tipOth' ];
+                for (var idx = 0; idx < tips.length; idx++) {
+                    var tip = document.querySelector(tips[idx]);
+                    if (idx == checkedIdx) {
+                        tip.classList.remove("d-none");
+                    } else {
+                        tip.classList.add("d-none");
+                    }
+                }
+            }
+            function need() {
+                var needsDescriptions = [
+                    'Experimenting or personal use',
+                    'Developing a solution for your customer',
+                    'Developing an Enterprise Application',
+                    'Embed RESTHeart Platform in your product or service',
+                    'Other'
+                ];
+                var idx = needIdx();
+                if (idx >= 0) {
+                    return needsDescriptions[idx];
+                } else {
+                    return 'None specified';
+                }
+            }
+            function useCases() {
+                var useCases = [ '#usecaseWebMobileApp', '#usecaseCMS', '#usecaseAPI', '#usecaseIntegration', '#usecaseOpenDataIoT', '#usecaseOther' ];
+                var useCaseDescriptions = [
+                    'Backend for Mobile or Web App', 
+                    'Content Management and Delivery',
+                    'Add an API to an service that uses MongoDB',
+                    'Integrate with MongoDB via REST API',
+                    'Open Data or Internet of Things',
+                    'Other'
+                ];
+                var ret = [];
+                for (var idx = 0; idx < useCases.length; idx++) {
+                    if (document.querySelector(useCases[idx]).checked) {
+                        ret.push(useCaseDescriptions[idx]);
+                    }
+                }
+                return ret.length == 0 ? 'None specified' : ret.join(', ');
             }
         </script>
     </div>
