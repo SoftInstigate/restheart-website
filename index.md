@@ -29,7 +29,7 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-    <div class="header__desc restheart-red">For developers with deadlines.</div>
+    <div class="header__desc restheart-red">Beautifully crafted API for developers with deadlines</div>
     <div class="d-flex justify-content-center">
         <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
             MORE</a>
