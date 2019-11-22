@@ -344,13 +344,8 @@ permalink: /get
             <h2 class="text-info">Describe your need</h2><span class="text-sm text-info">&nbsp;&nbsp;optional</span>
         </div>
         <div class="form-row">
-        <div class="col-md-6 mb-3">
-            <h3 class="text-info">Scenario</h3>
-        </div>
-        <div class="col-md-6 mb-3">
-            <h3 class="text-info">Use case</h3>
-        </div>
             <div class="col-md-6 mb-3">
+                <h3 class="text-info mb-3">Scenario</h3>
                 <div class="form-check">
                 <input class="form-check-input" type="radio" name="needs" id="needOSS">
                 <label class="form-check-label lead" for="needOSS">Experimenting or personal use</label>
@@ -373,6 +368,7 @@ permalink: /get
                 </div>
             </div>
             <div class="col-md-6 mb-3">
+                <h3 class="text-info mb-3">Use case</h3>
                 <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="usecases" id="usecaseWebMobileApp">
                 <label class="form-check-label lead text-red" for="usecaseWebMobileApp">Backend for Mobile or Web App</label>
