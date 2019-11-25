@@ -6,18 +6,13 @@ permalink: /support
 
 <div class="alert mb-2" role="alert">
     <h1><span class="far fa-comment-dots mr-2 text-success"></span>Happy Hour</h1>
-    <p class="lead">Weekly Free video chat about RESTHeart</p>
-    <hr class="mt-1 mb-4">
     <p class="mb-4">
-        Join us on our <span class="text-success"><strong>free</strong></span> weekly video chat and take the chance to chat with <strong>REST</strong>Heart authors and top contributors.
+        If you have any question about RESTHeart and want to get in touch with the core development team, you can book a free video chat with us.
     </p>
-    <ul class="fa-ul">
-        <li><span class="fa-li fa fa-dollar-sign font-weight-light"></span>FREE</li>
-        <li><span class="fa-li fa fa-hourglass font-weight-light"></span>Every Tuesday, 11am-12pm Eastern Standard Time US. <a class="small" href="https://www.thetimezoneconverter.com/?t=11%3A00%20am&tz=Eastern%20Standard%20Time%20(EST)&" target="_black">Start time on your time zone</a></li>
-        <li><span class="fa-li fa fa-envelope font-weight-light"></span>Open to the Public, please <a href="mailto:ask@restheart.org?subject=Happy%20Hour%20RSVP">email to confirm</a></li>
-        <li><span class="fa-li fa fa-video font-weight-light"></span><a href="https://whereby.com/restheart" target="_blank">Click here</a> to join. Works best in Chrome and Firefox.
-        </li>
-    </ul>
+    <hr class="mt-1 mb-4">
+    <p class="lead">
+        <a href="https://calendly.com/restheart/restheart-free-chat" target="_blank" class="btn btn-primary mr-2">Book a chat</a>
+    </p>
 </div>
 
 <div class="alert" role="alert">
