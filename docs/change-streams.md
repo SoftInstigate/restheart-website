@@ -161,7 +161,7 @@ PUT /cs_test HTTP/1.1
 ```
 
 Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
-This is because the document returned by the change stream looks like:
+This is because the Change Event looks like:
 
 {: .black-code }
 ```json
@@ -177,7 +177,7 @@ change streams (returned with `?rep=SHAL`).
 
 {: .black-code }
 ```
-GET /db/cs_test?rep=SHAL HTTP/1.1
+GET /cs_test?rep=SHAL HTTP/1.1
 ```
 
 {% include code-header.html 
