@@ -32,9 +32,9 @@ permalink: /get
 <div class="jumbotron bg-light mt-4 py-4">
 <form id="pre-checkout" novalidate class="was-validated">
     <div class="form-row">
-        <div class="col-12 mb-4 text-muted lead">
-            Select <span class="text-white bg-dark px-1 py-1">30 Days Trial</span> or <span class="text-white bg-dark px-1 py-1">Professional Edition</span> below
-        </div>
+        <small class="col-12 mb-4 text-muted hint">
+            Select <mark class="text-muted">30 Days Trial</mark> or <mark class="text-muted">Professional Edition</mark> below
+        </small>
         <div class="col-md-10">
             <select id="item" class="form-control form-control-lg" required>
                 <option value="0">RESTHeart Platform 30 Days Trial</option>
@@ -341,7 +341,7 @@ permalink: /get
     <div id="need">
         <hr class="my-4">
         <div class="form-row mt-2">
-            <h2 class="text-info">Describe your need</h2><span class="text-sm text-info">&nbsp;&nbsp;optional</span>
+            <h2 class="text-info">Please describe your need</h2><span class="text-sm text-info">&nbsp;&nbsp;optional</span>
         </div>
         <div class="form-row">
             <div class="col-md-6 mb-3">
@@ -395,9 +395,12 @@ permalink: /get
                 </div>
             </div>
             <div class="col-md-12 mb-3">
-                <p id="tipOSS" class="d-none lead">You might want to try the free OSS version.</p>
+                <div id="tipOSS" class="d-none">
+                    <p class="lead">You might want to try the free OSS version.</p>
+                    <p>If you are a student or an educator at high schools, universities and colleges you can use RESTHeart Platform PE free of charge. See <i class="">Discounts for Education</i> below for more information.</p>
+                </div>
                 <div id="tipRef" class="d-none lead">
-                    <strong>You are eligible for 25% of the license price according to our referral program.</strong> 
+                    <strong>You are eligible for 20% of the license price according to our referral program.</strong> 
                     <p><a href="/contact">Contact us</a> to register your deal.</p>
                 </div>
                 <p id="tipEnt" class="d-none lead"><a href="/contact">Contact us</a> for a tailored offer for RESTHeart Platform Enterprise Edition</p>
@@ -452,6 +455,12 @@ permalink: /get
                     onChangeNeed(function() {
                         showNeedTip();
                     });
+                    var iqp = location.href.match(/[?&]i=(.*?)(?:$|&)/)[1];   // get params "u" from URL
+                    if (iqp && iqp === 'buy') {
+                        var item = document.querySelector('#item');
+                        item.selectedIndex = 1;
+                        item.dispatchEvent(new Event('change'));
+                    }
             }, false);
             function onChangeItem(handler) {
                 document.querySelector('#item').addEventListener('change', handler);
@@ -463,6 +472,7 @@ permalink: /get
                 var address = document.querySelector('#address');
                 var zip = document.querySelector('#zip');
                 var country = document.querySelector('#country');
+                var need = document.querySelector('#need');
                 switch (idx) {
                     case 0:
                         address.removeAttribute('required');
@@ -470,10 +480,12 @@ permalink: /get
                         country.removeAttribute('required');
                         billing.classList.add("d-none");
                         qtnTip.classList.add("d-none");
+                        need.classList.remove("d-none");
                         return { idx:0, free: true, description: "RESTHeart Platform 30 Days Trial", productId: 562478 };
                     default:
                         billing.classList.remove("d-none");
                         qtnTip.classList.remove("d-none");
+                        need.classList.add("d-none");
                         address.setAttribute('required','');
                         zip.setAttribute('required','');
                         country.setAttribute('required','');
