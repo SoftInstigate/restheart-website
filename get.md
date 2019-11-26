@@ -379,7 +379,7 @@ permalink: /get
                 </div>
                 <div class="form-check mt-2">
                 <input class="form-check-input" type="checkbox" name="usecases" id="usecaseAPI">
-                <label class="form-check-label lead" for="usecaseAPI">Add an API to an service that uses MongoDB</label>
+                <label class="form-check-label lead" for="usecaseAPI">Add an API to a service that uses MongoDB</label>
                 </div>
                 <div class="form-check mt-2">
                 <input class="form-check-input" type="checkbox" name="usecases" id="usecaseIntegration">
