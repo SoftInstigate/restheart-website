@@ -130,11 +130,10 @@ not needed anymore.
 ## Examples
 
 The following requests upsert a collection defining two change streams:
-
 * *test\_stream* bound at
-    `/db/cs_test/_streams/test_stream`
+    `/cs_test/_streams/test_stream`
 * *test\_stream\_with\_stage\_params* bound at
-    `/db/cs_test/_streams/test_stream_with_stage_params`
+    `/cs_test/_streams/test_stream_with_stage_params`
 
 {% include code-header.html 
     type="Request" 
@@ -142,7 +141,7 @@ The following requests upsert a collection defining two change streams:
 
 {: .black-code }
 ```
-PUT /db/cs_test HTTP/1.1
+PUT /cs_test HTTP/1.1
 
 { 
     "streams" : [ 
@@ -151,7 +150,7 @@ PUT /db/cs_test HTTP/1.1
       },
       { "stages" : [ 
           { "_$match" : { 
-              "fullDocument.name" : { "_$var" : "n" } 
+              "fullDocument::name" : { "_$var" : "n" } 
               } 
           }
         ],
@@ -161,8 +160,16 @@ PUT /db/cs_test HTTP/1.1
 }
 ```
 
+Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
+This is because the document returned by the change stream looks like:
+
+{: .black-code }
+```json
+
+```
+
 Note between the `_links` collection property the URIs of the
-change streams.
+change streams (returned with `?rep=SHAL`).
 {% include code-header.html 
     type="Request" 
 %}
@@ -170,7 +177,7 @@ change streams.
 
 {: .black-code }
 ```
-GET /db/cs_test HTTP/1.1
+GET /db/cs_test?rep=SHAL HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -189,10 +196,10 @@ HTTP/1.1 200 OK
     "_links": {
         ...,
         "test_stream": {
-            "href": "/db/cs_test/_streams/test_stream"
+            "href": "/cs_test/_streams/test_stream"
         },
         "test_stream_with_stage_params": {
-            "href": "/db/cs_test/_streams/test_stream_with_stage_params"
+            "href": "/cs_test/_streams/test_stream_with_stage_params"
         }
     },
 
@@ -215,7 +222,7 @@ fails.
 
 {: .black-code }
 ```
-GET /test/cs_test/_streams/test_stream_with_stage_params HTTP/1.1
+GET /cs_test/_streams/test_stream_with_stage_params HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -247,7 +254,7 @@ Passing the variable n, the request succeeds:
 
 {: .black-code }
 ```
-GET /test/cs_test/_streams/test_ap?avars={"n":1} HTTP/1.1
+GET /cs_test/_streams/test_ap?avars={"n":1} HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -271,24 +278,18 @@ Variables can be used in change streams query as follows:
 ```
 
 In case of change stream with stage parameter previous example, the variable was used
-to restrinct notifications only to changes on documents with a property *name* matching the
+to restrict notifications only to changes on documents with a property *name* matching the
 variable *n:*
 
 {: .black-code }
 ``` json
-{
-  ...
-
-    { "_$match" : { "fullDocument.name" : { "_$var" : "n" } } }
-
-  ...
-}
+{ "_$match" : { "fullDocument::name" : { "_$var" : "n" } } }
 ```
 
 ### Security Informations
 By default RESTHeart makes sure that the aggregation variables passed as query parameters hasn't got inside MongoDB operators. 
 
-This behaviour is required to protect data from undesiderable malicious query injection. 
+This behavior is required to protect data from undesirable malicious query injection. 
 
 Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
 
