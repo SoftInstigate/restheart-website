@@ -415,9 +415,6 @@ permalink: /get
     <div class="form-row">
         <a id="payBtn" href="#!" class="paddle_button" class="btn mt-3 ml-auto pay-disabled">Get</a>
         <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
-        <script type="text/javascript">
-            Paddle.Setup({ vendor: 37055 });
-        </script>
         <script>
             function openCheckout() {
                 var form = document.getElementById('pre-checkout');
@@ -431,7 +428,6 @@ permalink: /get
                     need: need(),
                     useCases: useCases()
                 };
-                console.log(_passthrough);
                 Paddle.Checkout.open({
                     product: it.productId,
                     email: form.email.value,
@@ -455,8 +451,9 @@ permalink: /get
                     onChangeNeed(function() {
                         showNeedTip();
                     });
-                    var iqp = location.href.match(/[?&]i=(.*?)(?:$|&)/)[1];   // get params "u" from URL
-                    if (iqp && iqp === 'buy') {
+                    // get param "i" from URL
+                    var iqps = location.href.match(/[?&]i=(.*?)(?:$|&)/); 
+                    if (iqps && iqps.length > 0 && iqps[1] === 'buy') {
                         var item = document.querySelector('#item');
                         item.selectedIndex = 1;
                         item.dispatchEvent(new Event('change'));
