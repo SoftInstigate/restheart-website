@@ -310,7 +310,10 @@ title: Editions
       <tr>
         <td>Pricing</td>
         <td>Free</td>
-        <td>30-Day Free Trial then USD 499 per Deployment Instance per Year. <div class="small text-muted">VAT applies for EU customers</div></td>
+        <td>30-Day Free Trial then USD 499
+          <div class="small text-muted">Perpetual license with 1 year of support and upgrade.</div>
+          <div class="small text-muted"><a href="/get#licensing-faq">Licensing FAQ</a></div>
+        </td>
         <td>Negotiable</td>
         <td>Negotiable</td>
       </tr>

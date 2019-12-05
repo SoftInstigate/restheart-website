@@ -598,7 +598,7 @@ permalink: /get
     </div>
 </div>
 
-<div class="jumbotron bg-light mb-5">
+<div id="licensing-faq" class="jumbotron bg-light mb-5">
     <h1>Licensing FAQ</h1>
     <div class="row">
         <div class="col-md-6">
