@@ -195,7 +195,7 @@ $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/d
 
 {: .black-code}
 ```
-$ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml
+$ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml -e etc/default.properties
 ```
 
 ### Accept License
