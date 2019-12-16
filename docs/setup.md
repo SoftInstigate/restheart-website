@@ -188,14 +188,14 @@ Initiate the replica set as follows:
 
 {: .black-code}
 ```
-$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/default.properties
+$ java -Dfile.encoding=UTF-8 -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/default.properties
 ```
 
 ### Start  restheart-platform-security
 
 {: .black-code}
 ```
-$ java -jar restheart-platform-security.jar etc/restheart-platform-security.yml -e etc/default.properties
+$ java -Dfile.encoding=UTF-8 -jar restheart-platform-security.jar etc/restheart-platform-security.yml -e etc/default.properties
 ```
 
 ### Accept License
