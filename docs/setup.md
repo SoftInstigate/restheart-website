@@ -72,7 +72,7 @@ The following image shows the email with the License Key.
 
 In this case, the license key to copy and paste is:
 
-{: .black-code}
+{: .black-code }
 ```
 eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJsaWNlbnNlZSI6IlhYWCIsImxpY2Vuc29yIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiYWRkaXRpb25hbENvbmRpdGlvbnMiOiJUaGlzIGxpY2Vuc2Uga2V5IGNhbiBvbmx5IGJlIHVzZWQgZm9yIGRldmVsb3BtZW50IHB1cnBvc2VzIiwiaXNzIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiY29uY3VycmVudCI6ZmFsc2UsIm1heE1hY2hpbmVzIjoxLCJsaWNlbnNlSGFzaCI6ImM1ZWQ4MDczZTYxMzFiZDU0ZTI0MTEyNjE1OGI5NGQ3MTI3OGU5YmIyZjU4NGFkNzMzZDllYjBiNWM4MzNhYzYiLCJ0eXBlIjoiVHJpYWwgbGljZW5zZSIsInN1YnNjcmlwdGlvblBlcmlvZCI6ImZyb20gMDYvMTAvMjAxOSB0byAwNy8xMC8yMDE5IiwiZmxvYXRpbmciOmZhbHNlLCJleHAiOjE1NjI3MTY4MDAsImlhdCI6MTU2MDEyNDgwMCwianRpIjoiZDZlOTE2ZTItZDJkMy00ZjRkLWIxN2MtZjA0MDA2NDJlZTQ2In0.jiK-gCTho5O66v8FpKKebiSltas39jKgm9OmBnG1fBM-6kYBQQ7dX79cvhY6R3Ea3hVyrDc0URoHLSfjlUB3gcFqBcDrltYtPhHa27HmEfVdhqK6Itu2hbth-J-A1xpWNRjmIeUzPoGYR58QA10F4Zh0rrSLE1Zh4sXWXrX7vvlKxSirg7x48MEV0SeGNehxuQMjKwgsKQinwvq5PlkNQHx72mOgeUrhpNrQwFYmcAC8XnzliQ8cAJGX9ql3IhxHtTIfkPi3nE49wewiQWHe_kDRJJDSJsrk99FN2YjUQ-mqjpLdZCI4iyNhw0Z-iOkT1BGhTNL6SVaMrU0XiQ
 ```
@@ -188,15 +188,21 @@ Initiate the replica set as follows:
 
 {: .black-code}
 ```
-$ java -Dfile.encoding=UTF-8 -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/default.properties
+$ java -Dfile.encoding=UTF-8 -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/core.properties
 ```
 
-### Start  restheart-platform-security
+{: .bs-callout.bs-callout-info}
+Until version 4.1.9 the default properties file was called `dafault.properties`
+
+### Start restheart-platform-security
 
 {: .black-code}
 ```
-$ java -Dfile.encoding=UTF-8 -jar restheart-platform-security.jar etc/restheart-platform-security.yml -e etc/default.properties
+$ java -Dfile.encoding=UTF-8 -jar restheart-platform-security.jar etc/restheart-platform-security.yml -e etc/security.properties
 ```
+
+{: .bs-callout.bs-callout-info}
+Until version 4.1.9 restheart-platform-security.yml was not parametric and the `-e etc/security.properties` argument was not required.
 
 ### Accept License
 

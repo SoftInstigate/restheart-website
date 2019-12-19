@@ -40,50 +40,57 @@ It's also possible to pass both the `restheart-platform-core`'s environment prop
 {: .black-code}
 ```
 $ export RESTHEART_ENVFILE=etc/restheart-platform-core.yml
-$ export RESTHEART_CONFFILE=etc/default.properties
+$ export RESTHEART_CONFFILE=etc/core.properties
 ```
 
-For RESTHeart security use the equivalent `RESTHEART_SECURITY_CONFFILE` environment variable or Java property.
+For RESTHeart Security use the equivalent `RESTHEART_SECURITY_CONFFILE` environment variable or Java property.
 
-If you either download the RESTHeart Platform Trial or clone the open source projects, the configuration files are always under the `etc/` folder.
+The RESTHeart Platform the configuration files are under the `etc/` folder.
 
 __Core configuration__
-
-Either `restheart` (OSS) or `restheart-platform-core` (trial) folder:
 
 {: .table.table-responsive }
 |file|description|
 |-|-|
 |`etc/restheart-platform-core.yml`|parametric configuration file|
-|`etc/default.properties`|default parameters values|
-|`etc/standalone.properties`|run restheart-platform-core without restheart-platform-security|
-|`etc/bwcv3.properties`|run restheart-platform-core in backward compatibility mode|
-
+|`etc/core.properties`|default parameters values|
+|`etc/core-standalone.properties`|run restheart-platform-core without restheart-platform-security|
+|`etc/core-bwcv3.properties`|run restheart-platform-core in backward compatibility mode|
+|`etc/core-docker.properties`|used by the Docker container|
 
 __Security configuration__
-
-Either `restheart-security` (OSS) or `restheart-platform-security` (trial) folder:
 
 {: .table.table-responsive }
 |file|description|
 |-|-|
 |`etc/restheart-platform-security.yml`|parametric configuration file|
-|`etc/default.properties`|default parameters values|
+|`etc/security.properties`|default parameters values|
+|`etc/security-docker.properties`|used by the Docker container|
 
 {: .bs-callout.bs-callout-info}
 The configuration files are documented in details with inline comments.
 
+{: .bs-callout.bs-callout-info}
+Be aware that before 4.1.10 the properties files have a slightly different names (e.g. `etc/core-bwcv3.properties` was called `etc/bwcv3.properties`).
+
 ## Updating configuration in Docker containers
 
-The configuration files used by the Docker containers are in the directory `Docker/etc`. 
+The configuration files used by the Docker containers are:
 
-If a configuration file is modified, the containers must be rebuilt for changes to take effect:
+- `etc/restheart-platform-core.yml`
+- `etc/restheart-platform-security.yml`
+
+The properties files used by the Docker containers are:
+
+- `etc/core-docker.properties`
+- `etc/security-docker.properties`
+
+**Important**  if a configuration or property file is modified, the containers must be rebuilt for changes to take effect:
 
 {: .black-code}
 ```
 $ docker-compose up --build
 ```
-
 
 ## Important configuration options
 
@@ -128,23 +135,27 @@ It is possible to pass an optional [properties file](https://docs.oracle.com/jav
 
 This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the YAML configuration files, but now you can have a single parametric YAML file, with a set of small, different properties files for each environment.
 
-For example, the `dev.properties` file in `etc/` folder contains the following properties:
+For example, the `core.properties` file in `etc/` folder contains the following properties:
 
 {: .black-code}
 ``` properties
-https-listener = true
+## RESTHeart Configuration - development properties.
+# Documentation: https://restheart.org/docs/configuration
+
+https-listener = false
 https-host = localhost
 https-port = 4443
 
 http-listener = true
 http-host = localhost
-http-port = 8080
+http-port = 8081
 
 ajp-listener = true
 ajp-host = localhost
 ajp-port = 8009
 
-instance-name = development
+instance-name = default
+instance-base-url = http://localhost:8080
 
 default-representation-format = STANDARD
 
@@ -154,7 +165,11 @@ mongo-uri = mongodb://127.0.0.1
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart
 
-log-level = DEBUG
+enable-log-console: true
+log-level = INFO
+enable-log-file: false
+# with --fork use an absoulte path of a writable file
+log-file-path: /var/log/restheart-plaform-core.log
 
 query-time-limit = 0
 aggregation-time-limit = 0
@@ -162,7 +177,7 @@ aggregation-time-limit = 0
 #suggested value: core*2
 io-threads: 4
 #suggested value: core*16
-worker-threads: 16
+worker-threads: 32
 ```
 
 The [restheart-platform-core.yml](https://github.com/softInstigate/restheart/blob/master/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
@@ -199,18 +214,18 @@ To start RESTHeart and provide it with a properties file pass the `--envfile` co
 
 {: .black-code}
 ``` bash
-$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/dev.properties
+$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/core.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
 {: .black-code}
 ``` bash
-$ export RESTHEART_ENVFILE=etc/dev.properties
+$ export RESTHEART_ENVFILE=etc/core.properties
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml
 ```
 
-This approach allows to share one single configuration file among several environments. For example, one could create `dev.properties`, `test.properties` and `production.properties`, one for each environment, with one single common `restheart-platform-core.yml` configuration file.
+This approach allows to share one single configuration file among several environments. For example, one could create `core-dev.properties`, `core-test.properties` and `core-production.properties`, one for each environment, with one single common `restheart-platform-core.yml` configuration file.
 
 ### Environment variables ###
 
