@@ -462,16 +462,6 @@ plugins-args:
 
 An example Initializer is `org.restheart.security.plugins.initializers.TestInitializer`.
 
-### Configuration
-
-The Initializer must be declared in the yml configuration file. 
-Of course the implementation class must be in the java classpath.
-
-{: .black-code}
-```yml
-initializer-class: org.restheart.security.plugins.initializers.ExampleInitializer
-```
-
 ### Defining Interceptors
 
 The `PluginsRegistry` class allows to define Interceptors.
