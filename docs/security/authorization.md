@@ -104,7 +104,7 @@ The example ACL document applies to users with `editor` role. A user with this r
  The `writeFilter` applies to write request. The example ACL document allows the requests to only modify the documents that were created by the authenticated user.
 
 {: .bs-callout.bs-callout-warning }
-`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/develop/security-plugins/#interceptors) or [Request Interceptors](/docs/develop/core-plugins/#transformers).
+`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/develop/security-plugins/#interceptors) or [Request Transformers](/docs/develop/core-plugins/#transformers).
 
 `readFilter` and `writeFilter` can use the following variables:
 
