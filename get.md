@@ -608,7 +608,7 @@ permalink: /get
             <div class="lead mt-4 mb-2 text-primary">What is the subscription?</div>
             <p>License includes 1 year subscription. During this period
             you can ask for support and RESTHeart Platform can be upgraded.
-             You cannot ask for support or upgrade RESTHeart Plafrom to releases that are published after the subscription period.</p>
+             You cannot ask for support or upgrade RESTHeart Platform to releases that are published after the subscription period.</p>
             <!-- question -->
             <div class="lead mt-4 mb-2 text-primary">How subscription is renewed?</div>
             <p>To extend the subscription, you need a new License Key.
