@@ -35,9 +35,7 @@ title: Change Streams
 </div>
 
 ## Introduction
-Modern web applications needs to react with promptness and efficiency to data changes in many contexts.
-
-RESTHeart PRO *Change Stream* feature comes in handy to achieve this goal. Exposing a websocket server endpoint, every [RFC 6455-compliant](https://tools.ietf.org/html/rfc6455) or [JSR-356-compliant](https://www.oracle.com/technetwork/articles/java/jsr356-1937161.html) Websocket client can be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
+Modern web applications needs to react with promptness and efficiency to data changes in many contexts. RESTHeart Platform *Change Stream* feature comes in handy to achieve this goal.
 
 > "Change streams allow applications to access real-time data changes. [...]  Because change streams use the aggregation framework, applications can also filter for specific changes." 
 
@@ -106,6 +104,22 @@ Notes:
 * Only a subset of aggregation pipeline stages are allowed for this features. Check MongoDB's [documentation](https://docs.mongodb.com/manual/changeStreams/#modify-change-stream-output) for further informations.
 * Stages takes as input [Change Events](https://docs.mongodb.com/manual/reference/change-events/) instead of the modified documents itselves. For example, the modified version of a document after a PATCH request is present at event.fullDocument property of the stages input event. (See [examples](#examples) below).
 
+{: .bs-callout.bs-callout-info }
+Always restart the server after modifying a stream definition, or deleting its collection, to disconnect all clients.
+
+<div class="bs-callout bs-callout-danger">
+    <strong>NOTE:</strong> to get <em>Change Streams</em> working properly HTTP listener must be enabled. This is done by default by using our Docker images.
+    <br><br>
+    <div><strong>If you want to use this feature while running RESTHeart Platform manually the following settings to <code>resheart-platform-security</code> are needed:</strong></div>
+    <br><br>
+    <pre class="black-code"><code class="language-properties hljs"><span class="hljs-comment">## security.properties</span>
+    <span class="hljs-meta">root-proxy-pass</span>=<span class="hljs-string">http://localhost:8081</span>
+    <span class="hljs-comment">## <span class="hljs-doctag">NOTE:</span> change streams require HTTP (AJP doesn't support WebSocket)</span>
+    <span class="hljs-comment">## enable http listener in restheart-platform-core</span>
+    <span class="hljs-comment">##\u00a0and set root-proxy-pass=http://localhost:8081</span>
+    </code></pre>
+</div>
+
 ### Escape stage properties informations
 MongoDB does not allow to store fields with names starting with $ or
 containing *dots* (.), see [Restrictions on Field
@@ -130,10 +144,10 @@ not needed anymore.
 ## Examples
 
 The following requests upsert a collection defining two change streams:
-* *test\_stream* bound at
-    `/cs_test/_streams/test_stream`
-* *test\_stream\_with\_stage\_params* bound at
-    `/cs_test/_streams/test_stream_with_stage_params`
+* **all** bound at
+    `/messages/_streams/all`
+* **myMessages** bound at
+    `/messages/_streams/myMessages`
 
 {% include code-header.html 
     type="Request" 
@@ -141,20 +155,32 @@ The following requests upsert a collection defining two change streams:
 
 {: .black-code }
 ```
-PUT /cs_test HTTP/1.1
+PUT /messages HTTP/1.1
 
 { 
     "streams" : [ 
-      { "stages" : [],
-        "uri" : "test_stream"
+      { "stages" : [
+          { 
+              "_$and" : [
+                { 
+                    "operationType": "insert"
+                },
+                { 
+                    "operationType": "update"
+                }
+              ]
+          }
+      ],
+        "uri" : "all"
       },
       { "stages" : [ 
-          { "_$match" : { 
-              "fullDocument::name" : { "_$var" : "n" } 
+          { 
+              "_$match" : { 
+                "fullDocument::name" : { "_$var" : "n" } 
               } 
           }
         ],
-        "uri" : "test_stream_with_stage_params"
+        "uri" : "myMessages"
       }
     ] 
 }
@@ -165,6 +191,25 @@ This is because the Change Event looks like:
 
 {: .black-code }
 ```json
+{
+  "fullDocument": {
+    "_id": {
+      "$oid": "5e15ff5779ca449eb20fdd09"
+    },
+    "message": "hi uji, how are you?",
+    "name": "uji",
+    "_etag": {
+      "$oid": "5e15ff57a2e5700c3459e801"
+    }
+  },
+  "documentKey": {
+    "_id": {
+      "$oid": "5e15ff5779ca449eb20fdd09"
+    }
+  },
+  "updateDescription": null,
+  "operationType": "insert"
+}
 
 ```
 
@@ -177,7 +222,7 @@ change streams (returned with `?rep=SHAL`).
 
 {: .black-code }
 ```
-GET /cs_test?rep=SHAL HTTP/1.1
+GET /messages?rep=SHAL HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -195,11 +240,11 @@ HTTP/1.1 200 OK
 
     "_links": {
         ...,
-        "test_stream": {
-            "href": "/cs_test/_streams/test_stream"
+        "all": {
+            "href": "/messages/_streams/all"
         },
-        "test_stream_with_stage_params": {
-            "href": "/cs_test/_streams/test_stream_with_stage_params"
+        "myMessages": {
+            "href": "/messages/_streams/myMessages"
         }
     },
 
@@ -212,7 +257,7 @@ HTTP/1.1 200 OK
 
 The query parameter `avars` allows to pass variables to the change stream.
 
-For example, the previous example *test_stream_with_stage_params* use a variable named
+For example, the previous example *myMessages* use a variable named
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
@@ -222,7 +267,7 @@ fails.
 
 {: .black-code }
 ```
-GET /cs_test/_streams/test_stream_with_stage_params HTTP/1.1
+GET /messages/_streams/myMessages HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -254,7 +299,7 @@ Passing the variable n, the request succeeds:
 
 {: .black-code }
 ```
-GET /cs_test/_streams/test_ap?avars={"n":1} HTTP/1.1
+GET /messages/_streams/myMessages?avars={"n":"uji"} HTTP/1.1
 ```
 
 {% include code-header.html 
