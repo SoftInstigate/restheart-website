@@ -305,9 +305,22 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Pricing</td>
+        <td colspan="4">Support</td>
       </tr>
       <tr>
+        <td>Support</td>
+        <td>Community support on Github and Stackoverflow
+        <div class="small text-muted">No SLA or commitment</div>
+        </td>
+        <td>Priority bug fixing only</td>
+        <td>Dedicated support</td>
+        <td>Dedicated support</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td colspan="4">Pricing</td>
+      </tr>
+      <tr class="compare-row">
         <td>Pricing</td>
         <td>Free</td>
         <td>30-Day Free Trial then USD 499
@@ -321,7 +334,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4">Purchase</td>
       </tr>
-      <tr class="compare-row">
+      <tr>
         <td>Purchase</td>
         <td>n/a</td>
         <td>Online with credit card</td>
@@ -332,7 +345,7 @@ title: Editions
         <td>&nbsp;</td>
         <td colspan="4">Obtain</td>
       </tr>
-      <tr>
+      <tr class="compare-row">
         <td>Obtain</td>
         <td><a style="font-weight: 100" href="https://github.com/SoftInstigate/restheart">GitHub Repository</a></td>
         <td>
