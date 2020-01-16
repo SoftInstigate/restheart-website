@@ -6,13 +6,13 @@ title: Change Streams
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-- [The *streams* collection metadata](#the-streams-collection-metadata)
+- [The *streams* collection metadata](#thestreamscollection-metadata)
   - [Stream metadata object format](#stream-metadata-object-format)
   - [Escape stage properties informations](#escape-stage-properties-informations)
 - [Examples](#examples)
 - [Passing variables to change streams](#passing-variables-to-change-streams)
   - [Variables in stages or query](#variables-in-stages-or-query)
-  - [Security Informations](#security-Informations)
+  - [Security Informations](#security-informations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -45,6 +45,22 @@ Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, cli
 
 {: .bs-callout.bs-callout-info }
 Multi-document transaction requires at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/). 
+
+{: .bs-callout.bs-callout-info }
+Always restart the server after modifying a stream definition, or deleting its collection, to disconnect all clients.
+
+<div class="bs-callout bs-callout-danger">
+    <strong>NOTE:</strong> to get <em>Change Streams</em> working properly HTTP listener must be enabled. This is done by default by using our Docker images.
+    <br><br>
+    <div><strong>If you want to use this feature while running RESTHeart Platform manually the following settings to <code>resheart-platform-security</code> are needed:</strong></div>
+    <br><br>
+    <pre class="black-code"><code class="language-properties hljs"><span class="hljs-comment">## restheart-platform-security/etc/security.properties</span>
+    <span class="hljs-meta">root-proxy-pass</span>=<span class="hljs-string">http://localhost:8081</span>
+    <span class="hljs-comment">## <span class="hljs-doctag">NOTE:</span> change streams require HTTP (AJP doesn't support WebSocket)</span>
+    <span class="hljs-comment">## enable http listener in restheart-platform-core</span>
+    <span class="hljs-comment">##\u00a0and set root-proxy-pass=http://localhost:8081</span>
+    </code></pre>
+</div>
 
 ## The *streams* collection metadata
 
@@ -104,22 +120,6 @@ Notes:
 * Only a subset of aggregation pipeline stages are allowed for this features. Check MongoDB's [documentation](https://docs.mongodb.com/manual/changeStreams/#modify-change-stream-output) for further informations.
 * Stages takes as input [Change Events](https://docs.mongodb.com/manual/reference/change-events/) instead of the modified documents itselves. For example, the modified version of a document after a PATCH request is present at event.fullDocument property of the stages input event. (See [examples](#examples) below).
 
-{: .bs-callout.bs-callout-info }
-Always restart the server after modifying a stream definition, or deleting its collection, to disconnect all clients.
-
-<div class="bs-callout bs-callout-danger">
-    <strong>NOTE:</strong> to get <em>Change Streams</em> working properly HTTP listener must be enabled. This is done by default by using our Docker images.
-    <br><br>
-    <div><strong>If you want to use this feature while running RESTHeart Platform manually the following settings to <code>resheart-platform-security</code> are needed:</strong></div>
-    <br><br>
-    <pre class="black-code"><code class="language-properties hljs"><span class="hljs-comment">## security.properties</span>
-    <span class="hljs-meta">root-proxy-pass</span>=<span class="hljs-string">http://localhost:8081</span>
-    <span class="hljs-comment">## <span class="hljs-doctag">NOTE:</span> change streams require HTTP (AJP doesn't support WebSocket)</span>
-    <span class="hljs-comment">## enable http listener in restheart-platform-core</span>
-    <span class="hljs-comment">##\u00a0and set root-proxy-pass=http://localhost:8081</span>
-    </code></pre>
-</div>
-
 ### Escape stage properties informations
 MongoDB does not allow to store fields with names starting with $ or
 containing *dots* (.), see [Restrictions on Field
@@ -146,8 +146,8 @@ not needed anymore.
 The following requests upsert a collection defining two change streams:
 * **all** bound at
     `/messages/_streams/all`
-* **myMessages** bound at
-    `/messages/_streams/myMessages`
+* **mine** bound at
+    `/messages/_streams/mine`
 
 {% include code-header.html 
     type="Request" 
@@ -180,7 +180,7 @@ PUT /messages HTTP/1.1
               } 
           }
         ],
-        "uri" : "myMessages"
+        "uri" : "mine"
       }
     ] 
 }
@@ -243,8 +243,8 @@ HTTP/1.1 200 OK
         "all": {
             "href": "/messages/_streams/all"
         },
-        "myMessages": {
-            "href": "/messages/_streams/myMessages"
+        "mine": {
+            "href": "/messages/_streams/mine"
         }
     },
 
@@ -257,7 +257,7 @@ HTTP/1.1 200 OK
 
 The query parameter `avars` allows to pass variables to the change stream.
 
-For example, the previous example *myMessages* use a variable named
+For example, the previous example *mine* use a variable named
 "*n". *If the variable is not passed via the `avars` qparam, the request
 fails.
 
@@ -267,7 +267,7 @@ fails.
 
 {: .black-code }
 ```
-GET /messages/_streams/myMessages HTTP/1.1
+GET /messages/_streams/mine HTTP/1.1
 ```
 
 {% include code-header.html 
@@ -299,7 +299,7 @@ Passing the variable n, the request succeeds:
 
 {: .black-code }
 ```
-GET /messages/_streams/myMessages?avars={"n":"uji"} HTTP/1.1
+GET /messages/_streams/mine?avars={"n":"uji"} HTTP/1.1
 ```
 
 {% include code-header.html 
