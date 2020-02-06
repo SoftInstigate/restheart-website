@@ -11,6 +11,7 @@ title: Apply Plugins
 * [Apply a Checker via metadata](#apply-a-checker-via-metadata)
 * [Apply a Checker programmatically](#apply-a-checker-programmatically)
 * [Apply an Hook via metadata](#apply-an-hook-via-metadata)
+* [Apply an Hook programmatically](#apply-an-hook-programmatically)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -291,3 +292,57 @@ Mandatory
 </tr>
 </tbody>
 </table>
+
+## Apply an Hook programmatically
+
+Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
+
+{: .black-code}
+``` java
+    /**
+     * 
+     * @param hook
+     * @param predicate hook is applied only to requests that resolve
+     * the predicate
+     * @param args
+     * @param confArgs 
+     */
+    public GlobalHook(Hook hook,
+            RequestContextPredicate predicate,
+            BsonValue args,
+            BsonValue confArgs) {
+        this.hook = hook;
+        this.predicate = predicate;
+        this.args = args;
+        this.confArgs = confArgs;
+    }
+```
+
+and adding them to the list `HookHandler.getGlobalHooks()`
+
+{: .black-code}
+``` java
+// a predicate that always resolve
+RequestContextPredicate predicate = new RequestContextPredicate() {
+        @Override
+        public boolean resolve(HttpServerExchange hse, RequestContext context) {
+            return true;
+        }
+    };
+
+// Let's use the predefined SnooperHook that logs old and new write requests 
+Hook snooperHook = new SnooperHook(); 
+
+// if the hook requires configuration arguments, define them here
+BsonDocument args = null;
+
+// if the hook requires configuration arguments, define them here
+BsonDocument confArgs = null;
+
+GlobalHook globalHook = new GlobalHook(hook, predicate, args, confArgs);
+
+// finally add it to global hooks list
+HookHandler.getGlobalHooks().add(globalHook);
+```
+
+You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Hook.
