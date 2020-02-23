@@ -14,6 +14,7 @@ title: Aggregations
 * [Passing variables to aggregations](#passing-variables-to-aggregations)
     * [Variables in stages or query](#variables-in-stages-or-query)
     * [Variables in map reduce functions](#variables-in-map-reduce-functions)
+    * [Handling paging in aggregations](#handling-paging-in-aggregations)
 * [Security information](#security-informations)
 
 </div>
@@ -162,7 +163,7 @@ Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-N
 
 ## Examples
 
-The following requests upsert a collection  defining two aggregation
+The following requests upsert a collection defining two aggregation
 operations:
 
 * aggregation operation *test\_ap* bound at
@@ -327,6 +328,39 @@ function() { 
  var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
  if (this.age > minage ) { emit(this.name, this.age); }
 };
+```
+
+## Handling paging in aggregations
+
+Starting RESTHeart Platform v4.1.12 (and RESTHeart OSS v4.1.8) paging must be handled explicitly by the aggregation (until this version paging was handled automatically). This allows more flexibility and better performances.
+
+Starting RESTHeart Platform v4.1.13 and (and RESTHeart OSS v4.1.9) the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
+
+- `@page` the value of the `page` query parameter
+- `@pagesize` the value of the `pagesize` query parameter
+- `@skip` to be used in `$skip` stage, equals to `(page-1)*pagesize` 
+- `@limit` to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
+
+For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents. 
+
+{: .black-code}
+```json
+{ "aggrs": [{
+    "uri": "paging",
+    "type": "pipeline",
+    "stages": [
+        {
+            "$skip": {
+                "$var": "@skip"
+            }
+        },
+        {
+            "$limit": {
+                "$var": "@limit"
+            }
+        }
+    ]}]
+}
 ```
 
 ### Security Informations
