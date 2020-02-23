@@ -246,7 +246,7 @@ The query parameter `avars` allows passing variables to the aggregations.
 
 {: .bs-callout.bs-callout-info}
 The value of a variable can be any valid JSON. 
-The following query parameter passes two variables, a number and an object: `?vars={ "number": 1, "object": {"a": {"json": "object" }} }`
+The following query parameter passes two variables, a number and an object: `?avars={ "number": 1, "object": {"a": {"json": "object" }} }`
 
 For example, the previous example aggregations both use a variable named
 "n". *If the variable is not passed via the `avars` qparam, the request
