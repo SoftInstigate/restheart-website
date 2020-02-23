@@ -341,7 +341,7 @@ Starting RESTHeart Platform v4.1.13 and (and RESTHeart OSS v4.1.9) the following
 - `@skip` to be used in `$skip` stage, equals to `(page-1)*pagesize` 
 - `@limit` to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
 
-For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents. 
+For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents. 
 
 {: .black-code}
 ```json
