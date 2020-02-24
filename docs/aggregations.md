@@ -334,7 +334,7 @@ function() { 
 
 Starting RESTHeart Platform v4.1.12 (and RESTHeart OSS v4.1.8) paging must be handled explicitly by the aggregation (until this version paging was handled automatically). This allows more flexibility and better performances.
 
-Starting RESTHeart Platform v4.1.13 and (and RESTHeart OSS v4.1.9) the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
+Starting RESTHeart Platform v4.2.0 and (and RESTHeart OSS v4.2.0) the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
 
 - `@page` the value of the `page` query parameter
 - `@pagesize` the value of the `pagesize` query parameter
