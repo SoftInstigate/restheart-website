@@ -162,7 +162,7 @@ public class SecretHider implements Initializer {
                 filterTransformerArgs,
                 null); // finally add it to global checker list
 
-        TransformerHandler.getGlobalTransformers().add(globalTransformer);
+        PluginsRegistry.getInstance().getGlobalTransformers().add(globalTransformer);
     }
 }
 ```

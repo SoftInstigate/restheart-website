@@ -119,7 +119,7 @@ Global Transformers can be defined programmatically instantiating `GlobalTransfo
     }
 ```
 
-and adding them to the list `TransformerHandler.getGlobalTransformers()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalTransformers()`
 
 {: .black-code}
 ``` java
@@ -225,7 +225,7 @@ public GlobalChecker(Checker checker,
             BsonValue confArgs)
 ```
 
-and adding them to the list `CheckerHandler.getGlobalCheckers()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalCheckers()`
 
 {: .black-code}
 ``` java
@@ -320,7 +320,7 @@ Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
     }
 ```
 
-and adding them to the list `HookHandler.getGlobalHooks()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalHooks()`
 
 {: .black-code}
 ``` java
@@ -344,7 +344,7 @@ BsonDocument confArgs = null;
 GlobalHook globalHook = new GlobalHook(hook, predicate, args, confArgs);
 
 // finally add it to global hooks list
-HookHandler.getGlobalHooks().add(globalHook);
+PluginsRegistry.getInstance().getGlobalHooks().add(globalHook);
 ```
 
 You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Hook.

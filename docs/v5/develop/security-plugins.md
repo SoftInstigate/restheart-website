@@ -480,16 +480,16 @@ PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
 
 ### Defining Global Permission Predicates
 
-The `GlobalSecuirtyPredicatesAuthorizer` class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.
+Global security predicates must all resolve to true to allow a request.
 
-> You can think about a Global Predicate a way to black list request matching a given condition.
+> You can think about a Global Security Predicate as a way to black list requests matching a given condition.
 
 The following example predicate denies `GET /foo/bar` requests:
 
 {: .black-code}
 ```java
 // add a global security predicate
-GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predicate() {
+PluginsRegistry.getInstance().getGlobalSecurityPredicates().add(new Predicate() {
     @Override
     public boolean resolve(HttpServerExchange exchange) {
         var request = Request.wrap(exchange);

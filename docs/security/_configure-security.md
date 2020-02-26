@@ -215,7 +215,7 @@ RequestContextPredicate securityPredicate = new RequestContextPredicate() {
         }
 
 // add the global predicate
-AccessManagerHandler.getGlobalSecurityPredicates().add(securityPredicate);
+GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(securityPredicate);
 ```
 You can use an [Initializer](/learn/initializer) to add Global Security Predicates.
 
