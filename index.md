@@ -10,7 +10,7 @@ layout: default
     </section>
 </section>
 
-<div class="jumbotron  bg-red text-white text-center mt-3 py-4">
+<div class="jumbotron bg-red text-white text-center mt-3 py-4">
     <div class="lead">Don't be shy and join us on our free <strong>Happy Hour</strong> video chats about RESTHeart.</div>
     <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
 </div>
