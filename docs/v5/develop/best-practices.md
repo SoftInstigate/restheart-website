@@ -20,7 +20,7 @@ title: Development Best Practices
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
+{% include doc-in-progress-v5.html %}
 
 ## RESTHeart Platform Core
 
