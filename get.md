@@ -5,7 +5,54 @@ permalink: /get
 ---
 
 <div class="form-row text-center mt-4">
-    <p class="mx-auto display-4 restheart-red">Try and Purchase <img width="30%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
+    <p class="mx-auto display-4 restheart-red">GET /<img class="mr-auto" width="20%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
+</div>
+
+<div class="form-row text-center mt-4">
+    <p class="mx-auto display-5 restheart-red">Open Source Edition</p>
+</div>
+
+<div class="text-center mb-2">
+Run RESTHeart stack with Docker in minutes
+</div>
+
+<pre class="black-code">
+    <code class="language-bash hljs">
+<span class="hljs-comment"># 1 - create a new directory
+$ mkdir <span class="hljs-string">restheart</span> && cd <span class="hljs-string">restheart</span></span>
+
+<span class="hljs-comment"># 2 - download the restheart docker-compose file</span>
+$ curl <span class="hljs-string">https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml</span>
+
+<span class="hljs-comment"># 3 - run the stack</span>
+$ docker-compose up -d
+...
+Creating restheart-mongo ... <span class="text-success">done</span>
+Creating restheart       ... <span class="text-success">done</span>
+Creating restheart-security ... <span class="text-success">done</span>
+    </code>
+</pre>
+
+<div class="alert alert-success mt-0" role="alert">
+    As soon as RESTHeart starts, you can jump to the <a href="/docs/tutorial/">tutorial</a>
+</div>
+
+<div class="alert text-muted">
+    <p>Can't use Docker? Check out <a href="https://github.com/SoftInstigate/restheart#run-manually" target="_blank">Run RESTHeart manually</a></p>
+    <p>Source code available at <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories</p>
+</div>
+
+<div class="alert alert-info mt-0" role="alert">
+    <h2 class="alert-heading">Confused about editions?</h2>
+    <hr class="my-2">
+    <p>RESTHeart <strong>is and will always be</strong> open source software.</p>
+    <p>There are paid editions of RESTHeart Platform that are distributed under a commercial license targeted to Enterprises. Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
+</div>
+
+<div id="platform" style="position: relative; top: -50px;"></div>
+
+<div class="form-row text-center mt-5">
+    <p class="mx-auto display-5 restheart-red">Try and Purchase Platform Edition</p>
 </div>
 
 <section class="mt-4 call-to-action">
@@ -452,11 +499,14 @@ permalink: /get
                         showNeedTip();
                     });
                     // get param "i" from URL
-                    var iqps = location.href.match(/[?&]i=(.*?)(?:$|&)/); 
-                    if (iqps && iqps.length > 0 && iqps[1] === 'buy') {
+                    var iqps = location.href.match(/[?&#platform]i=(.*?)(?:$|&)/); 
+                    console.log('************',iqps);
+                    if (iqps && iqps.length > 0 && (iqps[1] === 'buy' || iqps[1] === 'buy&')) {
                         var item = document.querySelector('#item');
                         item.selectedIndex = 1;
                         item.dispatchEvent(new Event('change'));
+                        var aTag = $("#platform");
+                        $('html,body').animate({scrollTop: aTag.offset().top},'slow');
                     }
             }, false);
             function onChangeItem(handler) {
@@ -572,10 +622,6 @@ permalink: /get
     </div>
 </form>
 
-</div>
-
-<div class="alert text-muted">
-    Looking for the Open Source version? Check out <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories
 </div>
 
 <div class="alert alert-info mb-5">
