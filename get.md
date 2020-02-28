@@ -500,7 +500,6 @@ Creating restheart-security ... <span class="text-success">done</span>
                     });
                     // get param "i" from URL
                     var iqps = location.href.match(/[?&#platform]i=(.*?)(?:$|&)/); 
-                    console.log('************',iqps);
                     if (iqps && iqps.length > 0 && (iqps[1] === 'buy' || iqps[1] === 'buy&')) {
                         var item = document.querySelector('#item');
                         item.selectedIndex = 1;
