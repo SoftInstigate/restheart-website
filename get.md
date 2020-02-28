@@ -5,7 +5,7 @@ permalink: /get
 ---
 
 <div class="form-row text-center mt-4">
-    <p class="mx-auto display-4 restheart-red">GET /<img class="mr-auto" width="20%"  src="{{ 'images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
+    <p class="mx-auto display-4 restheart-red">GET /<img class="mr-auto" width="20%"  src="{{ '/images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
 </div>
 
 <div class="form-row text-center mt-4">

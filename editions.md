@@ -347,9 +347,11 @@ title: Editions
       </tr>
       <tr class="compare-row">
         <td>Obtain</td>
-        <td><a style="font-weight: 100" href="https://github.com/SoftInstigate/restheart">GitHub Repository</a></td>
         <td>
-          <a href="{{ "/get" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
+          <a href="{{ "/get/" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
+        </td>
+        <td>
+          <a href="{{ "/get/#platform" | prepend: site.baseurl }}"><button style="1" type="button" class="pl-3 pr-3 btn btn-danger">GET</button></a>
         </td>
         <td><a href="mailto:ask@restheart.org?subject=Commercial request about RESTHeart EE">Contact</a></td>
         <td><a href="mailto:ask@restheart.org?subject=Commercial request about RESTHeart OEM">Contact</a></td>
