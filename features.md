@@ -18,7 +18,7 @@ permalink: /features
     <p>As a consequence, this page will be updated soon.</p>
 </div>
 
-## Backgroud
+## Background
 
 Read more about the background of our product on <a href="https://medium.com/softinstigate-team/the-origins-of-our-product-9ed6978c9448">The origins of RESTHeart</a>
 
@@ -39,3 +39,228 @@ Read more about the background of our product on <a href="https://medium.com/sof
 - Define **Relationships** so that documents automatically include hyperlinks to referenced data
 - Forget about HTTP details with automatic support of **Cross-origin resource sharing**, **Web Caching** and **HTTP ETag** to avoid ghost writes
 - Navigate data with the embedded **browser web app**
+
+<div class="row">
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                </h5>
+                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
+                <div class="mt-1">
+                    CRUD operations, Queries, GridFs, Aggregations and many more are
+                    accessible via a simple <strong>REST API</strong>.</div>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
+                            Management</a></h2>
+                </h5>
+                <div>
+                    RESTHeart allows to effectively manage content, such as
+                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
+                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
+                    <strong>audios</strong> and <strong>videos</strong>, 
+                    via a solid <strong>REST API</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+        </article>
+        <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
+                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
+                        </a>
+                    </div>
+                    <h2>
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
+                    </h2>
+                </h5>
+                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
+                </div>
+                <div class="mt-1">
+                    You can easily and effectively involve MongoDB
+                    in your <strong>Integration Processes</strong>
+                    because your <strong>Middleware</strong> can interact 
+                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row mt-4">
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                </h5>
+                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
+                <div class="mt-1">
+                    CRUD operations, Queries, GridFs, Aggregations and many more are
+                    accessible via a simple <strong>REST API</strong>.</div>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
+                            Management</a></h2>
+                </h5>
+                <div>
+                    RESTHeart allows to effectively manage content, such as
+                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
+                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
+                    <strong>audios</strong> and <strong>videos</strong>, 
+                    via a solid <strong>REST API</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+        </article>
+        <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
+                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
+                        </a>
+                    </div>
+                    <h2>
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
+                    </h2>
+                </h5>
+                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
+                </div>
+                <div class="mt-1">
+                    You can easily and effectively involve MongoDB
+                    in your <strong>Integration Processes</strong>
+                    because your <strong>Middleware</strong> can interact 
+                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row mt-4">
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                </h5>
+                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
+                <div class="mt-1">
+                    CRUD operations, Queries, GridFs, Aggregations and many more are
+                    accessible via a simple <strong>REST API</strong>.</div>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
+                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
+                    </div>
+                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
+                            Management</a></h2>
+                </h5>
+                <div>
+                    RESTHeart allows to effectively manage content, such as
+                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
+                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
+                    <strong>audios</strong> and <strong>videos</strong>, 
+                    via a solid <strong>REST API</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+        </article>
+        <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <div class="newsText__icon">
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
+                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
+                        </a>
+                    </div>
+                    <h2>
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
+                    </h2>
+                </h5>
+                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
+                </div>
+                <div class="mt-1">
+                    You can easily and effectively involve MongoDB
+                    in your <strong>Integration Processes</strong>
+                    because your <strong>Middleware</strong> can interact 
+                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
