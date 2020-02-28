@@ -5,7 +5,7 @@ permalink: /features
 ---
  
 <div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -21,7 +21,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -40,7 +40,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -57,11 +57,11 @@ permalink: /features
 </div>
 
 <div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-lg-12">
+    <article class="mt-4 mt-lg-0 col-lg-12 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extendible with Plugins</a></h2>
+                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extensible with Plugins</a></h2>
                 </h5>
                 <div>
                     Extend RESTHeart via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check</strong> and <strong>intercept</strong> requests and responses, executes <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
@@ -82,7 +82,7 @@ permalink: /features
 </div>
 
 <div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -97,7 +97,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -112,7 +112,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -132,7 +132,7 @@ permalink: /features
 </div>
 
 <div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -147,7 +147,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -162,7 +162,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -182,7 +182,7 @@ permalink: /features
 </div>
 
 <div class="row my-4">
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -196,7 +196,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
@@ -211,7 +211,7 @@ permalink: /features
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
