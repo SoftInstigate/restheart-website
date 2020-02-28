@@ -10,7 +10,12 @@ layout: default
     </section>
 </section>
 
-<section class="cd-intro mt-5 mb-0">
+<div class="jumbotron  bg-red text-white text-center mt-3 py-4">
+    <div class="lead">Don't be shy and join us on our free <strong>Happy Hour</strong> video chats about RESTHeart.</div>
+    <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
+</div>
+
+<section class="cd-intro mt-5 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
@@ -33,27 +38,17 @@ layout: default
     <div class="d-flex justify-content-center">
         <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
             MORE</a>
+        <a href="{{ "/get" | prepend: site.baseurl }}"
+            class="btn ml-3 mt-3 btn-md">Download</a>
     </div>
 </section>
 
-<div class="d-flex w-100 justify-content-center mt-5 mb-2">
-    <div class="card w-100 w-md-50 mr-lg-5 ml-lg-5" style="width: 18rem">
-        <h5 class="card-header text-center rh4-card-header"><strong>Latest version</strong></h5>
-        <!-- http://avtanski.net/projects/lcd/ -->
-        <img class="mx-auto mt-4 d-block img-responsive" src="/images/4.1.png" alt="RESTHeart 4.1">
-        <div class="card-body">
-            <div class="d-flex justify-content-center">
-                <a href="{{ "/get" | prepend: site.baseurl }}"
-                    class="btn w-50 mt-2 ml-2 btn-md">Download</a>
-            </div>
-        </div>
+<section id="examples" class="slice bg-white">
+    <div class="container-fluid mt-2 mb-5 text-center">
+        <h2 class="restheart-red">Runs everywhere with simple HTTP requests and JSON data format</h2>
     </div>
-</div>
-
-<div class="jumbotron jumbotron-fluid bg-red text-white text-center mt-5">
-    <div class="lead">Join us on our weekly <strong>Happy Hour</strong> video chat about RESTHeart.</div>
-    <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
-</div>
+    {% include examples.html %}
+</section>
 
 <section id="trusted-by">
     <div class="row mx-0">
@@ -110,14 +105,7 @@ layout: default
     </div>
 </section>
 
-<section id="examples" class="slice bg-white">
-    <div class="container-fluid">
-        <h1 class="text-center restheart-red">Runs anywhere</h1>
-    </div>
-    {% include examples.html %}
-</section>
-
-<section class="chart" id="chart">
+<section class="chart mt-3" id="chart">
 
     {% include docker_pull_chart.html %}
 
