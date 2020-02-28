@@ -1,5 +1,5 @@
 ---
-layout: page-notitle
+layout: page
 title: What RESTHeart can do
 permalink: /features
 ---
