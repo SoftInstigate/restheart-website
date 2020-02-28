@@ -1,60 +1,19 @@
 ---
 layout: page-notitle
-title: Did you know
+title: What RESTHeart can do
 permalink: /features
 ---
-
-# What RESTHeart can do
-
-<div class="alert alert-warning" role="alert">
-    <h2 class="alert-heading">
-            <svg class="float-left mr-3 my-auto d-block" width="30px" height="30px">
-                    <use xlink:href="/images/sprite.svg#feather" />
-                </svg>
-        This page is being updated.
-    </h2>
-    <hr class="mt-2 mb-2">
-    <p><strong>REST</strong>Heart v5 introduces many news features and improvements.</p>
-    <p>As a consequence, this page will be updated soon.</p>
-</div>
-
-## Background
-
-Read more about the background of our product on <a href="https://medium.com/softinstigate-team/the-origins-of-our-product-9ed6978c9448">The origins of RESTHeart</a>
-
-## Features
  
-- Setup in minutes a microservice with support for __MongoDB__, __AWS DocumentDB__ and __Azure Cosmos DB__; available also as a [Docker image](https://hub.docker.com/r/softinstigate/restheart/)
-- __Based on open standards__, like HTTP, JSON, REST, JSON and JSON Schema
-- __Read JSON documents__ with GET requests, specifying MongoDB queries and projection options; deal with large result sets with pagination
-- Create, modify and delete JSON documents with POST, PUT, PATCH and DELETE requests. Use __bulk requests__ to deal with multiple documents in one shot
-- **Authentication** and **Authorization** provided by a dedicated [security microservice](https://restheart.org/docs/security/overview/#understanding-restheart-security) 
-- Store and serve binary data with **GridFS** support
-- Define and execute **Aggregations**, supporting both map-reduce and aggregation pipelines
-- Execute requests in multi-document **ACID transactions**
-- Access real-time data changes via Websocket **Change Streams**
-- Create dbs, collections and indexes with **Data Model API**
-- Validate requests with **JSON Schema**
-- Extend RESTHeart via **Plugins**: **transform**, **check** requests and responses, keep data secure with **authenticators** and **authorizers**, executes **WebHooks** after a request completes, implement **Web Services** in minutes, serve **Static Resources** (such as HTML, CSS, images and JavaScript)
-- Define **Relationships** so that documents automatically include hyperlinks to referenced data
-- Forget about HTTP details with automatic support of **Cross-origin resource sharing**, **Web Caching** and **HTTP ETag** to avoid ghost writes
-- Navigate data with the embedded **browser web app**
-
-<div class="row">
+<div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Full support of MongoDb</a></h2>
                 </h5>
-                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
+                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. </div>
                 <div class="mt-1">
-                    CRUD operations, Queries, GridFs, Aggregations and many more are
-                    accessible via a simple <strong>REST API</strong>.</div>
+                    Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
@@ -66,50 +25,32 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
-                            Management</a></h2>
+                    <h2><a href="{{ "/docs/setup" | prepend: site.baseurl }}">Docker</a></h2>
                 </h5>
                 <div>
-                    RESTHeart allows to effectively manage content, such as
-                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
-                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
-                    <strong>audios</strong> and <strong>videos</strong>, 
-                    via a solid <strong>REST API</strong>.
+                    RESTHeart is available as battle-tested docker image.
+                    <a class="mt-1" href="https://hub.docker.com/r/softinstigate/restheart">
+                        <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
+                            src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
+                    </a>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/setup" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
-        </article>
-        <article class="mt-4 mt-lg-0 col-lg-4">
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
-                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
-                        </a>
-                    </div>
-                    <h2>
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
-                    </h2>
+                    <h2><a href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Battle-tested Security</a></h2>
                 </h5>
-                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
-                </div>
-                <div class="mt-1">
-                    You can easily and effectively involve MongoDB
-                    in your <strong>Integration Processes</strong>
-                    because your <strong>Middleware</strong> can interact 
-                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
+                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by a dedicated security microservice. Security can be easily customized thanks to its pluggable architecture.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -120,20 +61,14 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                    <h2><a href="{{ "/docs/read-docs" | prepend: site.baseurl }}">Read JSON documents</a></h2>
                 </h5>
-                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
-                <div class="mt-1">
-                    CRUD operations, Queries, GridFs, Aggregations and many more are
-                    accessible via a simple <strong>REST API</strong>.</div>
+                <div>
+                Read JSON documents with GET requests, specifying MongoDB queries and projection options; deal with large result sets with pagination.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/read-docs" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -141,50 +76,30 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
-                            Management</a></h2>
+                    <h2><a href="{{ "/docs/write-docs" | prepend: site.baseurl }}">Write JSON documents</a></h2>
                 </h5>
                 <div>
-                    RESTHeart allows to effectively manage content, such as
-                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
-                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
-                    <strong>audios</strong> and <strong>videos</strong>, 
-                    via a solid <strong>REST API</strong>.
+                    Create, modify and delete JSON documents with POST, PUT, PATCH and DELETE requests. Use <strong>bulk requests</strong> to deal with multiple documents in one shot.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/write-docs" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
-        </article>
-        <article class="mt-4 mt-lg-0 col-lg-4">
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
-                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
-                        </a>
-                    </div>
                     <h2>
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
+                        <a href="{{ "/docs/files" | prepend: site.baseurl }}">Binary data</a>
                     </h2>
                 </h5>
-                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
-                </div>
-                <div class="mt-1">
-                    You can easily and effectively involve MongoDB
-                    in your <strong>Integration Processes</strong>
-                    because your <strong>Middleware</strong> can interact 
-                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
+                <div>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/files" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -195,20 +110,14 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href=" /images/sprite.svg#mongodb" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Setup in minutes</a></h2>
+                    <h2><a href="{{ "/docs/aggregations" | prepend: site.baseurl }}">Aggregations</a></h2>
                 </h5>
-                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. 
-                <div class="mt-1">
-                    CRUD operations, Queries, GridFs, Aggregations and many more are
-                    accessible via a simple <strong>REST API</strong>.</div>
+                <div>
+                    Define and execute <strong>Aggregations</strong>, supporting both map-reduce and aggregation pipelines
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/aggregations" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -216,23 +125,62 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}"><svg>
-                                <use xlink:href="/images/sprite.svg#feather" /></svg></a>
-                    </div>
-                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Content
-                            Management</a></h2>
+                    <h2><a href="{{ "/docs/change-streams/" | prepend: site.baseurl }}">Real-time data</a></h2>
                 </h5>
                 <div>
-                    RESTHeart allows to effectively manage content, such as
-                    <strong>images</strong>, <strong>comments</strong>, <strong>tags</strong>,
-                    <strong>categories</strong>, <strong>geolocalized data</strong>, 
-                    <strong>audios</strong> and <strong>videos</strong>, 
-                    via a solid <strong>REST API</strong>.
+                    Handle hundreds of thousands of clients with Change Streams via WebSocket
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/change-streams/" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <h2>
+                        <a href="{{ "/docs/transactions" | prepend: site.baseurl }}">Transactions</a>
+                    </h2>
+                </h5>
+                <div>
+                Execute requests in multi-document <strong>ACID transactions</strong>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/docs/transactions" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row my-4">
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Data validation</a></h2>
+                </h5>
+                <div>Validate write requests with <strong>JSON Schema</strong></div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/docs/json-schema-validation/" | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <h2><a href="{{ "/use-cases/content-management" | prepend: site.baseurl }}">Plugins</a></h2>
+                </h5>
+                <div>
+                    Extend RESTHeart via <strong>Plugins</strong>: <strong>transform</strong>, <strong>check</strong> and <strong>intercept</strong> requests and responses, executes <strong>hooks</strong> after a request completes, implement <strong>Web Services</strong> in minutes.
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-end">
+                <a class="btn btn-m" href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
         </article>
@@ -240,27 +188,18 @@ Read more about the background of our product on <a href="https://medium.com/sof
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <div class="newsText__icon">
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">
-                            <svg><use xlink:href="/images/sprite.svg#torch" /></svg>
-                        </a>
-                    </div>
                     <h2>
-                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Integration</a>
+                        <a href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Upload data from CSV files</a>
                     </h2>
                 </h5>
-                <div>RESTHeart is an effective solution for <strong>Integration</strong> needs.
-                </div>
-                <div class="mt-1">
-                    You can easily and effectively involve MongoDB
-                    in your <strong>Integration Processes</strong>
-                    because your <strong>Middleware</strong> can interact 
-                    with the <strong>RESTHeart API</strong> using simple <strong>HTTP Connectors</strong>.
-                </div>
+                <div>The CSV Uploader Service allows importing data from a CSV file into a MongoDB collection.</div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/use-cases/integration" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/csv" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
 </div>
+
+{: .bs-callout.bs-callout-info}
+Read more about the background of our product on <a href="https://medium.com/softinstigate-team/the-origins-of-our-product-9ed6978c9448">The origins of RESTHeart</a>

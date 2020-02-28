@@ -59,7 +59,6 @@ The founding ideas around RESTHeart are:
 - Extend RESTHeart via **Plugins**: **transform**, **check** requests and responses, keep data secure with **authenticators** and **authorizers**, executes **WebHooks** after a request completes, implement **Web Services** in minutes, serve **Static Resources** (such as HTML, CSS, images and JavaScript)
 - Define **Relationships** so that documents automatically include hyperlinks to referenced data
 - Forget about HTTP details with automatic support of **Cross-origin resource sharing**, **Web Caching** and **HTTP ETag** to avoid ghost writes
-- Navigate data with the embedded **browser web app**
 
 <img src="/images/angular-react-vue.jpg" width="40%" class="mx-auto d-block img-responsive" />
 
