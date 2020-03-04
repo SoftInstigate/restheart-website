@@ -82,7 +82,7 @@ layout: default
                 <h2 class="call-to-action__title">Fully Supported</h2>
                 <p class="call-to-action__desc">Our dedicated support connects you with the engineers that develop
                     RESTHeart to seamlessly run production environments. RESTHeart OSS is supported by our active
-                    community on public channels like github and stackoverflow.</p>
+                    community on public channels like GitHub and StackOverflow.</p>
                 <a class="btn btn-o" href="/support">SUPPORT</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
