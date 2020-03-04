@@ -458,7 +458,7 @@ X-Powered-By: restheart.org
 Note that in this case the resource has a much nicer URL:
 
 ```plain
-http://localhost:8080/mybucket.files/example.png
+http://localhost:8080/mybucket.files/example.jpg
 ```
 
 Which is easier to read and link than the automatically generated name.
