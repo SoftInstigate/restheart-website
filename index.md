@@ -5,10 +5,12 @@ layout: default
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
-        <div class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">NoCoding and NoSQL Platform</div>
-        <div class="mt-2 ml-3 ml-md-5 top-3 text-lightcyan text-break">for MongoDB</div>
+        <div class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Beautifully crafted API </div>
+        <div class="mt-2 ml-3 ml-md-5 top-3 text-lightcyan text-break">for developers with deadlines</div>
     </section>
 </section>
+
+<div>
 
 <div class="jumbotron bg-red text-white text-center mt-3 py-4">
     <div class="lead">Don't be shy and join us on our free <strong>Happy Hour</strong> video chats about RESTHeart.</div>
@@ -34,7 +36,6 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-    <div class="header__desc restheart-red">Beautifully crafted API for developers with deadlines</div>
     <div class="d-flex justify-content-center">
         <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
             MORE</a>
