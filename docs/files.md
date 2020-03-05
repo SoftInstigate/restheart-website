@@ -6,12 +6,12 @@ title: Binary Files
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Introduction](#introduction)
-- [The "properties" part](#the-properties-part)
 - [Create a file bucket](#create-a-file-bucket)
-- [Uploading files with POST](#uploading-files-with-post)
-  - [GET the file's metadata](#get-the-files-metadata)
-  - [GET the file's binary data](#get-the-files-binary-data)
-- [Uploading files with PUT](#uploading-files-with-put)
+- [Uploading into file buckets with POST](#uploading-file-buckets-with-post)
+  - [Uploading with PUT](#uploading-with-put)
+- [GET the file's metadata](#get-the-files-metadata)
+- [GET the file's binary data](#get-the-files-binary-data)
+- [The "properties" part](#the-properties-part)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -34,105 +34,7 @@ __Note__: RESTHeart's HTTP clients must adhere to the **multipart/form-data** sp
 {: .bs-callout.bs-callout-success }
 In the examples in this section we assume RESTHeart is running on `localhost`, port `8080`.
 
-{: .bs-callout .bs-callout-warning }
-To upload a binary file **the request body must be encoded as `multipart/form-data`.**
-
-
-## The "properties" part
-
-
-To add optional form data parts to the request it is necessary to embed the data into the `properties` field name. The content of this field is automatically parsed as JSON data, so it must be valid JSON.
-
-In the following example, we set the "author" and the "filename":
-
-{% include code-header.html 
-    type="Request" 
-%}
-
-{: .black-code }
-``` bash
-http -v --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate", "filename":"example"}'
-```
-
-{: .black-code }
-```http
-PUT /mybucket.files/example HTTP/1.1
-Accept: */*
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Content-Length: 66606
-Content-Type: multipart/form-data; boundary=11c729f02b6a4373be26ef4cc475f340
-Host: localhost:8080
-User-Agent: HTTPie/0.9.8
-```
-
-{% include code-header.html 
-    type="Response" 
-%}
-
-{: .black-code }
-``` http
-HTTP/1.1 201 Created
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, X-Powered-By
-Connection: keep-alive
-Content-Length: 0
-Content-Type: application/json
-Date: Wed, 04 Mar 2020 16:45:52 GMT
-X-Powered-By: restheart.org
-```
-
-The JSON will be merged into in the metadata section:
-
-{% include code-header.html 
-    type="Request" 
-%}
-
-{: .black-code }
-``` http
-GET /mybucket.files/example HTTP/1.1
-Accept: */*
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Host: localhost:8080
-User-Agent: HTTPie/0.9.8
-```
-
-{% include code-header.html 
-    type="Response" 
-%}
-
-{: .black-code }
-``` http
-HTTP/1.1 200 OK
-
-{
-    "_id": "example",
-    "_links": {
-        "rh:data": {
-            "href": "/mybucket.files/example/binary"
-        }
-    },
-    "chunkSize": 261120,
-    "filename": "example",
-    "length": 66273,
-    "md5": "6399742c9e8a662fd2e999d8d31653c0",
-    "metadata": {
-        "_etag": {
-            "$oid": "5e5fd9fcddfa017301e00335"
-        },
-        "author": "SoftInstigate",
-        "contentType": "image/jpeg",
-        "filename": "example"
-    },
-    "uploadDate": {
-        "$date": 1583340028302
-    }
-}
-```
-
-### Create a File Bucket
+## Create a File Bucket
 
 File buckets are special collections whose aim is to store binary data and the associated metadata. Start by creating a new one for uploading binaries.
 
@@ -203,15 +105,24 @@ ETag: 5d1dc2cd0951267987cf8ab2
 X-Powered-By: restheart.org
 ```
 
-## Uploading files with POST
+## Uploading into file buckets with POST
 
-The following request done using HTTPie will POST a binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata associated into the previously created `/mybucket.files`.
+{: .bs-callout .bs-callout-warning }
+To upload a binary file **the request body must be encoded as `multipart/form-data`.**
+
+A multipart/form-data encoded request is splitted and submitted into different sections. These are trivially called *request parts*.
+Each part is delimited by a random digits string boundary.
+
+
+By setting `Content-Type:multipart/form-data`, the following example request done using HTTPie will POST a binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata associated into the previously created `/mybucket.files`
+
 
 {: .black-code }
 ```bash
 http -v --form POST localhost:8080/mybucket.files  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate"}'
-
 ```
+
+will produce the following results:
 
 {% include code-header.html 
     type="Request" 
@@ -227,8 +138,24 @@ Content-Length: 66574
 Content-Type: multipart/form-data; boundary=a54420e707704ef69099ae603c9acf4c
 Host: localhost:8080
 User-Agent: HTTPie/0.9.8
-
 ```
+
+{: .black-code }
+```
+### Multipart flow example --- this will be done usually hidden and handled under-the-hood by your http client
+
+--------------------------a54420e707704ef69099ae603c9acf4c
+Content-Disposition: form-data; name="properties"
+{"author":"SoftInstigate"}
+--------------------------a54420e707704ef69099ae603c9acf4c
+Content-Disposition: form-data; name="binary"; filename="example.jpg"
+Content-Type: image/jpg
+
+>>> contents of the file
+--------------------------a54420e707704ef69099ae603c9acf4c--
+```
+
+
 
 {% include code-header.html 
     type="Response" 
@@ -255,17 +182,61 @@ The `Location` HTTP header returns the file's location:
 Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
 ```
 
-{: .alert.alert-info }
+#### Uploading with PUT
+
+In order to explicit a human-readable name or to update an already exisiting asset you can use a PUT `multipart/form-data` encoded request. 
+
+{: .bs-callout.bs-callout-info }
 Note that the location contains the object ID automatically generated by
 MongoDB (see the string `5e5fcdd8ddfa017301e00331` at the end of the
 above Location URL). This is a unique identifier and it's convenient in many
 situation, but it's not always desirable. In many case it would be
 better to explicitly name the resource with something more readable and
-meaningful. To set the resource name it is necessary to upload the file
-by using the PUT verb instead of POST. We'll show this later.
+meaningful.
+
+{% include code-header.html 
+    type="Request" 
+%}
+
+{: .black-code }
+``` http
+PUT /mybucket.files/example HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 66574
+Content-Type: multipart/form-data; boundary=12c5bba0f1014fca997aa0aeb9cd5094
+Host: localhost:8080
+User-Agent: HTTPie/0.9.8
+```
+
+{% include code-header.html 
+    type="Response" 
+%}
+
+{: .black-code }
+``` http
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, X-Powered-By
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Wed, 04 Mar 2020 16:25:57 GMT
+X-Powered-By: restheart.org
+```
+
+In this case the resource has a much nicer URL:
+
+```plain
+http://localhost:8080/mybucket.files/example
+```
+
+Which is easier to read and link than the automatically generated name.
 
 
-#### GET the file's metadata
+## GET the file's metadata
 
 If you GET the `Location`, RESTHeart actually returns the file's metadata:
 
@@ -334,7 +305,10 @@ X-Powered-By: restheart.org
 }
 ```
 
-#### GET the file's binary data
+{: .bs-callout.bs-callout-info }
+Uploaded files metadata can be filtered and treated as regular collection documents. <br><br> For example, `http://localhost:8080/mybucket.files?filter={"metadata.author": "SoftInstigate"}` returns all the file metadata that satisfy the query.
+
+### GET the file's binary data
 
 The actual binary content is available by appending the `binary` postfix, like this:
 
@@ -343,59 +317,22 @@ The actual binary content is available by appending the `binary` postfix, like t
 http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331/binary
 ```
 
-{: .bs-callout.bs-callout-warning }
-Once a file has been created it becomes **immutable**: only its metadata can be updated. Practically, to update an existing file it's necessary to delete and re-create it.
 
-## Uploading files with PUT
+### The "properties" part
 
-In the previous examples, the `mybucket.files` owner by default assigned to new files a resource name coming from MongoDB. If we want to set a meaningful URL then we need to send a PUT, like this:
 
-The following PUT request done using HTTPie will upload the same data as the POST example with the difference that a meaningful name for the asset is explicitly indicated.
+As we did in previus example, is possible to associate metadata to a file upload. 
 
-{: .black-code }
-```bash
-http -v --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate"}'
+To add optional form data parts to the request it is necessary to embed the data into the `properties` field name. The content of this field is automatically parsed as JSON data, so it must be valid JSON.
 
-```
-
-{% include code-header.html 
-    type="Request" 
-%}
+In the following example, we set the "author" and the "filename":
 
 {: .black-code }
-``` http
-PUT /mybucket.files/example HTTP/1.1
-Accept: */*
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Content-Length: 66574
-Content-Type: multipart/form-data; boundary=12c5bba0f1014fca997aa0aeb9cd5094
-Host: localhost:8080
-User-Agent: HTTPie/0.9.8
+``` bash
+http -v --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate", "filename":"example"}'
 ```
 
-{% include code-header.html 
-    type="Response" 
-%}
-
-{: .black-code }
-``` http
-HTTP/1.1 201 Created
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, X-Powered-By
-Connection: keep-alive
-Content-Length: 0
-Content-Type: application/json
-Date: Wed, 04 Mar 2020 16:25:57 GMT
-X-Powered-By: restheart.org
-```
-
-
-{: .bs-callout.bs-callout-success }
-Note that any `Location` header is returned into response because it will be located at the path indicated at request time.
-
-If we GET the resulting resource, here is the full HTTP response:
+We then retrieve the metadata associated. The JSON will be merged into in the metadata section:
 
 {% include code-header.html 
     type="Request" 
@@ -404,11 +341,6 @@ If we GET the resulting resource, here is the full HTTP response:
 {: .black-code }
 ``` http
 GET /mybucket.files/example HTTP/1.1
-Accept: */*
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Host: localhost:8080
-User-Agent: HTTPie/0.9.8
 ```
 
 {% include code-header.html 
@@ -418,16 +350,6 @@ User-Agent: HTTPie/0.9.8
 {: .black-code }
 ``` http
 HTTP/1.1 200 OK
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, X-Powered-By
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Length: 243
-Content-Type: application/json
-Date: Wed, 04 Mar 2020 16:26:10 GMT
-ETag: 5e5fd695ddfa017301e00333
-X-Powered-By: restheart.org
 
 {
     "_id": "example",
@@ -437,31 +359,22 @@ X-Powered-By: restheart.org
         }
     },
     "chunkSize": 261120,
-    "filename": "file",
+    "filename": "example",
     "length": 66273,
     "md5": "6399742c9e8a662fd2e999d8d31653c0",
     "metadata": {
         "_etag": {
-            "$oid": "5e5fd695ddfa017301e00333"
+            "$oid": "5e5fd9fcddfa017301e00335"
         },
         "author": "SoftInstigate",
-        "contentType": "image/jpeg"
+        "contentType": "image/jpeg",
+        "filename": "example"
     },
     "uploadDate": {
-        "$date": 1583339157941
+        "$date": 1583340028302
     }
 }
-
-
 ```
-
-Note that in this case the resource has a much nicer URL:
-
-```plain
-http://localhost:8080/mybucket.files/example.jpg
-```
-
-Which is easier to read and link than the automatically generated name.
 
 <!-- ### GET a binary file
 
