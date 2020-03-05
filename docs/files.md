@@ -7,7 +7,7 @@ title: Binary Files
 
 - [Introduction](#introduction)
 - [Create a file bucket](#create-a-file-bucket)
-- [Uploading into file buckets with POST](#uploading-file-buckets-with-post)
+- [Uploading into file buckets with POST](#uploading-into-file-buckets-with-post)
   - [Uploading with PUT](#uploading-with-put)
 - [GET the file's metadata](#get-the-files-metadata)
 - [GET the file's binary data](#get-the-files-binary-data)
@@ -308,7 +308,7 @@ X-Powered-By: restheart.org
 {: .bs-callout.bs-callout-info }
 Uploaded files metadata can be filtered and treated as regular collection documents. <br><br> For example, `http://localhost:8080/mybucket.files?filter={"metadata.author": "SoftInstigate"}` returns all the file metadata that satisfy the query.
 
-### GET the file's binary data
+## GET the file's binary data
 
 The actual binary content is available by appending the `binary` postfix, like this:
 
@@ -318,7 +318,7 @@ http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331/binary
 ```
 
 
-### The "properties" part
+## The "properties" part
 
 
 As we did in previus example, is possible to associate metadata to a file upload. 
