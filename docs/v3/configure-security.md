@@ -70,7 +70,7 @@ authentication mechanism.
 RESTHeart is stateless: there isn't any authentication session and
 credentials must be sent on every request.
 
-Refer to [How Clients authenticate](/docs/clients_authentication) for more
+Refer to [How Clients authenticate]/docs/v3/clients-authentication() for more
 information.
 
 The HTTPS listener
