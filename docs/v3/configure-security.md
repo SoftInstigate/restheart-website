@@ -160,7 +160,7 @@ If the client credentials are not valid the response will be **HTTP/1.1
 
 The IDM is pluggable: the actual IDM implementation to use can be
 configured. Please refer to [Custom Identity
-Manager](/learn/custom-identity-manager) section for more information on how to
+Manager](/docs/v3/custom-identity-manager) section for more information on how to
 develop and configure a custom IDM.
 
 The **idm** section of the yaml configuration file is:
@@ -217,7 +217,7 @@ RequestContextPredicate securityPredicate = new RequestContextPredicate() {
 // add the global predicate
 AccessManagerHandler.getGlobalSecurityPredicates().add(securityPredicate);
 ```
-You can use an [Initializer](/learn/initializer) to add Global Security Predicates.
+You can use an [Initializer](/docs/v3/initializer) to add Global Security Predicates.
 
 ### DbIdentityManager
 
@@ -288,7 +288,7 @@ If you actually expose it, make sure to:
 1.  define an appropriate access policy enforced by the Access Manager
     so that users can only access their own data, (e.g. a user cannot modify other users' passwords)
 2.  For RESTHeart versions older than 3.3, filter out the *password* property from responses with
-    a [representation transformer](/learn/request-transformers).
+    a [representation transformer](/docs/v3/request-transformers).
  
 
 ## Access Manager

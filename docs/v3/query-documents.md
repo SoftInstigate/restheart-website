@@ -34,7 +34,7 @@ In RESTHeart, `GET` collection resource requests
 resources.
 
 Refer to [Representation
-Format](/learn/representation-format) for more information about the representation format.
+Format](/docs/v3/representation-format) for more information about the representation format.
 
 This section also applies to File Bucket and Schema Store resources,
 that embed File and JSON schema resources respectively.
@@ -172,7 +172,7 @@ parameter. Its default value is 100, maximum allowable size is 1000.
 The pages to return is specified with the `page` query parameter. The
 pagination links (first, last, next, previous) are **only returned on
 hal full mode** (`hal=f` query parameter); see [HAL
-mode](https://restheart.org/learn/representation-format/)
+mode](https://restheart.org/docs/v3/representation-format/)
 for more information.
 
 For instance, to return documents from 20 to 29 (page 3):

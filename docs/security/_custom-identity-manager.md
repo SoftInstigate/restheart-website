@@ -30,7 +30,7 @@ For further help, please refer to the RESTHeart support channels
 
 The Identity Manager is responsible of authenticating the users
 verifying the credentials provided via the [basic authentication
-mechanism](/learn/clients-authentication).
+mechanism](/docs/clients-authentication).
 
 Following the dependency injection approach, the actual IDM
 implementation to use is specified in the configuration file.

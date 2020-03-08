@@ -52,7 +52,7 @@ MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 
 > Global Transformers are applied to all requests.
 
-See [Request Transformers](/learn/request-transformers#global-transformers) for more information on `GlobalTransformer`
+See [Request Transformers](/docs/v3/request-transformers#global-transformers) for more information on `GlobalTransformer`
 
 ``` java
 GlobalTranformer globalTranformer;
@@ -68,7 +68,7 @@ ResponseTransformerHandler.getGlobalTransformers().add(globalTranformer);
 
 > Global Checkers are applied to all requests.
 
-See [Request Checkers](/learn/request-checkers#global-checkers) for more information on `GlobalChecker`.
+See [Request Checkers](/docs/v3/request-checkers#global-checkers) for more information on `GlobalChecker`.
 
 ``` java
 // check the request

@@ -77,7 +77,7 @@ configuration file; once the are configured, they can be bound to
 collections via the `hooks` collection metadata.
 
 Of course, the class(es) that implements the Hook must be added to the java
-classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
+classpath. See (How to package custom code)[/docs/v3/custom-code-packaging-howto] for more information.
 
 For example, if the hook is packaged in the *myhook.jar* file, start
 RESTHeart with the following command:

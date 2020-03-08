@@ -309,8 +309,8 @@ The `_embedded property looks like:`
 
 ### Links
 
-\_links are only returned on hal full mode. The only exception are with
-[relationships](/learn/relationships). If a collection defines a relationship,
+\_links are only returned on HAL full mode. The only exception are with
+[relationships](/docs/v3/relationships). If a collection defines a relationship,
 the representation of the documents always include the links to related
 data.
 <div class="table-responsive">

@@ -74,7 +74,7 @@ needed.  
 Once authenticated, the group memberships of the user will be retrieved
 and used by the Access Manager to determine authorization of actions on
 various collections (see: [Enable and Configure
-Security\#SimpleAccessManager](/learn/configure-security#simpleaccessmanager)).
+Security\#SimpleAccessManager](/docs/v3/configure-security#simpleaccessmanager)).
  Within the permissions section of security.yml, you must use the group
 names from your AD or LDAP system rather than the default examples in
 the file.  An example:

@@ -148,7 +148,7 @@ GlobalTransformer globalTransformer = new GlobalTransformer(
 TransformerHandler.getGlobalTransformers().add(globalTransformer);
 ```
 
-You can use an [Initializer](/learn/initializer) to add Global Transformers.
+You can use an [Initializer](/docs/v3/initializer) to add Global Transformers.
 
 ## Available and Custom Transformers
 
@@ -237,7 +237,7 @@ transformer metadata object.
 The usual application of this transformer is hiding sensitive data to
 clients.
 
-In [Security](/learn/security) section, the *DbIdentityManager* is described.
+In [Security](/docs/v3/security) section, the *DbIdentityManager* is described.
 It allows to authenticate users defined in a mongodb collection
 that must have the following fields: \_id as the userid, password
 (string) and roles (an array of strings).
@@ -322,7 +322,7 @@ off-the-shelf transformers provided with RESTHeart plus custom one.
 ```
 
 Or course, the class of the custom checker must be added to the java
-classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
+classpath. See (How to package custom code)[/docs/v3/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
 

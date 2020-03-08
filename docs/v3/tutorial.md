@@ -44,7 +44,7 @@ $ docker-compose up -d
 
 That runs RESTHeart and an empty MongoDB container, which we are going to use for the rest of this tutorial.
 
-Optionally, you might want to review to the [setup](/learn/setup/#run-restheart-with-docker) section to get more details on how to run RESTHeart and MongoDB with Docker and Docker Compose, but you can leave it for later. Let's instead jump into some action.
+Optionally, you might want to review to the [setup](/docs/v3/setup/#run-restheart-with-docker) section to get more details on how to run RESTHeart and MongoDB with Docker and Docker Compose, but you can leave it for later. Let's instead jump into some action.
 
 ## Create a Database
 
@@ -301,7 +301,7 @@ X-Powered-By: restheart.org
 
 Note that the two documents are within the `_embedded` array, while the rest is metadata (the meaning of metadata, such as `_etag` and `_returned`, should appear self-explanatory).
 
-Also beware that RESTHeart applies a [pagination algorithm](/learn/query-documents/#paging) to all requests, but by default it works only if the collection contains more than 100 documents, which is not this case.
+Also beware that RESTHeart applies a [pagination algorithm](/docs/v3/query-documents/#paging) to all requests, but by default it works only if the collection contains more than 100 documents, which is not this case.
 
 ## GET Document by URL (by id)
 
@@ -386,7 +386,7 @@ X-Powered-By: restheart.org
 }
 ```
 
-Now you could jump to [Queries](/learn/query-documents/) for more complex examples on how to search documents. Remember that you will have all MongoDB's queries power at your disposal.
+Now you could jump to [Queries](/docs/v3/query-documents/) for more complex examples on how to search documents. Remember that you will have all MongoDB's queries power at your disposal.
 
 ## Clean-up
 
@@ -405,10 +405,10 @@ Removing volume restheart_restheart-datadb
 
 ## Additional resources
 
-* [Setup](/learn/setup)
-* [Resource URI](/learn/resource-uri)
-* [Resource Representation Format](/learn/representation-format)
-* [Queries](/learn/query-documents/)
+* [Setup](/docs/v3/setup)
+* [Resource URI](/docs/v3/resource-uri)
+* [Resource Representation Format](/docs/v3/representation-format)
+* [Queries](/docs/v3/query-documents/)
 
 
 </div>

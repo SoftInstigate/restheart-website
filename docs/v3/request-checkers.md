@@ -127,7 +127,7 @@ GlobalChecker globalChecker = new GlobalChecker(checker, predicate, true, args, 
 CheckerHandler.getGlobalCheckers().add(globalChecker);
 ```
 
-You can use an [Initializer](/learn/initializer) to add Global Checkers.
+You can use an [Initializer](/docs/v3/initializer) to add Global Checkers.
 
 ## Checkers
 
@@ -139,7 +139,7 @@ RESTHeart comes with 3 ready-to-be-used checkers:
     request size
 -   **jsonSchemaChecker** to enforce a structure to documents using json
     schema; more information at [Document validation with JSON
-    schema](/learn/json-schema-validation)
+    schema](/docs/v3/json-schema-validation)
 
 [Custom checkers](#custom-checkers) can also be
 implemented.
@@ -464,7 +464,7 @@ metadata-named-singletons:
 ```
 
 The class of the custom checker must be added to the java
-classpath. See (How to package custom code)[/learn/custom-code-packaging-howto] for more information.
+classpath. See (How to package custom code)[/docs/v3/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
   

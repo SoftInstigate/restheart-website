@@ -25,7 +25,7 @@ title: Setup
 
 Docker is the simpliest way to run RESTHeart. There's a public repository on [Docker Hub](https://hub.docker.com/r/softinstigate/restheart).
 
-Please refer to [How to run RESTHeart with Docker](/learn/docker).
+Please refer to [How to run RESTHeart with Docker](/docs/v3/docker).
 
 ## Manual installation
 
@@ -152,7 +152,7 @@ options in the configuration file following a *convention over
 configuration* approach.
 
 For more information about the configuration file format refer to [Default
-Configuration File](/learn/configuration-file) section.
+Configuration File](/docs/v3/configuration-file) section.
 
 On Linux, OSX and Solaris you can run RESTHeart as a [daemon
 process](https://en.wikipedia.org/wiki/Daemon_(computing)): 

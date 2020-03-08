@@ -70,7 +70,7 @@ You should then see the __HAL Browser__:
 
 Note that by default docker-compose runs the latest RESTHeart release, which usually is a `SNAPSHOT`. If this is not what you want, then edit the `docker-compose.yml` file accordingly.
 
-If everything is working as expected, then **you can jump to the [tutorial](/learn/tutorial/)**.
+If everything is working as expected, then **you can jump to the [tutorial](/docs/v3/tutorial/)**.
 
 ### If something is not working
 

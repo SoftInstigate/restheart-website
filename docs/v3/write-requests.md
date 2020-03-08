@@ -30,7 +30,7 @@ database, using only the HTTP protocol.
 
 With the exception of the root resource (`/`) which is read-only, all
 resources have a state represented in JSON format (see [Representation
-Format](/learn/representation-format) for more information). Example
+Format](/docs/v3/representation-format) for more information). Example
 
 The following request:
 
@@ -40,7 +40,7 @@ PUT /db/coll {"description": "my first collection", "$currentDate": { "created_o
 
 creates the collection *coll* in the database *db* setting its state as
 follows (the property *\_etag *is automatically added by RESTHeart,
-see [ETag](/learn/etag) for more information):
+see [ETag](/docs/v3/etag) for more information):
 
 ``` json
 {
