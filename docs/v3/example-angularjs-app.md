@@ -204,7 +204,7 @@ running:
 > ports on a Docker container using standard localhost addressing such
 > as localhost:8000 or 0.0.0.0:8376. In a Windows or OSX installation,
 > the Docker daemon instead is running inside a Linux virtual machine
-> provided by [Boot2Docker](https://boot2docker.io).
+> provided by [Boot2Docker](https://github.com/boot2docker/boot2docker).
 
 Full Docker setup instructions are available
 at <https://docs.docker.com/installation/>. Please go there and follow
@@ -368,7 +368,7 @@ Your browser will show you something like this:
 ![](/images/attachments/7241730/7241791.png)
 
 For more information about the restheart docker image, check it
-at [github.com/softinstigate/docker-restheart](https://github.com/softinstigate/docker-restheart)
+at [https://hub.docker.com/r/softinstigate/restheart/](https://hub.docker.com/r/softinstigate/restheart/t)
 
 For more information about the RESTHeart security model refer to the
 [Security](https://softinstigate.atlassian.net/wiki/display/RH/Security)
@@ -861,7 +861,7 @@ development funny again.
 -   RESTful API Memo: PUT and POST
     Differences: <https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/>
 -   Boot2Docker - lightweight Linux distribution made specifically to
-    run Docker containers. https://boot2docker.io
+    run Docker containers. https://github.com/boot2docker/boot2docker
 -   Linking Docker containers
     together. https://docs.docker.com/userguide/dockerlinks/
 
