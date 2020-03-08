@@ -38,7 +38,7 @@ their distributions.
 ## Formats
 
 The current implementation supports both the [Prometheus
-format](https://prometheus.io/docs/instrumenting/exposition_formats/)
+format](https://prometheus.io/docs/v5/instrumenting/exposition_formats/)
 (which is popular in kubernetes environments), as well as the [classical
 JSON
 format](https://github.com/iZettle/dropwizard-metrics/blob/master/metrics-json/src/main/java/io/dropwizard/metrics/json/MetricsModule.java) generated

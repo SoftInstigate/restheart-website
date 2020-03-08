@@ -28,7 +28,7 @@ This page lists the plugins available out of the box in RESTHeart Platform.
 {: .table.table-responsive }
 |**Plugin**|**Type**|**Description**|**metadata**|
 |**cacheInvalidator**|Service|`POST /ic?db=restheart&coll=inventory` invalidates the metadata cache of `inventory` collection of the database `restheart`|
-|**csvLoader**|Service|Allows uploading data via csv file. More info at [Upload CSV files](/docs/csv/)|
+|**csvLoader**|Service|Allows uploading data via csv file. More info at [Upload CSV files](/docs/v5/csv/)|
 |**pingService** |Service|An example ping service bound to `/ping`|
 |**filterProperties**|Transformer|Filters out a the properties specified by the args property |`{ "rts": [{"name":"filterProperties", "phase": "RESPONSE", "scope": "CHILDREN", "args": [ "password" ] } ]}`|
 |**oidsToStrings**|Transformer|Replaces ObjectId in the response body with strings|`{ "rts": [{"name":"oidsToStrings", "phase": "RESPONSE", "scope": "CHILDREN" } ]}`|
@@ -38,7 +38,7 @@ This page lists the plugins available out of the box in RESTHeart Platform.
 |**snooper**|Hook|An example hook that logs request and response info|`{ "hooks": [{ "name": "snooper" } ]}`|
 |**checkContentSize**|Checker|Checks the request content length|`{ "checkers": [{ "name": "checkContentSize","args": { "max": 1048576, "min": null }, "skipNotSupported": true } ]}`|
 |**checkContent**|Checker|Checks the request content by using conditions based on json path expressions|`{ "checkers": [ { "name": "checkContent","args": [ { "path": "$", "type": "object", "mandatoryFields": [ "email", "password", "roles", "description" ], "optionalFields": [ "_id", "_etag" ] } ], "skipNotSupported": true } ]}`|
-|**jsonSchema**|Checker|Checks the request according to the specified JSON schema. More info at [JSON Schema Validation](/docs/json-schema-validation/)|`{ "checkers": [ { "name": "jsonSchema", "args": { "schemaId": "inventory", "schemaStoreDb": "restheart" } } ] }`|
+|**jsonSchema**|Checker|Checks the request according to the specified JSON schema. More info at [JSON Schema Validation](/docs/v5/json-schema-validation/)|`{ "checkers": [ { "name": "jsonSchema", "args": { "schemaId": "inventory", "schemaStoreDb": "restheart" } } ] }`|
 
 ## Inject properties with addRequestProperties
 

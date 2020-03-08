@@ -153,9 +153,9 @@ GlobalTransformer globalTransformer = new GlobalTransformer(
 TransformerHandler.getGlobalTransformers().add(globalTransformer);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
 
-Note that `AddBodyToWriteResponsesInitializer` is not enabled by default. To enabled it add `enabled=true` to its [configuration](/docs/develop/core-plugins/#configuration).
+Note that `AddBodyToWriteResponsesInitializer` is not enabled by default. To enabled it add `enabled=true` to its [configuration](/docs/v5/develop/core-plugins/#configuration).
 
 ## Apply a Checker via metadata
 
@@ -253,7 +253,7 @@ GlobalChecker globalChecker = new GlobalChecker(checker, predicate, true, args, 
 CheckerHandler.getGlobalCheckers().add(globalChecker);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers.
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Checkers.
 
 ## Apply an Hook via metadata
 
@@ -347,4 +347,4 @@ GlobalHook globalHook = new GlobalHook(hook, predicate, args, confArgs);
 PluginsRegistry.getInstance().getGlobalHooks().add(globalHook);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Hook.
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Hook.

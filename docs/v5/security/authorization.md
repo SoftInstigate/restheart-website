@@ -16,7 +16,7 @@ title: Authorization
 
 ## Introduction
 
-See [Understanding RESTHeart Security](/docs/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
+See [Understanding RESTHeart Security](/docs/v5/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
 **restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authorizers available out-of-the-box.
 
@@ -25,7 +25,7 @@ RESTHeart by default offers two types of authorizers:
 1. RESTHeart Authorizer (commercial editions only).
 1. Request Predicates Authorizer (any edition).
 
-However, it's even possible to develop __custom authorizers__. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
+However, it's even possible to develop __custom authorizers__. Please refer to [Develop Security Plugins](/docs/v5/develop/security-plugins) for more information.
 
 ## RESTHeart Authorizer 
 
@@ -89,7 +89,7 @@ The properties of the ACL document are:
 |**predicate**|string|If the [undertow predicate](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/acl.yml)|
 |**roles**|JSON array of strings|The roles that are applied the ACL document. The special role `$unauthenticated` applies to requests that are not authenticated.|
 |**priority**|number|A request might fulfill several predicates; an ACL document with higher priority has higher evaluation precedence.|
-|**readFilter**|`null` or JSON object|An optional [filter](/docs/read-docs/#filtering) that is added to GET requests when authorized by this ACL document.|
+|**readFilter**|`null` or JSON object|An optional [filter](/docs/v5/read-docs/#filtering) that is added to GET requests when authorized by this ACL document.|
 |**writeFilter**|`null` or JSON object|An optional filter that is added to write requests when authorized by this ACL document.|
 
 ### Using readFilter and writeFilter
@@ -104,7 +104,7 @@ The example ACL document applies to users with `editor` role. A user with this r
  The `writeFilter` applies to write request. The example ACL document allows the requests to only modify the documents that were created by the authenticated user.
 
 {: .bs-callout.bs-callout-warning }
-`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/develop/security-plugins/#interceptors) or [Request Transformers](/docs/develop/core-plugins/#transformers).
+`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/v5/develop/security-plugins/#interceptors) or [Request Transformers](/docs/v5/develop/core-plugins/#transformers).
 
 `readFilter` and `writeFilter` can use the following variables:
 

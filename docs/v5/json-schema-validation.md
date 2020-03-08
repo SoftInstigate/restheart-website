@@ -21,7 +21,7 @@ title: JSON Schema Validation
 RESTHeart supports MongoDB schema validation to enforce a format to documents: rules-based validation from MongoDB 3.2 and Json Schema validation from MongoDB 3.6, more in the [MongoDB documentation](https://docs.mongodb.com/manual/core/schema-validation).
 
 On top of this, RESTHeart provides a more general approach for
-validation based on [Checkers](/docs/checkers/) that can verify  write requests based on any condition.
+validation based on [Checkers](/docs/v5/checkers/) that can verify  write requests based on any condition.
 
 RESTHeart provides "out of the box" the *jsonSchema* Checker
 that validates the body of write requests against a **JSON schema**.
@@ -219,7 +219,7 @@ HTTP/1.1 201 Created
 - bulk POST that use update operators
 
 {: .bs-callout.bs-callout-info }
-To handle this requests,  set the checker property [skipNotSupported](/docs/plugins/apply/#apply-a-checker-via-metadata) to `false` and add custom checkers to handle specific requests.
+To handle this requests,  set the checker property [skipNotSupported](/docs/v5/plugins/apply/#apply-a-checker-via-metadata) to `false` and add custom checkers to handle specific requests.
 
 {: .black-code}
 ```

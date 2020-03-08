@@ -77,7 +77,7 @@ plugins-args:
 
 Plugins implementation classes must be added to the java classpath. 
 
-A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/develop/packaging) section.
+A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/v5/develop/packaging) section.
 
 ## Initializers
 
@@ -409,7 +409,7 @@ The default, 5 arguments, method `check()` can be used to store the argument `co
 
 If the checker cannot process the request, the method `doesSupportRequests()` should return false. This allows to skip executing the checker. The class `CheckersUtils` provides some helper method to check the type of the request, e.g `CheckersUtils.isBulkRequest()`.
 
-When a checker does not support a request, the outcome depends on the attribute `skipNotSupported` of the checker definition (see [Apply a Checker via metadata](/docs/plugins/apply/#apply-a-checker-via-metadata) and [Apply a Checker programmatically](/docs/plugins/apply/#apply-a-checker-programmatically)); when `skipNotSupported=true`, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.
+When a checker does not support a request, the outcome depends on the attribute `skipNotSupported` of the checker definition (see [Apply a Checker via metadata](/docs/v5/plugins/apply/#apply-a-checker-via-metadata) and [Apply a Checker programmatically](/docs/v5/plugins/apply/#apply-a-checker-programmatically)); when `skipNotSupported=true`, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.
 
 The following code, is an example checker that checks if the
 *number* property in PATCH request body is between 0 and 10.

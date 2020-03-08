@@ -116,7 +116,7 @@ It is difficult to filter out properties from a write request because it can use
 
 In the following example, we add the Transformer `filterProperties` to Response to filter out the nested property `secret`, and apply it on read requests on collection `/coll`. We will filter out the property to all users but for `admin`.
 
-In order to enable the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/develop/core-plugins/#initializers)
+In order to enable the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/v5/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/v5/develop/core-plugins/#initializers)
 
 {: .black-code }
 ``` java
@@ -209,7 +209,7 @@ public void handleRequest(HttpServerExchange exchange) throws Exception {
 
 In the following example, we add a Request Interceptor that forbids write requests to `/coll` when executed by a user that does not have to role *admin*.
 
-In order to enable the Interceptor we are going to programmatically apply it using an [Initializer](/docs/develop/security-plugins/#initializers)
+In order to enable the Interceptor we are going to programmatically apply it using an [Initializer](/docs/v5/develop/security-plugins/#initializers)
 
 {: .black-code}
 ``` java

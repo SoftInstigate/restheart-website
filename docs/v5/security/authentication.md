@@ -26,9 +26,9 @@ title: Authentication
 
 ## Introduction
 
-See [Understanding RESTHeart Security](/docs/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
+See [Understanding RESTHeart Security](/docs/v5/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
-**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins. Refer to [Develop Security Plugins](/docs/develop/security-plugins) section for more information.
+**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins. Refer to [Develop Security Plugins](/docs/v5/develop/security-plugins) section for more information.
 
 ## Authentication Mechanisms
 
@@ -66,7 +66,7 @@ For HMAC the `key` configuration option specifies the secret, for RSA the public
          audience: myAudience
 ```
 
-It is also possible to programmatically add extra verification steps via an [Initializer](/docs/develop/security-plugins#develop-an-initializer). An example follows:
+It is also possible to programmatically add extra verification steps via an [Initializer](/docs/v5/develop/security-plugins#develop-an-initializer). An example follows:
 
 {: .black-code}
 ```java

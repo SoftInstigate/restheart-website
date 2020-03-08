@@ -25,7 +25,7 @@ title: Develop Security Plugins
 
 This section provides detailed information on how to implement custom security plugins for the [RESTHeart Platform](https://restheart.org/get). If you are looking for the OSS Edition, please refer to its [GitHub repository](https://github.com/SoftInstigate/restheart-security/)
 
-See [Understanding RESTHeart Security](/docs/security/overview/#understanding-restheart-security) for an high level view of the RESTHeart security model.
+See [Understanding RESTHeart Security](/docs/v5/security/overview/#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
 ## Authentication Mechanisms
 

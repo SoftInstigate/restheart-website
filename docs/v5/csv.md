@@ -221,7 +221,7 @@ id,name,city,lat,lon,note
 The `GeoJSONTransformer` is the name of a custom transformer that must me packaged with RESTHeart. It transforms the latitude and longitude coordinates into a <a href="https://geojson.org/" target="_blank">GeoJson</a> object.
 
 {: .bs-callout.bs-callout-info }
-Check [Package RESTHeart Core plugins](/docs/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
+Check [Package RESTHeart Core plugins](/docs/v5/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
 
 {: .black-code }
 ```java
