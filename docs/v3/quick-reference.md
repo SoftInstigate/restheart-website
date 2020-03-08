@@ -1,7 +1,6 @@
 ---
 layout: docs
 title: Quick Reference
-permalink: /learn/quick-reference.html
 features:
 - href: features/dbs-collections.html
   title: DB and Collections  

@@ -79,10 +79,10 @@ title: Editions
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td colspan="4">Plugins (<a href="/docs/services/" class="text-dark">Services</a>, <a href="/docs/transformers/" class="text-dark">Transformers</a>, <a href="/docs/checkers/" class="text-dark">Checkers</a> and <a href="/docs/hooks/" class="text-dark">Hooks</a>)</td>
+        <td colspan="4">Plugins (<a href="https://restheart.org/docs/develop/core-plugins/#services" class="text-dark">Services</a>, <a href="https://restheart.org/docs/develop/core-plugins/#transformers" class="text-dark">Transformers</a>, <a href="https://restheart.org/docs/develop/core-plugins/#checkers" class="text-dark">Checkers</a> and <a href="https://restheart.org/docs/develop/core-plugins/#hooks" class="text-dark">Hooks</a>)</td>
       </tr>
       <tr class="compare-row">
-        <td>Plugins (<a href="/docs/services/" class="text-dark">Services</a>, <a href="/docs/transformers/" class="text-dark">Transformers</a>, <a href="/docs/checkers/" class="text-dark">Checkers</a> and <a href="/docs/hooks/" class="text-dark">Hooks</a>)</td>
+        <td>Plugins (<a href="https://restheart.org/docs/develop/core-plugins/#services" class="text-dark">Services</a>, <a href="https://restheart.org/docs/develop/core-plugins/#transformers" class="text-dark">Transformers</a>, <a href="https://restheart.org/docs/develop/core-plugins/#checkers/" class="text-dark">Checkers</a> and <a href="https://restheart.org/docs/develop/core-plugins/#hooks" class="text-dark">Hooks</a>)</td>
         <td><span class="tickblue">✔</span></td>
         <td><span class="restheart-red">✔</span></td>
         <td><span class="restheart-red">✔</span></td>

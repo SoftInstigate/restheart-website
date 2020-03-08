@@ -10,7 +10,7 @@ title: Initializer
 
 > Initializer is available starting from RESTHeart 3.3
 
-You can have a preview from the current 3.3.0-SNAPSHOT version, download it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.0-SNAPSHOT/)
+You can have a preview from the current 3.3.8-SNAPSHOT version, download it from [sonatype](https://oss.sonatype.org/content/repositories/snapshots/org/restheart/restheart/3.3.8-SNAPSHOT/)
 
 An initializer is a class with the method `init()` that is invoked at RESTHeart startup.
 
