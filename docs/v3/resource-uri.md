@@ -99,11 +99,6 @@ are identified.
 <td>/&lt;db&gt;/&lt;coll&gt;/_aggrs/&lt;aggr_name&gt;</td>
 <td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/docs/v3/aggregations">Aggregations</a>).</td>
 </tr>
-<tr class="odd">
-<td>Change Stream</td>
-<td>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</td>
-<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/v3/change-streams">Change Streams</a>).</td>
-</tr>
 </tbody>
 </table>
 </div>

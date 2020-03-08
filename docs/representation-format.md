@@ -551,7 +551,7 @@ The `_embedded` property looks like:
 </tr>
 <tr class="odd">
 <td><code>curies</code></td>
-<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="https://restheart.org/curies/2.0/db.html" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
+<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="#" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
 </tr>
 </tbody>
 </table>

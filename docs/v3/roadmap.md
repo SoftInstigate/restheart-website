@@ -85,7 +85,7 @@ The new format, called STANDARD, is as follows:
 
 ### Development status
 
-- <span style="color:green">**done**</span> in branch [https://github.com/SoftInstigate/restheart/tree/next](next)
+- <span style="color:green">**done**</span>
 - added new representation format called STANDARD
 - add integration tests using karate
 
