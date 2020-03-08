@@ -399,12 +399,12 @@ checkers:='[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
 ## Custom Checkers
 
 A checker is a java class that implements the
-interface [org.restheart.metadata.checkers.Checker](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/checkers/Checker.java).
+interface [org.restheart.metadata.checkers.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/metadata/checkers/Checker.java).
 
 It only requires to implement the method check() with 3 arguments:
 
 1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exchange
-2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
+2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 4.  BsonValue args (the arguments passed via the *args* property

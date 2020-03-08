@@ -165,7 +165,7 @@ The two arguments of `handleRequest()` are:
 
 1. [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) the
     exchange
-2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) context
+2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 
@@ -183,7 +183,7 @@ public MyService(final Map<String, Object> args) {
 
 ### A complete example: pingService
 
-The following is the code of the [PingService](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/plugins/services/PingService.java) that implements a
+The following is the code of the [PingService](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/services/PingService.java) that implements a
 simple ping service.
 
 {: .black-code}
@@ -253,10 +253,10 @@ Examples of Transformers are:
 - adding the `filter={"visibility":"public"}` query parameter to requests limiting the client visibility on documents.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/transformers)
+For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/transformers)
 
 A transformer is a java class that implements the
-interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Transformer.java). 
+interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java). 
 
 {: .black-code}
 ``` java
@@ -335,10 +335,10 @@ it does not fulfill some conditions, it returns *400 BAD REQUEST*
 response code thus enforcing a well defined structure to documents.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.checkers](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/checkers)
+For implementation examples refer to the package [org.restheart.plugins.checkers](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/checkers)
 
 A checker is a java class that implements the
-interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Checker.java).
+interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java).
 
   
 {: .black-code}
@@ -465,10 +465,10 @@ For example, request hooks can be used:
     properties satisfy a given condition.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.hooks](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/hooks)
+For implementation examples refer to the package [org.restheart.plugins.hooks](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/hooks)
 
 Hooks are developed implementing the java
-interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/plugins/Hook.java).
+interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Hook.java).
 
 
 The Hook interface requires to implement the following interface:

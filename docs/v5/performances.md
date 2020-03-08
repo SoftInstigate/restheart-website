@@ -151,7 +151,7 @@ We used the brilliant [load test
 tool](https://github.com/bazhenov/load-test-tool).
 
 The test case code is available on Github as part of the RESTHeart source code baseline. You can find
-it [here](https://github.com/SoftInstigate/restheart/tree/master/src/test/java/org/restheart/test/performance).
+it [here](https://github.com/SoftInstigate/restheart/tree/master/core/src/test/java/org/restheart/test/performance).
 
 ### Change Streams
 

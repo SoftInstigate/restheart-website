@@ -253,12 +253,12 @@ $ http -a a:a PUT 127.0.0.1:8080/test/userbase rts:='[{"name":"filterProperties"
 ## Custom Transformers
 
 A transformer is a java class that implements the
-interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/transformers/Transformer.java).
+interface [org.restheart.metadata.transformers.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/metadata/transformers/Transformer.java).
 
 It requires to implement the method transform() with 5 arguments:
 
 1.  [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) exchange
-2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/handlers/RequestContext.java) context
+2.  [RequestContext](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 3.  BsonValue contentToTransform (the json document to transform)

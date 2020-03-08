@@ -47,7 +47,7 @@ public void handleRequest(HttpServerExchange exchange, RequestContext context) {
 Both `HttpServerExchange exchange` and `RequestContext context` can be used to read and modify the request and the response.
 
 - [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) is the generic, low-level Undertow class to interact with the exchange;
-- [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) is the specialized RESTHeart helper class that simplifies the most common operations.
+- [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java) is the specialized RESTHeart helper class that simplifies the most common operations.
 
 {: .bs-callout.bs-callout-info }
 As a general rule, always prefer using `RequestContext`. Only use `HttpServerExchange` for low-level operations not directly supported by `RequestContext`.
@@ -184,7 +184,7 @@ if (Request.isContentTypeJson(exchange)) {
 }
 ```
 
-If you want to manipulate query parameters with a Request Interceptor, always use the Map `exchange.getQueryParameters()` or the method `exchange.addQueryParamter()` and `exchange.addQueryParamter()`. Do not update the query string directly: after Request Interceptors execution, the query string is rebuilt from the query parameters map, see [QueryStringRebuiler](https://github.com/SoftInstigate/restheart-security/blob/master/src/main/java/org/restheart/security/handlers/QueryStringRebuiler.java)
+If you want to manipulate query parameters with a Request Interceptor, always use the Map `exchange.getQueryParameters()` or the method `exchange.addQueryParamter()` and `exchange.addQueryParamter()`. Do not update the query string directly: after Request Interceptors execution, the query string is rebuilt from the query parameters map, see [QueryStringRebuiler](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/handlers/QueryStringRebuiler.java)
 
 ### How to send the response
 

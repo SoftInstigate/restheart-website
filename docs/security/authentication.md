@@ -170,7 +170,7 @@ auth-mechanisms:
 
 ### Identity Authentication
 
-**IdentityAuthMechanism** just authenticates any request building an [BaseAccount](https://github.com/SoftInstigate/restheart-security/blob/master/src/main/java/io/restheart-security/plugins/authentication/impl/BaseAccount.java) with the *username* and *roles* specified in the configuration. Useful for testing purposes. Note that enabling this causes the *DigestAuthMechanism* to fail, you cannot use both.
+**IdentityAuthMechanism** just authenticates any request building an [BaseAccount](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/io/restheart-security/plugins/authentication/impl/BaseAccount.java) with the *username* and *roles* specified in the configuration. Useful for testing purposes. Note that enabling this causes the *DigestAuthMechanism* to fail, you cannot use both.
 
 {: .black-code}
 ```yml
@@ -257,7 +257,7 @@ authenticators:
         conf-file: ../etc/users.yml
 ```
 
-See [users.yml](https://github.com/SoftInstigate/restheart-security/blob/master/etc/users.yml) for an example users definition.
+See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/users.yml) for an example users definition.
 
 ## Token Managers
 

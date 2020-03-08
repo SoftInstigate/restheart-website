@@ -18,7 +18,7 @@ title: Configuration File
 
 ## Sample configuration file ##
 
-An example of a complete configuration file is [available here](https://github.com/SoftInstigate/restheart/blob/master/etc/restheart.yml).
+An example of a complete configuration file is [available here](https://github.com/SoftInstigate/restheart/core/etc/restheart.yml).
 
 ## Configuration options ##
 

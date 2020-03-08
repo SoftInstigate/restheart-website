@@ -28,7 +28,7 @@ The Initializer class can be specified in the configuration file
 initializer-class: org.restheart.init.TestInitializer
 ```
 
-For an example look at [org.restheart.init.TestInitializer](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/init/TestInitializer.java)
+For an example look at [org.restheart.init.TestInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/init/TestInitializer.java)
 
 The class must implement the `Initializer` interface
 

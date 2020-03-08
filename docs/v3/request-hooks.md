@@ -87,7 +87,7 @@ $ java -server -classpath restheart.jar:myhook.jar org.restheart.Bootstrapper re
 ```
 
 Hooks are developed implementing the java
-interface [org.restheart.metadata.hooks.Hook](https://github.com/SoftInstigate/restheart/tree/master/src/main/java/org/restheart/metadata/hooks/Hook.java).
+interface [org.restheart.metadata.hooks.Hook](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/metadata/hooks/Hook.java).
 
 To add a dependency on RESTHeart using Maven, use the following:
 
@@ -212,7 +212,7 @@ given names that can be used in the _hooks_ collection metadata property.
 
 The following is the default hooks configuration that declares the
 example [snooper
-hook](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/metadata/hooks/SnooperHook.java)(that
+hook](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/metadata/hooks/SnooperHook.java)(that
 just logs resource status before and after request db operation
 execution).
 

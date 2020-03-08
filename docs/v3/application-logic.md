@@ -36,7 +36,7 @@ It requires to override the method handleRequest() with 2 arguments:
 
 1. [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) the
     exchange
-2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/handlers/RequestContext.java) context
+2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/core/main/java/org/restheart/handlers/RequestContext.java) context
     (that is the suggested way to retrieve the information of the
     request such as the payload) 
 

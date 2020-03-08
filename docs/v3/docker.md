@@ -38,7 +38,7 @@ __PLease help us improving this documentation__: if you encounter a problem, som
 
 Nothing is easier and faster than Docker Compose to run RESTHeart and MongoDB. However, this is neither a docker nor a docker-compose tutorial, so please refer to the [official documentation](https://docs.docker.com/compose/).
 
-Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml)
+Download the example [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/core/docker-compose.yml)
 
 ```bash
 $ mkdir restheart && cd restheart
@@ -144,7 +144,7 @@ $ docker pull softinstigate/restheart:<tag>
 
 ### Dockerfile
 
-* The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/Dockerfile).
+* The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
 
 ### How to Run
 

@@ -153,7 +153,7 @@ GlobalTransformer globalTransformer = new GlobalTransformer(
 TransformerHandler.getGlobalTransformers().add(globalTransformer);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
+You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
 
 Note that `AddBodyToWriteResponsesInitializer` is not enabled by default. To enabled it add `enabled=true` to its [configuration](/docs/develop/core-plugins/#configuration).
 
