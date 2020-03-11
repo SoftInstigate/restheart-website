@@ -180,7 +180,7 @@ io-threads: 4
 worker-threads: 32
 ```
 
-The [restheart-platform-core.yml](https://github.com/softInstigate/restheart/blob/master/core/etc/restheart.yml) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
+The [restheart-platform-core.yml](https://gist.github.com/ujibang/d6256c8fcc3f67240e053b2bcc89c4d4) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
 {: .black-code}
 ``` properties
