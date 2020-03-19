@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Binary Files
+title: Binary Files with GridFS
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
