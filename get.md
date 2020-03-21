@@ -25,7 +25,7 @@ $ mkdir <span class="hljs-string">restheart</span> && cd <span class="hljs-strin
 $ curl <span class="hljs-string">https://raw.githubusercontent.com/SoftInstigate/restheart/4.1.x/docker-compose.yml --output docker-compose.yml</span>
 
 <span class="hljs-comment"># 3 - run the stack</span>
-$ docker-compose up -d
+$ docker-compose up -d --no-build
 ...
 Creating restheart-mongo ... <span class="text-success">done</span>
 Creating restheart       ... <span class="text-success">done</span>
