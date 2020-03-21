@@ -22,7 +22,7 @@ Run RESTHeart stack with Docker in minutes
 $ mkdir <span class="hljs-string">restheart</span> && cd <span class="hljs-string">restheart</span></span>
 
 <span class="hljs-comment"># 2 - download the restheart docker-compose file</span>
-$ curl <span class="hljs-string">https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml</span>
+$ curl <span class="hljs-string">https://raw.githubusercontent.com/SoftInstigate/restheart/4.1.x/docker-compose.yml --output docker-compose.yml</span>
 
 <span class="hljs-comment"># 3 - run the stack</span>
 $ docker-compose up -d
