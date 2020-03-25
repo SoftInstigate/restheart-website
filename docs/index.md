@@ -16,23 +16,29 @@ title: Documentation
 
 ## Introduction
 
-Every developer in the world always need to build two things:
+3 things every developer in the world always need to implement:
 
-1. Identity and Access Management
-1. Data persistence and management
+1. Data persistence.
+1. Authentication and Authorization.
+1. API.
 
-RESTHeart is a REST API Microservice for MongoDB which provides full __Data__, __Identity__ and __Access__ Management for your __Web__ and __Mobile__ applications.
+RESTHeart provides out-of-the-box:
 
-RESTHeart connects to **MongoDB** and opens data to the Web. Clients, such as mobile and JavaScript apps, can access the database via a simple **API** based on **JSON** messages and plain **HTTP**.
+1. Data persistence via MongoDB.
+1. Secure Identity and Access Management.
+1. REST API with JSON messages.
 
-The word "microservice" here is due to the fact that RESTHeart is
+RESTHeart is a __REST API Microservice for MongoDB__ which provides server-side Data, Identity and Access Management for Web and Mobile applications.
 
-1. Fully stateless;
-1. Natively designed to be deployed in a Docker container.
+RESTHeart is:
 
-With RESTHeart teams can focus on building Angular, React, Vue, iOS or Android applications, because most of the server-side logic usually necessary for database operations is automatically handled, **without the need to write any server-side code** except for the client logic.
+1. A Stateless Microservice.
+1. Designed to be distributed as a Docker container.
+1. Easily deployable both on cloud and on-premises.
 
-For example, to insert data in MongoDB a developer models client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side code and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
+With RESTHeart teams can focus on building Angular, React, Vue, iOS or Android applications, because most of the server-side logic necessary to manage database operations, authentication / authorization and related APIs is automatically handled, __without the need to write any server-side code__ except for the UX/UI.
+
+> For example, to insert data into MongoDB a developer has to just create client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side coding and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
 
 For these reasons, RESTHeart is widely used by freelancers, Web agencies and System Integrators with deadlines, because it allows them to focus on the most important and creative part of their work: the User Experience.
 
@@ -43,12 +49,6 @@ For more ideas have a look at the list of [features](https://restheart.org/featu
 RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](/editions).
 
 RESTHeart is written in Java and is build on top of the [Undertow](http://undertow.io) high performance, non-blocking HTTP server. 
-
-We created RESTHeart because:
-
- 1. All modern applications require a common set of basic REST APIs;
- 2. Many recurrent non-functional requirements, like authentication and authorization, HTTP protocol support, etc... can be solved once for all;
- 3. We were tired of configuring and maintaining complicated application servers.
 
 The founding ideas around RESTHeart are:
 
