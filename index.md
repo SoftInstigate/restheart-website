@@ -5,7 +5,8 @@ layout: default
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
-        <div class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">REST API for MongoDB</div>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">REST API for MongoDB</h2>
+        <h5 class="mt-2 ml-3 ml-md-5 top-2 text-lightgreen  text-break">For developers with deadlines</h5>
     </section>
 </section>
 
