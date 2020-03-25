@@ -16,18 +16,27 @@ title: Documentation
 
 ## Introduction
 
-{: .alert.alert-success.text-center }
-RESTHeart is a REST microservice for MongoDB.
+Every developer in the world always need to build two things:
 
-RESTHeart connects to __MongoDB__ and opens its data to the Web. Clients, such as mobile and JavaScript apps, can access the database via a simple __API__ based on __JSON__ messages.
+1. Identity and Access Management
+1. Data persistence and management
 
-With RESTHeart teams can focus on building Angular, React, Vue, iOS or Android applications, because most of the server-side logic usually necessary for CRUD (Create, Read, Update, Delete) operations is automatically handled, without the need to write any code except for the client logic.
+RESTHeart is a REST API Microservice for MongoDB which provides full __Data__, __Identity__ and __Access__ Management for your __Web__ and __Mobile__ applications.
 
-For example, to insert data in MongoDB developers model client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side code and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
+RESTHeart connects to **MongoDB** and opens data to the Web. Clients, such as mobile and JavaScript apps, can access the database via a simple **API** based on **JSON** messages and plain **HTTP**.
 
-For these reasons, RESTHeart is widely used by freelancers, Web agencies ans System Integrators with deadlines, because it allows them to focus on the most creative parts of their work.
+The word "microservice" here is due to the fact that RESTHeart is
 
-For more ideas have a look at the collection of common [use cases](https://restheart.org/use-cases/).
+1. Fully stateless;
+1. Natively designed to be deployed in a Docker container.
+
+With RESTHeart teams can focus on building Angular, React, Vue, iOS or Android applications, because most of the server-side logic usually necessary for database operations is automatically handled, **without the need to write any server-side code** except for the client logic.
+
+For example, to insert data in MongoDB a developer models client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side code and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
+
+For these reasons, RESTHeart is widely used by freelancers, Web agencies and System Integrators with deadlines, because it allows them to focus on the most important and creative part of their work: the User Experience.
+
+For more ideas have a look at the list of [features](https://restheart.org/features) and the collection of common [use cases](https://restheart.org/use-cases/).
 
 <img src="/images/restheart-what-is-it.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
 
