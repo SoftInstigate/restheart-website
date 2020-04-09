@@ -11,7 +11,7 @@ title: Configuration
 
 <div class="alert alert-info" role="alert">
     <p class="mt-2">
-         For updated RESTHeart v5 configuration instructions please refer to the <a target="_blank" href="https://github.com/softInstigate/restheart" class="alert-link">README on GitHub</a>.
+         For updated RESTHeart v5 configuration instructions please refer to the <a target="_blank" href="https://github.com/softInstigate/restheart#configuration" class="alert-link">README on GitHub</a>.
     </p>
 </div>
 
