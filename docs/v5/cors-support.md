@@ -50,14 +50,14 @@ RESTHeart, in the case of a collection resource.
 
 **Request**
 
-{: .black-code}
+
 ```
 OPTIONS /test/coll HTTP/1.1
 ```
 
 **Response**
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true

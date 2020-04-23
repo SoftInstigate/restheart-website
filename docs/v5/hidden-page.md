@@ -9,7 +9,7 @@ title: Hidden page
 
 
 
-{: .black-code}
+
 ```
 GET /pippo HTTP/1.1
 ```
@@ -17,14 +17,14 @@ GET /pippo HTTP/1.1
 ## Parsing log message
 
 
-{: .black-code}
+
 ```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
 ## Parsing yml
 
-{: .black-code}
+
 ```
 ## configuration file for requestPredicatesAuthorizer
 permissions:
@@ -70,12 +70,12 @@ permissions:
     link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
 %}
 
-{: .black-code}
+
 ``` http
 POST /inventory HTTP/1.1
 ```
 
-{: .black-code}
+
 ``` http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
@@ -90,7 +90,7 @@ ETag: 5d233840dd860b259a3bad45
 X-Powered-By: restheart.org
 ```
 
-{: .black-code}
+
 ``` json
 [
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
@@ -105,7 +105,7 @@ X-Powered-By: restheart.org
 
 ### invece di 
 
-{: .black-code}
+
 ```
 POST /inventory HTTP/1.1
 
@@ -121,7 +121,7 @@ POST /inventory HTTP/1.1
 
 ### oppure 
 
-{: .black-code}
+
 ``` http
 POST /inventory HTTP/1.1
 
@@ -139,7 +139,7 @@ POST /inventory HTTP/1.1
 ## Se solo headers non fare il parsing con http ma con properties 
 ### (senza la prima riga di REQUEST/RESPONSE non viene fatto il parsing degli headers)
 
-{: .black-code}
+
 ``` http
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -155,7 +155,7 @@ ETag: 5d1dc2cd0951267987cf8ab2
 X-Powered-By: restheart.org
 ```
 
-{: .black-code}
+
 ``` properties
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *

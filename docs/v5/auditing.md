@@ -30,7 +30,7 @@ WARNING: use requests-log-level level 2 only for development purposes, it logs u
 
 Example `restheart.yml` fragment:
 
-{: .black-code}
+
 ```
 metrics-gathering-level: DATABASE
 requests-log-trace-headers:

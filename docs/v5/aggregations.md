@@ -5,22 +5,22 @@ title: Aggregations
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [The aggrs collection metadata](#theaggrscollection-metadata)
-    * [aggregation pipeline](#aggregation-pipeline)
-    * [Map-Reduce](#map-reduce)
-* [Examples](#examples)
-* [Materialized Views](#materialized-views)
-* [Passing variables to aggregations](#passing-variables-to-aggregations)
-    * [Variables in stages or query](#variables-in-stages-or-query)
-    * [Variables in map reduce functions](#variables-in-map-reduce-functions)
-    * [Handling paging in aggregations](#handling-paging-in-aggregations)
-* [Security information](#security-informations)
+-   [Introduction](#introduction)
+-   [The aggrs collection metadata](#theaggrscollection-metadata)
+    -   [aggregation pipeline](#aggregation-pipeline)
+    -   [Map-Reduce](#map-reduce)
+-   [Examples](#examples)
+-   [Materialized Views](#materialized-views)
+-   [Passing variables to aggregations](#passing-variables-to-aggregations)
+    -   [Variables in stages or query](#variables-in-stages-or-query)
+    -   [Variables in map reduce functions](#variables-in-map-reduce-functions)
+    -   [Handling paging in aggregations](#handling-paging-in-aggregations)
+-   [Security information](#security-informations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -28,9 +28,9 @@ title: Aggregations
 "Aggregations operations process data records and return computed results. Aggregation operations group values from multiple documents together, and can perform a variety of operations on the grouped data to return a single result."
 
 RESTHeart manages aggregation operations: both *aggregation pipelines*
-and *map reduce functions* are supported.
+and _map reduce functions_ are supported.
 
-In both cases only *inline* output type is supported, i.e. no result is directly
+In both cases only _inline_ output type is supported, i.e. no result is directly
 written to the DB server unless the [Materialized Views](#materialized-views) is used.
 
 ## The *aggrs* collection metadata
@@ -39,10 +39,9 @@ In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
-Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of *pipeline* or *mapReduce *objects:
+Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of _pipeline_ or *mapReduce *objects:
 
-{: .black-code}
-``` json
+```http
 GET /coll/_meta HTTP 1.1
 
 
@@ -56,21 +55,21 @@ GET /coll/_meta HTTP 1.1
 }
 ```
 
-### aggregation pipeline
+### Aggregation pipeline
 
-{: .black-code}
-``` json
+```json
 {
     "type":"pipeline",
-    "uri": <uri>,
+    "uri": "<uri>",
     "stages": [
         "<stage_1>",
         "<stage_2>",
-        ...
+        "..."
     ],
     "allowDiskUse": boolean
 }
 ```
+
 <div class="table-responsive">
 <table class="ts">
 <thead>
@@ -101,26 +100,26 @@ GET /coll/_meta HTTP 1.1
 </table>
 </div>
 
-To  store stages with operators and using the dot notation, RESTHeart
-*automatically* escapes the properties keys because of MongoDB's [Restrictions on Field
+To store stages with operators and using the dot notation, RESTHeart
+_automatically_ escapes the properties keys because of MongoDB's [Restrictions on Field
 Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-Names):
 
-* the $ prefix is "underscore escaped", e.g. `$exists` is stored as
+-   the \$ prefix is "underscore escaped", e.g. `$exists` is stored as
     `_$exists`
-* dots are escaped as **::** e.g. `SD.prop` is stored as `SD::prop`
+-   dots are escaped as **::** e.g. `SD.prop` is stored as `SD::prop`
 
 ### Map-Reduce
 
-{: .black-code}
-``` json
+```json
 {
-    "type":"mapReduce",
-    "uri":"<uri>",
+    "type": "mapReduce",
+    "uri": "<uri>",
     "map": "<map_function>",
     "reduce": "<reduce_function>",
     "query": "<query>"
 }
 ```
+
 <div class="table-responsive">
 <table class="ts">
 <thead>
@@ -166,14 +165,13 @@ Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-N
 The following requests upsert a collection defining two aggregation
 operations:
 
-* aggregation operation *test\_ap* bound at
+-   aggregation operation _test_ap_ bound at
     `/coll/_aggrs/example-pipeline`
-* map reduce operation *test\_mr* bound at
+-   map reduce operation _test_mr_ bound at
     `/coll/_aggrs/example-mapreduce`
 
-{: .black-code}
 ```
-PUT /coll HTTP/1.1 
+PUT /coll HTTP/1.1
 
 { "aggrs" : [ 
       { "stages" : [ { "$match" : { "name" : { "$var" : "n" } } },
@@ -204,12 +202,11 @@ The following example defines the aggregation `/coll/_aggrs/age-by-gender` that 
 {: .bs-callout.bs-callout-warning }
 Materialized Views are available from MongoDB 4.2.
 
-{: .black-code}
 ```
-PUT /coll HTTP/1.1 
+PUT /coll HTTP/1.1
 
-{ "aggrs" : [ 
-    { "stages" : [ 
+{ "aggrs" : [
+    { "stages" : [
         { "$group" : { "_id" : "$gender",  "avg_age" : { "$avg" : "$age" } } },
         { "$merge": { "into": "avgAgeByGender" } }
         ],
@@ -220,22 +217,20 @@ PUT /coll HTTP/1.1
 }
 ```
 
-Executing the aggregation  request returns no data, but thanks to the `$merge` stage,  the new collection `avgAgeByGender` gets created.
+Executing the aggregation request returns no data, but thanks to the `$merge` stage, the new collection `avgAgeByGender` gets created.
 
-{: .black-code}
 ```
-GET /coll/_aggrs/avg-by-city HTTP/1.1 
+GET /coll/_aggrs/avg-by-city HTTP/1.1
 
 HTTP/1.1 200 OK
 []
 ```
 
-{: .black-code}
 ```
-GET /avgAgeByGender HTTP/1.1 
+GET /avgAgeByGender HTTP/1.1
 
 HTTP/1.1 200 OK
-[ 
+[
     { "_id": "male", "avg_age": 34.5 }
     { "_id": "female", "avg_age": 35.6 }
 ]
@@ -246,15 +241,14 @@ HTTP/1.1 200 OK
 The query parameter `avars` allows passing variables to the aggregations.
 
 {: .bs-callout.bs-callout-info}
-The value of a variable can be any valid JSON. 
+The value of a variable can be any valid JSON.
 The following query parameter passes two variables, a number and an object: `?avars={ "number": 1, "object": {"a": {"json": "object" }} }`
 
 For example, the previous example aggregations both use a variable named
-"n". *If the variable is not passed via the `avars` qparam, the request
+"n". \*If the variable is not passed via the `avars` qparam, the request
 fails.
 
-{: .black-code}
-``` bash
+```bash
 GET /coll/_aggrs/example-pipeline HTTP/1.1
 
 HTTP/1.1 400 Bad Request
@@ -268,7 +262,6 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-{: .black-code}
 ```
 GET /coll/_aggrs/example-pipeline?avars={"n":1} HTTP/1.1
 
@@ -281,17 +274,15 @@ HTTP/1.1 200 OK
 Variables can be used in aggregation pipeline stages and map reduce
 query as follows:
 
-{: .black-code}
-``` js
+```js
 { "$var": "<var_name>" }
 ```
 
 In case of map reduce operation previous example, the variable was used
-to filter the documents to have the *name* property matching the
-variable *n:*
+to filter the documents to have the _name_ property matching the
+variable _n:_
 
-{: .black-code}
-``` js
+```js
 {
   "query": { "name": { "$var": "n" } },
   ...
@@ -303,7 +294,6 @@ variable *n:*
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
-{: .black-code}
 ```
 PATCH /coll HTTP/1.1
 
@@ -319,11 +309,10 @@ HTTP/1.1 200 Ok
 ...
 ```
 
-Note the *map* function; `JSON.parse($vars)` allows to access the
+Note the _map_ function; `JSON.parse($vars)` allows to access the
 variables passed with the query parameter `avars`
 
-{: .black-code}
-``` js
+```js
 function() { 
  var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
  if (this.age > minage ) { emit(this.name, this.age); }
@@ -336,50 +325,51 @@ Starting RESTHeart Platform v4.1.12 (and RESTHeart OSS v4.1.8) paging must be ha
 
 Starting RESTHeart Platform v4.2.0 and (and RESTHeart OSS v4.2.0) the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
 
-- `@page` the value of the `page` query parameter
-- `@pagesize` the value of the `pagesize` query parameter
-- `@skip` to be used in `$skip` stage, equals to `(page-1)*pagesize` 
-- `@limit` to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
+-   `@page` the value of the `page` query parameter
+-   `@pagesize` the value of the `pagesize` query parameter
+-   `@skip` to be used in `$skip` stage, equals to `(page-1)*pagesize`
+-   `@limit` to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
 
-For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents. 
+For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents.
 
-{: .black-code}
 ```json
-{ "aggrs": [{
-    "uri": "paging",
-    "type": "pipeline",
-    "stages": [
+{
+    "aggrs": [
         {
-            "$skip": {
-                "$var": "@skip"
-            }
-        },
-        {
-            "$limit": {
-                "$var": "@limit"
-            }
+            "uri": "paging",
+            "type": "pipeline",
+            "stages": [
+                {
+                    "$skip": {
+                        "$var": "@skip"
+                    }
+                },
+                {
+                    "$limit": {
+                        "$var": "@limit"
+                    }
+                }
+            ]
         }
-    ]}]
+    ]
 }
 ```
 
 ### Security Informations
 
-By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators. 
+By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
 
 This behavior is required to protect data from undesirable malicious query injection.
 
 Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart-platform-core.yml` configuration file.
 
-{: .black-code}
-``` yml
+```yml
 ### Security
 
-# Check if aggregation variables use operators. allowing operators in aggregation variables 
+# Check if aggregation variables use operators. allowing operators in aggregation variables
 # is risky. requester can inject operators modifying the query
 
 aggregation-check-operators: true
 ```
+
 </div>
-
-

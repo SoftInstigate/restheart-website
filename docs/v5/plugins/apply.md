@@ -42,7 +42,7 @@ and its children resources
 gets executed to any requests that involves the collection 
 and its documents.
 
-{: .black-code}
+
 ``` json
 {"name":<name>, "phase":<phase>, "scope":<scope>, "args":<args>}
 ```
@@ -92,7 +92,7 @@ Mandatory
 
 Global Transformers can be defined programmatically instantiating `GlobalTransformer` objects:
 
-{: .black-code}
+
 ``` java
     /**
      *
@@ -121,7 +121,7 @@ Global Transformers can be defined programmatically instantiating `GlobalTransfo
 
 and adding them to the list `PluginsRegistry.getInstance().getGlobalTransformers()`
 
-{: .black-code}
+
 ``` java
 // a predicate that resolves GET /db/coll
 RequestContextPredicate predicate = new RequestContextPredicate() {
@@ -165,7 +165,7 @@ to be applied to write requests.
 *checkers* is an array of *`checker`* objects. A *checker* object has
 the following format:
 
-{: .black-code}
+
 ```
 { "name": <checker_name>,"args": <arguments>, "skipNotSupported": <boolean> }
 ```
@@ -207,7 +207,7 @@ Mandatory
 
 Global Checkers can be defined programmatically instantiating `GlobalChecker` objects:
 
-{: .black-code}
+
 ``` java
     /**
      * 
@@ -227,7 +227,7 @@ public GlobalChecker(Checker checker,
 
 and adding them to the list `PluginsRegistry.getInstance().getGlobalCheckers()`
 
-{: .black-code}
+
 ``` java
 // a predicate that resolves POST /db/coll and PUT /db/coll/docid requests
 RequestContextPredicate predicate = new RequestContextPredicate() {
@@ -262,7 +262,7 @@ be applied to the requests involving the collection and its documents.
 
 `hooks` is an array of objects with the following format:
 
-{: .black-code}
+
 ``` json
 { "name": <hook_name>, "args": <arguments> }
 ```
@@ -299,7 +299,7 @@ Mandatory
 
 Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
 
-{: .black-code}
+
 ``` java
     /**
      * 
@@ -322,7 +322,7 @@ Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
 
 and adding them to the list `PluginsRegistry.getInstance().getGlobalHooks()`
 
-{: .black-code}
+
 ``` java
 // a predicate that always resolve
 RequestContextPredicate predicate = new RequestContextPredicate() {

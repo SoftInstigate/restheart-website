@@ -5,19 +5,19 @@ title: Secure connection to MongoDB
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Enable MongoDB authentication](#enable-mongodb-authentication)
-* [Connect to MongoDB over TLS](#connect-to-mongodb-over-tls)
-* [Restrict permissions of MongoDB user](#restrict-permissions-of-mongodb-user)
+-   [Introduction](#introduction)
+-   [Enable MongoDB authentication](#enable-mongodb-authentication)
+-   [Connect to MongoDB over TLS](#connect-to-mongodb-over-tls)
+-   [Restrict permissions of MongoDB user](#restrict-permissions-of-mongodb-user)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction 
 
-This section provides instructions on how to secure the connection between RESTHeart Platform and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart. 
+This section provides instructions on how to secure the connection between RESTHeart Platform and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart.
 
 ## Enable MongoDB authentication
 
@@ -31,8 +31,7 @@ from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
 process in background, using the `--fork` parameter.
 
-{: .black-code}
-``` bash
+```bash
 $ mongod --fork --syslog --auth
 $ mongo
 ```
@@ -47,10 +46,9 @@ single DB in read only mode. For more information refer to [MongoDB
 authentication with just enough
 permissions](#auth-with-jep)section.
 
-Create the *admin* user. The procedure is different depending on MongoDB
+Create the _admin_ user. The procedure is different depending on MongoDB
 version.
 
-{: .black-code}
 ```javascript
 > use admin
 > db.createUser({
@@ -64,8 +62,7 @@ version.
 
 We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart Platform download package (you find it in the etc directory)
 
-{: .black-code}
-``` bash
+```bash
 $ vi etc/restheart-platform-core.yml
 ```
 
@@ -73,15 +70,13 @@ Find and modify the following section providing the user-name, password
 and authentication db (the db where the MongoDB user is defined, in our
 case ‘admin’).
 
-{: .black-code}
-``` yml
+```yml
 mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 ```
 
 Now start RESTHeart Platform Core specifying the configuration file:
 
-{: .black-code}
-``` bash
+```bash
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
 
@@ -93,25 +88,23 @@ MongoDB clients can use TLS/SSL to encrypt connections to mongod and mongos inst
 
 To configure RESTHeart Platform for TLS/SSL do as follows:
 
-* create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
+-   create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
 
-{: .black-code}
-``` bash
+```bash
 $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
 # asks for password, use "changeit"
 ```
 
-* specify the ssl option in the mongo-uri in the restheart yml configuration file:
+-   specify the ssl option in the mongo-uri in the restheart yml configuration file:
 
-{: .black-code}
-``` yml
+```yml
 mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 ```
-* start restheart with following options:
 
-{: .black-code}
-``` bash
+-   start restheart with following options:
+
+```bash
 $ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
 
@@ -124,11 +117,10 @@ On production environments a strong security isolation is mandatory.
 In order to achieve it, the best practice is:
 
 1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Platform Core;
-2. use a MongoDB user with just enough permission: *read* or *readWrite* on mounted databases 
+2. use a MongoDB user with just enough permission: _read_ or *readWrite* on mounted databases
 
-The following example, creates a MongoDB user with appropriate roles to expose the databases *restheart.
+The following example, creates a MongoDB user with appropriate roles to expose the databases \*restheart.
 
-{: .black-code}
 ```javascript
 > use admin
 > db.createUser({user: "restheart",
@@ -143,8 +135,8 @@ The built-in role `clusterMonitor` is needed to check the replica set status of 
 To list the databases (i.e. GET /, the root resource) the listDatabases permission is needed. This permission is granted by the
 readWriteAnyDatabase role or you can create a custom role.
 
-To allow deleting a database the *dropDatabase* permission is needed.
-This permission is granted by the *dbAdmin* role or you can create a
+To allow deleting a database the _dropDatabase_ permission is needed.
+This permission is granted by the _dbAdmin_ role or you can create a
 custom role.
 
 </div>

@@ -5,12 +5,12 @@ title: Security Overview
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction ](#introduction)
-* [Features](#features)
-* [Use Cases](#use-cases)
-* [How it works](#how-it-works)
-* [Tutorial](#tutorial)
-* [Understanding restheart-security](#understanding-restheart-security)
+-   [Introduction ](#introduction)
+-   [Features](#features)
+-   [Use Cases](#use-cases)
+-   [How it works](#how-it-works)
+-   [Tutorial](#tutorial)
+-   [Understanding restheart-security](#understanding-restheart-security)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -19,54 +19,54 @@ title: Security Overview
 
 ## Introduction
 
-**restheart-security** is the security service for RESTHeart. 
+**restheart-security** is the security service for RESTHeart.
 
-It acts as a reverse proxy for HTTP resources, providing __Authentication__ and __Authorization__ services. 
+It acts as a reverse proxy for HTTP resources, providing **Authentication** and **Authorization** services.
 
 **restheart-security** enables developers to configure security policies in standardized micro-gateway instances that are external to API and micro-services implementations, avoiding coding security functions and a centralized gateway where scalability is a key concern.
 
-**restheart-security** can also be used as a micro-gateway for **Identity and Access Management**  in any HTTP-based micro-services architecture. 
+**restheart-security** can also be used as a micro-gateway for **Identity and Access Management** in any HTTP-based micro-services architecture.
 
 {: .bs-callout.bs-callout-info }
-Think about restheart-security as the "brick" that you put in front of your API and micro-services to protect them. 
+Think about restheart-security as the "brick" that you put in front of your API and micro-services to protect them.
 
-**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins. 
+**restheart-security** is built around a **pluggable architecture**. It comes with a strong security implementation but you can easily extend it by implementing plugins.
 
 {: .bs-callout.bs-callout-info }
 Building a plugin is as easy as implementing a simple interface and edit a configuration file. Plugins also allow to quickly implement and deploy secure Web Services.
 
 ## Features
 
-- Identity and Access Management at __HTTP protocol level__.
-- Placement within __Docker containers__, on the network layer and embeddable in Java applications.
-- Can be extended via easy-to-implement plugins.
-- Allows to quickly implement secured Web Services.
-- __Basic__, __Digest__ and __Token Authentication__. Other authentication methods can be added with plugins.
-- __Roles__ based Authorization with a powerful permission definition language. Other authorization methods can be added with plugins.
-- Solid multi-threading, non-blocking architecture.
-- High performance.
-- Small memory footprint.
-- Straightforward configuration.
+-   Identity and Access Management at **HTTP protocol level**.
+-   Placement within **Docker containers**, on the network layer and embeddable in Java applications.
+-   Can be extended via easy-to-implement plugins.
+-   Allows to quickly implement secured Web Services.
+-   **Basic**, **Digest** and **Token Authentication**. Other authentication methods can be added with plugins.
+-   **Roles** based Authorization with a powerful permission definition language. Other authorization methods can be added with plugins.
+-   Solid multi-threading, non-blocking architecture.
+-   High performance.
+-   Small memory footprint.
+-   Straightforward configuration.
 
 ## Use cases
 
 ### **restheart-security** on the network layer
 
-The following diagram shows a single instance of **restheart-security** placed on the network layer, in front of the resources to be protected. It acts as a centralized __security policy enforcer__.
+The following diagram shows a single instance of **restheart-security** placed on the network layer, in front of the resources to be protected. It acts as a centralized **security policy enforcer**.
 
-![restheart-security on the network layer](/images/restheart-security-on-network-layer.png "restheart-security on the network layer")
+![restheart-security on the network layer](/images/restheart-security-on-network-layer.png 'restheart-security on the network layer')
 
 ### **restheart-security** within containers
 
 The following diagram shows **restheart-security** used as a sidecar proxy within each container pod. Each micro-service is protected by an instance of **restheart-security** with its own dedicated security policy.
 
-![restheart-security within containers](/images/restheart-security-within-containers.png "restheart-security within containers")
+![restheart-security within containers](/images/restheart-security-within-containers.png 'restheart-security within containers')
 
 ### **restheart-security** embedded
 
 The following diagram shows **restheart-security** used to implement a simple micro-service using service extensions.
 
-![restheart-security embedded](/images/restheart-security-embedded.png "restheart-security embedded")
+![restheart-security embedded](/images/restheart-security-embedded.png 'restheart-security embedded')
 
 ## How it works
 
@@ -76,7 +76,6 @@ As an example, we are going to securely expose the resources of a RESTHeart serv
 
 The following options set a HTTPS listener bound to the public ip of `domain.io`.
 
-{: .black-code}
 ```yml
 https-listener: true
 https-host: domain.io
@@ -84,12 +83,12 @@ https-port: 443
 ```
 
 The two hosts in private network `10.0.1.0/24` are:
-- the RESTHeart server running on host `10.0.1.1` that exposes the collection `/db/coll`
-- the web server running on host `10.0.1.2` bound to URI `/web`
+
+-   the RESTHeart server running on host `10.0.1.1` that exposes the collection `/db/coll`
+-   the web server running on host `10.0.1.2` bound to URI `/web`
 
 We proxy them as follows:
 
-{: .black-code}
 ```yml
 proxies:
     - location: /api
@@ -102,29 +101,25 @@ As a result, the URLs `https://domain.io` and `https://domain.io/api` are proxie
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
-```
+```http
 GET /index.html HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
-```
+```http
 HTTP/1.1 401 Unauthorized
 ```
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
-```
+```http
 GET https://domain.io/api HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
-```
+```http
 HTTP/1.1 401 Unauthorized
 ```
 
@@ -132,40 +127,35 @@ With the default configuration **restheart-security** uses the Basic Authenticat
 
 #### users.yml
 
-{: .black-code}
 ```yml
 users:
     - userid: user
       password: secret
-      roles: [web,api]
+      roles: [web, api]
 ```
 
 ### acl.yml
 
-{: .black-code}
-``` yml
+```yml
 permissions:
-    # Users with role 'web' can GET web resources 
+    # Users with role 'web' can GET web resources
     - role: web
       predicate: path-prefix[path=/] and not path-prefix[path=/api] and method[GET]
 
-    # Users with role 'api' can GET and POST /api resources 
+    # Users with role 'api' can GET and POST /api resources
     - role: api
       predicate: path-prefix[path=/api] and (method[GET] or method[POST])
 ```
 
-
 {% include code-header.html type="Request" %}
 
-{: .black-code}
-```
+```http
 GET /index.html HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
 ```
 HTTP/1.1 200 OK
 ...
@@ -173,16 +163,14 @@ HTTP/1.1 200 OK
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
-```
+```http
 GET /api HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
-```
+```http
 HTTP/1.1 200 OK
 ...
 ```
@@ -193,19 +181,17 @@ To follow this tutorial you need <a href="https://httpie.org" target="_blank">ht
 
 Add to **restheart-platform-security.yml** the following proxy:
 
-{: .black-code}
-``` yml
+```yml
 proxies:
     - location: /secho
-      proxy-pass:  
-        - http://localhost:8080/echo
+      proxy-pass:
+          - http://localhost:8080/echo
 ```
 
 {: .bs-callout.bs-callout-info}
 the service `/echo` just echoes back the request (URL, query parameters, body and headers). It is defined in the configuration file as follows:
 
-{: .black-code}
-``` yml
+```yml
 services:
     - implementation-class: org.restheart.security.plugins.services.EchoService
       uri: /echo
@@ -215,8 +201,7 @@ services:
 {: .bs-callout.bs-callout-info}
 Note that `/echo` is not secured and can be invoked without restrictions.
 
-{: .black-code}
-``` bash
+```bash
 $ http -f 127.0.0.1:8080/echo?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
@@ -275,9 +260,9 @@ X-Powered-By: restheart.org
 
 Let's try now to invoke `/secho` (please note the leading 's') without passing authentication credentials. This will fail with `401 Unauthorized` HTTP response.
 
-{: .black-code}
-``` bash
+```bash
 $ http -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
+
 HTTP/1.1 401 Unauthorized
 Connection: keep-alive
 Content-Length: 0
@@ -288,9 +273,9 @@ WWW-Authenticate: Digest realm="RESTHeart Realm",domain="localhost",nonce="Z+fsw
 
 Let's try now to pass credentials via basic authentication. The user `admin` is defined in the `users.yml` file.
 
-{: .black-code}
 ```bash
 $ http -a admin:changeit -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
+
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -368,33 +353,34 @@ X-Powered-By: restheart.org
         ]
     }
 }
-  ```
+```
 
 We can note that **restheart-security**:
 
-- has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
-- has determined the account roles. The proxied request includes the headers `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles`.
-- has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
-- the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.
+-   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
+-   has determined the account roles. The proxied request includes the headers `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles`.
+-   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
+-   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.
 
 ## Understanding **restheart-security**
 
 In **restheart-security** everything is a plugin including Authentication Mechanisms, Authenticators, Authorizers, Token Managers and Services.
 
-![restheart-security explained](/images/restheart-security-explained.png "restheart-security explained")
+![restheart-security explained](/images/restheart-security-explained.png 'restheart-security explained')
 
-Different **Authentication Mechanism** manage different authentication schemes. 
-An example is *BasicAuthMechanism* that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
+Different **Authentication Mechanism** manage different authentication schemes.
+An example is _BasicAuthMechanism_ that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
 
-A different example is the *IdentityAuthMechanism* that binds the request to a single identity specified by configuration. This Authentication Mechanism does not require an Authenticator to build the account.
+A different example is the _IdentityAuthMechanism_ that binds the request to a single identity specified by configuration. This Authentication Mechanism does not require an Authenticator to build the account.
 
- **restheart-security** allows defining several mechanism. As an in-bound request is received, the `authenticate()` method is called on each mechanism in turn until one of the following occurs: 
- - A mechanism successfully authenticates the incoming request &#8594; the request proceeds to Authorization phase;
- - The list of mechanisms is exhausted &#8594; the request fails with code `401 Unauthorized`.
+**restheart-security** allows defining several mechanism. As an in-bound request is received, the `authenticate()` method is called on each mechanism in turn until one of the following occurs:
 
-The **Authenticator** verifies the credentials extracted from the request by Authentication Mechanism. For instance, the *BasicAuthMechanism* extracts the credentials from the request in the form of id and password. The Authenticator can check these credentials against a database or a LDAP server. Note that some Authentication Mechanisms don't actually rely on a Authenticator to build the Account.
+-   A mechanism successfully authenticates the incoming request &#8594; the request proceeds to Authorization phase;
+-   The list of mechanisms is exhausted &#8594; the request fails with code `401 Unauthorized`.
 
-The **Authorizer** is responsible of checking if the user can actually perform the request against an Access Control List. For instance the *RequestPredicatesAuthorizer* checks if the request is allowed by looking at the role based permissions defined using the undertow predicate definition language.
+The **Authenticator** verifies the credentials extracted from the request by Authentication Mechanism. For instance, the _BasicAuthMechanism_ extracts the credentials from the request in the form of id and password. The Authenticator can check these credentials against a database or a LDAP server. Note that some Authentication Mechanisms don't actually rely on a Authenticator to build the Account.
+
+The **Authorizer** is responsible of checking if the user can actually perform the request against an Access Control List. For instance the _RequestPredicatesAuthorizer_ checks if the request is allowed by looking at the role based permissions defined using the undertow predicate definition language.
 
 The **Token Manager** is responsible of generating and validating an auth-token. When a client successfully authenticates, the Token Manager generates an auth-token that is returned in the `Auth-Token` response header. It can be used to authenticate further requests. This requires an Authentication Manager to handle it using the Token Manager for token validation.
 

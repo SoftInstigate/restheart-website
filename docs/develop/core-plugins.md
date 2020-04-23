@@ -31,7 +31,7 @@ Core plugins are executed by `restheart-platform-core` service.
 
 Plugins must be registered to be available using the `@RegisterPlugin` annotation:
 
-{: .black-code}
+
 ``` java
 @RegisterPlugin(name = "foo", description = "a fantastic plugin")
 public class FooPlugin implements Service {
@@ -55,7 +55,7 @@ Until RESTHeart version 3.x, registering a plugin involved declaring it in the c
 
 All Plugins accept the argument `confArgs`. Set `confArgs` defining an object in the yml configuration file with the same name of the plugin (as defined in its @RegisterPlugin annotation) under the `plugins-args` configuration section:
 
-{: .black-code}
+
 ``` yml
 #### Plugins configuration
 
@@ -88,7 +88,7 @@ The Initializer class must implement the `org.restheart.plugins.Initializer` int
 
 The `Initializer` interface:
 
-{: .black-code}
+
 ``` java
 public interface Initializer extends Plugin {
     /**
@@ -107,7 +107,7 @@ Services are a simple yet powerful way of implementing custom Web Services.
 The Service implementation class must extend handler must extend the
 abstract class `org.restheart.plugins.Service`
 
-{: .black-code}
+
 ``` java
 public abstract class Service extends PipedHttpHandler implements Plugin {
     /**
@@ -156,7 +156,7 @@ public abstract class Service extends PipedHttpHandler implements Plugin {
 
 It requires to override the method `handleRequest()` inherited from `PipedHttpHandler`.
 
-{: .black-code}
+
 ``` java
 public abstract void handleRequest(HttpServerExchange exchange, RequestContext context) throws Exception;
 ```
@@ -175,7 +175,7 @@ The method `defaultUri()` can return a String such as `/foo` that is the URI whe
 
 The Service implementation class must have a constructor with `confArgs` argument; this is optionally set from the configuration file.
 
-{: .black-code}
+
 ```java
 public MyService(final Map<String, Object> args) {
 }
@@ -186,7 +186,7 @@ public MyService(final Map<String, Object> args) {
 The following is the code of the [PingService](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/services/PingService.java) that implements a
 simple ping service.
 
-{: .black-code}
+
 ``` java
 @RegisterPlugin(name = "pingService",
         description = "Ping service")
@@ -236,7 +236,7 @@ public class PingService extends Service {
 
 **pingService Configuration** (to set the `msg` argument)
 
-{: .black-code}
+
 ``` yml
 plugins-args:
   pingService:
@@ -258,7 +258,7 @@ For implementation examples refer to the package [org.restheart.plugins.transfor
 A transformer is a java class that implements the
 interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java). 
 
-{: .black-code}
+
 ``` java
     /**
      * contentToTransform can be directly manipulated or
@@ -302,7 +302,7 @@ The default, 5 arguments, method `transform()` can be used to store the argument
 
 The following code, is an example transformer that adds the property *_timestamp* to the response body.
 
-{: .black-code}
+
 ``` java
 import io.undertow.server.HttpServerExchange;
 import org.bson.BsonInt64;
@@ -341,7 +341,7 @@ A checker is a java class that implements the
 interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java).
 
   
-{: .black-code}
+
 ``` java
     public interface Checker extends Plugin {
     enum PHASE {
@@ -412,7 +412,7 @@ When a checker does not support a request, the outcome depends on the attribute 
 The following code, is an example checker that checks if the
 *number* property in PATCH request body is between 0 and 10.
 
-{: .black-code}
+
 ``` java
 package com.whatever;
 
@@ -473,7 +473,7 @@ interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/resthea
 
 The Hook interface requires to implement the following interface:
 
-{: .black-code}
+
 ``` java
 public interface Hook extends Plugin {
     /**
@@ -527,7 +527,7 @@ For instance, the following implementation returns `true` if the request
 actually *created* a document (either POSTing the collection or PUTing
 the document):
 
-{: .black-code}
+
 ``` java
 @Override
 public boolean doesSupportRequests(RequestContext rc) {

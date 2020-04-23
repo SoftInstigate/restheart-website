@@ -98,7 +98,7 @@ a few calls to an empty database (thus the 404s).
 
 **Prometheus example response** 
 
-{: .black-code}
+
 ```
 http_response_timers_METRICS_count{method="GET",code="2xx"} 13 1510039263986
 http_response_timers_METRICS_max{method="GET",code="2xx"} 101.0 1510039263986
@@ -295,7 +295,7 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 
 **JSON example response**
 
-{: .black-code}
+
 ```
 {
   "version": "3.0.0",
@@ -553,7 +553,7 @@ which is equivalent to requesting `/mydatabase/_metrics`.
 
 The prometheus metrics look as follows:
 
-{: .black-code}
+
 ```
 http_response_timers_count{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3 1510039263986
 http_response_timers_max{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986

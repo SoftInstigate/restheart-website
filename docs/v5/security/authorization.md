@@ -51,7 +51,7 @@ The configuration allows:
 - enabling the root role (`root-role`): users with root role, can execute any requests, regardless of the permissions set in the ACL.
 - controlling the ACL caching.
 
-{: .black-code}
+
 ``` yml
 authorizers:
     - name: rhAuthorizer
@@ -69,7 +69,7 @@ authorizers:
 
 An example ACL document follows:
 
-{: .black-code}
+
 ``` json
 {
   "_id": { "$oid": "5d9485639eab3a852d48a1de" },
@@ -119,7 +119,7 @@ The example ACL document applies to users with `editor` role. A user with this r
 
 **RequestPredicatesAuthorizer** allows defining roles permissions in a YAML configuration file using the [Undertow predicate language](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation). 
 
-{: .black-code}
+
 ``` yml
 authorizers:
     name: requestPredicatesAuthorizer
@@ -130,7 +130,7 @@ authorizers:
 
 The file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/acl.yml) defines the role based permissions. An example follows:
 
-{: .black-code}
+
 ``` yml
 ## configuration file for requestPredicatesAuthorizer
 permissions:

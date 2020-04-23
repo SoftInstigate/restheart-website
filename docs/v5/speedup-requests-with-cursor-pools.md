@@ -40,7 +40,7 @@ RESTHeart allows to [Read Documents](/docs/v5/read-docs/) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 
-{: .black-code}
+
 ```
 GET /test/coll?count&page=3&pagesize=10 HTTP/1.1
 
@@ -178,14 +178,14 @@ default
 </div>
 Example
 
-{: .black-code}
+
 ```
 GET /test/coll?count&page=1000&pagesize=1000&eager=random HTTP/1.1
 ```
 
 ## Configuration
 
-{: .black-code}
+
 ```
 ## eager db cursor preallocation policy
 # in big collections, reading a far page involves skipping the db cursor for many documents resulting in a performance bottleneck

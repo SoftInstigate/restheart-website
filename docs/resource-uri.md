@@ -5,16 +5,16 @@ title: Resource URI
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Resources URIs](#resources-uris)
-* [Document id](#document-id)
-    * [Examples](#examples)
-* [URL encoding](#url-encoding)
+-   [Introduction](#introduction)
+-   [Resources URIs](#resources-uris)
+-   [Document id](#document-id)
+    -   [Examples](#examples)
+-   [URL encoding](#url-encoding)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -34,6 +34,7 @@ are identified.
 </div>
 
 ## Resources URIs
+
 <div class="table-responsive">
 <table class="table table-responsive">
 <colgroup>
@@ -132,9 +133,8 @@ are identified.
 In MongoDB, the \_id can be of any type. For instance, it can be an
 ObjectId, a String or even a JSON object, as in the following document:
 
-{: .black-code}
-```
-{ "_id": {"a":1,"b":2} }
+```json
+{ "_id": { "a": 1, "b": 2 } }
 ```
 
 RESTHeart needs to be able to assign a unique URI to each document. For
@@ -187,17 +187,15 @@ The following table shows the supported types:
 </table>
 </div>
 
-
 {: .bs-callout.bs-callout-info }
-**\*** The default value of the id\_type query parameter
-is **STRING\_OID**. In this case, the value of the **&lt;doc_id&gt;** is
+**\*** The default value of the id_type query parameter
+is **STRING_OID**. In this case, the value of the **&lt;doc_id&gt;** is
 interpreted either as an ObjectId or a String. The former applies if the
 value is a valid ObjectId.
 
 {: .bs-callout.bs-callout-info }
 **\*\*** **STRING** is useful if the \_id value would be a valid
 ObjectId and it is actually a String.
-
 
 ### Examples
 

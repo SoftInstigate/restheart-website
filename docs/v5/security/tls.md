@@ -30,7 +30,7 @@ In any case, restheart-security and restheart-core are both able to expose direc
 
 The following configuration file except shows the involved options:
 
-{: .black-code}
+
 ``` bash
 #### listeners
 https-listener: true
@@ -64,7 +64,7 @@ The test self signed certificate is provided only for testing purposes. Using it
 
 The only option to specify to use the default, embedded self signed certificate is the following:
 
-{: .black-code}
+
 ``` yml
 use-embedded-keystore: true
 ```
@@ -82,7 +82,7 @@ Follow this <a target="_blank" href="https://www.digitalocean.com/community/tuto
 
 Once the certificate has been added, you can configure it as follows:
 
-{: .black-code}
+
 ``` yml
 use-embedded-keystore: false
 

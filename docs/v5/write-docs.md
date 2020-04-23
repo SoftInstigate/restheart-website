@@ -105,7 +105,7 @@ The following table summarizes the semantic of the write verbs:
     link="http://restninja.io/share/21de47ede7d9e910b80ac0d998184bf992b98895/2"
 %}
 
-{: .black-code}
+
 ```
 PUT /inventory/newItem HTTP/1.1
 
@@ -120,7 +120,7 @@ PUT /inventory/newItem HTTP/1.1
     link="http://restninja.io/share/fcf2a3da225dc2018581416fee19f96fb105cca3/0"
 %}
 
-{: .black-code}
+
 ```
 POST /inventory HTTP/1.1
 
@@ -135,7 +135,7 @@ POST /inventory HTTP/1.1
     link="http://restninja.io/share/cad8a808b52787063c7544d396d7b4ba30be489f/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /inventory/newItem HTTP/1.1
 
@@ -157,7 +157,7 @@ The dot notation can be used in `PUT`, `PATCH` and `POST` verbs.
     link="http://restninja.io/share/d891c0dfaf794019f7cebf79dafa895cd9697da7/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /inventory/newItem HTTP/1.1
 
@@ -171,7 +171,7 @@ PATCH /inventory/newItem HTTP/1.1
     link="http://restninja.io/share/fef0424bf8e69d11a7aae35f41a82e67164a1dfc/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /inventory/newItem HTTP/1.1
 
@@ -196,7 +196,7 @@ RESTHeart allows to use all MongoDB update operators on `PATCH` requests.
     link="http://restninja.io/share/1f3c2941dc649dfb8a3ba6628451093f83d02fea/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /inventory/newItem HTTP/1.1
 
@@ -251,7 +251,7 @@ the *\_etag* property.
     link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
 %}
 
-{: .black-code}
+
 ```
 POST /inventory HTTP/1.1
 
@@ -275,7 +275,7 @@ request data will be updated*. POSTing documents containing existing *\_id*s wil
     link="http://restninja.io/share/0e5b13f1e048ea373f86c19e8fb48be7c70c7531/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /inventory/*?filter={"qty":{"$gte":50}} HTTP/1.1
 
@@ -291,7 +291,7 @@ PATCH /inventory/*?filter={"qty":{"$gte":50}} HTTP/1.1
     link="http://restninja.io/share/acba248263a0be8e55ed03d7ff52e79a27449bbd/0"
 %}
 
-{: .black-code}
+
 ```
 DELETE /inventory/*?filter={"qty":{"$lte":50}} HTTP/1.1
 ```

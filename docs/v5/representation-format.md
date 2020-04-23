@@ -29,14 +29,14 @@ RESTHeart has three different options for representing the resources:`STANDARD`,
 
 The default representation is controlled by the configuration option `default-representation-format` .
 
-{: .black-code}
+
 ``` properties
 default-representation-format: STANDARD
 ```
 
 The `rep` query parameter can also be used for switching between representations.
 
-{: .black-code}
+
 ```
 GET /inventory?rep=s HTTP/1.1
 GET /inventory?rep=hal HTTP/1.1
@@ -54,7 +54,7 @@ In the following response the documents of the collection `inventory` are return
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory HTTP/1.1
 ```
@@ -63,7 +63,7 @@ GET /inventory HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 
@@ -98,7 +98,7 @@ HTTP/1.1 200 OK
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory/_meta HTTP/1.1
 ```
@@ -107,7 +107,7 @@ GET /inventory/_meta HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 
@@ -144,7 +144,7 @@ The query parameter `jsonMode` allows to specify the JSON Mode
 
 #### Standard RESTHeart representation
 
-{: .black-code}
+
 ```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
@@ -166,7 +166,7 @@ GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
 #### Strict representation
 
-{: .black-code}
+
 ```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict
 
@@ -192,7 +192,7 @@ HTTP/1.1 200 OK
 
 #### Extended representation
 
-{: .black-code}
+
 ```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended HTTP/1.1
 
@@ -224,7 +224,7 @@ HTTP/1.1 200 OK
 
 #### Relaxed representation
 
-{: .black-code}
+
 ```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed HTTP/1.1
 
@@ -251,7 +251,7 @@ HTTP/1.1 200 OK
 {: .bs-callout.bs-callout-success }
 SHELL JSON Mode is very useful since it **allows to use the response body directly in the mongoshell!**
 
-{: .black-code}
+
 ```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell HTTP/1.1
 
@@ -270,7 +270,7 @@ MongoDB adds this extension to the JSON.
 
 For instance, the `_id` of the following JSON document is an ObjectId.
 
-{: .black-code}
+
 ```
   {
     "_id": {
@@ -291,7 +291,7 @@ The following `filter` won’t find the document since the `_id` is an ObjectId 
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
 ```
@@ -302,7 +302,7 @@ The correct request is: 
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 ```
@@ -315,7 +315,7 @@ To get the names of the collections of the database `restheart` (the default con
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET / HTTP/1.1
 ```
@@ -324,7 +324,7 @@ GET / HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 
@@ -367,7 +367,7 @@ A collection represented with `HAL` has its own *properties*, *embedded resourc
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?rep=hal HTTP/1.1
 ```
@@ -375,7 +375,7 @@ GET /inventory?rep=hal HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
@@ -443,7 +443,7 @@ recursively represented as HAL documents.
 
 The `_embedded` property looks like:
 
-{: .black-code}
+
 ``` json
 { "_embedded": 
   { "rh:doc": [{
@@ -558,7 +558,7 @@ The `_embedded` property looks like:
 </div>
 The `_links` property looks like:
 
-{: .black-code}
+
 ``` json
 { "_links": { 
   "self": {
@@ -618,7 +618,7 @@ In the following response the collection /inventory has the properties `_id`, `_
     type="Request" 
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?rep=shal HTTP/1.1
 ```
@@ -627,7 +627,7 @@ GET /inventory?rep=shal HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 

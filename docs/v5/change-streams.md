@@ -80,7 +80,7 @@ by design: clients are not able to open up arbitrary change streams but only tho
 
 **stream object format**
 
-{: .black-code }
+
 ```
 {
     "uri": <uri>,
@@ -153,7 +153,7 @@ The following requests upsert a collection defining two change streams:
     type="Request" 
 %}
 
-{: .black-code }
+
 ```
 PUT /messages HTTP/1.1
 
@@ -189,7 +189,7 @@ PUT /messages HTTP/1.1
 Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
 This is because the Change Event looks like:
 
-{: .black-code }
+
 ```json
 {
   "fullDocument": {
@@ -220,7 +220,7 @@ change streams (returned with `?rep=SHAL`).
 %}
 
 
-{: .black-code }
+
 ```
 GET /messages?rep=SHAL HTTP/1.1
 ```
@@ -229,7 +229,7 @@ GET /messages?rep=SHAL HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ```
 HTTP/1.1 200 OK
 
@@ -265,7 +265,7 @@ fails.
     type="Request" 
 %}
 
-{: .black-code }
+
 ```
 GET /messages/_streams/mine HTTP/1.1
 ```
@@ -274,7 +274,7 @@ GET /messages/_streams/mine HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ```
 HTTP/1.1 400 Bad Request
 
@@ -297,7 +297,7 @@ Passing the variable n, the request succeeds:
     type="Request" 
 %}
 
-{: .black-code }
+
 ```
 GET /messages/_streams/mine?avars={"n":"uji"} HTTP/1.1
 ```
@@ -306,7 +306,7 @@ GET /messages/_streams/mine?avars={"n":"uji"} HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ```
 HTTP/1.1 101 Switching Protocols
 
@@ -317,7 +317,7 @@ HTTP/1.1 101 Switching Protocols
 
 Variables can be used in change streams query as follows:
 
-{: .black-code }
+
 ```
 { "$var": "<var_name>" }
 ```
@@ -326,7 +326,7 @@ In case of change stream with stage parameter previous example, the variable was
 to restrict notifications only to changes on documents with a property *name* matching the
 variable *n:*
 
-{: .black-code }
+
 ``` json
 { "_$match" : { "fullDocument::name" : { "_$var" : "n" } } }
 ```
@@ -338,7 +338,7 @@ This behavior is required to protect data from undesirable malicious query injec
 
 Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
 
-{: .black-code }
+
 ``` properties
 ### Security
 

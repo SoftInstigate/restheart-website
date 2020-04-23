@@ -5,14 +5,14 @@ title: CORS Support
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [CORS Support](#cors-support)
-* [Example](#example)
+-   [Introduction](#introduction)
+-   [CORS Support](#cors-support)
+-   [Example](#example)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
@@ -36,7 +36,7 @@ What happens behind the scene, for AJAX and HTTP request methods that
 can modify data, the CORS specification mandates that browsers
 "preflight" the request, soliciting supported methods from the server
 with an HTTP OPTIONS request header, and then, upon "approval" from the
-server, sending the actual request with the actual HTTP request method. 
+server, sending the actual request with the actual HTTP request method.
 
 ## CORS Support
 
@@ -50,15 +50,13 @@ RESTHeart, in the case of a collection resource.
 
 **Request**
 
-{: .black-code}
-```
+```http
 OPTIONS /test/coll HTTP/1.1
 ```
 
 **Response**
 
-{: .black-code}
-```
+```http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Headers: Accept, Accept-Encoding, Authorization, Content-Length, Content-Type, Host, If-Match, Origin, X-Requested-With, User-Agent, No-Auth-Challenge

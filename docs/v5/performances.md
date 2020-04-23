@@ -133,7 +133,7 @@ Ethernet switch.
 **MongoDB**: run (without authentication enabled) with the following
 command
 
-{: .black-code}
+
 ```
 $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 ```

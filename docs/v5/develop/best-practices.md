@@ -26,7 +26,7 @@ title: Development Best Practices
 
 ### Get the MongoClient
 
-{: .black-code}
+
 ``` java
 // get the MongoClient
 MongoClient client = MongoDBClientSingleton.getInstance().getClient();
@@ -36,7 +36,7 @@ MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 
 The plugins's methods of `restheart-platform-core` accept two arguments that allow to interact (read or modify) the request and the response:
 
-{: .black-code}
+
 ``` java
 
 public void handleRequest(HttpServerExchange exchange, RequestContext context) {
@@ -54,7 +54,7 @@ As a general rule, always prefer using `RequestContext`. Only use `HttpServerExc
 
 As an example, the filter query parameter can be retrieved as follows:
 
-{: .black-code}
+
 ``` java
 // RequestContext helper method to access the filter query parameter
 Deque<String>  filterQParam1 = context.getFilter();
@@ -78,7 +78,7 @@ When the request is authenticated by `restheart-platform-security` the user id a
 
 Note that for unauthenticated request these headers are not set.
 
-{: .black-code }
+
 ``` java
 var headers =  exchange.getRequestHeaders();
 
@@ -118,7 +118,7 @@ In the following example, we add the Transformer `filterProperties` to Response 
 
 In order to enable the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/v5/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/v5/develop/core-plugins/#initializers)
 
-{: .black-code }
+
 ``` java
 @RegisterPlugin(
         name = "secretHider",
@@ -175,7 +175,7 @@ The helper classes `ByteArrayRequest`, `JsonRequest`, `ByteArrayResponse` and `J
 
 For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`  
 
-{: .black-code}
+
 ```java
 HttpServerExchange exchange = ...;
 
@@ -190,7 +190,7 @@ If you want to manipulate query parameters with a Request Interceptor, always us
 
 You just set the status code and the response content using helper classes `ByteArrayResponse` or `JsonResponse`. You don't need to send the response explicitly using low level `HttpServerExchange` methods, since the `ResponseSenderHandler` is in the processing chain and will do it for you.
 
-{: .black-code}
+
 ```java
 @Override
 public void handleRequest(HttpServerExchange exchange) throws Exception {
@@ -211,7 +211,7 @@ In the following example, we add a Request Interceptor that forbids write reques
 
 In order to enable the Interceptor we are going to programmatically apply it using an [Initializer](/docs/v5/develop/security-plugins/#initializers)
 
-{: .black-code}
+
 ``` java
 @RegisterPlugin(
         name = "onlyAdminCanWriteSecrets",

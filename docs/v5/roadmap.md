@@ -102,7 +102,7 @@ The permissions are stored in `restheart.acl` collection. This way permissions c
 
 Permission documents have the following format:
 
-{: .black-code }
+
 ```
 {
     "roles": [ "admin", "user" ],

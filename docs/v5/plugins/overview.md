@@ -54,7 +54,7 @@ Developing a Plugins is done in java programming language and it is as easy as i
 
 Note that RESTHeart logs out the registered plugins at startup time. 
 
-{: .black-code }
+
 ```
 Registered initializer commLicense: Activates the commercial license
 Registered initializer rhPlatformActivator: Activates RESTHeart Platform

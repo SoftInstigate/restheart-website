@@ -35,7 +35,7 @@ The following examples assume RESTHeart Platform running on the localhost with t
 
 With the default configuration, a user is represented as follows:
 
-{: .black-code}
+
 ```
 {
     "_id": "username",
@@ -53,14 +53,14 @@ With the default configuration, a user is represented as follows:
     link="http://restninja.io/share/b6876216ee3fb0999f7c5178e42a7978f6cc3c4c/0"
 %}
 
-{: .black-code}
+
 ```
 GET /users HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
+
 ```
 [
   {
@@ -87,7 +87,7 @@ For security reasons, it not possbile to use the `filter` query parameter on the
     link="http://restninja.io/share/38c1eb85a21213dd39192ccd474789f4abdbd6bc/0"
 %}
 
-{: .black-code}
+
 ```
 POST /users HTTP/1.1
 
@@ -107,7 +107,7 @@ The password is automatically encrypted by RESTHeart Platform.
     link="http://restninja.io/share/3e541e5b4f1ce82ae255b8f6746d49f5faed9778/0"
 %}
 
-{: .black-code}
+
 ```
 PATCH /users/foo HTTP/1.1
 
@@ -122,7 +122,7 @@ PATCH /users/foo HTTP/1.1
     link="http://restninja.io/share/ae4858bc59f5ac755f03dc8858220e0a470a3779/0"
 %}
 
-{: .black-code}
+
 ```
 DELETE /users/foo HTTP/1.1
 ```
@@ -133,7 +133,7 @@ DELETE /users/foo HTTP/1.1
     link="http://restninja.io/share/5ee142fbb84071261e56fc7f1904af6430b0495f/0"
 %}
 
-{: .black-code}
+
 ```
 POST /acl HTTP/1.1
 
@@ -153,7 +153,7 @@ If the /acl collection has not been created before and you get 404 Not Found, cr
     link="http://restninja.io/share/eff74b1879d09706d2d9a7bdaafb649a4415c9a2/0"
 %}
 
-{: .black-code}
+
 ```
 PUT /acl HTTP/1.1
 ```

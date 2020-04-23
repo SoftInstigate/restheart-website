@@ -5,30 +5,30 @@ title: Authentication
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
-- [Authentication Mechanisms](#authentication-mechanisms)
-  - [JWT Authentication](#jwt-authentication)
-  - [Basic Authentication](#basic-authentication)
-  - [Avoid browsers to open the login popup window](#avoid-browsers-to-open-the-login-popup-window)
-  - [Digest Authentication](#digest-authentication)
-  - [Token Authentication](#token-authentication)
-  - [Identity Authentication](#identity-authentication)
-- [Authenticators](#authenticators)
-  - [RESTHeart Authenticator](#restheart-authenticator)
-  - [Simple File Authenticator](#simple-file-authenticator)
-- [Token Managers](#token-managers)
-  - [Random Token Manager](#random-token-manager)
+-   [Introduction](#introduction)
+-   [Authentication Mechanisms](#authentication-mechanisms)
+    -   [JWT Authentication](#jwt-authentication)
+    -   [Basic Authentication](#basic-authentication)
+    -   [Avoid browsers to open the login popup window](#avoid-browsers-to-open-the-login-popup-window)
+    -   [Digest Authentication](#digest-authentication)
+    -   [Token Authentication](#token-authentication)
+    -   [Identity Authentication](#identity-authentication)
+-   [Authenticators](#authenticators)
+    -   [RESTHeart Authenticator](#restheart-authenticator)
+    -   [Simple File Authenticator](#simple-file-authenticator)
+-   [Token Managers](#token-managers)
+    -   [Random Token Manager](#random-token-manager)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
 See [Understanding RESTHeart Security](/docs/security/overview#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
-**restheart-security** is built around a __pluggable architecture__. It comes with a strong security implementation but you can easily extend it by implementing plugins.  This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins. Refer to [Develop Security Plugins](/docs/develop/security-plugins) section for more information.
+**restheart-security** is built around a **pluggable architecture**. It comes with a strong security implementation but you can easily extend it by implementing plugins. This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins. Refer to [Develop Security Plugins](/docs/develop/security-plugins) section for more information.
 
 ## Authentication Mechanisms
 
@@ -50,11 +50,10 @@ Supported alghoritms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
 
 For HMAC the `key` configuration option specifies the secret, for RSA the public key.
 
-{: .black-code}
 ```yml
 - name: jwtAuthenticationMechanism
      class: com.restheart.security.plugins.mechanisms.JwtAuthenticationMechanism
-     args: 
+     args:
          algorithm: HS256
          key: secret
          base64Encoded: false
@@ -68,11 +67,10 @@ For HMAC the `key` configuration option specifies the secret, for RSA the public
 
 It is also possible to programmatically add extra verification steps via an [Initializer](/docs/develop/security-plugins#develop-an-initializer). An example follows:
 
-{: .black-code}
 ```java
 @RegisterPlugin(
-        name = "extraJwtVerificator", 
-        priority = 100, 
+        name = "extraJwtVerificator",
+        priority = 100,
         description = "Demonstrate how to add an extra verifictation step "
                 + "to the jwtAuthenticationMechanism",
         enabledByDefault = false)
@@ -117,14 +115,13 @@ public class ExtraJwtVerificator implements Initializer {
 
 **BasicAuthMechanism** manages the Basic Authentication method, where the client credentials are sent via the `Authorization` request header using the format `Authorization: Basic base64(id:pwd)`. The configuration allows specifying the Authenticator that will be used to verify the credentials.
 
-{: .black-code}
 ```yml
 auth-mechanisms:
     - name: basicAuthMechanism
       class: org.restheart.security.plugins.mechanisms.BasicAuthMechanism
       args:
-        realm: RESTHeart Realm
-        authenticator: simpleFileAuthenticator
+          realm: RESTHeart Realm
+          authenticator: simpleFileAuthenticator
 ```
 
 ### Avoid browsers to open the login popup window
@@ -136,7 +133,7 @@ WWW-Authenticate: Basic realm="RESTHeart Realm"
 WWW-Authenticate: Digest realm="RESTHeart Realm",domain="localhost",nonce="Toez71bBUPoNMTU0NDAwNDMzNjEwMXBY+Jp7YX/GVMcxAd61FpY=",opaque="00000000000000000000000000000000",algorithm=MD5,qop="auth"
 ```
 
-In browsers this leads to the login popup windows. In our web applications we might want to redirect to a fancy login page when the 401 Unauthorized response code. 
+In browsers this leads to the login popup windows. In our web applications we might want to redirect to a fancy login page when the 401 Unauthorized response code.
 
 To avoid the popup window just add to the request the `noauthchallenge` query parameter or the header `No-Auth-Challenge`. This will skip the challenge response.
 
@@ -144,57 +141,53 @@ To avoid the popup window just add to the request the `noauthchallenge` query pa
 
 **DigestAuthMechanism** manages the Digest Authentication method. The configuration allows specifying the Authenticator that will be used to verify the credentials.
 
-{: .black-code}
 ```yml
 auth-mechanisms:
     - name: digestAuthMechanism
       class: org.restheart.security.plugins.mechanisms.DigestAuthMechanism
-      args: 
-        realm: RESTHeart Realm
-        domain: localhost
-        authenticator: simpleFileAuthenticator
+      args:
+          realm: RESTHeart Realm
+          domain: localhost
+          authenticator: simpleFileAuthenticator
 ```
 
 ### Token Authentication
 
 **TokenBasicAuthMechanism** manages the Basic Authentication method with the actual password replaced by the auth token generated by **restheart-security**, i.e. the client credentials are sent via the `Authorization` request header using the format `Authorization: Basic base64(id:auth-token)`. It requires a Token Manager to be configured (eg. RndTokenManager).
 
-{: .black-code}
 ```yml
 auth-mechanisms:
     - name: tokenBasicAuthMechanism
       class: org.restheart.security.plugins.mechanisms.TokenBasicAuthMechanism
-      args: 
-        realm: RESTHeart Realm
+      args:
+          realm: RESTHeart Realm
 ```
 
 ### Identity Authentication
 
-**IdentityAuthMechanism** just authenticates any request building an [BaseAccount](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/io/restheart-security/plugins/authentication/impl/BaseAccount.java) with the *username* and *roles* specified in the configuration. Useful for testing purposes. Note that enabling this causes the *DigestAuthMechanism* to fail, you cannot use both.
+**IdentityAuthMechanism** just authenticates any request building an [BaseAccount](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/io/restheart-security/plugins/authentication/impl/BaseAccount.java) with the _username_ and _roles_ specified in the configuration. Useful for testing purposes. Note that enabling this causes the _DigestAuthMechanism_ to fail, you cannot use both.
 
-{: .black-code}
 ```yml
 auth-mechanisms:
     - name: identityAuthMechanism
       class: org.restheart.security.plugins.mechanisms.IdentityAuthMechanism
       args:
-        username: admin
-        roles:
-            - admin
-            - user
+          username: admin
+          roles:
+              - admin
+              - user
 ```
 
-**IdentityAuthMechanism** 
+**IdentityAuthMechanism**
 
-{: .black-code}
 ```yml
-    - name: identityAuthMechanism
-      class: org.restheart.security.plugins.mechanisms.IdentityAuthMechanism
-      args:
-        username: admin
-        roles:
-            - admin
-            - user
+- name: identityAuthMechanism
+  class: org.restheart.security.plugins.mechanisms.IdentityAuthMechanism
+  args:
+      username: admin
+      roles:
+          - admin
+          - user
 ```
 
 ## Authenticators
@@ -209,52 +202,50 @@ auth-mechanisms:
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
 
-*RESTHeart Authenticator* authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
+_RESTHeart Authenticator_ authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
 
 {: .bs-callout.bs-callout-info }
 RESTHeart Authenticator is strong and battle tested and suggested for production use.
 
 The configuration allows:
 
-- defining the collection to use (`users-collection-uri`), the properties of the user document to use as user id, password  and roles (`prop-id`, `prop-password` and `json-path-roles`).
-- enabling hashed password using the strong bcrypt hashing algorithm (`bcrypt-hashed-password` and `bcrypt-complexity`); note that the password is automatically hashed on write requests and that the password property is automatically removed from responses.
-- allows initializing the users collection and the admin user if not existing. See `create-user` option.
-- allows controlling the users caching.
+-   defining the collection to use (`users-collection-uri`), the properties of the user document to use as user id, password and roles (`prop-id`, `prop-password` and `json-path-roles`).
+-   enabling hashed password using the strong bcrypt hashing algorithm (`bcrypt-hashed-password` and `bcrypt-complexity`); note that the password is automatically hashed on write requests and that the password property is automatically removed from responses.
+-   allows initializing the users collection and the admin user if not existing. See `create-user` option.
+-   allows controlling the users caching.
 
-{: .black-code}
-``` yml
+```yml
 authenticators:
     - name: rhAuthenticator
       class: com.restheart.security.plugins.authenticators.RHAuthenticator
       args:
-        users-collection-uri: /users
-        prop-id: _id
-        prop-password: password
-        json-path-roles: $.roles
-        bcrypt-hashed-password: true
-        bcrypt-complexity: 12
-        create-user: true
-        create-user-document: '{"_id": "admin", "password": "$2a$12$lZiMMNJ6pkyg4uq/I1cF5uxzUbU25aXHtg7W7sD2ED7DG1wzUoo6u", "roles": ["admin"]}'
-        # create-user-document.password must be hashed when bcrypt-hashed-password=true
-        # default password is 'secret'
-        # see https://bcrypt-generator.com but replace initial '$2y' with '$2a'
-        cache-enabled: true
-        cache-size: 1000
-        cache-ttl: 60000
-        cache-expire-policy: AFTER_WRITE
+          users-collection-uri: /users
+          prop-id: _id
+          prop-password: password
+          json-path-roles: $.roles
+          bcrypt-hashed-password: true
+          bcrypt-complexity: 12
+          create-user: true
+          create-user-document: '{"_id": "admin", "password": "$2a$12$lZiMMNJ6pkyg4uq/I1cF5uxzUbU25aXHtg7W7sD2ED7DG1wzUoo6u", "roles": ["admin"]}'
+          # create-user-document.password must be hashed when bcrypt-hashed-password=true
+          # default password is 'secret'
+          # see https://bcrypt-generator.com but replace initial '$2y' with '$2a'
+          cache-enabled: true
+          cache-size: 1000
+          cache-ttl: 60000
+          cache-expire-policy: AFTER_WRITE
 ```
 
 ### Simple File Authenticator
 
-**simpleFileAuthenticator** allows defining users credentials and roles in a simple yml configuration file. 
+**simpleFileAuthenticator** allows defining users credentials and roles in a simple yml configuration file.
 
-{: .black-code}
-``` yml
+```yml
 authenticators:
     - name: simpleFileAuthenticator
       class: org.restheart.security.plugins.authenticators.SimpleFileAuthenticator
       args:
-        conf-file: ../etc/users.yml
+          conf-file: ../etc/users.yml
 ```
 
 See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/users.yml) for an example users definition.
@@ -265,11 +256,10 @@ See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/security/
 
 **RndTokenManager** generates an auth token using a random number generator. It has one argument, `ttl`, which is the tokens Time To Live in minutes.
 
-{: .black-code}
 ```yml
 token-manager:
     name: rndTokenManager
     class: org.restheart.security.plugins.tokens.RndTokenManager
     args:
-      ttl: 15
+        ttl: 15
 ```

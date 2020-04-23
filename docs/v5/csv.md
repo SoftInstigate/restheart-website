@@ -41,7 +41,7 @@ To create the `restheart` db, run the following:
     link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
 %}
 
-{: .black-code}
+
 ``` http
 PUT / HTTP/1.1
 ```
@@ -53,7 +53,7 @@ Let's create a `poi` collection, run the following:
     link="http://restninja.io/share/0f076791d9d87f503299c588b626675296ec4adb/0"
 %}
 
-{: .black-code }
+
 ``` http
 PUT /poi HTTP/1.1
 ```
@@ -62,7 +62,7 @@ PUT /poi HTTP/1.1
 
 We are going to use the following example file `POI.csv`:
 
-{: .black-code }
+
 ```
 id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
@@ -76,7 +76,7 @@ To import the `POI.csv` into the collection `poi`, run the following:
     link="http://restninja.io/share/93ed5c1c6b20f9e8899b2308232e8ab8b5ee6820/0"
 %}
 
-{: .black-code }
+
 ``` http
 POST /csv?db=restheart&coll=poi&id=0 HTTP/1.1
 Content-Type: text/csv
@@ -99,7 +99,7 @@ Now the `/poi` collection contains the documents:
     link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
 %}
 
-{: .black-code }
+
 ```
 GET /poi HTTP/1.1
 ```
@@ -108,7 +108,7 @@ GET /poi HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ```
 [{
     "_id": 2,
@@ -168,7 +168,7 @@ New lines in the CSV will *NOT* be added.
     link="http://restninja.io/share/79039d27d707ec45ecd0c65b9485c169606c0cf3/0"
 %}
 
-{: .black-code }
+
 ``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true HTTP/1.1
 Content-Type: text/csv
@@ -186,7 +186,7 @@ To update existing documents *and* add new ones, add the `upsert=true` query par
     link="http://restninja.io/share/102cc2b5ebddc0b1ee0856bb04d2864c1916b436/0"
 %}
 
-{: .black-code }
+
 ``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true&upsert=true HTTP/1.1
 Content-Type: text/csv
@@ -208,7 +208,7 @@ The CSV format allows creating flat documents. The transformer modifies the requ
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true&transformer=GeoJSONTransformer HTTP/1.1
 Content-Type: text/csv
@@ -223,7 +223,7 @@ The `GeoJSONTransformer` is the name of a custom transformer that must me packag
 {: .bs-callout.bs-callout-info }
 Check [Package RESTHeart Core plugins](/docs/v5/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
 
-{: .black-code }
+
 ```java
 @RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
 public class GeoJSONTransformer implements Transformer {
@@ -250,7 +250,7 @@ public class GeoJSONTransformer implements Transformer {
 
 Now the documents have the new property `point` with the GeoJSON Point object:
 
-{: .black-code }
+
 ```json
 [
     {

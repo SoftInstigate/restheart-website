@@ -5,19 +5,20 @@ title: Performances
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Change Streams](#change-streams)
+-   [Change Streams](#change-streams)
 
-* [Read and Write JSON documents](#read-and-write-json-documents)
-    * [Test case 1](#test-case-1)
-    * [Test case 2](#test-case-2)
-    * [Test case 3](#test-case-3)
+-   [Read and Write JSON documents](#read-and-write-json-documents)
 
-* [How we tested](#how-we-tested)
+    -   [Test case 1](#test-case-1)
+    -   [Test case 2](#test-case-2)
+    -   [Test case 3](#test-case-3)
+
+-   [How we tested](#how-we-tested)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 RESTHeart has been designed and developed with lightness and
 performances as fundamental parameters.
@@ -31,21 +32,19 @@ to autonomously reproduce the tests.
 Measure RESTHeart's notification throughput while _n_ Websockets are listening for targetted notifications.
 RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every client will wait until all notification have been received.
 
-
 ![change stream test](/images/perftest/change-stream-test.png){: class="img-responsive"}
 
 Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
 
-|  Clients     |              TPS             | Mean Notification Time (333ms = Real Time) |
-|:-------------|-----------------------------:|-------------------------------------------:|
-| **10**       |      27                      |             357ms                          |
-| **100**      |      278                     |             359ms                          |                       
-| **1000**     |      2790                    |             358ms                          |
-| **10000**    |      27909                   |             358ms                          |
-| **15000**    |      41812                   |             358ms                          |
-| **20000**    |      54125                   |             369ms                          |
-| **25000**    |      61995                   |             403ms                          |
-
+| Clients   |   TPS | Mean Notification Time (333ms = Real Time) |
+| :-------- | ----: | -----------------------------------------: |
+| **10**    |    27 |                                      357ms |
+| **100**   |   278 |                                      359ms |
+| **1000**  |  2790 |                                      358ms |
+| **10000** | 27909 |                                      358ms |
+| **15000** | 41812 |                                      358ms |
+| **20000** | 54125 |                                      369ms |
+| **25000** | 61995 |                                      403ms |
 
 ## Read and Write JSON documents
 
@@ -60,8 +59,8 @@ time](https://restheart.org/images/perftest/test-1-et.png){: class="img-responsi
 In this scenario, RESTHeart introduces just a **2,41% overhead** over
 the total execution time:
 
-|               | Execution Time |    TPS   |
-|---------------|:--------------:|:--------:|
+|               | Execution Time |   TPS    |
+| ------------- | :------------: | :------: |
 | **RESTHeart** |      250s      | 3990 tps |
 | **Direct**    |      244s      | 4086 tps |
 
@@ -69,7 +68,7 @@ the total execution time:
 
 Measure the execution time to **query a collection 100.000 times**,
 getting 5 documents each time (limit 5) and skipping just 25 documents,
-under different concurrency levels. 
+under different concurrency levels.
 
 ![test 2 execution
 time](https://restheart.org/images/perftest/test-2-et.png){: class="img-responsive"}
@@ -79,10 +78,10 @@ time](https://restheart.org/images/perftest/test-2-et.png){: class="img-responsi
 RESTHeart delivers better performances under any concurrency level over
 direct access via MongoDB driver:
 
-| Threads       |   50|  100|  200|  250|   400|   500|
-|---------------|----:|----:|----:|----:|-----:|-----:|
-| **RESTHeart** |  78s|  82s|  78s|  76s|   76s|   76s|
-| **Direct**    |  97s|  95s|  96s|  96s|  109s|  112s|
+| Threads       |  50 | 100 | 200 | 250 |  400 |  500 |
+| ------------- | --: | --: | --: | --: | ---: | ---: |
+| **RESTHeart** | 78s | 82s | 78s | 76s |  76s |  76s |
+| **Direct**    | 97s | 95s | 96s | 96s | 109s | 112s |
 
 ### Test case 3
 
@@ -99,10 +98,10 @@ Thanks to the eager pre-allocation DBCursor engine, queries with
 significant skip parameter executes much faster (50 times in this case)
 with RESTHeart:
 
-| Threads       |    1   |   2   |   4   |   5   |   8   |  10  |   20  |   40  |   50  |   80   |  100  |  200  |  400  |   500  |
-|---------------|:------:|:-----:|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:------:|:-----:|:-----:|:-----:|:------:|
+| Threads       |   1    |   2   |   4   |   5   |   8   |  10  |  20   |  40   |  50   |   80   |  100  |  200  |  400  |  500   |
+| ------------- | :----: | :---: | :---: | :---: | :---: | :--: | :---: | :---: | :---: | :----: | :---: | :---: | :---: | :----: |
 | **RESTHeart** | 16,28s | 6,22s | 5,05s | 2,53s | 3,76s | 3,6s | 2,98s | 5,65s | 9,04s | 10,74s | 6,76s | 9,24s | 6,76s | 12,71s |
-| **Direct**    |  1091s |  627s |  324s |  328s |  329s | 325s |  324s |  321s |  321s |  304s  |  302s |  305s |  327s |  327s  |
+| **Direct**    | 1091s  | 627s  | 324s  | 328s  | 329s  | 325s | 324s  | 321s  | 321s  |  304s  | 302s  | 305s  | 327s  |  327s  |
 
 ## How we tested
 
@@ -133,7 +132,6 @@ Ethernet switch.
 **MongoDB**: run (without authentication enabled) with the following
 command
 
-{: .black-code}
 ```
 $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 ```
@@ -142,8 +140,8 @@ $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 
 -   logging to file off
 -   eager-cursor-allocation-linear-slice-heights set to \[50\]
--   io-threads: 8 
--   worker-threads: 64 
+-   io-threads: 8
+-   worker-threads: 64
 
 #### Test code
 
@@ -155,7 +153,7 @@ it [here](https://github.com/SoftInstigate/restheart/tree/master/core/src/test/
 
 ### Change Streams
 
-Tests have been made simulating a production environment composed by ***3 EC2 t3a.medium instances*** running with ***Ubuntu 18.04***
+Tests have been made simulating a production environment composed by **_3 EC2 t3a.medium instances_** running with **_Ubuntu 18.04_**
 
 _Check [this repository](https://github.com/SoftInstigate/restheart-perftest) to learn how to setup by your own a local testing environment._
 

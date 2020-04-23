@@ -76,7 +76,7 @@ As an example, we are going to securely expose the resources of a RESTHeart serv
 
 The following options set a HTTPS listener bound to the public ip of `domain.io`.
 
-{: .black-code}
+
 ```yml
 https-listener: true
 https-host: domain.io
@@ -89,7 +89,7 @@ The two hosts in private network `10.0.1.0/24` are:
 
 We proxy them as follows:
 
-{: .black-code}
+
 ```yml
 proxies:
     - location: /api
@@ -102,28 +102,28 @@ As a result, the URLs `https://domain.io` and `https://domain.io/api` are proxie
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
+
 ```
 GET /index.html HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 401 Unauthorized
 ```
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
+
 ```
 GET https://domain.io/api HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 401 Unauthorized
 ```
@@ -132,7 +132,7 @@ With the default configuration **restheart-security** uses the Basic Authenticat
 
 #### users.yml
 
-{: .black-code}
+
 ```yml
 users:
     - userid: user
@@ -142,7 +142,7 @@ users:
 
 ### acl.yml
 
-{: .black-code}
+
 ``` yml
 permissions:
     # Users with role 'web' can GET web resources 
@@ -157,7 +157,7 @@ permissions:
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
+
 ```
 GET /index.html HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
@@ -165,7 +165,7 @@ Authorization: Basic dXNlcjpzZWNyZXQ=
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 ...
@@ -173,7 +173,7 @@ HTTP/1.1 200 OK
 
 {% include code-header.html type="Request" %}
 
-{: .black-code}
+
 ```
 GET /api HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
@@ -181,7 +181,7 @@ Authorization: Basic dXNlcjpzZWNyZXQ=
 
 {% include code-header.html type="Response" %}
 
-{: .black-code}
+
 ```
 HTTP/1.1 200 OK
 ...
@@ -193,7 +193,7 @@ To follow this tutorial you need <a href="https://httpie.org" target="_blank">ht
 
 Add to **restheart-platform-security.yml** the following proxy:
 
-{: .black-code}
+
 ``` yml
 proxies:
     - location: /secho
@@ -204,7 +204,7 @@ proxies:
 {: .bs-callout.bs-callout-info}
 the service `/echo` just echoes back the request (URL, query parameters, body and headers). It is defined in the configuration file as follows:
 
-{: .black-code}
+
 ``` yml
 services:
     - implementation-class: org.restheart.security.plugins.services.EchoService
@@ -215,7 +215,7 @@ services:
 {: .bs-callout.bs-callout-info}
 Note that `/echo` is not secured and can be invoked without restrictions.
 
-{: .black-code}
+
 ``` bash
 $ http -f 127.0.0.1:8080/echo?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK
@@ -275,7 +275,7 @@ X-Powered-By: restheart.org
 
 Let's try now to invoke `/secho` (please note the leading 's') without passing authentication credentials. This will fail with `401 Unauthorized` HTTP response.
 
-{: .black-code}
+
 ``` bash
 $ http -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
 HTTP/1.1 401 Unauthorized
@@ -288,7 +288,7 @@ WWW-Authenticate: Digest realm="RESTHeart Realm",domain="localhost",nonce="Z+fsw
 
 Let's try now to pass credentials via basic authentication. The user `admin` is defined in the `users.yml` file.
 
-{: .black-code}
+
 ```bash
 $ http -a admin:changeit -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
 HTTP/1.1 200 OK

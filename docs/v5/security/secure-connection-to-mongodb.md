@@ -31,7 +31,7 @@ from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
 process in background, using the `--fork` parameter.
 
-{: .black-code}
+
 ``` bash
 $ mongod --fork --syslog --auth
 $ mongo
@@ -50,7 +50,7 @@ permissions](#auth-with-jep)section.
 Create the *admin* user. The procedure is different depending on MongoDB
 version.
 
-{: .black-code}
+
 ```javascript
 > use admin
 > db.createUser({
@@ -64,7 +64,7 @@ version.
 
 We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart Platform download package (you find it in the etc directory)
 
-{: .black-code}
+
 ``` bash
 $ vi etc/restheart-platform-core.yml
 ```
@@ -73,14 +73,14 @@ Find and modify the following section providing the user-name, password
 and authentication db (the db where the MongoDB user is defined, in our
 case ‘admin’).
 
-{: .black-code}
+
 ``` yml
 mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 ```
 
 Now start RESTHeart Platform Core specifying the configuration file:
 
-{: .black-code}
+
 ``` bash
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
@@ -95,7 +95,7 @@ To configure RESTHeart Platform for TLS/SSL do as follows:
 
 * create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
 
-{: .black-code}
+
 ``` bash
 $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
@@ -104,13 +104,13 @@ $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 
 * specify the ssl option in the mongo-uri in the restheart yml configuration file:
 
-{: .black-code}
+
 ``` yml
 mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 ```
 * start restheart with following options:
 
-{: .black-code}
+
 ``` bash
 $ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
 ```
@@ -128,7 +128,7 @@ In order to achieve it, the best practice is:
 
 The following example, creates a MongoDB user with appropriate roles to expose the databases *restheart.
 
-{: .black-code}
+
 ```javascript
 > use admin
 > db.createUser({user: "restheart",

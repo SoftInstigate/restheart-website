@@ -31,7 +31,7 @@ See [Understanding RESTHeart Security](/docs/v5/security/overview/#understanding
 
 The Authentication Mechanism class must implement the `org.restheart.security.plugins.AuthMechanism` interface. 
 
-{: .black-code}
+
 ```java
 public interface AuthMechanism implements AuthenticationMechanism {
   @Override
@@ -51,7 +51,7 @@ public interface AuthMechanism implements AuthenticationMechanism {
 The Authentication Mechanism must be declared in the yml configuration file. 
 Of course the implementation class must be in the java classpath.
 
-{: .black-code}
+
 ```yml
 auth-mechanisms:
     - name: <name>
@@ -67,7 +67,7 @@ The Authentication Mechanism implementation class must have the following constr
 
 If the property `args` is specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthMechanism(final String name, final Map<String, Object> args) throws ConfigurationException {
 
@@ -79,7 +79,7 @@ public MyAuthMechanism(final String name, final Map<String, Object> args) throws
 
 If the property `args` is not specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthMechanism(final String name) throws ConfigurationException {
 }
@@ -95,7 +95,7 @@ The method `authenticate()` must return:
 
 To mark the authentication as failed in `authenticate()`:
 
-{: .black-code}
+
 ```java
 securityContext.authenticationFailed("authentication failed", getMechanismName());
 return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
@@ -103,7 +103,7 @@ return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
 
 To mark the authentication as successful in `authenticate()`:
 
-{: .black-code}
+
 ```java
 // build the account
 final Account account;
@@ -119,7 +119,7 @@ return AuthenticationMechanismOutcome.AUTHENTICATED;
 
 An example is *BasicAuthMechanism* that sends the `401 Not Authenticated` response with the following challenge header:
 
-{: .black-code}
+
 ```
 WWW-Authenticate: Basic realm="RESTHeart Realm"
 ```
@@ -130,7 +130,7 @@ To build the account, the Authentication Mechanism can use a configurable Authen
 
 Tip: Use the `PluginsRegistry` to get the instance of the Authenticator from its name.
 
-{: .black-code}
+
 ```java
 // get the name of the authenticator from the arguments
 String authenticatorName = argValue(args, "authenticator");
@@ -151,7 +151,7 @@ Account account = authenticator.verify(id, credential);
 
 The Authenticator class must implement the `org.restheart.security.plugins.Authenticator` interface. 
 
-{: .black-code}
+
 ```java
 public interface Authenticator extends IdentityManager {
   @Override
@@ -170,7 +170,7 @@ public interface Authenticator extends IdentityManager {
 The Authenticator must be declared in the yml configuration file. 
 Of course the implementation class must be in the java classpath.
 
-{: .black-code}
+
 ```yml
 authenticators:
     - name: <name>
@@ -186,7 +186,7 @@ The Authenticator implementation class must have the following constructor:
 
 If the property `args` is specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthenticator(final String name, final Map<String, Object> args) throws ConfigurationException {
 
@@ -198,7 +198,7 @@ public MyAuthenticator(final String name, final Map<String, Object> args) throws
 
 If the property `args` is not specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthenticator(final String name) throws ConfigurationException {
 }
@@ -208,7 +208,7 @@ public MyAuthenticator(final String name) throws ConfigurationException {
 
 The Authorizer implementation class must implement the `org.restheart.security.Authorizer` interface. 
 
-{: .black-code}
+
 ```java
 public interface Authorizer {
     /**
@@ -233,7 +233,7 @@ public interface Authorizer {
 The Authorizer must be declared in the yml configuration file. 
 Of course the implementation class must be in the java classpath.
 
-{: .black-code}
+
 ```yml
 authorizers:
       name: <name>
@@ -249,7 +249,7 @@ The Authorizer implementation class must have the following constructor:
 
 If the property `args` is specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthorizer(final String name, final Map<String, Object> args) throws ConfigurationException {
 
@@ -261,7 +261,7 @@ public MyAuthorizer(final String name, final Map<String, Object> args) throws Co
 
 If the property `args` is not specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyAuthorizer(final String name) throws ConfigurationException {
 }
@@ -273,7 +273,7 @@ The Token Manager implementation class must implement the `org.restheart.securit
 
 Note that TokenManager extends Authenticator for token verification methods.
 
-{: .black-code}
+
 ```java
 public interface PluggablTokenManager extends Authenticator {
   static final HttpString AUTH_TOKEN_HEADER = HttpString.tryFromString("Auth-Token");
@@ -315,7 +315,7 @@ public interface PluggablTokenManager extends Authenticator {
 The Token Manager must be declared in the yml configuration file. 
 Of course the implementation class must be in the java classpath.
 
-{: .black-code}
+
 ```yml
 token-manager:
     name: <name>
@@ -331,7 +331,7 @@ The Token Manager implementation class must have the following constructor:
 
 If the property `args` is specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyTM(final String name, final Map<String, Object> args) throws ConfigurationException {
 
@@ -343,7 +343,7 @@ public MyTM(final String name, final Map<String, Object> args) throws Configurat
 
 If the property `args` is not specified in configuration:
 
-{: .black-code}
+
 ```java
 public MyTM(final String name) throws ConfigurationException {
 }
@@ -353,7 +353,7 @@ public MyTM(final String name) throws ConfigurationException {
 
 The Service implementation class must extend the `org.restheart.security.plugins.Service` abstract class, implementing the following method
 
-{: .black-code}
+
 ```java
 public abstract class Service extends PipedHttpHandler implements ConfigurablePlugin {
   /**
@@ -368,7 +368,7 @@ public abstract class Service extends PipedHttpHandler implements ConfigurablePl
 
 An example service implementation follows. It sends the usual `Hello World` message, however if the request specifies `?name=Bob` it responds with `Hello Bob`.
 
-{: .black-code}
+
 ```java
 public void handleRequest(HttpServerExchange exchange) throws Exception {
   var msg = new StringBuffer("Hello ");
@@ -394,7 +394,7 @@ public void handleRequest(HttpServerExchange exchange) throws Exception {
 The *Service* must be declared in the yml configuration file. 
 Of course the implementation class must be in the java classpath.
 
-{: .black-code}
+
 ```yml
 services:
     - name: <name>
@@ -415,7 +415,7 @@ With `secured: true` the service request goes thought the  authentication and au
 
 The Service abstract class implements the following constructor:
 
-{: .black-code}
+
 ```java
 public MyService(PipedHttpHandler next,
           String name,
@@ -432,7 +432,7 @@ Notably it allows to define *Interceptors* and *Global Permission Predicates*.
 
 The Initializer implementation class must extend the `org.restheart.security.plugins.Initializer` interface, implementing the following method:
 
-{: .black-code}
+
 ```java
 public interface Initializer {
   public void init();
@@ -441,7 +441,7 @@ public interface Initializer {
 
 It must also registered via the `@RegisterPlugin` annotation, example:
 
-{: .black-code}
+
 ```java
 @RegisterPlugin(
         name = "testInitializer",
@@ -455,7 +455,7 @@ public class TestInitializer implements Initializer {
 
 If the initializer is not enabled by default (i.e.e`enabledByDefault=false`), it can be enabled via configuration file as follows:
 
-{: .black-code}
+
 ```
 plugins-args:
   testInitializer:
@@ -468,7 +468,7 @@ An example Initializer is `org.restheart.security.plugins.initializers.TestIniti
 
 The `PluginsRegistry` class allows to define Interceptors.
 
-{: .black-code}
+
 ```java
 RequestInterceptor requestInterceptor = ...;
 ResponseInterceptor responseIterceptor = ...;
@@ -486,7 +486,7 @@ Global security predicates must all resolve to true to allow a request.
 
 The following example predicate denies `GET /foo/bar` requests:
 
-{: .black-code}
+
 ```java
 // add a global security predicate
 PluginsRegistry.getInstance().getGlobalSecurityPredicates().add(new Predicate() {
@@ -514,7 +514,7 @@ A Response Interceptor applies after the request has been proxied or handled by 
 
 Those interfaces both extend the base interface `org.restheart.security.plugins.Interceptor`
 
-{: .black-code}
+
 ```java
 public interface Interceptor {
   /**
@@ -540,7 +540,7 @@ Example interceptor implementations can be found in the package``org.restheart.s
 
 If the request is errored, than it is not processed further and the response eventually set is returned.
 
-{: .black-code}
+
 ```java
 var request = ByteArrayRequest.wrap(hse);
 
@@ -571,7 +571,7 @@ In some cases, you need to access the request content. For example you want to m
 
  `RequestInterceptor` defines the following methods with a default implementation.
 
-{: .black-code}
+
 ```java
 public interface RequestInterceptor extends Interceptor {
   public enum IPOINT { BEFORE_AUTH, AFTER_AUTH }
@@ -604,7 +604,7 @@ In some cases, you need to access the response content. For example you want the
 
  `ResponseInterceptor` defines the following method with a default implementation that returns false:
 
-{: .black-code}
+
 ```java
 public interface ResponseInterceptor extends Interceptor {
   /**

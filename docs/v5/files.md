@@ -5,13 +5,13 @@ title: Binary Files
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
-- [Create a file bucket](#create-a-file-bucket)
-- [Uploading into file buckets with POST](#uploading-into-file-buckets-with-post)
-  - [Uploading with PUT](#uploading-with-put)
-- [GET the file's metadata](#get-the-files-metadata)
-- [GET the file's binary data](#get-the-files-binary-data)
-- [The "properties" part](#the-properties-part)
+-   [Introduction](#introduction)
+-   [Create a file bucket](#create-a-file-bucket)
+-   [Uploading into file buckets with POST](#uploading-into-file-buckets-with-post)
+    -   [Uploading with PUT](#uploading-with-put)
+-   [GET the file's metadata](#get-the-files-metadata)
+-   [GET the file's binary data](#get-the-files-binary-data)
+-   [The "properties" part](#the-properties-part)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -28,8 +28,7 @@ RESTHeart offers complete binary files management. It's possible to **create**, 
 You can read more about GridFS [here](https://docs.mongodb.org/manual/core/gridfs/).
 
 {: .bs-callout.bs-callout-warning }
-__Note__: RESTHeart's HTTP clients must adhere to the **multipart/form-data** specification. However the specification allows a form to upload multiple files at the same time, but RESTHeart prohibits that: while it's possible to POST / PUT several different non-binary parts for each file, it's mandatory to upload one single binary file per each POST / PUT request. This limitation is necessary to univocally relate all the optional parts to the unique file.
-
+**Note**: RESTHeart's HTTP clients must adhere to the **multipart/form-data** specification. However the specification allows a form to upload multiple files at the same time, but RESTHeart prohibits that: while it's possible to POST / PUT several different non-binary parts for each file, it's mandatory to upload one single binary file per each POST / PUT request. This limitation is necessary to univocally relate all the optional parts to the unique file.
 
 {: .bs-callout.bs-callout-success }
 In the examples in this section we assume RESTHeart is running on `localhost`, port `8080`.
@@ -39,25 +38,23 @@ In the examples in this section we assume RESTHeart is running on `localhost`, p
 File buckets are special collections whose aim is to store binary data and the associated metadata. Start by creating a new one for uploading binaries.
 
 {: .bs-callout .bs-callout-warning }
-To be recognized as a file bucket the collection's name must end with ***.files postfix**  (i.e. mybucket.files is a valid file bucket name)
+To be recognized as a file bucket the collection's name must end with **\*.files postfix** (i.e. mybucket.files is a valid file bucket name)
 
 Create the default `restheart` database, if none exists yet:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
-``` http
+```http
 PUT / HTTP/1.1
 ```
 
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -75,21 +72,19 @@ X-Powered-By: restheart.org
 
 Create the collection for hosting files.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
-``` http
+```http
 PUT /mybucket.files HTTP/1.1
 ```
 
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -110,25 +105,21 @@ X-Powered-By: restheart.org
 {: .bs-callout .bs-callout-warning }
 To upload a binary file **the request body must be encoded as `multipart/form-data`.**
 
-A multipart/form-data encoded request is splitted and submitted into different sections. These are trivially called *request parts*.
+A multipart/form-data encoded request is splitted and submitted into different sections. These are trivially called _request parts_.
 Each part is delimited by a random digits string boundary.
-
 
 By setting `Content-Type:multipart/form-data`, the following example request done using HTTPie will POST a binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata associated into the previously created `/mybucket.files`
 
-
-{: .black-code }
 ```bash
 http -v --form POST localhost:8080/mybucket.files  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate"}'
 ```
 
 will produce the following results:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
 ```http
 POST /mybucket.files HTTP/1.1
 Accept: */*
@@ -140,7 +131,6 @@ Host: localhost:8080
 User-Agent: HTTPie/0.9.8
 ```
 
-{: .black-code }
 ```
 ### Multipart flow example --- this will be done usually hidden and handled under-the-hood by your http client
 
@@ -155,14 +145,11 @@ Content-Type: image/jpg
 --------------------------a54420e707704ef69099ae603c9acf4c--
 ```
 
-
-
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -177,14 +164,13 @@ X-Powered-By: restheart.org
 
 The `Location` HTTP header returns the file's location:
 
-{: .black-code }
-``` http
+```
 Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
 ```
 
 #### Uploading with PUT
 
-In order to explicit a human-readable name or to update an already exisiting asset you can use a PUT `multipart/form-data` encoded request. 
+In order to explicit a human-readable name or to update an already exisiting asset you can use a PUT `multipart/form-data` encoded request.
 
 {: .bs-callout.bs-callout-info }
 Note that the location contains the object ID automatically generated by
@@ -194,12 +180,11 @@ situation, but it's not always desirable. In many case it would be
 better to explicitly name the resource with something more readable and
 meaningful.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
-``` http
+```http
 PUT /mybucket.files/example HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
@@ -210,12 +195,11 @@ Host: localhost:8080
 User-Agent: HTTPie/0.9.8
 ```
 
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -235,24 +219,21 @@ http://localhost:8080/mybucket.files/example
 
 Which is easier to read and link than the automatically generated name.
 
-
 ## GET the file's metadata
 
 If you GET the `Location`, RESTHeart actually returns the file's metadata:
 
 We have from the previous example:
 
-{: .black-code }
-``` http
+```http
 GET http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4 HTTP/1.1
 ```
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
-``` http
+```http
 GET /mybucket.files/5e5fcdd8ddfa017301e00331 HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
@@ -261,12 +242,11 @@ Host: localhost:8080
 User-Agent: HTTPie/0.9.8
 ```
 
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -312,43 +292,37 @@ Uploaded files metadata can be filtered and treated as regular collection docume
 
 The actual binary content is available by appending the `binary` postfix, like this:
 
-{: .black-code }
 ```
 http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331/binary
 ```
 
-
 ## The "properties" part
 
-
-As we did in previus example, is possible to associate metadata to a file upload. 
+As we did in previus example, is possible to associate metadata to a file upload.
 
 To add optional form data parts to the request it is necessary to embed the data into the `properties` field name. The content of this field is automatically parsed as JSON data, so it must be valid JSON.
 
 In the following example, we set the "author" and the "filename":
 
-{: .black-code }
-``` bash
+```bash
 http -v --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg properties='{"author":"SoftInstigate", "filename":"example"}'
 ```
 
 We then retrieve the metadata associated. The JSON will be merged into in the metadata section:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
 %}
 
-{: .black-code }
-``` http
+```http
 GET /mybucket.files/example HTTP/1.1
 ```
 
-{% include code-header.html 
-    type="Response" 
+{% include code-header.html
+    type="Response"
 %}
 
-{: .black-code }
-``` http
+```http
 HTTP/1.1 200 OK
 
 {
@@ -380,7 +354,7 @@ HTTP/1.1 200 OK
 
 As shown above, when we GET the representation for the newly created file the response contains only its metadata.
 
-Appending \``/binary`\` at the end of the above URL makes returns the actual binary content stored into GridFS. Open 
+Appending \``/binary`\` at the end of the above URL makes returns the actual binary content stored into GridFS. Open
 
 [http://localhost:8080/mybucket.files/dataflow.png/binary](http://localhost:8080/mybucket.files/dataflow.png/binary)
 

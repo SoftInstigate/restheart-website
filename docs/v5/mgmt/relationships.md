@@ -38,7 +38,7 @@ relationship so that links to the referenced documents are auto-magically inclu
 
 `rels` is an array of `rel` objects having the following format:
 
-{: .black-code}
+
 ```
 {
   "real": "<relid>",
@@ -113,7 +113,7 @@ Let's create a collection, declaring a **many-to-one** relationship
 called **`parent`**, so that documents can refer a *parent document* in
 the collection itself.
 
-{: .black-code}
+
 ```
 PUT /parentcoll HTTP/1.1
 
@@ -124,7 +124,7 @@ HTTP/1.1 201 CREATED
 
 Let's now create few documents, specifying the `parent` property:
 
-{: .black-code}
+
 ```
 PUT /parentcoll/root HTTP/1.1
 
@@ -133,7 +133,7 @@ PUT /parentcoll/root HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /parentcoll/1 HTTP/1.1
 
@@ -142,7 +142,7 @@ PUT /parentcoll/1 HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /parentcoll/1.1 HTTP/1.1
 
@@ -151,7 +151,7 @@ PUT /parentcoll/1.1 HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /parentcoll/1.2 HTTP/1.1
 
@@ -165,7 +165,7 @@ includes `parent` with the correct URI of the
 document `/parentcoll/1`
 
 
-{: .black-code}
+
 ```
 GET /test/parentcoll/1.2 HTTP/1.1
 
@@ -186,7 +186,7 @@ HTTP/1.1 200 OK
 In this example, we create two collections: `bands` and `albums`; of
 course, each band has a **1:N** relationship to albums.
 
-{: .black-code}
+
 ```
 PUT /bands HTTP/1.1
 
@@ -213,7 +213,7 @@ PUT /bands HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /albums HTTP/1.1
 
@@ -224,7 +224,7 @@ HTTP/1.1 201 CREATED
 
 Let's now create few albums:
 
-{: .black-code}
+
 ```
 PUT /albums/Disintegration HTTP/1.1 
 
@@ -233,7 +233,7 @@ PUT /albums/Disintegration HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /albums/Wish HTTP/1.1
 
@@ -242,7 +242,7 @@ PUT /albums/Wish HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /albums/Bloodflowers HTTP/1.1 
 
@@ -253,7 +253,7 @@ HTTP/1.1 201 CREATED
 
 Now we create the band referring these albums:
 
-{: .black-code}
+
 ```
 PUT /bands/The%20Cure HTTP/1.1 
 
@@ -267,7 +267,7 @@ If we now get The Cure document, we can notice the `albums` link: `/albums?filte
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
 
-{: .black-code}
+
 ```
 $ GET /bands/The%20Cure HTTP/1.1
 
@@ -290,7 +290,7 @@ HTTP/1.1 200 OK
 If we want to get the referenced document with httpie (or curl) we need
 to issue the following request:
 
-{: .black-code}
+
 ```
 GET /albums?filter="{'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"` HTTP/1.1
 ```
@@ -301,7 +301,7 @@ We'll resemble the previous example, but using an inverse relationship,
 i.e. the filed storing the relationship will be stored in the album
 documents.
 
-{: .black-code}
+
 ```
 PUT /bandsi HTTP/1.1 
 
@@ -310,7 +310,7 @@ PUT /bandsi HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ``` 
 PUT /albumsi HTTP/1.1
 { "descr":"albums published by music bands" }
@@ -320,7 +320,7 @@ HTTP/1.1 201 CREATED
 
 Let's now create few albums:
 
-{: .black-code}
+
 ```
 PUT /albumsi/Disintegration HTTP/1.1
 
@@ -329,7 +329,7 @@ PUT /albumsi/Disintegration HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ``` 
 PUT /albumsi/Wish HTTP/1.1
 
@@ -337,7 +337,7 @@ PUT /albumsi/Wish HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-{: .black-code}
+
 ```
 PUT /test/albumsi/Bloodflowers HTTP/1.1
 
@@ -348,7 +348,7 @@ HTTP/1.1 201 CREATED
 
 Now we create the band referred by these albums:
 
-{: .black-code}
+
 ```
 PUT /bandsi/The%20Cure HTTP/1.1
 
@@ -359,7 +359,7 @@ HTTP/1.1 201 CREATED
   
 If we now get "The Cure" document, we can notice the `albums` link: `/albumsi?filter={'band':'The Cure'}`
 
-{: .black-code}
+
 ```
 GET /test/bandsi/The%20Cure
 

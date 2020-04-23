@@ -31,7 +31,7 @@ Please [contact us](https://restheart.org/contact/) for any question.
 
 After downloading the the [RESTHeart Platform](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-core.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
 
-{: .black-code}
+
 ```bash
 $ unzip restheart-platform-4.0.zip
 $ cd restheart-platform-4.0
@@ -49,7 +49,7 @@ $ mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile
 
 Then it's possible to use it as a Maven dependency:
 
-{: .black-code}
+
 ```xml
 <dependency>
     <groupId>com.restheart</groupId>
@@ -62,7 +62,7 @@ Then it's possible to use it as a Maven dependency:
 
 The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package artifacts into a single uber-jar, including all dependencies.
 
-{: .black-code}
+
 ``` xml
 <project>
 
@@ -125,7 +125,7 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
 
 After downloading the the [RESTHeart Platform](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-security.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
 
-{: .black-code}
+
 ```bash
 $ unzip restheart-platform-4.0.zip
 $ cd restheart-platform-4.0
@@ -143,7 +143,7 @@ $ mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile
 
 Then it's possible to use it as a Maven dependency:
 
-{: .black-code}
+
 ```xml
 <dependency>
     <groupId>com.restheart</groupId>
@@ -156,7 +156,7 @@ Then it's possible to use it as a Maven dependency:
 
 The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package artifacts into a single uber-jar, including all dependencies.
 
-{: .black-code}
+
 ``` xml
 <project>
 

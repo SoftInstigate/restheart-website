@@ -74,7 +74,7 @@ the REQUEST phase. Looking at the *args* argument we can figure out that
 the request json data will be transformed adding the *log* object with
 the username of authenticated user and its remote ip.
 
-{: .black-code}
+
 ```
 PUT /rtsexample HTTP/1.1
 
@@ -84,7 +84,7 @@ PUT /rtsexample HTTP/1.1
 If we now create a document, we can see the *log* property stored in the
 document because it was injected by RESTHeart in the request data.
 
-{: .black-code}
+
 ```
 PUT /rtsexample/mydoc HTTP/1.1
 
@@ -93,7 +93,7 @@ PUT /rtsexample/mydoc HTTP/1.1
 HTTP/1.1 201 Created
 ```
 
-{: .black-code}
+
 ```
 GET /rtsexample/mydoc HTTP/1.1
 
@@ -120,7 +120,7 @@ Let's assume a collection called *filterExample*; we can remove
 the property `secret` from the response with the following
 filterProperties transformer.
 
-{: .black-code}
+
 ```
 PUT /filterExample HTTP/1.1
 
@@ -135,7 +135,7 @@ enforce a schema to the documents of a collection.
 The schema definition is passed via the checker metadata args property
 as an array of conditions. A condition has the following format
 
-{: .black-code}
+
 ```
 { "path": <json_path>, "type": <property_type>, "regex": <regex>, "nullable": boolean, "optional": boolean }
 ```
@@ -143,7 +143,7 @@ as an array of conditions. A condition has the following format
 If the type is 'object' the properties *mandatoryFields* and
 *optionalFields* apply as well:
 
-{: .black-code}
+
 ```
 { "path": <json_path>, "type": "object", "mandatoryFields": [ <field_names> ], "optionalFields": [ <field_names>] }
 ```
@@ -243,7 +243,7 @@ array.
 
 For example, given the following document:
 
-{: .black-code}
+
 ```
 {
     "_id": {
@@ -354,7 +354,7 @@ document to have following fields:
 </table>
 </div>
 
-{: .black-code}
+
 ```
 PUT /test/users HTTP/1.1
 
@@ -405,7 +405,7 @@ limit the maximum size of the uploaded file.
 The following example, creates a file bucket resource, limiting the file
 size from 64 to 32768 bytes:
 
-{: .black-code}
+
 ```
 PUT /test/icons.files HTTP/1.1
 

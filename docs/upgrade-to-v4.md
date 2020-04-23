@@ -5,24 +5,24 @@ title: Upgrade to RESTHeart v4
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
-- [Architecture](#architecture)
-- [New features](#new-features)
-- [Default configuration](#default-configuration)
-  - [core](#core)
-  - [security](#security)
-- [Representation Format](#representation-format)
-  - [RESTHeart v3](#restheart-v3)
-  - [RESTHeart Platform v4](#restheart-platform-v4)
-- [Plugins Development](#plugins-development)
-  - [Core Plugins](#core-plugins)
-  - [Security Plugins](#security-plugins)
-- [HAL browser removed](#hal-browser-removed)
+-   [Introduction](#introduction)
+-   [Architecture](#architecture)
+-   [New features](#new-features)
+-   [Default configuration](#default-configuration)
+    -   [core](#core)
+    -   [security](#security)
+-   [Representation Format](#representation-format)
+    -   [RESTHeart v3](#restheart-v3)
+    -   [RESTHeart Platform v4](#restheart-platform-v4)
+-   [Plugins Development](#plugins-development)
+    -   [Core Plugins](#core-plugins)
+    -   [Security Plugins](#security-plugins)
+-   [HAL browser removed](#hal-browser-removed)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -72,8 +72,8 @@ The RESTHeart team supports you. Check our [Services](/services) for free and pr
 
 RESTHeart Platform v4 introduces two main new features:
 
-* [Change Streams](/docs/change-streams) to handle real-time data streams via WebSocket connections.
-* [Transactions](/docs/transactions) to handle multi-document transactions.
+-   [Change Streams](/docs/change-streams) to handle real-time data streams via WebSocket connections.
+-   [Transactions](/docs/transactions) to handle multi-document transactions.
 
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
@@ -89,7 +89,7 @@ RESTHeart Platform v4 introduces two main new features:
 RESTHeart Platform 4 has some different default values.
 
 {: .alert.alert-info }
-The default configuration applies starting restheart-platform-core either without specifying a configuration file or specifying the parametric configuration file  `restheart.yml` with the properties file `default.properties`
+The default configuration applies starting restheart-platform-core either without specifying a configuration file or specifying the parametric configuration file `restheart.yml` with the properties file `default.properties`
 
 {: .alert.alert-info }
 You can start RESTHeart Platform v4 with v3 backward compatible settings using the properties file `bwcv3.properties`
@@ -128,11 +128,10 @@ Examples follows:
 
 ### RESTHeart v3
 
-{: .black-code}
 ```
 # read metadata and documents of collection restheart.coll -> GET /restheart/coll
 
-{ "_embedded": [ 
+{ "_embedded": [
     { <doc_1> },
     { <doc_2> },
     ...,
@@ -151,11 +150,10 @@ Examples follows:
 
 ### RESTHeart Platform v4
 
-{: .black-code}
 ```
 # read documents of collection restheart.coll -> GET /coll
 
-[ 
+[
     { <doc_1> },
     { <doc_2> },
     ...,
@@ -183,13 +181,12 @@ The new Java API to extend RESTHeart has been improved in such a way that it is 
 
 ### Core Plugins
 
-*Transformers*, *Hooks*, *Checkers* and *Services* (aka *Logic Handlers*) are implemented extending interfaces that are identical to the legacy ones, with the exceptions that they were moved to the more meaningful package `org.restheart.plugins`.
+_Transformers_, _Hooks_, _Checkers_ and _Services_ (aka _Logic Handlers_) are implemented extending interfaces that are identical to the legacy ones, with the exceptions that they were moved to the more meaningful package `org.restheart.plugins`.
 
 The configuration of custom plugins has been simplified. Rather that declaring the implementation classes in the configuration file, plugins are registered using the `@RegisterPlugin` annotation. Plugins can optionally have a options set in the configuration file. An example follows.
 
 **Ping service implementation**
 
-{: .black-code}
 ```java
 @RegisterPlugin(name = "pingService",
         description = "Ping service")
@@ -204,11 +201,11 @@ public class PingService extends Service {
     public PingService(Map<String, Object> confArgs) {
         super(confArgs);
 
-        this.msg =  confArgs != null  && confArgs.containsKey("msg") 
-                ? (String) confArgs.get("msg") 
+        this.msg =  confArgs != null  && confArgs.containsKey("msg")
+                ? (String) confArgs.get("msg")
                 : "ping";
     }
-    
+
     @Override
     public String defaultUri() {
         return "/ping";
@@ -231,27 +228,28 @@ public class PingService extends Service {
         } else {
             context.setResponseStatusCode(HttpStatus.SC_NOT_IMPLEMENTED);
         }
-        
+
         next(exchange, context);
     }
 }
 ```
+
 **Ping service optional configuration**
 
-{: .black-code}
 ```yml
-  pingService:
+pingService:
     #uri: "/hello"
     msg: Hello World!
 ```
 
 ### Security Plugins
 
-Security can be extended much easier compared to v3 and more types of security plugins are available: *Authentication Mechanisms*, *Authenticators*, *Authorizers*, *Token Managers*, *Services*, *Initializers* and *Interceptors*.
+Security can be extended much easier compared to v3 and more types of security plugins are available: _Authentication Mechanisms_, _Authenticators_, _Authorizers_, _Token Managers_, _Services_, _Initializers_ and _Interceptors_.
 
 {: .jumbotron}
+
 > it is so easy implementing the security layer with restheart-security and it is so complete that we expect it to be used by other projects
-*Andrea Di Cesare*
+> _Andrea Di Cesare_
 
 {: .alert.alert-info}
 The main reason behind the RESTHeart Platform being split in two micro-services versus the monolithic architecture of RESTHeart 3 was simplifying and hardening the implementation of the security layer.
@@ -265,4 +263,4 @@ The HAL browser has been removed, since the project is no longer maintained.
 {: .bs-callout.bs-callout-info }
 RESTHeart Platform v5 will include an Admin Web application that will replace it.
 
-An online alternative that we suggest is <a href="http://restninja.io" target="_blank">http://restninja.io</a> 
+An online alternative that we suggest is <a href="http://restninja.io" target="_blank">http://restninja.io</a>

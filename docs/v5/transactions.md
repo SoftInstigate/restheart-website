@@ -63,7 +63,7 @@ Sessions are available also in the OS version of RESTHeart. RESTHeart Platform a
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 POST /_sessions { "causallyConsistent": true} HTTP/1.1
 ```
@@ -72,7 +72,7 @@ POST /_sessions { "causallyConsistent": true} HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
@@ -90,7 +90,7 @@ The *causallyConsistent* property is optional, true by default.
 
 The session id is returned via the *Location* response header. In this case 
 
-{: .black-code }
+
 ``` 
 sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 ```
@@ -103,7 +103,7 @@ Requests can be executed in a session using the |`sid` query parameter.
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 {"foo": "bar"}
@@ -113,7 +113,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 201 Created
 ```
@@ -122,7 +122,7 @@ HTTP/1.1 201 Created
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 ```
@@ -131,7 +131,7 @@ GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 200 OK
 ```
@@ -178,7 +178,7 @@ The following POST request starts the transaction in session `11c3ceb6-7b97-4f34
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
 ```
@@ -187,7 +187,7 @@ POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 201 Created
 Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1
@@ -196,7 +196,7 @@ Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_
 
 Note that the `Location` response header returns the id of the transaction or `txn`. In this case:
 
-{: .black-code }
+
 ```
 txn=1
 ```
@@ -207,7 +207,7 @@ txn=1
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns
 ```
@@ -216,7 +216,7 @@ GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 200 Ok
 ...
@@ -237,7 +237,7 @@ Requests can be executed in the transaction using the `sid` and `txn` query para
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 
@@ -248,7 +248,7 @@ POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 201 Created
 ```
@@ -257,7 +257,7 @@ HTTP/1.1 201 Created
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 ```
@@ -266,7 +266,7 @@ GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 200 Ok
 ```
@@ -279,7 +279,7 @@ Use the method PATCH to commit the transaction.
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 PATCH /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
@@ -288,7 +288,7 @@ PATCH /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 200 OK
 ```
@@ -301,7 +301,7 @@ Use the method DELETE to abort the transaction.
     type="Request" 
 %}
 
-{: .black-code }
+
 ``` http
 DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
@@ -310,7 +310,7 @@ DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
     type="Response" 
 %}
 
-{: .black-code }
+
 ``` http
 HTTP/1.1 204 No Content
 ```

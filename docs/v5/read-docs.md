@@ -48,7 +48,7 @@ To GET documents in the collection, run the following:
     link="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0"
 %}
 
-{: .black-code}
+
 ```
 GET /inventory HTTP/1.1
 ```
@@ -75,7 +75,7 @@ for more information.
     link="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/3"
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?page=2&pagesize=3 HTTP/1.1
 ```
@@ -125,7 +125,7 @@ managed automatically by RESTHeart) are not affected by this option.
     link="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0"
 %}
 
-{: .black-code}
+
 ```
 GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
 ```
@@ -138,7 +138,7 @@ GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
     link="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]} HTTP/1.1
 ```
@@ -179,7 +179,7 @@ Use `_size` keyword after the collection path to retrieve the number of document
     link="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/1"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory/_size?filter={"status":"A"} HTTP/1.1
 ```
@@ -206,7 +206,7 @@ starting with \_ that are managed automatically by RESTHeart).
 
 The `sort` simplified format is :
 
-{: .black-code}
+
 ```
 sort=[ |-]<fieldname>
 ```
@@ -219,7 +219,7 @@ expression](https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor
 JSON expression format is available starting from version 2.0.1. See
 improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 
-{: .black-code}
+
 ```
 sort={"field": 1}
 ```
@@ -269,7 +269,7 @@ sort={"field": 1}
     link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?sort=status HTTP/1.1
 ```
@@ -294,7 +294,7 @@ GET /inventory?sort={"status":1} HTTP/1.1
     link="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?sort=-status HTTP/1.1
 ```
@@ -320,7 +320,7 @@ GET /inventory?sort={"status":-1} HTTP/1.1
     link="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?sort=status&sort=-qty HTTP/1.1
 ```
@@ -350,7 +350,7 @@ This is only possible with json expression format
     link="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0"
 %}
 
-{: .black-code}
+
 ``` http
 PUT /inventory/_indexes/text HTTP/1.1
 
@@ -365,7 +365,7 @@ PUT /inventory/_indexes/text HTTP/1.1
     link="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}} HTTP/1.1
 ```
@@ -405,7 +405,7 @@ managed automatically by RESTHeart) are not affected by this option.
     link="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?keys={'item':1} HTTP/1.1
 ```
@@ -417,7 +417,7 @@ GET /inventory?keys={'item':1} HTTP/1.1
     link="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?keys={'item':0} HTTP/1.1
 ```
@@ -429,7 +429,7 @@ GET /inventory?keys={'item':0} HTTP/1.1
     link="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?keys={'item':1}&keys={'qty':1} HTTP/1.1
 ```
@@ -469,7 +469,7 @@ The following example returns all documents in the collection named **coll** usi
     link="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?hint={'item':1} HTTP/1.1
 ```
@@ -483,7 +483,7 @@ The following example returns the documents using the compound index on the **it
     link="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?hint=item&hint=-status HTTP/1.1
 ```
@@ -497,7 +497,7 @@ The following example returns the documents using a forwards collection scan.
     link="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?hint={'$natural':1} HTTP/1.1
 ```
@@ -511,7 +511,7 @@ The following example returns the documents using a reverse collection scan.
     link="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0"
 %}
 
-{: .black-code}
+
 ``` http
 GET /inventory?hint={'$natural':-1} HTTP/1.1
 ``` 

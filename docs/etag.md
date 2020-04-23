@@ -5,11 +5,11 @@ title: ETag
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Introduction](#introduction)
-- [ETag for write requests](#etag-for-write-requests)
-- [ETag for web caching](#etag-for-web-caching)
-- [ETag policy](#etag-policy)
-- [An example with AngularJs](#an-example-with-angularjs)
+-   [Introduction](#introduction)
+-   [ETag for write requests](#etag-for-write-requests)
+-   [ETag for web caching](#etag-for-web-caching)
+-   [ETag policy](#etag-policy)
+-   [An example with AngularJs](#an-example-with-angularjs)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -22,15 +22,15 @@ title: ETag
 
 The **ETag** or **entity tag** is part of HTTP; it is used for:
 
-- **[Web cache](https://en.wikipedia.org/wiki/Web_cache) validation**,
-  and which allows a client to make conditional requests. This allows
-  caches to be more efficient, and saves bandwidth, as a web server
-  does not need to send a full response if the content has not
-  changed.
-- For **[optimistic concurrency
-  control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)** as
-  a way to help prevent ghost writes, i.e. simultaneous updates of a
-  resource from overwriting each other.
+-   **[Web cache](https://en.wikipedia.org/wiki/Web_cache) validation**,
+    and which allows a client to make conditional requests. This allows
+    caches to be more efficient, and saves bandwidth, as a web server
+    does not need to send a full response if the content has not
+    changed.
+-   For **[optimistic concurrency
+    control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)** as
+    a way to help prevent ghost writes, i.e. simultaneous updates of a
+    resource from overwriting each other.
 
 RESTHeart automatically manages ETags, creating and updating them.
 
@@ -39,7 +39,6 @@ can note that any response includes the header ETag (other response
 headers are omitted for simplicity) and this is valid for any type of
 resource, included file resources.
 
-{: .black-code}
 ```bash
 PUT /test descr="a db for testing" HTTP/1.1
 HTTP/1.1 201 Created
@@ -75,9 +74,8 @@ request.
 Let's try to update the document at URI /test/coll/doc forcing the ETag
 check with the `checkEtag` query parameter.
 
-{: .black-code}
 ```
-PUT 127.0.0.1:8080/test/coll/doc?checkEtag HTTP/1.1 
+PUT 127.0.0.1:8080/test/coll/doc?checkEtag HTTP/1.1
 { "descry": "a document for testing but modified" }
 
 HTTP/1.1 409 Conflict
@@ -92,11 +90,10 @@ Note that the _ETag_ header is present in the response.
 
 Let's try to pass now a wrong ETag via the _If-Match_ request header
 
-{: .black-code}
 ```
 PUT 127.0.0.1:8080/test/coll/doccheckEtag HTTP/1.1
-If-Match:wrong_etag 
-{ "desc":"a document for testing but modified"} 
+If-Match:wrong_etag
+{ "desc":"a document for testing but modified"}
 
 HTTP/1.1 412 Precondition Failed
 ...
@@ -110,9 +107,8 @@ Again the correct ETag header is present in the response.
 
 Let's try to pass now the correct ETag via the *If-Match* request header
 
-{: .black-code}
 ```
-PUT /test/coll/doc?checkEtag HTTP/1.1 
+PUT /test/coll/doc?checkEtag HTTP/1.1
 If-Match:55e84c0ac2e66d1e0a8e46b4
 {"descr":"a document for testing but modified"}
 
@@ -135,7 +131,6 @@ request header. In case the resource state has not been modified
 Not Modified*, without passing back the data and thus saving bandwidth.
 This is especially useful for file resources.
 
-{: .black-code}
 ```
 GET /test/coll/doc HTTP/1.1
 HTTP/1.1 200 OK
@@ -156,18 +151,17 @@ RESTHeart has a default configurable ETag checking policy.
 The following configuration file snippet defines the default ETag check
 policy:
 
-- The policy applies for databases, collections (also applies to file
-  buckets) and documents.
-- valid values are REQUIRED, REQUIRED_FOR_DELETE, OPTIONAL
+-   The policy applies for databases, collections (also applies to file
+    buckets) and documents.
+-   valid values are REQUIRED, REQUIRED_FOR_DELETE, OPTIONAL
 
 It defines when the ETag check is mandatory.
 
-{: .black-code}
 ```yml
 etag-check-policy:
-  db: REQUIRED_FOR_DELETE
-  coll: REQUIRED_FOR_DELETE
-  doc: OPTIONAL
+    db: REQUIRED_FOR_DELETE
+    coll: REQUIRED_FOR_DELETE
+    doc: OPTIONAL
 ```
 
 The ETag checking policy can also be modified at request level with the
@@ -178,7 +172,6 @@ For instance specifying the following collection metadata, the ETag will
 be checked for all write requests on the collection resources and its
 documents.
 
-{: .black-code}
 ```
 {
   "etagPolicy": "REQUIRED",
@@ -193,7 +186,6 @@ If the client wants to make sure that a write request only creates
 documents without updating them, it can send a random ETag; in case the
 resource does not exist, the ETag is not checked anyway.
 
-{: .black-code}
 ```
 PUT /db/coll/doc?checkEtag HTTP/1.1
 If-Match:x
@@ -213,19 +205,18 @@ It allows to create and edit notes.
 The following is a snippet the controller
 [notes.js ](https://github.com/SoftInstigate/restheart-notes-example/blob/master/app/scripts/controllers/notes.js)
 
-{: .black-code}
 ```js
-$scope.updateNote = function() {
-  if (angular.isUndefined($scope.selected)) {
-    return;
-  }
-  $scope.selected.date = { $date: Date.now() };
-  $scope.selected
-    .put(null, { "If-Match": $scope.selected._etag.$oid })
-    .then(function(res) {
-      delete dirties[$scope.selected._id.$oid];
-      $scope.loadNotes(true);
-    });
+$scope.updateNote = function () {
+    if (angular.isUndefined($scope.selected)) {
+        return;
+    }
+    $scope.selected.date = { $date: Date.now() };
+    $scope.selected
+        .put(null, { 'If-Match': $scope.selected._etag.$oid })
+        .then(function (res) {
+            delete dirties[$scope.selected._id.$oid];
+            $scope.loadNotes(true);
+        });
 };
 ```
 

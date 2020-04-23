@@ -2,16 +2,17 @@
 layout: docs
 title: Configuration
 ---
+
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Configuration files](#configuration-files)
-- [Updating configuration in Docker containers](#updating-configuration-in-docker-containers)
-- [Important configuration options](#important-configuration-options)
+-   [Configuration files](#configuration-files)
+-   [Updating configuration in Docker containers](#updating-configuration-in-docker-containers)
+-   [Important configuration options](#important-configuration-options)
 
-- [Parametric configuration](#parametric-configuration)
-  - [Environment variables](#environment-variables)
-  - [Command line parameters](#command-line-parameters)
-    
+-   [Parametric configuration](#parametric-configuration)
+    -   [Environment variables](#environment-variables)
+    -   [Command line parameters](#command-line-parameters)
+
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -25,20 +26,17 @@ Specifying the configuration files is optional; without them the processes run w
 
 `restheart-platform-core` and `restheart-platform-security` are configured via configuration and properties files. Configuration files can be parametric and merged with a set of properties to get the final values.
 
-{: .black-code}
-```
+```bash
 $ java -jar restheart-platform-core.jar <configuration-file> -e <properties-file>
-
 $ java -jar restheart-platform-security.jar <configuration-file> -e <properties-file>
 ```
 
 {: .bs-callout.bs-callout-warning }
-__Note__: properties files for `restheart-platform-security` are available starting from Platform release 4.1.
+**Note**: properties files for `restheart-platform-security` are available starting from Platform release 4.1.
 
 It's also possible to pass both the `restheart-platform-core`'s environment properties and configuration file respectively via the `RESTHEART_ENVFILE` and `RESTHEART_CONFFILE` environment variables or Java properties, for example:
 
-{: .black-code}
-```
+```bash
 $ export RESTHEART_ENVFILE=etc/restheart-platform-core.yml
 $ export RESTHEART_CONFFILE=etc/core.properties
 ```
@@ -47,7 +45,7 @@ For RESTHeart Security use the equivalent `RESTHEART_SECURITY_CONFFILE` environm
 
 The RESTHeart Platform the configuration files are under the `etc/` folder.
 
-__Core configuration__
+**Core configuration**
 
 {: .table.table-responsive }
 |file|description|
@@ -58,7 +56,7 @@ __Core configuration__
 |`etc/core-bwcv3.properties`|run restheart-platform-core in backward compatibility mode|
 |`etc/core-docker.properties`|used by the Docker container|
 
-__Security configuration__
+**Security configuration**
 
 {: .table.table-responsive }
 |file|description|
@@ -77,18 +75,17 @@ Be aware that before 4.1.10 the properties files have a slightly different names
 
 The configuration files used by the Docker containers are:
 
-- `etc/restheart-platform-core.yml`
-- `etc/restheart-platform-security.yml`
+-   `etc/restheart-platform-core.yml`
+-   `etc/restheart-platform-security.yml`
 
 The properties files used by the Docker containers are:
 
-- `etc/core-docker.properties`
-- `etc/security-docker.properties`
+-   `etc/core-docker.properties`
+-   `etc/security-docker.properties`
 
-**Important**  if a configuration or property file is modified, the containers must be rebuilt for changes to take effect:
+**Important** if a configuration or property file is modified, the containers must be rebuilt for changes to take effect:
 
-{: .black-code}
-```
+```bash
 $ docker-compose up --build
 ```
 
@@ -103,7 +100,7 @@ All the important configuration options of `resthart-platform-core` are defined 
 {: .table.table-responsive }
 |property|default|description|
 |-|-|-|-|
-|*Listeners section*|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
+|_Listeners section_|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
 |instance-name|default|name of this instance of `resthart-platform-core`|
 |default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query parameters is not specified|
 |mongo-uri|mongodb://127.0.0.1|the <a href="https://docs.mongodb.com/manual/reference/connection-string/" target="_blank">MongoDB connection string</a>|
@@ -131,14 +128,13 @@ For security reasons RESTHeart by default binds only on `localhost`, so it won't
 {: .bs-callout.bs-callout-info }
 Until version 4.0, only `restheart-platform-core.yml` can make use of parameters. This feature has also been extended to `restheart-platform-security.yml` starting from version 4.1.
 
-It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter). 
+It is possible to pass an optional [properties file](https://docs.oracle.com/javase/tutorial/essential/environment/properties.html) (following the Java Properties syntax) as a startup parameter, via a OS environment variable or via a Java property (which you can pass to the JVM with the "-D" command line parameter).
 
 This has proven to be very useful when RESTHeart is deployed in several environments and the configuration files are just slightly different among the environments. In the past was necessary to copy and paste any modification on all the YAML configuration files, but now you can have a single parametric YAML file, with a set of small, different properties files for each environment.
 
 For example, the `core.properties` file in `etc/` folder contains the following properties:
 
-{: .black-code}
-``` properties
+```properties
 ## RESTHeart Configuration - development properties.
 # Documentation: https://restheart.org/docs/configuration
 
@@ -161,7 +157,7 @@ default-representation-format = STANDARD
 
 mongo-uri = mongodb://127.0.0.1
 
-# The MongoDb resource to bind to the root URI / 
+# The MongoDb resource to bind to the root URI /
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart
 
@@ -182,8 +178,7 @@ worker-threads: 32
 
 The [restheart-platform-core.yml](https://gist.github.com/ujibang/d6256c8fcc3f67240e053b2bcc89c4d4) file contains the above parameters, expressed with the "Mustache syntax" (triple curly braces to indicate parametric values). Have a look at the below fragment for an example:
 
-{: .black-code}
-``` properties
+```properties
 {% raw %}
 instance-name: {{{instance-name}}}
 
@@ -212,56 +207,51 @@ Of course, you can decide which values in ``restheart-platform-core.yml` you wan
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
-{: .black-code}
-``` bash
+```bash
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml --envfile etc/core.properties
 ```
 
 Alternatively, pass the envfile path via `RESTHEART_ENVFILE` environment variable:
 
-{: .black-code}
-``` bash
+```bash
 $ export RESTHEART_ENVFILE=etc/core.properties
 $ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml
 ```
 
 This approach allows to share one single configuration file among several environments. For example, one could create `core-dev.properties`, `core-test.properties` and `core-production.properties`, one for each environment, with one single common `restheart-platform-core.yml` configuration file.
 
-### Environment variables ###
+### Environment variables
 
 Is is possible to override any **primitive type parameter** in `restheart-platform-core.yml` with an environment variable. Primitive types are:
 
- - String
- - Integer
- - Long
- - Boolean
-  
- For example, the parameter `mongo-uri` in the YAML file can be overridden by exporting a `MONGO_URI` environment variable:
+-   String
+-   Integer
+-   Long
+-   Boolean
 
-{: .black-code}
+For example, the parameter `mongo-uri` in the YAML file can be overridden by exporting a `MONGO_URI` environment variable:
+
 ```bash
 $ export MONGO_URI="mongodb://127.0.0.1"
 ```
 
 The following log entry appears at the very beginning of logs during the startup process:
 
-{: .black-code}
 ```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
 
 A shell environment variable is equivalent to a YAML parameter in `restheart-platform-core.yml`, but it's all uppercase and `'-'` (dash) are replaced with `'_'` (underscore).
 
-__Remember__: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
+**Remember**: _environment variables replacement doesn't work with YAML structured data in configuration files, like arrays or maps. You must use properties files and mustache syntax for that._
 
-### Command line parameters ###
+### Command line parameters
 
 To know the available CLI parameters, run RESTHeart with `--help`:
 
-{: .black-code}
-```
+```bash
 $ java -jar target/restheart.jar --help
-Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options] 
+Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options]
       <Configuration file>
   Options:
     --envFile, --envfile, -e
