@@ -1,6 +1,6 @@
 ---
 layout: page-notitle
-title: Get RESTHeart Platform
+title: Get RESTHeart
 permalink: /get
 ---
 
