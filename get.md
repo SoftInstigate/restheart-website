@@ -12,34 +12,85 @@ permalink: /get
     <p class="mx-auto display-5 restheart-red">Open Source Edition</p>
 </div>
 
-<div class="text-center mb-2">
-Run RESTHeart stack with Docker in minutes
-</div>
+## Prerequisites
 
-<pre class="black-code">
-    <code class="language-bash hljs">
-<span class="hljs-comment"># 1 - create a new directory
-$ mkdir <span class="hljs-string">restheart</span> && cd <span class="hljs-string">restheart</span></span>
+You need:
 
-<span class="hljs-comment"># 2 - download the restheart docker-compose file</span>
-$ curl <span class="hljs-string">https://raw.githubusercontent.com/SoftInstigate/restheart/4.1.x/docker-compose.yml --output docker-compose.yml</span>
+-   JDK 11
+-   MongoDB
 
-<span class="hljs-comment"># 3 - run the stack</span>
-$ docker-compose up -d --no-build
+For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB documentation.
+
+## Download RESTHeart
+
+Download either the zip or tar.gz archive
+
+[zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip){: .btn btn-md}
+[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz){: .btn btn-md}
+
+If you choose to download either the zip or tar archive:
+
+Un-zip
+
+```bash
+$ unzip restheart.zip
+```
+
+Or un-tar
+
+```bash
+$ tar -xzf restheart.tar.gz
+```
+
+Configuration files are under the `etc/` folder:
+
+```
+.
+├── etc/
+│   ├── acl.yml
+│   ├── default.properties
+│   ├── restheart.yml
+│   └── users.yml
+├── plugins/
+│   ├── restheart-mongodb.jar
+│   └── restheart-security.jar
+└── restheart.jar
+```
+
+## Run RESTHeart
+
+By default, RESTHeart will look for a __running MongoDB__ instance on `localhost`, port `27017`.
+
+```bash
+$ cd restheart
+
+$ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
+```
+
+To check that RESTHeart is up and running, open the URL [http://localhost:8080/ping](http://localhost:8080/ping), you should see the message: "Greetings from RESTHeart!".
+
+## Run with Docker
+
+```bash
+# 1 - create a new directory
+$ mkdir restheart && cd restheart
+
+# 2 - download the restheart docker-compose file
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+
+# 3 - run the stack
+$ docker-compose up -d
 ...
-Creating restheart-mongo ... <span class="text-success">done</span>
-Creating restheart       ... <span class="text-success">done</span>
-Creating restheart-security ... <span class="text-success">done</span>
-    </code>
-</pre>
+Creating restheart-mongo ... done
+Creating restheart       ... done
+```
 
 <div class="alert alert-success mt-0" role="alert">
     As soon as RESTHeart starts, you can jump to the <a href="/docs/tutorial/">tutorial</a>
 </div>
 
 <div class="alert text-muted">
-    <p>Can't use Docker? Check out <a href="https://github.com/SoftInstigate/restheart#run-manually" target="_blank">Run RESTHeart manually</a></p>
-    <p>Source code available at <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> and <a href="https://github.com/SoftInstigate/restheart-security" target="_blank">RESTHeart Security</a> GitHub repositories</p>
+    <p>Source code available at <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> GitHub repo</p>
 </div>
 
 <div class="alert alert-info mt-0" role="alert">
