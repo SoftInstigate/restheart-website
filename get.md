@@ -28,9 +28,7 @@ Download either the zip or tar.gz archive
 [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip){: .btn btn-md}
 [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz){: .btn btn-md}
 
-If you choose to download either the zip or tar archive:
-
-Un-zip
+Either un-zip
 
 ```bash
 $ unzip restheart.zip
@@ -42,7 +40,9 @@ Or un-tar
 $ tar -xzf restheart.tar.gz
 ```
 
-Configuration files are under the `etc/` folder:
+The archive will uncompress in the `restheart/` folder. Configuration files are in the `etc/` folder, while extensions are in the `plugins/` folder. You'll see the main `restheart.jar` file in the root.
+
+See the directory' structure:
 
 ```
 .
