@@ -14,35 +14,41 @@ permalink: /get
 
 ## Prerequisites
 
-You need:
+To run RESTHeart connected to a local instance of MongoDB you need:
 
--   JDK 11
--   MongoDB
+-   At least Java v11;
+-   MongoDB v3 or v4 running on `localhost` on port `27017`.
 
-For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB documentation.
+For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
 
 ## Download RESTHeart
 
-Download either the zip or tar.gz archive
+Download either the [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip) or the [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz) archive:
 
 [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip){: .btn btn-md}
 [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz){: .btn btn-md}
 
-Either un-zip
+Un-zip it
 
 ```bash
 $ unzip restheart.zip
 ```
 
-Or un-tar
+Or un-tar it
 
 ```bash
 $ tar -xzf restheart.tar.gz
 ```
 
-The archive will uncompress in the `restheart/` folder. Configuration files are in the `etc/` folder, while extensions are in the `plugins/` folder. You'll see the main `restheart.jar` file in the root.
+The archive will uncompress in the `restheart/` folder. 
 
-See the directory' structure:
+```bash
+$ cd restheart
+```
+
+Configuration files are in the `etc/` folder, while extensions are in the `plugins/` folder. You'll see the main `restheart.jar` file in the root.
+
+See the whole directory tree:
 
 ```
 .
@@ -62,12 +68,12 @@ See the directory' structure:
 By default, RESTHeart will look for a __running MongoDB__ instance on `localhost`, port `27017`.
 
 ```bash
-$ cd restheart
-
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
 To check that RESTHeart is up and running, open the URL [http://localhost:8080/ping](http://localhost:8080/ping), you should see the message: "Greetings from RESTHeart!".
+
+Alternatively, use a command line HTTP client like [curl](https://curl.haxx.se) and [httpie](https://httpie.org) or a API client like [Postman](https://www.postman.com).
 
 ## Run with Docker
 
@@ -80,7 +86,8 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 
 # 3 - run the stack
 $ docker-compose up -d
-...
+Creating network "temp_restheart-backend" with the default driver
+Creating volume "temp_restheart-mongo-volume" with default driver
 Creating restheart-mongo ... done
 Creating restheart       ... done
 ```
