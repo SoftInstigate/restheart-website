@@ -88,6 +88,7 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 
 # 3 - run the stack
 $ docker-compose up -d
+
 Creating network "temp_restheart-backend" with the default driver
 Creating volume "temp_restheart-mongo-volume" with default driver
 Creating restheart-mongo ... done
