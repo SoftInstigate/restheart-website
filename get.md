@@ -21,6 +21,8 @@ To run RESTHeart connected to a local instance of MongoDB you need:
 
 For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
 
+To install Java for your operating system have a look at [this page](https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot).
+
 ## Download RESTHeart
 
 Download either the [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip) or the [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz) archive:
@@ -66,6 +68,8 @@ See the whole directory tree:
 ## Run RESTHeart
 
 By default, RESTHeart will look for a __running MongoDB__ instance on `localhost`, port `27017`.
+
+RESTHeart is distributed as a Java executable, it needs at least a Java 11 Runtime. Within the `restheart/` folder, execute the following command:
 
 ```bash
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
