@@ -77,6 +77,8 @@ Alternatively, use a command line HTTP client like [curl](https://curl.haxx.se) 
 
 ## Run with Docker
 
+If you prefer to run containers, RESTHeart is also distributed as a [public Docker image](https://hub.docker.com/r/softinstigate/restheart).
+
 ```bash
 # 1 - create a new directory
 $ mkdir restheart && cd restheart
