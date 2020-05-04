@@ -9,40 +9,46 @@ permalink: /get
 </div>
 
 <div class="form-row text-center mt-4">
-    <p class="mx-auto display-5 restheart-red">Open Source Edition</p>
+    <p class="mx-auto display-5 restheart-red">Download and Install RESTHeart Open Source</p>
 </div>
+
+> RESTHeart is a Java application which connects to __MongoDB__ and provides immediate access to all database features through a comprehensive **REST API**.
 
 ## Prerequisites
 
-To run RESTHeart connected to a local instance of MongoDB you need:
+To run RESTHeart you need:
 
--   At least Java v11;
--   MongoDB v3 or v4 running on `localhost` on port `27017`.
+-   **Java 11** (alternatively, you can just **[run it with Docker](#run-with-docker)**).
+-   **MongoDB** (or any API-compatible database).
 
-For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
+> RESTHeart can work with **any database compatible with the MongoDB API**. It has been tested with MongoDB Community and Enterprise (v2, v3 and v4), [Percona Server for MongoDB](https://www.percona.com/software/mongodb/percona-server-for-mongodb), [Microsoft Azure Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/mongodb-introduction) and [Amazon DocumentDB](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).
 
-To install Java for your operating system have a look at [this page](https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot).
+For more information on **how to install and run MongoDB** check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
 
-## Download RESTHeart
+-   To **install Java** for your operating system download it from [AdoptOpenJDK](https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot).
+-   Are you a Java developer and need to manage multiple JDK? We suggest to have a look at [SDKMAN!](https://sdkman.io)
+-   Do you have **Docker**? You can [run RESTHeart in a Docker container](#run-with-docker), even without Java!
 
-Download either the [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip) or the [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz) archive:
+## Download and Install RESTHeart
+
+To install RESTHeart and run it with Java you just have to download either the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip) or the [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz) file and uncompress it.
 
 [zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip){: .btn btn-md}
 [tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz){: .btn btn-md}
 
-Un-zip it
+Then un-zip it
 
 ```bash
 $ unzip restheart.zip
 ```
 
-Or un-tar it
+or un-tar it
 
 ```bash
 $ tar -xzf restheart.tar.gz
 ```
 
-The archive will uncompress in the `restheart/` folder. 
+The archive will uncompress in the `restheart/` folder.
 
 ```bash
 $ cd restheart
@@ -67,21 +73,29 @@ See the whole directory tree:
 
 ## Run RESTHeart
 
-By default, RESTHeart will look for a __running MongoDB__ instance on `localhost`, port `27017`.
+By default, RESTHeart is configured to look for a **running MongoDB** instance on `localhost`, port `27017`.
 
-RESTHeart is distributed as a Java executable, it needs at least a Java 11 Runtime. Within the `restheart/` folder, execute the following command:
+-   RESTHeart needs at least the **Java 11 Runtime Environment**. It won't even start with older versions of Java.
+
+Within the `restheart/` folder, execute the following command:
 
 ```bash
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-To check that RESTHeart is up and running, open the URL [http://localhost:8080/ping](http://localhost:8080/ping), you should see the message: "Greetings from RESTHeart!".
+## Check it works
 
-Alternatively, use a command line HTTP client like [curl](https://curl.haxx.se) and [httpie](https://httpie.org) or a API client like [Postman](https://www.postman.com).
+To check that RESTHeart is up and running, open the URL [http://localhost:8080/ping](http://localhost:8080/ping). You will see the message:
+
+> Greetings from RESTHeart!
+
+Alternatively, you can open the above URL using a command line HTTP client like [curl](https://curl.haxx.se) and [httpie](https://httpie.org) or a API client like [Postman](https://www.postman.com).
 
 ## Run with Docker
 
-If you prefer to run containers, RESTHeart is also distributed as a [public Docker image](https://hub.docker.com/r/softinstigate/restheart).
+If you prefer to run with containers, RESTHeart is also distributed as a [public Docker image](https://hub.docker.com/r/softinstigate/restheart). In this case you don't need to install Java, it is already packaged in the Docker image.
+
+> With `docker-compose` you can run both RESTHeart and a dedicated MongoDB instance with a single command!
 
 ```bash
 # 1 - create a new directory
@@ -99,25 +113,31 @@ Creating restheart-mongo ... done
 Creating restheart       ... done
 ```
 
-<div class="alert alert-success mt-0" role="alert">
-    As soon as RESTHeart starts, you can jump to the <a href="/docs/tutorial/">tutorial</a>
-</div>
+Again, to check that RESTHeart is up and running, just open the URL [http://localhost:8080/ping](http://localhost:8080/ping).
 
-<div class="alert text-muted">
-    <p>Source code available at <a href="https://github.com/SoftInstigate/restheart" target="_blank">RESTHeart</a> GitHub repo</p>
-</div>
+## Tutorial
+
+As soon as RESTHeart is up and running, you can jump to the [tutorial](/docs/tutorial/).
+
+## Source code
+
+The full source code is available on [GitHub](https://github.com/SoftInstigate/restheart).
+
+RESTHeart is distributed under the terms of the OSI-approved AGPL v3 license. A commercial license is available upon request.
+
+## Editions
 
 <div class="alert alert-info mt-0" role="alert">
     <h2 class="alert-heading">Confused about editions?</h2>
     <hr class="my-2">
-    <p>RESTHeart <strong>is and will always be</strong> open source software.</p>
-    <p>There are paid editions of RESTHeart Platform that are distributed under a commercial license targeted to Enterprises. Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
+    <p>RESTHeart is a open source software.</p>
+    <p>There are paid editions of RESTHeart that are distributed under a commercial license targeted to Enterprises which are looking for dedicated technical support and additional functionalities. Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
 </div>
 
 <div id="platform" style="position: relative; top: -50px;"></div>
 
 <div class="form-row text-center mt-5">
-    <p class="mx-auto display-5 restheart-red">Try and Purchase Platform Edition</p>
+    <p class="mx-auto display-5 restheart-red">Try RESTHeart Platform Professional Edition</p>
 </div>
 
 <section class="mt-4 call-to-action">
@@ -129,7 +149,7 @@ Creating restheart       ... done
                 <h2 class="call-to-action__title">Trial</h2>
                 <p class="call-to-action__desc">
                 Get 30 days trial for free.
-                During the trial you can use RESTHeart Platform PE without restrictions.</p>
+                During the trial you can use RESTHeart Platform Professional without restrictions.</p>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
                 <svg class="call-to-action__icon">
