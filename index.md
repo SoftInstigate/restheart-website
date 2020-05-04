@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
@@ -12,9 +11,10 @@ layout: default
 
 <div>
 
-<div class="jumbotron bg-red text-white text-center mt-3 py-4">
-    <div class="lead">Don't be shy and join us on our free <strong>Happy Hour</strong> video chats about RESTHeart.</div>
-    <a href="{{ "/support" | prepend: site.baseurl }}" class="btn btn-o-white mt-3 btn-m">More info</a>
+<div class="jumbotron bg-white text-white text-center mt-3 py-4">
+    <a href="https://mongodbworld2020.sched.com/event/b2Hz">
+        <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
+    </a>
 </div>
 
 <section class="cd-intro mt-5 mb-2">
@@ -37,10 +37,9 @@ layout: default
         </span>
     </h1>
     <div class="d-flex justify-content-center">
-        <a href="#usecases" class="btn ml-1 mt-3 btn-md">LEARN
-            MORE</a>
-        <a href="{{ "/get" | prepend: site.baseurl }}"
-            class="btn ml-3 mt-3 btn-md">Download</a>
+        <a href="#usecases" class="btn bg-info ml-1 mt-3 btn-md">LEARN MORE</a>
+        <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
+        <a href="{{ "/support" | prepend: site.baseurl }}" class="btn bg-warning ml-1 mt-3 btn-md">SUPPORT</a>
     </div>
 </section>
 
