@@ -19,7 +19,7 @@ title: Setup
 {% include docs-head.html %} 
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading">This page applies to the RESTHeart Platform Profession Edition</h2>
+    <h2 class="alert-heading">This page applies to the RESTHeart Platform Professional Edition</h2>
     <hr class="my-2">
     Confused on which version to choose? Check our <a href="{{ "/faq/#os-vs-pe" | prepend: site.baseurl }}" class="alert-link">FAQs</a> to learn more about the main differences between editions.
     <p class="mt-2">
