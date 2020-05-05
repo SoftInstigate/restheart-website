@@ -11,13 +11,13 @@ layout: default
 
 <div>
 
-<div class="jumbotron bg-white text-white text-center mt-3 py-4">
+<div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
     <a href="https://mongodbworld2020.sched.com/event/b2Hz">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>
 </div>
 
-<section class="cd-intro mt-5 mb-2">
+<section class="cd-intro mt-0 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
@@ -36,8 +36,8 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-    <div class="d-flex justify-content-center">
-        <a href="#usecases" class="btn bg-info ml-1 mt-3 btn-md">LEARN MORE</a>
+    <div class="d-flex flex-wrap justify-content-center mx-0">
+        <a href="#usecases" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
         <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
         <a href="{{ "/support" | prepend: site.baseurl }}" class="btn bg-warning ml-1 mt-3 btn-md">SUPPORT</a>
     </div>
