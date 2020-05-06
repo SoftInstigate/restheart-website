@@ -31,10 +31,10 @@ For more information on **how to install and run MongoDB** check the [Installati
 
 ## Download and Install RESTHeart
 
-To install RESTHeart and run it with Java you just have to download either the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip) or the [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz) file and uncompress it.
+To install RESTHeart and run it with Java you just have to download either the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.0.0/restheart.zip) or the [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.0.0/restheart.tar.gz) file and uncompress it.
 
-[zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.zip){: .btn btn-md}
-[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0-RC4/restheart.tar.gz){: .btn btn-md}
+[zip](https://github.com/SoftInstigate/restheart/releases/download/5.0.0/restheart.zip){: .btn btn-md}
+[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.0.0/restheart.tar.gz){: .btn btn-md}
 
 Then un-zip it
 
