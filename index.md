@@ -96,15 +96,6 @@ layout: default
     </div>
 </section>
 
-<div class="anchor-offset" id="usecases">
-</div>
-<section id="usecases" class="slice bg-white">
-    <div class="container">
-        <h1 class="text-center restheart-red">Use Cases</h1>
-        {% include use-cases.html %}
-    </div>
-</section>
-
 <section class="chart mt-3" id="chart">
 
     {% include docker_pull_chart.html %}
