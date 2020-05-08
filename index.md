@@ -37,7 +37,7 @@ layout: default
         </span>
     </h1>
     <div class="d-flex flex-wrap justify-content-center mx-0">
-        <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">DOCUMENTATION</a>
+        <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
         <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
         <a href="{{ "/support" | prepend: site.baseurl }}" class="btn bg-warning ml-1 mt-3 btn-md">SUPPORT</a>
     </div>
