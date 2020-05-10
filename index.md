@@ -5,7 +5,7 @@ layout: default
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
         <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">REST API for MongoDB</h2>
-        <h5 class="mt-2 ml-3 ml-md-5 top-2 text-lightgreen  text-break">For developers with deadlines</h5>
+        <h5 class="mt-2 ml-3 ml-md-5 top-2 restheart-red text-break">For developers with deadlines</h5>
     </section>
 </section>
 
@@ -39,7 +39,6 @@ layout: default
     <div class="d-flex flex-wrap justify-content-center mx-0">
         <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
         <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
-        <a href="{{ "/support" | prepend: site.baseurl }}" class="btn bg-warning ml-1 mt-3 btn-md">SUPPORT</a>
     </div>
 </section>
 
