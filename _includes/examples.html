@@ -119,9 +119,8 @@ const url = encodeURI('https://beta.mrest.io/demo/messages?filter={"from":"Bob"}
 
 fetch(url, { headers: {'key':'demo'} })
   .then(response => response.json())
-  .then(function(data) {
-    console.log(JSON.stringify(data));
-});
+  .then(json => JSON.stringify(json, null, 2))
+  .then(data => document.getElementById('app').innerHTML = data);
 
 {% endhighlight %}
                     </div>
