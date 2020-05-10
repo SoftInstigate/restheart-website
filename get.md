@@ -8,8 +8,10 @@ permalink: /get
     <p class="mx-auto display-4 restheart-red">GET /<img class="mr-auto" width="20%"  src="{{ '/images/rh_logo_vert.png' | prepend: site.baseurl }}" /></p>
 </div>
 
-<div class="form-row text-center mt-4">
-    <p class="mx-auto display-5 restheart-red">Download and Install RESTHeart Open Source</p>
+
+<div class="text-center mt-4">
+    <p class="mx-auto display-5 restheart-red">RESTHeart Open Source</p>
+    <p class="text-muteds small"><span class="far fa-bell text-success mr-2"></span> Looking for <mark>RESTHeart Platform</mark>? <a class="examples__linsk" href="#platform">Start a free 30 days Trial</a></p>
 </div>
 
 > RESTHeart is a Java application which connects to __MongoDB__ and provides immediate access to all database features through a comprehensive **REST API**.
@@ -137,7 +139,7 @@ RESTHeart is distributed under the terms of the OSI-approved AGPL v3 license. A 
 <div id="platform" style="position: relative; top: -50px;"></div>
 
 <div class="form-row text-center mt-5">
-    <p class="mx-auto display-5 restheart-red">Try RESTHeart Platform Professional Edition</p>
+    <p class="mx-auto display-5 restheart-red">RESTHeart Platform</p>
 </div>
 
 <section class="mt-4 call-to-action">
