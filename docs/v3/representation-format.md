@@ -126,7 +126,7 @@ HAL builds up on 2 simple concepts: **Resources** and **Links**
 
 ## Strict mode representations of BSON
 
-**RESTHeart** represents the state of MongoDb resources using
+**RESTHeart** represents the state of MongoDB resources using
 the [strict mode representations of
 BSON](https://docs.mongodb.org/manual/reference/mongodb-extended-json/) that
 conforms to the [JSON RFC](https://www.json.org/). 

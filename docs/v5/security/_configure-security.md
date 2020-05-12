@@ -223,7 +223,7 @@ You can use an [Initializer](/docs/v5/initializer) to add Global Security Predic
 
 The DbIdentityManager shipped with RESTHeart (class is
 *org.restheart.security.impl.DbIdentityManager*) authenticates users
-defined in a MongoDb collection.
+defined in a MongoDB collection.
 
 To use the DbIdentityManager, set the **idm** section of the yaml 
 configuration file as follows:
@@ -263,7 +263,7 @@ are used for authentication:
 3.  **roles**: (array of strings) the property holding the user roles
 
 The _cache-_ prefixed properties control the cache to avoids the IDM actually
-executing a MongoDb query for each request.
+executing a MongoDB query for each request.
 
 The property _bcrypt-hashed-password_ defines if the password is hashed using the bcrypt
 algorithm. Stating RESTHeart 3.3, write requests to the dbim collection automatically

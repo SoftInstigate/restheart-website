@@ -104,7 +104,7 @@ All the important configuration options of `resthart-platform-core` are defined 
 |instance-name|default|name of this instance of `resthart-platform-core`|
 |default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query parameters is not specified|
 |mongo-uri|mongodb://127.0.0.1|the <a href="https://docs.mongodb.com/manual/reference/connection-string/" target="_blank">MongoDB connection string</a>|
-|root-mongo-resource|/restheart|MongoDb resource to bind to the root URI `/`|
+|root-mongo-resource|/restheart|MongoDB resource to bind to the root URI `/`|
 |log-level|DEBUG|log level|
 |query-time-limit|0 (no limit)|kill request with slow queries|
 |aggregation-time-limit|0 (no limit)|kill slow aggregations requests|
@@ -157,7 +157,7 @@ default-representation-format = STANDARD
 
 mongo-uri = mongodb://127.0.0.1
 
-# The MongoDb resource to bind to the root URI /
+# The MongoDB resource to bind to the root URI /
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart
 

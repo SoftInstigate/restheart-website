@@ -257,7 +257,7 @@ $ docker start restheart
 
 The MongoDB container instead is stateful, so deleting leads to lose all data unless you attached  a persistent [Docker Volume](https://docs.docker.com/userguide/dockervolumes/). 
 
-To stop MongoDb:
+To stop MongoDB:
 
 ``` bash
 $ docker stop mongodb

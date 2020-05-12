@@ -105,7 +105,7 @@ HTTP/1.1 204 No Content
 The following examples that all dbs are exposes via RESTHeart. For this, edit the property file `etc/default.properties` and set `root-mongo-resource = '*'`:
 
 ```
-# The MongoDb resource to bind to the root URI /
+# The MongoDB resource to bind to the root URI /
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = '*'
 ```

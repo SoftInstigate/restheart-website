@@ -332,7 +332,7 @@ HTTP/1.1 200 OK
 The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
 </p>
 
-<pre class="black-code"><code># The MongoDb resource to bind to the root URI / 
+<pre class="black-code"><code># The MongoDB resource to bind to the root URI / 
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart</code></pre>
 

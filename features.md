@@ -9,9 +9,9 @@ permalink: /features
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Full support of MongoDb</a></h2>
+                    <h2><a href="{{ "/use-cases/rest-api" | prepend: site.baseurl }}">Full support of MongoDB</a></h2>
                 </h5>
-                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDb. </div>
+                <div>RESTHeart unlocks <strong>all the features</strong> of MongoDB. </div>
                 <div class="mt-1">
                     Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
                 </div>
@@ -188,7 +188,7 @@ permalink: /features
                 <h5 class="card-title">
                     <h2><a href="{{ "/docs/json-schema-validation/" | prepend: site.baseurl }}">Data validation</a></h2>
                 </h5>
-                <div>Validate write requests with <strong>JSON Schema</strong>. RESTHeart extends MongoDb support of JSON Schema to apply and reuse definitions stored in the internal schema store collection.
+                <div>Validate write requests with <strong>JSON Schema</strong>. RESTHeart extends MongoDB support of JSON Schema to apply and reuse definitions stored in the internal schema store collection.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">

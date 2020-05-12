@@ -156,7 +156,7 @@ Please refer to the [docker-compose official documentation](https://docs.docker.
 
 This section describes how to run MongoDB standalone configured as a Replica Set. Refer to the [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/convert-standalone-to-replica-set/) for more information.
 
-**Start MongoDb** passing the `replSet` option.
+**Start MongoDB** passing the `replSet` option.
 
 ```bash
 $ mongodb --fork --syslog --replSet foo
