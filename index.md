@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
@@ -9,13 +10,32 @@ layout: default
     </section>
 </section>
 
-<div>
-
-<div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <a href="https://mongodbworld2020.sched.com/event/b2Hz">
-        <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
-    </a>
-</div>
+<section id="call-to-action" class="call-to-action">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+                <h2 class="call-to-action__title">What it does</h2>
+                <p>With RESTHeart developers can focus on building Angular, React, Vue, iOS or Android applications, thanks to its <strong>out-of-the-box features</strong>.</p>
+                <ol class="">
+                    <li>Automatic access to MongoDB.</li>
+                    <li>Full REST API with JSON.</li>
+                    <li>Authentication and Authorization.</li>
+                </ol>
+                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
+            </div>
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+                <h2 class="call-to-action__title">What it is</h2>
+                <p>RESTHeart is a fast and secure backend for Web and Mobile apps which requires <strong>no server-side coding</strong>.</p>
+                <ol class="">
+                    <li>Ready-to-run stateless Microservice.</li>
+                    <li>Distributable as a Docker container.</li>
+                    <li>Easily deployable both on Cloud and on-premises.</li>
+                </ol>
+                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section class="cd-intro mt-0 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
@@ -36,16 +56,9 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-    <div class="d-flex flex-wrap justify-content-center mx-0">
-        <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
-        <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
-    </div>
 </section>
 
 <section id="examples" class="slice bg-white">
-    <div class="container-fluid mt-2 mb-5 text-center">
-        <h2 class="restheart-red">Runs everywhere with simple HTTP requests and JSON data format</h2>
-    </div>
     {% include examples.html %}
 </section>
 
@@ -100,6 +113,12 @@ layout: default
     {% include docker_pull_chart.html %}
 
 </section>
+
+<div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
+    <a href="https://mongodbworld2020.sched.com/event/b2Hz">
+        <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
+    </a>
+</div>
 
 <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->
 <script src="assets/animated-headline/js/modernizr.js"></script> <!-- Modernizr -->
