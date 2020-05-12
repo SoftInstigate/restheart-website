@@ -15,22 +15,22 @@ layout: default
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it does</h2>
-                <p>With RESTHeart developers can focus on building Angular, React, Vue, iOS or Android applications, thanks to its <strong>out-of-the-box features</strong>.</p>
-                <ol class="">
-                    <li>Automatic access to MongoDB.</li>
+                <p>RESTHeart connects to <strong>MongoDB</strong> and allows to access the database via a complete set of <strong>REST APIs</strong>.</p>
+                <ul class="">
+                    <li>Automatic data persistence via MongoDB.</li>
                     <li>Full REST API with JSON.</li>
-                    <li>Authentication and Authorization.</li>
-                </ol>
+                    <li>Applicative authentication and authorization.</li>
+                </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it is</h2>
-                <p>RESTHeart is a fast and secure backend for Web and Mobile apps which requires <strong>no server-side coding</strong>.</p>
-                <ol class="">
+                <p>RESTHeart is a fast and secure backend for modern <strong>Web</strong> and <strong>Mobile</strong> apps which requires <strong>no server-side coding</strong>.</p>
+                <ul class="">
                     <li>Ready-to-run stateless Microservice.</li>
                     <li>Distributable as a Docker container.</li>
                     <li>Easily deployable both on Cloud and on-premises.</li>
-                </ol>
+                </ul>
                 <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
             </div>
         </div>
