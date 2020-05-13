@@ -250,7 +250,7 @@ BsonDocument confArgs = null;
 GlobalChecker globalChecker = new GlobalChecker(checker, predicate, true, args, confArgs);
 
 // finally add it to global checker list
-CheckerHandler.getGlobalCheckers().add(globalChecker);
+CheckHandler.getGlobalCheckers().add(globalChecker);
 ```
 
 You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Checkers.
