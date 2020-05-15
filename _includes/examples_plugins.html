@@ -1,0 +1,84 @@
+<style>
+.highlight {
+background-color: #eff2f3;
+}
+</style>
+<section class="examples mt-1 mb-5">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#ws" role="tab">web service</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor" role="tab">interceptor</a></li>
+    </ul>
+    <div class="tab-content pt-4 pb-5">
+        <div class="tab-pane fade show active" id="ws" role="tabpanel">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-4">
+                            <h2 class="examples__title">Implement web services in minutes.</h2>
+                            <p class="examples__desc">
+                                
+                            </p>
+                            <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white">More examples</a>
+                        </div>
+                        <div class="col-md-8">
+{% highlight java %}
+@RegisterPlugin(
+        name = "hello",
+        defaultURI = "/hello")
+public class HelloByteArrayService implements ByteArrayService {
+    @Override
+    public void handle(ByteArrayRequest request, ByteArrayResponse response) throws Exception {
+        response.setStatusCode(200);
+        response.setContent("Hello World".getBytes());
+        response.setContentType("text/plain");
+    }
+}
+{% endhighlight %}
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane fade" id="interceptor" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents from the command line with cURL.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: <strong>filter</strong> to apply a query (that needs to be encoded with --data-urlencode option since it contains the curly brackets) and <strong>pagesize</strong> to limit the response to two documents.
+                            <br/>
+                            Here we use the immortal <a target="_blank" class="text-danger" href="https://curl.haxx.se/">cURL</a>!
+                        </p>
+                        <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+{% highlight bash %}    
+$ curl --header "key:demo" -G --data-urlencode 'filter={"from":"Bob"}' https://beta.mrest.io/demo/messages?pagesize=2
+
+[
+    {
+        "_id": {
+            "$oid": "5c50963e477870eb8258fa68"
+        }, 
+        "from": "Bob", 
+        "message": "was here", 
+        "timestamp": {
+            "$date": 1548785214114
+        }
+    }, 
+    {
+        "_id": {
+            "$oid": "5c50962f477870eb8258fa54"
+        }, 
+        "from": "Bob", 
+        "message": "RESTHeart rocks", 
+        "timestamp": {
+            "$date": 1548785199983
+        }
+    }
+]
+{% endhighlight %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
