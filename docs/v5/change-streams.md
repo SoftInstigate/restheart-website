@@ -161,7 +161,7 @@ PUT /messages HTTP/1.1
     "streams" : [ 
       { "stages" : [
           { 
-              "_$and" : [
+              "_$or" : [
                 { 
                     "operationType": "insert"
                 },
