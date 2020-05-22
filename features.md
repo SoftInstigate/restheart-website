@@ -46,7 +46,7 @@ permalink: /features
                 <h5 class="card-title">
                     <h2><a href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Battle-tested Security</a></h2>
                 </h5>
-                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by a dedicated security microservice. Security can be easily customized thanks to its pluggable architecture.
+                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by its security layer. Security can be easily customized thanks to its pluggable architecture.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
