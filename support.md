@@ -21,7 +21,7 @@ permalink: /support
         Dedicated support for production environments from the RESTHeart Team. No one can help you better.
     </p>
     <p class="lead">
-        Included in the Enterprise Edition subscription.
+        Included in the paid annual subscription.
     </p>
     <hr class="mt-1 mb-4">
     <p class="lead">
@@ -55,13 +55,13 @@ permalink: /support
 <div id="free" class="alert" role="alert">
     <h1><span class="fab fa-github mr-2"></span>Free support</h1>
     <p class="lead">
-        RESTHeart team offers best effort support for the open source edition via StackOverflow and GitHub. Dedicated support is available to paying customers for the Professional and Enterprise editions. 
+        RESTHeart's team offers best effort support via StackOverflow and GitHub. Dedicated support is available for paying customers under an annual subscription model.
     </p>
     <hr class="mt-1 mb-4">
     <h2>
-        <a href="https://github.com/SoftInstigate/restheart/issues/new" class="btn btn-primary mr-2">Report an issue</a> on github
+        <a href="https://github.com/SoftInstigate/restheart/issues/new" class="btn btn-primary mr-2">Report an issue</a> on GitHub.
     </h2>
     <h2>
-        <a href="https://stackoverflow.com/questions/tagged/restheart" class="btn btn-primary mr-2">Ask a question</a> on StackOverflow using the tag <i>restheart</i>
+        <a href="https://stackoverflow.com/questions/tagged/restheart" class="btn btn-primary mr-2">Ask a question</a> on StackOverflow using the tag <i>#restheart</i>
     </h2>
 </div>
