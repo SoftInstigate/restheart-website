@@ -83,31 +83,6 @@ layout: default
     </div>
 </section>
 
-<section id="call-to-action" class="call-to-action">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
-                <svg class="call-to-action__icon">
-                    <use xlink:href="/images/sprite.svg#lamp" /></svg>
-                <h2 class="call-to-action__title">Fully Supported</h2>
-                <p class="call-to-action__desc">Our dedicated support connects you with the engineers that develop
-                    RESTHeart to seamlessly run production environments. RESTHeart OSS is supported by our active
-                    community on public channels like GitHub and StackOverflow.</p>
-                <a class="btn btn-o" href="/support">SUPPORT</a>
-            </div>
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__second">
-                <svg class="call-to-action__icon">
-                    <use xlink:href="/images/sprite.svg#thumb" /></svg>
-                <h2 class="call-to-action__title">RESTHeart OSS and RESTHeart Platform</h2>
-                <p class="call-to-action__desc"><strong>RESTHeart OSS</strong> is distributed under the Open Source GNU
-                    AGPL v3 license. <strong>RESTHeart Platform</strong> is shipped with additional enterprise grade
-                    features under a business-friendly commercial license.</p>
-                <a class="btn btn-o-white" href="/editions">EDITIONS</a>
-            </div>
-        </div>
-    </div>
-</section>
-
 <section class="chart mt-3" id="chart">
 
     {% include docker_pull_chart.html %}
