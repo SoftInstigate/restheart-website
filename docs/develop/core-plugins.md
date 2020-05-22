@@ -5,26 +5,26 @@ title: Develop Core Plugins
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-    * [Registering](#registering)
-    * [Configuration](#configuration)
-    * [Packaging](#packaging)
-* [Initializers](#initializers)
-* [Services](#services)
-* [Transformers](#transformers)
-* [Checkers](#checkers)
-* [Hooks](#hooks)
+-   [Introduction](#introduction)
+    -   [Registering](#registering)
+    -   [Configuration](#configuration)
+    -   [Packaging](#packaging)
+-   [Initializers](#initializers)
+-   [Services](#services)
+-   [Transformers](#transformers)
+-   [Checkers](#checkers)
+-   [Hooks](#hooks)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
 ## Introduction 
 
-This page provides detailed information on how to develop core plugins for the [RESTHeart Platform](https://restheart.org/get).
+This page provides detailed information on how to develop core plugins for the [RESTHeart](https://restheart.org/get).
 
 {: .bs-callout.bs-callout-info}
 Core plugins are executed by `restheart-platform-core` service.
@@ -33,8 +33,7 @@ Core plugins are executed by `restheart-platform-core` service.
 
 Plugins must be registered to be available using the `@RegisterPlugin` annotation:
 
-
-``` java
+```java
 @RegisterPlugin(name = "foo", description = "a fantastic plugin")
 public class FooPlugin implements Service {
     ...
@@ -47,8 +46,8 @@ Additional attributes of `@RegisterPlugin` annotation:
 |attribute|description|default value|
 |-|-|-|
 |**priority**|defines execution order for Intializer (less is higher priority)|10|
-|**uri**|sets the URI of a Service overwriting its default value specified with the `Service.defaultUri()` method.|*none*|
-|**enabledByDefault**|`true` to enable the plugin. If `false` it can be enabled setting the plugin  configuration argument 'enabled'|true|
+|**uri**|sets the URI of a Service overwriting its default value specified with the `Service.defaultUri()` method.|_none_|
+|**enabledByDefault**|`true` to enable the plugin. If `false` it can be enabled setting the plugin configuration argument 'enabled'|true|
 
 {: .bs-callout.bs-callout-info}
 Until RESTHeart version 3.x, registering a plugin involved declaring it in the configuration file. Thanks to the `@RegisterPlugin` annotation, this is not needed anymore.
@@ -57,25 +56,24 @@ Until RESTHeart version 3.x, registering a plugin involved declaring it in the c
 
 All Plugins accept the argument `confArgs`. Set `confArgs` defining an object in the yml configuration file with the same name of the plugin (as defined in its @RegisterPlugin annotation) under the `plugins-args` configuration section:
 
-
-``` yml
+```yml
 #### Plugins configuration
 
 plugins-args:
-  logMessageInitializer:
-    enabled: false
-    message: Hello World!
-    log-level: INFO
-  addBodyToWriteResponsesInitializer:
-    enabled: false
-  pingService:
-    uri: "/hello"
-    msg: Hello World!
+    logMessageInitializer:
+        enabled: false
+        message: Hello World!
+        log-level: INFO
+    addBodyToWriteResponsesInitializer:
+        enabled: false
+    pingService:
+        uri: '/hello'
+        msg: Hello World!
 ```
 
 ### Packaging
 
-Plugins implementation classes must be added to the java classpath. 
+Plugins implementation classes must be added to the java classpath.
 
 A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/v5/develop/packaging) section.
 
@@ -90,11 +88,10 @@ The Initializer class must implement the `org.restheart.plugins.Initializer` int
 
 The `Initializer` interface:
 
-
-``` java
+```java
 public interface Initializer extends Plugin {
     /**
-     * 
+     *
      * @param confArgs arguments optionally specified in the configuration file
      */
     void init(Map<String, Object> confArgs);
@@ -109,8 +106,7 @@ Services are a simple yet powerful way of implementing custom Web Services.
 The Service implementation class must extend handler must extend the
 abstract class `org.restheart.plugins.Service`
 
-
-``` java
+```java
 public abstract class Service extends PipedHttpHandler implements Plugin {
     /**
      * The configuration properties passed to this handler.
@@ -158,25 +154,23 @@ public abstract class Service extends PipedHttpHandler implements Plugin {
 
 It requires to override the method `handleRequest()` inherited from `PipedHttpHandler`.
 
-
-``` java
+```java
 public abstract void handleRequest(HttpServerExchange exchange, RequestContext context) throws Exception;
 ```
 
 The two arguments of `handleRequest()` are:
 
 1. [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) the
-    exchange
+   exchange
 2. [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java) context
-    (that is the suggested way to retrieve the information of the
-    request such as the payload) 
+   (that is the suggested way to retrieve the information of the
+   request such as the payload)
 
 The method `defaultUri()` can return a String such as `/foo` that is the URI when the service will be bound. The URI can also be specified in the plugin configuration, see [Plugin Configuration](#configuration)
 
 ### Constructor
 
 The Service implementation class must have a constructor with `confArgs` argument; this is optionally set from the configuration file.
-
 
 ```java
 public MyService(final Map<String, Object> args) {
@@ -188,8 +182,7 @@ public MyService(final Map<String, Object> args) {
 The following is the code of the [PingService](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/services/PingService.java) that implements a
 simple ping service.
 
-
-``` java
+```java
 @RegisterPlugin(name = "pingService",
         description = "Ping service")
 public class PingService extends Service {
@@ -203,11 +196,11 @@ public class PingService extends Service {
     public PingService(Map<String, Object> confArgs) {
         super(confArgs);
 
-        this.msg =  confArgs != null  && confArgs.containsKey("msg") 
-                ? (String) confArgs.get("msg") 
+        this.msg =  confArgs != null  && confArgs.containsKey("msg")
+                ? (String) confArgs.get("msg")
                 : "ping";
     }
-    
+
     @Override
     public String defaultUri() {
         return "/ping";
@@ -230,7 +223,7 @@ public class PingService extends Service {
         } else {
             context.setResponseStatusCode(HttpStatus.SC_NOT_IMPLEMENTED);
         }
-        
+
         next(exchange, context);
     }
 }
@@ -238,30 +231,29 @@ public class PingService extends Service {
 
 **pingService Configuration** (to set the `msg` argument)
 
-
-``` yml
+```yml
 plugins-args:
-  pingService:
-    msg: Hello World!
+    pingService:
+        msg: Hello World!
 ```
 
 ## Transformers
 
 {: .bs-callout.bs-callout-info}
-Transformers allow to transform the request or the response. 
+Transformers allow to transform the request or the response.
 
 Examples of Transformers are:
-- filtering out from the response sensitive properties;
-- adding the `filter={"visibility":"public"}` query parameter to requests limiting the client visibility on documents.
+
+-   filtering out from the response sensitive properties;
+-   adding the `filter={"visibility":"public"}` query parameter to requests limiting the client visibility on documents.
 
 {: .bs-callout.bs-callout-info}
 For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/transformers)
 
 A transformer is a java class that implements the
-interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java). 
+interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java).
 
-
-``` java
+```java
     /**
      * contentToTransform can be directly manipulated or
      * RequestContext.setResponseContent(BsonValue value) for response phase and
@@ -299,13 +291,13 @@ interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/
     }
 }
 ```
+
 {: .bs-callout.bs-callout-info}
 The default, 5 arguments, method `transform()` can be used to store the argument `confArgs` in a instance variable when the Transformer needs the arguments specified via the configuration file
 
-The following code, is an example transformer that adds the property *_timestamp* to the response body.
+The following code, is an example transformer that adds the property _\_timestamp_ to the response body.
 
-
-``` java
+```java
 import io.undertow.server.HttpServerExchange;
 import org.bson.BsonInt64;
 import org.bson.BsonValue;
@@ -317,12 +309,12 @@ package com.whatever;
 @RegisterPlugin(name = "myTransformer",
         description = "Add _timestamp to the body")
 public class MyTransformer implements Transformer {
-    tranform(final HttpServerExchange exchange, 
-        final RequestContext context, 
-        BsonValue contentToTransform, 
+    tranform(final HttpServerExchange exchange,
+        final RequestContext context,
+        BsonValue contentToTransform,
         final BsonValue args) {
           if (contentToTransform != null && contentToTransform.isDocument()){
-            contentToTransform.asDocument().put("_timestamp", 
+            contentToTransform.asDocument().put("_timestamp",
                   new BsonInt64(System.currentTimeMillis()));
           }
     }
@@ -333,7 +325,7 @@ public class MyTransformer implements Transformer {
 
 {: .bs-callout.bs-callout-info}
 Checkers allows to check the request so that, if
-it does not fulfill some conditions, it returns *400 BAD REQUEST*
+it does not fulfill some conditions, it returns _400 BAD REQUEST_
 response code thus enforcing a well defined structure to documents.
 
 {: .bs-callout.bs-callout-info}
@@ -342,9 +334,7 @@ For implementation examples refer to the package [org.restheart.plugins.checkers
 A checker is a java class that implements the
 interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java).
 
-  
-
-``` java
+```java
     public interface Checker extends Plugin {
     enum PHASE {
         BEFORE_WRITE,
@@ -414,12 +404,11 @@ When a checker does not support a request, the outcome depends on the attribute 
 The following code, is an example checker that checks if the
 *number* property in PATCH request body is between 0 and 10.
 
-
-``` java
+```java
 package com.whatever;
 
 @RegisterPlugin(
-        name = "checkNumber", 
+        name = "checkNumber",
         description = "Checks if number property is between 0 and 10 on PATCH requests")
 public class MyChecker implements Checker {
     @Override
@@ -433,10 +422,10 @@ public class MyChecker implements Checker {
         }
 
         BsonValue _value = context.getContent().asDocument().get("number");
-        
+
         if (_value != null && _value.isNumber()) {
             Integer value = _value.asInt32().getValue();
-            
+
             return value < 10 && value > 0;
         } else {
             return false; // BAD REQUEST
@@ -462,7 +451,7 @@ Request Hooks allow to execute custom code after a request completes.
 
 For example, request hooks can be used:
 
--   to send a confirmation email when a user registers 
+-   to send a confirmation email when a user registers
 -   to send push notifications when a resource is updated so that its
     properties satisfy a given condition.
 
@@ -472,11 +461,9 @@ For implementation examples refer to the package [org.restheart.plugins.hooks](h
 Hooks are developed implementing the java
 interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Hook.java).
 
-
 The Hook interface requires to implement the following interface:
 
-
-``` java
+```java
 public interface Hook extends Plugin {
     /**
      *
@@ -491,7 +478,7 @@ public interface Hook extends Plugin {
             BsonValue args) {
         return hook(exchange, context, args, null);
     }
-        
+
 
     /**
      *
@@ -526,11 +513,10 @@ should be executed against the `RequestContext` object that
 encapsulates all information about the request.
 
 For instance, the following implementation returns `true` if the request
-actually *created* a document (either POSTing the collection or PUTing
+actually _created_ a document (either POSTing the collection or PUTing
 the document):
 
-
-``` java
+```java
 @Override
 public boolean doesSupportRequests(RequestContext rc) {
     if (rc.getDbOperationResult() == null) {

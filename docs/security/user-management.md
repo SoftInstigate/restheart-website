@@ -29,7 +29,7 @@ It also shows how to manage permissions for the default [RESTHeart Authorizer](/
 
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
+The following examples assume RESTHeart running on the localhost with the default configuration: the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
 
 ## User document
 
@@ -99,7 +99,7 @@ POST /users HTTP/1.1
 ```
 
 {: .bs-callout.bs-callout-info}
-The password is automatically encrypted by RESTHeart Platform.
+The password is automatically encrypted by RESTHeart.
 
 ## Update a user
 

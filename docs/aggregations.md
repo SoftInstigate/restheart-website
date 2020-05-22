@@ -42,7 +42,7 @@ meaning for RESTheart that influences its behavior.
 Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of _pipeline_ or *mapReduce *objects:
 
 ```http
-GET /coll/_meta HTTP 1.1
+GET /coll/_meta HTTP/1.1
 
 
 {
@@ -66,7 +66,7 @@ GET /coll/_meta HTTP 1.1
         "<stage_2>",
         "..."
     ],
-    "allowDiskUse": boolean
+    "allowDiskUse": true
 }
 ```
 
@@ -294,7 +294,7 @@ variable _n:_
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
-```
+```http
 PATCH /coll HTTP/1.1
 
 { "aggrs" : [
@@ -321,9 +321,9 @@ function() { 
 
 ## Handling paging in aggregations
 
-Starting RESTHeart Platform v4.1.12 (and RESTHeart OSS v4.1.8) paging must be handled explicitly by the aggregation (until this version paging was handled automatically). This allows more flexibility and better performances.
+Starting from RESTHeart v4.1.8 paging must be handled explicitly by the aggregation (until this version paging was handled automatically). This allows more flexibility and better performances.
 
-Starting RESTHeart Platform v4.2.0 and (and RESTHeart OSS v4.2.0) the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
+Starting from RESTHeart v4.2.0 the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
 
 -   `@page` the value of the `page` query parameter
 -   `@pagesize` the value of the `pagesize` query parameter
@@ -361,7 +361,7 @@ By default RESTHeart makes sure that the aggregation variables passed as query p
 
 This behavior is required to protect data from undesirable malicious query injection.
 
-Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart-platform-core.yml` configuration file.
+Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart.yml` configuration file.
 
 ```yml
 ### Security

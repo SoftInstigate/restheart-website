@@ -35,9 +35,9 @@ See [Understanding RESTHeart Security](/docs/v5/security/overview#understanding-
 ### JWT Authentication
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>JWT Authentication is available only on RESTHeart Platform.</p>
+    <p>JWT Authentication is available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
@@ -202,9 +202,9 @@ auth-mechanisms:
 ### RESTHeart Authenticator
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>RESTHeart Authenticator is available only on RESTHeart Platform.</p>
+    <p>RESTHeart Authenticator is available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>

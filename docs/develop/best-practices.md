@@ -5,29 +5,28 @@ title: Development Best Practices
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [RESTHeart Platform Core](#restheart-platform-core)
-    * [Get the MongoClient](#get-the-mongoclient)
-    * [Interact with Request and Response](#interact-with-request-and-response)
-    * [Get user id and roles from restheart-platform-security](#get-user-id-and-roles-from-restheart-platform-security)
-    * [Filter out properties from Request or Response](#filter-out-properties-from-request-or-response)
-* [RESTHeart Platform Security](#restheart-platform-security)
-    * [Interact with the HttpServerExchange object](#interact-with-the-httpserverexchange-object)
-    * [How to send the response](#how-to-send-the-response)
-    * [Forbid write requests containing specific properties to all roles but admin](#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin)
+-   [RESTHeart Core](#restheart-platform-core)
+    -   [Get the MongoClient](#get-the-mongoclient)
+    -   [Interact with Request and Response](#interact-with-request-and-response)
+    -   [Get user id and roles from restheart-platform-security](#get-user-id-and-roles-from-restheart-platform-security)
+    -   [Filter out properties from Request or Response](#filter-out-properties-from-request-or-response)
+-   [RESTHeart Security](#restheart-platform-security)
+    -   [Interact with the HttpServerExchange object](#interact-with-the-httpserverexchange-object)
+    -   [How to send the response](#how-to-send-the-response)
+    -   [Forbid write requests containing specific properties to all roles but admin](#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
-## RESTHeart Platform Core
+## RESTHeart Core
 
 ### Get the MongoClient
 
-
-``` java
+```java
 // get the MongoClient
 MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 ```
@@ -36,8 +35,7 @@ MongoClient client = MongoDBClientSingleton.getInstance().getClient();
 
 The plugins's methods of `restheart-platform-core` accept two arguments that allow to interact (read or modify) the request and the response:
 
-
-``` java
+```java
 
 public void handleRequest(HttpServerExchange exchange, RequestContext context) {
   ...
@@ -46,16 +44,15 @@ public void handleRequest(HttpServerExchange exchange, RequestContext context) {
 
 Both `HttpServerExchange exchange` and `RequestContext context` can be used to read and modify the request and the response.
 
-- [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) is the generic, low-level Undertow class to interact with the exchange;
-- [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java) is the specialized RESTHeart helper class that simplifies the most common operations.
+-   [HttpServerExchange](https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java) is the generic, low-level Undertow class to interact with the exchange;
+-   [RequestContext](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java) is the specialized RESTHeart helper class that simplifies the most common operations.
 
 {: .bs-callout.bs-callout-info }
 As a general rule, always prefer using `RequestContext`. Only use `HttpServerExchange` for low-level operations not directly supported by `RequestContext`.
 
 As an example, the filter query parameter can be retrieved as follows:
 
-
-``` java
+```java
 // RequestContext helper method to access the filter query parameter
 Deque<String>  filterQParam1 = context.getFilter();
 
@@ -73,13 +70,12 @@ Deque<String> filterQParam2 = exchange.getQueryParameters().get(RequestContext.F
 
 When the request is authenticated by `restheart-platform-security` the user id and roles are passed to `restheart-platform-core` via the following request headers:
 
-- `X-Forwarded-Account-Id`
-- `X-Forwarded-Account-Roles`
+-   `X-Forwarded-Account-Id`
+-   `X-Forwarded-Account-Roles`
 
 Note that for unauthenticated request these headers are not set.
 
-
-``` java
+```java
 var headers =  exchange.getRequestHeaders();
 
 var id = headers.getFirst(HttpString.tryFromString("X-Forwarded-Account-Id"));
@@ -105,8 +101,9 @@ if (roles.contains("admin")) {
 RESTHeart includes the Transformer `filterProperties` that allows to filter out properties from both the Request and the Response.
 
 You might want to:
-- filter out properties from the request body in write requests (`POST`, `PUT` and `PATCH` verbs)
-- filter out properties from the response body in read requests (`GET` verb)
+
+-   filter out properties from the request body in write requests (`POST`, `PUT` and `PATCH` verbs)
+-   filter out properties from the response body in read requests (`GET` verb)
 
 {: .bs-callout.bs-callout-warning }
 `filterProperties` can only filter out root properties. Avoid using it to filter nested properties.
@@ -118,8 +115,7 @@ In the following example, we add the Transformer `filterProperties` to Response 
 
 In order to enable the Transformer we are going to programmatically apply it defining a [Global Transformer](/docs/v5/plugins/apply/#apply-a-transformer-programmatically) and enable it using an [Initializer](/docs/v5/develop/core-plugins/#initializers)
 
-
-``` java
+```java
 @RegisterPlugin(
         name = "secretHider",
         priority = 100,
@@ -137,7 +133,7 @@ public class SecretHider implements Initializer {
                         .get(HttpString.tryFromString("X-Forwarded-Account-Roles"));
 
                 var roles = new ArrayList<String>();
-                
+
                 if (_roles != null) {
                     _roles.forEach(role -> roles.add(role));
                 }
@@ -167,14 +163,13 @@ public class SecretHider implements Initializer {
 }
 ```
 
-## RESTHeart Platform Security
+## RESTHeart Security
 
 ### Interact with the HttpServerExchange object
 
 The helper classes `ByteArrayRequest`, `JsonRequest`, `ByteArrayResponse` and `JsonResponse` are available to make easy interacting the `HttpServerExchange` object. As a general rule, always prefer using the helper classes if the functionality you need is available.
 
-For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`  
-
+For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`
 
 ```java
 HttpServerExchange exchange = ...;
@@ -190,7 +185,6 @@ If you want to manipulate query parameters with a Request Interceptor, always us
 
 You just set the status code and the response content using helper classes `ByteArrayResponse` or `JsonResponse`. You don't need to send the response explicitly using low level `HttpServerExchange` methods, since the `ResponseSenderHandler` is in the processing chain and will do it for you.
 
-
 ```java
 @Override
 public void handleRequest(HttpServerExchange exchange) throws Exception {
@@ -205,14 +199,13 @@ public void handleRequest(HttpServerExchange exchange) throws Exception {
 }
 ```
 
-### Forbid write requests containing specific properties to all roles but *admin*
+### Forbid write requests containing specific properties to all roles but _admin_
 
-In the following example, we add a Request Interceptor that forbids write requests to `/coll` when executed by a user that does not have to role *admin*.
+In the following example, we add a Request Interceptor that forbids write requests to `/coll` when executed by a user that does not have to role _admin_.
 
 In order to enable the Interceptor we are going to programmatically apply it using an [Initializer](/docs/v5/develop/security-plugins/#initializers)
 
-
-``` java
+```java
 @RegisterPlugin(
         name = "onlyAdminCanWriteSecrets",
         priority = 100,
@@ -286,9 +279,9 @@ public class OnlyAdminCanWriteSecrets implements Initializer {
 
 This interceptor is executed (see method `resolve()`):
 
-- to write requests: `(req.isPost() || req.isPatch() || req.isPut()`
-- that are executed by authenticated users without the role *admin*: `!req.isAccountInRole("admin")`
-- on URI starting with `/coll`: `hse.getRequestPath().startsWith("/coll")`
+-   to write requests: `(req.isPost() || req.isPatch() || req.isPut()`
+-   that are executed by authenticated users without the role _admin_: `!req.isAccountInRole("admin")`
+-   on URI starting with `/coll`: `hse.getRequestPath().startsWith("/coll")`
 
 The interceptor needs the request body (`requiresContent()` returns `true`) and must be executed after authorization and authentication phases (`interceptPoint()` returns `AFTER_AUTH`)
 

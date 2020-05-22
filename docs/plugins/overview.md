@@ -19,10 +19,10 @@ title: Plugins
 
 ## Introduction 
 
-RESTHeart Platform works *out-of-the-box* by merely installing it and requires no coding. On the other side real applications often need the API to be extended in some way.
+RESTHeart works *out-of-the-box* by merely installing it and requires no coding. On the other side real applications often need the API to be extended in some way.
 
 {:.alert.alert-success}
-RESTHeart Platform can be extended via *Plugins*. 
+RESTHeart can be extended via *Plugins*. 
 
 Both `restheart-platform-core` and `restheart-platform-security` make use of Plugins.
 
@@ -45,7 +45,7 @@ The following table lists the different types of Plugins of `restheart-platform-
 
 ## Available Plugins
 
-RESTHeart Platform is shipped with some general purpose Plugins. For a complete list of available Plugins please refer to [Available Plugins](/docs/v5/plugins/list/).
+RESTHeart is shipped with some general purpose Plugins. For a complete list of available Plugins please refer to [Available Plugins](/docs/v5/plugins/list/).
 
 You can also develop and add your own Plugins. For more information refer to [Develop Core Plugins](/docs/v5/develop/core-plugins/)
 
@@ -57,7 +57,7 @@ Note that RESTHeart logs out the registered plugins at startup time.
 
 ```
 Registered initializer commLicense: Activates the commercial license
-Registered initializer rhPlatformActivator: Activates RESTHeart Platform
+Registered initializer rhPlatformActivator: Activates RESTHeart
 Registered service istatus: Internal service that allows querying for server status
 Registered service cacheInvalidator: Invalidates the db and collection metadata cache
 Registered service csvLoader: Uploads a csv file in a collection

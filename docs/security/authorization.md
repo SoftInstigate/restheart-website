@@ -30,12 +30,12 @@ However, it's even possible to develop __custom authorizers__. Please refer to [
 ## RESTHeart Authorizer 
 
 {: .bs-callout.bs-callout-info}
-Available since RESTHeart Platform v4.1
+Available since RESTHeart v4.1
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>RESTHeart Authorizer is available only on RESTHeart Platform (Professional, Enterprise and OEM editions)</p>
+    <p>RESTHeart Authorizer is available only on RESTHeart (Professional, Enterprise and OEM editions)</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Free Trial</button></a>
 </div>

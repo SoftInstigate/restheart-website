@@ -21,7 +21,7 @@ title: List of available Plugins
 
 ## Introduction
 
-This page lists the plugins available out of the box in RESTHeart Platform.
+This page lists the plugins available out of the box in RESTHeart.
 
 ## List of Plugins
 

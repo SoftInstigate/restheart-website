@@ -5,32 +5,31 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Package RESTHeart Core plugins](#package-restheart-core-plugins)
-  * [Create a Uber jar for Core](#create-a-uber-jar-for-core)
-* [Package RESTHeart Security plugins](#package-restheart-security-plugins)
-  * [Create a Uber jar for Security](#create-a-uber-jar-for-security) 
+-   [Introduction](#introduction)
+-   [Package RESTHeart Core plugins](#package-restheart-core-plugins)
+    -   [Create a Uber jar for Core](#create-a-uber-jar-for-core)
+-   [Package RESTHeart Security plugins](#package-restheart-security-plugins)
+    -   [Create a Uber jar for Security](#create-a-uber-jar-for-security)
 
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
 ## Introduction
 
-This page provides information on how to package custom plugins for the [RESTHeart Platform](https://restheart.org/get).
+This page provides information on how to package custom plugins for the [RESTHeart](https://restheart.org/get).
 
-It's possible to package plugins for both RESTHeart Platform Security or RESTHeart Platform core.
+It's possible to package plugins for both RESTHeart Security or RESTHeart core.
 
 Please [contact us](https://restheart.org/contact/) for any question.
 
 ## Package RESTHeart Core plugins
 
-After downloading the the [RESTHeart Platform](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-core.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
-
+After downloading the the [RESTHeart](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-core.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
 
 ```bash
 $ unzip restheart-platform-4.0.zip
@@ -49,7 +48,6 @@ $ mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile
 
 Then it's possible to use it as a Maven dependency:
 
-
 ```xml
 <dependency>
     <groupId>com.restheart</groupId>
@@ -62,8 +60,7 @@ Then it's possible to use it as a Maven dependency:
 
 The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package artifacts into a single uber-jar, including all dependencies.
 
-
-``` xml
+```xml
 <project>
 
   ...
@@ -117,14 +114,13 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
   </build>
 
   ...
-  
+
 </project>
 ```
 
 ## Package RESTHeart Security plugins
 
-After downloading the the [RESTHeart Platform](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-security.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
-
+After downloading the the [RESTHeart](https://restheart.org/get), follow the below sequence of commands to install `restheart-platform-security.jar` as a local Maven dependency. Usually on Linux and MacOS the Maven local repo is into a `.m2/` folder.
 
 ```bash
 $ unzip restheart-platform-4.0.zip
@@ -143,7 +139,6 @@ $ mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile
 
 Then it's possible to use it as a Maven dependency:
 
-
 ```xml
 <dependency>
     <groupId>com.restheart</groupId>
@@ -156,8 +151,7 @@ Then it's possible to use it as a Maven dependency:
 
 The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin provides the capability to package artifacts into a single uber-jar, including all dependencies.
 
-
-``` xml
+```xml
 <project>
 
   ...
@@ -210,7 +204,8 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
   </build>
 
   ...
-  
+
 </project>
 ```
+
 </div>

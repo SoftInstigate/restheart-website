@@ -5,10 +5,10 @@ title: Roadmap
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [RESTHeart Platform 4.2](#restheart-platform-42)
-- [RESTHeart Platform 5.0](#restheart-platform-50)
+- [RESTHeart 4.2](#restheart-platform-42)
+- [RESTHeart 5.0](#restheart-platform-50)
 - [Released](#released)
-    - [RESTHeart Platform 4.1](#restheart-platform-41)
+    - [RESTHeart 4.1](#restheart-platform-41)
 
 </div>
 
@@ -19,7 +19,7 @@ title: Roadmap
 {: .bs-callout.bs-callout-info}
 **We listen to you!** For any feedback or request feel free to [open an issue](https://github.com/SoftInstigate/restheart/issues/new) on github. 
 
-## RESTHeart Platform 4.2
+## RESTHeart 4.2
 
 ### Unified extensions API
 
@@ -27,7 +27,7 @@ Both **restheart-platform-core** and **restheart-platform-security** can be exte
 
 Developing plugins involves implementing classes that extend interfaces and registering them.
 
-RESTHeart Platform 4.2 will unify the extension API so that both core and security plugins will follow the same approach.
+RESTHeart 4.2 will unify the extension API so that both core and security plugins will follow the same approach.
 
 The new repository `restheart-platform-plugins` containing the plugin API will be released and distributed under the Apache License 2.0.
 
@@ -39,9 +39,9 @@ This will better clarify the legal implications of developing your custom extens
 LDAP Authenticator for **restheart-platform-security**
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>The LDAP Authenticator will be available only on RESTHeart Platform.</p>
+    <p>The LDAP Authenticator will be available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
 </div>
 
@@ -51,18 +51,18 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 - configurable LDAP query to retrieve users
 - compatible with Active Directory
 
-## RESTHeart Platform 5.0
+## RESTHeart 5.0
 
-### RESTHeart Platform Studio
+### RESTHeart Studio
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>The RESTHeart Platform Studio Web App will be available only on RESTHeart Platform.</p>
+    <p>The RESTHeart Studio Web App will be available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
 </div>
 
-The new service `restheart-platform-studio` will added to RESTHeart Platform. This is a web application:
+The new service `restheart-platform-studio` will added to RESTHeart. This is a web application:
 
 - for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
 - for users: to manage and publishing content through forms
@@ -84,7 +84,7 @@ From the undertow migration to Netty announcement on 12 April, 2019:
 
 ## Released
 
-## RESTHeart Platform 4.1
+## RESTHeart 4.1
 
 {: .alert.alert-success }
 Released 7 October 2019
@@ -92,9 +92,9 @@ Released 7 October 2019
 ### rhAuthorizer 
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>rhAuthorizer will be available only on RESTHeart Platform.</p>
+    <p>rhAuthorizer will be available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
 </div>
 

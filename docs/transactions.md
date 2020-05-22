@@ -24,9 +24,9 @@ title: Transactions
 {% include docs-head.html %} 
 
 <div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
+    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
     <hr class="my-2">
-    <p>Transactions are available only on RESTHeart Platform.</p>
+    <p>Transactions are available only on RESTHeart.</p>
     <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
     <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
 </div>
@@ -55,7 +55,7 @@ MongoDB v3.6 introduced *sessions*, defined as follows:
 Sessions allows to enforce <a href="https://docs.mongodb.com/manual/core/read-isolation-consistency-recency/#causal-consistency" target="_blank">casual consistency</a> and are the foundation for transactions.
 
 {: .bs-callout.bs-callout-success }
-Sessions are available also in the OS version of RESTHeart. RESTHeart Platform adds support for multi-document transactions on top of sessions.
+Sessions are available also in the OS version of RESTHeart. RESTHeart adds support for multi-document transactions on top of sessions.
 
 ### Start a session
 

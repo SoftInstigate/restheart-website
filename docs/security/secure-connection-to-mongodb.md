@@ -17,7 +17,7 @@ title: Secure connection to MongoDB
 
 ## Introduction 
 
-This section provides instructions on how to secure the connection between RESTHeart Platform and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart. 
+This section provides instructions on how to secure the connection between RESTHeart and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart. 
 
 ## Enable MongoDB authentication
 
@@ -60,9 +60,9 @@ version.
 })
 ```
 
-    We need to provide the MongoDB user authentication credentials in the RESTHeart Platform Core configuration file: see docs. 
+    We need to provide the MongoDB user authentication credentials in the RESTHeart Core configuration file: see docs. 
 
-We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart Platform download package (you find it in the etc directory)
+We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart download package (you find it in the etc directory)
 
 
 ``` bash
@@ -78,7 +78,7 @@ case ‘admin’).
 mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 ```
 
-Now start RESTHeart Platform Core specifying the configuration file:
+Now start RESTHeart Core specifying the configuration file:
 
 
 ``` bash
@@ -91,7 +91,7 @@ Test the connection open `http://localhost:8080/roles/admin`
 
 MongoDB clients can use TLS/SSL to encrypt connections to mongod and mongos instances.
 
-To configure RESTHeart Platform for TLS/SSL do as follows:
+To configure RESTHeart for TLS/SSL do as follows:
 
 * create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
 
@@ -117,13 +117,13 @@ $ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Dj
 
 ## Restrict permissions of MongoDB user
 
-In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart Platform Core to execute any command on any MongoDB resource.
+In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart Core to execute any command on any MongoDB resource.
 
 On production environments a strong security isolation is mandatory.
 
 In order to achieve it, the best practice is:
 
-1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Platform Core;
+1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Core;
 2. use a MongoDB user with just enough permission: *read* or *readWrite* on mounted databases 
 
 The following example, creates a MongoDB user with appropriate roles to expose the databases *restheart.

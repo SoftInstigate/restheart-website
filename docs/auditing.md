@@ -5,13 +5,13 @@ title: Auditing
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Opentracing / zipkin headers support](#opentracing--zipkin-headers-support)
-    - [Configuration](#configuration)
+-   [Opentracing / zipkin headers support](#opentracing--zipkin-headers-support)
+    -   [Configuration](#configuration)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
@@ -23,13 +23,12 @@ This implementation makes it possible to correlate logged exceptions (in case th
 
 It handles all headers mentioned in https://github.com/openzipkin/b3-propagation, as well as the uber-trace-id header that is used by Jaeger (see https://www.jaegertracing.io/docs/v5/client-libraries/#trace-span-identity) to get broader support.
 
-### Configuration ###
+### Configuration
 
 `metrics-gathering-level`: metrics gathering for which level? OFF => no gathering, ROOT => gathering at root level, DATABASE => at db level, COLLECTION => at collection level
 WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers).
 
 Example `restheart.yml` fragment:
-
 
 ```
 metrics-gathering-level: DATABASE
