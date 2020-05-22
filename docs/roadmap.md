@@ -38,13 +38,6 @@ This will better clarify the legal implications of developing your custom extens
 
 LDAP Authenticator for **restheart-platform-security**
 
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
-    <hr class="my-2">
-    <p>The LDAP Authenticator will be available only on RESTHeart.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-</div>
-
 The new authenticator will update the old Access Manager [ADIdentityManager](https://github.com/SoftInstigate/restheart/blob/3.11.x/src/main/java/org/restheart/security/impl/ADIdentityManager.java) available for restheart 3.x to include:
 
 -   caching (extending an abstract class that simplifies implementing cached authenticators)
@@ -54,13 +47,6 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 ## RESTHeart 5.0
 
 ### RESTHeart Studio
-
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
-    <hr class="my-2">
-    <p>The RESTHeart Studio Web App will be available only on RESTHeart.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-</div>
 
 The new service `restheart-platform-studio` will added to RESTHeart. This is a web application:
 
@@ -90,13 +76,6 @@ From the undertow migration to Netty announcement on 12 April, 2019:
 Released 7 October 2019
 
 ### rhAuthorizer
-
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart</strong> feature.</h2>
-    <hr class="my-2">
-    <p>rhAuthorizer will be available only on RESTHeart.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-</div>
 
 The permissions are stored in `restheart.acl` collection. This way permissions can be dynamically modified without requesting to server restart.
 

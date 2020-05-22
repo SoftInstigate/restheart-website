@@ -19,14 +19,6 @@ title: Change Streams
 
 {% include docs-head.html %}
 
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
-    <hr class="my-2">
-    <p>Change Streams are available only on RESTHeart Platform.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
-</div>
-
 <div class="alert alert-success" role="alert">
     <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
     <hr class="my-2">

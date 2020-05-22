@@ -32,14 +32,6 @@ However, it's even possible to develop **custom authorizers**. Please refer to [
 {: .bs-callout.bs-callout-info}
 Available since RESTHeart Platform v4.1
 
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
-    <hr class="my-2">
-    <p>RESTHeart Authorizer is available only on RESTHeart Platform (Professional, Enterprise and OEM editions)</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Free Trial</button></a>
-</div>
-
 _RESTHeart Authorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**, seamlessly connecting `restheart-platform-security` with `restheart-platform-core`.
 
 {: .bs-callout.bs-callout-info }

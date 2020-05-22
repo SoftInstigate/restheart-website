@@ -75,14 +75,6 @@ RESTHeart Platform v4 introduces two main new features:
 -   [Change Streams](/docs/change-streams) to handle real-time data streams via WebSocket connections.
 -   [Transactions](/docs/transactions) to handle multi-document transactions.
 
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
-    <hr class="my-2">
-    <p><strong>Change Streams</strong> and <strong>Transactions</strong> are available only on RESTHeart Platform.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
-</div>
-
 ## Default configuration
 
 {: .alert.alert-warning }

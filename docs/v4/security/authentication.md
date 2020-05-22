@@ -34,14 +34,6 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
 
 ### JWT Authentication
 
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
-    <hr class="my-2">
-    <p>JWT Authentication is available only on RESTHeart Platform.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
-</div>
-
 JWT Authentication manages the authentication following the <a href="https://jwt.io" target="_blank">JSON Web Token standard</a>.
 
 The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`.
@@ -193,14 +185,6 @@ auth-mechanisms:
 ## Authenticators
 
 ### RESTHeart Authenticator
-
-<div class="alert alert-info" role="alert">
-    <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
-    <hr class="my-2">
-    <p>RESTHeart Authenticator is available only on RESTHeart Platform.</p>
-    <p class="small">Confused about editions? Check the <a class="alert-link" href="/editions">editions matrix</a>.</p>
-    <a href="/get"><button class="btn trial-btn">Get Free Trial</button></a>
-</div>
 
 _RESTHeart Authenticator_ authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
 
