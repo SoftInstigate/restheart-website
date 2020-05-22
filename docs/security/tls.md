@@ -5,15 +5,15 @@ title: Configure TLS
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [The HTTPS listener](#the-https-listener)
-* [Use the test self signed certificate ](#use-the-test-self-signed-certificate)
-* [Use a valid certificate](#use-a-valid-certificate)
+-   [Introduction](#introduction)
+-   [The HTTPS listener](#the-https-listener)
+-   [Use the test self signed certificate ](#use-the-test-self-signed-certificate)
+-   [Use a valid certificate](#use-a-valid-certificate)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction 
 
@@ -26,12 +26,11 @@ HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. **
 
 There are many ways of enabling HTTS; for instance you can setup a web server such as nginx as a reverse proxy in front of RESTHeart or you may rely on cloud services that provides load balancers that manages SSL for you (such are Amazon WS or Google Cloud).
 
-In any case, restheart-security and restheart-core are both able to expose directly the HTTS protocol and  this is done configuring the https listener. This is the suggested configuration for small systems.
+In any case, restheart-security and restheart-core are both able to expose directly the HTTS protocol and this is done configuring the https listener. This is the suggested configuration for small systems.
 
 The following configuration file except shows the involved options:
 
-
-``` bash
+```bash
 #### listeners
 https-listener: true
 https-host: 0.0.0.0
@@ -48,7 +47,7 @@ use-embedded-keystore: true
 
 To enable https configure the https listener using the following options:
 
-1.  **https-listener** *true* to enable it
+1.  **https-listener** _true_ to enable it
 2.  **https-host** the ip where to bind the listener
 3.  **https-port** the port where to bind the listener:
 
@@ -64,8 +63,7 @@ The test self signed certificate is provided only for testing purposes. Using it
 
 The only option to specify to use the default, embedded self signed certificate is the following:
 
-
-``` yml
+```yml
 use-embedded-keystore: true
 ```
 
@@ -76,16 +74,14 @@ Using the self-signed certificate leads to issues with some clients and all brow
 
 ## Use a valid certificate
 
-You need to get a valid certificate from a Certificate Authority and install it to the java keystore. 
+You need to get a valid certificate from a Certificate Authority and install it to the java keystore.
 
 Follow this <a target="_blank" href="https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores">tutorial</a> to add the certificate to the java keystore.
 
 Once the certificate has been added, you can configure it as follows:
 
-
-``` yml
+```yml
 use-embedded-keystore: false
-
 keystore-file: /path/to/keystore/file
 keystore-password: he keystore password
 certpassword: the certificate password
