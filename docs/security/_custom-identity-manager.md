@@ -5,20 +5,20 @@ title: Custom Identity Manager
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Develop](#develop)
-    -   [The IDM class](#the-idm-class)
-    -   [Methods to implement](#methods-to-implement)
--   [Configuration](#configuration)
--   [Add custom classes to the classpath](#add-custom-classes-to-the-classpath)
-    -   [Using the java classpath option](#using-the-java-classpath-option)
-    -   [Using the Maven shade plugin](#using-the-maven-shade-plugin)
--   [Example](#example)
+* [Introduction](#introduction)
+* [Develop](#develop)
+    * [The IDM class](#the-idm-class)
+    * [Methods to implement](#methods-to-implement)
+* [Configuration](#configuration)
+* [Add custom classes to the classpath](#add-custom-classes-to-the-classpath)
+    * [Using the java classpath option](#using-the-java-classpath-option)
+    * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
+* [Example](#example)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 This section will provide detailed information on how to implement a
 custom IDM.
@@ -30,7 +30,7 @@ For further help, please refer to the RESTHeart support channels
 
 The Identity Manager is responsible of authenticating the users
 verifying the credentials provided via the [basic authentication
-mechanism](/docs/clients-authentication).
+mechanism](/docs/v5/clients-authentication).
 
 Following the dependency injection approach, the actual IDM
 implementation to use is specified in the configuration file.
@@ -56,11 +56,11 @@ The steps required to develop and configure an IDM are:
 
 The IDM implementation class must implement the interface
 *io.undertow.security.idm.IdentityManager *available from the
-_undertow-core_ package.
+*undertow-core* package. 
 
 **maven coordinates of undertow-core package**
 
-```plain
+``` plain
 <dependency>
   <groupId>io.undertow</groupId>
   <artifactId>undertow-core</artifactId>
@@ -74,7 +74,7 @@ Constructor
 
 The constructor must have the following signature:
 
-```plain
+``` plain
 public MyIdentityManager(Map<String, Object> args)
 ```
 
@@ -84,8 +84,7 @@ configuration file.
 ### Methods to implement
 
 The interface *io.undertow.security.idm.IdentityManager* mandates to
-implement 3 _verify_ methods:
-
+implement 3 *verify* methods:
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
@@ -126,7 +125,7 @@ Verify a supplied <code>Credential</code> against a requested ID.
 The actual check occurs in the third *verify* method. They can be
 implemented as follows.
 
-```plain
+``` plain
 @Override
 public Account verify(Account account) {
      // need to re-verify previously authenticated account? If not, leave as follows.
@@ -140,10 +139,10 @@ public Account verify(Credential credential) {
 }
  
 public Account verify(String id, Credential credential) {
-
+    
     if (credential instanceof PasswordCredential) {
         char[] password = ((PasswordCredential) credential).getPassword();
-
+        
         // here check the id and password
         ....
     } else {
@@ -152,17 +151,17 @@ public Account verify(String id, Credential credential) {
 }
 ```
 
-The _Credential_ argument is actually an instance
+The *Credential* argument is actually an instance
 of *io.undertow.security.idm.PasswordCredential*
 
-The _verify_ methods should return *null* for invalid credentials or an
+The *verify* methods should return *null* for invalid credentials or an
 instance of *org.restheart.security.impl.SimpleAccount *whose
 constructor allows to instantiate an immutable *Account* object that
 includes roles as an *Array&lt;Strings&gt; *object.
 
 ## Configuration
 
-The IDM is configured in the _idm_ section of the yaml configuration
+The IDM is configured in the *idm* section of the yaml configuration
 file.
 
 Here you specify the actual IDM implementation to use and any parameters
@@ -171,8 +170,8 @@ defined or some parameters that control caching).
 
 For example, if the *idm* configuration section is:
 
-```yaml
-idm:
+``` plain
+idm:    
     implementation-class: org.restheart.examples.security.MyIdentityManager
     arg1: 5
     arg2: hey man!
@@ -183,7 +182,7 @@ idm:
 
 Then:
 
--   the IDM singleton will be of class _MyIdentityManager_
+-   the IDM singleton will be of class *MyIdentityManager*
 -   its constructor will be invoked passing a Map argument with 4 keys
     1.  *implementation-class* of class String
     2.  *arg1* of class *Integer*
@@ -199,7 +198,7 @@ The custom classes must be added to the java classpath.
 
 In order to achieve this, start RESTHeart with the following command:
 
-```bash
+``` plain
 $ java -server -classpath restheart.jar:custom-classes.jar org.restheart.Bootstrapper restheart.yml
 ```
 
@@ -211,10 +210,10 @@ the capability to package the artifact in an uber-jar, including its
 dependencies and to *shade* - i.e. rename - the packages of some of the
 dependencies.
 
-It allows to create a single jar including any RESTHeart class and your
+ It allows to create a single jar including any RESTHeart class and your
 custom ones. In this case you can start RESTHeart with
 
-```bash
+``` plain
 $ java -server -jar restheart_plus_custom.jar restheart.yml
 ```
 
@@ -225,13 +224,13 @@ find it
 at [restheart-customization-examples](https://github.com/SoftInstigate/restheart-customization-examples).
 
 It includes the **ExampleIdentityManager;** this is a simple IDM that
-verifies the _password_ to be the flipped _userid_ string. In case the
+verifies the *password* to be the flipped *userid* string. In case the
 user id is 'admin', it also associate the user with the ADMIN role and,
 in all other cases, with the 'USER' role.
 
 The implementation class follows:
 
-```java
+``` java
 package org.restheart.examples.security;
 
 import com.google.common.collect.Sets;

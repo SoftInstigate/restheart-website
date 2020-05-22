@@ -5,16 +5,16 @@ title: Resource URI
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Resources URIs](#resources-uris)
--   [Document id](#document-id)
-    -   [Examples](#examples)
--   [URL encoding](#url-encoding)
+* [Introduction](#introduction)
+* [Resources URIs](#resources-uris)
+* [Document id](#document-id)
+    * [Examples](#examples)
+* [URL encoding](#url-encoding)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 ## Introduction
 
@@ -34,7 +34,6 @@ are identified.
 </div>
 
 ## Resources URIs
-
 <div class="table-responsive">
 <table class="table table-responsive">
 <colgroup>
@@ -83,7 +82,7 @@ are identified.
 <tr class="odd">
 <td>Bulk Documents</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/*?filter=[filter expression]</code></td>
-<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/write-docs/">Write Requests</a>.</td>
+<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/v5/write-docs/">Write Requests</a>.</td>
 </tr>
 <tr class="even">
 <td>Indexes</td>
@@ -118,12 +117,12 @@ are identified.
 <tr class="even">
 <td>Aggregation</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/_aggrs/&lt;aggr_name&gt;</code></td>
-<td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/docs/aggregations">Aggregations</a>).</td>
+<td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/docs/v5/aggregations">Aggregations</a>).</td>
 </tr>
 <tr class="odd">
 <td>Change Stream</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</code></td>
-<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/change-streams">Change Streams</a>).</td>
+<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/v5/change-streams">Change Streams</a>).</td>
 </tr>
 </tbody>
 </table>
@@ -133,8 +132,9 @@ are identified.
 In MongoDB, the \_id can be of any type. For instance, it can be an
 ObjectId, a String or even a JSON object, as in the following document:
 
-```json
-{ "_id": { "a": 1, "b": 2 } }
+
+```
+{ "_id": {"a":1,"b":2} }
 ```
 
 RESTHeart needs to be able to assign a unique URI to each document. For
@@ -187,15 +187,17 @@ The following table shows the supported types:
 </table>
 </div>
 
+
 {: .bs-callout.bs-callout-info }
-**\*** The default value of the id_type query parameter
-is **STRING_OID**. In this case, the value of the **&lt;doc_id&gt;** is
+**\*** The default value of the id\_type query parameter
+is **STRING\_OID**. In this case, the value of the **&lt;doc_id&gt;** is
 interpreted either as an ObjectId or a String. The former applies if the
 value is a valid ObjectId.
 
 {: .bs-callout.bs-callout-info }
 **\*\*** **STRING** is useful if the \_id value would be a valid
 ObjectId and it is actually a String.
+
 
 ### Examples
 

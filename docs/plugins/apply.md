@@ -18,6 +18,8 @@ title: Apply Plugins
 
 {% include docs-head.html %} 
 
+{% include doc-in-progress-v5.html %}
+
 ## Introduction 
 
 Transformers, Checkers and Hooks can be applied to any request.
@@ -117,7 +119,7 @@ Global Transformers can be defined programmatically instantiating `GlobalTransfo
     }
 ```
 
-and adding them to the list `TransformerHandler.getGlobalTransformers()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalTransformers()`
 
 
 ``` java
@@ -151,9 +153,9 @@ GlobalTransformer globalTransformer = new GlobalTransformer(
 TransformerHandler.getGlobalTransformers().add(globalTransformer);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Checkers and Global Transformers. An example can is [AddBodyToWriteResponsesInitializer](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/initializers/AddBodyToWriteResponsesInitializer.java)
 
-Note that `AddBodyToWriteResponsesInitializer` is not enabled by default. To enabled it add `enabled=true` to its [configuration](/docs/develop/core-plugins/#configuration).
+Note that `AddBodyToWriteResponsesInitializer` is not enabled by default. To enabled it add `enabled=true` to its [configuration](/docs/v5/develop/core-plugins/#configuration).
 
 ## Apply a Checker via metadata
 
@@ -223,7 +225,7 @@ public GlobalChecker(Checker checker,
             BsonValue confArgs)
 ```
 
-and adding them to the list `CheckerHandler.getGlobalCheckers()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalCheckers()`
 
 
 ``` java
@@ -251,7 +253,7 @@ GlobalChecker globalChecker = new GlobalChecker(checker, predicate, true, args, 
 CheckHandler.getGlobalCheckers().add(globalChecker);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Checkers.
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Checkers.
 
 ## Apply an Hook via metadata
 
@@ -318,7 +320,7 @@ Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
     }
 ```
 
-and adding them to the list `HookHandler.getGlobalHooks()`
+and adding them to the list `PluginsRegistry.getInstance().getGlobalHooks()`
 
 
 ``` java
@@ -342,7 +344,7 @@ BsonDocument confArgs = null;
 GlobalHook globalHook = new GlobalHook(hook, predicate, args, confArgs);
 
 // finally add it to global hooks list
-HookHandler.getGlobalHooks().add(globalHook);
+PluginsRegistry.getInstance().getGlobalHooks().add(globalHook);
 ```
 
-You can use an [Initializer](/docs/develop/core-plugins#initializers) to add Global Hook.
+You can use an [Initializer](/docs/v5/develop/core-plugins#initializers) to add Global Hook.

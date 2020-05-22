@@ -17,6 +17,8 @@ layout: docs
 
 {% include docs-head.html %} 
 
+{% include doc-in-progress-v5.html %}
+
 ## Introduction
 
 This page provides information on how to package custom plugins for the [RESTHeart Platform](https://restheart.org/get).

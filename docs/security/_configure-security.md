@@ -5,21 +5,22 @@ title: Enable and Configure Security
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
-    -   [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
-    -   [How to use a valid certificate](#how-to-use-a-valid-certificate)
--   [Identity Manager](#identity-manager)
-    -   [SimpleFileIdentityManager](#simplefileidentitymanager)
-    -   [Global Security Predicates](#global-security-predicates)
-    -   [DbIdentityManager](#dbidentitymanager)
--   [Access Manager](#access-manager)
-    -   [SimpleAccessManager](#simpleaccessmanager)
-    -   [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
+* [Introduction](#introduction)
+    * [How to use the default self signed certificate ](#how-to-use-the-default-self-signed-certificate)
+    * [How to use a valid certificate](#how-to-use-a-valid-certificate)
+* [Identity Manager](#identity-manager)
+    * [SimpleFileIdentityManager](#simplefileidentitymanager)
+    * [Global Security Predicates](#global-security-predicates)
+    * [DbIdentityManager](#dbidentitymanager)
+* [Access Manager](#access-manager)
+    * [SimpleAccessManager](#simpleaccessmanager)
+    * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -34,13 +35,13 @@ Once security is enabled, requests undergo the following process:
 
 1.  the client submits a request over SSL providing username and
     password credentials via the basic authentication method
-2.  the RESTHeart's Identity Manager (IDM) starts the _authentication_
+2.  the RESTHeart's Identity Manager (IDM) starts the *authentication*
     of the request it, i.e. it verifies the user identity against the
     provided id and password:
     1.  if the authentication fails, the requests ends with response
-        code _401 Unauthorized_;
+        code *401 Unauthorized*;
     2.  if the authentication succeeds, the request continue
-3.  the RESTHeart's Access Manager (AM) starts the _authorization_ of
+3.  the RESTHeart's Access Manager (AM) starts the *authorization* of
     the request, i.e. it determines if the client is given the
     permission to execute it against the configured security policy:
     1.  if the authorization fails, the requests ends with response
@@ -69,12 +70,12 @@ authentication mechanism.
 RESTHeart is stateless: there isn't any authentication session and
 credentials must be sent on every request.
 
-Refer to [How Clients authenticate](/docs/security/how-clients-authenticate) for more
+Refer to [How Clients authenticate](/docs/v5//docs/security/how-clients-authenticate) for more
 information.
 
 The HTTPS listener
 
-**Important!** HTTP is not secure: credentials can be sniffed by a man-in-the-middle
+**Important!**  HTTP is not secure: credentials can be sniffed by a man-in-the-middle
 attack. **It is paramount to use HTTPS**
 
 There are many ways of enabling HTTS; for instance you can setup a web
@@ -88,7 +89,7 @@ configuration for small systems.
 
 The following configuration file except shows the involved options:
 
-```bash
+``` bash
 #### listeners
 https-listener: true
 https-host: 0.0.0.0
@@ -106,7 +107,7 @@ use-embedded-keystore: true
 To enable https configure the https listener using the following
 options:
 
-1.  **https-listener** _true_ to enable it
+1.  **https-listener** *true* to enable it
 2.  **https-host** the ip where to bind the listener
 3.  **https-port** the port where to bind the listener:
 
@@ -159,20 +160,20 @@ If the client credentials are not valid the response will be **HTTP/1.1
 
 The IDM is pluggable: the actual IDM implementation to use can be
 configured. Please refer to [Custom Identity
-Manager](/docs/custom-identity-manager) section for more information on how to
+Manager](/docs/v5/custom-identity-manager) section for more information on how to
 develop and configure a custom IDM.
 
 The **idm** section of the yaml configuration file is:
 
-```yml
-idm:
+``` yml
+idm:    
     implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
     conf-file: ./etc/security.yml
 ```
 
 1.  **implementation-class** specifies the java class that implements
     the IDM. You can use one of the implementations shipped
-    out-of-the-box or implement your own.
+    out-of-the-box or implement your own. 
 2.  **cont-file** is the path of a yam configuration file that is passed
     to the IDM. **Note**: the path is either absolute or relative to the
     directory of restheart.jar
@@ -180,19 +181,19 @@ idm:
 ### SimpleFileIdentityManager
 
 The SimpleFileIdentityManager shipped with RESTHeart (class is
-_org.restheart.security.impl.SimpleFileIdentityManager_) authenticates
+*org.restheart.security.impl.SimpleFileIdentityManager*) authenticates
 users defined in a yaml file.
 
 This is how its straightforward conf-file looks like:
 
-```yml
+``` yml
 users:
-    - userid: admim
-      password: changeit
-      roles: [admins]
-    - userid: user
-      password: changeit
-      roles: [users]
+ - userid: admim
+   password: changeit
+   roles: [admins]
+ - userid: user
+   password: changeit
+   roles: [users]
 ```
 
 ### Global Security Predicates
@@ -201,7 +202,7 @@ users:
 
 Global Security Predicates can be defined programmatically as follows:
 
-```java
+``` java
 // allow users with role "ADMIN" to GET /
 RequestContextPredicate securityPredicate = new RequestContextPredicate() {
             @Override
@@ -214,29 +215,28 @@ RequestContextPredicate securityPredicate = new RequestContextPredicate() {
         }
 
 // add the global predicate
-GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(securityPredicate);
+PluginsRegistry.getInstance().getGlobalSecurityPredicates().add(securityPredicate);
 ```
-
-You can use an [Initializer](/docs/initializer) to add Global Security Predicates.
+You can use an [Initializer](/docs/v5/initializer) to add Global Security Predicates.
 
 ### DbIdentityManager
 
 The DbIdentityManager shipped with RESTHeart (class is
-_org.restheart.security.impl.DbIdentityManager_) authenticates users
+*org.restheart.security.impl.DbIdentityManager*) authenticates users
 defined in a MongoDB collection.
 
-To use the DbIdentityManager, set the **idm** section of the yaml
+To use the DbIdentityManager, set the **idm** section of the yaml 
 configuration file as follows:
 
-```yml
-idm:
+``` yml
+idm:    
     implementation-class: org.restheart.security.impl.DbIdentityManager
     conf-file: ./etc/security.yml
 ```
 
 This is how the security.yml looks like:
 
-```yml
+``` yml
 dbim:
     - db: userbase
       coll: accounts
@@ -252,10 +252,10 @@ dbim:
       cache-expire-policy: AFTER_WRITE
 ```
 
-The _db_ and *coll* properties point to the collection with the user documents
+The _db_ and _coll_ properties point to the collection with the user documents
 (userbase.accounts in this case).
 
-The _prop-_ prefixed properties define which properties of the user document
+The _prop-_ prefixed properties define which properties of the user document 
 are used for authentication:
 
 1.  **id**: (string) the property holding the userid
@@ -274,12 +274,12 @@ exits at startup time, creating it eventually. This is useful to initialize a de
 the if _bcrypt-hashed-password_ is set to _true_, the _create-user-document_ password must
 be bcryped.
 
-**Note** Starting from RESTHeart v3.3, the _password_ field is always
+**Note** Starting from RESTHeart v3.3, the _password_ field is always 
 filtered out from the response and read requests with a filter query parameter involving
 the _password_ property are forbidden to avoid snooping passwords.
 
 **Hint** To completely hide the users collection, just specify a underscore prefixed
-collection name (e.g. _\_accounts_).
+collection name (e.g. _\_accounts_). 
 RESTHeart threats collections whose names start with \_ as reserved: they are not
 exposed by the API.
 
@@ -287,8 +287,9 @@ If you actually expose it, make sure to:
 
 1.  define an appropriate access policy enforced by the Access Manager
     so that users can only access their own data, (e.g. a user cannot modify other users' passwords)
-2.  For RESTHeart versions older than 3.3, filter out the _password_ property from responses with
-    a [representation transformer](/docs/request-transformers).
+2.  For RESTHeart versions older than 3.3, filter out the *password* property from responses with
+    a [representation transformer](/docs/v5/request-transformers).
+ 
 
 ## Access Manager
 
@@ -306,8 +307,8 @@ The **access-manager** section of the yaml configuration file is:
 
 ### Configuration
 
-```text
-access-manager:
+``` text
+access-manager:    
     implementation-class: org.restheart.security.impl.SimpleAccessManager
     conf-file: ./etc/security.yml
 ```
@@ -330,7 +331,7 @@ file as a set of permissions.
 
 This is how the configuration file looks like:
 
-```bash
+``` bash
 permissions:
  - role: admins
    predicate: path-prefix[path="/"]
@@ -345,57 +346,57 @@ on http requests. Please refer to [undertow
 documentation](https://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#predicates-attributes-and-handlers) for
 more information about predicates.
 
-Assign permission to the special role **\$unauthenticated** to enable
+Assign permission to the special role **$unauthenticated** to enable
 requests on resources without requiring authentication.
 
 #### Specify Permission on URI Remapped Resources
 
-The _mongo-mounts_ configuration option allows to map the URI of the
+The *mongo-mounts* configuration option allows to map the URI of the
 MongoDB resources.
 
-Starting from RESTHeart version 3.3, the _path_ attribute of permission
+Starting from RESTHeart version 3.3, the _path_ attribute of permission 
 are absolute.
 
 Example: With the following configuration, all the collections of the
-db *mydb* are given the path prefix _/api_
+db *mydb* are given the path prefix */api*
 
-```yml
+``` yml
 mongo-mounts:
     - what: /mydb
       where: /api
 ```
 
-The collection /mydb/coll is therefore remapped to the URI _/api/coll_
+The collection /mydb/coll is therefore remapped to the URI */api/coll*
 and the predicate to allow GET requests on this collection is:
 
-```yml
+``` yml
 permissions:
-    - role: $unauthenticated
-      predicate: path-prefix[path="/api/coll"] and method[value="GET"]
+ - role: $unauthenticated
+   predicate: path-prefix[path="/api/coll"] and method[value="GET"]
 ```
 
 For versions older than 3.3, the rule is:
 
 When the URI of a resource is remapped via mongo-mounts configuration
 option, the *path* attribute of permissions must be relative to the
-*what *argument of the _mongo-mounts_ option.
+*what *argument of the *mongo-mounts* option.
 
 Example: With the following configuration, all the collections of the
-db *mydb* are given the path prefix _/api_
+db *mydb* are given the path prefix */api*
 
-```yml
+``` yml
 mongo-mounts:
     - what: /mydb
       where: /api
 ```
 
-The collection /mydb/coll is therefore remapped to the URI _/api/coll_
+The collection /mydb/coll is therefore remapped to the URI */api/coll*
 and the predicate to allow GET requests on this collection is:
 
-```yml
+``` yml
 permissions:
-    - role: $unauthenticated
-      predicate: path-prefix[path="/coll"] and method[value="GET"]
+ - role: $unauthenticated
+   predicate: path-prefix[path="/coll"] and method[value="GET"]
 ```
 
 </div>

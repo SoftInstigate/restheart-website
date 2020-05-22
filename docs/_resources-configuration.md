@@ -138,7 +138,7 @@ the *GetRoleHandler* (GETing the /\_logic/roles/mine resource) to
 determine if the current user is logged in and show the login form
 eventually.
 
-Refer to [Application Logic](/docs/application-logic) section for more
+Refer to [Application Logic](/docs/v5/application-logic) section for more
 information on how to develop a custom application handler.
 
 The default configuration pipes in three example application logic

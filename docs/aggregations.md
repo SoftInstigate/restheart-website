@@ -42,7 +42,8 @@ meaning for RESTheart that influences its behavior.
 Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of _pipeline_ or *mapReduce *objects:
 
 ```http
-GET /coll/_meta HTTP/1.1
+GET /coll/_meta HTTP 1.1
+
 
 {
     "aggrs": [
@@ -54,14 +55,18 @@ GET /coll/_meta HTTP/1.1
 }
 ```
 
-### aggregation pipeline
+### Aggregation pipeline
 
 ```json
 {
-    "type": "pipeline",
+    "type":"pipeline",
     "uri": "<uri>",
-    "stages": ["<stage_1>", "<stage_2>", "..."],
-    "allowDiskUse": true
+    "stages": [
+        "<stage_1>",
+        "<stage_2>",
+        "..."
+    ],
+    "allowDiskUse": boolean
 }
 ```
 
@@ -165,7 +170,7 @@ operations:
 -   map reduce operation _test_mr_ bound at
     `/coll/_aggrs/example-mapreduce`
 
-```http
+```
 PUT /coll HTTP/1.1
 
 { "aggrs" : [ 
@@ -197,7 +202,7 @@ The following example defines the aggregation `/coll/_aggrs/age-by-gender` that 
 {: .bs-callout.bs-callout-warning }
 Materialized Views are available from MongoDB 4.2.
 
-```http
+```
 PUT /coll HTTP/1.1
 
 { "aggrs" : [
@@ -214,14 +219,14 @@ PUT /coll HTTP/1.1
 
 Executing the aggregation request returns no data, but thanks to the `$merge` stage, the new collection `avgAgeByGender` gets created.
 
-```http
+```
 GET /coll/_aggrs/avg-by-city HTTP/1.1
 
 HTTP/1.1 200 OK
 []
 ```
 
-```http
+```
 GET /avgAgeByGender HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -243,7 +248,7 @@ For example, the previous example aggregations both use a variable named
 "n". \*If the variable is not passed via the `avars` qparam, the request
 fails.
 
-```http
+```bash
 GET /coll/_aggrs/example-pipeline HTTP/1.1
 
 HTTP/1.1 400 Bad Request
@@ -257,7 +262,7 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-```http
+```
 GET /coll/_aggrs/example-pipeline?avars={"n":1} HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -277,9 +282,10 @@ In case of map reduce operation previous example, the variable was used
 to filter the documents to have the _name_ property matching the
 variable _n:_
 
-```json
+```js
 {
-    "query": { "name": { "$var": "n" } }
+  "query": { "name": { "$var": "n" } },
+  ...
 }
 ```
 
@@ -288,7 +294,7 @@ variable _n:_
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
-```http
+```
 PATCH /coll HTTP/1.1
 
 { "aggrs" : [
@@ -307,8 +313,8 @@ Note the _map_ function; `JSON.parse($vars)` allows to access the
 variables passed with the query parameter `avars`
 
 ```js
-function() {
- var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
+function() { 
+ var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
  if (this.age > minage ) { emit(this.name, this.age); }
 };
 ```

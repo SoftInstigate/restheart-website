@@ -5,21 +5,22 @@ title: Speedup Requests with Cursor Pools
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [How it works](#how-it-works)
--   [Request parameters](#request-parameters)
--   [Configuration](#configuration)
--   [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
+* [Introduction](#introduction)
+* [How it works](#how-it-works)
+* [Request parameters](#request-parameters)
+* [Configuration](#configuration)
+* [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
+
 
 ## Introduction
 
 RESTHeart speedups the execution of GET requests to collections
-resources via its **db cursors pre-allocation engine**.
+resources via its **db cursors pre-allocation engine**. 
 
 This applies when several documents need to be read from a big
 collection and moderates the effects of the
@@ -30,14 +31,15 @@ In common scenarios, RESTHeart's db cursor pre-allocation engine allows
 to deliver brilliant performances, even up to a 1000% increase over
 querying MongoDB directly with its Java driver.
 
-Refer to the [Performances](/docs/performances) section for more information
+Refer to the [Performances](/docs/v5/performances) section for more information
 and real case results.
 
 Let's first clarify the issue addressed by the engine.
 
-RESTHeart allows to [Read Documents](/docs/read-docs/) via GET requests
+RESTHeart allows to [Read Documents](/docs/v5/read-docs/) via GET requests
 on collection resources where documents are returned as embedded
 resources.
+
 
 ```
 GET /test/coll?count&page=3&pagesize=10 HTTP/1.1
@@ -58,7 +60,7 @@ Pagination is controlled via the following query parameters:
 -   `pagesize`: the number of documents to return (default value is 100,
     maximum is 1000).
 
-**Behind the scene, this is implemented via the MongoDB _cursor.skip()_
+**Behind the scene, this is implemented via the MongoDB *cursor.skip()*
 method; **
 
 The issue is that MongoDB queries with a large "skip" slow down
@@ -76,7 +78,7 @@ Consider using range-based pagination for these kinds of tasks. That is, query f
 
 ## How it works
 
-When RESTHeart detects a query involving many skips (with a big _page_
+When RESTHeart detects a query involving many skips (with a big *page*
 query parameter), in parallel it starts pre-allocating other cursors
 (with same sort, filter and projection parameters) in a pool; further
 similar requests will be served much quicker because the cursors needed
@@ -91,7 +93,7 @@ to retrieve the data will probably be in the pool and already skipped.
 -   Cursors will last in the pool for 8 minutes (MongoDB will timeout
     the cursors in 10 minutes anyway).
 -   Two different cursors allocation policies can be applied and
-    controlled by the _eager_ query parameter: LINEAR and RANDOM. The
+    controlled by the *eager* query parameter: LINEAR and RANDOM. The
     former will better improve a linear scanning of the collection
     (reading pages in sequence), the latter, random accesses.
 
@@ -107,7 +109,7 @@ The following images depicts how it works, in the LINEAR case:
     document. MongoDB needs to generate a cursor skipping 1.000.000
     documents: this takes time to complete;
 2.  Asynchronously, the **db cursor pre-allocation engine** creates few
-    cursor in the pool (_delta_, _slice width_ and actual number of
+    cursor in the pool (*delta*, *slice width* and actual number of
     cursors being configurable);
 3.  **Request B** asks for 5 documents starting for the next page.
     RESTHeart finds cursor in the pool that has been already skipped. In
@@ -122,20 +124,19 @@ The following images depicts how it works, in the RANDOM case:
     document (page=200.000). MongoDB needs to generate a cursor skipping
     1.000.000 documents that takes time to complete;
 2.  Asynchronously, the **db cursor pre-allocation engine** creates few
-    cursor in the pool (_slice width_ and actual number of cursors being
+    cursor in the pool (*slice width* and actual number of cursors being
     configurable)
 3.  **Request B** asks for the 250.000th page. RESTHeart finds a cursor
     in the pool that has been already skipped. In the worst case only
-    _slice width_ skips are needed.
+    *slice width* skips are needed.
 
 ![](/images/attachments/9207943/12058637.png?width=640){:
 width="640" class="image-center img-responsive"}
 
 ## Request parameters
 
-The engine is controlled by the _eager_ query parameter. Possible values
+The engine is controlled by the *eager* query parameter. Possible values
 are:
-
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
@@ -177,11 +178,13 @@ default
 </div>
 Example
 
+
 ```
 GET /test/coll?count&page=1000&pagesize=1000&eager=random HTTP/1.1
 ```
 
 ## Configuration
+
 
 ```
 ## eager db cursor preallocation policy
@@ -196,7 +199,6 @@ eager-cursor-allocation-linear-slice-heights: [ 4, 2, 1 ]
 eager-cursor-allocation-random-max-cursors: 20
 eager-cursor-allocation-random-slice-min-width: 1000
 ```
-
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
@@ -244,9 +246,9 @@ eager-cursor-allocation-random-slice-min-width: 1000
 When iterating a cursor that uses an index for the sort, then:
 
 -   a document inserted *after* the cursor's position will appear in the
-    results.
+    results. 
 -   a document inserted *before* the cursor's position doesn't affect
-    the cursor's position or meaning of the current "skip".
+    the cursor's position or meaning of the current "skip". 
 
 When iterating a sorted cursor without an index, documents inserted
 after the cursor will not appear in the results. Note that, if the

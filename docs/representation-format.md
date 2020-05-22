@@ -5,45 +5,41 @@ title: Representation Format
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Standard Representation](#standard-representation)
-    -   [Json Mode](#json-mode)
--   [BSON types](#bson-types)
--   [Get the names of existing collections](#get-the-names-of-existing-collections)
--   [HAL](#hal)
-    -   [Example](#example)
-    -   [Properties](#properties)
-    -   [Documents as embedded resources](#documents-as-embedded-resources)
-    -   [Links](#links)
-    -   [Hal mode](#hal-mode)
--   [Simplified HAL](#simplified-hal)
+- [Introduction](#introduction)
+- [Standard Representation](#standard-representation)
+    - [Json Mode](#json-mode)
+- [BSON types](#bson-types)
+- [Get the names of existing collections](#get-the-names-of-existing-collections)
+- [HAL](#hal)
+    - [Example](#example)
+    - [Properties](#properties)
+    - [Documents as embedded resources](#documents-as-embedded-resources)
+    - [Links](#links)
+    - [Hal mode](#hal-mode)
+- [Simplified HAL](#simplified-hal)
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 ## Introduction
 
-RESTHeart has three different options for representing the resources:`STANDARD`, `HAL` and `SHAL` (Simplified HAL).
+RESTHeart has three different options for representing the resources:`STANDARD`, `HAL` and `SHAL` (Simplified HAL). 
 
 The default representation is controlled by the configuration option `default-representation-format` .
 
-```properties
+
+``` properties
 default-representation-format: STANDARD
 ```
 
 The `rep` query parameter can also be used for switching between representations.
 
-```http
+
+```
 GET /inventory?rep=s HTTP/1.1
-```
-
-```http
 GET /inventory?rep=hal HTTP/1.1
-```
-
-```http
 GET /inventory?rep=shal HTTP/1.1
 ```
 
@@ -54,19 +50,21 @@ Starting with RESTHeart v4 this is the default representation format.
 
 In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET /inventory HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+```
 HTTP/1.1 200 OK
 
 ...
@@ -94,21 +92,23 @@ HTTP/1.1 200 OK
 ]
 ```
 
-Execute the following query to retrieve the metadata of the collection _inventory_:
+ Execute the following query to retrieve the metadata of the collection *inventory*:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET /inventory/_meta HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+```
 HTTP/1.1 200 OK
 
 ...
@@ -144,7 +144,8 @@ The query parameter `jsonMode` allows to specify the JSON Mode
 
 #### Standard RESTHeart representation
 
-```http
+
+```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
 {
@@ -165,8 +166,9 @@ GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
 #### Strict representation
 
-```http
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict HTTP/1.1
+
+```
+GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict
 
 HTTP/1.1 200 OK
 
@@ -190,7 +192,8 @@ HTTP/1.1 200 OK
 
 #### Extended representation
 
-```http
+
+```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -221,7 +224,8 @@ HTTP/1.1 200 OK
 
 #### Relaxed representation
 
-```http
+
+```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -247,7 +251,8 @@ HTTP/1.1 200 OK
 {: .bs-callout.bs-callout-success }
 SHELL JSON Mode is very useful since it **allows to use the response body directly in the mongoshell!**
 
-```http
+
+```
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -265,7 +270,8 @@ MongoDB adds this extension to the JSON.
 
 For instance, the `_id` of the following JSON document is an ObjectId.
 
-```json
+
+```
   {
     "_id": {
       "$oid": "5d0b4e325beb2029a8d1bd5e"
@@ -281,21 +287,23 @@ The strict mode is used on both request and response resource representation and
 
 The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
 ```
 
-The correct request is:
+The correct request is: 
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 ```
 
@@ -303,27 +311,29 @@ GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 
 To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET / HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+```
 HTTP/1.1 200 OK
 
 ...
 
-[
+[ 
   "inventory",
   "chat",
-  "files.bucket"
+  "files.bucket" 
 ]
 ```
 
@@ -336,8 +346,7 @@ The <code>root-mongo-resource</code> property is set in <code>default.properties
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart</code></pre>
 
-With <code>root-mongo-resource = '\*'</code>, the request <code>GET /</code> returns the names of existing <i>databases</i>.
-
+With <code>root-mongo-resource = '*'</code>, the request <code>GET /</code> returns the names of existing <i>databases</i>.
 </div>
 
 ## HAL
@@ -351,24 +360,24 @@ With <code>root-mongo-resource = '\*'</code>, the request <code>GET /</code> ret
 
 ## Example
 
-We’ll get the `inventory` collection resource and analyze it.
-A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
+We’ll get the `inventory` collection resource and analyze it. 
+A collection represented with `HAL` has its own *properties*, *embedded resources* (in this case, documents) and *link templates* (for pagination, sorting, etc).
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+```
 GET /inventory?rep=hal HTTP/1.1
 ```
-
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
-HTTP/1.1 200 OK
 
+```
+HTTP/1.1 200 OK
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, X-Powered-By
@@ -420,12 +429,12 @@ The other fields are reserved properties (i.e. are managed automatically
 by RESTHeart for you); these always starts with \_:
 
 {: .table.table-responsive}
-| Property | Description |
+| Property       | Description                                                                                             |
 |----------------|---------------------------------------------------------------------------------------------------------|
-| `_type` | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode) |
-| `_id` | the name of the collection |
-| `_etag` | entity tag, used for caching and to avoid ghost writes. |
-| `_returned` | the number of the documents embedded in this representation |
+| `_type`        | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode)                   |
+| `_id`          | the name of the collection                                                                              |
+| `_etag`        | entity tag, used for caching and to avoid ghost writes.                                                 |
+| `_returned`    | the number of the documents embedded in this representation                                             |
 
 ## Documents as embedded resources
 
@@ -434,44 +443,42 @@ recursively represented as HAL documents.
 
 The `_embedded` property looks like:
 
-```json
-{
-    "_embedded": {
-        "rh:doc": [
-            {
-                "_id": {
-                    "$oid": "5d233aeb93dc53162739e172"
-                },
-                "_etag": {
-                    "$oid": "5d233aeb93dc53162739e16d"
-                },
-                "item": "postcard",
-                "qty": 45,
-                "size": {
-                    "h": 10,
-                    "w": 15.25,
-                    "uom": "cm"
-                },
-                "status": "A"
-            },
-            {
-                "_id": {
-                    "$oid": "5d233aeb93dc53162739e171"
-                },
-                "_etag": {
-                    "$oid": "5d233aeb93dc53162739e16d"
-                },
-                "item": "planner",
-                "qty": 75,
-                "size": {
-                    "h": 22.85,
-                    "w": 30,
-                    "uom": "cm"
-                },
-                "status": "D"
-            }
-        ]
+
+``` json
+{ "_embedded": 
+  { "rh:doc": [{
+      "_id": {
+        "$oid": "5d233aeb93dc53162739e172"
+      },
+      "_etag": {
+        "$oid": "5d233aeb93dc53162739e16d"
+      },
+      "item": "postcard",
+      "qty": 45,
+      "size": {
+        "h": 10,
+        "w": 15.25,
+        "uom": "cm"
+      },
+      "status": "A"
+    },
+    {
+      "_id": {
+        "$oid": "5d233aeb93dc53162739e171"
+      },
+      "_etag": {
+        "$oid": "5d233aeb93dc53162739e16d"
+      },
+      "item": "planner",
+      "qty": 75,
+      "size": {
+        "h": 22.85,
+        "w": 30,
+        "uom": "cm"
+      },
+      "status": "D"
     }
+  ]}
 }
 ```
 
@@ -551,8 +558,9 @@ The `_embedded` property looks like:
 </div>
 The `_links` property looks like:
 
-```json
-{ "_links": {
+
+``` json
+{ "_links": { 
   "self": {
     "href": "/inventory?hal=f"
   },
@@ -606,19 +614,21 @@ Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
+
 
 ```
 GET /inventory?rep=shal HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+```
 HTTP/1.1 200 OK
 
 ...
@@ -650,5 +660,4 @@ HTTP/1.1 200 OK
   "_returned": 6
 }
 ```
-
 </div>

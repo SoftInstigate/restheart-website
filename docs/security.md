@@ -1,5 +1,5 @@
 ---
 layout: redirect
-redirectUrl: /docs/security/overview/
+redirectUrl: /docs/v5/security/overview/
 ---
 

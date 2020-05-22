@@ -19,11 +19,13 @@ title: Develop Security Plugins
 
 {% include docs-head.html %} 
 
+{% include doc-in-progress-v5.html %}
+
 ## Introduction
 
 This section provides detailed information on how to implement custom security plugins for the [RESTHeart Platform](https://restheart.org/get). If you are looking for the OSS Edition, please refer to its [GitHub repository](https://github.com/SoftInstigate/restheart-security/)
 
-See [Understanding RESTHeart Security](/docs/security/overview/#understanding-restheart-security) for an high level view of the RESTHeart security model.
+See [Understanding RESTHeart Security](/docs/v5/security/overview/#understanding-restheart-security) for an high level view of the RESTHeart security model.
 
 ## Authentication Mechanisms
 
@@ -478,16 +480,16 @@ PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
 
 ### Defining Global Permission Predicates
 
-The `GlobalSecuirtyPredicatesAuthorizer` class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.
+Global security predicates must all resolve to true to allow a request.
 
-> You can think about a Global Predicate a way to black list request matching a given condition.
+> You can think about a Global Security Predicate as a way to black list requests matching a given condition.
 
 The following example predicate denies `GET /foo/bar` requests:
 
 
 ```java
 // add a global security predicate
-GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predicate() {
+PluginsRegistry.getInstance().getGlobalSecurityPredicates().add(new Predicate() {
     @Override
     public boolean resolve(HttpServerExchange exchange) {
         var request = Request.wrap(exchange);

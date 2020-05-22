@@ -41,7 +41,7 @@ GET /coll?page=1&pagesize=5&filter={query} HTTP/1.1
     type="Response"
 %}
 
-```
+```json
 [ {doc#1 }, { doc#2 }, ... , { doc#5 } ]
 ```
 
@@ -59,7 +59,7 @@ GET /coll/docid HTTP/1.1
     type="Response"
 %}
 
-```
+```json
 { "_id": "docid", ... }
 ```
 
@@ -215,7 +215,7 @@ GET /bucket.files/fileid/binary HTTP/1.1
     type="Request"
 %}
 
-```http
+```
 POST  /db/bucket.files properties={"a": 1} file=<binary> HTTP/1.1
 ```
 
@@ -248,7 +248,7 @@ GET / HTTP/1.1
     type="Response"
 %}
 
-```
+```json
 [ "coll1", "coll2", "bucket1.files", "bucket2.files", ... ]
 ```
 
@@ -266,7 +266,7 @@ GET /coll/_meta HTTP/1.1
     type="Response"
 %}
 
-```
+```json
 { "aggrs": [...], "checkers": [...], "transformers": [...], "streams": [...] }
 ```
 

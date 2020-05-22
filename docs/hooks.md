@@ -1,4 +1,4 @@
 ---
 layout: redirect
-redirectUrl: /docs/develop/core-plugins/#hooks
+redirectUrl: /docs/v5/develop/core-plugins/#hooks
 ---

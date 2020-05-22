@@ -5,23 +5,23 @@ title: Transactions
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Sessions](#sessions)
-    -   [Start a session](#start-a-session)
-    -   [Execute a request in a session](#execute-a-request-in-a-session)
--   [Transactions](#transactions)
-    -   [Transaction Status](#transaction-Status)
-    -   [Error handling](#error-handling)
-    -   [Start the transaction](#start-the-transaction)
-    -   [Get the current transaction status](#get-the-current-transaction-status)
-    -   [Execute requests in the transaction](#execute-requests-in-the-transaction)
-    -   [Commit the transaction](#commit-the-transaction)
-    -   [Abort the transaction](#abort-the-transaction)
+- [Introduction](#introduction)
+- [Sessions](#sessions)
+  - [Start a session](#start-a-session)
+  - [Execute a request in a session](#execute-a-request-in-a-session)
+- [Transactions](#transactions)
+  - [Transaction Status](#transaction-Status)
+  - [Error handling](#error-handling)
+  - [Start the transaction](#start-the-transaction)
+  - [Get the current transaction status](#get-the-current-transaction-status)
+  - [Execute requests in the transaction](#execute-requests-in-the-transaction)
+  - [Commit the transaction](#commit-the-transaction)
+  - [Abort the transaction](#abort-the-transaction)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 <div class="alert alert-info" role="alert">
     <h2 class="alert-heading"><strong>RESTHeart Platform</strong> feature.</h2>
@@ -41,14 +41,14 @@ title: Transactions
 
 An operation on a single document is atomic. This is enough in most use cases since embedded documents can capture relationships between data in a single document.
 
-However, for situations that require atomicity for multiple write requests or consistency between multiple read requests, multi-document transactions must be used.
+However, for situations that require atomicity for multiple write requests or  consistency between multiple read requests, multi-document transactions must be used.
 
 {: .bs-callout.bs-callout-info }
 Multi-document transaction requires at least MongoDB v4.0 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
 
 ## Sessions
 
-MongoDB v3.6 introduced _sessions_, defined as follows:
+MongoDB v3.6 introduced *sessions*, defined as follows:
 
 > A session is an abstract concept that represents a set of sequential operations executed by an application that are related in some way.
 
@@ -59,21 +59,21 @@ Sessions are available also in the OS version of RESTHeart. RESTHeart Platform a
 
 ### Start a session
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
-POST /_sessions HTTP/1.1
 
-{ "causallyConsistent": true}
+``` http
+POST /_sessions { "causallyConsistent": true} HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 201 Created
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: *
@@ -86,11 +86,12 @@ Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 X-Powered-By: restheart.org
 ```
 
-The _causallyConsistent_ property is optional, true by default.
+The *causallyConsistent* property is optional, true by default.
 
-The session id is returned via the _Location_ response header. In this case
+The session id is returned via the *Location* response header. In this case 
 
-```
+
+``` 
 sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 ```
 
@@ -98,37 +99,40 @@ sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 
 Requests can be executed in a session using the |`sid` query parameter.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
-POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 
+``` http
+POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 {"foo": "bar"}
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 201 Created
 ```
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 200 OK
 ```
 
@@ -160,8 +164,8 @@ The following table shows the most important error status that should be handled
 |Write conflict inside transaction|409|This error occurs when a transaction updating one of more documents tries to commit after a second transaction have been successfully committed updating the same data.|
 
 {: .bs-callout.bs-callout-warning }
-By default, a transaction must have a runtime of less than one minute. After that, the transaction is automatically ABORTED.
-Check
+By default, a transaction must have a runtime of less than one minute. After that, the transaction is automatically ABORTED. 
+Check 
 <a href="https://docs.mongodb.com/manual/core/transactions-production-consideration/#runtime-limit" target="_blank">MongoDB Documentation</a> for more information.
 
 ### Start the transaction
@@ -170,19 +174,21 @@ Transaction are started in sessions.
 
 The following POST request starts the transaction in session `11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0`
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 201 Created
 Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1
 ...
@@ -190,25 +196,28 @@ Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_
 
 Note that the `Location` response header returns the id of the transaction or `txn`. In this case:
 
+
 ```
 txn=1
 ```
 
 ### Get the current transaction status
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
-GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
+
+``` http
+GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 200 Ok
 ...
 
@@ -224,37 +233,41 @@ HTTP/1.1 200 Ok
 
 Requests can be executed in the transaction using the `sid` and `txn` query parameters.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 POST /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 
 {"foo": "bar"}
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 201 Created
 ```
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 200 Ok
 ```
 
@@ -262,19 +275,21 @@ HTTP/1.1 200 Ok
 
 Use the method PATCH to commit the transaction.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 PATCH /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 200 OK
 ```
 
@@ -282,18 +297,20 @@ HTTP/1.1 200 OK
 
 Use the method DELETE to abort the transaction.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```http
+
+``` http
 HTTP/1.1 204 No Content
 ```

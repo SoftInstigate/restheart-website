@@ -5,68 +5,73 @@ title: User Management
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction ](#introduction)
--   [User document](#user-document)
--   [Get existing users](#get-existing-users)
--   [Create a user](#create-a-user)
--   [Update a user](#update-a-user)
--   [Delete a user](#delete-a-user)
--   [Create an ACL document](#create-an-acl-document)
+* [Introduction ](#introduction)
+* [User document](#user-document)
+* [Get existing users](#get-existing-users)
+* [Create a user](#create-a-user)
+* [Update a user](#update-a-user)
+* [Delete a user](#delete-a-user)
+* [Create an ACL document](#create-an-acl-document)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 ## Introduction 
 
-This section provides instructions on how to create, update and delete users for the default [RESTHeart Authenticator](/docs/security/authentication/#restheart-authenticator).
+This section provides instructions on how to create, update and delete users for the default [RESTHeart Authenticator](/docs/v5/security/authentication/#restheart-authenticator).
 
-It also shows how to manage permissions for the default [RESTHeart Authorizer](/docs/security/authorization/#restheart-authorizer).
+It also shows how to manage permissions for the default [RESTHeart Authorizer](/docs/v5/security/authorization/#restheart-authorizer).
 
 {: .bs-callout.bs-callout-info}
 **RESTHeart Authenticator** uses the collection `/users` by default.
 
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database *restheart* is bound to `/` and the user *admin* exists with default password *secret*.
 
 ## User document
 
 With the default configuration, a user is represented as follows:
 
-```json
+
+```
 {
     "_id": "username",
-    "roles": ["list", "of", "roles"],
+    "roles": [ "list", "of", "roles" ],
     "password": "secret"
 }
 ```
 
 {: .bs-callout.bs-callout-info}
-**RESTHeart Authenticator** can be configured to use different properties for the username, roles an password. Check [RESTHeart Authenticator](/docs/security/authentication/#restheart-authenticator) for more information.
+**RESTHeart Authenticator** can be configured to use different properties for the username, roles an password. Check [RESTHeart Authenticator](/docs/v5/security/authentication/#restheart-authenticator) for more information.
 
 ## Get existing users
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/b6876216ee3fb0999f7c5178e42a7978f6cc3c4c/0"
 %}
 
-```http
+
+```
 GET /users HTTP/1.1
 ```
 
 {% include code-header.html type="Response" %}
 
-```json
+
+```
 [
-    {
-        "_id": "admin",
-        "roles": ["admin"],
-        "_etag": {
-            "$oid": "5d2edb155883c050065d6a8a"
-        }
+  {
+    "_id": "admin",
+    "roles": [
+      "admin"
+    ],
+    "_etag": {
+      "$oid": "5d2edb155883c050065d6a8a"
     }
+  }
 ]
 ```
 
@@ -78,11 +83,12 @@ For security reasons, it not possbile to use the `filter` query parameter on the
 
 ## Create a user
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/38c1eb85a21213dd39192ccd474789f4abdbd6bc/0"
 %}
 
-```http
+
+```
 POST /users HTTP/1.1
 
 {
@@ -97,11 +103,12 @@ The password is automatically encrypted by RESTHeart Platform.
 
 ## Update a user
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/3e541e5b4f1ce82ae255b8f6746d49f5faed9778/0"
 %}
 
-```http
+
+```
 PATCH /users/foo HTTP/1.1
 
 {
@@ -111,21 +118,23 @@ PATCH /users/foo HTTP/1.1
 
 ## Delete a user
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/ae4858bc59f5ac755f03dc8858220e0a470a3779/0"
 %}
 
-```http
+
+```
 DELETE /users/foo HTTP/1.1
 ```
 
 ## Create an ACL document
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/5ee142fbb84071261e56fc7f1904af6430b0495f/0"
 %}
 
-```http
+
+```
 POST /acl HTTP/1.1
 
 {
@@ -140,10 +149,11 @@ POST /acl HTTP/1.1
 {: .bs-callout.bs-callout-info }
 If the /acl collection has not been created before and you get 404 Not Found, create if first with:
 
-{% include code-header.html type="Request"
+{% include code-header.html type="Request" 
     link="http://restninja.io/share/eff74b1879d09706d2d9a7bdaafb649a4415c9a2/0"
 %}
 
-```http
+
+```
 PUT /acl HTTP/1.1
 ```

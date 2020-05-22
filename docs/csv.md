@@ -5,11 +5,11 @@ title: Upload CSV files
 
 <div markdown="1"  class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction ](#introduction)
--   [Upload the CSV file](#upload-the-csv-file)
--   [Query parameters](#query-parameters)
--   [Update documents from CSV](#update-documents-from-csv)
--   [Apply a transformer](#apply-a-transformer)
+- [Introduction ](#introduction)
+- [Upload the CSV file](#upload-the-csv-file)
+- [Query parameters](#query-parameters)
+- [Update documents from CSV](#update-documents-from-csv)
+- [Apply a transformer](#apply-a-transformer)
 
 </div>
 
@@ -28,7 +28,7 @@ The CSV Uploader Service allows importing data from a CSV file into a MongoDB co
 This RESTHeart service is bound to the `/csv` API resource by default.
 
 {: .bs-callout.bs-callout-info}
-By uploading a CSV file you create or update one document per each row of the file.
+By uploading a CSV file you create or update one document per each row of the file. 
 
 ### Before running the example requests
 
@@ -36,29 +36,32 @@ The following examples assume the RESTHeart Platform running on `localhost` with
 
 To create the `restheart` db, run the following:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
 %}
 
-```http
+
+``` http
 PUT / HTTP/1.1
 ```
 
 Let's create a `poi` collection, run the following:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/0f076791d9d87f503299c588b626675296ec4adb/0"
 %}
 
-```http
+
+``` http
 PUT /poi HTTP/1.1
 ```
 
 ## Upload the CSV file
 
 We are going to use the following example file `POI.csv`:
+
 
 ```
 id,name,city,lat,lon,note
@@ -68,12 +71,13 @@ id,name,city,lat,lon,note
 
 To import the `POI.csv` into the collection `poi`, run the following:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/93ed5c1c6b20f9e8899b2308232e8ab8b5ee6820/0"
 %}
 
-```http
+
+``` http
 POST /csv?db=restheart&coll=poi&id=0 HTTP/1.1
 Content-Type: text/csv
 
@@ -83,51 +87,51 @@ id,name,city,lat,lon,note
 ```
 
 {: .bs-callout.bs-callout-info}
-The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service
+The `/csv` path is a reserved path, used by the RESTHeart CSV Uploader Service 
 
 {: .bs-callout.bs-callout-info }
 Note that the Content-Type must be `text/csv` otherwise you'll get a `400 Bad Request` error.
 
 Now the `/poi` collection contains the documents:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
 %}
 
-```http
+
+```
 GET /poi HTTP/1.1
 ```
 
-{% include code-header.html
-    type="Response"
+{% include code-header.html 
+    type="Response" 
 %}
 
-```json
-[
-    {
-        "_id": 2,
-        "city": "Milan",
-        "lat": 45.464278,
-        "lon": 9.190596,
-        "name": "Duomo",
-        "note": "Milan Cathedral",
-        "_etag": {
-            "$oid": "5d249beebb77e333b6dc9c84"
-        }
-    },
-    {
-        "_id": 1,
-        "city": "Rome",
-        "lat": 41.8902614,
-        "lon": 12.4930871,
-        "name": "Coliseum",
-        "note": "Also known as the Flavian Amphitheatre",
-        "_etag": {
-            "$oid": "5d249beebb77e333b6dc9c83"
-        }
+
+```
+[{
+    "_id": 2,
+    "city": "Milan",
+    "lat": 45.464278,
+    "lon": 9.190596,
+    "name": "Duomo",
+    "note": "Milan Cathedral",
+    "_etag": {
+        "$oid": "5d249beebb77e333b6dc9c84"
     }
-]
+},
+{
+    "_id": 1,
+    "city": "Rome",
+    "lat": 41.8902614,
+    "lon": 12.4930871,
+    "name": "Coliseum",
+    "note": "Also known as the Flavian Amphitheatre",
+    "_etag": {
+        "$oid": "5d249beebb77e333b6dc9c83"
+    }
+}]
 ```
 
 ## Query parameters
@@ -137,13 +141,13 @@ The CSV uploader service is controlled by the following query parameters.
 {: .table.table-responsive }
 |query parameter|description|default value|
 |-|-|
-|`db`|(_required_) the name of the database|no default|
-|`coll`|(_required_) the name of the collection|no default|
+|`db`|(*required*) the name of the database|no default|
+|`coll`|(*required*) the name of the collection|no default|
 |`id`|id column index |no id column|
 |`sep`|column separator |,|
 |`transformer`|name of a transformer to apply to imported data |no transformer|
 |`update`|if `true`, update matching documents|false|
-|`upsert`|applies when `update=true`; if `true`, create new document if no documents match the \_id |true|
+|`upsert`|applies when `update=true`; if `true`, create new document if no documents match the _id |true|
 |`props`|additional properties to add to each row, e.g. `?props=foo&props=bar`|no props|
 |`values`|values of additional properties to add to each row e.g. `?values=1&values=2`|no values|
 
@@ -157,14 +161,15 @@ If the CSV lines are changed or new ones are added, you can update your collecti
 To update your collection use the `update` parameter.
 
 {: .bs-callout.bs-callout-warning }
-New lines in the CSV will _NOT_ be added.
+New lines in the CSV will *NOT* be added.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/79039d27d707ec45ecd0c65b9485c169606c0cf3/0"
 %}
 
-```http
+
+``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true HTTP/1.1
 Content-Type: text/csv
 
@@ -174,14 +179,15 @@ id,name,city,lat,lon,note
 3,Cattedrale di Santa Maria del Fiore,43.773251,11.255474,Florence Cathedral
 ```
 
-To update existing documents _and_ add new ones, add the `upsert=true` query parameter:
+To update existing documents *and* add new ones, add the `upsert=true` query parameter:
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
     link="http://restninja.io/share/102cc2b5ebddc0b1ee0856bb04d2864c1916b436/0"
 %}
 
-```http
+
+``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true&upsert=true HTTP/1.1
 Content-Type: text/csv
 
@@ -198,11 +204,12 @@ To apply a transformer use the `transformer` query parameter.
 {: .bs-callout.bs-callout-info }
 The CSV format allows creating flat documents. The transformer modifies the request body so that we can take advantage of the nested nature of JSON.
 
-{% include code-header.html
-    type="Request"
+{% include code-header.html 
+    type="Request" 
 %}
 
-```http
+
+``` http
 POST /csv?db=restheart&coll=poi&id=0&update=true&transformer=GeoJSONTransformer HTTP/1.1
 Content-Type: text/csv
 
@@ -214,7 +221,8 @@ id,name,city,lat,lon,note
 The `GeoJSONTransformer` is the name of a custom transformer that must me packaged with RESTHeart. It transforms the latitude and longitude coordinates into a <a href="https://geojson.org/" target="_blank">GeoJson</a> object.
 
 {: .bs-callout.bs-callout-info }
-Check [Package RESTHeart Core plugins](/docs/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
+Check [Package RESTHeart Core plugins](/docs/v5/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
+
 
 ```java
 @RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
@@ -223,14 +231,14 @@ public class GeoJSONTransformer implements Transformer {
     @Override
     public void transform(final HttpServerExchange exchange, final RequestContext context, BsonValue contentToTransform, final BsonValue args) {
         var body = contentToTransform.asDocument();
-
+        
         // get Coordinates
         var coordinates = new BsonArray();
         coordinates.add(body.get("lon"));
         coordinates.add(body.get("lat"));
 
         var point = new BsonDocument();
-
+        
         point.put("type", new BsonString("Point"));
         point.put("coordinates", coordinates);
 
@@ -242,15 +250,16 @@ public class GeoJSONTransformer implements Transformer {
 
 Now the documents have the new property `point` with the GeoJSON Point object:
 
+
 ```json
 [
     {
-        "point": {
+        "point": { 
             "coordinates": [
                 9.190596,
                 45.464278
             ],
-            "type": "Point"
+            "type": "Point"       
         }
         "_etag": {
             "$oid": "5d2c40021861f94794721285"
@@ -282,3 +291,4 @@ Now the documents have the new property `point` with the GeoJSON Point object:
     }
 ]
 ```
+

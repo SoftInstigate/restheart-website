@@ -16,39 +16,30 @@ title: Documentation
 
 ## Introduction
 
-There are some features every developer in the world always need to implement:
+{: .alert.alert-success.text-center }
+RESTHeart is a REST microservice for MongoDB.
 
-1. Data persistence.
-1. Authentication and Authorization.
-1. API.
+RESTHeart connects to **MongoDB** and opens its data to the Web. Clients, such as mobile and JavaScript apps, can access the database via a simple **API** based on **JSON** messages.
 
-RESTHeart provides out-of-the-box:
+With RESTHeart teams can focus on building Angular, React.js, Vue.js, iOS or Android applications, because most of the server-side logic usually necessary for CRUD (Create, Read, Update, Delete) operations is automatically handled, without the need to write any code except for the client logic.
 
-1. Data persistence via MongoDB.
-1. Secure Identity and Access Management.
-1. REST API with JSON messages.
+For example, to insert data in MongoDB developers model client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side code and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
 
-RESTHeart is a **REST API Microservice for MongoDB** which provides server-side Data, Identity and Access Management for Web and Mobile applications.
+For these reasons, RESTHeart is widely used by freelancers, Web agencies and System Integrators with deadlines, because it allows them to focus on the most creative parts of their work.
 
-RESTHeart is:
-
-1. A Stateless Microservice.
-1. Designed to be distributed as a Docker container.
-1. Easily deployable both on cloud and on-premises.
-
-With RESTHeart teams can focus on building Angular, React, Vue, iOS or Android applications, because most of the server-side logic necessary to manage database operations, authentication / authorization and related APIs is automatically handled, **without the need to write any server-side code** except for the UX/UI.
-
-> For example, to insert data into MongoDB a developer has to just create client-side JSON documents and then execute POST operations via HTTP to RESTHeart: no more need to deal with complicated server-side coding and database drivers in Java, JavaScript, PHP, Ruby, Python, etc.
-
-For these reasons, RESTHeart is widely used by freelancers, Web agencies and System Integrators with deadlines, because it allows them to focus on the most important and creative part of their work: the User Experience.
-
-For more ideas have a look at the list of [features](https://restheart.org/features) and the collection of common [use cases](https://restheart.org/use-cases/).
+For more ideas have a look at the collection of common [use cases](https://restheart.org/use-cases/).
 
 <img src="/images/restheart-what-is-it.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
 
 RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](/editions).
 
 RESTHeart is written in Java and is build on top of the [Undertow](http://undertow.io) high performance, non-blocking HTTP server.
+
+We created RESTHeart because:
+
+1.  All modern applications require a common set of basic REST APIs;
+2.  Many recurrent non-functional requirements, like authentication and authorization, HTTP protocol support, etc... can be solved once for all;
+3.  We were tired of configuring and maintaining complicated application servers.
 
 The founding ideas around RESTHeart are:
 
@@ -65,12 +56,12 @@ The founding ideas around RESTHeart are:
 -   **Based on open standards**, like HTTP, JSON, REST, JSON and JSON Schema
 -   **Read JSON documents** with GET requests, specifying MongoDB queries and projection options; deal with large result sets with pagination
 -   Create, modify and delete JSON documents with POST, PUT, PATCH and DELETE requests. Use **bulk requests** to deal with multiple documents in one shot
--   **Authentication** and **Authorization** provided by a dedicated [security microservice](https://restheart.org/docs/security/overview/#understanding-restheart-security)
+-   **Authentication** and **Authorization** provided by a dedicated [security module](https://github.com/SoftInstigate/restheart/tree/master/security)
 -   Store and serve binary data with **GridFS** support
 -   Define and execute **Aggregations**, supporting both map-reduce and aggregation pipelines
 -   Execute requests in multi-document **ACID transactions**
 -   Access real-time data changes via Websocket **Change Streams**
--   Create dbs, collections and indexes with **Data Model API**
+-   Create databases, collections and indexes with **Data Model API**
 -   Validate requests with **JSON Schema**
 -   Extend RESTHeart via **Plugins**: **transform**, **check** requests and responses, keep data secure with **authenticators** and **authorizers**, executes **WebHooks** after a request completes, implement **Web Services** in minutes, serve **Static Resources** (such as HTML, CSS, images and JavaScript)
 -   Define **Relationships** so that documents automatically include hyperlinks to referenced data

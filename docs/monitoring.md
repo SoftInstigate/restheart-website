@@ -5,20 +5,20 @@ title: Monitoring
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Formats](#formats)
-    -   [using restheart `rep` query parameter](#using-restheart-rep-query-parameter)
-    -   [using HTTP content negotiation](#using-http-content-negotiation)
--   [Configuration options](#configuration-options)
--   [Reading data](#reading-data)
--   [Examples](#examples)
--   [What's new in 3.9](#whats-new-in-39)
-    -   [Prometheus database and collection labels for request to root metrics](#prometheus-database-and-collection-labels-for-request-to-root-metrics)
+- [Introduction](#introduction)
+- [Formats](#formats)
+  - [using restheart `rep` query parameter](#using-restheart-rep-query-parameter)
+  - [using HTTP content negotiation](#using-http-content-negotiation)
+- [Configuration options](#configuration-options)
+- [Reading data](#reading-data)
+- [Examples](#examples)
+- [What's new in 3.9](#whats-new-in-39)
+  - [Prometheus database and collection labels for request to root metrics](#prometheus-database-and-collection-labels-for-request-to-root-metrics)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 {% include doc-in-progress.html %}
 
@@ -38,8 +38,7 @@ their distributions.
 ## Formats
 
 The current implementation supports both the [Prometheus
-format](https://prometheus.io/docs/instrumenting/exposition_formats/)
-(which is popular in kubernetes environments), as well as the [classical
+format](https://prometheus.io/docs/instrumenting/exposition_formats/) (which is popular in kubernetes environments), as well as the [classical
 JSON
 format](https://github.com/iZettle/dropwizard-metrics/blob/master/metrics-json/src/main/java/io/dropwizard/metrics/json/MetricsModule.java) generated
 by dopwizard metrics. The prometheus format is the default one, but you
@@ -97,7 +96,8 @@ to the type of the query (e.g. `METRICS`, `DATABASE`, `COLLECTION`,
 first digit, full). The examples are calls to the root `/_metrics` after
 a few calls to an empty database (thus the 404s).
 
-**Prometheus example response**
+**Prometheus example response** 
+
 
 ```
 http_response_timers_METRICS_count{method="GET",code="2xx"} 13 1510039263986
@@ -294,6 +294,7 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 ```
 
 **JSON example response**
+
 
 ```
 {
@@ -535,9 +536,9 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 }
 ```
 
-## What's new in 3.9
+## What's new in 3.9 ##
 
-### Prometheus database and collection labels for request to root metrics
+### Prometheus database and collection labels for request to root metrics ###
 
 The Prometheus metrics requested on endpoint `/ _metrics` no longer include only
 the aggregated parent metrics, but all metrics collected. To distinguish metrics
@@ -551,6 +552,7 @@ value \_all\_, i.e. metrics for database mydatabase and all contained collection
 which is equivalent to requesting `/mydatabase/_metrics`.
 
 The prometheus metrics look as follows:
+
 
 ```
 http_response_timers_count{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3 1510039263986

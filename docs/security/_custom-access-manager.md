@@ -5,21 +5,22 @@ title: Custom Access Manager
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Develop](#develop)
-    -   [The AM class](#the-am-class)
-    -   [Constructor](#constructor)
-    -   [Methods to implement](#methods-to-implement)
--   [Configuration](#configuration)
--   [How to add the custom classes to the classpath](#how-to-add-the-custom-classes-to-the-classpath)
-    -   [Using the java classpath option](#using-the-java-classpath-option)
-    -   [Using the Maven shade plugin](#using-the-maven-shade-plugin)
--   [Example](#example)
+- [Introduction](#introduction)
+- [Develop](#develop)
+  * [The AM class](#the-am-class)
+  * [Constructor](#constructor)
+  * [Methods to implement](#methods-to-implement)
+- [Configuration](#configuration)
+- [How to add the custom classes to the classpath](#how-to-add-the-custom-classes-to-the-classpath)
+  * [Using the java classpath option](#using-the-java-classpath-option)
+  * [Using the Maven shade plugin](#using-the-maven-shade-plugin)
+- [Example](#example)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
+
 
 ## Introduction
 
@@ -55,7 +56,7 @@ The steps required to develop and configure an AM are:
 ### The AM class
 
 The AM implementation class must implement the
-interface* org.restheart.security.AccessManager*
+interface* org.restheart.security.AccessManager* 
 
 The AM is a singleton instance of this class.
 
@@ -63,18 +64,17 @@ The AM is a singleton instance of this class.
 
 The constructor must have the following signature:
 
-```plain
+``` plain
 public MyAccessManager(Map<String, Object> args)
 ```
 
-The argument *args* maps the _access-manager_ properties as specified in
+The argument *args* maps the *access-manager* properties as specified in
 the configuration file.
 
 ### Methods to implement
 
 The interface *org.restheart.security.AccessManager* mandates to
 implement 2 methods:
-
 <div class="table-responsive">
 <table class="ts">
 <colgroup>
@@ -125,12 +125,12 @@ The *context *object is easier to use.
 
 For instance:
 
--   it incapsulates the request json payload as an object resulting form
+* it incapsulates the request json payload as an object resulting form
     the parsing of the json string data, where the exchange gives access
     to it as a an *StreamSourceChannel*
--   In case of a file resource, it incapsulates the file type (e.g.
+* In case of a file resource, it incapsulates the file type (e.g.
     image/png for images)
--   it provides some convenient properties, such as type (resource type,
+* it provides some convenient properties, such as type (resource type,
     such as DOCUMENT or COLLECTION) and method (GET, PUT, POST, etc)
 
 ## Configuration
@@ -144,7 +144,7 @@ is defined or some parameters that control caching).
 
 For example, if the *access-manager* configuration section is:
 
-```plain
+``` plain
 access-manager:
     implementation-class: org.restheart.examples.security.MyAccessManager
     arg1: 5
@@ -156,8 +156,8 @@ access-manager:
 
 Then:
 
--   the AM singleton will be of class *MyAccessManager*
--   its constructor will be invoked passing a Map argument with 4 keys
+* the AM singleton will be of class *MyAccessManager*
+* its constructor will be invoked passing a Map argument with 4 keys
     1.  *implementation-class* of class String
     2.  *arg1* of class *Integer*
     3.  *arg2* of class *String*
@@ -184,10 +184,10 @@ the capability to package the artifact in an uber-jar, including its
 dependencies and to *shade* - i.e. rename - the packages of some of the
 dependencies.
 
-It allows to create a single jar including any RESTHeart class and your
+ It allows to create a single jar including any RESTHeart class and your
 custom ones. In this case you can start RESTHeart with
 
-```plain
+``` plain
 java -server -jar restheart_plus_custom.jar restheart.yml
 ```
 
@@ -200,17 +200,17 @@ at [restheart-customization-examples](https://github.com/SoftInstigate/resthear
 It includes the **ExampleAccessManager; **this is a simple AM that
 hardcodes the security policy:
 
--   allow any authenticated user to GET /\_logic/aggregate
--   allow any authenticated user to GET,POST /test/bands
--   allow any authenticated user to GET /test/bands/&lt;bandid&gt;
--   allow users with ROLE admin to GET,PUT,PATCH,DELETE
+* allow any authenticated user to GET /\_logic/aggregate
+* allow any authenticated user to GET,POST /test/bands
+* allow any authenticated user to GET /test/bands/&lt;bandid&gt;
+* allow users with ROLE admin to GET,PUT,PATCH,DELETE
     /test/bands/&lt;bandid&gt;
 
 Any other requests are not allowed.
 
 The implementation class follows:
 
-```java
+``` java
 package org.restheart.examples.security;
 
 import io.undertow.attribute.ExchangeAttributes;

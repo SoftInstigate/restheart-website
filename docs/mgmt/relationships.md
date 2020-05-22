@@ -5,29 +5,29 @@ title: Relationships
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [The <em>rels</em> collection metadata](#the-rels-collection-metadata)
--   [Examples](#examples)
-    -   [Tree of documents](#tree-of-documents)
-    -   [One-to-Many, owning](#one-to-many-owning)
-    -   [One-to-Many, inverse](#one-to-many-inverse)
+* [Introduction](#introduction)
+* [The <em>rels</em> collection metadata](#the-rels-collection-metadata)
+* [Examples](#examples)
+    * [Tree of documents](#tree-of-documents)
+    * [One-to-Many, owning](#one-to-many-owning)
+    * [One-to-Many, inverse](#one-to-many-inverse)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %}
+{% include docs-head.html %} 
 
 ## Introduction
 
 In MongoDB, documents can have relationships with other documents (see
 MongoDB [Relationships](https://docs.mongodb.org/master/applications/data-models-relationships/)
-documentation section).
+documentation section). 
 
 **RESTHeart allows to declare the existing relationships in a
 collection, so that it automatically adds the links to related documents
 in its representation.**
 
-## The _rels_ collection metadata
+## The *rels* collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
@@ -38,14 +38,15 @@ relationship so that links to the referenced documents are auto-magically inclu
 
 `rels` is an array of `rel` objects having the following format:
 
-```json
+
+```
 {
-    "real": "<relid>",
-    "type": "<type>",
-    "role": "<role>",
-    "target-db": "<dname>",
-    "target-cill": "<collname>",
-    "ref-field": "<reffieldname>"
+  "real": "<relid>",
+  "type": "<type>",
+  "role": "<role>",
+  "target-db": "<dname>",
+  "target-cill": "<collname>",
+  "ref-field": "<reffieldname>"
 }
 ```
 
@@ -109,10 +110,11 @@ In this example, we create a collection to store documents organized in
 a tree (each document has a single parent document).
 
 Let's create a collection, declaring a **many-to-one** relationship
-called **`parent`**, so that documents can refer a _parent document_ in
+called **`parent`**, so that documents can refer a *parent document* in
 the collection itself.
 
-```http
+
+```
 PUT /parentcoll HTTP/1.1
 
 {"rels":[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]}
@@ -122,7 +124,8 @@ HTTP/1.1 201 CREATED
 
 Let's now create few documents, specifying the `parent` property:
 
-```http
+
+```
 PUT /parentcoll/root HTTP/1.1
 
 {"parent":"root"}
@@ -130,7 +133,8 @@ PUT /parentcoll/root HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /parentcoll/1 HTTP/1.1
 
 {"parent":"root"}
@@ -138,7 +142,8 @@ PUT /parentcoll/1 HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /parentcoll/1.1 HTTP/1.1
 
 {"parent":"1"}
@@ -146,7 +151,8 @@ PUT /parentcoll/1.1 HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /parentcoll/1.2 HTTP/1.1
 
 {"parent":"1"}
@@ -158,12 +164,14 @@ If we now get the document `/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
 document `/parentcoll/1`
 
-```http
+
+
+```
 GET /test/parentcoll/1.2 HTTP/1.1
 
 HTTP/1.1 200 OK
 {
-    "_id": "1.2",
+    "_id": "1.2", 
     "parent": 1,
     "_links": {
         "parent": {
@@ -178,7 +186,8 @@ HTTP/1.1 200 OK
 In this example, we create two collections: `bands` and `albums`; of
 course, each band has a **1:N** relationship to albums.
 
-```http
+
+```
 PUT /bands HTTP/1.1
 
 {
@@ -204,7 +213,8 @@ PUT /bands HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /albums HTTP/1.1
 
 { "descr":"albums published by music bands" }
@@ -214,15 +224,17 @@ HTTP/1.1 201 CREATED
 
 Let's now create few albums:
 
-```http
-PUT /albums/Disintegration HTTP/1.1
+
+```
+PUT /albums/Disintegration HTTP/1.1 
 
 {"year":1989}
 
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /albums/Wish HTTP/1.1
 
 {"year":1992}
@@ -230,8 +242,9 @@ PUT /albums/Wish HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
-PUT /albums/Bloodflowers HTTP/1.1
+
+```
+PUT /albums/Bloodflowers HTTP/1.1 
 
 {"year":2000}
 
@@ -240,8 +253,9 @@ HTTP/1.1 201 CREATED
 
 Now we create the band referring these albums:
 
-```http
-PUT /bands/The%20Cure HTTP/1.1
+
+```
+PUT /bands/The%20Cure HTTP/1.1 
 
 {"albums":["Disintegration","Wish","Bloodflowers"]}
 
@@ -253,21 +267,21 @@ If we now get The Cure document, we can notice the `albums` link: `/albums?filte
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
 
-```http
-GET /bands/The%20Cure HTTP/1.1
+
+```
+$ GET /bands/The%20Cure HTTP/1.1
 
 HTTP/1.1 200 OK
-
 {
-    "_id": "The Cure",
+    "_id": "The Cure", 
     "_links": {
         "albums": {
             "href": "/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
         },
-    },
+    }, 
     "albums": [
-        "Disintegration",
-        "Three Imaginary Boys",
+        "Disintegration", 
+        "Three Imaginary Boys", 
         "Seventeen Seconds"
     ]
 }
@@ -276,7 +290,8 @@ HTTP/1.1 200 OK
 If we want to get the referenced document with httpie (or curl) we need
 to issue the following request:
 
-```http
+
+```
 GET /albums?filter="{'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"` HTTP/1.1
 ```
 
@@ -286,15 +301,17 @@ We'll resemble the previous example, but using an inverse relationship,
 i.e. the filed storing the relationship will be stored in the album
 documents.
 
-```http
-PUT /bandsi HTTP/1.1
+
+```
+PUT /bandsi HTTP/1.1 
 
 {"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]', "descr":"music bands"}
 
 HTTP/1.1 201 CREATED
 ```
 
-``` http
+
+``` 
 PUT /albumsi HTTP/1.1
 { "descr":"albums published by music bands" }
 
@@ -303,7 +320,8 @@ HTTP/1.1 201 CREATED
 
 Let's now create few albums:
 
-```http
+
+```
 PUT /albumsi/Disintegration HTTP/1.1
 
 { "year":1989, "band":"The Cure" }
@@ -311,14 +329,16 @@ PUT /albumsi/Disintegration HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+``` 
 PUT /albumsi/Wish HTTP/1.1
 
 { "year":1992, "band":"The Cure" }
 HTTP/1.1 201 CREATED
 ```
 
-```http
+
+```
 PUT /test/albumsi/Bloodflowers HTTP/1.1
 
 { "year":2000, "band":"The Cure" }
@@ -328,30 +348,35 @@ HTTP/1.1 201 CREATED
 
 Now we create the band referred by these albums:
 
-```http
+
+```
 PUT /bandsi/The%20Cure HTTP/1.1
 
 {"descr":"The Cure are an English rock band formed in Crawley, West Sussex, in 1976"}
 
 HTTP/1.1 201 CREATED
 ```
-
+  
 If we now get "The Cure" document, we can notice the `albums` link: `/albumsi?filter={'band':'The Cure'}`
 
-```http
-GET /test/bandsi/The%20Cure HTTP/1.1
+
+```
+GET /test/bandsi/The%20Cure
 
 HTTP/1.1 200 OK
 
 {
-    "_id": "The Cure",
+    "_id": "The Cure", 
     "_links": {
         "albums": {
             "href": "/test/albums?filter={'band':'The Cure'}"
         }
-    },
+    }, 
     "descr": "The Cure are an English rock band formed in Crawley, West Sussex, in 1976"
 }
 ```
 
 </div>
+  
+
+  

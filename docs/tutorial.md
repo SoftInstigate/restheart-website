@@ -38,7 +38,6 @@ GET /inventory HTTP/1.1
 %}
 
 ```json
-
 [
   {
     "_id": {
@@ -72,9 +71,7 @@ GET /inventory HTTP/1.1
     },
     "status": "D"
   },
-
   ...
-
 ]
 ```
 
