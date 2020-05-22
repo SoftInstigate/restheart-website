@@ -16,7 +16,7 @@ title: ETag
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v5.html %}
+{% include doc-in-progress.html %}
 
 ## Introduction
 

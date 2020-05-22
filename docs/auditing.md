@@ -13,7 +13,7 @@ title: Auditing
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress-v5.html %}
+{% include doc-in-progress.html %}
 
 ## Opentracing / zipkin headers support
 

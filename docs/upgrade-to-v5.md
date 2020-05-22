@@ -7,6 +7,6 @@ title: Upgrade to RESTHeart v5
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress-v5.html %}
+{% include doc-in-progress.html %}
 
 </div>
