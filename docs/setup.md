@@ -16,8 +16,8 @@ title: Setup
     </p>
     <p class="mt-2">
         <ul>
-            <li><a target="_blank" href="https://github.com/softInstigate/restheart#run-with-docker" class="alert-link">Run with Docker</a></li>
-            <li><a target="_blank" href="https://github.com/softInstigate/restheart#run-manually" class="alert-link">Run manually</a></li>
+            <li><a target="_blank" href="https://github.com/SoftInstigate/restheart/blob/master/docs/docker.md" class="alert-link">Run with Docker</a></li>
+            <li><a target="_blank" href="https://github.com/softInstigate/restheart#run-with-Java" class="alert-link">Run manually</a></li>
         </ul>
     </p>
 </div>
