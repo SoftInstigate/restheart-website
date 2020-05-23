@@ -22,8 +22,8 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
 
 RESTHeart by default offers two types of authorizers:
 
-1. RESTHeart Authorizer (commercial editions only).
-1. Request Predicates Authorizer (any edition).
+1. RESTHeart Authorizer.
+1. Request Predicates Authorizer.
 
 However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
 

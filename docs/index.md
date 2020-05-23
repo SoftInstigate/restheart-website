@@ -15,6 +15,8 @@ title: Documentation
 
 {% include docs-head.html %}
 
+> RESTHeart is a modern **backend** for **Web** and **Mobile** apps, designed to _radically simplify server-side development and deployment_.
+
 ## Introduction
 
 There are some features every developer always need to implement:
@@ -28,8 +30,6 @@ RESTHeart provides out-of-the-box:
 -   Data persistence via MongoDB.
 -   Secure Identity and Access Management.
 -   REST API with JSON.
-
-> RESTHeart is a modern **backend** for **Web** and **Mobile** apps, designed to _radically simplify server-side development and deployment_.
 
 ![clients](/images/clients.png){: width="80%" height="auto" class="mx-auto d-block img-responsive"}
 

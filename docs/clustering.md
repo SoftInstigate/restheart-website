@@ -60,9 +60,6 @@ In summary, the top level steps for a highly available RESTHeart + MongoDB confi
 {: .bs-callout.bs-callout-info}
 If you want to know more about clustering, load balancing and high avalability, please [contact us](/services).
 
-{: .bs-callout.bs-callout-info}
-If you want to know more about RESTHeart's Editions, have a look [here](/editions).
-
 ## References
 
 To understand more in general abou Load Balancing, Affinity, Persistence, Sticky Sessions you can read this [article](https://www.haproxy.com/fr/blog/load-balancing-affinity-persistence-sticky-sessions-what-you-need-to-know/).

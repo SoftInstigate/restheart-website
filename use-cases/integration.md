@@ -1,6 +1,6 @@
 ---
 layout: article
-title: "Use Case: Integration"
+title: 'Use Case: Integration'
 ---
 
 # Significant Integration Cost Savings Using RESTHeart
@@ -20,17 +20,14 @@ In the following example, an integration flow run by **MuleSoft Anypoint** integ
 <img src="/images/restheart-integration.svg" width="80%" height="auto" class="mx-auto d-block img-responsive" />
 
 {: .text-justify .mt-5 .mb-5}
-RESTHeart can be extended via *plugins* 
+RESTHeart can be extended via _plugins_
 to implement additional Web Services and transform data to best fulfill the integration needs. Hooks can also be easily defined to trigger integration events.
 
 {: .text-justify .mt-5 .mb-5}
 RESTHeart provides a strong security module for authentication and authorization to put data access under control and threat protection at every layer.
 
 {: .text-justify .mt-5 .mb-5}
-To see an estimate of how much money you will save using RESTHeart for your integration project, go to the [RESTHeart ROI Calculator](../../editions#roi-calculator).
- 
-{: .text-justify .mt-5 .mb-5}
 For a detailed description of setting up an API to MongoDB using RESTHeart see [Building Instant RESTFul API’s with MongoDB and RESTHeart](../../docs/setup).
 
-{: .text-justify .mt-5 .mb-5} 
+{: .text-justify .mt-5 .mb-5}
 For a detailed description of setting up an API to Amazon’s DocumentDB using RESTHeart see [How to Create a Web API for AWS DocumentDB (using RESTHeart)](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).

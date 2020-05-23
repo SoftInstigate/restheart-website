@@ -5,29 +5,28 @@ title: An example Web application with AngularJS
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
-- [Ingredients](#ingredients)
-- [Introduction](#introduction)
-- [Goals](#goals)
-- [Getting the servers up and running](#getting-the-servers-up-and-running)
-- [Creating the data structure](#creating-the-data-structure)
-- [The Web client](#the-web-client)
-- [Understanding the Web client](#understanding-the-web-client)
-    - [Application initialization and configuration](#application-initialization-and-configuration)
-    - [Authentication](#authentication)
-    - [Getting, Posting, and Deleting Notes](#getting-posting-and-deleting-notes)
-        - [Notes list](#notes-list)
-        - [Creating a new note](#creating-a-new-note)
-        - [Updating and Deleting a note](#updating-and-deleting-a-note)
-- [Stopping and restarting](#stopping-and-restarting)
-- [Conclusions](#conclusions)
-- [References](#references)
+-   [Web API in action with AngularJS, RESTHeart and MongoDB](#web-api-in-action-with-angularjs-restheart-and-mongodb)
+-   [Ingredients](#ingredients)
+-   [Introduction](#introduction)
+-   [Goals](#goals)
+-   [Getting the servers up and running](#getting-the-servers-up-and-running)
+-   [Creating the data structure](#creating-the-data-structure)
+-   [The Web client](#the-web-client)
+-   [Understanding the Web client](#understanding-the-web-client)
+    -   [Application initialization and configuration](#application-initialization-and-configuration)
+    -   [Authentication](#authentication)
+    -   [Getting, Posting, and Deleting Notes](#getting-posting-and-deleting-notes)
+        -   [Notes list](#notes-list)
+        -   [Creating a new note](#creating-a-new-note)
+        -   [Updating and Deleting a note](#updating-and-deleting-a-note)
+-   [Stopping and restarting](#stopping-and-restarting)
+-   [Conclusions](#conclusions)
+-   [References](#references)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
-
+{% include docs-head.html %}
 
 Please provide us with your feedback, so that we can improve this
 tutorial.
@@ -120,8 +119,8 @@ The main ingredients for our recipe are:
 -   **RESTHeart API Server** - RESTHeart is the RESTful Web API Server
     for MongoDB, ready to use with CRUD operations API and Data Model
     operations API. Create databases, collections, indexes and document
-    by only using HTTP verbs.**  
-    **
+    by only using HTTP verbs.\*\*  
+    \*\*
 -   **AngularJS** - it lets you extend HTML vocabulary for your
     application. The resulting environment is extraordinarily
     expressive, readable, and quick to develop.
@@ -172,7 +171,7 @@ users.
 
 ## Goals
 
-We will create a simple notes Web application. 
+We will create a simple notes Web application.
 
 -   After login, the user will see its notes in a list on the left; a
     search box allows to filter the notes list;
@@ -181,8 +180,6 @@ We will create a simple notes Web application. 
 -   Buttons allow to create a new note or delete an existing one.
 
 ![](/images/attachments/7241730/7700536.png?height=400){height="400"}
-
-  
 
 ## Getting the servers up and running
 
@@ -223,7 +220,7 @@ issued only the very first time):
 
 **Start boot2docker (only needed in Windows and MacOS X)**
 
-``` bash
+```bash
 $ boot2docker init
 $ boot2docker start
 $ eval "$(boot2docker shellinit)"
@@ -240,7 +237,7 @@ Run the hello-world container to verify your setup:
 
 **Hello, world!**
 
-``` plain
+```plain
 $ docker run hello-world
 ```
 
@@ -249,7 +246,7 @@ necessary for this tutorial, one for MongoDB and one for RESTHeart.
 
 **Pull the docker images**
 
-``` bash
+```bash
 $ docker pull mongo
 $ docker pull softinstigate/restheart 
 ```
@@ -262,7 +259,7 @@ You can list the available Docker images via the
 
 **List local docker images**
 
-``` text
+```text
 $ docker images
  
 REPOSITORY                TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
@@ -275,7 +272,7 @@ sequence.
 
 **Start the two images as daemons**
 
-``` text
+```text
 $ docker run -d --name mongodb mongo:3.0
 $ docker run -d -p 8080:8080 --name restheart --link mongodb:mongodb softinstigate/restheart
 ```
@@ -297,7 +294,7 @@ is fine, for example issuing the `docker logs mongodb` command:
 
 **MongoDB logs**
 
-``` text
+```text
 $ docker logs mongodb
 
 2015-07-09T14:41:56.938+0000 I JOURNAL  [initandlisten] journal dir=/data/db/journal
@@ -325,13 +322,13 @@ Do the same for RESTHeart, issuing the `docker logs restheart` command:
 
 **RESTHeart logs**
 
-``` text
+```text
 $ docker logs restheart
 
 14:42:13.076 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart ********************************************
 14:42:13.100 [main] INFO  org.restheart.Bootstrapper - Creating pid file /var/run/restheart.pid
 14:42:13.236 [main] INFO  org.restheart.Bootstrapper - RESTHeart version 0.10.3
-14:42:13.341 [main] INFO  org.restheart.Bootstrapper - Initializing MongoDB connection pool to mongodb:27017 
+14:42:13.341 [main] INFO  org.restheart.Bootstrapper - Initializing MongoDB connection pool to mongodb:27017
 14:42:13.343 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
 14:42:13.735 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
 14:42:13.970 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
@@ -358,7 +355,7 @@ that everything works opening the embedded HAL browser, this way:
 If you are running boot2docker, point your browser
 at `https://192.168.59.103:8080/browser` (note that the IP address might
 be different, to know it issue the `boot2docker ip` command); if you are
-on Linux, simply it is at `http://localhost:8080/browser`. 
+on Linux, simply it is at `http://localhost:8080/browser`.
 
 The browser will prompt you for authentication: use the pre-defined
 user `admin` with password `changeit`.
@@ -387,7 +384,7 @@ the notes collection in it.
 
 **Get up and running**
 
-``` bash
+```bash
 $ http -a admin:changeit PUT https://192.168.59.103:8080/rhnedb descr="restheart notes example db"
 HTTP/1.1 201 Created
 ...
@@ -404,23 +401,23 @@ code!
 ## The Web client
 
 Clone the Web client code from the GitHub's repository at
-[https://github.com/SoftInstigate/restheart-notes-example](https://github.com/softinstigate/restheart-notes-example): 
+[https://github.com/SoftInstigate/restheart-notes-example](https://github.com/softinstigate/restheart-notes-example):
 
 **Clone the Web client**
 
-``` bash
+```bash
 $ git clone https://github.com/SoftInstigate/restheart-notes-example.git
 $ cd restheart-notes-example
 ```
 
 Depending on how you installed RESTHeart, you might need to adjust the
-RESTHEART\_URL variable in the code.
+RESTHEART_URL variable in the code.
 
 Edit the following line in the file app/scripts/app.js
 
-**Set the RESTHEART\_URL variable**
+**Set the RESTHEART_URL variable**
 
-``` bash
+```bash
 var RESTHEART_URL = "https://192.168.59.103:8080";
 ```
 
@@ -431,7 +428,7 @@ command:
 
 **Get the IP address**
 
-``` bash
+```bash
 $ boot2docker ip
 ```
 
@@ -446,7 +443,7 @@ for previewing the application .
 
 **View the web app**
 
-``` bash
+```bash
 $ npm update -g npm
 $ npm install -g bower grunt-cli
 $ bower install
@@ -491,11 +488,11 @@ These tasks are accomplished by:
     html templates and controllers.
 
 The following code snippet from config.router.js shows the three states
-of the application: *signin*, the abstract state *app* and *app.notes*.
+of the application: _signin_, the abstract state _app_ and _app.notes_.
 
 **application states**
 
-``` plain
+```plain
                      .state('signin', {
                             url: '/signin',
                             templateUrl: 'views/signin.html',
@@ -508,7 +505,7 @@ of the application: *signin*, the abstract state *app* and *app.notes*.
                                 ]
                             }
                         })
-                        
+
                         .state('app', {
                             template: '<div ui-view></div>',
                             abstract: true,
@@ -521,7 +518,7 @@ of the application: *signin*, the abstract state *app* and *app.notes*.
                                 ]
                             }
                         })
-                        
+
                         .state('app.notes', {
                             url: "/notes",
                             templateUrl: 'views/notes.html',
@@ -538,35 +535,33 @@ of the application: *signin*, the abstract state *app* and *app.notes*.
 
 ### Authentication
 
-The *signin* state is where user authentication occurs. A form collects
+The _signin_ state is where user authentication occurs. A form collects
 the user id and the password and perform a GET request to RESTHeart at
 the URI `/_logic/roles/<userid>`; this is a special endpoint intended to
 simplify the credentials check process.
 
 The possible responses to GET `/_logic/roles/<userid>` requests are:
 
--   *401 Unauthorized*, if no or wrong credentials were passed in the
+-   _401 Unauthorized_, if no or wrong credentials were passed in the
     Authorization header
--   *403 Forbidden*, if the user id in the Authorization header is
+-   _403 Forbidden_, if the user id in the Authorization header is
     different than the &lt;userid&gt; in the URI
--   *200 OK* if credentials match; in this case the following document
-    is sent; not that it includes the *roles* array:  
-      
+-   _200 OK_ if credentials match; in this case the following document
+    is sent; not that it includes the _roles_ array:  
+
 
 **Roles**
 
-``` json
+```json
 {
-    "_embedded": {}, 
+    "_embedded": {},
     "_links": {
         "self": {
             "href": "/_logic/roles/admin"
         }
-    }, 
-    "authenticated": true, 
-    "roles": [
-        "ADMIN"
-    ]
+    },
+    "authenticated": true,
+    "roles": ["ADMIN"]
 }
 ```
 
@@ -600,7 +595,7 @@ Restangular is then configured to:
 -   to delete the auth token from the session storage if it is expired
     leading to a *401 Unauthorized* response
 -   to add the *No-Auth-Challenge* request header to avoid the browser
-    to prompt you for credentials with the awful popup login window 
+    to prompt you for credentials with the awful popup login window
 
 Finally, the controller of the app abstract state (that is executed by
 all children states, including app.notes) checks if the authentication
@@ -627,7 +622,7 @@ loadNotes function:
 
 **Load notes**
 
-``` js
+```js
 $scope.loadNotes = function (selectFirst) {
     $scope.isLoading = true;
     var apiOptions = {
@@ -678,15 +673,15 @@ RESTHeart.
 
 The query parameters influence the result set:
 
--   **sort\_by** requires the documents to be sorted: in this case, by
-    the *date* property descending (- stands for descending);
+-   **sort_by** requires the documents to be sorted: in this case, by
+    the _date_ property descending (- stands for descending);
 -   **pagesize** and **page** control the paging: in this case we are
     returning the first 50 documents;
 -   **filter** can be any MongoDB query: in this case, it filters the
     notes limiting to those created by the authenticated user; also, if
-    a search query has been specified, the *$regex* operator performs a
-    case-insensitive match for documents with *content* value containing
-    it. 
+    a search query has been specified, the *\$regex* operator performs a
+    case-insensitive match for documents with _content_ value containing
+    it.
 
 #### Creating a new note
 
@@ -695,17 +690,19 @@ The new button allows to create a new note. This is done by the
 
 **Create a new note**
 
-``` js
+```js
 $scope.createNote = function () {
     var note = {
         content: 'New note',
-        color: $scope.colors[Math.floor((Math.random() * 3))],
+        color: $scope.colors[Math.floor(Math.random() * 3)],
         date: Date.now(),
-        user: AuthService.getSavedUserid()
+        user: AuthService.getSavedUserid(),
     };
-    ApiRestangular.all("notes").post(note).then(function () {
-        $scope.loadNotes();
-    });
+    ApiRestangular.all('notes')
+        .post(note)
+        .then(function () {
+            $scope.loadNotes();
+        });
 };
 ```
 
@@ -725,23 +722,26 @@ Save button is displayed. Clicking it invokes the updateNote() function:
 
 **Update a note**
 
-``` js
+```js
 $scope.updateNote = function () {
     if (angular.isUndefined($scope.selected)) {
         return;
     }
     $scope.selected.date = Date.now();
-    $scope.selected.put(null, {"If-Match": $scope.selected._etag.$oid}).then(function (res) {
-        dirties[$scope.selected._id.$oid] = false;
-        $scope.loadNotes(true);
-    });
+    $scope.selected
+        .put(null, { 'If-Match': $scope.selected._etag.$oid })
+        .then(function (res) {
+            dirties[$scope.selected._id.$oid] = false;
+            $scope.loadNotes(true);
+        });
 };
- 
 $scope.deleteNote = function () {
-    ApiRestangular.one("notes", $scope.selected._id.$oid).remove(null, {"If-Match": $scope.selected._etag.$oid}).then(function () {
-        $scope.loadNotes();
-        $scope.selected = null;
-    });
+    ApiRestangular.one('notes', $scope.selected._id.$oid)
+        .remove(null, { 'If-Match': $scope.selected._etag.$oid })
+        .then(function () {
+            $scope.loadNotes();
+            $scope.selected = null;
+        });
 };
 ```
 
@@ -752,7 +752,7 @@ The Restangular `put()` performs the following request:
 Note the argument {"If-Match": $scope.selected.\_etag.$oid}
 
 This adds the If-Match request header with the values of the note
-property \_etag.$oid. RESTHeart implements the Entity Tag optimistic
+property \_etag.\$oid. RESTHeart implements the Entity Tag optimistic
 concurrency control protocol: existing resources can be modified only
 specifying the correct ETag in this header, otherwise 409 Conflict or
 412 Precondition Failed return error codes are returned. This makes sure
@@ -780,7 +780,7 @@ Docker:
 
 **Stop Docker containers**
 
-``` text
+```text
 $ docker stop restheart
 $ docker stop mongodb
 ```
@@ -792,7 +792,7 @@ this, then you can start it again:
 
 **Start an existing Docker container**
 
-``` text
+```text
 $ docker start mongodb
 ```
 
@@ -801,7 +801,7 @@ On the other hand, RESTHeart is fully stateless, so it's recommended to
 
 **Remove and re-run a Docker container**
 
-``` text
+```text
 $ docker rm restheart
 $ docker run -d -p 8080:8080 --name restheart --link mongodb:mongodb softinstigate/restheart
 ```
@@ -849,7 +849,7 @@ development funny again.
 -   RESTHeart
     documentation: <https://restheart.org/docs/>
 -   MongoDB CRUD
-    Introduction: <https://docs.mongodb.org/manual/core/crud-introduction/> 
+    Introduction: <https://docs.mongodb.org/manual/core/crud-introduction/>
 -   Docker containers for RESTHeart and
     MongoDB: <https://registry.hub.docker.com/u/softinstigate/restheart/>
 -   REST - Representational state

@@ -9,12 +9,14 @@ In 2014 we had long realized that both application servers and frameworks force 
 For these reasons, at SoftInstigate we started developing an open-source product called **RESTHeart**, in order to investigate more rational ways to build applications. It was born as a summer experiment and it became an increasingly focused and robust product in the following years.
 
 {: .mt-5}
+
 # What RESTHeart actually does, in a minute
 
 {: .text-justify}
 RESTHeart is a standalone microservice which connects to **MongoDB** database and immediately exposes all of MongoDB’s capabilities through a complete REST API, which allows to read and write JSON messages and binary data via HTTP.
 
 {: .text-justify}
+
 > Developers don’t need to write a single line of backend code to serve data and content to Mobile Apps and Angular, React, Vue or other Single Page Application frameworks.
 
 <img src="/images/restheart-what-is-it.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
@@ -23,9 +25,11 @@ RESTHeart is a standalone microservice which connects to **MongoDB** database an
 RESTHeart provides a strong security module for authentication, authorization, and data caching. It allows to effectively manage content and its metadata, such as images, tags, categories, geo-localized data, audios and videos, allowing to access them through a clean REST API.
 
 {: .text-justify}
+
 > In most scenarios RESTHeart is the perfect backend microservice for Mobile and Web applications, so that frontend developers can focus on building User Interfaces.
 
 {: .mt-5}
+
 # A bit of history: the death of SOAP Web Services
 
 {: .text-justify}
@@ -38,23 +42,24 @@ This was also caused by the growing success of JavaScript to write “Single Pag
 The affirmation of Apps for mobile devices, either Apple or Android, also greatly shifted the request for processing capacity from the server to the client, making some complexities typical of traditional Application Servers (and related XML-based technologies) superfluous.
 
 {: .mt-5}
+
 # The collapse of SOA
 
 {: .text-justify}
 Service Oriented Architecture (SOA) promised to revolutionize the relationship between the business and the technological world. The goal of SOA was to conceptually break down the application domain into “business services” with a direct functional meaning, providing tools that would allow even non-technical people to orchestrate these services “easily”.
 
 {: .text-justify}
-Especially during the decade from 2000–2010 the mainstream software industry translated this idea into a number of platforms like EAI, ESB, BPM, SOA and Web Services. The WS-* family of specifications and Simple Object Access Protocol (SOAP) were established. XML was rampant and ubiquitous.
+Especially during the decade from 2000–2010 the mainstream software industry translated this idea into a number of platforms like EAI, ESB, BPM, SOA and Web Services. The WS-\* family of specifications and Simple Object Access Protocol (SOAP) were established. XML was rampant and ubiquitous.
 
 {: .text-justify}
 Most of these initiatives, however, collapsed under their own weight and SOA was declared “officially dead” in 2009 by an article of Anne Thomas Manes, Chief Researcher at Burton Group and one of the main SOA proponents:
 
-
-> But perhaps that’s the challenge: The acronym got in the way. People forgot what SOA stands for. They were too wrapped up in silly technology debates (eg, “what’s the best ESB?” Or “WS- * vs. REST”), and they missed the important stuff: architecture and services.
+> But perhaps that’s the challenge: The acronym got in the way. People forgot what SOA stands for. They were too wrapped up in silly technology debates (eg, “what’s the best ESB?” Or “WS- \* vs. REST”), and they missed the important stuff: architecture and services.
 > […]
 > The demise of SOA is tragic for the IT industry. Organizations desperately need to make architectural improvements to their application portfolios. Service orientation is a prerequisite for rapid data integration and business processes; it enables situational development models, such as mashups; and it’s the foundational architecture for SaaS and cloud computing.
 
 {: .mt-5}
+
 # The REST architectural style becomes pervasive
 
 {: .text-justify}
@@ -66,6 +71,7 @@ REST is a complex word but a relatively simple idea: it’s based on the concept
 > REST is the structural essence of the Web and fits perfectly in a world where the Web and Internet technologies have become pervasive.
 
 {: .mt-5}
+
 # The rise of NoSQL databases
 
 {: .text-justify}
@@ -83,6 +89,7 @@ MongoDB is a lightweight and extremely fast product capable of managing JSON doc
 > What really mattered to developers was that JSON objects on the client could eventually travel to and from the database as they were, without any transformation.
 
 {: .mt-5}
+
 # Microservices and JAMStack becoming popular
 
 {: .text-justify}
@@ -98,6 +105,7 @@ JAMstack means “Modern web development architecture based on client-side JavaS
 This leads to extremely robust Web sites, as HTML pages are not dynamically generated from databases but they are plain static files which can be distributed via Content Delivery Networks like CloudFront or Cloudflare.
 
 {: .mt-5}
+
 # Conclusions
 
 {: .text-justify .mb-5}

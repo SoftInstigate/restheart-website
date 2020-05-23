@@ -23,15 +23,12 @@ title: Setup
 <div markdown="1">
 
 {: .alert-heading}
+
 ## This page applies to the RESTHeart Platform Professional Editions only
 
 To setup the **Open Source** version look at its repository on [GitHub](https://github.com/softInstigate/restheart).
 
 </div>
-
-
-{: .alert .alert-warning}
-Confused on which version to choose? Check our [FAQ](/faq/#os-vs-pe)
 
 ## 1 - Get RESTHeart Platform Trial Edition
 

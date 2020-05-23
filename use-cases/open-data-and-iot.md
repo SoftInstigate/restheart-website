@@ -1,13 +1,13 @@
 ---
 layout: article
-title: "Use Case: Open Data and IoT"
+title: 'Use Case: Open Data and IoT'
 ---
 
 {: .text-justify .mt-5}
-RESTHeart is a perfect fit for real-time data, open data and solutions for the Internet of Things (IoT). 
+RESTHeart is a perfect fit for real-time data, open data and solutions for the Internet of Things (IoT).
 
 {: .text-justify .mb-5}
-Data can be uploaded to RESTHeart via JSON calls or Excel's CSV files and made immediately available through the REST API. 
+Data can be uploaded to RESTHeart via JSON calls or Excel's CSV files and made immediately available through the REST API.
 
 {: .text-justify .mb-5}
 Several RESTHeart users tell us that they had their Open Data application up and running in a single day!
@@ -22,6 +22,3 @@ RESTHeart allows for high performance, live streaming of real-time data from Mon
 
 {: .text-justify .mb-5}
 RESTHeart also leverages MongoDB's Geospatial support and stores GeoJSON objects without the need to write complicated server-side code: geometries are then available to clients such as Google Maps via its API.
-
-{: .text-justify .mb-5}
-To see just how much money you can save in development cost using RESTHeart to enable your real-time data, open data or IoT application, see [RESTHeart’s ROI Calculator](../../editions#roi-calculator).

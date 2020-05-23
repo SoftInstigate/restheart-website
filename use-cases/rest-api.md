@@ -19,9 +19,6 @@ RESTHeart provides a strong security module for authentication, authorization, a
 
 {: .text-justify .mt-5 .mb-5}
 In most scenarios, RESTHeart can be the perfect server-side backend for mobile and web applications, so that frontend developers can focus on building user Interfaces.
-
-{: .text-justify .mt-5 .mb-5}
-To see an estimate of how much money you will save using RESTHeart for your development project, go to the [RESTHeart ROI Calculator](../../editions#roi-calculator).
  
 {: .text-justify .mt-5 .mb-5}
 For a detailed description of setting up an API to MongoDB using RESTHeart see [Building Instant RESTFul API’s with MongoDB and RESTHeart](../../docs/setup).

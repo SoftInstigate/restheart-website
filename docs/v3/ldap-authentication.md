@@ -1,28 +1,25 @@
 ---
 layout: docs
-title: ActiveDirectory and LDAP authentication 
+title: ActiveDirectory and LDAP authentication
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-    * [Configuration](#configuration)
-    * [Roles and Groups](#roles-and-groups)
+-   [Introduction](#introduction)
+    -   [Configuration](#configuration)
+    -   [Roles and Groups](#roles-and-groups)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
-
+{% include docs-head.html %}
 
 ## Introduction
 
 A simple implementation of LDAP authentication has been provided and can
 be specified in the configuration file.  Written for use in an
 environment using Active Directory, it provides basic authentication
-against the configured LDAP or AD provider.  
-
-  
+against the configured LDAP or AD provider.
 
 Warning
 
@@ -36,8 +33,8 @@ made, please don't hesitate to bring them to our attention.
 In restheart.yml, update the idm implementation-class to use
 ADIdentityManager:
 
-``` text
-idm:    
+```text
+idm:
     implementation-class: org.restheart.security.impl.ADIdentityManager
     conf-file: ./etc/security.yml
 ```
@@ -47,7 +44,7 @@ details will be configured.  In this file, you must configure the domain
 controller(s) and the principal name suffix(es) to be used in
 authentication.
 
-``` text
+```text
 ## Config for AD Identity Manager
 adim:
     - domainControllers: ldap://eastdc.example.com, ldap://westdc.example.com
@@ -67,7 +64,7 @@ of "john", the following attempts would be made (in this order):
 -   westdc.example.com : <john@example.com>
 
 In many cases, only one domain controller or principal name suffix are
-needed.  
+needed.
 
 ### Roles and Groups
 
@@ -79,7 +76,7 @@ Security\#SimpleAccessManager](/docs/v3/configure-security#simpleaccessmanager))
 names from your AD or LDAP system rather than the default examples in
 the file.  An example:
 
-``` text
+```text
 permissions:
 # Users with role 'DevOps' can do anything
     - role: DevOps
@@ -87,7 +84,3 @@ permissions:
 ```
 
 </div>
-
-  
-
-  
