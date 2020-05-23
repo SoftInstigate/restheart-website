@@ -11,13 +11,6 @@ layout: default
                         v{{ page.docs_version }}
                     </button>
                     <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
-                            {% if page.docs_version == 5 %}
-                            <strong>v5</strong>
-                            {% else %}
-                            v5
-                            {% endif %}
-                        </a>
                         <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
                             {% if page.docs_version == 3 %}
                             <strong>v3</strong>
@@ -30,6 +23,13 @@ layout: default
                             <strong>v4</strong>
                             {% else %}
                             v4
+                            {% endif %}
+                        </a>
+                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                            {% if page.docs_version == 5 %}
+                            <strong>v5</strong>
+                            {% else %}
+                            v5
                             {% endif %}
                         </a>
                     </div>
@@ -49,7 +49,6 @@ layout: default
                         class="btn btn-sm mr-2 mb-1" target="_blank">New issue</a>
                     <a href="https://github.com/SoftInstigate/restheart-website/edit/gh-pages/{{ page.path }}"
                         class="btn btn-sm btn-link mb-1">Edit On Github</a>
-
                     <button class="btn btn-link bd-sidebar__toggle d-md-none p-0 mb-1" type="button"
                         data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
                         aria-expanded="false" aria-label="Toggle docs navigation">
@@ -60,28 +59,22 @@ layout: default
                                 d="M4 7h22M4 15h22M4 23h22" />
                         </svg>
                     </button>
-
                 </div>
-
-
             </div>
 
             <div class="bd-sidebar__menu collapse" id="bd-sidebar__menu">
                 {% if page.docs_version == 4 %}
-                    {% include docs-v4-sidebar.html %}
+                {% include docs-v4-sidebar.html %}
                 {% elsif page.docs_version == 3 %}
-                    {% include docs-v3-sidebar.html %}
+                {% include docs-v3-sidebar.html %}
                 {% else %}
-                    {% include docs-sidebar.html %}
+                {% include docs-sidebar.html %}
                 {% endif %}
             </div>
-
         </div>
-
         {{ content }}
     </div>
 </div>
-
 <script>
     $("#bd-sidebar__menu").hover(
         () => $("#bd-sidebar__menu").addClass('scrollable'),
