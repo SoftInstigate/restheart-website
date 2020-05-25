@@ -32,7 +32,7 @@ RESTHeart provides out-of-the-box:
 -   Secure Identity and Access Management.
 -   REST API with JSON.
 
-![clients](/images/clients.png){: width="80%" height="auto" class="mx-auto d-block img-responsive"}
+![clients](/images/clients.png){: width="90%" height="auto" class="mx-auto d-block img-responsive"}
 
 ## Specifications
 
