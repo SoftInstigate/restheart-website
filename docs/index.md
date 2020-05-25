@@ -8,6 +8,7 @@ title: Documentation
 -   [Introduction](#introduction)
 -   [Specifications](#specifications)
 -   [Features](#features)
+-   [Support](#support)
 
 </div>
 
@@ -42,10 +43,18 @@ RESTHeart provides out-of-the-box:
 -   Can be packaged as a **Docker** container.
 -   Can be easily deployed both on **Cloud** and **on premises**.
 
-RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
-
 ## Features
 
 For a complete list of features please go [this page](/features).
+
+## Support
+
+RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
+
+-   Community support is available by opening a [Github issue](https://github.com/SoftInstigate/restheart/issues) or on [Stackoverflow](https://stackoverflow.com/questions/tagged/restheart).
+-   You can chat on [Gitter](https://stackoverflow.com/questions/tagged/restheart) or join our [Facebook community](https://stackoverflow.com/questions/tagged/restheart).
+-   The source code is published on its [GitHub repository](https://github.com/softInstigate/restheart/).
+
+If you need **dedicated, professional support** or a **Enterprise license**, please have a look at the [available options](/support).
 
 </div>
