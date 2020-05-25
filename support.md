@@ -4,6 +4,17 @@ title: Support
 permalink: /support
 ---
 
+# Open source
+
+If you are a student, individual developer or a small Web agency and comfortable with the AGPL v3 license, then using the product for free, as open source, is likely to be your best option.
+
+-   Community support is available by opening a [Github issue](https://github.com/SoftInstigate/restheart/issues) or on [Stackoverflow](https://stackoverflow.com/questions/tagged/restheart).
+-   You can chat on [Gitter](https://stackoverflow.com/questions/tagged/restheart) or join our [Facebook community](https://stackoverflow.com/questions/tagged/restheart).
+
+---
+
+[GitHub repository](https://github.com/softInstigate/restheart/){: .btn}
+
 # Subscription
 
 When a company is not comfortable with the AGPL open source license or need **dedicated technical support**, then it could purchase a **RESTHeart Subscription**, which comes with:
@@ -57,24 +68,6 @@ _Custom Subscriptions containing multiple licenses for multiple database product
 ---
 
 [Request a quote](mailto:ask@restheart.org?subject=RESTHeart subscription inquiry - Request a quote){: .btn}
-
-# Open source
-
-If you are a student, individual developer or a small Web agency and comfortable with the AGPL v3 license, then using the product for free, as open source, is likely to be your best option.
-
-The GNU Affero General Public License version 3 ([AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html)) is a copyleft license nearly identical to the GPLv3.
-As the AGPL is based on the GPL, not the LGPL, it does not contain any linking exceptions, and any derivative work using AGPL code (linked or otherwise, modified or not) must also be AGPL licensed and distributed.
-
--   A Software that interacts with RESTHeart via its REST API is not considered as a Derivative Work.
--   The RESTHeart Java Extension Framework (restheart-commons) is licensed under the Apache 2.0 License: custom plugins don’t incur in the limitations of the AGPL.
--   Any modification of RESTHeart’s source code must be released as open source, under the terms of the AGPLv3 license.
-
-*   Community support is available by opening a [Github issue](https://github.com/SoftInstigate/restheart/issues) or on [Stackoverflow](https://stackoverflow.com/questions/tagged/restheart).
-*   You can chat on [Gitter](https://stackoverflow.com/questions/tagged/restheart) or join our [Facebook community](https://stackoverflow.com/questions/tagged/restheart).
-
----
-
-[GitHub repository](https://github.com/softInstigate/restheart/){: .btn}
 
 # Happy hour
 
