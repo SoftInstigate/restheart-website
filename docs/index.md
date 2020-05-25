@@ -45,7 +45,7 @@ RESTHeart provides out-of-the-box:
 
 ## Features
 
-For a complete list of features please go [this page](/features).
+For a complete list of features please go to [this page](/features).
 
 ## Support
 
