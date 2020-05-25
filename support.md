@@ -4,21 +4,21 @@ title: Support
 permalink: /support
 ---
 
-# Open source support
+# Free support
 
-RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the business friendly [RESTHeart Commercial License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
+If you are a student, individual developer or a small Web agency and comfortable with the AGPL v3 license, then using the product for free, as open source, is likely to be your best option.
 
 -   Community support is available by opening a [Github issue](https://github.com/SoftInstigate/restheart/issues) or on [Stackoverflow](https://stackoverflow.com/questions/tagged/restheart).
 -   You can also chat on [Gitter](https://stackoverflow.com/questions/tagged/restheart) or join our [Facebook community](https://stackoverflow.com/questions/tagged/restheart).
 -   The source code is published on its [GitHub repository](https://github.com/softInstigate/restheart/).
-
-If you are a student, individual developer or a small Web agency and comfortable with the AGPL v3 license, then using the product for free, as open source, is likely to be your best option.
 
 ---
 
 [GitHub repository](https://github.com/softInstigate/restheart/){: .btn}
 
 # Subscription
+
+RESTHeart is dual licensed under the open source [GNU AGPL v3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) and the more business-friendly [RESTHeart Enterprise License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
 
 When a company is not comfortable with the AGPL open source license or need **dedicated technical support**, then it could purchase a **RESTHeart Subscription**, which comes with:
 
