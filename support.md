@@ -4,14 +4,7 @@ title: Support
 permalink: /support
 ---
 
-
-
 # Subscription
-
-RESTHeart is an open-core product distributed through a dual licensing model:
-
-1. **Open Source** - under the [GNU AGPL v3.0 license](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
-2. **Enterprise** - under a [business-friendly license](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt).
 
 When a company is not comfortable with the AGPL open source license or need **dedicated technical support**, then it could purchase a **RESTHeart Subscription**, which comes with:
 
@@ -38,12 +31,12 @@ _While the Enterprise license is perpetual, the subscription is annual and has t
 Subscription's levels depends on specific deployment needs. The below table illustrates a summary of usual levels:
 
 {: .table .table-responsive}
-| Subscription Level | RESTHeart’s instances | Deployment scenario                                        |
+| Subscription Level | RESTHeart’s instances | Deployment scenario |
 |--------------------|-----------------------|------------------------------------------------------------|
-| Single             | 1                     | Single node, no HA requirements.                           |
-| Cluster            | 3                     | Active/Active HA with up to 3 nodes.                       |
-| Unlimited          | Unlimited, dynamic    | Elastic clusters, like Kubernetes or ECS.                  |
-| OEM                | To be estimated       | Redistribute RESTHeart embedded in closed source products. |
+| Single | 1 | Single node, no HA requirements. |
+| Cluster | 3 | Active/Active HA with up to 3 nodes. |
+| Unlimited | Unlimited, dynamic | Elastic clusters, like Kubernetes or ECS. |
+| OEM | To be estimated | Redistribute RESTHeart embedded in closed source products. |
 
 _Only production instances matter: dev, test or other environments are free._
 
