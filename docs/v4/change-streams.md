@@ -148,35 +148,37 @@ The following requests upsert a collection defining two change streams:
     type="Request"
 %}
 
-```http
+```
 PUT /messages HTTP/1.1
 
-{
+{ 
     "streams" : [ 
       { "stages" : [
           {
-              "_$or" : [
-                {
-                    "operationType": "insert"
-                },
-                {
-                    "operationType": "update"
-                }
-              ]
+              "_$match": {
+                "_$or" : [
+                    { 
+                        "operationType": "insert"
+                    },
+                    { 
+                        "operationType": "update"
+                    }
+                ]
+            }
           }
       ],
         "uri" : "all"
       },
-      { "stages" : [
-          {
-              "_$match" : {
-                "fullDocument::name" : { "_$var" : "n" }
-              }
+      { "stages" : [ 
+          { 
+              "_$match" : { 
+                "fullDocument::name" : { "_$var" : "n" } 
+              } 
           }
         ],
         "uri" : "mine"
       }
-    ]
+    ] 
 }
 ```
 
