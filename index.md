@@ -15,17 +15,17 @@ layout: default
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it does</h2>
-                <p>RESTHeart connects to <strong>MongoDB</strong> and allows to access the database via a complete set of <strong>REST APIs</strong>.</p>
+                <p>RESTHeart leverages MongoDB to provide all data functionalities required by modern applications.</p>
                 <ul class="">
-                    <li>Automatic data persistence via MongoDB.</li>
                     <li>Full REST API with JSON.</li>
-                    <li>Applicative authentication and authorization.</li>
+                    <li>Queries, aggregations, streams and transactions.</li>
+                    <li>Authentication and roles-based authorization.</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it is</h2>
-                <p>RESTHeart is a modern backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
+                <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice.</li>
                     <li>Distributable as a Docker container.</li>
