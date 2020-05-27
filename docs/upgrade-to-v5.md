@@ -112,12 +112,12 @@ The following security plugins exist:
 
 - **AuthMechanism** - allows to handle an authentication schema
 - **Authenticator** - authenticates credentials
-- **Authorizer** - authorize credentials according to a security policy
+- **Authorizer** - authorize clients according to a security policy
 - **TokenManager** - issues an auth token to authenticated clients. This allows, for instance, a browser to store the less sensitive token instead of the users credentials.
 
 ### Simplified configuration
 
-A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration 
+A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration for a plugin just use its name under the `plugins-args` yml object:
 
 ```
 plugins-args:
@@ -138,8 +138,8 @@ public void init(Map<String, Object> args) throws ConfigurationException {
 ### Dependency injection
 
 Other dependency injections than `@InjectConfiguration` are:
-- @InjectPluginsRegistry - allows a plugin to get the reference of other plugins.
-- @InjectMongoClient - to get the MongoClient already initialized by the mongo service
+- `@InjectPluginsRegistry` - allows a plugin to get the reference of other plugins.
+- `@InjectMongoClient` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the mongo service.
 
 ```java
 private PluginsRegistry registry;
