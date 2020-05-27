@@ -19,7 +19,7 @@ layout: default
                 <ul class="">
                     <li>Full REST API with JSON.</li>
                     <li>Queries, aggregations, streams and transactions.</li>
-                    <li>Authentication and roles-based authorization.</li>
+                    <li>Authentication and role-based Authorization.</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
