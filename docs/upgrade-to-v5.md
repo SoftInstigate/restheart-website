@@ -3,11 +3,24 @@ layout: docs
 title: Upgrade to RESTHeart v5
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+-   [Configuration](#configuration)
+-   [Plugins](#plugins)
+    - [Simplified plugin deployment](#simplified-plugin-deployment)
+    - [License considerations](#license-considerations)
+    - [Simplified interfaces](#simplifiedinterfaces)
+    - [Simplified configuration](#simplified-configuration)
+    - [Dependency injection](#dependency-injection)
+- [Transactions](#transactions)
+- [Change Streams](#change-streams)
+- [Security Plugins](#security-plugins)
+
+</div>
+
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
-
-{% include doc-in-progress.html %}
 
 RESTHeart v5 is a major refactoring of the internal APIs:
 
@@ -27,7 +40,7 @@ Since RESTHeart v5 is now a single microservice (v4 was composed by two mircoser
 
 ## Plugins
 
-### Simplified plugins deployment
+### Simplified plugin deployment
 
 Developing a plugins only requires *restheart-commons*. Add the dependency with maven with:
 
