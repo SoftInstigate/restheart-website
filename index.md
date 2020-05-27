@@ -25,7 +25,7 @@ layout: default
             </div>
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it is</h2>
-                <p>RESTHeart is a fast and secure backend for modern <strong>Web</strong> and <strong>Mobile</strong> apps which requires <strong>no server-side coding</strong>.</p>
+                <p>RESTHeart is a modern backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice.</li>
                     <li>Distributable as a Docker container.</li>
