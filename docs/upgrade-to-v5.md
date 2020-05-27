@@ -19,8 +19,6 @@ RESTHeart v5 is a major refactoring of the internal APIs:
 {: .bs-callout.bs-callout-info}
 The REST API didn't change! If you haven't developed a plugin you will just need to update the configuration.
 
-</div>
-
 ## Configuration
 
 The configuration files has been cleaned up simplified. 
@@ -35,10 +33,10 @@ Developing a plugins only requires *restheart-commons*. Add the dependency with 
 
 ```
 <dependency>
-      <groupId>org.restheart</groupId>
-      <artifactId>restheart-commons</artifactId>
-      <version>5.1</version>
-    </dependency>
+    <groupId>org.restheart</groupId>
+    <artifactId>restheart-commons</artifactId>
+    <version>5.1</version>
+</dependency>
 ```
 
 Once you build your plugin, just copy the jar file to the `/plugins` directory and RESTHeart will automatically add it at startup time.
@@ -52,6 +50,43 @@ See some plugins examples at [restheart-examples](https://github.com/softInstiga
 ### Simplified interfaces
 
 All plugins require the `@RegisterPlugin` annotation. This allows RESTHeart to find them in the deployed plugins jar. It also allow defining the properties of plugins.
+
+The methods declared by the plugins interfaces now use parametric Request and Response classes (No more RequestContext). This simplifies the implementation.
+
+For example, the base class of the Service plugin is:
+
+```java
+public interface Service<R extends ServiceRequest<?>, S extends ServiceResponse<?>>
+        extends HandlingPlugin<R, S>, ConfigurablePlugin {
+    /**
+     * handle the request
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void handle(final R request, final S response) throws Exception;
+
+...
+
+}
+```
+
+Many specialized interfaces exists. A notable example is JsonService. Implementing the JsonService allows to quickly create a JSON web service. An example follows:
+
+```java
+@RegisterPlugin(
+        name = "example",
+        description = "an example web service",
+        enabledByDefault = true,
+        defaultURI = "/foo")
+public class FooService implements JsonService {
+    @Override
+    public void handle(JsonRequest request, JsonResponse response) throws Exception {
+        response.setContent(new JsonObject("msg","Hello World!"));
+    }
+}
+```
 
 The following plugins exist:
 
@@ -123,3 +158,5 @@ Starting v5.1, the following advanced security plugins are available in RESTHear
 - **jwtAuthenticationMechanism**: authenticates request with JSON Web Token
 - **mongoRealAuthenticator**: authenticate requests against client credentials stored in MongoDB. It also automatically protects and encrypts passwords
 - **mongoAclAuthorizer**: authorizes requests against ACL stored in MongoDB. It also adds role-based data filtering capability.
+
+</div>
