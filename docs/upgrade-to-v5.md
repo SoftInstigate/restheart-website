@@ -7,14 +7,14 @@ title: Upgrade to RESTHeart v5
 
 -   [Configuration](#configuration)
 -   [Plugins](#plugins)
-    - [Simplified plugin deployment](#simplified-plugin-deployment)
-    - [License considerations](#license-considerations)
-    - [Simplified interfaces](#simplified-interfaces)
-    - [Simplified configuration](#simplified-configuration)
-    - [Dependency injection](#dependency-injection)
-- [Transactions](#transactions)
-- [Change Streams](#change-streams)
-- [Security Plugins](#security-plugins)
+    -   [Simplified plugin deployment](#simplified-plugin-deployment)
+    -   [License considerations](#license-considerations)
+    -   [Simplified interfaces](#simplified-interfaces)
+    -   [Simplified configuration](#simplified-configuration)
+    -   [Dependency injection](#dependency-injection)
+-   [Transactions](#transactions)
+-   [Change Streams](#change-streams)
+-   [Security Plugins](#security-plugins)
 
 </div>
 
@@ -36,7 +36,7 @@ The REST API didn't change! If you haven't developed a plugin you will just need
 
 ## Configuration
 
-The configuration files has been cleaned up simplified. 
+The configuration files has been cleaned up simplified.
 
 Since RESTHeart v5 is now a single microservice (v4 was composed by two mircoservices, restheart-core and restheart-security), configuration is now controlled by a single file [restheart.yml](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/etc/restheart.yml)
 
@@ -44,7 +44,7 @@ Since RESTHeart v5 is now a single microservice (v4 was composed by two mircoser
 
 ### Simplified plugin deployment
 
-Developing a plugins only requires *restheart-commons*. Add the dependency with maven with:
+Developing a plugins only requires _restheart-commons_. Add the dependency with maven with:
 
 ```
 <dependency>
@@ -60,7 +60,7 @@ See some plugins examples at [restheart-examples](https://github.com/softInstiga
 
 ### License considerations
 
-*restheart-commons* is licensed under the Apache 2.0 open source license: when you develop a plugin, you don't incur in the limitations of the AGPL.
+_restheart-commons_ is licensed under the Apache 2.0 open source license: when you develop a plugin, you don't incur in the limitations of the AGPL.
 
 ### Simplified interfaces
 
@@ -105,15 +105,15 @@ public class FooService implements JsonService {
 
 The following plugins exist:
 
-- **Service** - allows to easily implement a Web Service
-- **Interceptor** - allow to snoop and modify requests and responses at different stages of the request lifecycle as defined by the interceptPoint parameter of the annotation RegisterPlugin.
+-   **Service** - allows to easily implement a Web Service
+-   **Interceptor** - allow to snoop and modify requests and responses at different stages of the request lifecycle as defined by the interceptPoint parameter of the annotation RegisterPlugin.
 
 The following security plugins exist:
 
-- **AuthMechanism** - allows to handle an authentication schema
-- **Authenticator** - authenticates credentials
-- **Authorizer** - authorize clients according to a security policy
-- **TokenManager** - issues an auth token to authenticated clients. This allows, for instance, a browser to store the less sensitive token instead of the users credentials.
+-   **AuthMechanism** - allows to handle an authentication schema
+-   **Authenticator** - authenticates credentials
+-   **Authorizer** - authorize clients according to a security policy
+-   **TokenManager** - issues an auth token to authenticated clients. This allows, for instance, a browser to store the less sensitive token instead of the users credentials.
 
 ### Simplified configuration
 
@@ -138,8 +138,9 @@ public void init(Map<String, Object> args) throws ConfigurationException {
 ### Dependency injection
 
 Other dependency injections than `@InjectConfiguration` are:
-- `@InjectPluginsRegistry` - allows a plugin to get the reference of other plugins.
-- `@InjectMongoClient` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the mongo service.
+
+-   `@InjectPluginsRegistry` - allows a plugin to get the reference of other plugins.
+-   `@InjectMongoClient` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the mongo service.
 
 ```java
 private PluginsRegistry registry;
@@ -170,8 +171,8 @@ Starting v5.1, support for [change streams](/docs/change-streams) is available i
 
 Starting v5.1, the following advanced security plugins are available in RESTHeart OSS:
 
-- **jwtAuthenticationMechanism**: authenticates request with JSON Web Token
-- **mongoRealAuthenticator**: authenticate requests against client credentials stored in MongoDB. It also automatically protects and encrypts passwords
-- **mongoAclAuthorizer**: authorizes requests against ACL stored in MongoDB. It also adds role-based data filtering capability.
+-   **jwtAuthenticationMechanism**: authenticates request with JSON Web Token
+-   **mongoRealAuthenticator**: authenticate requests against client credentials stored in MongoDB. It also automatically protects and encrypts passwords
+-   **mongoAclAuthorizer**: authorizes requests against ACL stored in MongoDB. It also adds role-based data filtering capability.
 
 </div>
