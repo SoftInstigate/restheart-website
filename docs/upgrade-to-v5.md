@@ -9,10 +9,117 @@ title: Upgrade to RESTHeart v5
 
 {% include doc-in-progress.html %}
 
-RESTHeart v5 is a major refactoring of the internal APIs. With this version we focused on these things:
+RESTHeart v5 is a major refactoring of the internal APIs:
 
-1. RESTHeart is back a **single unit of deployment**, no more need to run a separate security layer (it's muck like it was RESTHeart v3). Unzip the archive and run it.
-2. It's now much easier to extend the API with **plugins** and **interceptors** (see some [examples](https://github.com/SoftInstigate/restheart-examples)). You can build and deploy your own Web Services with few line of code.
-3. Promote plain JSON as the primary representation format and demote [HAL](http://stateless.co/hal_specification.html) as a secondary option (most developers just want to use their own format).
+1. Adopt the **open core model**: all features of v4 restricted to Enterprise License (transactions, change streams and advanced security plugins) are now open sourced. We still offer [technical support](/support) and the [business friendly License](https://raw.githubusercontent.com/SoftInstigate/restheart/master/COMM-LICENSE.txt) that covers Enterprise requirements.
+2. RESTHeart is back a **single unit of deployment**, no more need to run a separate security layer (it's muck like it was RESTHeart v3). Unzip the archive and run it.
+3. It's now much easier to extend the API with **plugins** and **interceptors** (see some [examples](https://github.com/SoftInstigate/restheart-examples)). You can build and deploy your own Web Services with few line of code.
+4. Promote plain JSON as the primary representation format and demote [HAL](http://stateless.co/hal_specification.html) as a secondary option (HAL might be removed from future releases).
+
+{: .bs-callout.bs-callout-info}
+The REST API didn't change! If you haven't developed a plugin you will just need to update the configuration.
 
 </div>
+
+## Configuration
+
+The configuration files has been cleaned up simplified. 
+
+Since RESTHeart v5 is now a single microservice (v4 was composed by two mircoservices, restheart-core and restheart-security), configuration is now controlled by a single file [restheart.yml](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/etc/restheart.yml)
+
+## Plugins
+
+### Simplified plugins deployment
+
+Developing a plugins only requires *restheart-commons*. Add the dependency with maven with:
+
+```
+<dependency>
+      <groupId>org.restheart</groupId>
+      <artifactId>restheart-commons</artifactId>
+      <version>5.1</version>
+    </dependency>
+```
+
+Once you build your plugin, just copy the jar file to the `/plugins` directory and RESTHeart will automatically add it at startup time.
+
+See some plugins examples at [restheart-examples](https://github.com/softInstigate/restheart-examples) repo.
+
+### License consideration
+
+*restheart-commons* is licensed under the Apache 2.0 open source license: when you develop a plugin, you don't incur in the limitations of the AGPL.
+
+### Simplified interfaces
+
+All plugins require the `@RegisterPlugin` annotation. This allows RESTHeart to find them in the deployed plugins jar. It also allow defining the properties of plugins.
+
+The following plugins exist:
+
+- **Service** - allows to easily implement a Web Service
+- **Interceptor** - allow to snoop and modify requests and responses at different stages of the request lifecycle as defined by the interceptPoint parameter of the annotation RegisterPlugin.
+
+The following security plugins exist:
+
+- **AuthMechanism** - allows to handle an authentication schema
+- **Authenticator** - authenticates credentials
+- **Authorizer** - authorize credentials according to a security policy
+- **TokenManager** - issues an auth token to authenticated clients. This allows, for instance, a browser to store the less sensitive token instead of the users credentials.
+
+### Simplified configuration
+
+A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration 
+
+```
+plugins-args:
+    ping:
+        secured: false
+        msg: 'Ping!'
+```
+
+The plugin consumes the configuration with a method annotated with `@InjectConfiguration`:
+
+```java
+@InjectConfiguration
+public void init(Map<String, Object> args) throws ConfigurationException {
+    this.msg = argValue(args, "msg");
+}
+```
+
+### Dependency injection
+
+Other dependency injections than `@InjectConfiguration` are:
+- @InjectPluginsRegistry - allows a plugin to get the reference of other plugins.
+- @InjectMongoClient - to get the MongoClient already initialized by the mongo service
+
+```java
+private PluginsRegistry registry;
+
+@InjectPluginsRegistry
+public void init(PluginsRegistry registry) {
+    this.registry = registry;
+}
+```
+
+```java
+private MongoClient mclient;
+
+@InjectMongoClient
+public void setMongoClient(MongoClient mclient) {
+    this.mclient = mclient;
+```
+
+## Transactions
+
+Starting v5.1, support for [transactions](/docs/transactions) is available in RESTHeart OSS.
+
+## Change Streams
+
+Starting v5.1, support for [change streams](/docs/change-streams) is available in RESTHeart OSS.
+
+## Security Plugins
+
+Starting v5.1, the following advanced security plugins are available in RESTHeart OSS:
+
+- **jwtAuthenticationMechanism**: authenticates request with JSON Web Token
+- **mongoRealAuthenticator**: authenticate requests against client credentials stored in MongoDB. It also automatically protects and encrypts passwords
+- **mongoAclAuthorizer**: authorizes requests against ACL stored in MongoDB. It also adds role-based data filtering capability.
