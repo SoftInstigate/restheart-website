@@ -273,7 +273,7 @@ HTTP/1.1 400 Bad Request
 {
     "_exceptions": [
         {
-            "exception": "org.restheart.hal.metadata.QueryVariableNotBoundException",
+            "exception": "org.restheart.exchange.QueryVariableNotBoundException",
             "exception message": "variable n not bound", 
             ...
         }
