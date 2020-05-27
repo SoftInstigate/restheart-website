@@ -9,7 +9,7 @@ title: Upgrade to RESTHeart v5
 -   [Plugins](#plugins)
     - [Simplified plugin deployment](#simplified-plugin-deployment)
     - [License considerations](#license-considerations)
-    - [Simplified interfaces](#simplifiedinterfaces)
+    - [Simplified interfaces](#simplified-interfaces)
     - [Simplified configuration](#simplified-configuration)
     - [Dependency injection](#dependency-injection)
 - [Transactions](#transactions)
@@ -22,7 +22,9 @@ title: Upgrade to RESTHeart v5
 
 {% include docs-head.html %}
 
-RESTHeart v5 is a major refactoring of the internal APIs:
+RESTHeart v5 is a major refactoring of the internal APIs to simplify the development and deployment experience.
+
+Notable news in v5 are:
 
 1. Adopt the **open core model**: all features of v4 restricted to Enterprise License (transactions, change streams and advanced security plugins) are now open sourced. We still offer [technical support](/support) and the [business friendly License](https://raw.githubusercontent.com/SoftInstigate/restheart/master/COMM-LICENSE.txt) that covers Enterprise requirements.
 2. RESTHeart is back a **single unit of deployment**, no more need to run a separate security layer (it's muck like it was RESTHeart v3). Unzip the archive and run it.
@@ -56,7 +58,7 @@ Once you build your plugin, just copy the jar file to the `/plugins` directory a
 
 See some plugins examples at [restheart-examples](https://github.com/softInstigate/restheart-examples) repo.
 
-### License consideration
+### License considerations
 
 *restheart-commons* is licensed under the Apache 2.0 open source license: when you develop a plugin, you don't incur in the limitations of the AGPL.
 
