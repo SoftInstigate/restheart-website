@@ -42,19 +42,6 @@ Change streams require at least MongoDB v3.6 configured as a [Replica Set](https
 {: .bs-callout.bs-callout-info }
 Always restart the server after modifying a stream definition, or deleting its collection, to disconnect all clients.
 
-<div class="bs-callout bs-callout-danger">
-    <strong>NOTE:</strong> to get <em>Change Streams</em> working properly HTTP listener must be enabled. This is done by default by using our Docker images.
-    <br><br>
-    <div><strong>If you want to use this feature while running RESTHeart manually the following settings to <code>resheart-platform-security</code> are needed:</strong></div>
-    <br><br>
-    <pre class="black-code"><code class="language-properties hljs"><span class="hljs-comment">## restheart-platform-security/etc/security.properties</span>
-    <span class="hljs-meta">root-proxy-pass</span>=<span class="hljs-string">http://localhost:8081</span>
-    <span class="hljs-comment">## <span class="hljs-doctag">NOTE:</span> change streams require HTTP (AJP doesn't support WebSocket)</span>
-    <span class="hljs-comment">## enable http listener in restheart-platform-core</span>
-    <span class="hljs-comment">##\u00a0and set root-proxy-pass=http://localhost:8081</span>
-    </code></pre>
-</div>
-
 ## The *streams* collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
