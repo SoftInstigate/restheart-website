@@ -37,7 +37,7 @@ Modern web applications needs to react with promptness and efficiency to data ch
 Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
 
 {: .bs-callout.bs-callout-info }
-Multi-document transaction requires at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
+Change streams require at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
 
 {: .bs-callout.bs-callout-info }
 Always restart the server after modifying a stream definition, or deleting its collection, to disconnect all clients.
