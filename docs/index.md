@@ -20,7 +20,7 @@ title: Documentation
 
 ## Introduction
 
-There are some features every developer always need to implement:
+There are some features every developer always needs to implement:
 
 -   Data persistence.
 -   Authentication and Authorization.
