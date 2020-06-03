@@ -70,7 +70,7 @@ HAL `_link` property
 
 ``` json
 {
-  "real": "<relid>",
+  "rel": "<relid>",
   "type": "<type>",
   "role": "<role>",
   "target-db": "<dname>",

@@ -40,7 +40,7 @@ relationship so that links to the referenced documents are auto-magically inclu
 
 ```json
 {
-    "real": "<relid>",
+    "rel": "<relid>",
     "type": "<type>",
     "role": "<role>",
     "target-db": "<dname>",
