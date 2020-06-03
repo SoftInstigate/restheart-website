@@ -183,7 +183,7 @@ the service `/echo` just echoes back the request (URL, query parameters, body an
 
 ```yml
 services:
-    - implementation-class: org.restheart.security.plugins.services.EchoService
+    echo:
       uri: /echo
       secured: false
 ```

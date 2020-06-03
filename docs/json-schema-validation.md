@@ -219,7 +219,7 @@ HTTP/1.1 201 Created
 - bulk POST that use update operators
 
 {: .bs-callout.bs-callout-info }
-To handle this requests,  set the checker property [skipNotSupported](/docs/plugins/apply/#apply-a-checker-via-metadata) to `false` and add custom checkers to handle specific requests.
+To handle this requests, set the checker property `skipNotSupported` to `false`, and add specialized interceptor to handle these requests.
 
 
 ```

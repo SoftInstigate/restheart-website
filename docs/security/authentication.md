@@ -14,8 +14,8 @@ title: Authentication
     -   [Token Authentication](#token-authentication)
     -   [Identity Authentication](#identity-authentication)
 -   [Authenticators](#authenticators)
-    -   [RESTHeart Authenticator](#restheart-authenticator)
-    -   [Simple File Authenticator](#simple-file-authenticator)
+    -   [Mongo Realm Authenticator](#mongo-realm-Authorizer)
+    -   [File Realm Authenticator](#file-realm-authorizer)
 -   [Token Managers](#token-managers)
     -   [Random Token Manager](#random-token-manager)
 
@@ -43,18 +43,18 @@ Supported algorithms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
 For HMAC the `key` configuration option specifies the secret, for RSA the public key.
 
 ```yml
-- name: jwtAuthenticationMechanism
-     class: com.restheart.security.plugins.mechanisms.JwtAuthenticationMechanism
-     args:
-         algorithm: HS256
-         key: secret
-         base64Encoded: false
-         usernameClaim: sub
-         rolesClaim: roles
-#          fixedRoles:
-#            - admin
-         issuer: myIssuer
-         audience: myAudience
+auth-mechanisms:
+    jwtAuthenticationMechanism:
+        enabled: false
+        algorithm: HS256
+        key: secret
+        base64Encoded: false
+        usernameClaim: sub
+        rolesClaim: roles
+        fixedRoles:
+    #      - admin
+        issuer: myIssuer
+        audience: myAudience
 ```
 
 ### Basic Authentication
@@ -63,11 +63,9 @@ For HMAC the `key` configuration option specifies the secret, for RSA the public
 
 ```yml
 auth-mechanisms:
-    - name: basicAuthMechanism
-      class: org.restheart.security.plugins.mechanisms.BasicAuthMechanism
-      args:
-          realm: RESTHeart Realm
-          authenticator: simpleFileAuthenticator
+    basicAuthMechanism:
+        enabled: true
+        authenticator: fileRealmAuthenticator
 ```
 
 ### Avoid browsers to open the login popup window
@@ -89,12 +87,11 @@ To avoid the popup window just add to the request the `noauthchallenge` query pa
 
 ```yml
 auth-mechanisms:
-    - name: digestAuthMechanism
-      class: org.restheart.security.plugins.mechanisms.DigestAuthMechanism
-      args:
-          realm: RESTHeart Realm
-          domain: localhost
-          authenticator: simpleFileAuthenticator
+    digestAuthMechanism:
+        enabled: true
+        realm: RESTHeart Realm
+        domain: localhost
+        authenticator: fileRealmAuthenticator
 ```
 
 ### Token Authentication
@@ -103,10 +100,8 @@ auth-mechanisms:
 
 ```yml
 auth-mechanisms:
-    - name: tokenBasicAuthMechanism
-      class: org.restheart.security.plugins.mechanisms.TokenBasicAuthMechanism
-      args:
-          realm: RESTHeart Realm
+    tokenBasicAuthMechanism:
+        enabled: true
 ```
 
 ### Identity Authentication
@@ -115,35 +110,22 @@ auth-mechanisms:
 
 ```yml
 auth-mechanisms:
-    - name: identityAuthMechanism
-      class: org.restheart.security.plugins.mechanisms.IdentityAuthMechanism
-      args:
-          username: admin
-          roles:
-              - admin
-              - user
-```
-
-**IdentityAuthMechanism**
-
-```yml
-- name: identityAuthMechanism
-  class: org.restheart.security.plugins.mechanisms.IdentityAuthMechanism
-  args:
-      username: admin
-      roles:
-          - admin
-          - user
+    identityAuthMechanism:
+        enabled: false
+        username: admin
+        roles:
+        - admin
+        - user
 ```
 
 ## Authenticators
 
-### RESTHeart Authenticator
+### Mongo Realm Authenticator
 
-_RESTHeart Authenticator_ authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
+_mongoRealAuthenticator_ authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
 
 {: .bs-callout.bs-callout-info }
-RESTHeart Authenticator is strong, battle tested and suggested for production usage.
+Mongo Realm Authenticator is suggested for production usage.
 
 The configuration allows:
 
@@ -154,36 +136,31 @@ The configuration allows:
 
 ```yml
 authenticators:
-    - name: rhAuthenticator
-      class: com.restheart.security.plugins.authenticators.RHAuthenticator
-      args:
-          users-collection-uri: /users
-          prop-id: _id
-          prop-password: password
-          json-path-roles: $.roles
-          bcrypt-hashed-password: true
-          bcrypt-complexity: 12
-          create-user: true
-          create-user-document: '{"_id": "admin", "password": "$2a$12$lZiMMNJ6pkyg4uq/I1cF5uxzUbU25aXHtg7W7sD2ED7DG1wzUoo6u", "roles": ["admin"]}'
-          # create-user-document.password must be hashed when bcrypt-hashed-password=true
-          # default password is 'secret'
-          # see https://bcrypt-generator.com but replace initial '$2y' with '$2a'
-          cache-enabled: true
-          cache-size: 1000
-          cache-ttl: 60000
-          cache-expire-policy: AFTER_WRITE
+    mongoRealmAuthenticator:
+        users-db: restheart
+        users-collection: users
+        prop-id: _id
+        prop-password: password
+        json-path-roles: $.roles
+        bcrypt-hashed-password: true
+        bcrypt-complexity: 12
+        create-user: true
+        create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
+        cache-enabled: false
+        cache-size: 1000
+        cache-ttl: 60000
+        cache-expire-policy: AFTER_WRITE
 ```
 
-### Simple File Authenticator
+### File Realm Authenticator
 
-**simpleFileAuthenticator** allows defining users credentials and roles in a simple yml configuration file.
+_fileRealmAuthenticator_ defines users credentials and roles in a simple yml configuration file.
 
 ```yml
 authenticators:
-    - name: simpleFileAuthenticator
-      class: org.restheart.security.plugins.authenticators.SimpleFileAuthenticator
-      args:
-          conf-file: ../etc/users.yml
+    fileRealmAuthenticator:
+        enabled: true
+        conf-file: ./etc/users.yml
 ```
 
 See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) for an example users definition.
@@ -196,8 +173,8 @@ See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/
 
 ```yml
 token-manager:
-    name: rndTokenManager
-    class: org.restheart.security.plugins.tokens.RndTokenManager
-    args:
+    rndTokenManager:
+    enabled: true
         ttl: 15
+        srv-uri: /tokens
 ```

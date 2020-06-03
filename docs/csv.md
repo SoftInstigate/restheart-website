@@ -9,13 +9,15 @@ title: Upload CSV files
 -   [Upload the CSV file](#upload-the-csv-file)
 -   [Query parameters](#query-parameters)
 -   [Update documents from CSV](#update-documents-from-csv)
--   [Apply a transformer](#apply-a-transformer)
 
 </div>
 
 <div  markdown="1"  class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
+
+
+{% include doc-in-progress.html %}
 
 ## Introduction
 
@@ -187,96 +189,4 @@ id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 3,Cattedrale di Santa Maria del Fiore,43.773251,11.255474,Florence Cathedral
-```
-
-### Apply a transformer
-
-To apply a transformer use the `transformer` query parameter.
-
-{: .bs-callout.bs-callout-info }
-The CSV format allows creating flat documents. The transformer modifies the request body so that we can take advantage of the nested nature of JSON.
-
-{% include code-header.html
-    type="Request"
-%}
-
-```http
-POST /csv?db=restheart&coll=poi&id=0&update=true&transformer=GeoJSONTransformer HTTP/1.1
-Content-Type: text/csv
-
-id,name,city,lat,lon,note
-1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
-2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
-```
-
-The `GeoJSONTransformer` is the name of a custom transformer that must me packaged with RESTHeart. It transforms the latitude and longitude coordinates into a <a href="https://geojson.org/" target="_blank">GeoJson</a> object.
-
-{: .bs-callout.bs-callout-info }
-Check [Package RESTHeart Core plugins](/docs/develop/packaging/#package-restheart-core-plugins) to know how to package the custom transformer.
-
-```java
-@RegisterPlugin(name = "GeoJSONTransformer", description = "Transform the x,y coordinate in GeoJSON object ")
-public class GeoJSONTransformer implements Transformer {
-
-    @Override
-    public void transform(final HttpServerExchange exchange, final RequestContext context, BsonValue contentToTransform, final BsonValue args) {
-        var body = contentToTransform.asDocument();
-
-        // get Coordinates
-        var coordinates = new BsonArray();
-        coordinates.add(body.get("lon"));
-        coordinates.add(body.get("lat"));
-
-        var point = new BsonDocument();
-
-        point.put("type", new BsonString("Point"));
-        point.put("coordinates", coordinates);
-
-        // Add the object to the document
-        body.append("point", point);
-    }
-}
-```
-
-Now the documents have the new property `point` with the GeoJSON Point object:
-
-```json
-[
-    {
-        "point": {
-            "coordinates": [
-                9.190596,
-                45.464278
-            ],
-            "type": "Point"
-        }
-        "_etag": {
-            "$oid": "5d2c40021861f94794721285"
-        },
-        "_id": 2,
-        "city": "Milan",
-        "lat": 45.464278,
-        "lon": 9.190596,
-        "name": "Duomo",
-        "note": "Milan Cathedral"
-    },
-    {
-        "point": {
-            "coordinates": [
-                12.4930871,
-                41.8902614
-            ],
-            "type": "Point"
-        },
-        "_etag": {
-            "$oid": "5d2c40021861f94794721284"
-        },
-        "_id": 1,
-        "city": "Rome",
-        "lat": 41.8902614,
-        "lon": 12.4930871,
-        "name": "Coliseum",
-        "note": "Also known as the Flavian Amphitheatre"
-    }
-]
 ```

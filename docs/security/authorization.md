@@ -6,8 +6,8 @@ title: Authorization
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [Introduction ](#introduction)
--   [RESTHeart Authorizer](#restheart-authorizer)
--   [Request Predicates Authorizer](#request-predicates-authorizer)
+-   [Mongo ACL Authorizer](#mongo-acl-authorizer)
+-   [File ACL Authorizer](#file-acl-authorizer)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -20,16 +20,16 @@ See [Understanding RESTHeart Security](/docs/security/overview#understanding-res
 
 RESTHeart is built around a **pluggable architecture**. It comes with a strong security implementation but you can easily extend it by implementing plugins. This section documents the authorizers available out-of-the-box.
 
-RESTHeart by default offers two types of authorizers:
+RESTHeart by default offers two implementations authorizers:
 
-1. RESTHeart Authorizer.
-1. Request Predicates Authorizer.
+1. Mongo ACL Authorizer
+1. File ACL Authorizer
 
 However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
 
-## RESTHeart Authorizer
+## Mongo Realm Authorizer
 
-_RESTHeart Authorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**.
+_mongoAclAuthorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**.
 The configuration allows:
 
 -   defining the collection to use to store ACL documents (`acl-uri`).
@@ -38,15 +38,15 @@ The configuration allows:
 
 ```yml
 authorizers:
-    - name: rhAuthorizer
-      class: com.restheart.security.plugins.authorizers.RHAuthorizer
-      args:
-          acl-uri: /acl
-          root-role: admin
-          cache-enabled: true
-          cache-size: 1000
-          cache-ttl: 5000
-          cache-expire-policy: AFTER_WRITE
+  mongoAclAuthorizer:
+    acl-db: restheart
+    acl-collection: acl
+    # clients with root-role can execute any request
+    root-role: admin
+    cache-enabled: true
+    cache-size: 1000
+    cache-ttl: 5000
+    cache-expire-policy: AFTER_WRITE
 ```
 
 ### Format of an ACL document
@@ -103,16 +103,14 @@ The `writeFilter` applies to write request. The example ACL document allows the 
 |%ROLES|the roles array of the authenticated user|match documents with `roles` array property containing any role of the authenticated user `{"roles": {"_$in": %ROLES }`|
 |%NOW|the current date as `{"$date": 1570027863000 }`|match documents with `timestamp` date property less than (before) the current date `{"timestamp":{"_$lt": "%NOW"}}`|
 
-## Request Predicates Authorizer
+## File ACL Authorizer
 
-**RequestPredicatesAuthorizer** allows defining roles permissions in a YAML configuration file using the [Undertow predicate language](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation).
+_fileRealmAuthorizer_ allows defining roles permissions in a YAML configuration file using the [Undertow predicate language](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation).
 
 ```yml
 authorizers:
-    name: requestPredicatesAuthorizer
-    class: org.restheart.security.plugins.authorizers.RequestPredicatesAuthorizer
-    args:
-        conf-file: ./etc/acl.yml
+  fileAclAuthorizer:
+    conf-file: ./etc/acl.yml
 ```
 
 The file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml) defines the role based permissions. An example follows:

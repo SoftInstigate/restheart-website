@@ -26,7 +26,7 @@ HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. **
 
 There are many ways of enabling HTTS; for instance you can setup a web server such as nginx as a reverse proxy in front of RESTHeart or you may rely on cloud services that provides load balancers that manages SSL for you (such are Amazon WS or Google Cloud).
 
-In any case, restheart-security and restheart-core are both able to expose directly the HTTS protocol and this is done configuring the https listener. This is the suggested configuration for small systems.
+In any case, restheart is able to expose directly the HTTS protocol and this is done configuring the https listener. This is the suggested configuration for small systems.
 
 The following configuration file except shows the involved options:
 
