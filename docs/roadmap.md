@@ -5,10 +5,12 @@ title: Roadmap
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [RESTHeart 4.2](#restheart-platform-42)
--   [RESTHeart 5.0](#restheart-platform-50)
+-   [RESTHeart 5.2](#restheart-52)
+-   [RESTHeart 6.0](#restheart-60)
 -   [Released](#released)
-    -   [RESTHeart 4.1](#restheart-platform-41)
+    -   [RESTHeart 5.1](#restheart-51)
+    -   [RESTHeart 5.0](#restheart-50)
+    -   [RESTHeart 4.1](#restheart-41)
 
 </div>
 
@@ -19,20 +21,13 @@ title: Roadmap
 {: .bs-callout.bs-callout-info}
 **We listen to you!** For any feedback or request feel free to [open an issue](https://github.com/SoftInstigate/restheart/issues/new) on github.
 
-## RESTHeart 4.2
+## RESTHeart 5.2
 
-### Unified extensions API
+## Support for request level replica set 
 
-Both **restheart-platform-core** and **restheart-platform-security** can be extended developing plugins.
+`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri. 
 
-Developing plugins involves implementing classes that extend interfaces and registering them.
-
-RESTHeart 4.2 will unify the extension API so that both core and security plugins will follow the same approach.
-
-The new repository `restheart-platform-plugins` containing the plugin API will be released and distributed under the Apache License 2.0.
-
-{: .bs-callout.bs-callout-info }
-This will better clarify the legal implications of developing your custom extensions. Your extensions will only depend the more business friendly Apache License 2.0.
+RESTHeart 5.2 will add query parameters to specify those options at request level.
 
 ## LDAP Authenticator
 
@@ -44,7 +39,7 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 -   configurable LDAP query to retrieve users
 -   compatible with Active Directory
 
-## RESTHeart 5.0
+## RESTHeart 6.0
 
 ### RESTHeart Studio
 
@@ -58,7 +53,7 @@ width="800" height="auto" class="mx-auto d-block img-responsive"}
 
 ### Upgrade to undertow 4.0
 
-Both **restheart-platform-core** and **restheart-platform-security** will updated to use Undertow 4.0.
+**RESTHeart** will updated to use Undertow 4.0.
 
 Undertow 4.0. will replace the underlying transport from XNIO to Netty.
 
@@ -69,6 +64,44 @@ From the undertow migration to Netty announcement on 12 April, 2019:
 > After a short 3.x cycle we are planning on releasing undertow 4.x that will provide API stability, in the same way that Undertow 1.x and 2.x have.
 
 ## Released
+
+## RESTHeart 5.1
+
+### Support for Transactions
+
+Support for Transactions has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
+
+{: .bs-callout.bs-callout-info }
+With RESTHeart 5.x we moved to the open core business model. While an enterprise license is available for legal and support requirements, all the codebase is Open Source and available under the AGPL 3.0.
+
+### Support for Change Streams
+
+Support for Change Stream has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
+
+## RESTHeart 5.0
+
+### Single process
+
+RESTHeart 4.x was composed by two processes: restheart-core and restheart-security. Although this simplified the development of specialized micro-services, we received many feedbacks about it being more complex to manage.
+
+RESTHeart 5 is back to a single process. Thanks to proxying feature it is still possible deploying RESTHeart with security and mongo-services as in 4.x line.
+
+### Improved plugin development API
+
+RESTHeart can be extended developing plugins.
+
+Developing plugins involves implementing classes that extend interfaces and registering them.
+
+RESTHeart 5 development API has been simplified and cleaned up.
+
+The module `restheart-commons` is the only required dependency for developing plugins and it is distributed under the Apache License 2.0.
+
+{: .bs-callout.bs-callout-info }
+This will better clarify the legal implications of developing your custom extensions. Your extensions will only depend the more business friendly Apache License 2.0.
+
+### Easier plugin deployment
+
+RESTHeart 5 streamlines the deployment of plugins. Copying the plugins jar file to the `/plugins` directory allows RESTHeart to pick it up at startup time.
 
 ## RESTHeart 4.1
 
