@@ -229,10 +229,10 @@ authenticators:
     - name: simpleFileAuthenticator
       class: org.restheart.security.plugins.authenticators.SimpleFileAuthenticator
       args:
-          conf-file: ../etc/users.yml
+          conf-file: ./etc/users.yml
 ```
 
-See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/users.yml) for an example users definition.
+See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) for an example users definition.
 
 ## Token Managers
 
