@@ -21,7 +21,7 @@ This implements issue [#287](https://github.com/SoftInstigate/restheart/issues/2
 
 This implementation makes it possible to correlate logged exceptions (in case this happens) with the corresponding request log, even when the thread handling the message is re-used shortly after.
 
-It handles all headers mentioned in https://github.com/openzipkin/b3-propagation, as well as the uber-trace-id header that is used by Jaeger (see https://www.jaegertracing.io/docs/v5/client-libraries/#trace-span-identity) to get broader support.
+It handles all headers mentioned in https://github.com/openzipkin/b3-propagation, as well as the uber-trace-id header that is used by Jaeger (see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity) to get broader support.
 
 ### Configuration
 
@@ -37,7 +37,7 @@ requests-log-trace-headers:
 #  - x-b3-spanid
 #  - x-b3-parentspanid
 #  - x-b3-sampled      # ^^
-#  - uber-trace-id     # jaeger header, see https://www.jaegertracing.io/docs/v5/client-libraries/#trace-span-identity
+#  - uber-trace-id     # jaeger header, see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity
 #  - traceparent       # vv opencensus.io headers, see https://github.com/w3c/distributed-tracing/blob/master/trace_context/HTTP_HEADER_FORMAT.md
 #  - tracestate        # ^^
 ```

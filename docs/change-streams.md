@@ -23,7 +23,7 @@ title: Change Streams
     <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
     <hr class="my-2">
     <p>Handle hundreds of thousands of concurrent clients.</p>
-    <p>Check the <a class="alert-link" href="/docs/v5/performances">performance tests</a>!</p>
+    <p>Check the <a class="alert-link" href="/docs/performances">performance tests</a>!</p>
 </div>
 
 ## Introduction

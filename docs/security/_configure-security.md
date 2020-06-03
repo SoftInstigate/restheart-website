@@ -70,7 +70,7 @@ authentication mechanism.
 RESTHeart is stateless: there isn't any authentication session and
 credentials must be sent on every request.
 
-Refer to [How Clients authenticate](/docs/v5//docs/security/how-clients-authenticate) for more
+Refer to [How Clients authenticate](/docs//docs/security/how-clients-authenticate) for more
 information.
 
 The HTTPS listener
@@ -160,7 +160,7 @@ If the client credentials are not valid the response will be **HTTP/1.1
 
 The IDM is pluggable: the actual IDM implementation to use can be
 configured. Please refer to [Custom Identity
-Manager](/docs/v5/custom-identity-manager) section for more information on how to
+Manager](/docs/custom-identity-manager) section for more information on how to
 develop and configure a custom IDM.
 
 The **idm** section of the yaml configuration file is:
@@ -217,7 +217,7 @@ RequestContextPredicate securityPredicate = new RequestContextPredicate() {
 // add the global predicate
 PluginsRegistry.getInstance().getGlobalSecurityPredicates().add(securityPredicate);
 ```
-You can use an [Initializer](/docs/v5/initializer) to add Global Security Predicates.
+You can use an [Initializer](/docs/initializer) to add Global Security Predicates.
 
 ### DbIdentityManager
 
@@ -288,7 +288,7 @@ If you actually expose it, make sure to:
 1.  define an appropriate access policy enforced by the Access Manager
     so that users can only access their own data, (e.g. a user cannot modify other users' passwords)
 2.  For RESTHeart versions older than 3.3, filter out the *password* property from responses with
-    a [representation transformer](/docs/v5/request-transformers).
+    a [representation transformer](/docs/request-transformers).
  
 
 ## Access Manager
