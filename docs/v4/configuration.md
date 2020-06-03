@@ -102,7 +102,7 @@ All the important configuration options of `resthart-platform-core` are defined 
 |-|-|-|-|
 |_Listeners section_|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
 |instance-name|default|name of this instance of `resthart-platform-core`|
-|default-representation-format|STANDARD|[representation format](/docs/representation-format) to use in case the `rep` query parameters is not specified|
+|default-representation-format|STANDARD|[representation format](/docs/v4/representation-format) to use in case the `rep` query parameters is not specified|
 |mongo-uri|mongodb://127.0.0.1|the <a href="https://docs.mongodb.com/manual/reference/connection-string/" target="_blank">MongoDB connection string</a>|
 |root-mongo-resource|/restheart|MongoDB resource to bind to the root URI `/`|
 |log-level|DEBUG|log level|
@@ -136,7 +136,7 @@ For example, the `core.properties` file in `etc/` folder contains the following 
 
 ```properties
 ## RESTHeart Configuration - development properties.
-# Documentation: https://restheart.org/docs/configuration
+# Documentation: https://restheart.org/docs/v4/configuration
 
 https-listener = false
 https-host = localhost

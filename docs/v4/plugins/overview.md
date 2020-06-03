@@ -27,7 +27,7 @@ Both `restheart-platform-core` and `restheart-platform-security` make use of Plu
 The Plugins of `restheart-platform-core` are intended for extending the API, while the plugins of `restheart-platform-security` allow customizing security, for instance by implementing a custom Authentication Mechanism that integrates with your Enterprise IDM.
 
 {:.bs-callout.bs-callout-info}
-This section focuses on extending `restheart-platform-core` through the Plugins. The Plugins for `restheart-platform-security` are described on [Develop Security Plugins](/docs/develop/security-plugins/).
+This section focuses on extending `restheart-platform-core` through the Plugins. The Plugins for `restheart-platform-security` are described on [Develop Security Plugins](/docs/v4/develop/security-plugins/).
 
 ## Types of Plugins
 
@@ -43,9 +43,9 @@ The following table lists the different types of Plugins of `restheart-platform-
 
 ## Available Plugins
 
-RESTHeart Platform is shipped with some general purpose Plugins. For a complete list of available Plugins please refer to [Available Plugins](/docs/plugins/list/).
+RESTHeart Platform is shipped with some general purpose Plugins. For a complete list of available Plugins please refer to [Available Plugins](/docs/v4/plugins/list/).
 
-You can also develop and add your own Plugins. For more information refer to [Develop Core Plugins](/docs/develop/core-plugins/)
+You can also develop and add your own Plugins. For more information refer to [Develop Core Plugins](/docs/v4/develop/core-plugins/)
 
 {:.bs-callout.bs-callout-info}
 Developing a Plugins is done in java programming language and it is as easy as implementing a simple interface.
@@ -75,4 +75,4 @@ Registered checker jsonSchema: Checks the request according to the specified JSO
 
 While `Services` and `Initializers` add logic that gets executed when the service URL is requested and at startup time respectively, the other Plugins can be applied to any request.
 
-This is achieved by defining the Plugin(s) to apply in the *metadata* of databases and collections. This process is further described in detail on [Apply Plugins](/docs/plugins/apply/)
+This is achieved by defining the Plugin(s) to apply in the *metadata* of databases and collections. This process is further described in detail on [Apply Plugins](/docs/v4/plugins/apply/)

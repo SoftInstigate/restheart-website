@@ -184,7 +184,7 @@ We will create a simple notes Web application.
 ## Getting the servers up and running
 
 You can refer to [Installation and
-Setup](https://restheart.org/docs/setup/) documentation
+Setup](https://restheart.org/docs/v4/setup/) documentation
 section for detailed instructions on how to install RESTHeart and
 MongoDB. However, the suggested way to get ready is using the official
 [RESTHeart Docker
@@ -610,7 +610,7 @@ the app.notes state.
 reference sheet
 
 Have a look at the RESTHeart documentation [reference
-sheet](https://restheart.org/docs/quick-reference)to quickly
+sheet](https://restheart.org/docs/v4/quick-reference)to quickly
 understand the semantic of the HTTP verbs on the different resources
 (for instance, a POST to a collection URI creates a document in it).
 
@@ -847,7 +847,7 @@ development funny again.
 
 -   RESTHeart: https://restheart.org
 -   RESTHeart
-    documentation: <https://restheart.org/docs/>
+    documentation: <https://restheart.org/docs/v4/>
 -   MongoDB CRUD
     Introduction: <https://docs.mongodb.org/manual/core/crud-introduction/>
 -   Docker containers for RESTHeart and

@@ -75,7 +75,7 @@ plugins-args:
 
 Plugins implementation classes must be added to the java classpath. 
 
-A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/develop/packaging) section.
+A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/v4/develop/packaging) section.
 
 ## Initializers
 
@@ -253,7 +253,7 @@ Examples of Transformers are:
 - adding the `filter={"visibility":"public"}` query parameter to requests limiting the client visibility on documents.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/transformers)
+For implementation examples refer to the package [org.restheart.plugins.transformers](https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/transformers)
 
 A transformer is a java class that implements the
 interface [org.restheart.plugins.Transformer](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java). 
@@ -335,7 +335,7 @@ it does not fulfill some conditions, it returns *400 BAD REQUEST*
 response code thus enforcing a well defined structure to documents.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.checkers](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/checkers)
+For implementation examples refer to the package [org.restheart.plugins.checkers](https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/checkers)
 
 A checker is a java class that implements the
 interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java).
@@ -407,7 +407,7 @@ The default, 5 arguments, method `check()` can be used to store the argument `co
 
 If the checker cannot process the request, the method `doesSupportRequests()` should return false. This allows to skip executing the checker. The class `CheckersUtils` provides some helper method to check the type of the request, e.g `CheckersUtils.isBulkRequest()`.
 
-When a checker does not support a request, the outcome depends on the attribute `skipNotSupported` of the checker definition (see [Apply a Checker via metadata](/docs/plugins/apply/#apply-a-checker-via-metadata) and [Apply a Checker programmatically](/docs/plugins/apply/#apply-a-checker-programmatically)); when `skipNotSupported=true`, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.
+When a checker does not support a request, the outcome depends on the attribute `skipNotSupported` of the checker definition (see [Apply a Checker via metadata](/docs/v4/plugins/apply/#apply-a-checker-via-metadata) and [Apply a Checker programmatically](/docs/v4/plugins/apply/#apply-a-checker-programmatically)); when `skipNotSupported=true`, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.
 
 The following code, is an example checker that checks if the
 *number* property in PATCH request body is between 0 and 10.
@@ -465,7 +465,7 @@ For example, request hooks can be used:
     properties satisfy a given condition.
 
 {: .bs-callout.bs-callout-info}
-For implementation examples refer to the package [org.restheart.plugins.hooks](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/hooks)
+For implementation examples refer to the package [org.restheart.plugins.hooks](https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/hooks)
 
 Hooks are developed implementing the java
 interface [org.restheart.plugins.Hook](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Hook.java).

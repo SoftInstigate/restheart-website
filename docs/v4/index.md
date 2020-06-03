@@ -65,7 +65,7 @@ The founding ideas around RESTHeart are:
 -   **Based on open standards**, like HTTP, JSON, REST, JSON and JSON Schema
 -   **Read JSON documents** with GET requests, specifying MongoDB queries and projection options; deal with large result sets with pagination
 -   Create, modify and delete JSON documents with POST, PUT, PATCH and DELETE requests. Use **bulk requests** to deal with multiple documents in one shot
--   **Authentication** and **Authorization** provided by a dedicated [security microservice](https://restheart.org/docs/security/overview/#understanding-restheart-security)
+-   **Authentication** and **Authorization** provided by a dedicated [security microservice](https://restheart.org/docs/v4/security/overview/#understanding-restheart-security)
 -   Store and serve binary data with **GridFS** support
 -   Define and execute **Aggregations**, supporting both map-reduce and aggregation pipelines
 -   Execute requests in multi-document **ACID transactions**

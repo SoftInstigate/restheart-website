@@ -1,4 +1,4 @@
 ---
 layout: redirect
-redirectUrl: /docs/develop/core-plugins/#transformers
+redirectUrl: /docs/v4/develop/core-plugins/#transformers
 ---

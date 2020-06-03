@@ -72,8 +72,8 @@ The RESTHeart team supports you. Check our [Services](/services) for free and pr
 
 RESTHeart Platform v4 introduces two main new features:
 
--   [Change Streams](/docs/change-streams) to handle real-time data streams via WebSocket connections.
--   [Transactions](/docs/transactions) to handle multi-document transactions.
+-   [Change Streams](/docs/v4/change-streams) to handle real-time data streams via WebSocket connections.
+-   [Transactions](/docs/v4/transactions) to handle multi-document transactions.
 
 ## Default configuration
 
@@ -114,7 +114,7 @@ The following tables summarize the different default configuration values.
 Following several community feedbacks, RESTHeart Platform v4 introduces a new default representation format that is more compact, easy to use and effective.
 
 {: .alert.alert-info}
-Read more at [Representation Format](/docs/representation-format)
+Read more at [Representation Format](/docs/v4/representation-format)
 
 Examples follows:
 
@@ -246,7 +246,7 @@ Security can be extended much easier compared to v3 and more types of security p
 {: .alert.alert-info}
 The main reason behind the RESTHeart Platform being split in two micro-services versus the monolithic architecture of RESTHeart 3 was simplifying and hardening the implementation of the security layer.
 
-Refer to [Develop Security Plugins](/docs/develop/security-plugins/) for more information.
+Refer to [Develop Security Plugins](/docs/v4/develop/security-plugins/) for more information.
 
 ## HAL browser removed
 

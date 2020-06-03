@@ -83,7 +83,7 @@ are identified.
 <tr class="odd">
 <td>Bulk Documents</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/*?filter=[filter expression]</code></td>
-<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/write-docs/">Write Requests</a>.</td>
+<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/v4/write-docs/">Write Requests</a>.</td>
 </tr>
 <tr class="even">
 <td>Indexes</td>
@@ -118,12 +118,12 @@ are identified.
 <tr class="even">
 <td>Aggregation</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/_aggrs/&lt;aggr_name&gt;</code></td>
-<td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/docs/aggregations">Aggregations</a>).</td>
+<td><code>&lt;aggr_name&gt;</code> is the <code>name</code> of the aggregation (specified in it declaration, see <a href="/docs/v4/aggregations">Aggregations</a>).</td>
 </tr>
 <tr class="odd">
 <td>Change Stream</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</code></td>
-<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/change-streams">Change Streams</a>).</td>
+<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/v4/change-streams">Change Streams</a>).</td>
 </tr>
 </tbody>
 </table>
