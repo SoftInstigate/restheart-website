@@ -186,7 +186,7 @@ authenticators:
           conf-file: ../etc/users.yml
 ```
 
-See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/security/etc/users.yml) for an example users definition.
+See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) for an example users definition.
 
 ## Token Managers
 
