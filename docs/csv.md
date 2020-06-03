@@ -141,7 +141,6 @@ The CSV uploader service is controlled by the following query parameters.
 |`coll`|(_required_) the name of the collection|no default|
 |`id`|id column index |no id column|
 |`sep`|column separator |,|
-|`transformer`|name of a transformer to apply to imported data |no transformer|
 |`update`|if `true`, update matching documents|false|
 |`upsert`|applies when `update=true`; if `true`, create new document if no documents match the \_id |true|
 |`props`|additional properties to add to each row, e.g. `?props=foo&props=bar`|no props|

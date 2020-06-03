@@ -155,7 +155,7 @@ GET / HTTP/1.1
 
 ```http
 GET /coll/_meta HTTP/1.1
-{ "aggrs": [...], "checkers": [...], "transformers": [...], "streams": [...] }
+{ "aggrs": [...], "streams": [...] }
 ```
 
 **Create a Collection**
