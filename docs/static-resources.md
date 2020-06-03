@@ -26,7 +26,7 @@ An example configuration follows:
 # Static web resources to bind to the URL specified by the 'where' property.
 # The 'what' property is the path of the directory containing the resources.
 # The path is either absolute (starts with /) or relative to the restheart.jar file
-# If embedded is true, the resources are either included in the restheart.jar or
+# Set embedded: true, if resources are embedded in the file restheart.jar
 
 static-resources-mounts:
   - what: /data/www
