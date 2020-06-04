@@ -95,7 +95,7 @@ Now the `/poi` collection contains the documents:
     link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
 %}
 
-```
+```http
 GET /poi HTTP/1.1
 ```
 
@@ -272,17 +272,34 @@ public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResp
 
 After uploading csv data the result is the following. The GeoJSON field is `point`.
 
-```
-$ http -a admin:secret :8080/csv\?db=restheart\&coll=poi\&id=0\&update=true
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/93ed5c1c6b20f9e8899b2308232e8ab8b5ee6820/0"
+%}
+
+```http
+POST /csv?db=restheart&coll=poi&id=0 HTTP/1.1
+Content-Type: text/csv
 
 id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
+```
 
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/adf673704bf76f7c2ee8f3273f0f8cfe6d975596/0"
+%}
 
-$ http -a admin:secret :8080/poi
-HTTP/1.1 200 OK
+```http
+GET /poi HTTP/1.1
+```
 
+{% include code-header.html
+    type="Response"
+%}
+
+```
 [
     {
         "_etag": {
@@ -322,5 +339,3 @@ HTTP/1.1 200 OK
     }
 ]
 ```
-
-
