@@ -9,15 +9,13 @@ title: Upload CSV files
 -   [Upload the CSV file](#upload-the-csv-file)
 -   [Query parameters](#query-parameters)
 -   [Update documents from CSV](#update-documents-from-csv)
+-   [Transform data](#transform-data)
 
 </div>
 
 <div  markdown="1"  class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
-
-
-{% include doc-in-progress.html %}
 
 ## Introduction
 
@@ -189,3 +187,140 @@ id,name,city,lat,lon,note
 2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
 3,Cattedrale di Santa Maria del Fiore,43.773251,11.255474,Florence Cathedral
 ```
+
+## Transform Data
+
+The CSV format allows creating flat documents. Using an Interceptor data can be modified to take advantage of the nested nature of JSON.
+
+We will use [csv-interceptor](https://github.com/SoftInstigate/restheart-examples/tree/master/csv-interceptor) on the restheart-examples repository.
+
+Clone the restheart-examples repository
+
+```bash
+$ git clone https://github.com/SoftInstigate/restheart-examples.git
+```
+
+Build the examples:
+
+```
+$ cd restheart-examples
+$ mvn package
+```
+
+Deploy the csv-interceptor
+
+```bash
+$ cp csv-interceptor/target/csv-interceptor.jar <restheart>/plugins
+```
+
+Restarting RESTHeart, the plugins will be automatically deployed.
+
+### The coordsToGeoJson Interceptor
+
+The code of the coordsToGeoJson follows:
+
+```java
+@RegisterPlugin(name = "coordsToGeoJson", 
+        description = "transforms cordinates array to GeoJSON point object for csv loader service")
+public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResponse> {
+    @Override
+    public void handle(BsonFromCsvRequest request, BsonResponse response) throws Exception {
+        var docs = request.getContent();
+
+        if (docs == null) {
+            return;
+        }
+
+        docs.stream()
+                .map(doc -> doc.asDocument())
+                .filter(doc -> doc.containsKey("lon") && doc.containsKey("lat"))
+                .forEachOrdered(doc -> {
+                    // get Coordinates
+                    var coordinates = new BsonArray();
+                    coordinates.add(doc.get("lon"));
+                    coordinates.add(doc.get("lat"));
+
+                    var point = new BsonDocument();
+
+                    point.put("type", new BsonString("Point"));
+                    point.put("coordinates", coordinates);
+
+                    // Add the object to the document
+                    doc.append("point", point);
+                });
+    }
+
+    @Override
+    public boolean resolve(BsonFromCsvRequest request, BsonResponse response) {
+        return request.isHandledBy("csvLoader")
+                && request.isPost()
+                && "/csv".equals(request.getPath());
+    }
+}
+```
+
+Note that the `resolve()` method returns true for POST requests on the /csv URI (where the csvLoader service is bound).
+
+The `handle()` method receives the `BsonFromCsvRequest` object that contains a `BsonArray` of documents parsed from the uploaded CSV data. It uses a stream to process all documents containing the properties `lon` and `lat` to add the corresponding GeoJSON object.
+
+The interceptor implements the `Interceptor` interface specifying the parametric types `BsonFromCsvRequest` and `BsonResponse`. This is mandatory since an interceptor can intercept requests handled by services that use the same exact types (Check the code of [CsvLoader](https://github.com/SoftInstigate/restheart/blob/master/mongodb/src/main/java/org/restheart/mongodb/services/CsvLoader.java) service, it implements the parametric `Service` interface using those types).
+
+```java
+public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResponse>
+```
+
+
+After uploading csv data the result is the following. The GeoJSON field is `point`.
+
+```
+$ http -a admin:secret :8080/csv\?db=restheart\&coll=poi\&id=0\&update=true
+
+id,name,city,lat,lon,note
+1,Coliseum,Rome,41.8902614,12.4930871,Also known as the Flavian Amphitheatre
+2,Duomo,Milan,45.464278,9.190596,Milan Cathedral
+
+
+$ http -a admin:secret :8080/poi
+HTTP/1.1 200 OK
+
+[
+    {
+        "_etag": {
+            "$oid": "5ed905845db98d3376dc30c8"
+        },
+        "_id": 2,
+        "city": "Milan",
+        "lat": 45.464278,
+        "lon": 9.190596,
+        "name": "Duomo",
+        "note": "Milan Cathedral",
+        "point": {
+            "coordinates": [
+                9.190596,
+                45.464278
+            ],
+            "type": "Point"
+        }
+    },
+    {
+        "_etag": {
+            "$oid": "5ed905845db98d3376dc30c7"
+        },
+        "_id": 1,
+        "city": "Rome",
+        "lat": 41.8902614,
+        "lon": 12.4930871,
+        "name": "Coliseum",
+        "note": "Also known as the Flavian Amphitheatre",
+        "point": {
+            "coordinates": [
+                12.4930871,
+                41.8902614
+            ],
+            "type": "Point"
+        }
+    }
+]
+```
+
+
