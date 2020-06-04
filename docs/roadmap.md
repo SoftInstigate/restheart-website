@@ -23,7 +23,7 @@ title: Roadmap
 
 ## RESTHeart 5.2
 
-## Support for request level replica set 
+##  Support for request level replica set 
 
 `readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri. 
 
@@ -67,6 +67,9 @@ From the undertow migration to Netty announcement on 12 April, 2019:
 
 ## RESTHeart 5.1
 
+{: .alert.alert-success }
+Released 28 May 2020
+
 ### Support for Transactions
 
 Support for Transactions has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
@@ -79,6 +82,9 @@ With RESTHeart 5.x we moved to the open core business model. While an enterprise
 Support for Change Stream has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
 
 ## RESTHeart 5.0
+
+{: .alert.alert-success }
+Released 6 May 2020
 
 ### Single process
 
