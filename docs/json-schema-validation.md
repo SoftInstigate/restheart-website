@@ -23,10 +23,10 @@ RESTHeart supports MongoDB schema validation to enforce a format to documents: r
 On top of this, RESTHeart provides a more general approach for
 validation based on [Interceptors](/docs/develop/core-plugins#interceptors) that can verify write requests based on any condition.
 
-RESTHeart provides "out of the box" the *jsonSchema* Checker
+RESTHeart provides "out of the box" the *jsonSchema* Interceptor
 that validates the body of write requests against a **JSON schema**.
 
-Compared to the internal MongoDB Json Schema validation, the *jsonSchema* Checker of RESTHeart provides additional advantages:
+Compared to the internal MongoDB Json Schema validation, the *jsonSchema* Interceptor of RESTHeart provides additional advantages:
 
 - schemas are stored in a special collection, the schema store `/_schemas` and are validated
 - schemas can and can be reused on multiple collections
@@ -108,18 +108,15 @@ HTTP/1.1 200 OK
 ## Document validation
 
 To apply the jsonSchema simply define the collection 
-metadata property `checkers` as follows:
+metadata property `jsonSchema` as follows:
 
 
 ``` json
 {
-	"checkers": [{
-		"name": "jsonSchema",
-		"args": {
+	"jsonSchema": {
 			"schemaId": <schema_id> ,
 			"schemaStoreDb": <schema_store_db>
-		}
-	}]
+	}
 }
 ```
 <div class="table-responsive">
@@ -160,12 +157,9 @@ Mandatory
 PUT /addresses HTTP/1.1
 
 {
-	"checkers": [{
-		"name": "jsonSchema",
-		"args": {
+	"jsonSchema": {
 			"schemaId": "address"
-		}
-	}]
+	}
 }
 ```
 
@@ -183,14 +177,9 @@ HTTP/1.1 400 Bad Request
 ...
 
 {
-  "_warnings": [
-    "#: 2 schema violations found",
-    "#: required key [city] not found",
-    "#: required key [country] not found"
-  ],
-  "http status code": 400,
-  "http status description": "Bad Request",
-  "message": "request check failed"
+    "http status code": 400,
+    "http status description": "Bad Request",
+    "message": "Request content violates schema 'address': 2 schema violations found, required key [city] not found, required key [country] not found"
 }
 ```
 
@@ -213,13 +202,10 @@ HTTP/1.1 201 Created
 
 ## Limitations
 
-*jsonChecker* does not support the following requests:
-
-- bulk PATCH
-- bulk POST that use update operators
+*jsonChecker* does not support bulk PATCH requests:
 
 {: .bs-callout.bs-callout-info }
-To handle this requests, set the checker property `skipNotSupported` to `false`, and add specialized interceptor to handle these requests.
+To handle this requests, set the metadata property `skipNotSupported` to `false`, and add specialized interceptors to handle these requests.
 
 
 ```
@@ -227,41 +213,12 @@ PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
 
 { "updated": true }
 
-HTTP 1.1 400 Bad Request
+HTTP 1.1 501 Not Implemented
 
 {
-  "_warnings": [
-    "the checker JsonSchemaChecker does not support this request and is configured to fail in this case. Note that the request is a bulk operation"
-  ],
-  "http status code": 400,
-  "http status description": "Bad Request",
-  "message": "request check failed"
+    "http status code": 501,
+    "http status description": "Not Implemented",
+    "message": "'jsonSchema' checker does not support bulk PATCH requests. Set 'skipNotSupported:true' to allow them."
 }
 ```
-
-
-```
-POST /addresses HTTP/1.1
-
-[{
-	"address": "Via D'Annunzio, 28",
-	"city": "L'Aquila",
-	"country": "Italy"
-   	"$currentDate": {
-   		"timestamp": true
-   	}
-}]
-
-HTTP 1.1 400 Bad Request
-
-{
-  "_warnings": [
-    "the checker JsonSchemaChecker does not support this request and is configured to fail in this case. Note that the request uses update operators and it is a bulk operation"
-  ],
-  "http status code": 400,
-  "http status description": "Bad Request",
-  "message": "request check failed"
-}
-```
-
 </div>
