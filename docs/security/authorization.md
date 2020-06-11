@@ -32,8 +32,8 @@ However, it's even possible to develop **custom authorizers**. Please refer to [
 _mongoAclAuthorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**.
 The configuration allows:
 
--   defining the collection to use to store ACL documents (`acl-uri`).
--   enabling the root role (`root-role`): users with root role, can execute any requests, regardless of the permissions set in the ACL.
+-   defining the collection to use to store ACL documents (`acl-db` and `acl-collection`).
+-   enabling the root role (`root-role`): users with root role, can execute any requests, regardless of the permissions set in the ACL. Set it to null (`root-role: null`) to disable it.
 -   controlling the ACL caching.
 
 ```yml

@@ -25,62 +25,64 @@ title: Develop Security Plugins
 
 This section provides detailed information on how to implement custom security plugins.
 
-See [Understanding RESTHeart Security](/docs/v4/security/overview) for an high level view of the RESTHeart security model.
+See [Security Overview](/docs/security/overview) for an high level view of the RESTHeart security model.
 
 ## Authentication Mechanisms
 
-The Authentication Mechanism class must implement the `org.restheart.security.plugins.AuthMechanism` interface. 
+The Authentication Mechanism class must implement the `org.restheart.plugins.security.AuthMechanism` interface. 
 
 
 ```java
-public interface AuthMechanism implements AuthenticationMechanism {
-  @Override
-  public AuthenticationMechanismOutcome authenticate(
-          final HttpServerExchange exchange,
-          final SecurityContext securityContext);
+public interface AuthMechanism extends
+        AuthenticationMechanism,
+        ConfigurablePlugin {
+    @Override
+    public AuthenticationMechanismOutcome authenticate(
+            final HttpServerExchange exchange,
+            final SecurityContext securityContext);
 
-  @Override
-  public ChallengeResult sendChallenge(final HttpServerExchange exchange,
-          final SecurityContext securityContext);
+    @Override
+    public ChallengeResult sendChallenge(final HttpServerExchange exchange,
+            final SecurityContext securityContext);
 
-  public String getMechanismName();
+    default String getMechanismName() {
+        return PluginUtils.name(this);
+    }
+}
+```
+
+### Registering
+
+The Authentication Mechanism implementation class must be annotated with `@RegisterPlugin`:
+
+```java
+@RegisterPlugin(name="myAuthMechanism",
+        description = "my custom auth mechanism")
+public class MyAuthMechanism implements AuthMechanism {
+
+}
 ```
 
 ### Configuration
 
-The Authentication Mechanism must be declared in the yml configuration file. 
-Of course the implementation class must be in the java classpath.
+The Authentication Mechanism can receive parameters from the configuration file using the `@InjectConfiguration` annotation:
 
+```java
+@InjectConfiguration
+    public void init(Map<String, Object> args) throws ConfigurationException {
+        // get configuration arguments
+        int number  = argValue(args, "number");
+        String string = argValue(args, "string");
+}
+```
+
+The parameters are defined in the configuration file under the `auth-mechanisms` section using the name of the mechanism as defined by the `@RegisterPlugins` annotation:
 
 ```yml
 auth-mechanisms:
-    <name>:
+    myAuthMechanism:
         number: 10
         string: a string
-```
-
-### Constructor
-
-The Authentication Mechanism implementation class must have the following constructor:
-
-If the property `args` is specified in configuration:
-
-
-```java
-public MyAuthMechanism(final String name, final Map<String, Object> args) throws ConfigurationException {
-
-  // use argValue() helper method to get the arguments specified in the configuration file
-  Integer _number = argValue(args, "number");
-  String _string = argValue(args, "string");
-}
-```
-
-If the property `args` is not specified in configuration:
-
-
-```java
-public MyAuthMechanism(final String name) throws ConfigurationException {
-}
 ```
 
 ### authenticate()
@@ -126,23 +128,33 @@ WWW-Authenticate: Basic realm="RESTHeart Realm"
 
 To build the account, the Authentication Mechanism can use a configurable Authenticator. This allows to extends the Authentication Mechanism with different Authenticator implementations. For instance the *BasicAuthMechanism* can use different Authenticator implementations that hold accounts information in a DB or in a LDAP server. 
 
-Tip: Use the `PluginsRegistry` to get the instance of the Authenticator from its name.
+Tip: Use the `@InjectConfiguration` and ` @InjectPluginsRegistry` to retrieve the instance of the Authenticator from its name.
 
 
 ```java
-// get the name of the authenticator from the arguments
-String authenticatorName = argValue(args, "authenticator");
+private IdentityManager identityManager;
 
-Authenticator authenticator = PluginsRegistry
-                                .getInstance()
-                                .getAuthenticator(authenticatorName);
+    @InjectConfiguration
+    @InjectPluginsRegistry
+    public void init(final Map<String, Object> args, PluginsRegistry pluginsRegistry) throws ConfigurationException {
 
-// get the client id and credential from the request
-String id;
-Credential credential;
+        // the authenticator specified in auth mechanism configuration
+        this.identityManager = pluginsRegistry.getAuthenticator(argValue(args, "authenticator")).getInstance();
+    }
 
-
-Account account = authenticator.verify(id, credential);
+    @Override
+    public AuthenticationMechanismOutcome authenticate(final HttpServerExchange exchange,
+            final SecurityContext securityContext) {
+            Account account = this.identityManager.verify(id, credential);
+    
+            if (account != null) {
+              securityContext.authenticationComplete(sa, "IdentityAuthenticationManager", true);
+              return AuthenticationMechanism.AuthenticationMechanismOutcome.AUTHENTICATED;
+            } else {
+              securityContext.authenticationFailed("authentication failed", getMechanismName());
+              return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
+            }
+    }
 ```
 
 ## Authenticators

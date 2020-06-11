@@ -129,7 +129,7 @@ Mongo Realm Authenticator is suggested for production usage.
 
 The configuration allows:
 
--   defining the collection to use (`users-collection-uri`), the properties of the user document to use as user id, password and roles (`prop-id`, `prop-password` and `json-path-roles`).
+-   defining the collection to use (`users-db` and `users-collection`), the properties of the user document to use as user id, password and roles (`prop-id`, `prop-password` and `json-path-roles`).
 -   enabling hashed password using the strong bcrypt hashing algorithm (`bcrypt-hashed-password` and `bcrypt-complexity`); note that the password is automatically hashed on write requests and that the password property is automatically removed from responses.
 -   allows initializing the users collection and the admin user if not existing. See `create-user` option.
 -   allows controlling the users caching.
@@ -169,12 +169,12 @@ See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/
 
 ### Random Token Manager
 
-**RndTokenManager** generates an auth token using a random number generator. It has one argument, `ttl`, which is the tokens Time To Live in minutes.
+**rndTokenService** generates an auth token using a random number generator. It has two arguments, `ttl`, which is the tokens Time To Live in minutes, and `srv-uri` the URI of the service that allows to get and invalidate the user auth token.
 
 ```yml
 token-manager:
     rndTokenManager:
-    enabled: true
+        enabled: true
         ttl: 15
         srv-uri: /tokens
 ```
