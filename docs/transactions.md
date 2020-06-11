@@ -38,6 +38,13 @@ However, for situations that require atomicity for multiple write requests or co
 {: .bs-callout.bs-callout-info }
 Multi-document transaction requires at least MongoDB v4.0 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
 
+#### Tech talk on Transaction in RESTHeart at MongoDB Live 2020
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VMaKyQkXByo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+{: .bs-callout.bs-callout-info }
+The demo application used during the presentation is available on github: [restheart-txn-demo](https://github.com/softInstigate/restheart-txn-demo)
+
 ## Sessions
 
 MongoDB v3.6 introduced _sessions_, defined as follows:
