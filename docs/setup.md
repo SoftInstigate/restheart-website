@@ -18,7 +18,6 @@ title: Setup
     -   [Integration Tests](#integration-tests)
     -   [Maven Dependencies](#maven-dependencies)
     -   [Project structure](#project-structure)
--   [Book a chat](#book-a-chat)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -424,9 +423,5 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ├── mongodb
 └── security
 ```
-
-## Book a chat
-
-If you have any question about RESTHeart and want to talk directly with the core development team, you can also [book a free video chat](https://calendly.com/restheart/restheart-free-chat) with us.
 
 </div>
