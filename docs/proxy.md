@@ -16,7 +16,12 @@ title: Proxing requests
 
 The `restheart.yml` configuration file allows defining proxied resources. This makes possible to put other microservices under the security domain of RESTHeart.
 
-As an example, we are going to proxy `https://httpbin.org/anything` through RESTHeart:
+As an example, we are going to see how to proxy `https://httpbin.org/anything` through RESTHeart.
+
+{: .bs-callout .bs-callout-info }
+`https://httpbin.org/anything` is a popular and simple online HTTP Request & Response Service that returns anything that is passed to request for testing purposes.
+
+Add the following section to the configuration file `restheart.yml `and restart RESTHeart:
 
 ```yml
 proxies:
