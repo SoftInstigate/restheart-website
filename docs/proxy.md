@@ -6,6 +6,7 @@ title: Proxing requests
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
+* [How to proxy requests](#how-to-proxy-requests)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -15,6 +16,8 @@ title: Proxing requests
 ## Introduction
 
 The `restheart.yml` configuration file allows defining proxied resources. This makes possible to put other microservices under the security domain of RESTHeart.
+
+## How to proxy requests
 
 As an example, we are going to see how to proxy `https://httpbin.org/anything` through RESTHeart.
 
