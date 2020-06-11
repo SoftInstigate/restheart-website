@@ -26,7 +26,7 @@ title: Authentication
 
 ## Introduction
 
-See [Understanding RESTHeart Security](/docs/security/overview#understanding-RESTHeart) for an high level view of the RESTHeart security model.
+See [Security Overview](/docs/security/overview) for an high level view of the RESTHeart security model.
 
 **RESTHeart** is built around a **pluggable architecture**. It comes with a strong security implementation but you can easily extend it by implementing plugins. This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins.
 

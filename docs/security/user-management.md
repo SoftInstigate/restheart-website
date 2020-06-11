@@ -20,12 +20,12 @@ title: User Management
 
 ## Introduction 
 
-This section provides instructions on how to create, update and delete users for the default [RESTHeart Authenticator](/docs/security/authentication/#restheart-authenticator).
+This section provides instructions on how to create, update and delete users with [mongoRealAuthenticator](/docs/security/authentication/#mongo-realm-authenticator).
 
-It also shows how to manage permissions for the default [RESTHeart Authorizer](/docs/security/authorization/#restheart-authorizer).
+It also shows how to manage permissions with [mongoAclAuthorizer](/docs/security/authorization/#mongo-acl-authorizer).
 
 {: .bs-callout.bs-callout-info}
-**RESTHeart Authenticator** uses the collection `/users` by default.
+**mongoRealAuthenticator** uses the collection `/users` by default.
 
 ### Before running the example requests
 
@@ -44,7 +44,7 @@ With the default configuration, a user is represented as follows:
 ```
 
 {: .bs-callout.bs-callout-info}
-**RESTHeart Authenticator** can be configured to use different properties for the username, roles an password. Check [RESTHeart Authenticator](/docs/security/authentication/#restheart-authenticator) for more information.
+**mongoRealAuthenticatorr** can be configured to use different properties for the username, roles an password. Check [mongoRealAuthenticator](/docs/security/authentication/#mongo-realm-authenticator) for more information.
 
 ## Get existing users
 

@@ -5,11 +5,10 @@ title: Security Overview
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction ](#introduction)
--   [Features](#features)
+-   [Introduction](#introduction)
+-   [Handle users in MongoDB collection](#handle-users-in-mongodb-collection)
+-   [Handle permissions in MongoDB collection](#handle-permissions-in-mongodb-collection)
 -   [Understanding RESTHeart security](#understanding-restheart-security)
--   [Proxying external resources](#proxying-external-resources)
-    -   [Tutorial](#tutorial)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -18,28 +17,61 @@ title: Security Overview
 
 ## Introduction
 
-RESTHeart provides out-of-the-box **Authentication** and **Authorization** services.
+RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.
 
-It is possible to authenticate clients via multiple schemes and enforce **role-based security policies**.
-Security can be easily customized to integrate external providers or implement fine grained security policies.
+The default configuration file enables `fileRealmAuthenticator` and `fileAclAuthorizer`. These use the files [/etc/users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) and [/etc/acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) to handle users credentials and permissions respectively.
 
-RESTHeart is built around a **pluggable architecture**. It comes with a strong security implementation but you can extend it by implementing plugins.
+RESTHeart can also handle users and permissions stored on MongoDB collections. This provides more flexibility and control over security and it is the **suggested configuration for production**.
 
-## Features
+## Handle users in MongoDB collection
 
--   Identity and Access Management at **HTTP protocol level**.
--   Can be extended via easy-to-implement plugins.
--   Allows to quickly implement secured Web Services.
--   **Basic**, **Digest** and **Token Authentication**. Other authentication methods can be added with plugins.
--   **Roles** based Authorization with a powerful permission definition language. Other authorization methods can be added with plugins.
--   Solid multi-threading, non-blocking architecture.
--   High performance.
--   Small memory footprint.
+To enable user authentication from MongoDB collection set `mongoRealmAuthenticator` as the authenticator of the enabled authentication mechanisms where applicable:
+
+```yml
+auth-mechanisms:
+  basicAuthMechanism:
+    enabled: true
+    authenticator: mongoRealmAuthenticator
+  digestAuthMechanism:
+    enabled: true
+    realm: RESTHeart Realm
+    domain: yourdomain.com
+    authenticator: mongoRealmAuthenticator
+```
+
+For more information on collection based authentication check the following documentation pages:
+
+- [mongoRealmAuthenticator](/docs/security/authentication/#mongo-realm-authenticator)
+- [User Management](/docs/security/user-management/)
+
+## Handle permissions in MongoDB collection
+
+Permissions stored in the MongoDB collection `/acl` should be already taken into account because the default configuration  enables the `mongoAclAuthorizer`.
+
+```yml
+authorizers:
+  mongoAclAuthorizer:
+    acl-db: restheart
+    acl-collection: acl
+    # clients with root-role can execute any request
+    root-role: admin
+    cache-enabled: true
+    cache-size: 1000
+    cache-ttl: 5000
+    cache-expire-policy: AFTER_WRITE
+```
+
+
+For more on collection based authorization check the documentation on [mongoAclAuthorizer](/docs/security/authorization/#mongo-acl-authorizer)
+
 
 ## Understanding RESTHeart security
 
+RESTHeart is built around a **pluggable architecture**. It comes with a strong security implementation but you can extend it by implementing plugins.
+
 In RESTHeart everything is a plugin including Authentication Mechanisms, Authenticators, Authorizers, Token Managers and Services.
 
+{: .img-fluid }
 ![restheart-security explained](/images/restheart-security-explained.png 'restheart-security explained')
 
 Different **Authentication Mechanism** manage different authentication schemes.
@@ -60,292 +92,3 @@ The **Token Manager** is responsible of generating and validating an auth-token.
 
 A **Service** is a quick way of implementing Web Services to expose additional custom logic.
 
-## Proxying external resources
-
-The `restheart.yml` configuration file allows defining listeners and proxied resources in the first place.
-
-As an example, we are going to securely expose the resources of a RESTHeart server and Web Server running on a private network.
-
-The following options set a HTTPS listener bound to the public ip of `domain.io`.
-
-```yml
-https-listener: true
-https-host: domain.io
-https-port: 443
-```
-
-The two hosts in private network `10.0.1.0/24` are:
-
--   the RESTHeart server running on host `10.0.1.1` that exposes the collection `/db/coll`
--   the web server running on host `10.0.1.2` bound to URI `/web`
-
-We proxy them as follows:
-
-```yml
-proxies:
-    - location: /api
-      proxy-pass: https://10.0.0.1/db/coll
-    - location: /
-      proxy-pass: https://10.0.0.2/web
-```
-
-As a result, the URLs `https://domain.io` and `https://domain.io/api` are proxied to the resources specified by the `proxy-pass` URLs. All requests from the external network pass through RESTHeart that enforces authentication and authorization.
-
-{% include code-header.html type="Request" %}
-
-```http
-GET /index.html HTTP/1.1
-```
-
-{% include code-header.html type="Response" %}
-
-```http
-HTTP/1.1 401 Unauthorized
-```
-
-{% include code-header.html type="Request" %}
-
-```http
-GET https://domain.io/api HTTP/1.1
-```
-
-{% include code-header.html type="Response" %}
-
-```http
-HTTP/1.1 401 Unauthorized
-```
-
-With the default configuration RESTHeart uses the Basic Authentication with credentials and permission defined in `users.yml` and `acl.yml` configuration files respectively:
-
-#### users.yml
-
-```yml
-users:
-    - userid: user
-      password: secret
-      roles: [web, api]
-```
-
-### acl.yml
-
-```yml
-permissions:
-    # Users with role 'web' can GET web resources
-    - role: web
-      predicate: path-prefix[path=/] and not path-prefix[path=/api] and method[GET]
-
-    # Users with role 'api' can GET and POST /api resources
-    - role: api
-      predicate: path-prefix[path=/api] and (method[GET] or method[POST])
-```
-
-{% include code-header.html type="Request" %}
-
-```http
-GET /index.html HTTP/1.1
-Authorization: Basic dXNlcjpzZWNyZXQ=
-```
-
-{% include code-header.html type="Response" %}
-
-```http
-HTTP/1.1 200 OK
-```
-
-{% include code-header.html type="Request" %}
-
-```http
-GET /api HTTP/1.1
-Authorization: Basic dXNlcjpzZWNyZXQ=
-```
-
-{% include code-header.html type="Response" %}
-
-```http
-HTTP/1.1 200 OK
-```
-
-### Tutorial
-
-To follow this tutorial you need <a href="https://httpie.org" target="_blank">httpie</a>, a modern command line HTTP client made in Python which is easy to use and produces a colorized and indented output.
-
-Add to **restheart.yml** the following proxy:
-
-```yml
-proxies:
-    - location: /secho
-      proxy-pass:
-          - http://localhost:8080/echo
-```
-
-{: .bs-callout.bs-callout-info}
-the service `/echo` just echoes back the request (URL, query parameters, body and headers). It is defined in the configuration file as follows:
-
-```yml
-services:
-    echo:
-      uri: /echo
-      secured: false
-```
-
-{: .bs-callout.bs-callout-info}
-Note that `/echo` is not secured and can be invoked without restrictions.
-
-```bash
-$ http -f 127.0.0.1:8080/echo?qparam=value header:value a=1 b=2
-HTTP/1.1 200 OK
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Length: 341
-Content-Type: application/json
-Date: Mon, 18 Feb 2019 17:25:19 GMT
-X-Powered-By: restheart.org
-
-{
-    "URL": "http://127.0.0.1:8080/echo",
-    "content": "a=1&b=2",
-    "headers": {
-        "Accept": [
-            "*/*"
-        ],
-        "Accept-Encoding": [
-            "gzip, deflate"
-        ],
-        "Connection": [
-            "keep-alive"
-        ],
-        "Content-Length": [
-            "7"
-        ],
-        "Content-Type": [
-            "application/x-www-form-urlencoded; charset=utf-8"
-        ],
-        "Host": [
-            "127.0.0.1:8080"
-        ],
-        "User-Agent": [
-            "HTTPie/1.0.2"
-        ],
-        "header": [
-            "value"
-        ]
-    },
-    "method": "POST",
-    "note": "showing up to 20 bytes of the request content",
-    "prop2": "property added by example response interceptor",
-    "qparams": {
-        "pagesize": [
-            "0"
-        ],
-        "qparam": [
-            "value"
-        ]
-    }
-}
-```
-
-Let's try now to invoke `/secho` (please note the leading 's') without passing authentication credentials. This will fail with `401 Unauthorized` HTTP response.
-
-```bash
-$ http -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
-HTTP/1.1 401 Unauthorized
-Connection: keep-alive
-Content-Length: 0
-Date: Mon, 18 Feb 2019 17:26:04 GMT
-WWW-Authenticate: Basic realm="RESTHeart Realm"
-WWW-Authenticate: Digest realm="RESTHeart Realm",domain="localhost",nonce="Z+fsw9eFwPgNMTU1MDUxMDc2NDA2NmFWzLOw/aaHdtjyi0jm5uE=",opaque="00000000000000000000000000000000",algorithm=MD5,qop="auth"
-```
-
-Let's try now to pass credentials via basic authentication. The user `admin` is defined in the `users.yml` file.
-
-```bash
-$ http -a admin:changeit -f 127.0.0.1:8080/secho?qparam=value header:value a=1 b=2
-HTTP/1.1 200 OK
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-Auth-Token: 5iojkf21pdul7layo3qultyes7qyt8obdm1u67hkmnw6l39ckm
-Auth-Token-Location: /tokens/admin
-Auth-Token-Valid-Until: 2019-02-18T17:41:25.142209Z
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Length: 427
-Content-Type: application/json
-Date: Mon, 18 Feb 2019 17:26:25 GMT
-X-Powered-By: restheart.org
-
-{
-    "URL": "http://localhost:8080/echo",
-    "content": "a=1&b=2",
-    "headers": {
-        "Accept": [
-            "*/*"
-        ],
-        "Accept-Encoding": [
-            "gzip, deflate"
-        ],
-        "Connection": [
-            "keep-alive"
-        ],
-        "Content-Length": [
-            "7"
-        ],
-        "Content-Type": [
-            "application/x-www-form-urlencoded; charset=utf-8"
-        ],
-        "Host": [
-            "localhost:8080"
-        ],
-        "User-Agent": [
-            "HTTPie/1.0.2"
-        ],
-        "X-Forwarded-Account-Id": [
-            "admin"
-        ],
-        "X-Forwarded-Account-Roles": [
-            "user,admin"
-        ],
-        "X-Forwarded-For": [
-            "127.0.0.1"
-        ],
-        "X-Forwarded-Host": [
-            "127.0.0.1:8080"
-        ],
-        "X-Forwarded-Port": [
-            "8080"
-        ],
-        "X-Forwarded-Proto": [
-            "http"
-        ],
-        "X-Forwarded-Server": [
-            "127.0.0.1"
-        ],
-        "header": [
-            "value"
-        ]
-    },
-    "method": "POST",
-    "note": "showing up to 20 bytes of the request content",
-    "prop2": "property added by example response interceptor",
-    "qparams": {
-        "pagesize": [
-            "0"
-        ],
-        "qparam": [
-            "value"
-        ]
-    }
-}
-```
-
-We can note that RESTHeart:
-
--   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
--   has determined the account roles. The proxied request includes the headers `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles`.
--   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
--   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.

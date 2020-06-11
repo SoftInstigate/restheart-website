@@ -27,7 +27,7 @@ RESTHeart by default offers two implementations authorizers:
 
 However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
 
-## Mongo Realm Authorizer
+## Mongo ACL Authorizer
 
 _mongoAclAuthorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**.
 The configuration allows:
