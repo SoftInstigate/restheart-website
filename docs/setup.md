@@ -311,7 +311,7 @@ After building `cd core/target` where, among other files, you'll have the struct
 
 You can copy these files somewhere else and the [run the executable restheart.jar](#run-restheart) passing to it the path of the YAML configuration file.
 
-Have a look at [`core/etc/restheart.yml`](core/etc/restheart.yml) and [`core/etc/default.properties`](core/etc/default.properties) for more.
+Have a look at [core/etc/restheart.yml](core/etc/restheart.yml) and [core/etc/default.properties](core/etc/default.properties) for more.
 
 ### Integration Tests
 
@@ -392,11 +392,11 @@ Plugin examples are collected [here](https://github.com/SoftInstigate/restheart-
 
 When the core module starts, it scans the Java classpath within the `plugins/` folder and loads all the JAR files there.
 
-Plugins are annotated with the [`@RegisterPlugin`](commons/src/main/java/org/restheart/plugins/RegisterPlugin.java) and implement an Interface.
+Plugins are annotated with the [@RegisterPlugin](commons/src/main/java/org/restheart/plugins/RegisterPlugin.java) and implement an Interface.
 
 Several types of Plugin exist to extends RESTHeart. For more information refer to [Plugins overview](https://restheart.org/docs/plugins/overview/) in the documentation.
 
-For example, below the [`MongoService`](mongodb/src/main/java/org/restheart/mongodb/MongoService.java) class implementing the [`Service`](commons/src/main/java/org/restheart/plugins/Service.java) interface, which provides all of MongoDB's capabilities to the `core` module:
+For example, below the [MongoService](mongodb/src/main/java/org/restheart/mongodb/MongoService.java) class implementing the [Service](commons/src/main/java/org/restheart/plugins/Service.java) interface, which provides all of MongoDB's capabilities to the `core` module:
 
 ```java
 @RegisterPlugin(name = "mongo",
