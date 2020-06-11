@@ -12,7 +12,7 @@ title: Setup
 -   [Configuration](#configuration)
     -   [Environment variables](#environment-variables)
     -   [Run the process in background](#run-the-process-in-background)
--   [Run with Docker](#run-with-Docker)
+-   [Run with Docker](#run-with-docker)
 -   [Build it yourself](#build-it-yourself)
 -   [User guide](#user-guide)
 -   [Book a chat](#book-a-chat)
