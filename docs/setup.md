@@ -6,10 +6,9 @@ title: Setup
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [Download and Run](#download-and-run)
-    -   [Prerequisites](#prerequisites)
     -   [Get the latest release](#get-the-latest-release)
     -   [Run with Java](#run-with-java)
--   [Configuration](#configuration)
+-   [Configuration files](#configuration-files)
     -   [Environment variables](#environment-variables)
     -   [Run the process in background](#run-the-process-in-background)
 -   [Security mandatory setup](#security-mandatory-setup)
@@ -25,21 +24,6 @@ title: Setup
 {% include docs-head.html %}
 
 ## Download and Run
-
-### Prerequisites
-
-To run RESTHEart connected to a local instance of MongoDB you need:
-
--   At least Java v11;
--   MongoDB v3 or v4 running on `localhost` on port `27017`.
-
----
-
-The default RESTHeart's [configuration properties file](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) points a local MongoDB instance, running on `localhost` with standard port `27017`. Instead, to connect RESTHeart to a remote MongoDB instance please have a look at the [Configuration](#configuration) section.
-
----
-
-For more information on how to install and run MongoDB check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
 
 ### Get the latest release
 
@@ -78,6 +62,11 @@ Configuration files are under the `etc/` folder.
 ```
 
 ### Run with Java
+
+To run RESTHeart connected to a local instance of MongoDB you need:
+
+-   At least Java v11;
+-   MongoDB v3 or v4 running on `localhost` on port `27017`.
 
 ```bash
 $ cd restheart
@@ -143,7 +132,7 @@ $ curl --user admin:secret :8080/collection
 [{"_id":{"$oid":"5dd3cfb2fe3c18a7834121d3"},"a":1,"_etag":{"$oid":"5dd3cfb2439f805aea9d5130"}},{"_id":{"$oid":"5dd3cfb0fe3c18a7834121d1"},"a":2,"_etag":{"$oid":"5dd3cfb0439f805aea9d512f"}}]%
 ```
 
-## Configuration
+## Configuration files
 
 The main configuration file is [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) contains actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like this:
 
