@@ -15,7 +15,7 @@ title: Setup
 -   [Security mandatory setup](#security-mandatory-setup)
 -   [Run with Docker](#run-with-docker)
 -   [Build it yourself](#build-it-yourself)
--   [User guide](#user-guide)
+-   [Maven Dependencies](#maven-dependencies)
 -   [Book a chat](#book-a-chat)
 
 </div>
@@ -34,7 +34,7 @@ To run RESTHEart connected to a local instance of MongoDB you need:
 
 ---
 
-The default RESTHeart's [configuration properties file](core/etc/default.properties) points a local MongoDB instance, running on `localhost` with standard port `27017`. Instead, to connect RESTHeart to a remote MongoDB instance please have a look at the [Configuration](#configuration) section.
+The default RESTHeart's [configuration properties file](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) points a local MongoDB instance, running on `localhost` with standard port `27017`. Instead, to connect RESTHeart to a remote MongoDB instance please have a look at the [Configuration](#configuration) section.
 
 ---
 
@@ -144,7 +144,7 @@ $ curl --user admin:secret :8080/collection
 
 ## Configuration
 
-The main configuration file is [restheart.yml](core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](core/etc/default.properties) contains actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like this:
+The main configuration file is [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) contains actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like this:
 
 ```bash
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
@@ -175,7 +175,7 @@ For example, the parameter `mongo-uri` in the YAML file can be overridden by set
 $ MONGO_URI="mongodb://127.0.0.1" java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-> Have a look at the [docker-compose.yml](docker-compose.yml) file for an example of how to export an environment variable if using Docker.
+> Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
 
 The following log entry appears at the very beginning of logs during the startup process:
 
@@ -287,7 +287,7 @@ The authorizer `mongoAclAuthorizer` is already enabled by the default configurat
 
 ## Run with Docker
 
-The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](../core/Dockerfile).
+The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
 
 To run both RESTHeart and MongoDB services you can use `docker-compose`. Just copy and paste the following shell command:
 
@@ -472,10 +472,6 @@ public class MongoService implements Service<BsonRequest, BsonResponse> {
     ...
 }
 ```
-
-## User guide
-
-For more information, read the [Use guide](http://restheart.org/docs/).
 
 ---
 
