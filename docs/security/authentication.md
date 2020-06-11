@@ -14,8 +14,8 @@ title: Authentication
     -   [Token Authentication](#token-authentication)
     -   [Identity Authentication](#identity-authentication)
 -   [Authenticators](#authenticators)
-    -   [Mongo Realm Authenticator](#mongo-realm-authorizer)
-    -   [File Realm Authenticator](#file-realm-authorizer)
+    -   [Mongo Realm Authenticator](#mongo-realm-authenticator)
+    -   [File Realm Authenticator](#file-realm-authenticator)
 -   [Token Managers](#token-managers)
     -   [Random Token Manager](#random-token-manager)
 
