@@ -62,11 +62,11 @@ version.
 
     We need to provide the MongoDB user authentication credentials in the RESTHeart Core configuration file: see docs. 
 
-We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart download package (you find it in the etc directory)
+We’ll use the `restheart.yml` configuration file that comes with RESTHeart download package (you find it in the etc directory)
 
 
 ``` bash
-$ vi etc/restheart-platform-core.yml
+$ vi etc/restheart.yml
 ```
 
 Find and modify the following section providing the user-name, password
@@ -82,7 +82,7 @@ Now start RESTHeart Core specifying the configuration file:
 
 
 ``` bash
-$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
+$ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
 Test the connection open `http://localhost:8080/roles/admin`
@@ -112,7 +112,7 @@ mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 
 
 ``` bash
-$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
+$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
 ## Restrict permissions of MongoDB user

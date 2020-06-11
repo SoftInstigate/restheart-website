@@ -31,8 +31,6 @@ RESTHeart 5.2 will add query parameters to specify those options at request leve
 
 ## LDAP Authenticator
 
-LDAP Authenticator for **restheart-platform-security**
-
 The new authenticator will update the old Access Manager [ADIdentityManager](https://github.com/SoftInstigate/restheart/blob/3.11.x/src/main/java/org/restheart/security/impl/ADIdentityManager.java) available for restheart 3.x to include:
 
 -   caching (extending an abstract class that simplifies implementing cached authenticators)
@@ -43,7 +41,7 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 
 ### RESTHeart Studio
 
-The new service `restheart-platform-studio` will added to RESTHeart. This is a web application:
+The new service `restheart-studio` will added to RESTHeart. This is a web application:
 
 -   for developers: to manage dbs, collections (including configuring extensions such as _Transformers_, _Hooks_, _Checkers_, etc), users and ACL, and reading and writing documents and files.
 -   for users: to manage and publishing content through forms
