@@ -25,7 +25,7 @@ proxies:
      name: anything
 ```
 
-As a result, the URL `http://<restheart-ip:port>/anything` proxies requests to the `proxy-pass` URL.
+As a result, requests to URL `http://<restheart-ip:port>/anything` are proxied to `https://httpbin.org/anything`as specified by the parameter `proxy-pass`.
 
 {% include code-header.html type="Request" %}
 
