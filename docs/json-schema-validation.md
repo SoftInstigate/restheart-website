@@ -21,7 +21,7 @@ title: JSON Schema Validation
 RESTHeart supports MongoDB schema validation to enforce a format to documents: rules-based validation from MongoDB 3.2 and Json Schema validation from MongoDB 3.6, more in the [MongoDB documentation](https://docs.mongodb.com/manual/core/schema-validation).
 
 On top of this, RESTHeart provides a more general approach for
-validation based on [Interceptors](/docs/develop/core-plugins#interceptors) that can verify write requests based on any condition.
+validation based on [Interceptors](/docs/develop/core-plugins) that can verify write requests based on any condition.
 
 RESTHeart provides "out of the box" the *jsonSchema* Interceptor
 that validates the body of write requests against a **JSON schema**.
