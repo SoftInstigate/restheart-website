@@ -28,9 +28,6 @@ are identified.
     <p>
       Being the most general case, the following table refers to the configuration exposing all MongoDB resources (<code>root-mongo-resource='*'</code>)
     </p>
-    <p>
-      <i>Refer to the <a href="{{ "../configuration" | prepend: site.baseurl }}">Configuration Section</a> for further information about this topic.</i>
-    </p>
 </div>
 
 ## Resources URIs
