@@ -122,7 +122,7 @@ auth-mechanisms:
 
 ### Mongo Realm Authenticator
 
-_mongoRealAuthenticator_ authenticates users defined in a MongoDB collection, seamlessly connecting restheart-platform-security with restheart-platform-core.
+_mongoRealAuthenticator_ authenticates users defined in a MongoDB collection.
 
 {: .bs-callout.bs-callout-info }
 Mongo Realm Authenticator is suggested for production usage.
