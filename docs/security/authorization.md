@@ -25,7 +25,7 @@ RESTHeart by default offers two implementations authorizers:
 1. Mongo ACL Authorizer
 1. File ACL Authorizer
 
-However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/develop/security-plugins) for more information.
+However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
 ## Mongo ACL Authorizer
 
@@ -38,15 +38,15 @@ The configuration allows:
 
 ```yml
 authorizers:
-  mongoAclAuthorizer:
-    acl-db: restheart
-    acl-collection: acl
-    # clients with root-role can execute any request
-    root-role: admin
-    cache-enabled: true
-    cache-size: 1000
-    cache-ttl: 5000
-    cache-expire-policy: AFTER_WRITE
+    mongoAclAuthorizer:
+        acl-db: restheart
+        acl-collection: acl
+        # clients with root-role can execute any request
+        root-role: admin
+        cache-enabled: true
+        cache-size: 1000
+        cache-ttl: 5000
+        cache-expire-policy: AFTER_WRITE
 ```
 
 ### Format of an ACL document
@@ -109,8 +109,8 @@ _fileRealmAuthorizer_ allows defining roles permissions in a YAML configuration 
 
 ```yml
 authorizers:
-  fileAclAuthorizer:
-    conf-file: ./etc/acl.yml
+    fileAclAuthorizer:
+        conf-file: ./etc/acl.yml
 ```
 
 The file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml) defines the role based permissions. An example follows:
