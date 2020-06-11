@@ -15,7 +15,9 @@ title: Setup
 -   [Security mandatory setup](#security-mandatory-setup)
 -   [Run with Docker](#run-with-docker)
 -   [Build it yourself](#build-it-yourself)
--   [Maven Dependencies](#maven-dependencies)
+    -   [Integration Tests](#integration-tests)
+    -   [Maven Dependencies](#maven-dependencies)
+    -   [Project structure](#project-structure)
 -   [Book a chat](#book-a-chat)
 
 </div>
@@ -230,12 +232,13 @@ Right before installing RESTHeart you **MUST** perform the security mandatory se
 {: .bs-callout .bs-callout-warning}
 After installation two default users exist: `admin` and `user` with password `secret`. `admin` can execute any request, including creating and deleting the `restheart` database and collections under it. You must update the passwords.
 
-The suggested *minimal* configuration follows:
-- update the password of the `admin` user in collection `/users`
-- disable the weak `fileRealmAuthenticator` and `fileAclAuthorizer`
-- enable the production ready `mongoRealmAuthenticator` and `mongoAclAuthorizer`
+The suggested _minimal_ configuration follows:
 
-### Update the password of user *admin* in collection */users*
+-   update the password of the `admin` user in collection `/users`
+-   disable the weak `fileRealmAuthenticator` and `fileAclAuthorizer`
+-   enable the production ready `mongoRealmAuthenticator` and `mongoAclAuthorizer`
+
+### Update the password of user _admin_ in collection _/users_
 
 Start RESTHeart with default configuration and run the following command to update the password of the user `admin` stored in the db (this is not updating the password of the user `admin` stored in `etc/users.yml`).
 
@@ -246,40 +249,36 @@ $ curl -v -d '{"password":"<YOUR-STRONG-PASSWORD-HERE>"}' -u admin:secret -H "Co
 {: .bs-callout .bs-callout-info}
 The document `/users/admin` is created at first startup of RESTHeart as specified by the configuration option `create-user-document` of `mongoRealmAuthenticator`
 
-### Disable *fileRealmAuthenticator* and *fileAclAuthorizer*
+### Disable _fileRealmAuthenticator_ and _fileAclAuthorizer_
 
 In `restheart.yml`:
 
 ```yml
 authenticators:
-  fileRealmAuthenticator:
-    enabled: false
-
-...
-
+    fileRealmAuthenticator:
+        enabled: false
+---
 authorizers:
-  fileAclAuthorizer:
-    enabled: false
-
-...
+    fileAclAuthorizer:
+        enabled: false
 ```
 
-### Enable *mongoRealmAuthenticator*
+### Enable _mongoRealmAuthenticator_
 
 In `restheart.yml`:
 
 ```yml
 auth-mechanisms:
-  tokenBasicAuthMechanism:
-    enabled: true
-  basicAuthMechanism:
-    enabled: true
-    authenticator: mongoRealmAuthenticator
-  digestAuthMechanism:
-    enabled: true
-    realm: RESTHeart Realm
-    domain: localhost
-    authenticator: mongoRealmAuthenticator
+    tokenBasicAuthMechanism:
+        enabled: true
+    basicAuthMechanism:
+        enabled: true
+        authenticator: mongoRealmAuthenticator
+    digestAuthMechanism:
+        enabled: true
+        realm: RESTHeart Realm
+        domain: localhost
+        authenticator: mongoRealmAuthenticator
 ```
 
 {: .bs-callout .bs-callout-info}
@@ -356,7 +355,7 @@ Read the [docker compose documentation](https://docs.docker.com/compose/) for mo
 
 ## Build it yourself
 
-Building RESTHeart requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 11** or later.
+Building RESTHeart by yourself is not necessary, but if you want to try then it requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 11** or later.
 
 ```bash
 $ mvn clean package
@@ -378,13 +377,13 @@ Have a look at [core/etc/restheart.yml](https://github.com/SoftInstigate/resthea
 
 ### Integration Tests
 
-To run the integration test suite, first make sure that Docker is running. Maven starts a MongoDB volatile instance with Docker, so it is mandatory.
+To run the integration test suite, first make sure that Docker is running. Maven starts a MongoDB volatile instance with Docker.
 
 ```bash
 $ mvn verify
 ```
 
-## Maven Dependencies
+### Maven Dependencies
 
 RESTHeart's releases are available on [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.restheart%22).
 
@@ -410,11 +409,7 @@ To compile new plugins, add the `restheart-commons` dependency to your POM file:
 
 **IMPORTANT**: The `restheart-commons` artifact in the `commons` module has been released using the Apache v2 license instead of the AGPL v3. This is much like MongoDB is doing with the Java driver. It implies **your projects does not incur in the AGPL restrictions when extending RESTHeart with plugins**.
 
-## Continuous Integration
-
-We continuously integrate and deploy development releases to Maven Central. RESTHeart's public Docker images are automatically built and pushed to [Docker Hub](https://hub.docker.com/r/softinstigate/restheart/). The `latest` tag for Docker images refers to the most recent stable release on the `master` branch, **we don't publish SNAPSHOTs as Docker images**.
-
-## Project structure
+### Project structure
 
 Starting from RESTHeart v5 we have merged all sub-projects into a single [Maven multi module project](https://maven.apache.org/guides/mini/guide-multiple-modules.html) and a single Git repository (this one).
 
@@ -429,57 +424,6 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ├── mongodb
 └── security
 ```
-
-## Plugins
-
-Except for the `core` services, everything else is a plugin. The `security` and `mongodb` modules are just JAR files which are copied into the `plugins/` folder within the root folder, where the `restheart.jar` core and `etc/` folder are.
-
-```
-.
-├── etc/
-│   ├── acl.yml
-│   ├── default.properties
-│   ├── restheart.yml
-│   └── users.yml
-├── plugins/
-│   ├── restheart-mongodb.jar
-│   └── restheart-security.jar
-└── restheart.jar
-```
-
----
-
-Plugin examples are collected [here](https://github.com/SoftInstigate/restheart-examples).
-
----
-
-When the core module starts, it scans the Java classpath within the `plugins/` folder and loads all the JAR files there.
-
-Plugins are annotated with the [@RegisterPlugin](https://github.com/SoftInstigate/restheart/blob/master/commons/src/main/java/org/restheart/plugins/RegisterPlugin.java) and implement an Interface.
-
-Several types of Plugin exist to extends RESTHeart. For more information refer to [Plugins overview](https://restheart.org/docs/plugins/overview/) in the documentation.
-
-For example, below the [MongoService](https://github.com/SoftInstigate/restheart/blob/master/mongodb/src/main/java/org/restheart/mongodb/MongoService.java) class implementing the [Service](https://github.com/SoftInstigate/restheart/blob/master/commons/src/main/java/org/restheart/plugins/Service.java) interface, which provides all of MongoDB's capabilities to the `core` module:
-
-```java
-@RegisterPlugin(name = "mongo",
-        description = "handles requests to mongodb resources",
-        enabledByDefault = true,
-        defaultURI = "/",
-        dontIntercept = {InterceptPoint.REQUEST_AFTER_AUTH},
-        priority = Integer.MIN_VALUE)
-public class MongoService implements Service<BsonRequest, BsonResponse> {
-    ...
-}
-```
-
----
-
-**WARNING**: the user guide has not yet been fully updated for v5, work is in progress. However, the fundamental public APIs have not changed since previous versions. RESTHeart v5 is more a refactoring of the internal architecture than anything else.
-
----
-
-Please open a issue [here](https://github.com/SoftInstigate/restheart/issues) if you have any question, or send an email to <a href="mailto:ask@restheart.org">ask@restheart.org</a> and we'll be happy to clarify anything.
 
 ## Book a chat
 
