@@ -10,7 +10,6 @@ title: Setup
     -   [Get the latest release](#get-the-latest-release)
     -   [Run with Java](#run-with-java)
 -   [Configuration](#configuration)
-    -   [Configuration files](configuration-files)
     -   [Environment variables](#environment-variables)
     -   [Run the process in background](#run-the-process-in-background)
 -   [Run with Docker](#run-with-Docker)
@@ -143,8 +142,6 @@ $ curl --user admin:secret :8080/collection
 ```
 
 ## Configuration
-
-### Configuration files
 
 The main configuration file is [restheart.yml](core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](core/etc/default.properties) contains actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like this:
 
