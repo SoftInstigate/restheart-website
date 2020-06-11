@@ -89,8 +89,8 @@ HTTP/1.1 200 OK
         "Host": "httpbin.org",
         "User-Agent": "HTTPie/1.0.3",
         "X-Amzn-Trace-Id": "Root=1-5ee2508c-35dd55551c2c0188bba66b8f",
-        "X-Forwarded-Account-Id": "admin",
-        "X-Forwarded-Account-Roles": "user,admin",
+        "X-Forwarded-Account-Id": "user",
+        "X-Forwarded-Account-Roles": "anything",
         "X-Forwarded-Host": "localhost:8080",
         "X-Forwarded-Server": "localhost"
     },
@@ -105,4 +105,5 @@ We can note that RESTHeart:
 -   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
 -   has determined the account roles
 -   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
+- the user id and roles are passed by RESTHeart to the proxied service via the `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles` request header.
 -   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.
