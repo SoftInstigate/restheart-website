@@ -14,17 +14,9 @@ title: Proxing requests
 
 ## Introduction
 
-The `restheart.yml` configuration file allows defining listeners and proxied resources in the first place.
+The `restheart.yml` configuration file allows defining proxied resources. This makes possible to put other microservices under the security domain of RESTHeart.
 
-As an example, we are going to securely expose the resources of a `https://httpbin.org/anything`.
-
-The following options set a HTTPS listener bound to the public ip of `domain.io`.
-
-```yml
-https-listener: true
-https-host: domain.io
-https-port: 443
-```
+As an example, we are going to proxy `https://httpbin.org/anything` through RESTHeart:
 
 ```yml
 proxies:
@@ -33,7 +25,7 @@ proxies:
      name: anything
 ```
 
-As a result, the URL `https://domain.io/anything` is proxied to the resources specified by the `proxy-pass` URL. All requests from the external network pass through RESTHeart that enforces authentication and authorization.
+As a result, the URL `http://<restheart-ip:port>/anything` proxies requests to the `proxy-pass` URL.
 
 {% include code-header.html type="Request" %}
 
@@ -64,7 +56,7 @@ users:
 permissions:
     # Users with role 'anything' can execute GET /anything
     - role: anything
-      predicate: path-prefix[path=/anything]  and method[GET]
+      predicate: path-prefix[path=/anything] and method[GET]
 ```
 
 {% include code-header.html type="Request" %}
@@ -84,6 +76,6 @@ HTTP/1.1 200 OK
 We can note that RESTHeart:
 
 -   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
--   has determined the account roles.
+-   has determined the account roles
 -   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
 -   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.
