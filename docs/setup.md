@@ -11,7 +11,6 @@ title: Setup
 -   [Configuration files](#configuration-files)
     -   [Environment variables](#environment-variables)
     -   [Run the process in background](#run-the-process-in-background)
--   [Security mandatory setup](#security-mandatory-setup)
 -   [Run with Docker](#run-with-docker)
 -   [Build it yourself](#build-it-yourself)
     -   [Integration Tests](#integration-tests)
@@ -27,12 +26,7 @@ title: Setup
 
 ### Get the latest release
 
-Two alternatives:
-
--   Download the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.zip) or [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.tar.gz) archive.
--   If you know Maven, you can even [build the source code](#build-it-yourself) by yourself.
-
-If you choose to download either the zip or tar archive:
+Download the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.zip) or [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.tar.gz) archive.
 
 Un-zip
 
@@ -152,7 +146,7 @@ You can edit the YAML configuration file or create distinct properties file. Usu
 
 ### Environment variables
 
-It is possible to override any primitive type parameter in `restheart.yml` with an environment variable. Primitive types are:
+It is possible to override any primitive type parameter in `restheart.yml` with an environment variable, without the need to edit any configuration file. Primitive types are:
 
 -   String
 -   Integer
@@ -212,65 +206,6 @@ In this case to see the logs you first need to enable file logging and set an ab
 enable-log-file = true
 log-file-path = /usr/local/var/log/restheart.log
 ```
-
-## Security mandatory setup
-
-Right before installing RESTHeart you **MUST** perform the security mandatory setup.
-
-{: .bs-callout .bs-callout-warning}
-After installation two default users exist: `admin` and `user` with password `secret`. `admin` can execute any request, including creating and deleting the `restheart` database and collections under it. You must update the passwords.
-
-The suggested _minimal_ configuration follows:
-
--   update the password of the `admin` user in collection `/users`
--   disable the weak `fileRealmAuthenticator` and `fileAclAuthorizer`
--   enable the production ready `mongoRealmAuthenticator` and `mongoAclAuthorizer`
-
-### Update the password of user _admin_ in collection _/users_
-
-Start RESTHeart with default configuration and run the following command to update the password of the user `admin` stored in the db (this is not updating the password of the user `admin` stored in `etc/users.yml`).
-
-```bash
-$ curl -v -d '{"password":"<YOUR-STRONG-PASSWORD-HERE>"}' -u admin:secret -H "Content-Type: application/json" -X PATCH :8080/users/admin
-```
-
-{: .bs-callout .bs-callout-info}
-The document `/users/admin` is created at first startup of RESTHeart as specified by the configuration option `create-user-document` of `mongoRealmAuthenticator`
-
-### Disable _fileRealmAuthenticator_ and _fileAclAuthorizer_
-
-In `restheart.yml`:
-
-```yml
-authenticators:
-    fileRealmAuthenticator:
-        enabled: false
----
-authorizers:
-    fileAclAuthorizer:
-        enabled: false
-```
-
-### Enable _mongoRealmAuthenticator_
-
-In `restheart.yml`:
-
-```yml
-auth-mechanisms:
-    tokenBasicAuthMechanism:
-        enabled: true
-    basicAuthMechanism:
-        enabled: true
-        authenticator: mongoRealmAuthenticator
-    digestAuthMechanism:
-        enabled: true
-        realm: RESTHeart Realm
-        domain: localhost
-        authenticator: mongoRealmAuthenticator
-```
-
-{: .bs-callout .bs-callout-info}
-The authorizer `mongoAclAuthorizer` is already enabled by the default configuration. The `/acl` contains no permission. Its default configuration however sets `root-role: admin` and this gives the `admin` user the permission to execute any request.
 
 ## Run with Docker
 
