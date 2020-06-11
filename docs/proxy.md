@@ -12,27 +12,78 @@ title: Proxing requests
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
-RESTHeart allows proxying requests. 
+The `restheart.yml` configuration file allows defining listeners and proxied resources in the first place.
 
-An example configuration follows:
+As an example, we are going to securely expose the resources of a `https://httpbin.org/anything`.
+
+The following options set a HTTPS listener bound to the public ip of `domain.io`.
 
 ```yml
-### Proxied resources
-
- # location (required) The location URI to bound to the HTTP proxied server.
- # proxy-pass (required) The URL of the HTTP proxied server. It can be an array of URLs for load balancing.
- # name (optional) The name of the proxy. It is required to identify 'restheart'.
- # rewrite-host-header (optional, default true) should the HOST header be rewritten to use the target host of the call.
- # connections-per-thread (optional, default 10) Controls the number of connections to create per thread.
- # soft-max-connections-per-thread (optional, default 5) Controls the number of connections to create per thread.
- # max-queue-size (optional, default 0) Controls the number of connections to create per thread.
- # connections-ttl (optional, default -1) Connections Time to Live in seconds.
- # problem-server-retry (optional, default 10) Time in seconds between retries for problem server.
-proxies:
-  - location: /anything
-    proxy-pass: https://httpbin.org/anything
+https-listener: true
+https-host: domain.io
+https-port: 443
 ```
+
+```yml
+proxies:
+   - location: /anything
+     proxy-pass: https://httpbin.org/anything
+     name: anything
+```
+
+As a result, the URL `https://domain.io/anything` is proxied to the resources specified by the `proxy-pass` URL. All requests from the external network pass through RESTHeart that enforces authentication and authorization.
+
+{% include code-header.html type="Request" %}
+
+```http
+GET /anything HTTP/1.1
+```
+
+{% include code-header.html type="Response" %}
+
+```http
+HTTP/1.1 401 Unauthorized
+```
+
+With the default configuration RESTHeart uses the Basic Authentication with credentials and permission defined in `users.yml` and `acl.yml` configuration files respectively. Let's add a user and a permission for `/anything`
+
+#### users.yml
+
+```yml
+users:
+    - userid: user
+      password: secret
+      roles: [anything]
+```
+
+### acl.yml
+
+```yml
+permissions:
+    # Users with role 'anything' can execute GET /anything
+    - role: anything
+      predicate: path-prefix[path=/anything]  and method[GET]
+```
+
+{% include code-header.html type="Request" %}
+
+```http
+GET /anything HTTP/1.1
+Authorization: Basic dXNlcjpzZWNyZXQ=
+```
+
+{% include code-header.html type="Response" %}
+
+```http
+HTTP/1.1 200 OK
+
+....
+```
+We can note that RESTHeart:
+
+-   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
+-   has determined the account roles.
+-   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
+-   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.
