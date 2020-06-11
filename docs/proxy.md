@@ -67,7 +67,7 @@ permissions:
 {% include code-header.html type="Request" %}
 
 ```http
-GET /anything HTTP/1.1
+GET /anything?foo=bar HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
 ```
 
@@ -76,7 +76,29 @@ Authorization: Basic dXNlcjpzZWNyZXQ=
 ```http
 HTTP/1.1 200 OK
 
-....
+{
+    "args": {
+        "foo": "bar"
+    },
+    "data": "",
+    "files": {},
+    "form": {},
+    "headers": {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate",
+        "Host": "httpbin.org",
+        "User-Agent": "HTTPie/1.0.3",
+        "X-Amzn-Trace-Id": "Root=1-5ee2508c-35dd55551c2c0188bba66b8f",
+        "X-Forwarded-Account-Id": "admin",
+        "X-Forwarded-Account-Roles": "user,admin",
+        "X-Forwarded-Host": "localhost:8080",
+        "X-Forwarded-Server": "localhost"
+    },
+    "json": null,
+    "method": "GET",
+    "origin": "127.0.0.1, 93.41.97.239",
+    "url": "https://localhost:8080/anything?foo=bar"
+}
 ```
 We can note that RESTHeart:
 
