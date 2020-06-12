@@ -92,7 +92,7 @@ The `readFilter` applies to GET requests. The example ACL document limits the re
 The `writeFilter` applies to write request. The example ACL document allows the requests to only modify the documents that were created by the authenticated user.
 
 {: .bs-callout.bs-callout-warning }
-`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/develop/security-plugins/#interceptors).
+`writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using [Interceptors](/docs/plugins/security-plugins/).
 
 `readFilter` and `writeFilter` can use the following variables:
 
