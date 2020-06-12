@@ -6,6 +6,7 @@ title: Develop Core Plugins
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
+    * [@Dependency](#@dependecy) 
     * [@RegisterPlugin annotation](#@register-plugin-annotation) 
     * [Plugin Configuration](#plugin-configuration)
     * [Dependency injection](#dependency-injection)
@@ -19,8 +20,6 @@ title: Develop Core Plugins
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 Plugins allow to extend RESTHeart:
@@ -32,6 +31,20 @@ Plugins allow to extend RESTHeart:
 It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
 For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repository on GitHub.
+
+### Dependency
+
+The only required dependency to develop a plugin is `restheart-commons`.
+
+With maven:
+
+```xml
+<dependency>
+    <groupId>org.restheart</groupId>
+    <artifactId>restheart-commons</artifactId>
+    <version>VERSION</version>
+</dependency>
+```
 
 ### @RegisterPlugin annotation
 
@@ -50,6 +63,20 @@ public class MyPlugin implements JsonService {
 ...
 }
 ```
+
+The following table described the arguments of the annotation:
+
+| param  | plugin  | description  | mandatory  | default value  | 
+|---|---|---|---|---|
+| name  | all  | the name of the plugin  | yes  | *none* |
+| description | all  | description of the plugin | yes  |  *none* |
+|  enabledByDefault | all  | true to enable the plugin otherwise it can be enabled by setting the configuration argument `enabled: true`  | no  | true |
+|  defaultURI | service  |  the default URI of the Service  | no  | /&lt;srv-name&gt; |
+|  dontIntercept |  service | `true` to avoid interceptors to be executed on requests handled by the service  | no  | {} |
+|  interceptPoint |  interceptor |  the intercept point: REQUEST_BEFORE_AUTH, REQUEST_AFTER_AUTH, RESPONSE, RESPONSE_ASYNC | no  | REQUEST_AFTER_AUTH |
+|  initPoint |  initializer | specify when the initializer is executed: BEFORE_STARTUP, AFTER_STARTUP |  no | AFTER_STARTUP |
+|  requiresContent | proxy interceptor | Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC) | no  | false |
+|  priority | interceptor, initializer | the execution priority (less is higher priority  | no  | 10 |
 
 ### Plugin Configuration
 
@@ -129,7 +156,7 @@ When a request hits RESTHeart, it determines which service will handle it. The S
 
 ## Services
 
-Depending on the required content type, the Service class implements one of the specialized `org.restheart.plugins.Service` interfaces:
+Depending on the content type, the Service class implements one of the specialized `org.restheart.plugins.Service` interfaces. The following implementation are provided by `restheart-commons`:
 
 - `ByteArrayService`
 - `JsonService`
@@ -149,8 +176,7 @@ public class MongoServerStatusService implements BsonService {
 
     private MongoClient mongoClient;
 
-    private static final BsonDocument DEFAULT_COMMAND
-            = new BsonDocument("serverStatus", new BsonInt32(1));
+    private static final BsonDocument COMMAND = new BsonDocument("serverStatus", new BsonInt32(1));
 
     @InjectMongoClient
     public void init(MongoClient mongoClient) {
@@ -160,16 +186,7 @@ public class MongoServerStatusService implements BsonService {
     @Override
     public void handle(BsonRequest request, BsonResponse response) throws Exception {
         if (request.isGet()) {
-            var commandQP = request.getExchange().getQueryParameters().get("command");
-
-            final var command = commandQP != null
-                    ? BsonDocument.parse(commandQP.getFirst())
-                    : DEFAULT_COMMAND;
-            
-            LOGGER.debug("### command=" + command);
-            
-            var serverStatus = mongoClient.getDatabase("admin")
-                    .runCommand(command, BsonDocument.class);
+            var serverStatus = mongoClient.getDatabase("admin").runCommand(COMMAND, BsonDocument.class);
             
             response.setContent(serverStatus);
             response.setStatusCode(HttpStatus.SC_OK);
@@ -184,9 +201,9 @@ public class MongoServerStatusService implements BsonService {
 
 The key method is `handle()` that is executed when a request to the service URI hits RESTHeart.
 
-### Crate Service with type
+### Crate Service with custom generic type
 
-To implement a Service that handles different types of Request and Response, the it must implement the base `Service` interface. 
+To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface. 
 
 The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects. 
 
@@ -254,189 +271,86 @@ public class XmlRequest extends ServiceRequest<Document> {
 }
 ```
 
+In the constructor a call to `super(exchange)` attaches the object to the `HttpServerExchange`. The object is retrieved using the inherited `of()` method that gets the instance attachment from the `HttpServerExchange`. This is fundamental for two reasons: first the same request and response objects must be shared by the all handlers of the processing chain. Second, this avoid the need to parse the content several times for performance reasons.
+
 ## Interceptors
 
-Interceptors allows to snoop and modify requests and responses.
+ Interceptors allow to snoop and modify requests and responses at different
+ stages of the request lifecycle as defined by the interceptPoint parameter of
+ the annotation `@RegisterPlugin`.
+ 
+ An interceptor can intercept either proxied requests or requests handled by
+ Services.
+ 
+ An interceptor can intercept requests handled by a Service when its request
+ and response types are equal to the ones declared by the Service.
+ 
+ An interceptor can intercept a proxied request, when its request and response
+ types extends BufferedRequest and BufferedResponse.
 
-A Request Interceptor applies before the request is proxied or handled by a _Service_ thus allowing to modify the request. Its implementation class must implement the interface `org.restheart.security.plugins.RequestInterceptor` .
+The following implementation are provided by `restheart-commons`:
 
-A Response Interceptor applies after the request has been proxied or handled by a _Service_ thus allowing to modify the response. Its implementation class must implement the interface `org.restheart.security.plugins.ResponseInterceptor`.
+- `ByteArrayInterceptor` intercepts requests handled by services implementing `ByteArrayService`
+- `JsonService` intercepts requests handled by services implementing `JsonService`
+- `BsonService` intercepts requests handled by services implementing `BsonService`
+- `MongoService` intercepts requests handled by the MongoService
 
-Those interfaces both extend the base interface `org.restheart.security.plugins.Interceptor`
-
-```java
-public interface Interceptor {
-  /**
-   * implements the interceptor logic
-   *
-   * @param exchange
-   * @throws Exception
-   */
-  public void handleRequest(final HttpServerExchange exchange) throws Exception;
-
-  /**
-   *
-   * @param exchange
-   * @return true if the interceptor must handle the request
-   */
-  public boolean resolve(final HttpServerExchange exchange);
-}
-```
-
-The `handleRequest()` method is invoked only if the `resolve()` method returns true.
-
-Example interceptor implementations can be found in the package``org.restheart.security.plugins.interceptors`.
-
-If the request is errored, than it is not processed further and the response eventually set is returned.
+The last one is particularly useful as it allows intercepting requests to the MongoDb API.
 
 ```java
-var request = ByteArrayRequest.wrap(hse);
-
-response.setInError(true);
-
-// or using the helper mehtod endExchangeWithMessage()
-
-response.endExchangeWithMessage(HttpStatus.SC_FORBIDDEN, "you can't do that");
-```
-
-### Intercept Point
-
-The Request Interceptor can be executed before or after the authentication and authorization phases. This is controlled defining the intercept point by optionally overriding the method `interceptPoint()` which default behavior is returning `BEFORE_AUTH`.
-
-If the Interceptor needs to deal with the `SecurityContext`, for instance it needs to check the user roles as in `ByteArrayRequest.wrap(echange).isAccountInRole("admin")`, then the Request Interceptor must be executed the authentication and authorization phases after intercept point must be `AFTER_AUTH`.
-
-### Accessing the Content in Request Interceptors
-
-In some cases, you need to access the request content. For example you want to modify request content with a `RequestInterceptor` or to implement an `Authorizer` that checks the content to authorize the request.
-
-Accessing the content from the _HttpServerExchange_ object using the exchange _InputStream_ in proxied requests leads to an error because Undertow allows reading the content just once.
-
-In order to simplify accessing the content, the `ByteArrayRequest.wrap(exchange).readContent()` and `JsonRequest.wrap(exchange).readContent()` helper methods are available. They are very efficient since they use the non blocking `RequestBufferingHandler` under to hood.
-However, since accessing the request content might lead to significant performance overhead, a _RequestInterceptor_ that resolves the request and overrides the `requiresContent()` to return true must be implemented to make data available.
-
-`RequestInterceptor` defines the following methods with a default implementation.
-
-```java
-public interface RequestInterceptor extends Interceptor {
-  public enum IPOINT { BEFORE_AUTH, AFTER_AUTH }
-
-    /**
-     *
-     * @return true if the Interceptor requires to access the request content
-     */
-    default boolean requiresContent() {
-        return false;
+@RegisterPlugin(name = "secretFilter", 
+    interceptPoint = InterceptPoint.RESPONSE,
+    description = "removes the property 'secret' from GET /coll")
+public class ReadOnlyPropFilter implements MongoInterceptor {
+    @Override
+    public void handle(MongoRequest request, MongoResponse response) throws Exception {
+        if (response.getContent().isDocument()) {
+            response.getContent().asDocument().remove("secret");
+        } else if (request.getContent().isArray()) {
+            response.getContent().asArray().stream()
+                    .map(doc -> doc.asDocument())
+                    .forEach(doc -> doc.remove("secret"));
+        }
     }
 
-    /**
-     *
-     * @return the intecept point
-     */
-    default IPOINT interceptPoint() {
-        return BEFORE_AUTH;
+    @Override
+    public boolean resolve(MongoRequest request, MongoResponse response) {
+        return request.isGet()
+                && response.getContent() != null
+                && "coll".equalsIgnoreCase(request.getCollectionName();
     }
 }
+
 ```
 
-Please note that, in order to mitigate DoS attacks, the size of the Request content available with `readContent()` is limited to 16 Mbytes.
-
-### Accessing the Content in Response Interceptors
-
-In some cases, you need to access the response content. For example you want the modify the response from a proxied resource before sending it to the client.
-
-In order to simplify accessing the content, the `ByteArrayRequest.wrap(exchange).readContent()` and `JsonResponse.wrap(exchange).readContent()` helper methods are available. Since accessing the response content might lead to significant performance overhead because the full response must be read by **restheart** before proxying, an _Interceptor_ that resolves the request and overrides the `requiresResponseContent()` to return true must be implemented to make data available.
-
-`Interceptor` defines the following method with a default implementation that returns false:
-
-```java
-public interface ResponseInterceptor extends Interceptor {
-  /**
-   *
-   * @return true if the Interceptor requires to access the response content
-   */
-  default boolean requiresResponseContent() {
-      return false;
-  }
-}
-```
-
-Please note that, in order to mitigate DoS attacks, the size of the response content available with `readContent()` is limited to 16 Mbytes.
-
-### Configuration
-
-Interceptors are configured programmatically with _Initializers_. See [Initializers](#initializers) section for more information.
+The `handle()` method is invoked only if the `resolve()` method returns true.
 
 ## Initializers
 
 An _Initializer_ allows executing custom logic at startup time.
 
-Notably it allows to define _Interceptors_ and _Global Permission Predicates_.
-
-The Initializer implementation class must extend the `org.restheart.security.plugins.Initializer` interface, implementing the following method:
+The Initializer implementation class must extend the `org.restheart.plugins.Initializer` interface: 
 
 ```java
-public interface Initializer {
-  public void init();
+public interface Initializer extends ConfigurablePlugin {
+    public void init();
 }
 ```
 
-It must also registered via the `@RegisterPlugin` annotation, example:
+With the following code the Initializer hangs restheart startup until the user confirms.
 
 ```java
 @RegisterPlugin(
-        name = "testInitializer",
+        name = "confirmStartupInitializer",
+        description = "hangs restheart startup until the user hits <enter>"
         priority = 100,
-        description = "The initializer used to test interceptors and global predicates",
-        enabledByDefault = false)
-public class TestInitializer implements Initializer {
-
-}
-```
-
-If the initializer is not enabled by default (i.e.e`enabledByDefault=false`), it can be enabled via configuration file as follows:
-
-```
-plugins-args:
-  testInitializer:
-    enabled: true
-```
-
-An example Initializer is `org.restheart.security.plugins.initializers.TestInitializer`.
-
-### Defining Interceptors
-
-The `PluginsRegistry` class allows to define Interceptors.
-
-```java
-RequestInterceptor requestInterceptor = ...;
-ResponseInterceptor responseIterceptor = ...;
-
-PluginsRegistry.getInstance().getRequestInterceptors().add(requestInterceptor);
-
-PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
-```
-
-### Defining Global Permission Predicates
-
-The `GlobalSecuirtyPredicatesAuthorizer` class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.
-
-> You can think about a Global Predicate a way to black list request matching a given condition.
-
-The following example predicate denies `GET /foo/bar` requests:
-
-```java
-// add a global security predicate
-GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predicate() {
-    @Override
-    public boolean resolve(HttpServerExchange exchange) {
-        var request = Request.wrap(exchange);
-
-        // return false to deny the request
-        return !(request.isGet()
-                        && "/secho/foo".equals(URLUtils.removeTrailingSlashes(
-                                        exchange.getRequestPath())));
+        initPoint = InitPoint.BEFORE_STARTUP)
+public class confirmStartupInitializer implements Initializer {
+    public void init() {
+        System.out.println("Hit <enter> to start RESTHeart");
+        System.console().readLine();
     }
-});
+}
 ```
 
 <hr>
