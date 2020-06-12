@@ -25,9 +25,9 @@ title: Develop Core Plugins
 
 Plugins allow to extend RESTHeart:
 
-- **Services** to extend the API adding web services.
-- **Interceptors** to snoop and modify requests and responses at different stages of the request lifecycle.
-- **Initializers**  to execute initialization logic at system startup time.
+- **Services** extend the API adding web services.
+- **Interceptors** snoop and modify requests and responses at different stages of the request lifecycle.
+- **Initializers**  execute initialization logic at system startup time.
 
 It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
@@ -46,7 +46,7 @@ An example follows:
     description = "just an example service", 
     defaultUri="/foo",
     enabledByDefault=false) 
-public class MyPluginimplements JsonService {
+public class MyPlugin implements JsonService {
 ...
 }
 ```
@@ -97,6 +97,15 @@ private PluginsRegistry registry;
 @InjectPluginsRegistry
 public void init(PluginsRegistry registry) {
     this.registry = registry;
+}
+```
+
+```java
+private MongoClient mclient;
+
+@InjectMongoClient
+public void init(MongoClient mclient) {
+    this.mclient = mclient;
 }
 ```
 
