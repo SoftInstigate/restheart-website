@@ -6,9 +6,13 @@ title: Develop Core Plugins
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
+    * [@RegisterPlugin annotation](#@register-plugin-annotation) 
+    * [Plugin Configuration](#plugin-configuration)
+    * [Dependency injection](#dependency-injection)
+    * [Request and Response Generic Classes](#request-and-response-generic-classes)
 * [Services](#services)
-* [Initializers](#initializers)
 * [Interceptors](#interceptors)
+* [Initializers](#initializers)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -19,150 +23,227 @@ title: Develop Core Plugins
 
 ## Introduction
 
-For examples refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repo
+Plugins allow to extend RESTHeart:
 
-## Services
+- **Services** to extend the API adding web services.
+- **Interceptors** to snoop and modify requests and responses at different stages of the request lifecycle.
+- **Initializers**  to execute initialization logic at system startup time.
 
-The Service implementation class must extend the `org.restheart.security.plugins.Service` abstract class, implementing the following method
+It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
+
+For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repository on GitHub.
+
+### @RegisterPlugin annotation
+
+All plugins must be a annotated with `@RegisterPlugin` to:
+- allow RESTHeart to find plugins' implementation classes in deployed jars (see [How to Deploy Plugins](/docs/plugins/deploy))
+- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+
+An example follows:
 
 ```java
-public abstract class Service extends PipedHttpHandler implements ConfigurablePlugin {
-  /**
-   *
-   * @param exchange
-   * @throws Exception
-   */
-  public abstract void handleRequest(HttpServerExchange exchange) throws Exception;
-  }
+@RegisterPlugin(name = "foo service", 
+    description = "just an example service", 
+    defaultUri="/foo",
+    enabledByDefault=false) 
+public class MyPluginimplements JsonService {
+...
 }
 ```
 
-An example service implementation follows. It sends the usual `Hello World` message, however if the request specifies `?name=Bob` it responds with `Hello Bob`.
+### Plugin Configuration
 
-```java
-public void handleRequest(HttpServerExchange exchange) throws Exception {
-  var msg = new StringBuffer("Hello ");
-
-  var _name = exchange.getQueryParameters().get("name");
-
-  if (_name == null || _name.isEmpty()) {
-      msg.append("World");
-  } else {
-      msg.append(_name.getFirst());
-  }
-
-  var response = ByteArrayResponse.wrap(exchange);
-
-  response.setStatusCode(HttpStatus.SC_OK);
-  response.setContentType("text/plain");
-  response.writeContent(msg.getBytes());
-}
-```
-
-### Configuration
-
-The _Service_ must be declared in the yml configuration file.
-Of course the implementation class must be in the java classpath.
-
-```yml
-services:
-    <name>:
-        uri: <the-service-uri>
-        secured: <boolean>
-        number: 10
-        string: a string
-```
-
-The _uri_ property allows to bind the service under the specified path. E.g., with `uri: /mysrv` the service responds at URL `https://domain.io/mysrv`
-
-With `secured: true` the service request goes thought the authentication and authorization phases. With `secured: false` the service is fully open.
-
-### Constructor
-
-The Service abstract class implements the following constructor:
-
-```java
-public MyService(PipedHttpHandler next,
-          String name,
-          String uri,
-          Boolean secured,
-          Map<String, Object> args);
-```
-
-## Initializers
-
-An _Initializer_ allows executing custom logic at startup time.
-
-Notably it allows to define _Interceptors_ and _Global Permission Predicates_.
-
-The Initializer implementation class must extend the `org.restheart.security.plugins.Initializer` interface, implementing the following method:
-
-```java
-public interface Initializer {
-  public void init();
-}
-```
-
-It must also registered via the `@RegisterPlugin` annotation, example:
-
-```java
-@RegisterPlugin(
-        name = "testInitializer",
-        priority = 100,
-        description = "The initializer used to test interceptors and global predicates",
-        enabledByDefault = false)
-public class TestInitializer implements Initializer {
-
-}
-```
-
-If the initializer is not enabled by default (i.e.e`enabledByDefault=false`), it can be enabled via configuration file as follows:
+A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration for a plugin just use its name under the `plugins-args` yml object:
 
 ```
 plugins-args:
-  testInitializer:
-    enabled: true
+    ping:
+        enabled: true
+        secured: false
+        uri: /ping
+        msg: 'Ping!'
 ```
 
-An example Initializer is `org.restheart.security.plugins.initializers.TestInitializer`.
+`enabled` `secured` and `uri` are special configuration options that are automatically managed by RESTHeart:
 
-### Defining Interceptors
+- *enabled*: for enabling or disabling the plugin via configuration overwriting the `enabledByDefault` property of `@RegisterPlugin`
+- *uri*: applies to Services to bind them to the URI overwriting the `defaultUri` property of `@RegisterPlugin`
+- *secured*: applies to Services, with `secured: true` the service request goes thought the authentication and authorization phases, with `secured: false` the service is fully open.
 
-The `PluginsRegistry` class allows to define Interceptors.
+{: .bs-callout .bs-callout-warning }
+Service have `secured: false` by default. If a service is deployed and has no configuration it will be fully open. If your service needs to be protected, add a configuration for it with `secured: true`
+
+The plugin consumes the configuration with a method annotated with `@InjectConfiguration`:
 
 ```java
-RequestInterceptor requestInterceptor = ...;
-ResponseInterceptor responseIterceptor = ...;
-
-PluginsRegistry.getInstance().getRequestInterceptors().add(requestInterceptor);
-
-PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
+@InjectConfiguration
+public void init(Map<String, Object> args) throws ConfigurationException {
+    this.msg = argValue(args, "msg");
+}
 ```
 
-### Defining Global Permission Predicates
+`argValue()` is an helper method to simplify retrieving the value of the configuration argument.
 
-The `GlobalSecuirtyPredicatesAuthorizer` class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.
+### Dependency injection
 
-> You can think about a Global Predicate a way to black list request matching a given condition.
+Other dependency injections than `@InjectConfiguration` are:
 
-The following example predicate denies `GET /foo/bar` requests:
+-   `@InjectPluginsRegistry` - allows a plugin to get the reference of other plugins.
+-   `@InjectMongoClient` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the mongo service.
 
 ```java
-// add a global security predicate
-GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predicate() {
-    @Override
-    public boolean resolve(HttpServerExchange exchange) {
-        var request = Request.wrap(exchange);
+private PluginsRegistry registry;
 
-        // return false to deny the request
-        return !(request.isGet()
-                        && "/secho/foo".equals(URLUtils.removeTrailingSlashes(
-                                        exchange.getRequestPath())));
+@InjectPluginsRegistry
+public void init(PluginsRegistry registry) {
+    this.registry = registry;
+}
+```
+
+### Request and Response Generic Classes
+
+*Services* and *Interceptor* are generic classes. They use type parameters for Request and Response classes.
+
+Many concrete implementations of specialized Request and Response exist in the `org.restheart.exchange` package to simplify development:
+
+- `JsonRequest` and `JsonResponse`
+- `BsonRequest` and `BsonResponse`
+- `MongoRequest` and `MongoResponse`
+- `ByteArrayRequest` and `ByteArrayResponse`
+- `BsonFromCsvRequest`
+
+Those implementations differ on the data type used to hold the request and response content. For example, `ByteArrayRequest` and `BsonRequest` hold content as `byte[]` and `BsonValue` respectively.
+
+Different implementation can also provide some helper methods to cope with specific request parameter. For instance, the `MongoRequest`, i.e. the request used by the MongoService, has the method `getPageSize()` because this is a query parameter used by that service.
+
+When a request hits RESTHeart, it determines which service will handle it. The Service implementation is responsible of instantiating the correct Request and Response objects that will be used along the whole exchange processing chain.
+
+## Services
+
+Depending on the required content type, the Service class implements one of the specialized `org.restheart.plugins.Service` interfaces:
+
+- `ByteArrayService`
+- `JsonService`
+- `BsonService`
+
+The code of example [mongo-status-service](https://github.com/SoftInstigate/restheart-examples/tree/master/mongo-status-service) implementing `BsonService` and using the `MongoClient` obtained via `@InjectMongoClient` follows:
+
+```java
+@RegisterPlugin(
+        name = "serverstatus",
+        description = "returns MongoDB serverStatus",
+        enabledByDefault = true,
+        defaultURI = "/status")
+public class MongoServerStatusService implements BsonService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoServerStatusService.class);
+
+    private MongoClient mongoClient;
+
+    private static final BsonDocument DEFAULT_COMMAND
+            = new BsonDocument("serverStatus", new BsonInt32(1));
+
+    @InjectMongoClient
+    public void init(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
     }
-});
+
+    @Override
+    public void handle(BsonRequest request, BsonResponse response) throws Exception {
+        if (request.isGet()) {
+            var commandQP = request.getExchange().getQueryParameters().get("command");
+
+            final var command = commandQP != null
+                    ? BsonDocument.parse(commandQP.getFirst())
+                    : DEFAULT_COMMAND;
+            
+            LOGGER.debug("### command=" + command);
+            
+            var serverStatus = mongoClient.getDatabase("admin")
+                    .runCommand(command, BsonDocument.class);
+            
+            response.setContent(serverStatus);
+            response.setStatusCode(HttpStatus.SC_OK);
+            response.setContentTypeAsJson();
+        } else {
+            // Any other HTTP verb is a bad request
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+        }
+    }
+}
 ```
 
-<hr>
+The key method is `handle()` that is executed when a request to the service URI hits RESTHeart.
+
+### Crate Service with type
+
+To implement a Service that handles different types of Request and Response, the it must implement the base `Service` interface. 
+
+The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects. 
+
+The following example shows how to handle XML content:
+
+```java
+@RegisterPlugin(
+        name = "myXmlService",
+        description = "example service consuming XML requests",
+        enabledByDefault = true,
+        defaultURI = "/xml")
+public class MyXmlService implements Service<XmlRequest, XmlResponse> {
+    @Override
+    default Consumer<HttpServerExchange> requestInitializer() {
+        return e -> XmlRequest.init(e);
+    }
+
+    @Override
+    default Consumer<HttpServerExchange> responseInitializer() {
+        return e -> XmlResponse.init(e);
+    }
+
+    @Override
+    default Function<HttpServerExchange, JsonRequest> request() {
+        return e -> XmlRequest.of(e);
+    }
+
+    @Override
+    default Function<HttpServerExchange, JsonResponse> response() {
+        return e -> XmlResponse.of(e);
+    }
+}
+```
+
+The example follows a pattern that delegates the actual initialization (in `requestInitializer()` and `responseInitializer()`) and retrieval of the object from the exchange (in `request()` and `response()`) to the concrete class, as follows:
+
+```java
+public class XmlRequest extends ServiceRequest<Document> {
+    private XmlRequest(HttpServerExchange exchange) {
+        super(exchange);
+    }
+    
+    public static XmlRequest init(HttpServerExchange exchange) {
+        var ret = new XmlRequest(exchange);
+        
+        try {
+            ret.injectContent();
+        } catch (Throwable ieo) {
+            ret.setInError(true);
+        }
+        
+        return ret;
+    }
+    
+    public static XmlRequest of(HttpServerExchange exchange) {
+        return of(exchange, XmlRequest.class);
+    }
+    
+    public void injectContent() throws SAXException, IOException {
+        var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        var rawContent = ChannelReader.read(wrapped.getRequestChannel());
+	    
+        setContent(xdBuilder.parse(rawContent)ml);
+    }
+}
+```
 
 ## Interceptors
 
@@ -275,3 +356,78 @@ Please note that, in order to mitigate DoS attacks, the size of the response con
 ### Configuration
 
 Interceptors are configured programmatically with _Initializers_. See [Initializers](#initializers) section for more information.
+
+## Initializers
+
+An _Initializer_ allows executing custom logic at startup time.
+
+Notably it allows to define _Interceptors_ and _Global Permission Predicates_.
+
+The Initializer implementation class must extend the `org.restheart.security.plugins.Initializer` interface, implementing the following method:
+
+```java
+public interface Initializer {
+  public void init();
+}
+```
+
+It must also registered via the `@RegisterPlugin` annotation, example:
+
+```java
+@RegisterPlugin(
+        name = "testInitializer",
+        priority = 100,
+        description = "The initializer used to test interceptors and global predicates",
+        enabledByDefault = false)
+public class TestInitializer implements Initializer {
+
+}
+```
+
+If the initializer is not enabled by default (i.e.e`enabledByDefault=false`), it can be enabled via configuration file as follows:
+
+```
+plugins-args:
+  testInitializer:
+    enabled: true
+```
+
+An example Initializer is `org.restheart.security.plugins.initializers.TestInitializer`.
+
+### Defining Interceptors
+
+The `PluginsRegistry` class allows to define Interceptors.
+
+```java
+RequestInterceptor requestInterceptor = ...;
+ResponseInterceptor responseIterceptor = ...;
+
+PluginsRegistry.getInstance().getRequestInterceptors().add(requestInterceptor);
+
+PluginsRegistry.getInstance().getResponseInterceptors().add(responseIterceptor);
+```
+
+### Defining Global Permission Predicates
+
+The `GlobalSecuirtyPredicatesAuthorizer` class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.
+
+> You can think about a Global Predicate a way to black list request matching a given condition.
+
+The following example predicate denies `GET /foo/bar` requests:
+
+```java
+// add a global security predicate
+GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predicate() {
+    @Override
+    public boolean resolve(HttpServerExchange exchange) {
+        var request = Request.wrap(exchange);
+
+        // return false to deny the request
+        return !(request.isGet()
+                        && "/secho/foo".equals(URLUtils.removeTrailingSlashes(
+                                        exchange.getRequestPath())));
+    }
+});
+```
+
+<hr>
