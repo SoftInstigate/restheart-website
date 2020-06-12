@@ -18,8 +18,8 @@ layout: default
                 <p>RESTHeart leverages MongoDB to provide all data functionalities required by modern applications.</p>
                 <ul class="">
                     <li>Full REST API with JSON.</li>
-                    <li>Queries, aggregations, streams and transactions.</li>
-                    <li>Authentication and role-based Authorization.</li>
+                    <li>Queries, aggregations, streams, and transactions.</li>
+                    <li>Authentication and role-based authorization.</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
@@ -27,9 +27,9 @@ layout: default
                 <h2 class="call-to-action__title">What it is</h2>
                 <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
                 <ul class="">
-                    <li>Ready-to-run stateless Microservice.</li>
+                    <li>Ready-to-run stateless microservice.</li>
                     <li>Distributable as a Docker container.</li>
-                    <li>Easily deployable both on Cloud and on-premises.</li>
+                    <li>Easy deployment – in the cloud and on-premises.</li>
                 </ul>
                 <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
             </div>
@@ -42,13 +42,13 @@ layout: default
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
             <b>Ready-to-use, no server-side coding</b>
-            <b>Supports all features of MongoDB</b>
+            <b>Supports all MongoDB features</b>
             <b>Data API for Mobile Apps</b>
             <b>Develop REST Web Services</b>
             <b>Publish Content to the Web</b>
             <b>Handle users and permissions</b>
             <b>Available as binary package and Docker image</b>
-            <b>Put data access under control</b>
+            <b>Simplifed data access</b>
             <b>Stream real-time data with WebSockets</b>
             <b>Integrate with MongoDB</b>
             <b>Notify clients with Hooks</b>
