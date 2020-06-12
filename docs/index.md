@@ -1,6 +1,9 @@
 ---
 layout: docs
 title: Documentation
+edited: y
+spellCheck: n
+notes: ? non-blocking v asynchronous?
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -16,39 +19,38 @@ title: Documentation
 
 {% include docs-head.html %}
 
-> RESTHeart is a modern **backend** for **Web** and **Mobile** apps, designed to _radically simplify server-side development and deployment_.
+> RESTHeart provides a modern **backend** for **Web** and **Mobile** apps; designed to radically simplify server-side development and deployment.
 
 ## Introduction
 
-There are some features every developer always needs to implement:
+Every app needs:
 
--   Data persistence.
--   Authentication and Authorization.
--   API.
+- Data persistence
+- Authentication and Authorization
+- API
 
 RESTHeart provides out-of-the-box:
 
--   Data persistence via MongoDB.
--   Secure Identity and Access Management.
--   REST API with JSON.
+- Data persistence via MongoDB
+- Secure Identity and Access Management
+- REST API with JSON
 
-![clients](/images/clients.png){: width="90%" height="auto" class="mx-auto d-block img-responsive"}
 
-## Specifications
+## Highlights
 
 -   Written in **Java 11**
--   Built on top of RedHat’s **Undertow** non-blocking HTTP server.
--   Uses **MongoDB** and compatible databases for data persistence.
--   Fully **stateless**.
--   Can be packaged as a **Docker** container.
--   Can be easily deployed both on **Cloud** and **on premises**.
+-   Built on top of RedHat’s **Undertow** non-blocking HTTP server
+-   Uses **MongoDB** and compatible databases for data persistence
+-   Fully **stateless**
+-   Can be packaged as a **Docker** container
+-   Easily deployed in the **cloud** and **on premises**
 
-## Features
-
-For a complete list of features please go to [this page](/features).
+A complete list of features are available [here](/features).
 
 ## Support
 
-If you need either **Community support** or **dedicated, professional support** and a **Enterprise license**, please have a look at the [available options](/support).
+If you need **Community support** or **dedicated, professional support** and a **Enterprise license**, please consider the [available options](/support).
+
+![clients](/images/clients.png){: width="90%" height="auto" class="mx-auto d-block img-responsive"}
 
 </div>
