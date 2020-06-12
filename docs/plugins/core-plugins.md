@@ -6,7 +6,7 @@ title: Develop Core Plugins
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
-    * [@Dependency](#@dependecy) 
+    * [Dependency](#dependecy) 
     * [@RegisterPlugin annotation](#@register-plugin-annotation) 
     * [Plugin Configuration](#plugin-configuration)
     * [Dependency injection](#dependency-injection)
