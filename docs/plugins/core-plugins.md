@@ -32,7 +32,7 @@ It is also possible developing security plugins to customize the security layer.
 
 For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repository on GitHub.
 
-### Dependency
+### Dependency
 
 The only required dependency to develop a plugin is `restheart-commons`.
 
