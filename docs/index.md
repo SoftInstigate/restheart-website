@@ -3,14 +3,12 @@ layout: docs
 title: Documentation
 edited: y
 spellCheck: n
-notes: ? non-blocking v asynchronous?
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [Introduction](#introduction)
--   [Specifications](#specifications)
--   [Features](#features)
+-   [Highlights](#Highlights)
 -   [Support](#support)
 
 </div>
@@ -39,7 +37,7 @@ RESTHeart provides out-of-the-box:
 ## Highlights
 
 -   Written in **Java 11**
--   Built on top of RedHat’s **Undertow** non-blocking HTTP server
+-   Built on top of RedHat’s **Undertow** asynchronous HTTP server
 -   Uses **MongoDB** and compatible databases for data persistence
 -   Fully **stateless**
 -   Can be packaged as a **Docker** container
@@ -49,7 +47,7 @@ A complete list of features are available [here](/features).
 
 ## Support
 
-If you need **Community support** or **dedicated, professional support** and a **Enterprise license**, please consider the [available options](/support).
+If you need **community support** or **dedicated, professional support** and an **Enterprise license**, please consider the [available options](/support).
 
 ![clients](/images/clients.png){: width="90%" height="auto" class="mx-auto d-block img-responsive"}
 
