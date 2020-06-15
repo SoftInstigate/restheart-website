@@ -89,7 +89,7 @@ The method `authenticate()` must return:
 
 - NOT_ATTEMPTED: the request cannot be authenticated because it doesn't fulfill the authentication mechanism requirements. An example is *BasicAutMechanism* when the request does not include the header `Authotization` or its value does not start by `Basic `
 - NOT_AUTHENTICATED: the Authentication Mechanism handled the request but could not authenticate the client, for instance because of wrong credentials.
-- AUTHENTICATED: the Authentication Mechanism successfully authenticated the request. In this case the fo
+- AUTHENTICATED: the Authentication Mechanism successfully authenticated the request.
 
 To mark the authentication as failed in `authenticate()`:
 

@@ -73,7 +73,7 @@ In RESTHeart everything is a plugin including Authentication Mechanisms, Authent
 
 <img class="img-fluid" src="/images/restheart-security-explained.png" alt="restheart-security explained">
 
-Different **Authentication Mechanism** manage different authentication schemes.
+Different **Authentication Mechanisms** manage different authentication schemes.
 An example is _BasicAuthMechanism_ that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
 
 A different example is the _IdentityAuthMechanism_ that binds the request to a single identity specified by configuration. This Authentication Mechanism does not require an Authenticator to build the account.
