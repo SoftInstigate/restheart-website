@@ -71,8 +71,7 @@ RESTHeart is built around a **pluggable architecture**. It comes with a strong s
 
 In RESTHeart everything is a plugin including Authentication Mechanisms, Authenticators, Authorizers, Token Managers and Services.
 
-{: .img-fluid }
-![restheart-security explained](/images/restheart-security-explained.png 'restheart-security explained')
+<img class="img-fluid" src="/images/restheart-security-explained.png" alt="restheart-security explained">
 
 Different **Authentication Mechanism** manage different authentication schemes.
 An example is _BasicAuthMechanism_ that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
