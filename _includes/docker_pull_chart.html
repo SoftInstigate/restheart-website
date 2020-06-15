@@ -24,7 +24,7 @@
                 data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
             -->
     </div>
-    <h3 class="text-center sm-2 mt-2 xs-2">RESTHeart Docker image's pulls</h3>
+    <h3 class="text-center sm-2 mt-2 xs-2">RESTHeart Docker daily image's pulls</h3>
 </div>
 
 <canvas id="dockerPullChart"></canvas>
@@ -87,20 +87,39 @@
     $(document).ready(function () {
         // the script /etc/cron.daily/rh-pull-count runs at dbapi.io
         // and POSTs the stats every day to beta.mrest.io/demo/stats
-        $.ajax({
-            url: "https://beta.mrest.io/demo/stats?pagesize=10",
-            beforeSend: function (xhr) { xhr.setRequestHeader('key', 'demo'); },
-            success: function (result) {
-                if (result && result.reverse && result.map) {
-                    result.reverse();
 
-                    var data = result.map(function (x) {
+        var reqs = [];
+
+        for (i = 0; i <= 6; i++) {
+            reqs.push($.ajax({
+                url: `https://beta.mrest.io/demo/stats?pagesize=100&page=${i + 1}`,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('key', 'demo');
+                }
+            }));
+        }
+
+        var combined = Promise.all(reqs)
+            .then(result => result.reduce((acc, result) => { return acc.concat(result); }, []))
+            .then(result => {
+                if (result && result.reverse && result.map) {
+                    var totals = result.reverse().map(function (x) {
                         return x.pull_count;
                     });
 
+                    var deltas = totals.map((d, index, arr) => {
+                        if (index > 0) {
+                            return arr[index] - arr[index - 1];
+                        }
+                    });
+
+                    for (var c = 1; c <= totals.lenght; c++) {
+                        deltas.push(totals[c] - totals[c - 1]);
+                    }
+
                     var max = 0;
-                    data.forEach(function (x) { if (x > max) { max = x } });
-                    max = +max + 100;
+                    deltas.forEach(x => x > max ? max = x : max = max);
+                    max = +max + 10;
 
                     var labels = result.map(function (x) {
                         var date = new Date(x.timestamp.$date);
@@ -109,23 +128,14 @@
 
                     var ctx = $("#dockerPullChart");
                     var dockerPullChart = new Chart(ctx, {
-                        type: 'line',
+                        type: 'bar',
                         data: {
                             labels: labels,
                             datasets: [{
-                                data: data,
-                                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                                borderColor: 'rgba(0, 0, 0, .3)',
-                                pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-                                pointHoverBackgroundColor: 'rgba(255, 255, 255, 1)',
-                                pointBorderColor: 'rgba(155, 37, 58, 1)',
-                                pointHoverBorderColor: 'rgba(155, 37, 58, 1)',
-                                pointBorderWidth: 4,
-                                pointHoverBorderWidth: 6,
-                                borderWidth: 2,
-                                pointRadius: 10,
-                                pointHoverRadius: 12,
-                                fill: false
+                                data: deltas,
+                                backgroundColor: 'rgba(155, 37, 58, 1)',
+                                
+                                fill: true
                             }]
                         },
                         options: {
@@ -139,7 +149,8 @@
                                     },
                                     ticks: {
                                         display: true,
-                                        suggestedMax: max
+                                        suggestedMax: max,
+                                        min: 0
                                     }
                                 }],
                                 xAxes: [{
@@ -165,7 +176,103 @@
                         }
                     });
                 }
-            }
-        });
+            });
+
+
+        // line chart with total pull in the last 10 days
+        // $.ajax({
+        //     url: "https://beta.mrest.io/demo/stats?pagesize=100&page=5",
+        //     beforeSend: function (xhr) { xhr.setRequestHeader('key', 'demo'); },
+        //     success: function (result) {
+        //         if (result && result.reverse && result.map) {
+        //             result.reverse();
+
+        //             var data = result.map(function (x) {
+        //                 return x.pull_count;
+        //             });
+
+        //             var data2 = data.map((d, index, arr) => {
+        //                 if (index > 0) {
+        //                     return arr[index] - arr[index - 1];
+        //                 }
+        //             });
+
+        //             console.log(data2);
+
+        //             for (var c = 1; c <= data.lenght; c++) {
+        //                 console.log(data[c] - data[c - 1]);
+        //                 data2.push(data[c] - data[c - 1]);
+        //             }
+
+        //             var max = 2000;
+        //             // data2.forEach(function (x) { if (x > max) { max = x } });
+        //             // max = +max + 100;
+
+        //             var labels = result.map(function (x) {
+        //                 var date = new Date(x.timestamp.$date);
+        //                 return new Date(date.setDate(date.getDate() - 1)).toISOString().substring(0, 10);
+        //             });
+
+        //             var ctx = $("#dockerPullChart");
+        //             var dockerPullChart = new Chart(ctx, {
+        //                 type: 'bar',
+        //                 data: {
+        //                     labels: labels,
+        //                     datasets: [{
+        //                         data: data2,
+        //                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        //                         borderColor: 'rgba(0, 0, 0, .3)',
+        //                         pointBackgroundColor: 'rgba(255, 255, 255, 1)',
+        //                         pointHoverBackgroundColor: 'rgba(255, 255, 255, 1)',
+        //                         pointBorderColor: 'rgba(155, 37, 58, 1)',
+        //                         pointHoverBorderColor: 'rgba(155, 37, 58, 1)',
+        //                         pointBorderWidth: 4,
+        //                         pointHoverBorderWidth: 6,
+        //                         borderWidth: 2,
+        //                         pointRadius: 10,
+        //                         pointHoverRadius: 12,
+        //                         fill: false
+        //                     }]
+        //                 },
+        //                 options: {
+        //                     showLastTooltip: true,
+        //                     legend: { display: false },
+        //                     scales: {
+        //                         yAxes: [{
+        //                             display: true,
+        //                             gridLines: {
+        //                                 display: true
+        //                             },
+        //                             ticks: {
+        //                                 display: true,
+        //                                 suggestedMax: max,
+        //                                 min: 0
+        //                             }
+        //                         }],
+        //                         xAxes: [{
+        //                             display: true
+        //                         }]
+        //                     },
+        //                     layout: {
+        //                         padding: {
+        //                             left: 20,
+        //                             right: 20,
+        //                             top: 10,
+        //                             bottom: 10
+        //                         }
+        //                     },
+        //                     animation: {
+        //                         duration: 1000
+        //                     },
+        //                     tooltips: {
+        //                         displayColors: false,
+        //                         backgroundColor: 'rgba(155, 37, 58, 1)',
+        //                         bodyFontSize: 18
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     }
+        // });
     });
 </script>
