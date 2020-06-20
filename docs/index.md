@@ -8,7 +8,7 @@ spellCheck: n
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [Introduction](#introduction)
--   [Highlights](#Highlights)
+-   [Highlights](#highlights)
 -   [Support](#support)
 
 </div>
