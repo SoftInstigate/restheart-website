@@ -1,6 +1,6 @@
 ---
 layout: page-notitle
-title: Get RESTHeart
+title: Get Started
 permalink: /get
 ---
 
