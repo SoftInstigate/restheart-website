@@ -6,7 +6,6 @@ If you are ready to follow beginner or advanced RESTHeart [tutorials](/docs/tuto
 {% include setup-for-tutorial.md %}
 
 
-
 ## Build it yourself
 
 Building RESTHeart by yourself is not necessary, but if you want to try then it requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 11** or later.
