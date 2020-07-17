@@ -10,34 +10,7 @@ layout: default
     </section>
 </section>
 
-<section id="call-to-action" class="call-to-action">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">What it does</h2>
-                <p>RESTHeart leverages MongoDB to provide all data functionalities required by modern applications.</p>
-                <ul class="">
-                    <li>Full REST API with JSON.</li>
-                    <li>Queries, aggregations, streams and transactions.</li>
-                    <li>Authentication and role-based Authorization.</li>
-                </ul>
-                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
-            </div>
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">What it is</h2>
-                <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
-                <ul class="">
-                    <li>Ready-to-run stateless Microservice.</li>
-                    <li>Distributable as a Docker container.</li>
-                    <li>Easily deployable both on Cloud and on-premises.</li>
-                </ul>
-                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="cd-intro mt-0 mb-2">
+<section class="cd-intro mt-4 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">REST microservice for MongoDB</b>
@@ -58,8 +31,47 @@ layout: default
     </h1>
 </section>
 
-<section id="examples" class="slice bg-white">
+<section id="call-to-action" class="call-to-action">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+                <h2 class="call-to-action__title">What it does</h2>
+                <p>RESTHeart leverages MongoDB and provides the API required by modern applications. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
+                <ul class="">
+                    <li>HTTP API with JSON</li>
+                    <li>Queries, aggregations, change streams, transactions and more</li>
+                    <li>Pluggable Authentication and role-based Authorization</li>
+                </ul>
+                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
+            </div>
+            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+                <h2 class="call-to-action__title">What it is</h2>
+                <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
+                <ul class="">
+                    <li>Ready-to-run stateless Microservice</li>
+                    <li>Available as binary and Docker container</li>
+                    <li>Deploy both on Cloud and on-premises</li>
+                </ul>
+                <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <h2 class="text-center restheart-red">Clean and ready-to-use Data API for MongoDB</h2>
+</div>
+
+<section id="examples" class="slice bg-white my-0 pb-0">
     {% include examples.html %}
+</section>
+
+<div class="container">
+    <h2 class="text-center restheart-red m-0 mb-2">Elegant Java Framework to extend the API</h2>
+</div>
+
+<section id="examples-plugins" class="slice bg-white">
+    {% include examples_plugins.html %}
 </section>
 
 <section id="trusted-by">
@@ -90,7 +102,7 @@ layout: default
 </section>
 
 <div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <a href="https://mongodbworld2020.sched.com/event/b2Hz">
+    <a href="https://youtu.be/VMaKyQkXByo" target="_blank">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>
 </div>
