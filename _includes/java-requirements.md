@@ -1,4 +1,4 @@
-To run RESTHeart connected to a local instance of MongoDB you need:
+To run RESTHeart with Java you need:
 
 -   Java v11 or higher;
--   MongoDB v3 or higher running on `localhost` on port `27017`.
+-   MongoDB v3 or higher (or any API-compatible database) running on `localhost` on port `27017`.
