@@ -7,7 +7,7 @@ title: Monitoring
 
 - [Introduction](#introduction)
 - [Formats](#formats)
-  - [using restheart `rep` query parameter](#using-restheart-rep-query-parameter)
+  - [using restheart *rep* query parameter](#using-restheart-rep-query-parameter)
   - [using HTTP content negotiation](#using-http-content-negotiation)
 - [Configuration options](#configuration-options)
 - [Reading data](#reading-data)
