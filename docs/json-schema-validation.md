@@ -199,7 +199,7 @@ HTTP/1.1 201 Created
 _jsonChecker_ does not support bulk PATCH requests:
 
 {: .bs-callout.bs-callout-info }
-To handle this requests, set the metadata property `skipNotSupported` to `true`, and add specialized interceptors to validate these requests.
+To handle this requests, set the metadata property `skipNotSupported` to `true`, and add specialized interceptors to validate these requests if required.
 
 ```http
 PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
