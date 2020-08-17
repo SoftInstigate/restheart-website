@@ -1,6 +1,10 @@
-Recommend configuration assistance
-(1 page or many)
-
+---
+layout: docs
+title: Quickstart
+edited: in progress -- this markdown file is not rendering on the live site, why?
+spellCheck: n
+notes: This fragment appeared at the top of the page-- parked here for now: Recommend configuration assistance (1 page or many)
+---
 
 
 The main configuration file is [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) contain actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like so:

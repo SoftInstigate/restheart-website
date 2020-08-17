@@ -1,6 +1,5 @@
 ---
 layout: docs
-
 title: Setup
 edited: in progress
 spellCheck: n
