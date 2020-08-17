@@ -55,6 +55,6 @@ To run RESTHeart with your own Java installation, download the [ZIP](https://git
 For more detailed information see:
 - [Setup](/setup.md)
 <!-- this may not be final location for configuration-->
-- [Configuration Options](/docs/v5/configuration.md)
+- [Configuration Options](/v5/configuration.md)
 
 </div>
