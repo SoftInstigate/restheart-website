@@ -29,11 +29,11 @@ If you are new to RESTHeart read on to learn more.
 
 ## RESTHeart Setup Options 
 
-RESTHeart may be run with [Docker](#install-restheart-with-docker), [Java](#restheart-with-java), or you can build it yourself using [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and Java. There is no need to self-build, so we will concentrate here on Java or Docker options.
+RESTHeart may be run with [Docker](#install-restheart-with-docker), [Java](#restheart-with-java), or you can build it yourself using [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and Java. There is no need to self-build, so we will concentrate on the Java or Docker options.
 
-RESTHeart can work with **any database compatible with the MongoDB API**. It has been tested with MongoDB Community and Enterprise (v2–4), [Percona Server for MongoDB](https://www.percona.com/software/mongodb/percona-server-for-mongodb), [Microsoft Azure Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/mongodb-introduction) and [Amazon DocumentDB](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).
+RESTHeart works with **any database compatible with the MongoDB API**. It has been tested with MongoDB Community and Enterprise (v2–4), [Percona Server for MongoDB](https://www.percona.com/software/mongodb/percona-server-for-mongodb), [Microsoft Azure Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/mongodb-introduction) and [Amazon DocumentDB](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced).
 
-For more information on **how to install and run MongoDB** check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) on MongoDB's documentation.
+For more information on **how to install and run MongoDB** check the [Installation Tutorial](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials) and [Manage MongoDB](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/) from MongoDB.
 
 
 ## Install RESTHeart with Docker
@@ -68,15 +68,15 @@ Stopping restheart-mongo ... done
 
 To stop and start the containers you may use `docker-compose stop` then `docker-compose start` to start them again. 
 
-To completely shutdown the containers and clean-up everything use `docker-compose down -v`. 
+To completely shut down the containers and clean-up everything use `docker-compose down -v`. 
 
 Beware, the `down` command with `-v` parameter erases the MongoDB attached docker volume (named `restheart-mongo-volume`) with all its data.
 
 To run the services in background, add the `-d` parameter: `docker-compose up -d`. In this case, you can tail the logs with `docker-compose logs -f`. 
 
-Read the [docker compose documentation](https://docs.docker.com/compose/) for more.
+Read the [docker compose documentation](https://docs.docker.com/compose/) for more information.
 
-Skip ahead to [Run RESTHeart](#run-restheart)
+Skip ahead to [Run RESTHeart](#run-restheart).
 
 ## RESTHeart with Java
 
@@ -86,7 +86,7 @@ Skip ahead to [Run RESTHeart](#run-restheart)
 
 > RESTHeart needs, at minimum, the **Java 11 Runtime Environment**. It won't even start with older versions of Java.
 
-If you are a Java developer and need to manage multiple JDKs, we suggest to have a look at [SDKMAN!](https://sdkman.io)
+If you're a Java developer and need to manage multiple JDKs, we suggest you look at [SDKMAN!](https://sdkman.io)
 
 
 ### Install RESTHeart with Java
@@ -151,11 +151,11 @@ The directory tree is:
 
 ### Remote vs. Local
 
-To connect RESTHeart to a remote MongoDB instance you have to edit the `mongo-uri` property, setting you own [connection string](https://docs.mongodb.com/manual/reference/connection-string/). For example, a MongoDB Atlas cluster connection string could be something like `mongodb+srv://<username>:<password>@cluster0.mongodb.net/test?w=majority`. Remember that RESTHeart internally uses the MongoDB Java driver, so you must follow that connection string format.
+To connect RESTHeart to a remote MongoDB instance, edit the `mongo-uri` property, setting you own [connection string](https://docs.mongodb.com/manual/reference/connection-string/). For example, a MongoDB Atlas cluster connection string could be something like `mongodb+srv://<username>:<password>@cluster0.mongodb.net/test?w=majority`. Remember that RESTHeart internally uses the MongoDB Java driver, so you must follow that connection string format.
 
 ## Defaults and First Steps
 
-The default setup provides a local instance. By default, RESTHeart only mounts the database `restheart`. This is controlled by the `root-mongo-resource` in the `restheart/etc/default.properties` file.
+The default setup provides a local instance and mounts the database `restheart`. This is controlled by the `root-mongo-resource` in the `restheart/etc/default.properties` file.
 
 {% include initiate-database.md %}
 

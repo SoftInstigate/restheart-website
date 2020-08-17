@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Quickstart
+title: configuration
 edited: in progress -- this markdown file is not rendering on the live site, why?
 spellCheck: n
 notes: This fragment appeared at the top of the page-- parked here for now: Recommend configuration assistance (1 page or many)
