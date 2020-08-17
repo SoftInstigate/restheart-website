@@ -313,8 +313,8 @@ Note the _map_ function; `JSON.parse($vars)` allows to access the
 variables passed with the query parameter `avars`
 
 ```js
-function() { 
- var minage = JSON.parse($vars).minage; // <-- here we get minage from avars qparam
+function() {
+ var minage = JSON.parse($vars).minage;// <-- here we get minage from avars qparam
  if (this.age > minage ) { emit(this.name, this.age); }
 };
 ```

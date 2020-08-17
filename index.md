@@ -10,12 +10,33 @@ layout: default
     </section>
 </section>
 
+<section class="cd-intro mt-4 mb-2">
+    <h1 class="cd-headline d-block justify-content-center letters type">
+        <span class="cd-words-wrapper waiting restheart-red">
+            <b class="is-visible">REST microservice for MongoDB</b>
+            <b>Ready-to-use, no server-side coding</b>
+            <b>Supports all features of MongoDB</b>
+            <b>Data API for Mobile Apps</b>
+            <b>Develop REST Web Services</b>
+            <b>Publish Content to the Web</b>
+            <b>Handle users and permissions</b>
+            <b>Available as binary package and Docker image</b>
+            <b>Put data access under control</b>
+            <b>Stream real-time data with WebSockets</b>
+            <b>Integrate with MongoDB</b>
+            <b>Notify clients with Hooks</b>
+            <b>Create Open Data solutions</b>            
+            <b>Threat protection at every layer</b>
+        </span>
+    </h1>
+</section>
+
 <section id="call-to-action" class="call-to-action">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">What it does</h2>
-                <p>RESTHeart leverages MongoDB to provide all data functionalities required by modern applications.</p>
+                <p>RESTHeart leverages MongoDB and provides the API required by modern applications. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
                 <ul class="">
                     <li>Full REST API with JSON.</li>
                     <li>Queries, aggregations, streams, and transactions.</li>
@@ -57,9 +78,16 @@ layout: default
         </span>
     </h1>
 </section>
-
-<section id="examples" class="slice bg-white">
+<section id="examples" class="slice bg-white my-0 pb-0">
     {% include examples.html %}
+</section>
+
+<div class="container">
+    <h2 class="text-center restheart-red m-0 mb-2">Elegant Java Framework to extend the API</h2>
+</div>
+
+<section id="examples-plugins" class="slice bg-white">
+    {% include examples_plugins.html %}
 </section>
 
 <section id="trusted-by">
@@ -90,7 +118,7 @@ layout: default
 </section>
 
 <div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <a href="https://mongodbworld2020.sched.com/event/b2Hz">
+    <a href="https://youtu.be/VMaKyQkXByo" target="_blank">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>
 </div>

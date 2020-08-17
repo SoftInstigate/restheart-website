@@ -24,7 +24,7 @@ background-color: #eff2f3;
                             </p>
                             <a href="/try" class="btn btn-o-white">More examples</a>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-8 sm">
 {% highlight bash %}
 $ http GET https://beta.mrest.io/demo/messages?filter='{"from":"Bob"}'\&pagesize=2 key:demo
 
@@ -120,7 +120,7 @@ const url = encodeURI('https://beta.mrest.io/demo/messages?filter={"from":"Bob"}
 fetch(url, { headers: {'key':'demo'} })
   .then(response => response.json())
   .then(json => JSON.stringify(json, null, 2))
-  .then(data => document.getElementById('app').innerHTML = data);
+  .then(docs => console.log(docs));
 
 {% endhighlight %}
                     </div>
@@ -143,17 +143,17 @@ fetch(url, { headers: {'key':'demo'} })
 {% highlight java %}
 
 public void printOutMessages() throws UnirestException {
-    HttpResponse<JsonNode> resp = Unirest.get("https://beta.mrest.io/demo/messages")
+    var resp = Unirest.get("https://beta.mrest.io/demo/messages")
             .header("key", "demo")
             .queryString("filter", "{\"from\":\"Bob\"}")
             .queryString("pagesize", "2")
             .asJson();
 
     // get body as JSON array 
-    JSONArray messages = resp.getBody().getArray();
+    var messages = resp.getBody().getArray();
 
     // print out each message
-    messages.forEach(message -> System.out.println(message.toString()));
+    messages.forEach(msg -> System.out.println(msg.toString()));
 }
 
 {% endhighlight %}
@@ -220,7 +220,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
         </div>
     </div>
     <div class="container py-1 text-center">
-        <p class="small">Examples use <a class="text-warning" target="_blank" href="https://mrest.io">mrest.io</a> cloud service for RESTHeart that requires the api <code>key</code>.
+        <p class="small">Examples use <a class="text-warning" target="_blank" href="https://mrest.io">mrest.io</a> cloud service for RESTHeart that requires the api <code>key</code>
         </p>
     </div>
 </section>

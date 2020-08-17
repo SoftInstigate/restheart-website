@@ -1,9 +1,11 @@
 ---
 layout: docs
+
 title: Setup
 edited: in progress
 spellCheck: n
 notes: requires links for configuration, environmental, and plugins
+
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
