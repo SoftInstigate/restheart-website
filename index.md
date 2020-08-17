@@ -38,9 +38,9 @@ layout: default
                 <h2 class="call-to-action__title">What it does</h2>
                 <p>RESTHeart leverages MongoDB and provides the API required by modern applications. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
                 <ul class="">
-                    <li>HTTP API with JSON</li>
-                    <li>Queries, aggregations, change streams, transactions and more</li>
-                    <li>Pluggable Authentication and role-based Authorization</li>
+                    <li>Full REST API with JSON.</li>
+                    <li>Queries, aggregations, streams, and transactions.</li>
+                    <li>Authentication and role-based authorization.</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
@@ -48,9 +48,9 @@ layout: default
                 <h2 class="call-to-action__title">What it is</h2>
                 <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and deployment.</p>
                 <ul class="">
-                    <li>Ready-to-run stateless Microservice</li>
-                    <li>Available as binary and Docker container</li>
-                    <li>Deploy both on Cloud and on-premises</li>
+                    <li>Ready-to-run stateless microservice.</li>
+                    <li>Distributable as a Docker container.</li>
+                    <li>Easy deployment – in the cloud and on-premises.</li>
                 </ul>
                 <a href="{{ "/get" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
             </div>
@@ -58,10 +58,26 @@ layout: default
     </div>
 </section>
 
-<div class="container">
-    <h2 class="text-center restheart-red">Clean and ready-to-use Data API for MongoDB</h2>
-</div>
-
+<section class="cd-intro mt-0 mb-2">
+    <h1 class="cd-headline d-block justify-content-center letters type">
+        <span class="cd-words-wrapper waiting restheart-red">
+            <b class="is-visible">REST microservice for MongoDB</b>
+            <b>Ready-to-use, no server-side coding</b>
+            <b>Supports all MongoDB features</b>
+            <b>Data API for Mobile Apps</b>
+            <b>Develop REST Web Services</b>
+            <b>Publish Content to the Web</b>
+            <b>Handle users and permissions</b>
+            <b>Available as binary package and Docker image</b>
+            <b>Simplifed data access</b>
+            <b>Stream real-time data with WebSockets</b>
+            <b>Integrate with MongoDB</b>
+            <b>Notify clients with Hooks</b>
+            <b>Create Open Data solutions</b>            
+            <b>Threat protection at every layer</b>
+        </span>
+    </h1>
+</section>
 <section id="examples" class="slice bg-white my-0 pb-0">
     {% include examples.html %}
 </section>
