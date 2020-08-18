@@ -44,7 +44,7 @@ notes:
 
 ## Absolute Beginner Tutorial
 
-Are you a complete beginner? Once you have completed your [setup](/setup.md) have a go at our [entry-level tutorial](/tutorials.md).
+Are you a complete beginner? Once you have completed your [setup](/setup.md) have a go at our [entry-level tutorial](/tutorial.md).
 
 ## From the Team
 * [**Json Web Token Authentication for Angular App with Auth0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ): Learn how to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart. 
