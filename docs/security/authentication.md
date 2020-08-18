@@ -40,7 +40,7 @@ The token is verified against the configured `issuer` and `audience` and accordi
 
 Supported algorithms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
 
-For HMAC the `key` configuration option specifies the secret, for RSA the public key.
+For HMAC the `key` configuration option specifies the secret, for RSA the *certificate* (detailed instruction on how to set the key with RSA can be found in [issue 384](https://github.com/SoftInstigate/restheart/issues/384#issuecomment-675415299))
 
 ```yml
 auth-mechanisms:
