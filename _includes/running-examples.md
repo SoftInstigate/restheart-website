@@ -1,8 +1,14 @@
+<!--
+edited: n
+spellCheck: n
+notes: Is it possible to have resthear db bound before creating the db? BECAUSE the first lines say -- assumes db is bound THEN how to create the database follows.
+-->
+
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+The following examples assume that the RESTHeart Platform is running on the localhost with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
 
-To create the _restheart_ db, run the following:
+To create the _restheart_ database, run the following:
 
 {% include code-header.html
     type="Request"

@@ -6,6 +6,12 @@ spellCheck: n
 notes: This fragment appeared at the top of the page-- parked here for now: Recommend configuration assistance (1 page or many)
 ---
 
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+-   [Apply Changes](#apply-changes)
+
+</div>
+
 
 The main configuration file is [restheart.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml) which is parametrized using [Mustache.java](https://github.com/spullara/mustache.java). The [default.properties](https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties) contain actual values for parameters defined into the YAML file. You pass these properties at startup, using the `-e` or `--envFile` parameter, like so:
 
@@ -84,3 +90,5 @@ In this case to see the logs you first need to enable file logging and set an ab
 enable-log-file = true
 log-file-path = /usr/local/var/log/restheart.log
 ```
+
+
