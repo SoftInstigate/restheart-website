@@ -2,6 +2,9 @@
 layout: page
 title: What RESTHeart can do
 permalink: /features
+edited: in progress 
+spellCheck: n
+notes: 
 ---
  
 <div class="row mt-4">
@@ -13,7 +16,7 @@ permalink: /features
                 </h5>
                 <div>RESTHeart unlocks <strong>all the features</strong> of MongoDB. </div>
                 <div class="mt-1">
-                    Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
+                    Supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
@@ -28,7 +31,7 @@ permalink: /features
                     <h2><a href="{{ "/docs/setup" | prepend: site.baseurl }}">Docker</a></h2>
                 </h5>
                 <div>
-                    RESTHeart is available as a docker image. The service is lightweight and full stateless thus ideal for on-the-cloud deployments.
+                    RESTHeart is available as a docker image. The service is lightweight and full stateless – ideal for cloud deployments.
                     <a class="mt-1" href="https://hub.docker.com/r/softinstigate/restheart">
                         <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
                             src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
@@ -46,7 +49,7 @@ permalink: /features
                 <h5 class="card-title">
                     <h2><a href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Battle-tested Security</a></h2>
                 </h5>
-                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by its security layer. Security can be easily customized thanks to its pluggable architecture.
+                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by the security layer. Security can be easily customized thanks to its pluggable architecture.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
@@ -61,17 +64,17 @@ permalink: /features
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extensible with Plugins</a></h2>
+                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extendable with Plugins</a></h2>
                 </h5>
                 <div>
-                    Extend RESTHeart via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check</strong> and <strong>intercept</strong> requests and responses, executes <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
+                    Extend RESTHeart via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check,</strong> and <strong>intercept</strong> requests and responses, executes <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
                 </div>
                 <div class="bs-callout bs-callout-info">
-                    Plugins makes RESTHeart one of the most effective development platform with the majority of API available out-of-the-box and a simple way adding custom business logic.
+                    The Plugin options make RESTHeart one of the most effective development platform with most API available out-of-the-box and a simplifying custom business logic.
                 </div>
                 <div>
-                    Creating a plugin is as simple as implementing a java interface and copying the jar in the <i>plugins</i> directory 
-                    <span class="small">(simplified deplyment available form RESTHeart Platform v5)</span>
+                    Creating a plugin is as simple as implementing a Java interface and copying the jar in the <i>plugins</i> directory 
+                    <span class="small">(simplified deployment available form RESTHeart Platform v5)</span>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">

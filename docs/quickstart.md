@@ -25,7 +25,7 @@ RESTHeart's setup process depends on which option you choose:
 - [Run with Java](#java)
 
 
-## Get the latest release
+## Get the Latest Release
 
 ### Docker
 Download the [image](https://hub.docker.com/r/softinstigate/restheart). This container will give you Java, MongoDB, and RESTHeart.
