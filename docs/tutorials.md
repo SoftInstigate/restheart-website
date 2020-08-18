@@ -1,10 +1,14 @@
 ---
 layout: docs
 title: Tutorials
+edited: in progress 
+spellCheck: n
+notes: 
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
+* [Absolute Beginner Tutorial](#absolute-beginner-tutorial)
 * [From the Team](#from-the-team)
 * [From the Community](#from-the-community)
 
@@ -38,25 +42,29 @@ title: Tutorials
     </div>
 </div>
 
+## Absolute Beginner Tutorial
+
+Are you a complete beginner? Once you have completed your [setup](/setup.md) have a go at our [entry-level tutorial](/tutorials.md).
+
 ## From the Team
-* [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart. 
+* [**Json Web Token Authentication for Angular App with Auth0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ): Learn how to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart. 
 
-* [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database. 
+* [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced): The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of **Amazon's** database. Learn how to configure RESTHeart to access a DocumentDB database. 
 
-* [**JSON Schema — Form Validation, with Angular & RESTHeart**](https://medium.com/softinstigate-team/json-schema-validazione-e-salvataggio-di-un-form-con-angular-restheart-ec13cbdb5872): The **JSON Schema** makes the creation and the validation of a Form activities relatively simple and fast. The functionality of RESTHeart allows us to have an efficient server-side validation system controlled by the JSON Schema, while the **Angular** Angular6-json-schema-form library transform the JSON Schema in a Form very easily.
+* [**JSON Schema — Form Validation, with Angular & RESTHeart**](https://medium.com/softinstigate-team/json-schema-validazione-e-salvataggio-di-un-form-con-angular-restheart-ec13cbdb5872): The **JSON Schema** makes the creation and the validation of Form activities relatively simple and fast. The functionality of RESTHeart leverages an efficient server-side validation system controlled by the JSON Schema, while the **Angular** Angular6-json-schema-form library transforms the JSON Schema into a Form very easily.
 
-* [**RESTful API memo: PUT and POST verbs**](https://medium.com/softinstigate-team/restful-api-memo-put-and-post-verbs-1351ffabc359): **PUT** and **POST** verbs sometimes can be a source of confusion. Let’s briefly recap how they are supposed to work, by revisiting the Hypertext Transfer Protocol.
+* [**RESTful API memo: PUT and POST verbs**](https://medium.com/softinstigate-team/restful-api-memo-put-and-post-verbs-1351ffabc359): **PUT** and **POST** verbs can sometimes be a source of confusion. Let’s briefly recap how they work by revisiting the Hypertext Transfer Protocol.
 
-* [**RESTHeart, the REST API Server for MongoDB**](https://medium.com/softinstigate-team/restheart-the-rest-api-server-for-mongodb-4d84ca3376bc): **RESTHeart** leverages **MongoDB**’s document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally accessible HTTP resources, implementing a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs like GET, POST, PUT, PATCH, DELETE, etc.
+* [**RESTHeart, the REST API Server for MongoDB**](https://medium.com/softinstigate-team/restheart-the-rest-api-server-for-mongodb-4d84ca3376bc): **RESTHeart** leverages **MongoDB’s** document-oriented nature, creating an automatic mapping between MongoDB’s internal storage of data and a graph of externally-accessible HTTP resources. The implementation utilises a model of interaction compliant with an HATEOAS (Hypermedia as the Engine of Application State) representation, where the state of a client process is entirely driven by HTTP verbs such as GET, POST, PUT, etc.
 
-* [**RESTHeart Performances**](/docs/performances): **RESTHeart** has been designed and developed with lightness and performances as fundamental parameters. On this regards, also thanks to its caching capabilities, RESTHeart often overcomes the results that can be achieved accessing MongoDB directly via its Java driver. This article includes the performance test results gathered by the SoftInstigate’s development team.
+* [**RESTHeart Performances**](/docs/performances): **RESTHeart** is designed and developed with lightness and performances as fundamental requirements. This, combined with its caching capabilities enables RESTHeart to outperform MongoDB when accessed directly via its Java driver. This article includes the performance-test results gathered by the SoftInstigate’s development team.
 
-* [**RESTHeart and NGINX with SSL**](https://github.com/SoftInstigate/nginx-restheart): This repository shows an example of NGINX as a SSL frontend for RESTHeart 4.0. It uses Docker images to setup a complete stack made with NGINX, RESTHeart and MongoDB. NGINX acts as a HTTPS reverse proxy for RESTHeart and it uses a self-signed certificate for the SSL connection.
+* [**RESTHeart and NGINX with SSL**](https://github.com/SoftInstigate/nginx-restheart): This repository shows an example of NGINX as a SSL frontend for RESTHeart 4.0. It uses Docker images to setup a complete stack made with NGINX, RESTHeart, and MongoDB. NGINX acts as a HTTPS reverse proxy for RESTHeart and it uses a self-signed certificate for the SSL connection.
 
 ## From the Community
 
-*  [**Building Instant RESTFul API's with MongoDB and RESTHeart**](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/):When you need to turn your Mongo database into a RESTFul API, RESTHeart can get you up-and-running quickly. In this article, we'll explore using RESTHeart to expose a RESTFUL API directly from a Mongo database on Compose.
+*  [**Building Instant RESTFul API's with MongoDB and RESTHeart**](https://www.compose.com/articles/building-instant-restful-apis-with-mongodb-and-restheart/): When you need to turn your MongoDB into a RESTFul API (REST API), RESTHeart can get you up and running quickly. Explore using RESTHeart to expose a REST API directly from a MongoDB on Compose.
 
-*  [**Building Secure Instant API's with RESTHeart and Compose**](https://www.compose.com/articles/building-secure-instant-apis-with-restheart-and-compose/):Following up on our previous article on using RESTHeart to expose a RESTFUL API directly from a Mongo database on Compose, in this article, we'll show you how to secure your RESTHeart API by adding authentication and role-base access control, as well as enabling SSL encryption.
+*  [**Building Secure Instant API's with RESTHeart and Compose**](https://www.compose.com/articles/building-secure-instant-apis-with-restheart-and-compose/): Secure your RESTHeart API by adding authentication and role-based access control, as well as enabling SSL encryption.
 
-*  [**Launching RESTHeart into Production**](https://www.compose.com/articles/launching-restheart-into-production/):Now that we've shown you how to build instant RESTFul API's with RESTHeart and secure your RESTHeart installation, there's just one more step to building instant, secure API's from Compose MongoDB: taking RESTHeart into production.
+*  [**Launching RESTHeart into Production**](https://www.compose.com/articles/launching-restheart-into-production/): Now that we've shown you how to build instant REST API's with RESTHeart and secure your RESTHeart installation, there's just one more step to building instant, secure API's from Compose MongoDB: taking RESTHeart into production.

@@ -2,6 +2,9 @@
 layout: page
 title: What RESTHeart can do
 permalink: /features
+edited: in progress 
+spellCheck: n
+notes: 
 ---
  
 <div class="row mt-4">
@@ -13,7 +16,9 @@ permalink: /features
                 </h5>
                 <div>RESTHeart unlocks <strong>all the features</strong> of MongoDB. </div>
                 <div class="mt-1">
-                    It also supports <strong>MongoDB Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
+
+                    Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
+
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
@@ -28,7 +33,9 @@ permalink: /features
                     <h2><a href="{{ "/docs/setup" | prepend: site.baseurl }}">Docker</a></h2>
                 </h5>
                 <div>
-                    RESTHeart is available as a Docker image. The service is lightweight and fully stateless, ideal for cloud deployments.
+
+                    RESTHeart is available as a Docker image. The service is lightweight and full stateless – ideal for cloud deployments.
+
                     <a class="mt-1" href="https://hub.docker.com/r/softinstigate/restheart">
                         <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
                             src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
@@ -46,7 +53,9 @@ permalink: /features
                 <h5 class="card-title">
                     <h2><a href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Battle-tested Security</a></h2>
                 </h5>
-                <div><strong>Authentication</strong> and <strong>Authorization</strong> are provided by a specialized security layer. Security can be easily customized thanks to RESTHeart's pluggable architecture.
+
+                <div><strong>Authentication</strong> and <strong>Authorization</strong> provided by the security layer. Security can be easily customized thanks to the pluggable architecture.
+
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
@@ -61,17 +70,21 @@ permalink: /features
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extensible with Plugins</a></h2>
+                    <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extendable with Plugins</a></h2>
                 </h5>
                 <div>
-                    Extend RESTHeart capabilities via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check</strong> and <strong>intercept</strong> requests and responses, execute <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
+
+                    Extend RESTHeart capabilities via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check,</strong> and <strong>intercept</strong> requests and responses, executes <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
                 </div>
+               
+                   
                 <div class="bs-callout bs-callout-info">
-                    Plugins makes RESTHeart a complete development platform, with an out-of-the-box RESTful data persistence API and an extension mechanism which allows to implement custom business logic in Java.
+                    Plugins make RESTHeart a complete development platform, with out-of-the-box RESTful data persistence API and an extension mechanism which implements custom business logic in Java.
                 </div>
                 <div>
                     Creating a plugin is as simple as implementing a Java interface and copying the resulting JAR file in the <i>plugins</i> directory 
                     <span class="small">(this simplified deployment option is available starting from RESTHeart 5)</span>
+
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
