@@ -13,7 +13,7 @@ permalink: /features
                 </h5>
                 <div>RESTHeart unlocks <strong>all the features</strong> of MongoDB. </div>
                 <div class="mt-1">
-                    Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
+                    It also supports <strong>MongoDB Atlas</strong>, <strong>AWS DocumentDB</strong> and <strong>Azure Cosmos DB</strong>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
