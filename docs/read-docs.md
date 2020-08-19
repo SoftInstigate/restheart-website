@@ -36,9 +36,14 @@ notes: first pass to fix up some bloopers
 
 This page provides examples of query operations using the `GET` method.
 
-You will learn how to retrieve documents from a collection, optionally specifying a query, sort criteria, fields projections options, and how to deal with pagination.  
+Learn how to:
 
-You will also learn how to retrieve a single document knowing its _id.
+- retrieve documents from a collection
+- optionally specifying a query
+- apply sort criteria
+- apply fields projections options
+- deal with pagination  
+- retrieve a single document knowing its _id.
 
 {% include running-examples.md %}
 

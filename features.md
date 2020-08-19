@@ -1,6 +1,6 @@
 ---
 layout: page
-title: What RESTHeart can do
+title: RESTHeart Offers
 permalink: /features
 edited: y
 spellCheck: y- UK
