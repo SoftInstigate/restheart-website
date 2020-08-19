@@ -19,7 +19,7 @@ notes:
 
 <div class="d-block d-md-none alert alert-warning" role="alert">
     <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
+    Follow us on <strong class="ml-1 mr-1">Medium.com</strong>
     </div>
     <div class="d-flex justify-content-center mt-2">
         <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri">Try RESTHeart blog</a></span>
@@ -28,7 +28,7 @@ notes:
 
 <div class="d-none d-md-block alert alert-warning" role="alert">
     <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
+    Follow us on <strong class="ml-1 mr-1">Medium.com</strong>
     </div>
     <div class="d-flex justify-content-center mt-2">
         <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri"> RESTHeart blog</a></span>

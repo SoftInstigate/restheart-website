@@ -1,6 +1,9 @@
 ---
 layout: docs
 title: Read JSON Documents
+edited: in progress
+spellCheck: n
+notes: first pass to fix up some bloopers
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -33,9 +36,14 @@ title: Read JSON Documents
 
 This page provides examples of query operations using the `GET` method.
 
-You will learn how to get documents from a collection, optionally specifying a query, sort criteria, fields projections options and deal with pagination.  
+Learn how to:
 
-You will also learn hot to get a single document knowing its _id.
+- retrieve documents from a collection
+- optionally specifying a query
+- apply sort criteria
+- apply fields projections options
+- deal with pagination  
+- retrieve a single document knowing its _id.
 
 {% include running-examples.md %}
 
@@ -55,12 +63,11 @@ GET /inventory HTTP/1.1
 
 ## Paging
 
-The response is paginated,  i..e. only a subset of the collection’s document is returned in the response array.
+The response is paginated,  i.e. only a subset of the collection’s document is returned in the response array.
 
-The number of documents to return is controlled via the `pagesize` query
-parameter. Its default value is 100, maximum allowable size is 1000.
+The `pagesize` query parameter controls the number of documents returned. Its default value is 100; the maximum allowable size is 1000.
 
-The pages to return is specified with the `page` query parameter. The
+The `page` query parameter specifies the pages to return. The
 pagination links (first, last, next, previous) are **only returned on
 hal full mode** (`hal=f` query parameter); see [HAL
 mode](https://restheart.org/docs/representation-format/)
@@ -82,10 +89,10 @@ GET /inventory?page=2&pagesize=3 HTTP/1.1
 
 ## Filtering
 
-The **`filter`** query parameter allows to specify conditions on the
-documents to be returned.
+The **`filter`** query parameter enables conditions to be specified to control which 
+documents are returned.
 
-The `filter` qparam value is any [mongodb
+The `filter` qparam value is any [MongoDB
 query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 
 Note that system properties (properties starting with \_ that are
@@ -104,11 +111,10 @@ managed automatically by RESTHeart) are not affected by this option.
     operator.
     </p>
     <p>
-    This can be very useful in conjunction with path based security
-    permission.
+    This can be very useful in conjunction with path-based security permission.
     </p>
     <p>
-    For instance the following permission can be used with the simple file
+    For instance, the following permission can be used with the simple file
     based Access Manager to restrict users to GET a collection only
     specifying a filter on the author property to be equal to their
     username:
@@ -239,10 +245,9 @@ sort={"field": 1}
     (ObjectId have a timestamp in the most significant bits).
     </p>
     <p>
-    RESTHeart returns data in pages (default being 100) and it is stateless.
-    This means that two requests use different db cursors. A default sorting
-    makes sure that requests on different pages returns documents in a well
-    defined order.
+    RESTHeart returns data in pages (default being 100), and it's stateless.
+    This means that two requests use different database cursors. A default sorting
+    makes sure that requests on different pages return documents in a well-defined order.
     </p>
     <div class="alert alert-warning" role="alert">
         <h2 class="alert-heading">Disable default sorting</h2>
@@ -287,6 +292,7 @@ GET /inventory?sort={"status":1} HTTP/1.1
 ```
 
 {: .mt-4 }
+
 #### Sort by *status* descending
 
 {% include code-header.html 
@@ -341,7 +347,7 @@ GET /inventory?sort={"status":1,"qty":-1} HTTP/1.1
 #### Sort by search score
 
 {: .bs-callout.bs-callout-info }
-This is only possible with json expression format
+This is only possible with JSON expression format
 
 **create a text index**
 
@@ -389,7 +395,7 @@ managed automatically by RESTHeart) are not affected by this option.
     <p>
     It's possible to use the "dot notation" to specify fields within an
     object, for example, let's say that both <strong>item</strong> and <strong>status</strong> are
-    part of an <strong>header</strong> object:
+    part of a <strong>header</strong> object:
     </p>
     <p class="black-code">
     <div class="black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; GET /inventory?keys={'header.item':1}&amp;keys={'header.status':1}</code></pre></div></div>
@@ -436,11 +442,11 @@ GET /inventory?keys={'item':1}&keys={'qty':1} HTTP/1.1
 
 ## Hint
 
-Hint allows overriding MongoDB’s default index selection and query optimization process. See [cursor hint](https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint) on MongoDB documentation.
+Hint overrides MongoDB’s default index selection and query optimization process. See [cursor hint](https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint) on MongoDB's documentation.
 
 This is done via the `hint` query parameter.
 
-Specify the index by the index specification document, either using a json document or the compact string representation; specifying the index by name is not supported.
+Specify the index by the index specification document, either using a JSON document or the compact string representation; specifying the index by name is not supported.
 
 Use `$natural` to force the query to perform a forwards collection scan.
 
