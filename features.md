@@ -3,7 +3,7 @@ layout: page
 title: RESTHeart Offers
 permalink: /features
 edited: y
-spellCheck: y- UK
+spellCheck: y- US
 notes: 
 ---
  
@@ -79,7 +79,7 @@ notes:
                
                    
                 <div class="bs-callout bs-callout-info">
-                    Plugins make RESTHeart a complete development platform, with out-of-the-box RESTful data persistence API and an extension mechanism which implements custom business logic in Java.
+                    Plugins make RESTHeart a complete development platform, with out-of-the-box RESTful data persistence API and an extension mechanism that implements custom business logic in Java.
                 </div>
                 <div>
                     Creating a plugin is as simple as implementing a Java interface and copying the resulting JAR file in the <i>plugins</i> directory 
@@ -217,7 +217,7 @@ notes:
                         <a href="{{ "docs/mgmt/dbs-collections/" | prepend: site.baseurl }}">Database Management API</a>
                     </h2>
                 </h5>
-                <div>API-managed creation and deletion of databases and collections. Define indexes and control plugins' behaviour via resource metadata.</div>
+                <div>API-managed creation and deletion of databases and collections. Define indexes and control plugins' behavior via resource metadata.</div>
             </div>
             <div class="d-flex w-100 justify-content-end">
                 <a class="btn btn-m" href="{{ "docs/mgmt/dbs-collections/" | prepend: site.baseurl }}">Read More</a>
