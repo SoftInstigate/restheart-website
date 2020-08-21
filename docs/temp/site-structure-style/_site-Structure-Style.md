@@ -31,13 +31,18 @@ US English
   - JSON (not lower)
   - metadata
 
-## 4. Project flow
+## 4. Headings
+
+H1 and H2 Pascal Caps
+H3 1st word Caps
+
+## 5. Project flow
 
 - Meta applied to markdown files to record edit/spell check
 - Document to store style and site decisions as _style-guide.md
 
 
-## 5. Proposed site structure Docs down
+## 6. Proposed site structure Docs down
 
 
 
@@ -58,7 +63,7 @@ US English
 |                |        | Security | security/overview.md & security/authentication.md & security/authorization.md  & security/how-clients-authenticate.md & security/secure-connection-to-mongodb.md & security/tls.md & plugins/security-plugins.md & proxy.md | May be worth have a "native" security v customisable security structure |
 |  |  | Specifications | performances.md & monitoring.md & parts of json-schema-validation.md |               |
 
-## 6. Consequence of restructure from Docs down
+## 7. Consequence of restructure from Docs down
 
 There need not be any major impact to the pages at the same level as Docs e.g. [Features](https://restheart.org/features) can still act as lead page for the sub pages within Docs. It may be that the sub page link can be improved e.g. the Docker link feeds through to setup, but the final decision may be to have a setup using Docker v setup using Java.
 
@@ -66,12 +71,12 @@ Consider staying fairly agile with regards to the inner pages, maintain as is wh
 
 Consider creating **see also**... between linked items (e.g. Resources > Quick Reference > Customisation and plugins in Resources > Quick Reference > Security), the "cards" used in Features would suit this.
 
-## 7. Predicted user flow
+## 8. Predicted user flow
 
 > Direct expert users path 1a. Resources > Quick Reference OR b. Get Started > Setup > Quick Start
 > Direct novice users path 2. Get Started > Overview > Use Cases > Setup > Tutorials
 
-## 8. General notes on user-type
+## 9. General notes on user-type
 
 From the point of view of a complete beginner, it gets technical fast. To attract novice users more scaffolding is required. Options include:
 
@@ -81,7 +86,7 @@ From the point of view of a complete beginner, it gets technical fast. To attrac
 - splitting out a beginners path v advanced path once the documentation is completed
 
 
-## 9. Single Sourcing (SS)
+## 10. Single Sourcing (SS)
 
 Single sourcing can be achieved through structuring content e.g. prerequisite page to SS (write-docs.md & read-docs.md & tutorial.md, & files.md all have the same prerequisite e.g. *"assume platform runs on local host with default configuration"*). 
 

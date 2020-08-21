@@ -12,7 +12,7 @@ notes: requires links for configuration, environmental, and plugins
 -   [Install with Docker](##install-restheart-with-docker)
 -   [Install with Java](#restheart-with-java)
 -   [Run RESTHeart](#run-restheart)
-- 	[Customise RESTHeart](#customisation)
+- 	[Customize RESTHeart](#customization)
 -	[Remote vs. Local](#remote-vs-local)
 
 
@@ -123,9 +123,9 @@ $ cd restheart
 {% include check-is-running.md %}
 
 
-## Customisation 
+## Customization 
 
-RESTHeart is highly-customisable through the use of:
+RESTHeart is highly-customizable through the use of:
 - configuration files,
 - environment variables,
 - plugins.
@@ -183,19 +183,17 @@ The default `acl.yml` defines the following permissions:
 
 ```bash
 # create database 'restheart'
-$ curl --user admin:secret -I -X PUT :8080/
-HTTP/1.1 201 OK
+$ curl --user admin:secret -I -X PUT http://localhost:8080/ HTTP/1.1 201 OK
 
 # create collection 'restheart.collection'
-$ curl --user admin:secret -I -X PUT :8080/collection
-HTTP/1.1 201 OK
+$ curl --user admin:secret -I -X PUT http://localhost:8080/collection HTTP/1.1 201 OK
 
 # create a couple of test documents
-$ curl --user admin:secret -X POST :8080/collection -d '{"a":1}' -H "Content-Type: application/json"
-$ curl --user admin:secret -X POST :8080/collection -d '{"a":2}' -H "Content-Type: application/json"
+$ curl --user admin:secret -X POST http://localhost:8080/collection -d '{"a":1}' -H "Content-Type: application/json"
+$ curl --user admin:secret -X POST http://localhost:8080/collection -d '{"a":2}' -H "Content-Type: application/json"
 
 # get documents
-$ curl --user admin:secret :8080/collection
+$ curl --user admin:secret http://localhost:8080/collection
 [{"_id":{"$oid":"5dd3cfb2fe3c18a7834121d3"},"a":1,"_etag":{"$oid":"5dd3cfb2439f805aea9d5130"}},{"_id":{"$oid":"5dd3cfb0fe3c18a7834121d1"},"a":2,"_etag":{"$oid":"5dd3cfb0439f805aea9d512f"}}]%
 ```
 

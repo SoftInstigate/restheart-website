@@ -1,6 +1,9 @@
 ---
 layout: docs
-title: Tutorial
+title: Beginner Tutorial
+edited: in progress
+spellCheck: n
+notes: The '_includes' running-examples snippet may not be the best solution here
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -17,6 +20,76 @@ title: Tutorial
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
+
+
+## Welcome to the Absolute Beginner Tutorial
+
+Expect, by the end of this walk-through, to have installed MongoDB and RESTHeart locally and to have created, edited, and deleted data from your database using HTTP requests.
+
+## System Setup
+
+This tutorial will utilize our Docker image. This provides all the software and their dependencies. 
+
+### Step 1 Get Docker
+
+If you don't have Docker, install [Docker](https://docs.docker.com/get-docker/) for your Operating System (OS).
+
+### Step 2 Download the Docker image
+
+In a command prompt, run 
+
+```bash
+docker pull softinstigate/restheart
+``` 
+
+to download the [public Docker image](https://hub.docker.com/r/softinstigate/restheart).
+
+### Step 3 Determine where to work
+
+Use your command prompt (or Explorer) to navigate to a suitable location, and create a working directory and enter it, e.g:
+
+```bash
+mkdir restheart && cd restheart
+```
+
+### Step 4 Download the Docker-Compose YAML file
+
+With your command prompt set to your working directory, download the RESTHeart docker-compose file:
+
+```bash
+curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+```
+
+### Step 5 Install the Docker image
+
+Run 
+
+```bash
+docker-compose up -d
+```
+
+If you installed a desktop version of Docker, you will be able to see a running instance of your container.
+
+![Screenshot of Docker Desktop in Windows running restheart MongoDB](/images/docker-screenshot.jpg)
+
+## Database Setup
+
+So far, you have created a local instance of RESTHeart and mounted the database restheart. 
+The database restheart doesn’t yet exist. Create it by issuing a PUT / HTTP command.
+
+Example for localhost, run: 
+
+```http
+curl --user admin:secret -I -X PUT http://localhost:8080/ HTTP/1.1 201 OK
+``` 
+from the command prompt.
+
+Success will be indicated by a `201 Created`, don't be concerned about curl error messages.
+
+
+## Interact With Your Database
+
+<!--TW see this snippet-- stuck at this point --> 
 
 {% include running-examples.md %}
 
