@@ -15,13 +15,21 @@ Where possible, remove HTML in favour of markdown equivalent.
 
 ## 3. Style Guide
 
+US English
+
 - Reduce word count (TLDR - fix too long didn't read)
 - Remove capitalizations where possible (e.g. cloud v Cloud, microservice v Microservice)
 - Reduce mix of formats (e.g. italic and bold)
 - Apply plain English principles
+- Concatenate (you're not you are)
 - Standardise common terms
   - e.g. MongoDB (not mongoDB or variants)
   - e.g. microservice (not micro-service)
+  - frontend (not front end)
+  - RESTful API (then use acronym after first instance REST API)
+  - Java (not lower)
+  - JSON (not lower)
+  - metadata
 
 ## 4. Project flow
 
