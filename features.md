@@ -67,14 +67,7 @@ notes:
                     <h2><a href="{{ "/docs/plugins/overview/" | prepend: site.baseurl }}">Extendable with Plugins</a></h2>
                 </h5>
                 <div>
-                    Extend RESTHeart capabilities via <strong>Plugins</strong> to <strong>transform</strong>, <strong>check,</strong> and <strong>intercept</strong> requests and responses. Execute <strong>hooks</strong> after a request completes and implement <strong>Web Services</strong>.
-                </div>
-                <div class="bs-callout bs-callout-info">
-                    Plugins make RESTHeart a complete development platform, with out-of-the-box RESTful data persistence API and an extension mechanism which implements custom business logic in Java.
-                </div>
-                <div>
-                    Creating a plugin is as simple as implementing a Java interface and copying the resulting JAR file in the <i>plugins</i> directory 
-                    <span class="small">(this simplified deployment option is available starting from RESTHeart 5)</span>
+                    Extend RESTHeart capabilities via <strong>Java Plugins</strong>. This makes RESTHeart a complete development platform, with an out-of-the-box data persistence API and an extension mechanism to implement custom logic and REST Web Services.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
