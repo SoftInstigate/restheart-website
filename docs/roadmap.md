@@ -49,6 +49,14 @@ The new service `restheart-studio` will added to RESTHeart. This is a web applic
 ![](/images/restheart-platform-admin-preview.png){:
 width="800" height="auto" class="mx-auto d-block img-responsive"}
 
+### GraphQL Plugin
+
+The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints. It will enable you to:
+
+-   Point to internal and external data sources.
+-   Setup relationships and security rules on the data models across sources.
+-   Get a managed unified GraphQL API to build modern applications.
+
 ### Upgrade to undertow 4.0
 
 **RESTHeart** will updated to use Undertow 4.0.
