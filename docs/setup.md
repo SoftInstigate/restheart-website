@@ -26,7 +26,10 @@ title: Setup
 
 ### Get the latest release
 
-Download the [ZIP](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.zip) or [TAR.GZ](https://github.com/SoftInstigate/restheart/releases/download/5.1.1/restheart.tar.gz) archive.
+Download the ZIP or TAR archive.
+
+[zip](https://github.com/SoftInstigate/restheart/releases/download/5.1.5/restheart.zip){: .btn btn-md}
+[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.1.5/restheart.tar.gz){: .btn btn-md}
 
 Un-zip
 
@@ -329,7 +332,7 @@ To compile new plugins, add the `restheart-commons` dependency to your POM file:
     <dependency>
         <groupId>org.restheart</groupId>
         <artifactId>restheart-commons</artifactId>
-        <version>5.1.1</version>
+        <version>5.1.5</version>
     </dependency>
 </dependencies>
 ```
