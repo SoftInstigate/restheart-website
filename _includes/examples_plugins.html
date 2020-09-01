@@ -23,17 +23,16 @@ background-color: #eff2f3;
                         </div>
                         <div class="col-md-8">
 {% highlight java %}
-@RegisterPlugin(name = "hello", 
-    description = "sends a greeting message to clients")
-public class HelloService implements JsonService {
+@RegisterPlugin(name = "greeterService", 
+    description = "sends a greetings message to clients",
+    defaultURI = "/greetings")
+public class GreeterService implements JsonService {
     @Override
     public void handle(JsonRequest request, JsonResponse response) throws Exception {
         if (request.isGet()) {
             var content = new JsonObject();
             content.addProperty("message", "Hello World!");
-
             response.setContent(content);
-            response.setStatusCode(200);
         } else {
             response.setStatusCode(400);
         }
@@ -57,13 +56,13 @@ public class HelloService implements JsonService {
                     <div class="col-md-8">
 {% highlight java %}
 @RegisterPlugin(name = "kotlinGreeterService",
-description = "A simple service written in Kotlin",
+description = "sends a greetings message, implemented in Kotlin",
 defaultURI = "/greetings")
-class GreeterService : JsonService {
+class GreeterServiceKt : JsonService {
     override fun handle(request: JsonRequest?, response: JsonResponse?) {
         if (request?.isGet!!) {
             var greetings = JsonObject()
-            greetings.addProperty("msg", "Hello World")
+            greetings.addProperty("msg", "Hello World!")
             response?.content = greetings;
         } else {
             response?.statusCode = 400;
