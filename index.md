@@ -13,7 +13,6 @@ layout: default
 <section class="cd-intro mt-4 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
-            <b class="is-visible">REST microservice for MongoDB</b>
             <b>Ready-to-use, no server-side coding</b>
             <b>Supports all features of MongoDB</b>
             <b>Data API for Mobile Apps</b>
@@ -67,7 +66,7 @@ layout: default
 </section>
 
 <div class="container">
-    <h2 class="text-center restheart-red m-0 mb-2">Elegant Java Framework to extend the API</h2>
+    <h2 class="text-center restheart-red m-0 mb-2">Elegant Java and Kotlin Framework to extend the API</h2>
 </div>
 
 <section id="examples-plugins" class="slice bg-white">

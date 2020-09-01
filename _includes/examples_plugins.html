@@ -6,6 +6,7 @@ background-color: #eff2f3;
 <section class="examples mt-1 mb-5">
     <ul class="nav nav-tabs nav-justified" role="tablist">
         <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#ws" role="tab">Web Service</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#kotlin" role="tab">Try with Kotlin</a></li>
         <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor" role="tab">Interceptor</a></li>
     </ul>
     <div class="tab-content pt-4 pb-5">
@@ -42,6 +43,33 @@ public class HelloService implements JsonService {
                         </div>
                     </div>
                 </div>
+        </div>
+        <div class="tab-pane fade show" id="kotlin" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Implement plugins in Kotlin.</h2>
+                        <p class="examples__desc">
+                            You can use Java and <strong>Kotlin</strong> to implement plugins.
+                        </p>
+                        <a href="https://github.com/SoftInstigate/restheart-examples/tree/master/kotlin-greeter-service" target="_blank" class="btn btn-o-white">Kotlin Service example</a>
+                    </div>
+                    <div class="col-md-8">
+{% highlight java %}
+@RegisterPlugin(name = "kotlinGreeterService",
+description = "A simple service written in Kotlin",
+defaultURI = "/greetings")
+class GreeterService : JsonService {
+    override fun handle(request: JsonRequest?, response: JsonResponse?) {
+        var greetings = JsonObject()
+        greetings.addProperty("msg", "Hello World")
+        response?.content = greetings;
+    }
+}
+{% endhighlight %}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="interceptor" role="tabpanel">
             <div class="container">
