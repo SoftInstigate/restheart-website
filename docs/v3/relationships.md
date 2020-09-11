@@ -74,7 +74,7 @@ HAL `_link` property
   "type": "<type>",
   "role": "<role>",
   "target-db": "<dname>",
-  "target-cill": "<collname>",
+  "target-coll": "<collname>",
   "ref-field": "<reffieldname>"
 }
 ```

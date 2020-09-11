@@ -44,7 +44,7 @@ relationship so that links to the referenced documents are auto-magically inclu
     "type": "<type>",
     "role": "<role>",
     "target-db": "<dname>",
-    "target-cill": "<collname>",
+    "target-coll": "<collname>",
     "ref-field": "<reffieldname>"
 }
 ```
