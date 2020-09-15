@@ -13,7 +13,7 @@ layout: default
 <section class="cd-intro mt-4 mb-2">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
-            <b>Ready-to-use, no server-side coding</b>
+            <b class="is-visible">Get your API in minutes</b>
             <b>Supports all features of MongoDB</b>
             <b>Data API for Mobile Apps</b>
             <b>Develop REST Web Services</b>
