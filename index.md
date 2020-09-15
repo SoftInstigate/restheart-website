@@ -33,7 +33,7 @@ layout: default
 <section id="call-to-action" class="call-to-action">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+            <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
                 <p>RESTHeart leverages MongoDB and provides the API required by modern applications. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
                 <ul class="">
@@ -43,7 +43,7 @@ layout: default
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
-            <div class="col-md-6 mb-5 call-to-action__item call-to-action__first">
+            <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
                 <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
                 <ul class="">
@@ -57,12 +57,33 @@ layout: default
     </div>
 </section>
 
+<div class="container text-center mt-0">
+    <img src="/images/restheart.gif" class="img-fluid">
+</div>
+
 <div class="container">
     <h2 class="text-center restheart-red">Clean and ready-to-use Data API for MongoDB</h2>
 </div>
 
 <section id="examples" class="slice bg-white my-0 pb-0">
     {% include examples.html %}
+</section>
+
+<section id="our-commitment" class="mb-5">
+    <div class="row mx-0">
+        <div id="commitment" class="container-fluid my-2">
+            <h2 class="text-center restheart-red">
+                Our commitment
+            </h2>
+            <div class="container">
+                <div class="row">
+                    <div class="col-8 offset-2 call-to-action__item call-to-action__first">
+            RESTHeart is built for stability, coded on a solid java foundation and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on your feedback, and keep it flexible with an open extension mechanism.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <div class="container">
