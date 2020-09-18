@@ -96,7 +96,7 @@ Running RESTHeart will cause the following warning message:
 | a browser running on the same host or edit the configuration.     |
 |                                                                   |
 | More information at                                               |
-| https://restheart.org/docs/setup#accept-license                   |
+| https://restheart.org/docs/enterprise-license                   |
 |                                                                   |
 *-------------------------------------------------------------------*
 ```
@@ -107,6 +107,8 @@ To properly run RESTHeart you must explicitly accept the license:
  - read and approve the license
 
 > To accept the License Agreement you need to select the two checkboxes and then click the "Activate the License Key" button.
+
+![Accept License](/images/accept-license.png){: class="mx-auto d-block img-fluid"}
 
 When done, you will find the following message in RESTHeart's log:
 
