@@ -33,23 +33,17 @@ RESTHeart has always been a very good fit for Microservices and other styles of 
 
 RESTHeart basically receives HTTP requests and tranforms them into MongoDB queries, through the Java driver. Creating a cluster has been a matter of putting a plain HTTP load balancer on top of the choosen clustering technology, exactly as one would do with any other HTTP server.
 
-However, a cluster of RESTHeart v3 nodes requires **sticky sessions**, otherwise the RESTHeart node could receive an authentication token created by another instance, which results in a HTTP 401 "Unauthorized" error.
+However, a cluster of RESTHeart nodes requires **sticky sessions**, otherwise the RESTHeart node could receive an authentication token created by another instance, which results in a HTTP 401 "Unauthorized" error.
 
 As RESTHeart instances don't communicate directly (to avoid expensive synchronization steps), then they can't validate authentication tokens created by other instances in the same cluster. To overcome this situation, the HTTP Load Balancer inserts a sticky session token into a cookie and then handle the communication flow from clients to RESTHeart instances accordingly. Sticky sessions, from an architectural point of view, introduce a level of statefulness in the system and their expiration timeout must be carefully tuned.
 
-This basic RESTHeart v3 clustering configuration is of course available also with [RESTHeart v4 Open Source Edition](https://github.com/softInstigate/restheart). We suggest to ask our [StackOverflow community](https://stackoverflow.com/questions/tagged/restheart) for more information about this.
+## RESTHeart v5 new capabilities
 
-## RESTHeart v4 new capabilities
+RESTHeart v5 add a new feature to make clustering easier, without the need for any sticky session. This enables a fully **stateless deployment**.
 
-**RESTHeart v4 Enterprise and OEM Editions** add a new feature to make clustering easier, without the need for any sticky session. This enables a fully **stateless deployment**.
-
-RESTHeart v4, in fact, comes with a specialized Token Manager which creates cryptographically signed tokens that can be aknowledged by any RESTHeart node in the cluster without direct communication and synchnonization among them: fast, simple and safe.
+RESTHeart now comes with a specialized Token Manager which creates cryptographically signed tokens that can be aknowledged by any RESTHeart node in the cluster without direct communication and synchnonization among them: fast, simple and safe.
 
 ![ALB](/images/alb.png){: class="mx-auto d-block img-responsive"}
-
-The Enterprise license is actually cluster based: it allows by default to create a single production cluster with up to two nodes. For OEM licenses, as they are volume-based, we need to have a chat with potential customers about their estimated volumes, so that we can package the best possibile option.
-
-Besides, customers will receive dedicated support and documentation for clustering and load balancing RESTHeart with MongoDB in higly demanding environments. For example, we illustrate how to setup our **RESTHeart Security** component (which comes with any commercial license) as a super-lightweight load balancer, **without the need to use any external product**.
 
 In summary, the top level steps for a highly available RESTHeart + MongoDB configuration are:
 
@@ -62,6 +56,6 @@ If you want to know more about clustering, load balancing and high avalability, 
 
 ## References
 
-To understand more in general abou Load Balancing, Affinity, Persistence, Sticky Sessions you can read this [article](https://www.haproxy.com/fr/blog/load-balancing-affinity-persistence-sticky-sessions-what-you-need-to-know/).
+To understand more in general abou Load Balancing, Affinity, Persistence, Sticky Sessions you can read this [overview](https://www.haproxy.com/fr/blog/load-balancing-affinity-persistence-sticky-sessions-what-you-need-to-know/).
 
 </div>
