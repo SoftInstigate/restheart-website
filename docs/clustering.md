@@ -6,7 +6,7 @@ title: Clustering and Load Balancing
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [What are Clustering and Load Balancing](#what-are-clustering-and-load-balancing)
--   [How it used to work](#how-it-used-to-work)
+-   [How it works](#how-it-works)
 -   [RESTHeart v5 capabilities](#restheart-v5-capabilities)
 -   [References](#references)
 
@@ -29,7 +29,7 @@ A **MongoDB Replica Set** is a group of `mongod` processes that maintain the sam
 
 RESTHeart has always been a very good fit for Microservices and other styles of distributed architecture. It has been deployed successfully with clustering technologies such as **AWS ECS** and **Fargate**, **Kubernetes** and many others.
 
-## How it used to work
+## How it works
 
 RESTHeart basically receives HTTP requests and transforms them into MongoDB queries, through the Java driver. Creating a cluster has been a matter of putting a plain HTTP load balancer on top of the chosen clustering technology, exactly as one would do with any other HTTP server.
 
@@ -43,7 +43,7 @@ RESTHeart v5 add a new feature to make clustering easier, without the need for a
 
 RESTHeart now comes with a specialized Token Manager which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
 
-(We're adding docs to explain how the Token Manager works, please [contact us by email](mailto:info@softinstigate.com) if you need more information urgently)
+(We're adding docs to explain how the Token Manager works, please [contact us by email](mailto:info@softinstigate.com) if you need more information urgently).
 
 ![ALB](/images/alb.png){: class="mx-auto d-block img-responsive"}
 
