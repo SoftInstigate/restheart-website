@@ -9,7 +9,7 @@ layout: docs
 
 * [How it works](#how-it-works)
 
-* [RESTHeart v5 capabilities](#restheart-v5-capabilities)
+* [RESTHeart EE capabilities](#restheart-ee-capabilities)
 
 * [References](#references)
 
