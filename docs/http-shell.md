@@ -67,3 +67,5 @@ The following commands show a typical commands usage scenario.
 | set header <name> <value> | set the header <name> to <value> | > set header If-Match 5f7f35efcb800f2502f95cb5 |
 | get headers | prints the current set headers | > get headers |
 | clear headers | clears the headers | > clear headers |
+
+</div>
