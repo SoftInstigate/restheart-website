@@ -5,12 +5,17 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [RESTHeart 5.2](#restheart-52)
--   [RESTHeart 6.0](#restheart-60)
--   [Released](#released)
-    -   [RESTHeart 5.1](#restheart-51)
-    -   [RESTHeart 5.0](#restheart-50)
-    -   [RESTHeart 4.1](#restheart-41)
+* [RESTHeart 5.2](#restheart-52)
+
+* [RESTHeart 6.0](#restheart-60)
+
+* [Released](#released)
+
+  * [RESTHeart 5.1](#restheart-51)
+
+  * [RESTHeart 5.0](#restheart-50)
+
+  * [RESTHeart 4.1](#restheart-41)
 
 </div>
 
@@ -23,9 +28,9 @@ layout: docs
 
 ## RESTHeart 5.2
 
-##  Support for request level replica set 
+## Support for request level replica set
 
-`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri. 
+`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
 
 RESTHeart 5.2 will add query parameters to specify those options at request level.
 
@@ -33,9 +38,11 @@ RESTHeart 5.2 will add query parameters to specify those options at request leve
 
 The new authenticator will update the old Access Manager [ADIdentityManager](https://github.com/SoftInstigate/restheart/blob/3.11.x/src/main/java/org/restheart/security/impl/ADIdentityManager.java) available for restheart 3.x to include:
 
--   caching (extending an abstract class that simplifies implementing cached authenticators)
--   configurable LDAP query to retrieve users
--   compatible with Active Directory
+* caching (extending an abstract class that simplifies implementing cached authenticators)
+
+* configurable LDAP query to retrieve users
+
+* compatible with Active Directory
 
 ## RESTHeart 6.0
 
@@ -43,16 +50,20 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 
 The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints. It will enable you to:
 
--   Point to internal and external data sources.
--   Setup relationships and security rules on the data models across sources.
--   Get a managed unified GraphQL API to build modern applications.
+* Point to internal and external data sources.
+
+* Setup relationships and security rules on the data models across sources.
+
+* Get a managed unified GraphQL API to build modern applications.
 
 The new service `restheart-graphql` will be added to RESTHeart. This service exposes a read-only GraphQL API for inquiring MongoDB resources.
 
-The special collection /_gqlapps holds the GraphQL App Definitions. A GraphQL Application Definition document defines:
+The special collection `/_gqlapps` holds the GraphQL App Definitions. A GraphQL Application Definition document defines:
 
-* application name, description and uri (the API will be available at /graphql/&lt;uri&gt;)
+* application name, description and uri (the API will be available at `/graphql/<uri>`)
+
 * the GraphQL schema
+
 * mappings (information that allows to map GraphQL types and fields to MongoDB queries).
 
 As soon as the GraphQL App Definition document gets created, the GraphQL API is automatically generated and available in RESTHeart.
@@ -61,8 +72,9 @@ As soon as the GraphQL App Definition document gets created, the GraphQL API is 
 
 The new service `restheart-studio` will added to RESTHeart. This is a web application:
 
--   for developers: to manage dbs, collections (including configuring extensions such as _Transformers_, _Hooks_, _Checkers_, etc), users and ACL, and reading and writing documents and files.
--   for users: to manage and publishing content through forms
+* for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
+
+* for users: to manage and publishing content through forms
 
 ![](/images/restheart-platform-admin-preview.png){:
 width="800" height="auto" class="mx-auto d-block img-responsive"}
@@ -93,7 +105,7 @@ Support for Transactions has been available since RESTHeart 4.0 as a commercial 
 {: .bs-callout.bs-callout-info }
 With RESTHeart 5.x we moved to the open core business model. While an enterprise license is available for legal and support requirements, all the codebase is Open Source and available under the AGPL 3.0.
 
-### Support for Change Streams
+\### Support for Change Streams
 
 Support for Change Stream has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
 
@@ -136,24 +148,23 @@ The permissions are stored in `restheart.acl` collection. This way permissions c
 
 Permission documents have the following format:
 
-```
-{
-    "roles": [ "admin", "user" ],
-    "condition": "path[/inventory] and (method[POST] or method[GET])",
-    "priority": 1,
-    "filters": {
-        "read": {"$or": [ {"status": "PUBLISHED"}, { "author": { "$var": "username" } } ] },
-        "write": {"author": {"$var": "username" }}
+    {
+        "roles": [ "admin", "user" ],
+        "condition": "path[/inventory] and (method[POST] or method[GET])",
+        "priority": 1,
+        "filters": {
+            "read": {"$or": [ {"status": "PUBLISHED"}, { "author": { "$var": "username" } } ] },
+            "write": {"author": {"$var": "username" }}
+        }
     }
-}
-```
 
 This permission document means:
 
 Allow POST and GET requests on path `/inventory`for users having role `admin` or `user` applying the following filters:
 
--   read requests: return documents having `status=PUBLISHED` or `author=<username of the requesting user>`
--   write requests: only allow requests having `author=<username of the requesting user>`
+* read requests: return documents having `status=PUBLISHED` or `author=<username of the requesting user>`
+
+* write requests: only allow requests having `author=<username of the requesting user>`
 
 {: .bs-callout.bs-callout-info}
 The `filters` properties allow to apply a `filter` (automatically added to the specified filter query parameter) to read and write requests. **This allows to seamlessly partition data depending on user role**.
