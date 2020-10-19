@@ -48,13 +48,7 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 
 ### GraphQL API
 
-The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints. It will enable you to:
-
-* Point to internal and external data sources.
-
-* Setup relationships and security rules on the data models across sources.
-
-* Get a managed unified GraphQL API to build modern applications.
+The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.
 
 The new service `restheart-graphql` will be added to RESTHeart. This service exposes a read-only GraphQL API for inquiring MongoDB resources.
 
@@ -66,7 +60,7 @@ The special collection `/_gqlapps` holds the GraphQL App Definitions. A GraphQL 
 
 * mappings (information that allows to map GraphQL types and fields to MongoDB queries).
 
-As soon as the GraphQL App Definition document gets created, the GraphQL API is automatically generated and available in RESTHeart.
+As soon as the GraphQL App Definition document gets created or updated, the GraphQL API is automatically generated and available under the security domain of RESTHeart.
 
 ### RESTHeart Studio
 
