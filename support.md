@@ -1,7 +1,7 @@
 ---
-layout: page-notitle
 title: Support
-permalink: /support
+permalink: "/support"
+layout: page-notitle
 ---
 
 # Free support

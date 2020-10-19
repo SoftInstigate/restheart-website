@@ -1,8 +1,7 @@
 ---
+title: 'Use Case: REST API for MongoDB'
 layout: article
-title: "Use Case: REST API for MongoDB"
 ---
-
 
 # Significant Development Cost Savings Using RESTHeart
 

@@ -1,7 +1,7 @@
 ---
-layout: page-notitle
 title: Try
-permalink: /try.html
+permalink: "/try.html"
+layout: page-notitle
 ---
 
 # Angular Example

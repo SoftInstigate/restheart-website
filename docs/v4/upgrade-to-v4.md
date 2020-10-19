@@ -1,6 +1,6 @@
 ---
-layout: docs
 title: Upgrade to RESTHeart v4
+layout: docs
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">

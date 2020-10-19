@@ -1,5 +1,6 @@
 ---
+permalink: "/support-packages.html"
 layout: redirect
-redirectUrl: /support
-permalink: /support-packages.html
+redirectUrl: "/support"
 ---
+

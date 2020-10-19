@@ -1,6 +1,6 @@
 ---
-layout: article
 title: 'Use Case: Open Data and IoT'
+layout: article
 ---
 
 {: .text-justify .mt-5}

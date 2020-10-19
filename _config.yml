@@ -1,60 +1,57 @@
-# Site settings
-encoding: utf-8
+---
 title: RESTHeart
+timezone: Europe/Rome
+collections:
+  posts:
+    title: Posts
+    output: true
+  uploads:
+    title: Uploads
+    output: true
+defaults:
+- scope:
+    path: docs
+  values:
+    docs_version: 5
+- scope:
+    path: docs/v3
+  values:
+    docs_version: 3
+- scope:
+    path: docs/v4
+  values:
+    docs_version: 4
+encoding: utf-8
 email: info@softinstigate.com
 description: The most popular REST API for MongoDB.
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "https://restheart.org" # the base hostname & protocol for your site
+baseurl: 
+url: https://restheart.org
 twitter_username: softinstigate
 github_username: softinstigate
-
-# Build settings
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
-timezone: Europe/Rome
 highlighter: rouge
 paginate: 7
 paginate_path: "/blog/page:num"
-permalink: /blog/:year/:month/:day/:title/
+permalink: "/blog/:year/:month/:day/:title/"
 excerpt_separator: "<!-- more -->"
 sass:
-  style: :compressed
+  style: compressed
 plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-
-# Google Analytics
+- jekyll-paginate
+- jekyll-sitemap
 domain: restheart.org
 google_analytics_tracking_id: UA-49060386-2
-
-# Hotjar.com
 hotjar_analytics: true
-
-# Iubenda cookie banner
 cookie_banner: true
-
 blog:
   tags:
-    url: /blog/tags/
-    title_prefix: "blog - tag: "
+    url: "/blog/tags/"
+    title_prefix: 'blog - tag: '
     layout: tag.html
   categories:
-    url: /blog/categories/
-    title_prefix: "blog - category: "
+    url: "/blog/categories/"
+    title_prefix: 'blog - category: '
     layout: category.html
-
-defaults:
-  - scope:
-      path: "docs"
-    values:
-      docs_version: 5
-  - scope:
-      path: "docs/v3"
-    values:
-      docs_version: 3
-  - scope:
-      path: "docs/v4"
-    values:
-      docs_version: 4

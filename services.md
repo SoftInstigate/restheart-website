@@ -1,5 +1,6 @@
 ---
+permalink: "/services"
 layout: redirect
-redirectUrl: /support
-permalink: /services
+redirectUrl: "/support"
 ---
+

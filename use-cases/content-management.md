@@ -1,6 +1,6 @@
 ---
-layout: article
 title: 'Use Case: Content Management'
+layout: article
 ---
 
 {: .text-justify .mt-5}

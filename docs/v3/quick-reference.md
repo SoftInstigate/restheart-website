@@ -1,9 +1,9 @@
 ---
-layout: docs
 title: Quick Reference
+layout: docs
 features:
 - href: features/dbs-collections.html
-  title: DB and Collections  
+  title: DB and Collections
   anchor: db-coll
 - href: features/documents.html
   title: Documents

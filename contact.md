@@ -1,6 +1,7 @@
 ---
-layout: default 
+layout: default
 ---
+
 <div class="h-100 jumbotron jumbotron-fluid bg-white mb-0 py-3">
     <h1 class="my-4 text-center restheart-red">For any questions</h1>
     <div class="d-flex justify-content-center align-content-end w-100 h-100">

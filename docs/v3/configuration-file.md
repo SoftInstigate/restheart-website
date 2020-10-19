@@ -1,7 +1,8 @@
 ---
-layout: docs
 title: Configuration File
+layout: docs
 ---
+
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 - [Sample configuration file](#sample-configuration-file)

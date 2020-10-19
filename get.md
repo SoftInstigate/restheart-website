@@ -1,5 +1,6 @@
 ---
+permalink: "/get"
 layout: redirect
-redirectUrl: /docs/setup
-permalink: /get
+redirectUrl: "/docs/setup"
 ---
+

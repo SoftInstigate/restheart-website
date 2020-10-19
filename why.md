@@ -1,6 +1,6 @@
 ---
-layout: article
 title: Why RESTHeart
+layout: article
 ---
 
 {: .mt-5}

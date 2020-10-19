@@ -1,5 +1,6 @@
 ---
+permalink: "/quick-start.html"
 layout: redirect
-redirectUrl: /docs/setup
-permalink: /quick-start.html
+redirectUrl: "/docs/setup"
 ---
+
