@@ -47,6 +47,16 @@ The [GraphQL](https://graphql.org) plugin will work side by side with the alread
 -   Setup relationships and security rules on the data models across sources.
 -   Get a managed unified GraphQL API to build modern applications.
 
+The new service `restheart-graphql` will be added to RESTHeart. This service exposes a read-only GraphQL API for inquiring MongoDB resources.
+
+The special collection /_gqlapps holds the GraphQL App Definitions. A GraphQL Application Definition document defines:
+
+* application name, description and uri (the API will be available at /graphql/<uri>)
+* the GraphQL schema
+* mappings (information that allows to map GraphQL types and fields to MongoDB queries).
+
+As soon as the GraphQL App Definition document gets created, the GraphQL API is automatically generated and available in RESTHeart.
+
 ### RESTHeart Studio
 
 The new service `restheart-studio` will added to RESTHeart. This is a web application:
