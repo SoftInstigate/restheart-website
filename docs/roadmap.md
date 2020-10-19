@@ -50,7 +50,7 @@ The new authenticator will update the old Access Manager [ADIdentityManager](htt
 
 The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.
 
-The new service `restheart-graphql` will be added to RESTHeart. This service exposes a read-only GraphQL API for inquiring MongoDB resources.
+The new service `restheart-graphql` will be added to RESTHeart. This service exposes a read-only (no mutations) GraphQL API for inquiring MongoDB resources.
 
 The special collection `/_gqlapps` holds the GraphQL App Definitions. A GraphQL Application Definition document defines:
 
@@ -99,7 +99,7 @@ Support for Transactions has been available since RESTHeart 4.0 as a commercial 
 {: .bs-callout.bs-callout-info }
 With RESTHeart 5.x we moved to the open core business model. While an enterprise license is available for legal and support requirements, all the codebase is Open Source and available under the AGPL 3.0.
 
-\### Support for Change Streams
+\### Support for Change Streams
 
 Support for Change Stream has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
 
@@ -154,7 +154,7 @@ Permission documents have the following format:
 
 This permission document means:
 
-Allow POST and GET requests on path `/inventory`for users having role `admin` or `user` applying the following filters:
+Allow POST and GET requests on path `/inventory`for users having role `admin` or `user` applying the following filters:
 
 * read requests: return documents having `status=PUBLISHED` or `author=<username of the requesting user>`
 
@@ -176,3 +176,6 @@ Add support of mustache parameters in `resthart-platform-security.yml` just like
 See RESTHeart Security [feature request 1](https://github.com/SoftInstigate/restheart-security/issues/1)
 
 </div>
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTIwNzMzNDEwN119
+-->
