@@ -2,6 +2,8 @@
 layout: default
 ---
 
+{% include http-shell-ad.html %}
+
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
@@ -24,7 +26,7 @@ layout: default
             <b>Stream real-time data with WebSockets</b>
             <b>Integrate with MongoDB</b>
             <b>Notify clients with Hooks</b>
-            <b>Create Open Data solutions</b>            
+            <b>Create Open Data solutions</b>
             <b>Threat protection at every layer</b>
         </span>
     </h1>
