@@ -45,7 +45,7 @@ The following commands show a typical commands usage scenario.
 
 - The following `put` command executes the `PUT` HTTP request on the URL `http://127.0.0.1:8080/messages/foo` (that is the *base URL* plus the specified resource URI), sending the request body from the file `message.json`.
 
-- The following `get` command executes the `GET` HTTP requests respectively on the URL `http://127.0.0.1:8080/messages/foo` opening the response body in the Shell sidecar.
+- The following `get` command executes the `GET` HTTP requests on the URL `http://127.0.0.1:8080/messages/foo` opening the response body in the Shell Sidecar.
 
 ![HTTP Shell Image](https://github.com/SoftInstigate/http-shell/blob/master/plugins/plugin-client-default/images/httpshellImage.png?raw=true){: class="mx-auto d-block img-fluid"}
 
@@ -54,18 +54,18 @@ The following commands show a typical commands usage scenario.
 {: .table.table-responsive}
 | command | description | example
 |---|---|---|
-| set auth &lt;id&gt; &lt;password&gt; | opens a dialog to sets the basic authentication credentials to use in further requests | > set auth |
-| reset auth | clear the basic authentication credentials | > reset auth |
-| set url &lt;url&gt; | sets the base url to use in further requests | > set url http://127.0.0.1:8080 |
-| get url | prints the base url | > get url |
-| get &lt;uri&gt; | executes the GET request to url=&lt;base-url&gt;+&lt;uri&gt; | > get /collection |
-| edit &lt;file&gt; | opens &lt;file&gt; for editing | > edit body.json |
-| post &lt;uri&gt; &lt;file&gt; | executes the request POST &lt;base-url>+&lt;uri&gt;, sending the content of &lt;file&gt; as the request body | > post /collection body.json |
-| put &lt;uri&gt; &lt;file&gt; | executes the request PUT &lt;base-url&gt;+&lt;uri&gt;, sending the content of &lt;file&gt; as the request body | > put /collection body.json |
-| patch &lt;uri&gt; &lt;file&gt; | executes the request PATCH &lt;base-url&gt;+&lt;uri&gt;, sending the content of &lt;file&gt; as the request body | > patch /collection body.json |
-| delete &lt;uri&gt; | executes the DELETE request to url=&lt;base-url&gt;+&lt;uri&gt; | > delete /collection |
-| set header &lt;name&gt; &lt;value&gt; | set the header &lt;name&gt; to &lt;value&gt; | > set header If-Match 5f7f35efcb800f2502f95cb5 |
-| get headers | prints the current set headers | > get headers |
-| clear headers | clears the headers | > clear headers |
+| `set auth <id> <password>` | opens a dialog to sets the basic authentication credentials to use in further requests | `> set auth` |
+| `reset auth` | clear the basic authentication credentials | `> reset auth` |
+| `set url <base-url>` | sets the *base-url* to be used in further requests | `> set url http://127.0.0.1:8080` |
+| `get url` | prints the base url | `> get url` |
+| `get <uri>` | executes the GET request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> get /collection` |
+| `edit <file>` | opens *&lt;file&gt;* for editing with the Monaco Editor | > `edit body.json` |
+| `post <uri> <file>` | executes the POST request request to URL *&lt;base-url>+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | > `post /collection body.json` |
+| `put <uri> <file>` | executes the PUT request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> put /collection body.json` |
+| `patch <uri> <file>` | executes the PATCH request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> patch /collection body.json` |
+| `delete <uri>` | executes the DELETE request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> delete /collection` |
+| `set header <name> <value>` | sets the header *&lt;name&gt;* to *&lt;value&gt;* | `> set header If-Match 5f7f35efcb800f2502f95cb5` |
+| `get headers` | prints the current set headers | `> get headers` |
+| `clear headers` | clears the headers | `> clear headers` |
 
 </div>
