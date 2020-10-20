@@ -16,10 +16,10 @@ layout: docs
 {: mt-4}
 ## A Simple Web Application
 
-This simple Web Application is hosted at StackBlitz and provides a table view of the documents stored in the MongoDB collection `messages`. A simple form allows to create a new document.
+This is a very simple Web Application hosted at StackBlitz. It shows a table of the *message* documents stored in a MongoDB collection and provides a simple form to create a new *message* document.
 
 {: .bs-callout.bs-callout-info}
-Click on `Editor` button to open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
+Click on `Editor` button and open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
 
 <div id="demo"></div>
 
