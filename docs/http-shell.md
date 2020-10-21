@@ -16,7 +16,7 @@ layout: docs
 
 ## Introduction
 
-**HTTP Shell** is a tool that provides developers a modern alternative to http clients for interacting with APIs. It is developed by [SoftInstigate](https://softinstigate.com) - the company behind RESTHeart - from its long experience on API development.
+[HTTP Shell](https://github.com/SoftInstigate/http-shell) is a tool that provides developers with a modern alternative to HTTP clients for interacting with APIs. It is being developed by [SoftInstigate](https://softinstigate.com) - the company behind RESTHeart - thanks to their long experience on API development. HTTP Shell is something between a low-level command line tool, like curl or httpie, and a more user friendly REST client, like Postman.
 
 {: .bs-callout.bs-callout-info}
 We suggest you to use **HTTP Shell** as a developer tool to execute requests on the RESTHeart API.
