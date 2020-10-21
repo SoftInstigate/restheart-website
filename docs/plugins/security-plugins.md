@@ -349,7 +349,7 @@ public class MyTokenManager implements TokenManager {
 ```
 
 {: .bs-callout .bs-callout-warning}
-Only on token manager can be used. If more than one token-manager are defined and enabled, only the first one will be used.
+Only one token manager can be used. If more than one token-manager are defined and enabled, only the first one will be used.
 
 ### Configuration
 
