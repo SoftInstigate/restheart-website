@@ -10,7 +10,7 @@ layout: docs
 -   [Specify a custom LogBack configuration](#specify-a-custom-logback-configuration)
 -   [Logging preferences in restheart.yml](#logging-preferences-in-restheartyml)
 -   [Example: enable logging from the MongoDB driver](#Example-enable-logging-from-the-mongodb-driver)
--   [Example, log trace headers](#Example-log-trace-headers)
+-   [Example: log trace headers](#Example-log-trace-headers)
 
 </div>
 
@@ -94,7 +94,7 @@ To define a different logging configuration, set the property `logback.configura
 $ java -Dlogback.configurationFile=./logback.xml -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-## Example, enable logging from the MongoDB driver
+## Example: enable logging from the MongoDB driver
 
 The following `logback.xml` adds `<logger name="org.mongodb" level="ALL"/>` to enable trace level logging from the MongoDB driver.
 
