@@ -9,8 +9,8 @@ layout: docs
 -   [Default LogBack configuration](#default-logback-configuration)
 -   [Specify a custom LogBack configuration](#specify-a-custom-logback-configuration)
 -   [Logging preferences in restheart.yml](#logging-preferences-in-restheartyml)
--   [Example: enable logging from the MongoDB driver](#Example-enable-logging-from-the-mongodb-driver)
--   [Example: log trace headers](#Example-log-trace-headers)
+-   [Example: enable logging from the MongoDB driver](#example-enable-logging-from-the-mongodb-driver)
+-   [Example: log trace headers](#example-log-trace-headers)
 
 </div>
 
