@@ -69,10 +69,10 @@ The configuration file `restheart.yml` allows to modify the log level and other 
 # WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers)
 
 
-enable-log-file: {{{enable-log-file}}}
-log-file-path: {{{log-file-path}}}
-enable-log-console: {{{enable-log-console}}}
-log-level: {{{log-level}}}
+enable-log-file: false
+log-file-path: ./restheart.log
+enable-log-console: true
+log-level: INFO
 requests-log-level: 1
 ansi-console: true
 metrics-gathering-level: DATABASE
