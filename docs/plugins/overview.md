@@ -11,11 +11,11 @@ layout: docs
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
-## Introduction 
+## Introduction
 
-RESTHeart works *out-of-the-box* by merely installing and configuring it. 
+RESTHeart works *out-of-the-box* by merely installing and configuring it.
 
 It comes with a complete MongoDB API and a security implementation that allows to authenticate users and authorize requests according to a role-based policy.
 
@@ -27,7 +27,7 @@ These functionalities are actually provided by the standard plugins that are dis
 │   └── restheart-security.jar
 ```
 
-`restheart-mongodb.jar` implements the `MongoService` that provides the MongoDB REST API. 
+`restheart-mongodb.jar` implements the `MongoService` that provides the MongoDB REST API.
 
 `restheart-security.jar` implements the standard security plugins described in the [Securing Requests](/docs/security/overview/) section.
 
@@ -48,8 +48,17 @@ Have a look at the GitHub repository [restheart-examples](https://github.com/Sof
 
 ## The proxy microservice pattern
 
-If you are not familiar with java, there is a different approach that can help you extending the API using the [proxying](/docs/proxy) feature. 
+If you are not familiar with java, there is a different approach that can help you extending the API using the [proxying](/docs/proxy) feature.
 
 You can add a side microservice, for instance using NodeJs, that implements a Web Service. This microservice can execute requests to RESTHeart if it needs to read or write data to MongoDB.
 
 You can then proxy it via RESTHeart so that it is protected under the same security domain of RESTHeart.
+
+Add the following section to the `restheart.yml` configuration file to proxy call to the RESTHeart's URI `/anything` to the web resource `https://httpbin.org/anything`
+
+```yml
+proxies:
+   - location: /anything
+     proxy-pass: https://httpbin.org/anything
+     name: anything
+```
