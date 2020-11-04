@@ -18,15 +18,15 @@ layout: docs
 
 Here at [SoftInstigate](https://softinstigate.com) we have developed many projects with RESTHeart.
 
-During our projects we have been keeping enhancing our development environment and building tools to make our life easier.
+During our projects we have been constantly enhancing our development environment and building tools to make our life easier.
 
 This page summarizes our findings and provides you with links and tips to setup your development environment in the most effective way.
 
 ## Plugin Project Skeleton
 
-You can start developing a pluging forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton)
+You can start developing a pluging by forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton)
 
-This repository includes a sample service and provides you with the following features.
+This repository includes a sample service and provides you with the following features:
 
 {: .table .table-responsive}
 |feature|description|
@@ -35,7 +35,7 @@ This repository includes a sample service and provides you with the following fe
 |**Watch Mode**|You can develop in *Watch Mode* so that the code is automatically rebuilt, and RESTHeart automatically restarted as soon as you change a source or configuration file.|
 |**Notifications**| get notifications on OSX when the *watcher* builds and restarts the container, so you know when you can try your changes.|
 |**microD profile**|start RESTHeart without the MongoDB Service. We call this profile *microD*, because it is an effective runtime environment for micro-services.|
-|**Debugging with Hot Code Replace**|RESTHeart runs in development mode, i.e. with the JVM configured for  debugging on port 4000. RESTHeart is run with the Java Virtual Machine [dcevm](http://dcevm.github.io), that allows extended *Hot Code Replace*. This means that whenever you change the code while debugging, the changes are automatically applied to the running service, without the need for rebuilding and restarting.|
+|**Debugging with Hot Code Replace**|RESTHeart runs in development mode, i.e. with the JVM configured for debugging on port 4000. RESTHeart is run with the Java Virtual Machine [dcevm](http://dcevm.github.io), that allows extended *Hot Code Replace*. This means that whenever you change the code while debugging, the changes are automatically applied to the running service, without the need for rebuilding and restarting.|
 
 ## HTTP Shell
 
