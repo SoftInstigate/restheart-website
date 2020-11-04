@@ -2,8 +2,6 @@
 layout: default
 ---
 
-{% include http-shell-ad.html %}
-
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
@@ -95,6 +93,10 @@ layout: default
 <section id="examples-plugins" class="slice bg-white">
     {% include examples_plugins.html %}
 </section>
+
+<div class="mt-0 pt-0 mb-5">
+{% include http-shell-ad.html %}
+</div>
 
 <section id="trusted-by">
     <div class="row mx-0">
