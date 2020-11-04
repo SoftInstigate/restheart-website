@@ -5,7 +5,7 @@ layout: default
 <section id="top">
     <section class="my-0">
         <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Instant REST APIs for your data</h2>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Open Source Stack for microservices</h2>
         <h5 class="mt-2 ml-3 ml-md-5 top-2 text-break text-mark" style="color:orange"><i>For developers with deadlines</i></h5>
     </section>
 </section>
@@ -15,14 +15,12 @@ layout: default
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">Get your API in minutes</b>
             <b>Supports all features of MongoDB</b>
-            <b>Data API for Mobile Apps</b>
-            <b>Develop REST Web Services</b>
+            <b>Instant Data API on MongoDB</b>
+            <b>Develop Web Services</b>
             <b>Publish Content to the Web</b>
             <b>Handle users and permissions</b>
-            <b>Available as binary package and Docker image</b>
-            <b>Put data access under control</b>
+            <b>Available as Docker image</b>
             <b>Stream real-time data with WebSockets</b>
-            <b>Integrate with MongoDB</b>
             <b>Notify clients with Hooks</b>
             <b>Create Open Data solutions</b>
             <b>Threat protection at every layer</b>
@@ -35,17 +33,18 @@ layout: default
         <div class="row">
             <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
-                <p>RESTHeart leverages MongoDB and provides the API required by modern applications. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
+                <p>RESTHeart is an Open Source stack highly suited for writing back end microservices.
+                It leverages MongoDB to provide the data API out-of-the-box. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
                 <ul class="">
-                    <li>Instant API for MongoDB</li>
+                    <li>Elegant Java and Kotlin Framework to extend the API</li>
+                    <li>Instant Data API with MongoDB</li>
                     <li>Built-in Authentication and Authorization</li>
-                    <li>Easily Extend Business Logic</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart is a backend for Web and Mobile apps, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
+                <p>RESTHeart is tailored for OpenJDK HotSpot & GraalVM, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
                     <li>Available as binary and Docker container</li>
