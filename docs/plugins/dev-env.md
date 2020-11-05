@@ -48,7 +48,7 @@ Let's see it as something between a low-level command line interface, like curl 
 
 The idea is that tools like curl are very powerful but a bit cumbersome, it is often hard for us to remember the exact syntax for each HTTP verb. HTTP Shell instead is still a command line interface, but with a much straightforward user experience.
 
-> HTTP Shell combines the power of familiar CLIs with visualizations in high-impact areas. Kui enables you to manipulate complex JSON and YAML data models, integrate disparate tooling, and provides quick access to aggregate views of operational data.
+> HTTP Shell combines the power of familiar CLIs with visualizations in high-impact areas. HTTP Shell enables you to execute HTTP requests, manipulate complex JSON and YAML data models, integrate disparate tooling, and provides quick access to aggregate views of operational data.
 
 
 ![HTTP Shell Image](https://github.com/SoftInstigate/http-shell/raw/master/plugins/plugin-client-default/images/httpshellImage.png){: .img-fluid }
