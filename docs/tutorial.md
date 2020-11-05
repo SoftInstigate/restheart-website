@@ -18,6 +18,9 @@ layout: docs
 
 {% include docs-head.html %}
 
+{: .bs-callout.bs-callout-warning}
+*Execute on rest ninja* doesn't work with Safari because it requires HTTPS. Since configuring HTTPS requires a valid certificate and takes some time to [configure](/docs/security/tls/), we suggest to just use Chrome or Firefox for this tutorial.
+
 {% include running-examples.md %}
 
 ## GET Documents from the Collection
