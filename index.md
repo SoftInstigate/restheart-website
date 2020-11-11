@@ -45,7 +45,7 @@ layout: default
             </div>
             <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart is tailored for OpenJDK HotSpot & GraalVM, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
+                <p>RESTHeart is tailored for JVM, Docker and Kubernetes, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
                     <li>Available as binary and Docker container</li>
