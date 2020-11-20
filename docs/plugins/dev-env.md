@@ -52,3 +52,23 @@ The idea is that tools like curl are very powerful but a bit cumbersome, it is o
 
 
 ![HTTP Shell Image](https://github.com/SoftInstigate/http-shell/raw/master/plugins/plugin-client-default/images/httpshellImage.png){: .img-fluid }
+
+### Commands
+
+{: .table.table-responsive}
+| command | description | example
+|---|---|---|
+| `h set auth <id> <password>` | opens a dialog to sets the basic authentication credentials to use in further requests | `> set auth` |
+| `h reset auth` | clear the basic authentication credentials | `> reset auth` |
+| `h set url <base-url>` | sets the *base-url* to be used in further requests | `> set url http://127.0.0.1:8080` |
+| `h get url` | prints the base url | `> get url` |
+| `h get <uri>` | executes the GET request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> get /collection` |
+| `edit <file>` | opens *&lt;file&gt;* for editing with the Monaco Editor | > `edit body.json` |
+| `h post <uri> <file>` | executes the POST request request to URL *&lt;base-url>+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | > `post /collection body.json` |
+| `h put <uri> <file>` | executes the PUT request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> put /collection body.json` |
+| `h patch <uri> <file>` | executes the PATCH request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> patch /collection body.json` |
+| `h delete <uri>` | executes the DELETE request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> delete /collection` |
+| `h set header <name> <value>` | sets the header *&lt;name&gt;* to *&lt;value&gt;* | `> set header If-Match 5f7f35efcb800f2502f95cb5` |
+| `h get headers` | prints the current set headers | `> get headers` |
+| `h clear headers` | clears the headers | `> clear headers` |
+
