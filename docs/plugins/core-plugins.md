@@ -292,9 +292,9 @@ In the constructor a call to `super(exchange)` attaches the object to the `HttpS
 The following implementation are provided by `restheart-commons`:
 
 - `ByteArrayInterceptor` intercepts requests handled by services implementing `ByteArrayService`
-- `JsonService` intercepts requests handled by services implementing `JsonService`
-- `BsonService` intercepts requests handled by services implementing `BsonService`
-- `MongoService` intercepts requests handled by the MongoService
+- `JsonInterceptor` intercepts requests handled by services implementing `JsonService`
+- `BsonInterceptor` intercepts requests handled by services implementing `BsonService`
+- `MongoInterceptor` intercepts requests handled by the MongoService
 
 The last one is particularly useful as it allows intercepting requests to the MongoDb API.
 
