@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Easy and Fun Runtime for Microservices</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant Data API on MongoDB</p>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">The Java Runtime for Microservices</h2>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant data persistence on MongoDB</p>
     </section>
 </section>
 
@@ -82,7 +82,7 @@ layout: default
             <div class="container">
                 <div class="row">
                     <div class="col-8 offset-2 call-to-action__item call-to-action__first">
-            RESTHeart is built for stability, coded on a solid java foundation and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on your feedback, and keep it flexible with an open extension mechanism.
+            RESTHeart is built for stability, coded on a solid Java foundation and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on your feedback, and keep it flexible with an open extension mechanism.
                     </div>
                 </div>
             </div>
