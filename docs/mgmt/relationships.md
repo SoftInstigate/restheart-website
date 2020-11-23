@@ -115,7 +115,17 @@ the collection itself.
 ```http
 PUT /parentcoll HTTP/1.1
 
-{"rels":[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]}
+{
+    "rels": [
+        {
+            "rel": "parent",
+            "type": "MANY_TO_ONE",
+            "role": "OWNING",
+            "target-coll": "parentcoll",
+            "ref-field": "parent"
+        }
+    ]
+}	
 
 HTTP/1.1 201 CREATED
 ```
@@ -182,15 +192,6 @@ course, each band has a **1:N** relationship to albums.
 PUT /bands HTTP/1.1
 
 {
-	"rels": [{
-		"rel": "albums",
-		"type": "ONE_TO_MANY",
-		"role": "OWNING",
-		"target-coll": "albums",
-		"ref-field": "albums"
-	}],
-	"descr": "music bands"
-}{
 	"rels": [{
 		"rel": "albums",
 		"type": "ONE_TO_MANY",
@@ -288,7 +289,18 @@ documents.
 ```http
 PUT /bandsi HTTP/1.1
 
-{"rels":[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]', "descr":"music bands"}
+{
+    "rels": [
+        {
+            "rel": "albums",
+            "type": "ONE_TO_MANY",
+            "role": "INVERSE",
+            "target-coll": "albums",
+            "ref-field": "band"
+        }
+    ],
+    "descr": "music bands"
+}
 
 HTTP/1.1 201 CREATED
 ```
