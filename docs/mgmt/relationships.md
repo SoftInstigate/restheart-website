@@ -283,7 +283,7 @@ GET /albums?filter="{'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"` H
 ### One-to-Many, inverse
 
 We'll resemble the previous example, but using an inverse relationship,
-i.e. the filed storing the relationship will be stored in the album
+i.e. the field storing the relationship will be stored in the album
 documents.
 
 ```http
