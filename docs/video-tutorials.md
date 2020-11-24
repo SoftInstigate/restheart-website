@@ -1,5 +1,5 @@
 ---
-title: video-tutorials
+title: Video tutorials
 layout: docs
 ---
 
