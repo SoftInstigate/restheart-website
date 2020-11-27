@@ -149,28 +149,36 @@ You can edit the YAML configuration file or create distinct properties file. Usu
 
 ### Environment variables
 
-It is possible to override any primitive type parameter in `restheart.yml` with an environment variable, without the need to edit any configuration file. Primitive types are:
+It is possible to override any primitive type parameter in `restheart.yml` with environment variables.
+
+Primitive types are:
 
 -   String
 -   Integer
 -   Long
 -   Boolean
 
-For example, the parameter `mongo-uri` in the YAML file can be overridden by setting a `MONGO_URI` environment variable:
+The  name of the shell environment variable is equal to a YAML parameter in `restheart.yml`, in uppercase and replacing '-' (dash) with '\_' (underscore).
+
+To avoid conflicts with other variables, the environment variable name can be prefixed with `RH_`, `RESTHEART_` or the legacy `RESTHEART_SECURITY_` .
+
+For example, the parameter `mongo-uri` in the YAML file can be overridden by the `MONGO_URI` environment variable:
 
 ```bash
 $ MONGO_URI="mongodb://127.0.0.1" java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-> Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
+{: .bs-callout.bs-callout-warning }
+Due to a bug affecting RESTHeart until v5.1.6, environment variables must be prefixed with `RESTHEART_SECURITY_` but for MongoService configuration options, like `mongo-uri` where no prefix is allowed. This has been fixed in RESTHeart v5.1.7.
+
+{: .bs-callout.bs-callout-info }
+Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
 
 The following log entry appears at the very beginning of logs during the startup process:
 
 ```
 [main] WARN  org.restheart.Configuration - >>> Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
 ```
-
-A shell environment variable is equivalent to a YAML parameter in `restheart.yml`, but it’s all uppercase and '-' (dash) are replaced with '\_' (underscore).
 
 ---
 
