@@ -158,7 +158,7 @@ Primitive types are:
 -   Long
 -   Boolean
 
-The  name of the shell environment variable is equal to a YAML parameter in `restheart.yml`, in uppercase and replacing '-' (dash) with '\_' (underscore).
+The  name of the shell environment variable is equal to a YAML parameter in `restheart.yml`, in uppercase and replacing `-` (dash) with `_` (underscore).
 
 To avoid conflicts with other variables, the environment variable name can be prefixed with `RH_`, `RESTHEART_` or the legacy `RESTHEART_SECURITY_` .
 
