@@ -50,7 +50,7 @@ Preliminary tests shows that:
 
 `readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
 
-RESTHeart 5.2 will add query parameters to specify those options at request level.
+v5.3 will add query parameters to specify those options at request level.
 
 ### Simplified security
 
@@ -104,7 +104,7 @@ The following permission document, makes the field `author` automatically set to
     "writeFilter": null,
     "hide": [ "protected" ],
     "forbid": [ "protected", "subdoc.protected"],
-    "override": [ "author": "%USER" ] <------
+    "override": { "author": "%USER" } <------
 }
 ```
 
