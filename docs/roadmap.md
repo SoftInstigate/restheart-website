@@ -7,6 +7,8 @@ layout: docs
 
 * [RESTHeart 5.2](#restheart-52)
 
+* [RESTHeart 5.3](#restheart-53)
+
 * [RESTHeart 6.0](#restheart-60)
 
 * [Released](#released)
