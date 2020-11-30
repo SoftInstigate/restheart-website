@@ -28,11 +28,83 @@ layout: docs
 
 ## RESTHeart 5.2
 
-## Support for request level replica set
+### GraalVM support
+
+**RESTHeart 5.2 is GraalVM friendly.**
+
+It will be tested and supported for executing with the GraalVM and it will also allow native image builds.
+
+Preliminary tests shows that:
+
+- RESTHeart native image startup time is 600% faster!
+
+- RESTHeart native image memory consumption is 1/6 (~280Mbyte vs 1.25 Gbytes).
+
+- [As expected](https://stackoverflow.com/questions/59488654/does-graalvm-native-image-increase-overall-application-performance-or-just-reduc), RESTHeart running on  HotSpot JVM has better peak performances (20-30% faster). However the native image enables better overall horizontal scalability due to faster startup time and much lesser memory consumption.
+
+## RESTHeart 5.3
+
+### Support for request level replica set
 
 `readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
 
 RESTHeart 5.2 will add query parameters to specify those options at request level.
+
+### Simplified security
+
+After several projects, we realized that the upsert semantic of write methods can make  defining security predicates complex. To simplify security v5.3 will add a toggleable special mode where:
+
+- `POST` -> can only create document(s)
+- `PUT` -> can only modify an existing document
+- `PATCH` -> can only modify an existing document
+
+As an example, let's consider that we want to allow the user `uji` with role `USER` to only **modify** documents created by him. The following permission would work with _simplified security_ but it does not currently work because `PUT` and `PATCH` can also _create_ not existing documents (and the `writeFilter` does not apply on creation).
+
+```json
+{
+    "_id": { "$oid": "5d9485639eab3a852d48a1de" },
+    "predicate": "path-prefix[/blog/] and (method[PUT] or method[PATCH])",
+    "roles": ["editor"],
+    "priority": 1,
+    "readFilter": null,
+    "writeFilter": { "_id": "%USER" }
+}
+```
+
+v5.3 will also extend the `mongoRealmAuthorizer` to add [role-based fields filtering and request content checker](https://github.com/SoftInstigate/restheart/issues/391).
+
+The following permission document, makes the field `protected` removed from the `GET /blog` response for user with role `editor`. It also forbids an `editor` to write and modify it
+
+```json
+{
+    "_id": { "$oid": "5d9485639eab3a852d48a1de" },
+    "predicate": "path-prefix[/blog] and (method[GET] or method[PATCH] or method[POST])",
+    "roles": ["editor"],
+    "priority": 1,
+    "readFilter": null,
+    "writeFilter": null,
+    "hide": [ "protected" ], <------
+    "forbid": [ "protected", "subdoc.protected"] <------
+}
+```
+
+v5.3 will also extend the `mongoRealmAuthorizer` to add role-based field override.
+
+The following permission document, makes the field `author` automatically set to the user id on write requests.
+
+```json
+{
+    "_id": { "$oid": "5d9485639eab3a852d48a1de" },
+    "predicate": "path-prefix[/blog] and (method[GET] or method[PATCH] or method[POST])",
+    "roles": ["editor"],
+    "priority": 1,
+    "readFilter": null,
+    "writeFilter": null,
+    "hide": [ "protected" ],
+    "forbid": [ "protected", "subdoc.protected"],
+    "override": [ "author": "%USER" ] <------
+}
+```
 
 ## LDAP Authenticator
 
@@ -72,18 +144,6 @@ The new service `restheart-studio` will added to RESTHeart. This is a web applic
 
 ![](/images/restheart-platform-admin-preview.png){:
 width="800" height="auto" class="mx-auto d-block img-responsive"}
-
-### Upgrade to undertow 4.0
-
-**RESTHeart** will updated to use Undertow 4.0.
-
-Undertow 4.0. will replace the underlying transport from XNIO to Netty.
-
-From the undertow migration to Netty announcement on 12 April, 2019:
-
-> undertow 3.0 final version should be released in the next few months, however in the short term the 3.x branch will not provide the same level of API compatibility that Undertow has traditionally provided. As the Netty implementation is new this will allow us to potentially fix any issues we find with our approach without being locked in to supporting an API that is not ideal.
-
-> After a short 3.x cycle we are planning on releasing undertow 4.x that will provide API stability, in the same way that Undertow 1.x and 2.x have.
 
 ## Released
 
