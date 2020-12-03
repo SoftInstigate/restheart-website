@@ -24,12 +24,15 @@ layout: docs
 
 ## Download and Run
 
+{: .bs-callout.bs-callout-info}
+You can run RESTHeart and MongoDB with Docker, skip to [Run with Docker](#run-with-docker) for instructions.
+
 ### Get the latest release
 
 Download the ZIP or TAR archive.
 
-[zip](https://github.com/SoftInstigate/restheart/releases/download/5.1.5/restheart.zip){: .btn btn-md}
-[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.1.5/restheart.tar.gz){: .btn btn-md}
+[zip](https://github.com/SoftInstigate/restheart/releases/download/5.1.7/restheart.zip){: .btn btn-md}
+[tgz](https://github.com/SoftInstigate/restheart/releases/download/5.1.7/restheart.tar.gz){: .btn btn-md}
 
 Un-zip
 
