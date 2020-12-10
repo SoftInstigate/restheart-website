@@ -22,11 +22,8 @@ layout: docs
 
 ## Setup and Configuration
 
-{: .bs-callout.bs-callout-warn }
-In Italian, translation in progress...
-
 <div class="embed-responsive embed-responsive-16by9">
-    <iframe src="https://www.youtube.com/embed/pqtC0Gh1_uE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe src="https://www.youtube.com/embed/dzggm7Wp2fU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 ## Security
