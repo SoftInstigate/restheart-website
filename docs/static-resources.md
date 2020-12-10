@@ -10,18 +10,18 @@ layout: docs
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 {% include doc-in-progress.html %}
 
 ## Introduction
 
-RESTHeart allows serving static resources. 
+RESTHeart allows serving static resources.
 
 An example configuration follows:
 
 ```yml
-#### Static Web Resources
+#### Static Web Resources
 
 # Static web resources to bind to the URL specified by the 'where' property.
 # The 'what' property is the path of the directory containing the resources.
