@@ -39,12 +39,12 @@ In the v5.2 product line we will progressively leverage the GraalVM to allow you
 
 ### Benefits of building a native image
 
-Build your RESTHeart application to native image provides multiple advantages, including faster startup times and lesser memory consumption.
+Building a RESTHeart application to native image provides multiple advantages, including faster startup times and lesser memory consumption.
 
-For comparison, a RESTHeart with default plugins startup time
+The following table compares RESTHeart (with default plugins) running on a MacBook Pro in both bytecode and native fashions:
 
 {: .table .table-responsive}
-||JVM|native|
+||bytecode|native|
 |-|-|-|
 |startup time|~2 secs|~150ms|
 |memory|1,25Gbyte|279Mbyte|
@@ -89,7 +89,18 @@ $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 
 ## Build RESTHeart with default plugins as native image
 
-RESTHeart's `pom.xml` includes the `native` profile; you can then simply build it with
+RESTHeart's `pom.xml` includes the `native` profile.
+
+Check that GraalVM SDK is active:
+
+```bash
+$ java -version
+openjdk version "11.0.9" 2020-10-20
+OpenJDK Runtime Environment GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06)
+OpenJDK 64-Bit Server VM GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06, mixed mode, sharing)
+```
+
+You can then simply build it with:
 
 ```bash
 $ git checkout https://github.com/SoftInstigate/restheart.git
@@ -109,9 +120,7 @@ In order to build RESTHeart with custom plugins as native image you use maven to
 {: .bs-callout.bs-callout-info }
 At startup time, RESTHeart dynamically loads the plugins jars found in  the `/plugins` directory. Dynamic class loading is simply not possible with GraalVM. This is why you need to package RESTHeart core and all plugins in a uber-jar.
 
-Add the `native` profile to your `pom.xml`
-
-Use this example [pom.xml](https://github.com/SoftInstigate/web-frameworks/blob/native/java/restheart/pom.xml) as a reference for your project.
+Define the Maven `native` profile following this example [pom.xml](https://github.com/SoftInstigate/web-frameworks/blob/native/java/restheart/pom.xml).
 
 You can now build the native image with:
 
