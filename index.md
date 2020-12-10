@@ -9,7 +9,7 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Java Runtime for Microservices</h2>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Java and GraalVM Runtime for Microservices</h2>
         <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant data persistence on MongoDB</p>
     </section>
 </section>
