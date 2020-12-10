@@ -43,7 +43,7 @@ Build your RESTHeart application to native image provides multiple advantages, i
 
 For comparison, a RESTHeart with default plugins startup time
 
-
+{: .table .table-responsive}
 ||JVM|native|
 |-|-|-|
 |startup time|~2 secs|~150ms|
