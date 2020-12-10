@@ -8,9 +8,9 @@ layout: docs
 * [Introduction](#introduction)
 * [Install the GraalVM](#install-the-graalvm)
 * [Run RESTHeart with GraalVM](#run-restheart-with-graalvm)
-* [Build RESTHeart with default plugins to native image](#build-restheart-with-default-plugins-to-native-image)
-* [Compile a RESTHeart with custom plugins to native image](#compile-a-restheart-with-custom-plugins-to-native-image)
-* [docker image to compile Linux native image](#a-docker-image-to-compile-linux-native-image)
+* [Build RESTHeart with default plugins as native image](#build-restheart-with-default-plugins-as-native-image)
+* [Build RESTHeart with custom plugins as native image](#build-restheart-with-custom-plugins-as-native-image)
+* [A docker image to build Linux native images](#a-docker-image-to-build-linux-native-images)
 
 </div>
 
@@ -41,7 +41,7 @@ In the v5.2 product line we will progressively leverage the GraalVM to allow you
 
 Build your RESTHeart application to native image provides multiple advantages, including faster startup times and lesser memory consumption.
 
-For comparison, a RESTHeart with default plugins startup time 
+For comparison, a RESTHeart with default plugins startup time
 
 
 ||JVM|native|
@@ -119,7 +119,7 @@ You can now build the native image with:
 $ mvn clean package -Pnative
 ```
 
-### A docker image to compile Linux native image
+### A docker image to build Linux native images
 
 [SoftInstigate](https://softinstigate.com) maintains the Debian based, docker image [softinstigate/graalvm-maven](https://github.com/SoftInstigate/graalvm-maven-docker) with GraalVM and Maven and `native-image`.
 
