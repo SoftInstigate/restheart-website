@@ -5,13 +5,13 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [RESTHeart 5.2](#restheart-52)
-
 * [RESTHeart 5.3](#restheart-53)
 
 * [RESTHeart 6.0](#restheart-60)
 
 * [Released](#released)
+
+  * [RESTHeart 5.2](#restheart-52)
 
   * [RESTHeart 5.1](#restheart-51)
 
@@ -27,22 +27,6 @@ layout: docs
 
 {: .bs-callout.bs-callout-info}
 **We listen to you!** For any feedback or request feel free to [open an issue](https://github.com/SoftInstigate/restheart/issues/new) on github.
-
-## RESTHeart 5.2
-
-### GraalVM support
-
-**RESTHeart 5.2 is GraalVM friendly.**
-
-It will be tested and supported for executing with the GraalVM and it will also allow native image builds.
-
-Preliminary tests shows that:
-
-- RESTHeart native image startup time is 600% faster!
-
-- RESTHeart native image memory consumption is 1/6 (~280Mbyte vs 1.25 Gbytes).
-
-- [As expected](https://stackoverflow.com/questions/59488654/does-graalvm-native-image-increase-overall-application-performance-or-just-reduc), RESTHeart running on  HotSpot JVM has better peak performances (20-30% faster). However the native image enables better overall horizontal scalability due to faster startup time and much lesser memory consumption.
 
 ## RESTHeart 5.3
 
@@ -148,6 +132,25 @@ The new service `restheart-studio` will added to RESTHeart. This is a web applic
 width="800" height="auto" class="mx-auto d-block img-responsive"}
 
 ## Released
+
+## RESTHeart 5.2
+
+{: .alert.alert-success }
+Released 11 Dec 2020
+
+### GraalVM support
+
+**RESTHeart 5.2 is GraalVM friendly.**
+
+It will be tested and supported for executing with the GraalVM and it will also allow native image builds.
+
+Preliminary tests shows that:
+
+- RESTHeart native image startup time is 600% faster!
+
+- RESTHeart native image memory consumption is 1/6 (~280Mbyte vs 1.25 Gbytes).
+
+- [As expected](https://stackoverflow.com/questions/59488654/does-graalvm-native-image-increase-overall-application-performance-or-just-reduc), RESTHeart running on  HotSpot JVM has better peak performances (20-30% faster). However the native image enables better overall horizontal scalability due to faster startup time and much lesser memory consumption.
 
 ## RESTHeart 5.1
 
