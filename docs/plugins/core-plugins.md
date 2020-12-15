@@ -202,7 +202,7 @@ public class MongoServerStatusService implements BsonService {
 
 The key method is `handle()` that is executed when a request to the service URI hits RESTHeart.
 
-### Crate Service with custom generic type
+### Create Service with custom generic type
 
 To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface. 
 
