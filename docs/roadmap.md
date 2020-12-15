@@ -69,7 +69,7 @@ As an example, let's consider that we want to allow the user `uji` with role `US
     "roles": ["editor"],
     "priority": 1,
     "readFilter": null,
-    "writeFilter": { "_id": "%USER" }
+    "writeFilter": { "createdBy": "%USER" }
 }
 ```
 
