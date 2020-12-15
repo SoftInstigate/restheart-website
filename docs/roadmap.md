@@ -164,7 +164,7 @@ Support for Transactions has been available since RESTHeart 4.0 as a commercial 
 {: .bs-callout.bs-callout-info }
 With RESTHeart 5.x we moved to the open core business model. While an enterprise license is available for legal and support requirements, all the codebase is Open Source and available under the AGPL 3.0.
 
-\### Support for Change Streams
+### Support for Change Streams
 
 Support for Change Stream has been available since RESTHeart 4.0 as a commercial plugins. With v5.1, it is available in RESTHeart OSS.
 
