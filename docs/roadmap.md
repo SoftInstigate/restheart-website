@@ -9,6 +9,10 @@ layout: docs
 
 * [RESTHeart 6.0](#restheart-60)
 
+* [RESTHeart 6.1](#restheart-61)
+
+* [RESTHeart Studio](#restheart-studio)
+
 * [Released](#released)
 
   * [RESTHeart 5.2](#restheart-52)
@@ -29,12 +33,6 @@ layout: docs
 **We listen to you!** For any feedback or request feel free to [open an issue](https://github.com/SoftInstigate/restheart/issues/new) on github.
 
 ## RESTHeart 5.3
-
-### Support for request level replica set
-
-`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
-
-v5.3 will add query parameters to specify those options at request level.
 
 ### write mode
 
@@ -138,7 +136,15 @@ The special collection `/_gqlapps` holds the GraphQL App Definitions. A GraphQL 
 
 As soon as the GraphQL App Definition document gets created or updated, the GraphQL API is automatically generated and available under the security domain of RESTHeart.
 
-### RESTHeart Studio
+## RESTHeart 6.1
+
+### Support for request level replica set
+
+`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
+
+v5.3 will add query parameters to specify those options at request level.
+
+## RESTHeart Studio
 
 The new service `restheart-studio` will added to RESTHeart. This is a web application:
 
