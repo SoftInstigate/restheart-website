@@ -36,13 +36,31 @@ layout: docs
 
 v5.3 will add query parameters to specify those options at request level.
 
+### write mode
+
+{: .bs-callout.bs-callout-info}
+Already available in 5.3.0-SNAPSHOT
+
+RESTHeart handles all write request with *upsert* semantic.
+
+v5.3 will add the `?writeMode` (and short alias `?wm`) that allows:
+
+- `POST /coll?wm=insert` inserts the document only if a document with same `_id` does not already exists (if exists, returns `409 Conflict` error status code)
+- `POST /coll?wm=update` updates only and existing document (if not existing, returns `404 Conflict` error status code)
+- `POST /coll?wm=upsert` same as current behavior
+
+`?wm` works for `POST` (also for bulk requests), `PUT`, `PATCH`.
+
 ### Simplified security
 
 After several projects, we realized that the upsert semantic of write methods can make  defining security predicates complex. To simplify security v5.3 will add a toggleable special mode where:
 
-- `POST` -> can only create document(s)
-- `PUT` -> can only modify an existing document
-- `PATCH` -> can only modify an existing document
+- `POST` -> can only create document(s) (same as `?wm=insert`)
+- `PUT` -> can only modify an existing document (same as `?wm=update`)
+- `PATCH` -> can only modify an existing document (same as `?wm=update`)
+
+{: .bs-callout.bs-callout-info}
+The interceptor `simplifiedSecurityWriteMode` is already available in 5.3.0-SNAPSHOT. Can be enabled via the configuration and forces the *writeMode* as described.
 
 As an example, let's consider that we want to allow the user `uji` with role `USER` to only **modify** documents created by him. The following permission would work with _simplified security_ but it does not currently work because `PUT` and `PATCH` can also _create_ not existing documents (and the `writeFilter` does not apply on creation).
 
