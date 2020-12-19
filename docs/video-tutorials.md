@@ -28,7 +28,7 @@ layout: docs
 
 ## Security
 
-{: .bs-callout.bs-callout.warn }
+{: .bs-callout.bs-callout-warn }
 In Italian, translation in progress...
 
 <div class="embed-responsive embed-responsive-16by9 mb-4">
@@ -37,7 +37,7 @@ In Italian, translation in progress...
 
 ## Plugin development
 
-{: .bs-callout.bs-callout.warn }
+{: .bs-callout.bs-callout-warn }
 In Italian, translation in progress...
 
 <div class="embed-responsive embed-responsive-16by9 mb-4">
