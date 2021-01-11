@@ -16,9 +16,11 @@ layout: docs
 
 ## RESTHeart Overview
 
-<div class="embed-responsive embed-responsive-16by9">
+<div class="embed-responsive embed-responsive-16by9 mb-3">
     <iframe src="https://www.youtube.com/embed/9KroH-RvjS0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+
+### Table of Contents
 
 -  [Introduction](https://www.youtube.com/watch?v=9KroH-RvjS0&t=0s)
 -  [Download and run](https://www.youtube.com/watch?v=9KroH-RvjS0&t=67s)
@@ -32,9 +34,11 @@ layout: docs
 
 ## Setup and Configuration
 
-<div class="embed-responsive embed-responsive-16by9">
+<div class="embed-responsive embed-responsive-16by9 mb-3">
     <iframe src="https://www.youtube.com/embed/dzggm7Wp2fU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+
+### Table of Contents
 
 -  [Introduction](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=0s)
 -  [Java binaries](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=57s)
@@ -45,11 +49,11 @@ layout: docs
 
 ## Security
 
-{: .bs-callout.bs-callout-warning }
-
-<div class="embed-responsive embed-responsive-16by9 mb-4">
+<div class="embed-responsive embed-responsive-16by9 mb-3">
     <iframe src="https://www.youtube.com/embed/QVk0aboHayM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+
+### Table of Contents
 
 -  [Introduction](https://www.youtube.com/watch?v=QVk0aboHayM&t=0s)
 -  [About authorization and authentication concepts](https://www.youtube.com/watch?v=QVk0aboHayM&t=36s)
