@@ -29,10 +29,9 @@ layout: docs
 ## Security
 
 {: .bs-callout.bs-callout-warning }
-In Italian, translation in progress...
 
 <div class="embed-responsive embed-responsive-16by9 mb-4">
-    <iframe src="https://www.youtube.com/embed/MFUR4SwB8d4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe src="https://www.youtube.com/embed/QVk0aboHayM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 ## Plugin development
