@@ -23,6 +23,9 @@ The default configuration file enables `fileRealmAuthenticator` and `fileAclAuth
 
 RESTHeart can also handle users and permissions stored on MongoDB collections. This provides more flexibility and control over security and it is the **suggested configuration for production**.
 
+{: .bs-callout.bs-callout-info }
+Watch [Authentication and Authorization in RESTHeart](https://www.youtube.com/watch?v=QVk0aboHayM&t=77s)
+
 ## Handle users in MongoDB collection
 
 To enable user authentication from MongoDB collection set `mongoRealmAuthenticator` as the authenticator of the enabled authentication mechanisms where applicable:
@@ -91,3 +94,5 @@ The **Token Manager** is responsible of generating and validating an auth-token.
 
 A **Service** is a quick way of implementing Web Services to expose additional custom logic.
 
+{: .bs-callout.bs-callout-info }
+Watch [Understanding RESTHeart security](https://www.youtube.com/watch?v=QVk0aboHayM&t=123s)
