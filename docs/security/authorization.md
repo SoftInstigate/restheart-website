@@ -151,3 +151,6 @@ permissions:
     - role: user
       predicate: regex[pattern="/secho/(.*?)", value="%R", full-match=true] and equals[%u, "${1}"]
 ```
+
+{: .bs-callout.bs-callout-info }
+Watch [Authorization via file and MongoDB](https://www.youtube.com/watch?v=QVk0aboHayM&t=1553s)

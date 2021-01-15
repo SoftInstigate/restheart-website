@@ -149,3 +149,6 @@ If the /acl collection has not been created before and you get 404 Not Found, cr
 ```http
 PUT /acl HTTP/1.1
 ```
+
+{: .bs-callout.bs-callout-info }
+Watch [Managing users with practical examples](https://www.youtube.com/watch?v=QVk0aboHayM&t=1828s)
