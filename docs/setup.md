@@ -100,6 +100,9 @@ HTTP/1.1 201 OK
 
 RESTHeart will start bound on HTTP port `8080`.
 
+{: .bs-callout.bs-callout-info }
+Watch [Java binaries](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=57s)
+
 #### Default users and ACL
 
 The default `users.yml` defines the following users:
@@ -206,6 +209,9 @@ Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options]
       This help message
 ```
 
+{: .bs-callout.bs-callout-info }
+Watch [Configuration](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=820s)
+
 ### Run the process in background
 
 To run RESTHeart in background add the `--fork` parameter, like this:
@@ -294,6 +300,9 @@ Beware the `down` command with `-v` parameter erases the MongoDB attached docker
 
 Read the [docker compose documentation](https://docs.docker.com/compose/) for more.
 
+{: .bs-callout.bs-callout-info }
+Watch [Docker / Docker Compose](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s)
+
 ## Build it yourself
 
 Building RESTHeart by yourself is not necessary, but if you want to try then it requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 11** or later.
@@ -365,5 +374,8 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ├── mongodb
 └── security
 ```
+
+{: .bs-callout.bs-callout-info }
+Watch [Compile source code from scratch](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=605s)
 
 </div>

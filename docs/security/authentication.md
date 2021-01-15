@@ -118,6 +118,9 @@ auth-mechanisms:
         - user
 ```
 
+{: .bs-callout.bs-callout-info }
+Watch [Authentication mechanisms](https://www.youtube.com/watch?v=QVk0aboHayM&t=342s)
+
 ## Authenticators
 
 ### Mongo Realm Authenticator
@@ -181,3 +184,6 @@ token-manager:
         ttl: 15
         srv-uri: /tokens
 ```
+
+{: .bs-callout.bs-callout-info }
+Watch [Authenticators in RESTHeart](https://www.youtube.com/watch?v=QVk0aboHayM&t=1211s)

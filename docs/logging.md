@@ -153,4 +153,7 @@ The define a custom `logback.xml` with the following `pattern` (note that is inc
 </configuration>
 ```
 
+{: .bs-callout.bs-callout-info }
+Watch [Logging](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=1152s)
+
 </div>
