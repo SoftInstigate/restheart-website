@@ -16,8 +16,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 The **ETag** or **entity tag** is part of HTTP; it is used for:

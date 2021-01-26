@@ -20,8 +20,6 @@ layout: docs
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 Gathering metrics about your production (and staging) environments can

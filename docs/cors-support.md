@@ -14,8 +14,6 @@ layout: docs
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 CORS stands for [Cross-origin resource

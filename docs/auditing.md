@@ -13,8 +13,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Opentracing / zipkin headers support
 
 This implements issue [#287](https://github.com/SoftInstigate/restheart/issues/287). It's a very slim implementation that will imho fit most use-cases. Incoming headers are copied to the response. If there are no headers set, we'll generate some and send them back. The `X-B3-TraceId` will be written to the logs (by default inside of the [%thread] marks).

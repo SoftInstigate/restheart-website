@@ -19,7 +19,9 @@ layout: docs
 
 {% include docs-head.html %}
 
-## Introduction 
+{% include doc-in-progress.html %}
+
+## Introduction
 
 RESTHeart allows managing dbs and collections.
 
