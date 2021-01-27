@@ -18,7 +18,9 @@ layout: docs
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
+
+{% include doc-in-progress-v6.html %}
 
 ## Introduction
 
@@ -31,6 +33,9 @@ Plugins allow to extend RESTHeart:
 It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
 For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repository on GitHub.
+
+{: .bs-callout.bs-callout-info }
+Watch [Introduction](https://www.youtube.com/watch?v=GReteuiMUio&t=0s)
 
 ### Dependency
 
@@ -79,6 +84,9 @@ The following table described the arguments of the annotation:
 |  requiresContent | proxy interceptor | Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC) | no  | false |
 |  priority | interceptor, initializer | the execution priority (less is higher priority  | no  | 10 |
 
+{: .bs-callout.bs-callout-info }
+Watch [Dependencies, annotations and parameters](https://www.youtube.com/watch?v=GReteuiMUio&t=108s)
+
 ### Plugin Configuration
 
 A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration for a plugin just use its name under the `plugins-args` yml object:
@@ -111,6 +119,9 @@ public void init(Map<String, Object> args) throws ConfigurationException {
 ```
 
 `argValue()` is an helper method to simplify retrieving the value of the configuration argument.
+
+{: .bs-callout.bs-callout-info }
+Watch [Plugin configuration](https://www.youtube.com/watch?v=GReteuiMUio&t=356s)
 
 ### Dependency injection
 
@@ -154,6 +165,7 @@ Those implementations differ on the data type used to hold the request and respo
 Different implementation can also provide some helper methods to cope with specific request parameter. For instance, the `MongoRequest`, i.e. the request used by the MongoService, has the method `getPageSize()` because this is a query parameter used by that service.
 
 When a request hits RESTHeart, it determines which service will handle it. The Service implementation is responsible of instantiating the correct Request and Response objects that will be used along the whole exchange processing chain.
+
 
 ## Services
 
@@ -274,6 +286,9 @@ public class XmlRequest extends ServiceRequest<Document> {
 
 In the constructor a call to `super(exchange)` attaches the object to the `HttpServerExchange`. The object is retrieved using the inherited `of()` method that gets the instance attachment from the `HttpServerExchange`. This is fundamental for two reasons: first the same request and response objects must be shared by the all handlers of the processing chain. Second, this avoid the need to parse the content several times for performance reasons.
 
+{: .bs-callout.bs-callout-info }
+Watch [Services](https://www.youtube.com/watch?v=GReteuiMUio&t=680s)
+
 ## Interceptors
 
  Interceptors allow to snoop and modify requests and responses at different
@@ -326,6 +341,9 @@ public class ReadOnlyPropFilter implements MongoInterceptor {
 
 The `handle()` method is invoked only if the `resolve()` method returns true.
 
+{: .bs-callout.bs-callout-info }
+Watch [Interceptors](https://www.youtube.com/watch?v=GReteuiMUio&t=986s)
+
 ## Initializers
 
 An _Initializer_ allows executing custom logic at startup time.
@@ -353,5 +371,8 @@ public class confirmStartupInitializer implements Initializer {
     }
 }
 ```
+
+{: .bs-callout.bs-callout-info }
+Watch [Initializers](https://www.youtube.com/watch?v=GReteuiMUio&t=1274s)
 
 <hr>

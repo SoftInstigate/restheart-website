@@ -19,6 +19,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 {% include running-examples.md %}
 
 ## List the collection indexes

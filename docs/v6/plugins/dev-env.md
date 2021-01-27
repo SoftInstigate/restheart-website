@@ -14,6 +14,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 Here at [SoftInstigate](https://softinstigate.com) we have developed many projects with RESTHeart.

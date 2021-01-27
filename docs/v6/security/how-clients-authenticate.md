@@ -15,18 +15,20 @@ layout: docs
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
+
+{% include doc-in-progress-v6.html %}
 
 ## Introduction
 
-Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security. 
+Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
 This section shows how clients can authenticate using the simple [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication),
 a standard method for an HTTP user agent to provide a *username* and
 *password* when making a request.
 
 ## Some examples
 
-With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
+With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
 
 
 ```

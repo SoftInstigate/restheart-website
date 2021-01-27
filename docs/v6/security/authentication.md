@@ -24,6 +24,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 See [Security Overview](/docs/security/overview) for an high level view of the RESTHeart security model.
