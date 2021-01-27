@@ -72,3 +72,16 @@ layout: docs
 <div class="embed-responsive embed-responsive-16by9 mb-4">
     <iframe src="https://www.youtube.com/embed/GReteuiMUio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+
+### Table of Contents
+
+-  [Introduction](https://www.youtube.com/watch?v=GReteuiMUio&t=0s)
+-  [Dependencies, annotations and parameters](https://www.youtube.com/watch?v=GReteuiMUio&t=108s)
+-  [Plugin configuration](https://www.youtube.com/watch?v=GReteuiMUio&t=356s)
+-  [Services](https://www.youtube.com/watch?v=GReteuiMUio&t=680s)
+-  [Interceptors](https://www.youtube.com/watch?v=GReteuiMUio&t=986s)
+-  [Initializers](https://www.youtube.com/watch?v=GReteuiMUio&t=1274s)
+-  [GitHub code examples](https://www.youtube.com/watch?v=GReteuiMUio&t=1424s)
+-  [Develop and deploy a plugin](https://www.youtube.com/watch?v=GReteuiMUio&t=1489s)
+-  [RESTHeart Plugin Skeleton](https://www.youtube.com/watch?v=GReteuiMUio&t=2281s)
+-  [Plugin dependencies management](https://www.youtube.com/watch?v=GReteuiMUio&t=2825s)
