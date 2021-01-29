@@ -31,8 +31,8 @@ You can run RESTHeart and MongoDB with Docker, skip to [Run with Docker](#run-wi
 
 Download the ZIP or TAR archive.
 
-[zip](https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.zip){: .btn btn-md}
-[tgz](https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.tar.gz){: .btn btn-md}
+<a class="btn btn-md" id="zipdl" href="https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.zip">zip</a>
+<a class="btn btn-md" id="tgzdl" href="https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.tar.gz">tgz</a>
 
 Un-zip
 
@@ -379,3 +379,12 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 Watch [Compile source code from scratch](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=605s)
 
 </div>
+
+<script async type="text/javascript">
+// avoid caching download link redirects
+var z = document.getElementById("zipdl");
+var t = document.getElementById("tgzdl");
+
+z.href = `${z.href}?nocache=${Math.random()}`;
+t.href = `${t.href}?nocache=${Math.random()}`;
+</script>
