@@ -17,11 +17,9 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
-Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security. 
+Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
 This section shows how clients can authenticate using the simple [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication),
 a standard method for an HTTP user agent to provide a *username* and
 *password* when making a request.

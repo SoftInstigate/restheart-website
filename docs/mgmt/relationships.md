@@ -17,8 +17,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 In MongoDB, documents can have relationships with other documents (see
@@ -29,6 +27,9 @@ documentation section).
 collection, so that it automatically adds the links to related documents
 in its representation.**
 
+{: bs-callout.bs-callout-info}
+Declaring relationships adds the `_links` property to the documents only in the HAL representation format. This is not available in the default representation format. Add the query parameter `?rep=HAL` to display the `_links` property.
+
 ## The _rels_ collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
@@ -36,7 +37,7 @@ properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
 The collection metadata `rels` allows to declare existing
-relationship so that links to the referenced documents are auto-magically included in the `_link` property
+relationship so that links to the referenced documents are auto-magically included in the `_link` property
 
 `rels` is an array of `rel` objects having the following format:
 
@@ -127,7 +128,7 @@ PUT /parentcoll HTTP/1.1
             "ref-field": "parent"
         }
     ]
-}	
+}
 
 HTTP/1.1 201 CREATED
 ```
@@ -168,7 +169,7 @@ HTTP/1.1 201 CREATED
 
 If we now get the document `/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
-document `/parentcoll/1`
+document `/parentcoll/1`
 
 ```http
 GET /test/parentcoll/1.2 HTTP/1.1
@@ -307,7 +308,7 @@ PUT /bandsi HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-``` http
+```http
 PUT /albumsi HTTP/1.1
 
 { "descr":"albums published by music bands" }

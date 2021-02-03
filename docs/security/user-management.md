@@ -18,8 +18,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 This section provides instructions on how to create, update and delete users with [mongoRealAuthenticator](/docs/security/authentication/#mongo-realm-authenticator).

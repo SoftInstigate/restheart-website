@@ -13,8 +13,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 RESTHeart works *out-of-the-box* by merely installing and configuring it.

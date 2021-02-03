@@ -15,8 +15,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.

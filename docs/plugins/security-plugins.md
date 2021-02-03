@@ -16,8 +16,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress.html %}
-
 ## Introduction
 
 This section provides detailed information on how to implement custom security plugins.

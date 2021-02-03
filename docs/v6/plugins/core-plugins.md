@@ -78,7 +78,7 @@ The following table described the arguments of the annotation:
 | description | all  | description of the plugin | yes  |  *none* |
 |  enabledByDefault | all  | true to enable the plugin otherwise it can be enabled by setting the configuration argument `enabled: true`  | no  | true |
 |  defaultURI | service  |  the default URI of the Service  | no  | /&lt;srv-name&gt; |
-|  dontIntercept |  service | `true` to avoid interceptors to be executed on requests handled by the service  | no  | {} |
+|  dontIntercept |  service | list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }` | no  | {} |
 |  interceptPoint |  interceptor |  the intercept point: REQUEST_BEFORE_AUTH, REQUEST_AFTER_AUTH, RESPONSE, RESPONSE_ASYNC | no  | REQUEST_AFTER_AUTH |
 |  initPoint |  initializer | specify when the initializer is executed: BEFORE_STARTUP, AFTER_STARTUP |  no | AFTER_STARTUP |
 |  requiresContent | proxy interceptor | Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC) | no  | false |
@@ -158,6 +158,7 @@ Many concrete implementations of specialized Request and Response exist in the `
 - `BsonRequest` and `BsonResponse`
 - `MongoRequest` and `MongoResponse`
 - `ByteArrayRequest` and `ByteArrayResponse`
+- `StringRequest` and `StringResponse`
 - `BsonFromCsvRequest`
 
 Those implementations differ on the data type used to hold the request and response content. For example, `ByteArrayRequest` and `BsonRequest` hold content as `byte[]` and `BsonValue` respectively.

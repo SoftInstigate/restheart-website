@@ -29,6 +29,9 @@ documentation section).
 collection, so that it automatically adds the links to related documents
 in its representation.**
 
+{: bs-callout.bs-callout-info}
+Declaring relationships adds the `_links` property to the documents only in the HAL representation format. This is not available in the default representation format. Add the query parameter `?rep=HAL` to display the `_links` property.
+
 ## The _rels_ collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
