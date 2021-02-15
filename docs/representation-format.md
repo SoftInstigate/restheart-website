@@ -9,7 +9,6 @@ layout: docs
 -   [Standard Representation](#standard-representation)
     -   [Json Mode](#json-mode)
 -   [BSON types](#bson-types)
--   [Get the names of existing collections](#get-the-names-of-existing-collections)
 -   [HAL](#hal)
     -   [Example](#example)
     -   [Properties](#properties)
@@ -25,7 +24,7 @@ layout: docs
 
 ## Introduction
 
-RESTHeart has three different options for representing the resources:`STANDARD`, `HAL` and `SHAL` (Simplified HAL).
+RESTHeart has three different options for representing the resources: `STANDARD`, `HAL` and `SHAL` (Simplified HAL).
 
 The default representation is controlled by the configuration option `default-representation-format` .
 
@@ -52,77 +51,15 @@ GET /inventory?rep=shal HTTP/1.1
 {: .bs-callout.bs-callout-warning }
 Starting with RESTHeart v4 this is the default representation format.
 
-In the following response the documents of the collection `inventory` are returned as an array of JSON documents.
+The following table summarizes how resources are represented
 
-{% include code-header.html
-    type="Request"
-%}
-
-```http
-GET /inventory HTTP/1.1
-```
-
-{% include code-header.html
-    type="Response"
-%}
-
-```http
-HTTP/1.1 200 OK
-
-...
-
-[
-  {
-    "_id": {
-      "$oid": "5d0b4dff2ec9ff0d92ddc2b7"
-    },
-    "_etag": {
-      "$oid": "5d0b4dff2ec9ff0d92ddc2b2"
-    },
-    "item": "postcard",
-    "qty": 45,
-    "size": {
-      "h": 10,
-      "w": 15.25,
-      "uom": "cm"
-    },
-    "status": "A"
-  },
-
-  ...
-
-]
-```
-
-Execute the following query to retrieve the metadata of the collection _inventory_:
-
-{% include code-header.html
-    type="Request"
-%}
-
-```http
-GET /inventory/_meta HTTP/1.1
-```
-
-{% include code-header.html
-    type="Response"
-%}
-
-```http
-HTTP/1.1 200 OK
-
-...
-
-{
-    "_etag": {
-        "$oid": "5d1e13dbdde87c62e98a4595"
-    },
-    "_id": "_meta",
-    "meta_field": "metadata_value"
-    ...
-}
-
-```
+{: .table.table-responsive}
+|resource|represented as|example|
+|-|-|-|
+|root `/`|paginated array of existing db names|`["db1", "db2"]`|
+|db `/<db-name>`|paginated array of collection/buckets names that exist in the db|`["collection1", "file.bucket"]`|
+|collection `<db-name>/<collection-name>`|paginated array of documents of the collection|`[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]`|
+|document|JSON object|`{"_id": "doc1, "foo": "bar" }`
 
 ### JSON Mode
 
@@ -259,7 +196,7 @@ Content-Type: application/javascript
 
 ## BSON types
 
-MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
+MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
 which type system is a superset of JSON’s. To preserve type information,
 MongoDB adds this extension to the JSON.
 
@@ -299,50 +236,9 @@ The correct request is:
 GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 ```
 
-## Get the names of existing collections
-
-To get the names of the collections of the database `restheart` (the default configuration binds `/` to this database).
-
-{% include code-header.html
-    type="Request"
-%}
-
-```http
-GET / HTTP/1.1
-```
-
-{% include code-header.html
-    type="Response"
-%}
-
-```http
-HTTP/1.1 200 OK
-
-...
-
-[
-  "inventory",
-  "chat",
-  "files.bucket"
-]
-```
-
-<div class="bs-callout bs-callout-info">
-<p>
-The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
-</p>
-
-<pre class="black-code"><code># The MongoDB resource to bind to the root URI / 
-# The format is /db[/coll[/docid]] or '*' to expose all dbs
-root-mongo-resource = /restheart</code></pre>
-
-With <code>root-mongo-resource = '\*'</code>, the request <code>GET /</code> returns the names of existing <i>databases</i>.
-
-</div>
-
 ## HAL
 
-[HAL](http://stateless.co/hal_specification.html) up on 2 simple concepts: **Resources** and **Links**
+[HAL](http://stateless.co/hal_specification.html) up on 2 simple concepts: **Resources** and **Links**
 
 -   **Resources** have state (plain JSON), embedded resources and links
 -   **Links** have target (href URI) and relations (aka rel)
@@ -352,7 +248,7 @@ With <code>root-mongo-resource = '\*'</code>, the request <code>GET /</code> ret
 ## Example
 
 We’ll get the `inventory` collection resource and analyze it.
-A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
+A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
 
 {% include code-header.html
     type="Request"
@@ -413,7 +309,7 @@ X-Powered-By: restheart.org
 
 ### Properties
 
-In this case, the collection properties comprise the field *metadata_field*; this
+In this case, the collection properties comprise the field *metadata_field*; this
 is user defined.
 
 The other fields are reserved properties (i.e. are managed automatically
@@ -432,7 +328,7 @@ by RESTHeart for you); these always starts with \_:
 Collection's embedded resources are the collection documents,
 recursively represented as HAL documents.
 
-The `_embedded` property looks like:
+The `_embedded` property looks like:
 
 ```json
 {
@@ -549,7 +445,7 @@ The `_embedded` property looks like:
 </tbody>
 </table>
 </div>
-The `_links` property looks like:
+The `_links` property looks like:
 
 ```json
 { "_links": {
@@ -593,7 +489,7 @@ The `_links` property looks like:
 
 ### HAL Mode
 
-The query parameter `hal` controls the verbosity of HAL representation.
+The query parameter `hal` controls the verbosity of HAL representation.
 Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
 (if the param is omitted) is compact mode.
 
