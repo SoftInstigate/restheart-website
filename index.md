@@ -14,7 +14,7 @@ layout: default
     </section>
 </section>
 
-<section class="cd-intro mt-4 mb-2">
+<section class="cd-intro mt-4 mb-1">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">Blazing fast</b>
@@ -33,10 +33,23 @@ layout: default
     </h1>
 </section>
 
+<section id="article-at-mongodb" class="call-to-action">
+    <div class="container-fluid">
+        <div class="row mb-1 bg-black">
+            <div class="col-md-12 call-to-action__item call-to-action__first text-center">
+                <h2 class="text-lightcyan">Featured on <strong>mongodb.com</strong></h2>
+                <p style="color:orange">RESTHeart API for MongoDB simplifies development
+                   and frees you to focus on delivering great user experiences</p>
+                <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="call-to-action" class="call-to-action">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
+        <div class="row mb-2">
+            <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
                 <p>RESTHeart is an Open Source runtime highly suited for back end microservices.
                 It leverages MongoDB to provide the data API out-of-the-box. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
@@ -47,7 +60,7 @@ layout: default
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
-            <div class="col-md-6 mb-2 call-to-action__item call-to-action__first">
+            <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
                 <p>RESTHeart is tailored for JVM, Docker and Kubernetes, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
                 <ul class="">
