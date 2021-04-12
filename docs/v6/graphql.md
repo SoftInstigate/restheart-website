@@ -50,9 +50,13 @@ This kind of configuration  allows you to change dynamically the behavior of you
 
 A GraphQL application definition is composed by three sections:
 
-1.  **descriptor**;
-2.  **schema**;
-3.  **mappings**.
+```json
+{
+    "descriptor": "...",
+    "schema": "...",
+    "mapping": "..."
+}
+```
 
 ### Descriptor
 
@@ -64,12 +68,24 @@ Here you can specify:
 -  **enabled**: can be *true* or *false*. If it's *false*, the GraphQL application can't be queried and vice-versa. By default it is *true*.
 -  **uri**: it specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If you don't specify the URI, application's name is used instead (so, at least one between *name* and *URI* must be present).
 
+```json
+{
+    "descriptor": {
+        "name": "MyApp",
+        "description": "my first test GraphQL application",
+        "enabled": true,
+        "uri": "/myapp"
+    }
+}
+```
+
 ### Schema
 
 This section must contain GraphQL application's schema written with *Schema Definition Language* (SDL). For example:
 
 ```json
 {
+    "descriptor": "...",
     "schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}",
     "mapping": "..."
 }
@@ -83,6 +99,7 @@ In this section you can specify how GraphQL types fields are mapped on MongoDB d
 
 ```json
 {
+    "descriptor": "...",
     "schema": "...",
     "mappings": {
         "User": {
@@ -108,6 +125,7 @@ Up to now, two kinds of mapping can be made:
 
 ```json
 {
+    "descriptor": "...",
     "schema": "...",
 	"mappings":{
 		"User": {
@@ -193,6 +211,7 @@ then, possible mappings are:
 
 ```json
 {
+    "descriptor": "...",
     "schema": "...",
 	"mappings": {
 		"User": {
@@ -310,6 +329,7 @@ mapped with:
 
 ```json
 {
+    "descriptor": "...",
     "schema": "...",
 	"mappings": {
 		"User": {
@@ -372,6 +392,7 @@ In order to mitigate the N+1 problem and optimize performances of yours GraphQL 
 
 ```json
 {
+    "descriptor": "...",
     "schema": "...",
 	"mappings": {
 		"User": "...",
