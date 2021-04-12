@@ -70,7 +70,8 @@ This section must contain GraphQL application's schema written with *Schema Defi
 
 ```json
 {
-"schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}"
+    "schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}",
+    "mapping": "..."
 }
 ```
 
@@ -82,22 +83,20 @@ In this section you can specify how GraphQL types fields are mapped on MongoDB d
 
 ```json
 {
+    "schema": "...",
     "mappings": {
         "User": {
-            "name": ...,
-            "surname": ...,
-            ...
+            "name": "...",
+            "surname": "..."
         },
 
         "Post": {
-            "text": ...,
-            "author": ...,
-            ...,
+            "text": "...",
+            "author": "..."
         },
 
         "Query": {
-            "users": ...,
-            ...
+            "users": "..."
         }
     }
 }
@@ -109,16 +108,22 @@ Up to now, two kinds of mapping can be made:
 
 ```json
 {
+    "schema": "...",
 	"mappings":{
 		"User": {
-			"name": "firstName",          // mapped with MongoDB document 'firstName' field
-			"phone": "contacts.phone",    // mapped with field in 'contacts' nested document
-			"email": "contacts.emails.0", // mapped with 1-th element of 'emails' array within 'contacts' nested document
+			"name": "firstName",
+			"phone": "contacts.phone",
+			"email": "contacts.emails.0",
 		}
 	}
 }
 ```
 
+Whit this configuration:
+
+- `name` is mapped with MongoDB document `firstName` field
+- `phone` is mapped with field `phone` in `contacts` nested document
+- `email` is mapped with 1st element of `emails` array within `contacts` nested document
 
 Notice that, if you don't specify a mapping for a field, RESTHeart will map it with a MongoDB document field with the same name.
 
@@ -174,21 +179,21 @@ with MongoDB data organized in the two collections *users* and *posts*:
 
 **POSTS**
 ```json
-[
-    {   "_id": {"$oid": "606d963f74744a3fa6f4489a" },
-        "text": "Lorem ipsum dolor sit amet",
-        "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
-    },
-    {   "_id": {"$oid": "606d963f74744a3fa6f4489e" },
-        "text": "Lorem ipsum dolor sit amet",
-        "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
-    }
+[ { "_id": {"$oid": "606d963f74744a3fa6f4489a" },
+    "text": "Lorem ipsum dolor sit amet",
+    "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
+  },
+  { "_id": {"$oid": "606d963f74744a3fa6f4489e" },
+    "text": "Lorem ipsum dolor sit amet",
+    "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
+  }
 ]
 ```
 then, possible mappings are:
 
 ```json
 {
+    "schema": "...",
 	"mappings": {
 		"User": {
 			"posts": {
@@ -305,6 +310,7 @@ mapped with:
 
 ```json
 {
+    "schema": "...",
 	"mappings": {
 		"User": {
 			"posts": {
@@ -366,8 +372,9 @@ In order to mitigate the N+1 problem and optimize performances of yours GraphQL 
 
 ```json
 {
+    "schema": "...",
 	"mappings": {
-		...,
+		"User": "...",
 		"Post": {
 			"author": {
 				"db": "restheart",
@@ -384,7 +391,7 @@ In order to mitigate the N+1 problem and optimize performances of yours GraphQL 
 				}
 			}
 		},
-		...
+		"Query": "..."
 	}
 }
 ```
