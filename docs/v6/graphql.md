@@ -31,7 +31,7 @@ The `restheart-graphql` service added to RESTHeart exposes a read-only (no mutat
 
 For each GraphQL application you need to upload on MongoDB a so called **definition**. You can specify the MongoDB's collection reserved for this purpose within the RESTHeart's YAML configuration as follow:
 
-```
+```yml
 plugins-args:
 	graphql:
 		enabled: true
@@ -46,7 +46,7 @@ by default:
 -  `<db_name>`= *restheart*
 -  `<reserved_collection_name>`= *gql-apps*
 
-This kind of configuration  allows you to change dinamically the behavior of your GraphQL application by updating the related document on MongoDB.
+This kind of configuration  allows you to change dynamically the behavior of your GraphQL application by updating the related document on MongoDB.
 
 A GraphQL application definition is composed by three sections:
 
@@ -63,9 +63,9 @@ Here you can specify:
 
 -  **description**: GraphQL application description.
 
--  **enabled**: can be *true* or *false*. If it's *false*, the GraphQL application can't be queried and viceversa. By default it is *true*.
+-  **enabled**: can be *true* or *false*. If it's *false*, the GraphQL application can't be queried and vice-versa. By default it is *true*.
 
--  **uri**: it specifies at which endpoint your GraphQL application is reachable (e.g. ../graphql/uri). If you don't specify uri, application's name is used instead (so, at least one between *name* and *uri* must be present).
+-  **uri**: it specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If you don't specify the URI, application's name is used instead (so, at least one between *name* and *URI* must be present).
 
 ### Schema
 
@@ -142,10 +142,10 @@ Notice that, if you don't specify a mapping for a field, RESTHeart will map it w
 	-  **limit** (Document or Integer): how many documents should be returned at most of those resulting.
 
 Moreover, a query could be:
-	-	**predefined**: if you enstablish directly in the configuration all the parameters above;
+	-	**predefined**: if you establish directly in the configuration all the parameters above;
 	-	**parametric**: if one or more parameters, of the MongoDB query, are determined by arguments passed through GraphQL query or by values that come from MongoDB documents that are already fetched.
 
-In order to make a **parametric mapping**, two *operators* could be used: 
+In order to make a **parametric mapping**, two *operators* could be used:
 
  - **\$arg**: allows you to use, inside the query mapping, values passed through GraphQL arguments;
  - **\$fk**: allows you to map a GraphQL field with a MongoDB relation, specifying which is the document field that hold the relation.
@@ -174,12 +174,26 @@ with MongoDB data organized in the two collections *users* and *posts*:
 
 **USERS**
 ```json
-{"_id": ObjectId("..."), "firstName": "...", "lastName": "...", "contacts": {"phone": "...", "emails": ["...", "...", ...], "posts_ids": [ObjectId("..."), ObjectId("..."), ...], ...}}
+{ "_id": {"$oid": "6037732f5fa7d52581015ed9" },
+  "firstName": "Foo",
+  "lastName": "Bar",
+  "contacts": { "phone": "+39113", "emails": ["foo@domain.com", "f.bar@domain.com"],
+  "posts_ids": [ { "$oid": "606d963f74744a3fa6f4489a" }, { "$oid": "606d963f74744a3fa6f4489e" } ] }
+}
 ```
 
 **POSTS**
 ```json
-{"_id": ObjectId("..."), "text": "...", "author_id": ObjectId("..."), ...}
+[
+    {   "_id": {"$oid": "606d963f74744a3fa6f4489a" },
+        "text": "Lorem ipsum dolor sit amet",
+        "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
+    },
+    {   "_id": {"$oid": "606d963f74744a3fa6f4489e" },
+        "text": "Lorem ipsum dolor sit amet",
+        "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
+    }
+]
 ```
 then, possible mappings are:
 
@@ -240,48 +254,44 @@ As result, we are saying that:
  - asking for **userByName** GraphQL field, the MongoDB documents searched are the ones within the **users** collection with field **name** equal to value of **_name** GraphQL argument. Moreover, we are asking to return at most **_limit** documents, to skip the firsts **_skip** ones and to sort them by name in reverse order.
 
 {: .bs-callout.bs-callout-info}
-Note that you can use also *dot-notation* with \$fk operator.
+Note that you can use also *dot-notation* with the `$fk` operator.
 
 ## Queries
 
 Up to now, only GraphQL Query can be made, so no subscription or mutation. In order to make a query you can use HTTP request with POST method and both content-type *application/json* and *application/graphql*. For instance:
 
 - application/json
-	```
-	POST /graphql/<app-uri> HTTP/1.1
-	Host: <host-name>
-	Content-Type: application/json
-	Authorization: ...
-	Content-Length: ...
+```
+POST /graphql/<app-uri> HTTP/1.1
+Host: <host-name>
+Content-Type: application/json
 
-	{
-		"query": "query test_operation($name: String){ userByName(_name: $name){name posts{text}} }",
-		"variables": { "name": "..." },
-		"operationName": ""
-	}
-	```
+{
+    "query": "query test_operation($name: String){ userByName(_name: $name){name posts{text}} }",
+    "variables": { "name": "..." },
+    "operationName": ""
+}
+```
 - application/graphql
 
-	```
-	POST /graphql/<app-uri> HTTP/1.1
-	Host: <host-name>
-	Content-Type: application/graphql
-	Authorization: ...
-	Content-Length: ...
+```
+POST /graphql/<app-uri> HTTP/1.1
+Host: <host-name>
+Content-Type: application/graphql
 
-	{
-		userByName(_name: "...") {
-			name
-			posts {
-				text
-			}
-		}
-	}
-	```
+{
+    userByName(_name: "...") {
+        name
+        posts {
+            text
+        }
+    }
+}
+```
 
 ## Optimization
 
-It's well known that every GraphQL service suffers of *N+1 requests problem* (link?). In our case this problem arises every time that a relation is mapped through $fk operator with a MongoDB query. For example, given the following GraphQL schema:
+It's well known that every GraphQL service suffers of *N+1 requests problem* (link?). In our case this problem arises every time that a relation is mapped through the `$fk` operator with a MongoDB query. For example, given the following GraphQL schema:
 
 ```
 type User {
@@ -300,9 +310,10 @@ type Query {
 	posts(_limit: Int = 0, _skip: Int = 0): [Post]
 }
 ```
+
 mapped with:
 
-```
+```json
 {
 	"mappings": {
 		"User": {
@@ -344,15 +355,13 @@ mapped with:
 	}
 }
 ```
+
 then, executing the GraphQL query:
 
 ```
-{
-	posts(_limit: 10) {
+{ posts(_limit: 10) {
 		text
-		author {
-			name
-		}
+		author { name }
 	}
 }
 ```
