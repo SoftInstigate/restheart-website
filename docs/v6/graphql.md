@@ -44,7 +44,6 @@ plugins-args:
 by default:
 
 -  `<db_name>`= *restheart*
-
 -  `<reserved_collection_name>`= *gql-apps*
 
 This kind of configuration  allows you to change dinamically the behavior of your GraphQL application by updating the related document on MongoDB.
@@ -52,9 +51,7 @@ This kind of configuration  allows you to change dinamically the behavior of you
 A GraphQL application definition is composed by three sections:
 
 1.  **descriptor**;
-
 2.  **schema**;
-
 3.  **mappings**.
 
 ### Descriptor
@@ -76,13 +73,9 @@ This section must contain GraphQL application's schema written with *Schema Defi
 
 ```
 {
-
 ...,
-
 "schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}",
-
 ...,
-
 }
 ```
 
@@ -160,74 +153,84 @@ In order to make a **parametric mapping**, two *operators* could be used:
 For example, having the following GraphQL schema:
 
 ```
-...
-
-type User{
+type User {
 	id: Int!
 	name: String
 	posts: [Post]
 }
 
-type Post{
+type Post {
 	id: Int!
 	text: String
 	author: User
-	...
 }
 
-type Query{
+type Query {
 	usersByName(_name: String!, _limit: Int = 0, _skip: Int = 0): [Users]
-	...
 }
-
-...
 ```
 with MongoDB data organized in the two collections *users* and *posts*:
 
-```
-//USERS
 
+**USERS**
+```json
 {"_id": ObjectId("..."), "firstName": "...", "lastName": "...", "contacts": {"phone": "...", "emails": ["...", "...", ...], "posts_ids": [ObjectId("..."), ObjectId("..."), ...], ...}}
+```
 
-
-//POSTS
-
+**POSTS**
+```json
 {"_id": ObjectId("..."), "text": "...", "author_id": ObjectId("..."), ...}
 ```
 then, possible mappings are:
 
-```
-"mappings":{
-	...,
-	"User":{
-		...,
-		"posts":{
-			"db": "restheart",
-			"collection": "posts",
-			"find": {"_id": {"$in": {"$fk": "posts_ids"} }}
+```json
+{
+	"mappings": {
+		"User": {
+			"posts": {
+				"db": "restheart",
+				"collection": "posts",
+				"find": {
+					"_id": {
+						"$in": {
+							"$fk": "posts_ids"
+						}
+					}
+				}
+			}
+		},
+		"Post": {
+			"author": {
+				"db": "restheart",
+				"collection": "user",
+				"find": {
+					"_id": {
+						"$fk": "author_id"
+					}
+				}
+			}
+		},
+		"Query": {
+			"usersByName": {
+				"db": "restheart",
+				"collection": "users",
+				"find": {
+					"name": {
+						"$arg": "_name"
+					}
+				},
+				"limit": {
+					"$arg": "_limit"
+				},
+				"skip": {
+					"$arg": "_skip"
+				},
+				"sort": {
+					"name": -1
+				}
+			}
 		}
-	},
-	"Post"{
-		...,
-		"author":{
-			"db": "restheart",
-			"collection": "user",
-			"find": {"_id": {"$fk": "author_id"}}
-		},
-		...
 	}
-	"Query":{
-		"usersByName":{
-			"db": "restheart",
-			"collection": "users",
-			"find": {"name":{"$arg":"_name"}},
-			"limit": {"$arg": "_limit"},
-			"skip":{"$arg": "_skip"},
-			"sort": {"name": -1}
-		},
-		...
-	}
-	...
 }
 ```
 As result, we are saying that:
@@ -252,8 +255,8 @@ Up to now, only GraphQL Query can be made, so no subscription or mutation. In or
 	Content-Length: ...
 
 	{
-		"query": "query test_operation($name: String){userByName(_name: $name){name posts{text}}}",
-		"variables": {"name": "..."},
+		"query": "query test_operation($name: String){ userByName(_name: $name){name posts{text}} }",
+		"variables": { "name": "..." },
 		"operationName": ""
 	}
 	```
@@ -267,9 +270,9 @@ Up to now, only GraphQL Query can be made, so no subscription or mutation. In or
 	Content-Length: ...
 
 	{
-		userByName(_name: "..."){
+		userByName(_name: "...") {
 			name
-			posts{
+			posts {
 				text
 			}
 		}
@@ -281,69 +284,73 @@ Up to now, only GraphQL Query can be made, so no subscription or mutation. In or
 It's well known that every GraphQL service suffers of *N+1 requests problem* (link?). In our case this problem arises every time that a relation is mapped through $fk operator with a MongoDB query. For example, given the following GraphQL schema:
 
 ```
-...
-
-type User{
+type User {
 	id: Int!
 	name: String
 	posts: [Post]
 }
 
-type Post{
+type Post {
 	id: Int!
 	text: String
 	author: User
-	...
 }
 
-type Query{
+type Query {
 	posts(_limit: Int = 0, _skip: Int = 0): [Post]
-	...
 }
-
-...
 ```
 mapped with:
 
 ```
-"mappings":{
-	...,
-	"User":{
-		...,
-		"posts":{
-			"db": "restheart",
-			"collection": "posts",
-			"find": {"_id": {"$in": {"$fk": "posts_ids"} }}
+{
+	"mappings": {
+		"User": {
+			"posts": {
+				"db": "restheart",
+				"collection": "posts",
+				"find": {
+					"_id": {
+						"$in": {
+							"$fk": "posts_ids"
+						}
+					}
+				}
+			}
+		},
+		"Post": {
+			"author": {
+				"db": "restheart",
+				"collection": "user",
+				"find": {
+					"_id": {
+						"$fk": "author_id"
+					}
+				}
+			}
+		},
+		"Query": {
+			"posts": {
+				"db": "restheart",
+				"collection": "posts",
+				"limit": {
+					"$arg": "_limit"
+				},
+				"skip": {
+					"$arg": "_skip"
+				}
+			}
 		}
-	},
-	"Post"{
-		...,
-		"author":{
-			"db": "restheart",
-			"collection": "user",
-			"find": {"_id": {"$fk": "author_id"}}
-		},
-		...
 	}
-	"Query":{
-		"posts":{
-			"db": "restheart",
-			"collection": "posts",
-			"limit": {"$arg": "_limit"},
-			"skip":{"$arg": "_skip"},
-		},
-		...
-	}
-	...
 }
 ```
 then, executing the GraphQL query:
 
 ```
 {
-	posts(_limit: 10){
+	posts(_limit: 10) {
 		text
-		author{
+		author {
 			name
 		}
 	}
@@ -358,24 +365,28 @@ Precisely, N+1 requests.
 
 In order to mitigate the N+1 problem and optimize performances of yours GraphQL API, RESTHeart allows you to use **per-request DataLoaders** to batch and cache MongoDB queries. This can be done specifying **dataLoader** field within the query mapping. For instance, the author mapping seen above becomes:
 
-```
-"mappings":{
-	...,
-	"Post"{
+```json
+{
+	"mappings": {
 		...,
-		"author":{
-			"db": "restheart",
-			"collection": "user",
-			"find": {"_id": {"$fk": "author_id"}}
-			"dataLoader": {
-				"batching": true,
-				"caching": true,
-				"maxBatchSize": 20
+		"Post": {
+			"author": {
+				"db": "restheart",
+				"collection": "user",
+				"find": {
+					"_id": {
+						"$fk": "author_id"
+					}
+				}
+				"dataLoader": {
+					"batching": true,
+					"caching": true,
+					"maxBatchSize": 20
+				}
 			}
 		},
 		...
 	}
-	...
 }
 ```
 where:
