@@ -33,13 +33,13 @@ For each GraphQL application you need to upload on MongoDB a so called **definit
 
 ```yml
 plugins-args:
-	graphql:
-		enabled: true
-		secured: false
-		uri: /graphql
-		db: <db_name>
-		collection: <reserved_collection_name>
-		verbose: false
+    graphql:
+        enabled: true
+        secured: false
+        uri: /graphql
+        db: <db_name>
+        collection: <reserved_collection_name>
+        verbose: false
 ```
 by default:
 
@@ -60,22 +60,17 @@ A GraphQL application definition is composed by three sections:
 Here you can specify:
 
 -  **name**: GraphQL application name.
-
 -  **description**: GraphQL application description.
-
 -  **enabled**: can be *true* or *false*. If it's *false*, the GraphQL application can't be queried and vice-versa. By default it is *true*.
-
 -  **uri**: it specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If you don't specify the URI, application's name is used instead (so, at least one between *name* and *URI* must be present).
 
 ### Schema
 
 This section must contain GraphQL application's schema written with *Schema Definition Language* (SDL). For example:
 
-```
+```json
 {
-...,
-"schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}",
-...,
+"schema": "type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}"
 }
 ```
 
@@ -85,30 +80,26 @@ Remember that, in order to be a valid schema, it must contain type *Query*.
 
 In this section you can specify how GraphQL types fields are mapped on MongoDB data. Mappings have to be organized following the same hierarchical structure of GraphQL SDL schema, so for each GraphQL type you can insert a JSON object with a property for each field that you want to map. For instance:
 
-```
-
+```json
 {
-...,
-	"mappings":
-	{
-		"User":{
-			"name": ...,
-			"surname": ...,
-			...
-		},
+    "mappings": {
+        "User": {
+            "name": ...,
+            "surname": ...,
+            ...
+        },
 
-		"Post":{
-			"text": ...,
-			"author": ...,
-			...,
+        "Post": {
+            "text": ...,
+            "author": ...,
+            ...,
+        },
 
-		},
-
-		"Query":{
-			"users": ...,
-			...
-		}
-	}
+        "Query": {
+            "users": ...,
+            ...
+        }
+    }
 }
 ```
 
@@ -116,13 +107,12 @@ Up to now, two kinds of mapping can be made:
 
 1. you can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array by **dot-notation**. For instance:
 
-```
+```json
 {
-...,
 	"mappings":{
 		"User": {
-			"name": "firstName", // mapped with MongoDB document 'firstName' field
-			"phone": "contacts.phone", // mapped with field in 'contacts' nested document
+			"name": "firstName",          // mapped with MongoDB document 'firstName' field
+			"phone": "contacts.phone",    // mapped with field in 'contacts' nested document
 			"email": "contacts.emails.0", // mapped with 1-th element of 'emails' array within 'contacts' nested document
 		}
 	}
@@ -134,21 +124,22 @@ Notice that, if you don't specify a mapping for a field, RESTHeart will map it w
 
 2. You can map a GraphQL field with a MongoDB query using the following parameters:
 
-	-  **db** (String): database name;
-	-  **collection** (String): collection name;
-	-  **find** (Document): selection filter using query operators (e.g. *\$in*, *\$and*, *\$or*, ...);
-	-  **sort** (Document): order in which the query returns matching documents;
-	-  **skip** (Document or Integer): how many documents should be skipped of those resulting;
-	-  **limit** (Document or Integer): how many documents should be returned at most of those resulting.
+-  **db** (String): database name;
+-  **collection** (String): collection name;
+-  **find** (Document): selection filter using query operators (e.g. `$in`, `$and`, `$or`, ...);
+-  **sort** (Document): order in which the query returns matching documents;
+-  **skip** (Document or Integer): how many documents should be skipped of those resulting;
+-  **limit** (Document or Integer): how many documents should be returned at most of those resulting.
 
 Moreover, a query could be:
-	-	**predefined**: if you establish directly in the configuration all the parameters above;
-	-	**parametric**: if one or more parameters, of the MongoDB query, are determined by arguments passed through GraphQL query or by values that come from MongoDB documents that are already fetched.
+
+- **predefined** : if you establish directly in the configuration all the parameters above;
+- **parametric** : if one or more parameters, of the MongoDB query, are determined by arguments passed through GraphQL query or by values that come from MongoDB documents that are already fetched.
 
 In order to make a **parametric mapping**, two *operators* could be used:
 
- - **\$arg**: allows you to use, inside the query mapping, values passed through GraphQL arguments;
- - **\$fk**: allows you to map a GraphQL field with a MongoDB relation, specifying which is the document field that hold the relation.
+ - **`$arg`**: allows you to use, inside the query mapping, values passed through GraphQL arguments;
+ - **`$fk`**: allows you to map a GraphQL field with a MongoDB relation, specifying which is the document field that hold the relation.
 
 For example, having the following GraphQL schema:
 
@@ -170,7 +161,6 @@ type Query {
 }
 ```
 with MongoDB data organized in the two collections *users* and *posts*:
-
 
 **USERS**
 ```json
@@ -386,7 +376,7 @@ In order to mitigate the N+1 problem and optimize performances of yours GraphQL 
 					"_id": {
 						"$fk": "author_id"
 					}
-				}
+				},
 				"dataLoader": {
 					"batching": true,
 					"caching": true,
