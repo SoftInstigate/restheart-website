@@ -144,15 +144,10 @@ You can map a GraphQL field with a MongoDB query using the following parameters:
 -  `skip` (Document or Integer): how many documents should be skipped of those resulting;
 -  `limit` (Document or Integer): how many documents should be returned at most of those resulting.
 
-Moreover, a query could be:
+Moreover, a query is **parametric** when the mapped MongoDb query includes one or more `$arg` and `$fk` operators:
 
-- **predefined** : if you establish directly in the configuration all the parameters above;
-- **parametric** : if one or more parameters, of the MongoDB query, are determined by arguments passed through GraphQL query or by values that come from MongoDB documents that are already fetched.
-
-In order to make a **parametric mapping**, two *operators* could be used:
-
- - `$arg`: allows you to use in the mapping the values passed through GraphQL arguments;
- - `$fk`: allows you to map a GraphQL field with a MongoDB relation, specifying which is the document field that hold the relation.
+ - `$arg`: allows to use the arguments of the GraphQL query in the MongoDb query;
+ - `$fk`: allows to map a GraphQL field with a MongoDB relation, specifying which is the document field that holds the relation.
 
 For example, having the following GraphQL schema:
 
