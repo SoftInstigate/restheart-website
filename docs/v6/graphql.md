@@ -5,21 +5,22 @@ layout: docs
 
 <div  markdown="1"  class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--  [Overview](#overview)
--  [GraphQL Applications](#graphql-applications)
-	-  [Descriptor](#descriptor)
-	-  [Schema](#schema)
-	-  [Mappings](#mappings)
--  [Queries](#queries)
--  [Optimization](#optimization)
+- [Overview](#overview)
+- [GraphQL Applications](#graphql-applications)
+	- [Descriptor](#descriptor)
+	- [Schema](#schema)
+	- [Mappings](#mappings)
+		- [Field to field mapping](#field-to-field-mapping)
+		- [Query mapping](#query-mapping)
+- [Queries](#queries)
+- [Responses](#responses)
+- [Optimization](#optimization)
 
 </div>
 
 <div  markdown="1"  class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
-
-{% include doc-in-progress-v6.html %}
 
 ## Overview
 
@@ -74,7 +75,7 @@ Here you can specify:
     "name": "MyApp",
     "description": "my first test GraphQL application",
     "enabled": true,
-    "uri": "/myapp"
+    "uri": "myapp"
   },
   "schema": "...",
   "mapping": "..."
@@ -296,6 +297,80 @@ Content-Type: application/graphql
 }
 ```
 
+## Responses
+
+In the following table are reported possible RESTHeart GraphQL Service responses:
+
+{: .table .table-responsive}
+|**HTTP Status code**|**description**|
+|:--:|:--:|
+| 200 |It's all OK!|
+| 400 |Invalid GraphQL query (e.g. required fields are not in the schema, argument type mismatch), schema - MongoDB data type mismatch, invalid app definition|
+| 401 |Unauthorized|
+| 404 |There is no GraphQL app bound to the requested endpoint |
+| 405 |HTTP method used not supported|
+| 500 |Internal Server Error|
+
+### Example responses
+
+#### 200 - OK
+
+```json
+
+{
+  "data":{
+    "userByName":[
+      {
+        "firstName": "nameUser1",
+        "lastName": "surnameUser1"
+      },
+      {
+        "firstName": "nameUser2",
+        "lastName": "surnameUser2"
+      }
+    ]
+  }
+}
+
+```
+
+#### 400 - Bad Request - Invalid GraphQL Query / schema - MongoDB data type mismatch
+
+```json
+{
+  "data": "...",
+  "errors" : "..."
+}
+```
+
+#### 400 - Bad Request - Invalid GraphQL App Definition
+
+```json
+{
+  "http status code":  400,
+  "http status description":  "Bad Request",
+  "message":  "..."
+}
+```
+
+#### 405 - Method Not Allowed
+
+```json
+{
+  "http status code":  405,
+  "http status description":  "Method Not Allowed"
+}
+```
+
+#### 500 - Internal Server Error
+
+```json
+{
+  "http status code":  500,
+  "http status description":  "Internal Server Error"
+}
+```
+
 ## Optimization
 
 It's well known that every GraphQL service suffers of *N+1 requests problem* (link?). In our case this problem arises every time that a relation is mapped through the `$fk` operator with a MongoDB query. For example, given the following GraphQL schema:
@@ -370,7 +445,9 @@ then, executing the GraphQL query:
 ```
 { posts(_limit: 10) {
     text
-    author { name }
+    author {
+      name
+    }
   }
 }
 ```
@@ -417,3 +494,32 @@ where:
 
 {: .bs-callout.bs-callout-info}
 Note that there's no magic number for *maxBatchSize*, so you have to tune it experiencing. For this purpose you can set *verbose = true* under the GraphQL plugin configuration within *restheart.yaml*.   In this way, RESTHeart will insert DataLoader statistics inside GraphQL queries answers.
+
+**Example**
+
+```json
+{
+"data":  {"..."},
+  "extensions":  {
+  "dataloader":  {
+      "overall-statistics":  {
+        "loadCount":  0,
+        "loadErrorCount":  0,
+        "loadErrorRatio":  0.0,
+        "batchInvokeCount":  0,
+        "batchLoadCount":  0,
+        "batchLoadRatio":  0.0,
+        "batchLoadExceptionCount":  0,
+        "batchLoadExceptionRatio":  0.0,
+        "cacheHitCount":  0,
+        "cacheHitRatio":  0.0
+      },
+      "individual-statistics":  {
+        "dataLoader1":"...",
+        "dataLoader2":"...",
+        "dataLoader3":"..."
+      }
+    }
+  }
+}
+```
