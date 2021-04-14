@@ -10,8 +10,8 @@ layout: docs
 	- [Descriptor](#descriptor)
 	- [Schema](#schema)
 	- [Mappings](#mappings)
-		- [Field to field mapping](#field-to-field-mapping)
-		- [Query mapping](#query-mapping)
+		- [Field to Field mapping](#field-to-field-mapping)
+		- [Field to Query mapping](#field-to-query-mapping)
 - [Queries](#queries)
 - [Responses](#responses)
 - [Optimization](#optimization)
@@ -102,10 +102,10 @@ In this section you can specify how GraphQL types fields are mapped on MongoDB d
 
 Two kinds of mapping can be made:
 
-- Field to field mapping
-- Query mapping
+- Field to Field mapping
+- Field to Query mapping
 
-#### Field to field mapping
+#### Field to Field mapping
 
 You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array by **dot-notation**. For instance:
 
@@ -133,7 +133,7 @@ Whit this configuration:
 
 Notice that, if you don't specify a mapping for a field, RESTHeart will map it with a MongoDB document field with the same name.
 
-#### Query mapping
+#### Field to Query mapping
 
 You can map a GraphQL field with a MongoDB query using the following parameters:
 
@@ -151,7 +151,7 @@ Moreover, a query could be:
 
 In order to make a **parametric mapping**, two *operators* could be used:
 
- - `$arg`: allows you to use, inside the query mapping, values passed through GraphQL arguments;
+ - `$arg`: allows you to use in the mapping the values passed through GraphQL arguments;
  - `$fk`: allows you to map a GraphQL field with a MongoDB relation, specifying which is the document field that hold the relation.
 
 For example, having the following GraphQL schema:
@@ -458,7 +458,7 @@ RESTHeart will make:
 
 Precisely, N+1 requests.
 
-In order to mitigate the N+1 problem and optimize performances of yours GraphQL API, RESTHeart allows you to use **per-request DataLoaders** to batch and cache MongoDB queries. This can be done specifying **dataLoader** field within the query mapping. For instance, the author mapping seen above becomes:
+In order to mitigate the N+1 problem and optimize performances of yours GraphQL API, RESTHeart allows you to use **per-request DataLoaders** to batch and cache MongoDB queries. This can be done specifying **dataLoader** field within the Field to Query mapping. For instance, the author mapping seen above becomes:
 
 ```json
 {
