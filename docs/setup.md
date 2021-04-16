@@ -25,7 +25,7 @@ layout: docs
 ## Download and Run
 
 {: .bs-callout.bs-callout-info}
-You can run RESTHeart and MongoDB with Docker, skip to [Run with Docker](#run-with-docker) for instructions.
+You can run RESTHeart and MongoDB with __Docker__: go to [Run with Docker](#run-with-docker) for instructions.
 
 ### Get the latest release
 
