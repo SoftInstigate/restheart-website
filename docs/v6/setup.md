@@ -33,8 +33,6 @@ You can run RESTHeart and MongoDB with Docker, skip to [Run with Docker](#run-wi
 
 Download the ZIP or TAR archive from [here](https://github.com/SoftInstigate/restheart/releases/latest).
 
-<a class="btn btn-md" id="latest" href="https://github.com/SoftInstigate/restheart/releases/latest">Latest release</a>
-
 Un-zip
 
 ```bash
