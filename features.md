@@ -117,7 +117,7 @@ notes:
                     </h2>
                 </h5>
                 <div>
-                Manage binary files with MongoDB’s GridFS. RESTHeart supports </strong>web caching </strong> for large files – reducing bandwidth.
+                Manage binary files with MongoDB’s GridFS. RESTHeart supports <strong>web caching </strong> for large files – reducing bandwidth.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
