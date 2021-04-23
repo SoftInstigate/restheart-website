@@ -7,14 +7,22 @@ layout: docs
 
 - [Overview](#overview)
 - [GraphQL Applications](#graphql-applications)
-	- [Descriptor](#descriptor)
-	- [Schema](#schema)
-	- [Mappings](#mappings)
-		- [Field to Field mapping](#field-to-field-mapping)
-		- [Field to Query mapping](#field-to-query-mapping)
+  - [Descriptor](#descriptor)
+  - [Schema](#schema)
+  - [Mappings](#mappings)
+    - [Field to Field mapping](#field-to-field-mapping)
+    - [Field to Query mapping](#field-to-query-mapping)
 - [Queries](#queries)
 - [Responses](#responses)
+  - [Example responses](#example-responses)
+    - [200 - OK](#200---ok)
+    - [400 - Bad Request - Invalid GraphQL Query / schema - MongoDB data type mismatch](#400---bad-request---invalid-graphql-query--schema---mongodb-data-type-mismatch)
+    - [400 - Bad Request - Invalid GraphQL App Definition](#400---bad-request---invalid-graphql-app-definition)
+    - [405 - Method Not Allowed](#405---method-not-allowed)
+    - [500 - Internal Server Error](#500---internal-server-error)
 - [Optimization](#optimization)
+- [A complete example](#a-complete-example)
+    - [Before running the example requests](#before-running-the-example-requests)
 
 </div>
 
@@ -297,14 +305,14 @@ Content-Type: application/graphql
 In the following table are reported possible RESTHeart GraphQL Service responses:
 
 {: .table .table-responsive}
-|**HTTP Status code**|**description**|
-|:--:|:--:|
-| 200 |It's all OK!|
-| 400 |Invalid GraphQL query (e.g. required fields are not in the schema, argument type mismatch), schema - MongoDB data type mismatch, invalid app definition|
-| 401 |Unauthorized|
-| 404 |There is no GraphQL app bound to the requested endpoint |
-| 405 |HTTP method used not supported|
-| 500 |Internal Server Error|
+| **HTTP Status code** |                                                                     **description**                                                                     |
+| :------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: |
+|         200          |                                                                      It's all OK!                                                                       |
+|         400          | Invalid GraphQL query (e.g. required fields are not in the schema, argument type mismatch), schema - MongoDB data type mismatch, invalid app definition |
+|         401          |                                                                      Unauthorized                                                                       |
+|         404          |                                                 There is no GraphQL app bound to the requested endpoint                                                 |
+|         405          |                                                             HTTP method used not supported                                                              |
+|         500          |                                                                  Internal Server Error                                                                  |
 
 ### Example responses
 
@@ -515,6 +523,391 @@ Note that there's no magic number for *maxBatchSize*, so you have to tune it exp
         "dataLoader3":"..."
       }
     }
+  }
+}
+```
+
+
+## A complete example
+
+{: .bs-callout.bs-callout-warning}
+*Execute on rest ninja* doesn't work with Safari because it requires HTTPS. Since configuring HTTPS requires a valid certificate and takes some time to [configure](/docs/security/tls/), we suggest to just use Chrome or Firefox for this tutorial.
+
+#### Before running the example requests
+
+
+The following example assume:
+
+  - RESTHeart Platform running on the localhost with the default configuration: the database *restheart* is bound to `/`, the user *admin* exists with default password *secret*, *gql-apps* is the collection, within `restheart` database, reserved to GraphQL apps definitions and the GraphQL service is reachable at `/graphql`.
+  - The `sample-mflix` database (downloadable [here](https://developer.mongodb.com/article/atlas-sample-datasets/#std-label-atlas-sample-data-local-installation)) is stored in the MongoDB instance associated to RESTHeart.
+
+
+To create the *gql-apps* collection, run the following:
+
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/cf0d3d9a0f811cf5d6921ad66fcf49cbad852a5a/0"
+%}
+
+```http
+PUT /gql-apps HTTP/1.1
+```
+
+To upload the example GraphQL app definition, run the following:
+
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/e582fd7affd60a00ee49a537845c1c4b692e1521/0"
+%}
+
+```http
+POST /gql-apps HTTP/1.1
+
+
+{
+ "descriptor": {
+   "name":"MFlix",
+   "description":"GraphQL App example using MongoDB sample_mflix dataset",
+   "enabled": true,
+   "uri":"mflix"
+  },
+   "schema": "type Comment{  _id: ObjectId  user: User  movie: Movie  text: String  date: DateTime}type Movie{  _id: ObjectId  title: String  year: Int  runtime: Int  released: DateTime  poster: String  plot: String  fullPlot: String  lastUpdate: String  filmType: String  directors: [String]  imdbRate: Float  imdbVotes: Int  countries: [String]  genres: [String]  tomatoesRate: Float  tomatoesReviewsNum: Int  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]  relatedMovies: [Movie]}type Session{  _id: ObjectId  user: User  jwt: String} type Theater{  theaterId: Int  location: BsonDocument} type User{  _id: ObjectId  name: String  email: String  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]}type Query{  MoviesByTitle(title: String!): [Movie]  MoviesByYear(year: Int!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Movie]  UserByEmail(email: String!): [User]  MoviesByTomatoesRateRange(min: Float, max: Float, sort: Int = 1, skip: Int = 0, limit: Int = 0):[Movie]  TheatersByCity(city: String!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Theater]}",
+ "mappings": {
+   "Comment": {
+     "user": {
+       "db":"sample_mflix",
+       "collection":"users",
+       "find": {
+         "email": {
+           "$fk":"email"
+          }
+        },
+       "dataLoader": {
+         "batching": true,
+         "caching": true
+        }
+      },
+     "movie": {
+       "db":"sample_mflix",
+       "collection":"movies",
+       "find": {
+         "_id": {
+           "$fk":"movie_id"
+          }
+        },
+       "dataLoader": {
+         "batching": true,
+         "caching": false,
+         "maxBatchSize": 30
+        }
+      }
+    },
+   "Movie": {
+     "imdbRate":"imdb.rating",
+     "imdbVotes":"imdb.votes",
+     "tomatoesRate":"tomatoes.viewer.rating",
+     "tomatoesReviewsNum":"tomatoes.viewer.numReviews",
+     "lastUpdate":"lastupdated",
+     "fullPlot":"fullplot",
+     "filmType":"type",
+     "comments": {
+       "db":"sample_mflix",
+       "collection":"comments",
+       "find": {
+         "$and": [
+            {
+             "movie_id": {
+               "$fk":"_id"
+              }
+            },
+            {
+             "date": {
+               "$gte": {
+                 "$arg":"startDate"
+                },
+               "$lt": {
+                 "$arg":"endDate"
+                }
+              }
+            }
+          ]
+        },
+       "sort": {
+         "date": {
+           "$arg":"sort"
+          }
+        },
+       "skip": {
+         "$arg":"skip"
+        },
+       "limit": {
+         "$arg":"limit"
+        },
+       "dataLoader": {
+         "batching": true,
+         "caching": false,
+         "maxBatchSize": 30
+        }
+      }
+    },
+   "Session": {
+     "user": {
+       "db":"sample_mflix",
+       "collection":"user",
+       "find": {
+         "email": {
+           "$fk":"user_id"
+          }
+        },
+       "dataLoader": {
+         "batching": true,
+         "caching": false,
+         "maxBatchSize": 30
+        }
+      }
+    },
+   "User": {
+     "comments": {
+       "db":"sample_mflix",
+       "collection":"comments",
+       "find": {
+         "email": {
+           "$fk":"email"
+          }
+        },
+       "sort": {
+         "_id": {
+           "$arg":"sort"
+          }
+        },
+       "skip": {
+         "$arg":"skip"
+        },
+       "limit": {
+         "$arg":"limit"
+        },
+       "dataLoader": {
+         "batching": true,
+         "caching": false,
+         "maxBatchSize": 30
+        }
+      }
+    },
+   "Query": {
+     "MoviesByTitle": {
+       "db":"sample_mflix",
+       "collection":"movies",
+       "find": {
+         "title": {
+           "$arg":"title"
+          }
+        }
+      },
+     "MoviesByYear": {
+       "db":"sample_mflix",
+       "collection":"movies",
+       "find": {
+         "year": {
+           "$arg":"year"
+          }
+        },
+       "sort": {
+         "_id": {
+           "$arg":"sort"
+          }
+        },
+       "skip": {
+         "$arg":"skip"
+        },
+       "limit": {
+         "$arg":"limit"
+        }
+      },
+     "UserByEmail": {
+       "db":"sample_mflix",
+       "collection":"users",
+       "find": {
+         "email": {
+           "$arg":"email"
+          }
+        }
+      },
+     "MoviesByTomatoesRateRange": {
+       "db":"sample_mflix",
+       "collection":"movies",
+       "find": {
+         "tomatoes.viewer.rating": {
+           "$gte": {
+             "$arg":"min"
+            },
+           "$lt": {
+             "$arg":"max"
+            }
+          }
+        },
+       "sort": {
+         "tomatoes.viewer.rating": {
+           "$arg":"sort"
+          }
+        },
+       "skip": {
+         "$arg":"skip"
+        },
+       "limit": {
+         "$arg":"limit"
+        }
+      },
+     "TheatersByCity": {
+       "db":"sample_mflix",
+       "collection":"theaters",
+       "find": {
+         "location.address.city": {
+           "$arg":"city"
+          }
+        },
+       "sort": {
+         "location.address.city": {
+           "$arg":"sort"
+          }
+        },
+       "skip": {
+         "$arg":"skip"
+        },
+       "limit": {
+         "$arg":"limit"
+        }
+      }
+    }
+  }
+}
+```
+
+
+To execute a GraphQL request to *Mflix* app with *Content-Type* `application/json`, run the following:
+
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/e2aed3eb5867ee201b0bee790e3924a16da2219b/0"
+%}
+
+```http
+POST /graphql/mflix HTTP/1.1
+
+{
+   "query":"query exampleOperation($year: Int!, $limit: Int = 0){MoviesByYear(year: $year, limit: $limit){ title comments{ text user{name} date} tomatoesRate}}",
+   "variables":{
+      "year":2008,
+      "limit":2
+   }
+}
+```
+
+{% include code-header.html
+    type="Response"
+%}
+
+```json
+{
+  "data": {
+    "MoviesByYear": [
+      {
+        "title": "The Bank Job",
+        "comments": [
+          {
+            "text": "Pariatur voluptatibus placeat quo architecto soluta non. Eaque exercitationem facilis consequuntur.",
+            "user": {
+              "name": "Shireen Baratheon"
+            },
+            "date": {
+              "$date": 954044557000
+            }
+          },
+          {
+            "text": "Facilis ea voluptatem et velit rerum animi corrupti. Commodi esse distinctio modi in pariatur natus. Accusamus culpa voluptatem voluptatibus suscipit.",
+            "user": {
+              "name": "Lisa Russo"
+            },
+            "date": {
+              "$date": 976465077000
+            }
+          }
+        ],
+        "tomatoesRate": 3.5
+      },
+      {
+        "title": "The Flyboys",
+        "comments": [],
+        "tomatoesRate": 3.6
+      }
+    ]
+  }
+}
+```
+
+
+To execute a GraphQL request to *Mflix* app with *Content-Type* `application/graphql`, run the following:
+
+
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/705cbffaa3daca184dde2958b15ffd5563faab46/0"
+%}
+
+```http
+POST /graphql/mflix HTTP/1.1
+
+{
+    MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
+        title
+        comments{
+            text
+            user{
+                name
+            }
+        }
+        tomatoesRate
+    }
+}
+```
+
+{% include code-header.html
+    type="Response"
+%}
+
+```json
+{
+  "data": {
+    "MoviesByTomatoesRateRange": [
+      {
+        "title": "The Wages of Fear",
+        "comments": [
+          {
+            "text": "Commodi accusamus totam eaque sunt. Nihil reiciendis commodi molestiae esse ipsam corporis reprehenderit. Non nam similique vel dolor magni quia quis.",
+            "user": {
+              "name": "Doreah"
+            }
+          }
+        ],
+        "tomatoesRate": 4.4
+      },
+      {
+        "title": "Chicago Deadline",
+        "comments": [
+          {
+            "text": "Nihil itaque a architecto. Illo veritatis totam at quibusdam. Doloremque hic totam consequuntur omnis molestiae commodi iste. Quis alias commodi nemo eveniet.",
+            "user": {
+              "name": "Patricia Good"
+            }
+          }
+        ],
+        "tomatoesRate": 4.4
+      },
+      {
+        "title": "The Passion of Joan of Arc",
+        "comments": [],
+        "tomatoesRate": 4.4
+      }
+    ]
   }
 }
 ```
