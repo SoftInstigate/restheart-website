@@ -53,7 +53,7 @@ site too.
 ## The Schema Store and Schema resources
 
 _Schema Store_ resources allow store JSON schemas used for document
-validation; they are specialized collection resources whose documents
+validation; they are specialized collection resources whose documents
 must conform to the JSON schema format (specifically to the latest
 version draft-04)
 
@@ -73,15 +73,15 @@ request creates a valid JSON Schema.
 PUT /_schemas/address HTTP/1.1
 
 {
-    "$schema": "https://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "properties": {
-        "address": { "type": "string" },
-        "city": { "type": "string" },
-        "postal-code": { "type": "string" },
-        "country": { "type": "string"}
-    },
-    "required": ["address", "city", "country"]
+  "$schema": "https://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "address": { "type": "string" },
+    "city": { "type": "string" },
+    "postal-code": { "type": "string" },
+    "country": { "type": "string"}
+  },
+  "required": ["address", "city", "country"]
 }
 
 HTTP/1.1 201 Created
@@ -98,10 +98,10 @@ GET /_schemas/address HTTP/1.1
 HTTP/1.1 200 OK
 
 {
-    "$schema": "https://json-schema.org/draft-04/schema#",
-    "id": "https://schema-store/restheart/address#",
-    "_id": "address",
-    ....
+  "$schema": "https://json-schema.org/draft-04/schema#",
+  "id": "https://schema-store/restheart/address#",
+  "_id": "address",
+  ....
 }
 ```
 
@@ -112,10 +112,10 @@ metadata property `jsonSchema` as follows:
 
 ```json
 {
-	"jsonSchema": {
-			"schemaId": <schema_id> ,
-			"schemaStoreDb": <schema_store_db>
-	}
+  "jsonSchema": {
+    "schemaId": <schema_id> ,
+	"schemaStoreDb": <schema_store_db>
+  }
 }
 ```
 
@@ -157,28 +157,24 @@ As an example, the following schema defines two bson types: `date` and `objectid
 
 ```json
 {
-    "_id": "bson",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "definitions": {
-        "date": {
-            "type": "object",
-            "properties": {
-                "_$date": {
-                    "type": "number"
-                }
-            },
-            "additionalProperties": false
+  "_id": "bson",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "date": {
+    "type": "object",
+      "properties": {
+        "_$date": { "type": "number" }
         },
-        "objectid": {
-            "type": "object",
-            "properties": {
-                "_$oid": {
-                    "type": "string"
-                }
-            },
-            "additionalProperties": false
-        }
+      "additionalProperties": false
+      },
+      "objectid": {
+        "type": "object",
+        "properties": {
+          "_$oid": { "type": "string" }
+        },
+      "additionalProperties": false
     }
+  }
 }
 ```
 
@@ -186,26 +182,16 @@ Once the definition has been saved in the `schema-store`, the new types can be u
 
 ```json
 {
-    "_id": "post",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-        "_id": {
-            "$ref": "http://schema-store/restheart/bson#/definitions/objectid"
-        },
-        "_etag": {
-            "$ref": "http://schema-store/restheart/bson#/definitions/objectid"
-        },
-        "title": {
-            "type": "string"
-        },
-        "content": {
-            "type": "string"
-        },
-        "date": {
-            "$ref": "http://schema-store/bson#/definitions/date"
-        }
-    }
+  "_id": "post",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "_id": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+    "_etag": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+    "title": { "type": "string" },
+    "content": { "type": "string" },
+    "date": { "$ref": "http://schema-store/bson#/definitions/date" }
+  }
 }
 ```
 
@@ -217,9 +203,7 @@ Once the definition has been saved in the `schema-store`, the new types can be u
 PUT /addresses HTTP/1.1
 
 {
-	"jsonSchema": {
-			"schemaId": "address"
-	}
+  "jsonSchema": { "schemaId": "address" }
 }
 ```
 
@@ -236,9 +220,9 @@ HTTP/1.1 400 Bad Request
 ...
 
 {
-    "http status code": 400,
-    "http status description": "Bad Request",
-    "message": "Request content violates schema 'address': 2 schema violations found, required key [city] not found, required key [country] not found"
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Request content violates schema 'address': 2 schema violations found, required key [city] not found, required key [country] not found"
 }
 ```
 
@@ -250,9 +234,9 @@ Passing valid data results in the document creation:
 POST /addresses HTTP/1.1
 
 {
-	"address": "Via D'Annunzio, 28",
-	"city": "L'Aquila",
-	"country": "Italy"
+  "address": "Via D'Annunzio, 28",
+  "city": "L'Aquila",
+  "country": "Italy"
 }
 
 HTTP/1.1 201 Created
@@ -273,9 +257,9 @@ PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
 HTTP 1.1 501 Not Implemented
 
 {
-    "http status code": 501,
-    "http status description": "Not Implemented",
-    "message": "'jsonSchema' checker does not support bulk PATCH requests. Set 'skipNotSupported:true' to allow them."
+  "http status code": 501,
+  "http status description": "Not Implemented",
+  "message": "'jsonSchema' checker does not support bulk PATCH requests. Set 'skipNotSupported:true' to allow them."
 }
 ```
 
