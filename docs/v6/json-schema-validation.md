@@ -191,10 +191,10 @@ Once the definition has been saved in the `schema-store`, the new types can be u
     "type": "object",
     "properties": {
         "_id": {
-            "$ref": "http://schema-store/bson#/definitions/objectid"
+            "$ref": "http://schema-store/restheart/bson#/definitions/objectid"
         },
         "_etag": {
-            "$ref": "http://schema-store/bson#/definitions/objectid"
+            "$ref": "http://schema-store/restheart/bson#/definitions/objectid"
         },
         "title": {
             "type": "string"
