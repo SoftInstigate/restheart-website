@@ -164,9 +164,8 @@ Use `_size` keyword after the collection path to retrieve the number of document
     <h4 id="impact-on-performances">Impact on performances</h4>
     <hr class="my-2">
     <p>
-    <code><strong>count</strong></code> involves querying the collection twice: once for counting
-    and once of actually retrieving the data; this has performance
-    implications!
+    Using the <code><strong>_size</strong></code> resources involves querying the collection twice: one for counting
+    and then another to retrieve the data.
     </p>
 </div>
 
