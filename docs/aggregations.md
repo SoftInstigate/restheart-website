@@ -6,7 +6,7 @@ layout: docs
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 -   [Introduction](#introduction)
--   [The aggrs collection metadata](#theaggrscollection-metadata)
+-   [The aggrs collection metadata](#theaggrscollection-metadata)
     -   [aggregation pipeline](#aggregation-pipeline)
     -   [Map-Reduce](#map-reduce)
 -   [Examples](#examples)
@@ -21,6 +21,8 @@ layout: docs
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
+
+{% include doc-in-progress-v6.html %}
 
 ## Introduction
 

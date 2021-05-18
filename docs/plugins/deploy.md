@@ -12,6 +12,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 To deploy a plugin, just copy its jar file in the `./plugins` directory of restheart.

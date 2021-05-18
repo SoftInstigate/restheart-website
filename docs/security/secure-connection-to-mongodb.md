@@ -15,9 +15,11 @@ layout: docs
 
 {% include docs-head.html %}
 
-## Introduction
+{% include doc-in-progress-v6.html %}
 
-This section provides instructions on how to secure the connection between RESTHeart and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart.
+## Introduction 
+
+This section provides instructions on how to secure the connection between RESTHeart and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart. 
 
 ## Enable MongoDB authentication
 

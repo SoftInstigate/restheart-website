@@ -22,6 +22,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Download and Run
 
 {: .bs-callout.bs-callout-info}

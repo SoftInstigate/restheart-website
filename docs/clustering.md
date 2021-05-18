@@ -18,6 +18,8 @@ layout: docs
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## What are Clustering and Load Balancing
 
 **Server Clustering** is a method of turning multiple computer servers into a cluster, which is a group of servers that acts like a single system.

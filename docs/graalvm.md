@@ -19,6 +19,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 [GraalVM](https://www.graalvm.org/) is a new virtual machine from Oracle that supports a polyglot runtime environment and the ability to compile Java applications to native images.

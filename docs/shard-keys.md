@@ -7,6 +7,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 {: .bs-callout.bs-callout-info}
 The shard key determines the distribution of the collection’s documents among a cluster’s shards.
 

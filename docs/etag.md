@@ -16,17 +16,19 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
-The **ETag** or **entity tag** is part of HTTP; it is used for:
+The **ETag** or **entity tag** is part of HTTP; it is used for:
 
--   **[Web cache](https://en.wikipedia.org/wiki/Web_cache) validation**,
+-   **[Web cache](https://en.wikipedia.org/wiki/Web_cache) validation**,
     and which allows a client to make conditional requests. This allows
     caches to be more efficient, and saves bandwidth, as a web server
     does not need to send a full response if the content has not
     changed.
--   For **[optimistic concurrency
-    control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)** as
+-   For **[optimistic concurrency
+    control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control)** as
     a way to help prevent ghost writes, i.e. simultaneous updates of a
     resource from overwriting each other.
 
@@ -52,7 +54,7 @@ PUT /test/coll/doc descr="a document for testing" HTTP/1.1
 HTTP/1.1 201 Created
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
- 
+
 GET /test/coll/doc HTTP/1.1
 HTTP/1.1 200 OK
 ...
@@ -70,7 +72,7 @@ Previous versions always require the ETag to be specified for any write
 request.
 
 Let's try to update the document at URI /test/coll/doc forcing the ETag
-check with the `checkEtag` query parameter.
+check with the `checkEtag` query parameter.
 
 ```http
 PUT /test/coll/doc?checkEtag HTTP/1.1
@@ -197,7 +199,7 @@ not existing or to PRECONDITION FAILED if it already exists.
 ## An example with AngularJs
 
 The example project
-[restheart-notes-example](https://github.com/softinstigate/restheart-notes-example) on
+[restheart-notes-example](https://github.com/softinstigate/restheart-notes-example) on
 github uses AngularJs to interact with RESTHeart.
 
 It allows to create and edit notes.

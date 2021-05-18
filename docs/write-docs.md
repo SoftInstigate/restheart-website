@@ -20,6 +20,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 This document shows how RESTHeart can use the `PUT`, `POST`, `PATCH` and

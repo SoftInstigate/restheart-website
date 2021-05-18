@@ -5,51 +5,19 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [Standard Representation](#standard-representation)
+-   [Representation Format](#representation-format)
+    -   [BSON types](#bson-types)
     -   [Json Mode](#json-mode)
--   [BSON types](#bson-types)
--   [HAL](#hal)
-    -   [Example](#example)
-    -   [Properties](#properties)
-    -   [Documents as embedded resources](#documents-as-embedded-resources)
-    -   [Links](#links)
-    -   [Hal mode](#hal-mode)
--   [Simplified HAL](#simplified-hal)
+- [Other representation formats](#other-representation-formats)
+    -   [HAL](#hal)
+    -   [Simplified HAL](#simplified-hal)
 </div>
 
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
 
-## Introduction
-
-RESTHeart has three different options for representing the resources: `STANDARD`, `HAL` and `SHAL` (Simplified HAL).
-
-The default representation is controlled by the configuration option `default-representation-format` .
-
-```properties
-default-representation-format: STANDARD
-```
-
-The `rep` query parameter can also be used for switching between representations.
-
-```http
-GET /inventory?rep=s HTTP/1.1
-```
-
-```http
-GET /inventory?rep=hal HTTP/1.1
-```
-
-```http
-GET /inventory?rep=shal HTTP/1.1
-```
-
-## Standard Representation
-
-{: .bs-callout.bs-callout-warning }
-Starting with RESTHeart v4 this is the default representation format.
+## Representation Format
 
 The following table summarizes how resources are represented
 
@@ -60,6 +28,48 @@ The following table summarizes how resources are represented
 |db `/<db-name>`|paginated array of collection/buckets names that exist in the db|`["collection1", "file.bucket"]`|
 |collection `<db-name>/<collection-name>`|paginated array of documents of the collection|`[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]`|
 |document|JSON object|`{"_id": "doc1, "foo": "bar" }`
+
+### BSON types
+
+MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
+which type system is a superset of JSON’s. To preserve type information,
+MongoDB adds this extension to the JSON.
+
+For instance, the `_id` of the following JSON document is an ObjectId.
+
+```json
+  {
+    "_id": {
+      "$oid": "5d0b4e325beb2029a8d1bd5e"
+    },
+    "item": "paper"
+
+    ...
+  }
+```
+
+{: .bs-callout.bs-callout-info }
+The strict mode is used on both request and response resource representation and also on the query parameter `filter`
+
+The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
+
+{% include code-header.html
+    type="Request"
+%}
+
+```http
+GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
+```
+
+The correct request is:
+
+{% include code-header.html
+    type="Request"
+%}
+
+```http
+GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
+```
 
 ### JSON Mode
 
@@ -194,49 +204,34 @@ Content-Type: application/javascript
 {"_id":ObjectId("5d7a4b59cf6eeb5fb1686613"),"_etag":ObjectId("5d7a6d13bd8a0d69516bbf56"),"timestamp":ISODate("2019-09-12T13:42:49.260Z"),"a":1,"b":1.0,"big":NumberLong("1568295769260"),"verybig":NumberLong("5887391606")}
 ```
 
-## BSON types
+## Other representation formats
 
-MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
-which type system is a superset of JSON’s. To preserve type information,
-MongoDB adds this extension to the JSON.
+RESTHeart has different options for representing the resources: `STANDARD`, `HAL` and `SHAL` (Simplified HAL).
 
-For instance, the `_id` of the following JSON document is an ObjectId.
+{: .bs-callout.bs-callout-warning }
+`HAL` and `SHAL` are deprecated in version 6.0 and will likely be removed in a future release.
 
-```json
-  {
-    "_id": {
-      "$oid": "5d0b4e325beb2029a8d1bd5e"
-    },
-    "item": "paper"
+The default representation can be controlled by the configuration option `default-representation-format` .
 
-    ...
-  }
+```properties
+default-representation-format: STANDARD
 ```
 
-{: .bs-callout.bs-callout-info }
-The strict mode is used on both request and response resource representation and also on the query parameter `filter`
-
-The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
-
-{% include code-header.html
-    type="Request"
-%}
+The `rep` query parameter can also be used for switching between representations.
 
 ```http
-GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
+GET /inventory?rep=s HTTP/1.1
 ```
-
-The correct request is:
-
-{% include code-header.html
-    type="Request"
-%}
 
 ```http
-GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
+GET /inventory?rep=hal HTTP/1.1
 ```
 
-## HAL
+```http
+GET /inventory?rep=shal HTTP/1.1
+```
+
+### HAL
 
 [HAL](http://stateless.co/hal_specification.html) up on 2 simple concepts: **Resources** and **Links**
 
@@ -245,7 +240,7 @@ GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 
 ![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
 
-## Example
+#### Example
 
 We’ll get the `inventory` collection resource and analyze it.
 A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
@@ -307,7 +302,7 @@ X-Powered-By: restheart.org
 }
 ```
 
-### Properties
+#### Properties
 
 In this case, the collection properties comprise the field *metadata_field*; this
 is user defined.
@@ -318,12 +313,12 @@ by RESTHeart for you); these always starts with \_:
 {: .table.table-responsive}
 | Property | Description |
 |----------------|---------------------------------------------------------------------------------------------------------|
-| `_type` | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode) |
+| `_type` | the type of this resource. in this case ‘COLLECTION’ (only returned on HAL full mode) |
 | `_id` | the name of the collection |
 | `_etag` | entity tag, used for caching and to avoid ghost writes. |
 | `_returned` | the number of the documents embedded in this representation |
 
-## Documents as embedded resources
+#### Documents as embedded resources
 
 Collection's embedded resources are the collection documents,
 recursively represented as HAL documents.
@@ -371,7 +366,7 @@ The `_embedded` property looks like:
 }
 ```
 
-### Links
+#### Links
 
 <div class="anchor-offset" id="dot-notation">
 </div>
@@ -379,7 +374,7 @@ The `_embedded` property looks like:
 <div class="bs-callout bs-callout-info mt-3" role="alert">
     <p>
     <code>_links</code> are only returned on <strong>hal full mode</strong>. The only exception are with
-    <a href="{{ "../mgmt/relationships" | prepend: site.baseurl }}">relationships</a>. If a collection defines a relationship,
+    <a href="{{ '../mgmt/relationships' | prepend: site.baseurl }}">relationships</a>. If a collection defines a relationship,
     the representation of the documents always include the links to related
     data.
     </p>
@@ -487,7 +482,7 @@ The `_links` property looks like:
 <div class="anchor-offset" id="hal-mode">
 </div>
 
-### HAL Mode
+#### HAL Mode
 
 The query parameter `hal` controls the verbosity of HAL representation.
 Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
@@ -495,7 +490,7 @@ Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
 
 When `hal=f` is specified, the representation is more verbose and includes special properties (such as links).
 
-## Simplified HAL
+### Simplified HAL
 
 {: .bs-callout.bs-callout-info }
 Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`

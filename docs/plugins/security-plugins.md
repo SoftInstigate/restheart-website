@@ -16,6 +16,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 This section provides detailed information on how to implement custom security plugins.
@@ -23,7 +25,7 @@ This section provides detailed information on how to implement custom security p
 ## Authentication Mechanisms
 
 An **Authentication Mechanism** authenticates incoming requests.
-
+ 
  RESTHeart provides different implementations: [Basic Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/BasicAuthMechanism.java), [Digest Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/DigestAuthMechanism.java), [JSON Web Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/JwtAuthenticationMechanism.java), [Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/TokenBasicAuthMechanism.java)
 
 These are all different methods for the client to pass some sort of credentials to the server. For example, `BasicAuthMechanism` extracts the credentials from the `Authorization` request header following the Basic Authentication specs [RFC 7617](https://tools.ietf.org/html/rfc7617).

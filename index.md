@@ -10,8 +10,13 @@ layout: default
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
         <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Java and GraalVM Runtime for Microservices</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant data persistence on MongoDB</p>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant REST and GraphQL API on MongoDB</p>
     </section>
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <a href="/docs/upgrade-to-v6/" target="_blank" class="btn btn-o-whites">See What's new in RESTHeart 6</a>
+        </div>
+    </div>
 </section>
 
 <section class="cd-intro mt-4 mb-1">

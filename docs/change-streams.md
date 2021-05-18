@@ -19,6 +19,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 <div class="alert alert-success" role="alert">
     <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
     <hr class="my-2">

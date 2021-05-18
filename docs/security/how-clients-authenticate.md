@@ -17,6 +17,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
@@ -26,7 +28,7 @@ a standard method for an HTTP user agent to provide a *username* and
 
 ## Some examples
 
-With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
+With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
 
 
 ```

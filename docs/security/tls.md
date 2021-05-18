@@ -15,7 +15,9 @@ layout: docs
 
 {% include docs-head.html %}
 
-## Introduction
+{% include doc-in-progress-v6.html %}
+
+## Introduction 
 
 This section provides instructions on how to enable Transport Layer Security so that requests can be served over the HTTPS protocol.
 

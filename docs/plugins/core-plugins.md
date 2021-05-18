@@ -20,6 +20,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 ## Introduction
 
 Plugins allow to extend RESTHeart:
@@ -70,7 +72,7 @@ public class MyPlugin implements JsonService {
 The following table described the arguments of the annotation:
 
 {: .table .table-responsive}
-| param  | plugin  | description  | mandatory  | default value  |
+| param  | plugin  | description  | mandatory  | default value  | 
 |---|---|---|---|---|
 | name  | all  | the name of the plugin  | yes  | *none* |
 | description | all  | description of the plugin | yes  |  *none* |

@@ -16,6 +16,8 @@ layout: docs
 
 {% include docs-head.html %}
 
+{% include doc-in-progress-v6.html %}
+
 > RESTHeart is a modern **backend** for **Web** and **Mobile** apps, designed to _radically simplify server-side development and deployment_.
 
 ## Introduction
