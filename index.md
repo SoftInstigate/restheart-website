@@ -14,7 +14,7 @@ layout: default
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
-            <a href="/docs/upgrade-to-v6/" target="_blank" class="btn btn-o-whites">See What's new in RESTHeart 6</a>
+            <a href="/docs/upgrade-to-v6/" class="btn btn-o-whites">See What's new in RESTHeart 6</a>
         </div>
     </div>
 </section>
