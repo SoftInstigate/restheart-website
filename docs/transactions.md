@@ -29,7 +29,7 @@ layout: docs
     <p>Enforce <strong>A</strong>tomicity, <strong>C</strong>onsistency, <strong>I</strong>solation and <strong>D</strong>urability with multi-document transactions.</p>
 </div>
 
-## Introduction 
+## Introduction
 
 An operation on a single document is atomic. This is enough in most use cases since embedded documents can capture relationships between data in a single document.
 
