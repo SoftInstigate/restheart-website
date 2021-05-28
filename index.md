@@ -14,7 +14,10 @@ layout: default
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
-            <a href="/docs/upgrade-to-v6/" class="btn btn-o-whites">See What's new in RESTHeart 6</a>
+            <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
+        </div>
+        <div class="col-md-12 text-center mt-4">
+            <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
         </div>
     </div>
 </section>
@@ -42,7 +45,7 @@ layout: default
     <div class="container-fluid">
         <div class="row mb-1 bg-black">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
-                <h2 class="text-lightcyan">Featured on <strong>mongodb.com</strong></h2>
+                <h2 class="text-lightcyan">Featured on <strong>MongoDB.com</strong></h2>
                 <p style="color:orange">RESTHeart API for MongoDB simplifies development
                    and frees you to focus on delivering great user experiences</p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
