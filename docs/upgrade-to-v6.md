@@ -19,16 +19,9 @@ layout: docs
 
 {% include docs-head.html %}
 
-<div class="alert alert-warning" role="alert">
-    <h2 class="alert-heading">
-            <svg class="float-left mr-3 my-auto d-block" width="30px" height="30px">
-                    <use xlink:href="/images/sprite.svg#feather" />
-                </svg>
-        This page is being updated.
-    </h2>
-    <hr class="mt-2 mb-2">
-    <p><strong>REST</strong>Heart v6 introduces many news features, improvements and changes.</p>
-    <p>We are updating the documentation.....</p>
+<div class="alert alert-info" role="alert">
+    <p class="mt-2"><strong>REST</strong>Heart v6 introduces many news features, improvements and changes.</p>
+    <p>This page summarizes the new features and provide guidance on upgrading from previous versions</p>
 </div>
 
 ## GraphQL API
@@ -143,7 +136,7 @@ $ docker pull softinstigate:restheart:6.0.0-native
 {: .bs-callout.bs-callout-warning }
 Breaking change
 
-Until v5, all write requests have always *upsert* write mode. 
+Until v5, all write requests have always *upsert* write mode.
 
 V6 changes this and now by default:
 
@@ -185,7 +178,7 @@ Breaking change
 
 RESTHeart 6 ships with Extended and Simplified Security.
 
-First of all, the new *write mode* simplifies the definition of permission, since a `POST` is an insert while `PUT` and `PATCH` are updates by default. This makes easier defining permission to allow creating documents or just updating.
+First of all, the new *write mode* simplifies the definition of permissions, since a `POST` is an insert while `PUT` and `PATCH` are updates by default. This makes easier defining permission to allow creating documents or just updating them.
 
 ### VETOER Authorizers
 
@@ -204,15 +197,15 @@ public class GlobalPredicatesVetoer implements Authorizer {
 }
 ```
 
-As an in-bound request is received and authenticated the isAllowed() method is
-called on each authorizers. A secured request is allowed when no `VETOER` denies
+As an in-bound request is received and authenticated the `isAllowed()` method is
+called on each authorizer. A secured request is allowed when no `VETOER` denies
 it and at least one `ALLOWER` allows it.
 
 ### secure attribute of @RegisterPlugin
 
 The `Service` plugin can be configured to require authentication and authorization.
 
-Prior to v6, in order to secure a `Service`, the configuration option `secure: true`  must be specified in `restheart.yml`
+Prior to v6, the configuration option `secure: true` must be specified in `restheart.yml` in order to secure a `Service`:
 
 ```yml
 plugins-args:
@@ -222,7 +215,7 @@ plugins-args:
 
 This forced the `Service` to have a configuration section.
 
-In RESTHeart v6 a `Service` can be secured via the following attribute of the `@RegisterPlugin` annotation.
+In RESTHeart v6, a `Service` can be programmatically secured via the following attribute of the `@RegisterPlugin` annotation:
 
 ```java
 @RegisterPlugin(name = "myService",
@@ -242,13 +235,11 @@ export const options = {
     uri: '/myService',
     secured: true, // <----- optional, default false
 }
-
-export function handle(request, response) {
 ```
 
 ### *fileAclAuthorizer* supports same options than *mongoAclAuthorizer*
 
-Until v5, `mongoAclAuthorizer` offers more options to define permissions than the `fileAclAuthorizer`. In v6 the two authorizers are functionally equivalent with the only difference that `mongoAclAuthorizer` handles ACL permissions in JSON in a MongoDB collection while `fileAclAuthorizer` handles them is a YML file. Here is a example of the same permission defined for the two authorizers:
+Until v5, `mongoAclAuthorizer` offers more options for permissions than the `fileAclAuthorizer`. In v6 the two authorizers are functionally equivalent with the only difference that `mongoAclAuthorizer` handles the ACL permissions in JSON in a MongoDB collection while `fileAclAuthorizer` handles them is a YML file. Here is a example of the same permission defined for the two authorizers:
 
 **fileAclAuthorizer**
 
@@ -303,17 +294,20 @@ Until v5, `mongoAclAuthorizer` offers more options to define permissions than th
 
 ### New ACL Permission predicates
 
-The ACL permissions use the undertow predicate language that allows to define the condition a request must met to be authorized.
+The ACL permissions use the undertow predicate language to define the condition a request must met to be authorized.
 
-RESTHeart 6 extends this language introducing the following 8 new predicates to extend and simplify the ACL permission definition:
+RESTHeart 6 extends this language introducing the following 7 new predicates that extend and simplify the ACL permission definition:
 
-- `qparams-contain`
-- `qparams-blacklist`
-- `qparams-blacklist`
-- `qparams-size`
-- `bson-request-contains`
-- `bson-request-whitelist`
-- `bson-request-blacklist`
+{: .table.table-responsive }
+|predicate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
+|-|-|-|
+|`qparams-contain`          |`true` if the request query string contains the specified parameter            |`qparams-contain(page,pagesize)`|
+|`qparams-blacklist`        |`true` if the request query string does not contain the blacklisted parameters |`qparams-contain(filter,sort)`|
+|`qparams-whitelist`        |`true` if the request query string contains only whitelisted parameters        |`qparams-whitelist(page,pagesize)`|
+|`qparams-size`             |`true` if the request query string the specified number of parameters          |`qparams-size(3)`|
+|`bson-request-contains`    |`true` if the request content is Bson and contains the specified properties    |`bson-request-contains(foo,bar.sub)`|
+|`bson-request-whitelist`   |`true` if the request content is Bson and only contains whitelisted properties |`bson-request-whitelist(foo,bar.sub)`|
+|`bson-request-blacklist`   |`true` if the request bson content does not contain blacklisted properties     |`bson-request-contains(foo,bar.sub)`|
 
 Consider the following example:
 
@@ -335,7 +329,7 @@ More examples can be found [here](https://github.com/SoftInstigate/restheart/blo
 
 ### MongoPermissions
 
-For requests handled by the `MongoService` (i.e. the service that implements the REST API for MongoDB) the permission can specify the `MongoPermission` object.
+For requests handled by the `MongoService` (i.e. the service that implements the REST API for MongoDB) the permission can specify the `MongoPermissions` object.
 
 ```yml
 mongo:
@@ -351,10 +345,13 @@ mongo:
           {"author": "@user.userid"}
 ```
 
-- `allowManagementRequests` DB Management Requests are forbidden by default (create/delete/update dbs, collection, file buckets schema stores and schemas, list/create/delete indexes, read db and collection metadata). To allow these requests, `allowManagementRequests` must be set to `true`
-- `allowBulkPatch` bulk PATCH requests are forbidden by default, to allow these requests, `allowBulkPatch` must be set to `true`
-- `allowBulkDelete` bulk DELETE requests are forbidden by default, to allow these requests, `allowBulkDelete` must be set to `true`
-- `allowWriteMode` requests cannot use the query parameter `?wm=insert|update|upsert` by default. To allow it, `allowWriteMode` must be set to `true`
+{: .table.table-responsive }
+|permission&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
+|-|-|
+|`allowManagementRequests`|DB Management Requests are forbidden by default (create/delete/update dbs, collection, file buckets schema stores and schemas, list/create/delete indexes, read db and collection metadata). To allow these requests, `allowManagementRequests` must be set to `true`|
+|`allowBulkPatch`|bulk PATCH requests are forbidden by default, to allow these requests, `allowBulkPatch` must be set to `true`|
+|`allowBulkDelete`|bulk DELETE requests are forbidden by default, to allow these requests, `allowBulkDelete` must be set to `true`|
+|`allowWriteMode`|requests cannot use the query parameter `?wm=insert|update|upsert` by default. To allow it, `allowWriteMode` must be set to `true`|
 
 Note that, in order to allow those requests, not only the corresponding flag must be set to `true` but the permission `predicate` must resolve to `true`.
 
@@ -384,15 +381,15 @@ The next request allows to PATCH the collection `coll` and all documents in it, 
 Breaking change
 
 `readFilter` and `writeFilter` are available in RESTHeart v5 as well.
-Are optional filters that are added to read and write requests respectively when authorized by this ACL document.
+These are optional filters that are added to read and write requests respectively when authorized by an ACL permission that defines them.
 
-Starting from v6, these must be under the `mongo` object because are applicable only to requests handled by the `MongoService`
+Starting from v6, these must be under the `mongo` object because they are applicable only to requests handled by the `MongoService`
 
 ### *mongo.mergeRequest*
 
-`mergeRequest` allows to merge the specified properties to the request content. In this way server-side evaluated properties can be enforced.
+`mergeRequest` allows to merge the specified properties to the request content. In this way, server-side evaluated properties can be enforced.
 
-In the following example
+In the following example:
 
 ```yml
 - roles: [ user ]
@@ -402,21 +399,25 @@ In the following example
         {"author": "@user.userid"}
 ```
 
-The property `author` is forced to be the userid of the authenticated client.
+the property `author` is evaluated to be the `userid` of the authenticated client.
 
-`@user` is a special variable that allow accessing the user properties. The following variables are available:
+`@user` is a special variable that allows accessing the properties of the user object. The following variables are available:
 
-- `@user` the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)
-- `@request` the properties of the request, e.g. `@request.remoteIp`
-- `@mongoPermissions` the `MongoPermissions` object, e.g. `@mongoPermissions.writeFilter`
-- `@now` the current date time
-- `@filter` the value of the `filter` query parameter
+
+{: .table.table-responsive }
+|variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description
+|-|-|
+|`@user`|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)|
+|`@request`|the properties of the request, e.g. `@request.remoteIp`|
+|`@mongoPermissions`|the `MongoPermissions` object, e.g. `@mongoPermissions.writeFilter`|
+|`@now`|the current date time|
+|`@filter`|the value of the `filter` query parameter|
 
 ### *mongo.projectResponse*
 
 `projectResponse` allows to project the response content, i.e. to remove properties.
 
-Can be used with positive or negative logic.
+It can be used with positive or negative logic.
 
 The following hides the properties `secret` and `a.nested.secret` (you can use the dot notation!). All other properties are returned.
 
@@ -428,7 +429,7 @@ The following hides the properties `secret` and `a.nested.secret` (you can use t
         {"secret": 0, "a.nested.secret": 0 }
 ```
 
-The following only return the property `public` (you can use the dot notation!). All other properties are hidden.
+The following only returns the property `public` (you can use the dot notation!). All other properties are hidden.
 
 ```yml
 - roles: [ user ]
@@ -440,14 +441,14 @@ The following only return the property `public` (you can use the dot notation!).
 
 ### OriginVetoer
 
-OriginVetoer protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted.
+`OriginVetoer` authorizer protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted.
 
 It can configured as follows in the *Authorizers* section of `restheart.yml`:
 
 ```yml
 authorizers:
   originVetoer:
-      enabled: false
+      enabled: true # <---- default is false
       whitelist:
         - https://restheart.org
         - http://localhost
@@ -455,7 +456,7 @@ authorizers:
 
 ### filterOperatorsBlacklist
 
-A global blacklist for MongoDb operators in filter query parameter.
+A global blacklist for MongoDb query operators in the `filter` query parameter.
 
 ```yml
 plugins-args:
@@ -463,6 +464,8 @@ plugins-args:
     blacklist: [ "$where" ]
     enabled: true
 ```
+
+With this configuration, the request `GET /coll?filter={"$where": "...."}` is forbidden.
 
 ## Variables in aggregation and permission
 
