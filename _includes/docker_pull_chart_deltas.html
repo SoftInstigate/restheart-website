@@ -1,0 +1,345 @@
+<h1 class="restheart-red text-center">Stats</h1>
+<div class="container">
+    <div class="container text-center">
+        <a href="https://hub.docker.com/r/softinstigate/restheart">
+            <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
+                src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
+        </a>
+        <a href="https://github.com/SoftInstigate/restheart/releases">
+            <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="GitHub All Releases"
+                src="https://img.shields.io/github/downloads/softinstigate/restheart/total.svg?style=for-the-badge">
+        </a>
+        <a href="https://github.com/SoftInstigate/restheart">
+            <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="GitHub stars"
+                src="https://img.shields.io/github/stars/softinstigate/restheart.svg?color=red&label=GitHub%20stars&style=for-the-badge">
+        </a>
+        <!--
+            https://img.shields.io/badge/downloads-24k-green?style=for-the-badge
+        -->
+        <!--
+            <a href="https://twitter.com/softinstigate" class="twitter-follow-button" data-show-count="false"
+                data-size="large" data-show-screen-name="false">Follow us on Twitter</a>
+            <a href="https://twitter.com/share" class="twitter-share-button"
+                data-text="Check out RESTHeart, the open source REST API Server for MongoDB" data-via="softinstigate"
+                data-size="large" data-related="softinstigate" data-hashtags="RESTHeart">Tweet</a>
+            -->
+    </div>
+    <h3 class="text-center sm-2 mt-2 xs-2">RESTHeart Docker daily image's pulls</h3>
+</div>
+
+<h2 class="text-center">Docker pulls <span id="tpulls">....</span></h2>
+
+<h3 class="text-center">3 months</h3>
+
+<canvas id="dockerPullChart3m"></canvas>
+
+<h3 class="text-center">1 year</h3>
+
+<canvas id="dockerPullChart1y"></canvas>
+
+<script>
+    // Chartjs custom plugin to always show last tooltip
+    // got from https://stackoverflow.com/questions/36992922/chart-js-v2-how-to-make-tooltips-always-appear-on-pie-chart
+    Chart.pluginService.register({
+        beforeRender: function (chart) {
+            if (chart.config.options.showLastTooltip) {
+                // create an array of tooltips
+                // we can't use the chart tooltip because there is only one tooltip per chart
+                chart.pluginTooltips = [];
+                chart.config.data.datasets.forEach(function (dataset, i) {
+                    var last = chart.getDatasetMeta(i).data.length - 1;
+                    var idx = 0;
+
+                    chart.getDatasetMeta(i).data.forEach(function (sector, j) {
+                        if (idx === last) {
+                            chart.pluginTooltips.push(new Chart.Tooltip({
+                                _chart: chart.chart,
+                                _chartInstance: chart,
+                                _data: chart.data,
+                                _options: chart.options.tooltips,
+                                _active: [sector]
+                            }, chart));
+                        }
+
+                        idx++;
+                    });
+                });
+
+                // turn off normal tooltips
+                //chart.options.tooltips.enabled = false;
+            }
+        },
+        afterDraw: function (chart, easing) {
+            if (chart.config.options.showLastTooltip) {
+                // we don't want the permanent tooltips to animate, so don't do anything till the animation runs atleast once
+                if (!chart.allTooltipsOnce) {
+                    if (easing !== 1)
+                        return;
+                    chart.allTooltipsOnce = true;
+                }
+
+                // turn on tooltips
+                chart.options.tooltips.enabled = true;
+                Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
+                    tooltip.initialize();
+                    tooltip.update();
+                    // we don't actually need this since we are not animating tooltips
+                    tooltip.pivot();
+                    tooltip.transition(easing).draw();
+                });
+                // chart.options.tooltips.enabled = false;
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        // the script /etc/cron.daily/rh-pull-count runs at dbapi.io
+        // and POSTs the stats every day to beta.mrest.io/demo/stats
+
+        var reqs = [];
+
+        for (i = 0; i <= 3; i++) {
+            reqs.push($.ajax({
+                url: `https://beta.mrest.io/demo/stats?pagesize=91&page=${i + 1}`,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('key', 'demo');
+                }
+            }));
+        }
+
+        var combined = Promise.all(reqs)
+            .then(result => result.reduce((acc, result) => { return acc.concat(result); }, []))
+            .then(result => {
+                if (result && result.reverse && result.map) {
+                    var totals = result.reverse().map(function (x) {
+                        return x.pull_count;
+                    });
+
+                    var deltas = totals.map((d, index, arr) => {
+                        if (index > 0) {
+                            return arr[index] - arr[index - 1];
+                        }
+                    });
+
+                    document.getElementById('tpulls').innerHTML = totals[363];
+
+                    for (var c = 1; c <= totals.lenght; c++) {
+                        deltas.push(totals[c] - totals[c - 1]);
+                    }
+
+                    var max = 0;
+                    deltas.forEach(x => x > max ? max = x : max = max);
+                    max = +max + 10;
+
+                    var labels = result.map(function (x) {
+                        var date = new Date(x.timestamp.$date);
+                        return new Date(date.setDate(date.getDate() - 1)).toISOString().substring(0, 10);
+                    });
+
+                    var ctx1y = $("#dockerPullChart1y");
+                    var dockerPullChart = new Chart(ctx1y, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: deltas,
+                                backgroundColor: '#B5848F',
+                                pointBackgroundColor: 'rgba(155, 37, 58, 1)',
+                                pointHoverBorderColor: 'rgba(155, 37, 58, 1)',
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            showLastTooltip: false,
+                            legend: { display: false },
+                            scales: {
+                                yAxes: [{
+                                    display: true,
+                                    gridLines: {
+                                        display: true
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        suggestedMax: max,
+                                        min: 0
+                                    }
+                                }],
+                                xAxes: [{
+                                    display: true
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 20,
+                                    right: 20,
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
+                            animation: {
+                                duration: 1000
+                            },
+                            tooltips: {
+                                displayColors: false,
+                                backgroundColor: 'rgba(155, 37, 58, 1)',
+                                bodyFontSize: 18
+                            }
+                        }
+                    });
+
+                    var labels3m = labels.slice(273, 364);
+                    var deltas3m = deltas.slice(273, 364);
+                    var max3m = 0;
+                    deltas3m.forEach(x => x > max ? max = x : max = max);
+                    max3m = +max3m + 10;
+                    var ctx3m = $("#dockerPullChart3m");
+                    var dockerPullChart = new Chart(ctx3m, {
+                        type: 'line',
+                        data: {
+                            labels: labels3m,
+                            datasets: [{
+                                data: deltas3m,
+                                backgroundColor: '#B5848F',
+                                pointBackgroundColor: 'rgba(155, 37, 58, 1)',
+                                pointHoverBorderColor: 'rgba(155, 37, 58, 1)',
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            showLastTooltip: false,
+                            legend: { display: false },
+                            scales: {
+                                yAxes: [{
+                                    display: true,
+                                    gridLines: {
+                                        display: true
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        suggestedMax: max3m,
+                                        min: 0
+                                    }
+                                }],
+                                xAxes: [{
+                                    display: true
+                                }]
+                            },
+                            layout: {
+                                padding: {
+                                    left: 20,
+                                    right: 20,
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
+                            animation: {
+                                duration: 1000
+                            },
+                            tooltips: {
+                                displayColors: false,
+                                backgroundColor: 'rgba(155, 37, 58, 1)',
+                                bodyFontSize: 18
+                            }
+                        }
+                    });
+                }
+            });
+
+
+        // line chart with total pull in the last 10 days
+        // $.ajax({
+        //     url: "https://beta.mrest.io/demo/stats?pagesize=100&page=5",
+        //     beforeSend: function (xhr) { xhr.setRequestHeader('key', 'demo'); },
+        //     success: function (result) {
+        //         if (result && result.reverse && result.map) {
+        //             result.reverse();
+
+        //             var data = result.map(function (x) {
+        //                 return x.pull_count;
+        //             });
+
+        //             var data2 = data.map((d, index, arr) => {
+        //                 if (index > 0) {
+        //                     return arr[index] - arr[index - 1];
+        //                 }
+        //             });
+
+        //             console.log(data2);
+
+        //             for (var c = 1; c <= data.lenght; c++) {
+        //                 console.log(data[c] - data[c - 1]);
+        //                 data2.push(data[c] - data[c - 1]);
+        //             }
+
+        //             var max = 2000;
+        //             // data2.forEach(function (x) { if (x > max) { max = x } });
+        //             // max = +max + 100;
+
+        //             var labels = result.map(function (x) {
+        //                 var date = new Date(x.timestamp.$date);
+        //                 return new Date(date.setDate(date.getDate() - 1)).toISOString().substring(0, 10);
+        //             });
+
+        //             var ctx = $("#dockerPullChart");
+        //             var dockerPullChart = new Chart(ctx, {
+        //                 type: 'bar',
+        //                 data: {
+        //                     labels: labels,
+        //                     datasets: [{
+        //                         data: data2,
+        //                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        //                         borderColor: 'rgba(0, 0, 0, .3)',
+        //                         pointBackgroundColor: 'rgba(255, 255, 255, 1)',
+        //                         pointHoverBackgroundColor: 'rgba(255, 255, 255, 1)',
+        //                         pointBorderColor: 'rgba(155, 37, 58, 1)',
+        //                         pointHoverBorderColor: 'rgba(155, 37, 58, 1)',
+        //                         pointBorderWidth: 4,
+        //                         pointHoverBorderWidth: 6,
+        //                         borderWidth: 2,
+        //                         pointRadius: 10,
+        //                         pointHoverRadius: 12,
+        //                         fill: false
+        //                     }]
+        //                 },
+        //                 options: {
+        //                     showLastTooltip: true,
+        //                     legend: { display: false },
+        //                     scales: {
+        //                         yAxes: [{
+        //                             display: true,
+        //                             gridLines: {
+        //                                 display: true
+        //                             },
+        //                             ticks: {
+        //                                 display: true,
+        //                                 suggestedMax: max,
+        //                                 min: 0
+        //                             }
+        //                         }],
+        //                         xAxes: [{
+        //                             display: true
+        //                         }]
+        //                     },
+        //                     layout: {
+        //                         padding: {
+        //                             left: 20,
+        //                             right: 20,
+        //                             top: 10,
+        //                             bottom: 10
+        //                         }
+        //                     },
+        //                     animation: {
+        //                         duration: 1000
+        //                     },
+        //                     tooltips: {
+        //                         displayColors: false,
+        //                         backgroundColor: 'rgba(155, 37, 58, 1)',
+        //                         bodyFontSize: 18
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     }
+        // });
+    });
+</script>
