@@ -25,8 +25,9 @@ layout: docs
 
 RESTHeart fully supports the GraalVM:
 
-- you can run RESTHeart using the GraalVM
-- you can build RESTHeart (and your custom plugins) to a native image using GraalVM’s `native-image` tool
+- RESTHeart can be run and is supported on the GraalVM
+- Services and Interceptors can be implemented in JavaScript and TypeScript leveraging the GraalVM polyglot programming model
+- RESTHeart (and your custom plugins) can be built as a native image using GraalVM’s `native-image` tool
 
 ## Why GraalVM
 
