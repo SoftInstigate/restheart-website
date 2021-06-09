@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Java and GraalVM Runtime for Microservices</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With instant REST and GraphQL API on MongoDB</p>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Low code Framework for Microservices</h2>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With Instant Access Management and Data API on MongoDB</p>
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
@@ -26,14 +26,15 @@ layout: default
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">Blazing fast</b>
-            <b>Get your API in minutes</b>
-            <b>Instant Data API on MongoDB</b>
+            <b>Instant REST, GraphQL and WebSocket API on MongoDB</b>
             <b>Develop Web Services</b>
+            <b>Use Java, Kotlin, JavaScript or TypeScript</b>
             <b>Deliver Content to the Web</b>
-            <b>Handle users and permissions</b>
-            <b>Proxy external resources</b>
             <b>Available as Docker image</b>
-            <b>Stream real-time data with WebSockets</b>
+            <b>Run and build it with java or as a native image</b>
+            <b>Handle Users and Permissions</b>
+            <b>Develop Interceptors and Initializers</b>
+            <b>Proxy External Resources</b>
             <b>Notify clients with Hooks</b>
             <b>Create Open Data solutions</b>
             <b>Threat protection at every layer</b>

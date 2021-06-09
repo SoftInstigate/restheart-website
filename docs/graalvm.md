@@ -114,6 +114,19 @@ $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 
 ## Build stock RESTHeart as native image
 
+{: .bs-callout.bs-callout-info }
+A Docker image of RESTHeart native is available tagged as `softinstigate/restheart:<version>-native`
+
+Example:
+
+```bash
+$ docker pull softinstigate/restheart:6.0.0-native
+```
+
+The [docker-compose-native.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose-native.yml) leveraging restheart-native is available as well. It runs restheart-native and MongoDB stack.
+
+### how to build from source
+
 RESTHeart's `pom.xml` includes the `native` profile.
 
 Check that GraalVM SDK is active:

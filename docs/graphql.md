@@ -102,6 +102,18 @@ This section must contain GraphQL application's schema written with *Schema Defi
 }
 ```
 
+#### Bson types
+
+{: .table .table-responsive}
+| Type       | Description | Example               |
+|------------|-------------|-----------------------|
+|ObjectId    |             |                       |
+|BsonDocument|             |                       |
+|Timestamp   |             |                       |
+|DateTime    |             |                       |
+|Decimal128  |             |                       |
+|Regex       |             |                       |
+
 Remember that, in order to be a valid schema, it must contain type *Query*.
 
 ### Mappings
