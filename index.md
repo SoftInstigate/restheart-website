@@ -28,11 +28,11 @@ layout: default
             <b class="is-visible">Blazing fast</b>
             <b>Instant REST, GraphQL and WebSocket API on MongoDB</b>
             <b>Develop Web Services</b>
+            <b>Handle Users and Permissions with no code</b>
             <b>Use Java, Kotlin, JavaScript or TypeScript</b>
             <b>Deliver Content to the Web</b>
             <b>Available as Docker image</b>
             <b>Run and build it with java or as a native image</b>
-            <b>Handle Users and Permissions</b>
             <b>Develop Interceptors and Initializers</b>
             <b>Proxy External Resources</b>
             <b>Notify clients with Hooks</b>
@@ -65,16 +65,16 @@ layout: default
                 <ul class="">
                     <li>Instant Data API with MongoDB</li>
                     <li>Built-in Authentication and Authorization</li>
-                    <li>Elegant Java and Kotlin Framework to extend the API</li>
+                    <li>Elegant Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart is tailored for JVM, Docker and Kubernetes, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
+                <p>RESTHeart is tailored for JVM, GraalVM, Docker and Kubernetes, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
-                    <li>Available as binary and Docker container</li>
+                    <li>Available as jar and native binary and Docker container</li>
                     <li>Deploy both on Cloud and on-premises</li>
                 </ul>
                 <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
