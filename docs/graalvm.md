@@ -9,7 +9,7 @@ layout: docs
 * [Why GraalVM](#why-graalvm)
 * [Install the GraalVM](#install-the-graalvm)
 * [Run RESTHeart with GraalVM](#run-restheart-with-graalvm)
-* [Build RESTHeart with default plugins as native image](#build-restheart-with-default-plugins-as-native-image)
+* [Build stock RESTHeart as native image](#build-stock-restheart-as-native-image)
 * [Build RESTHeart with custom plugins as native image](#build-restheart-with-custom-plugins-as-native-image)
 * [A docker image to build Linux native images](#a-docker-image-to-build-linux-native-images)
 
@@ -19,8 +19,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 [GraalVM](https://www.graalvm.org/) is a new virtual machine from Oracle that supports a polyglot runtime environment and the ability to compile Java applications to native images.
@@ -28,7 +26,7 @@ layout: docs
 RESTHeart fully supports the GraalVM:
 
 - you can run RESTHeart using the GraalVM
-- starting from v5.2, you can build RESTHeart (and your custom plugins) to a native image using GraalVM’s `native-image` tool
+- you can build RESTHeart (and your custom plugins) to a native image using GraalVM’s `native-image` tool
 
 ## Why GraalVM
 
@@ -51,8 +49,12 @@ Images from graalvm.org website.
 
 The GraalVM is faster than OpenJDK and it is also a polyglot runtime environment, so that you can seamlessly use multiple languages to implement RESTHeart plugins.
 
+RESTHeart leverages the GraalVM to allow developing [services](/docs/plugins/core-plugins/#services) and [interceptors](https://restheart.org/docs/plugins/core-plugins/#interceptors) using JavaScript.
+
+See [Polyglot JavaScript Services and Interceptors on GraalVM](/docs/upgrade-to-v6/#graalvm) for more details.
+
 {: .bs-callout.bs-callout-info}
-In the v5.2 product line we will progressively leverage the GraalVM to allow you to develop plugins, such as [services](/docs/plugins/core-plugins/#services) and [interceptors](https://restheart.org/docs/plugins/core-plugins/#interceptors) by just defining JavaScript lambda functions.
+Want to see some code? Several [code examples](https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources/test-js-plugins) are available as well.
 
 ### Benefits of running RESTHeart as a native image
 
@@ -81,8 +83,10 @@ In some use cases, native image might result in slightly worse peak performance.
 
 We suggest to install GraalVM with [sdkman](https://sdkman.io)
 
+You need at least version 21.1 for Java 16:
+
 ```
-$ sdk install java 20.3.0.r11-grl
+$ sdk install java 21.1.0.r16-grl
 ```
 
 After having installed GraalVM, you can install the `native-image` tool with `gu`
@@ -97,9 +101,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "11.0.9" 2020-10-20
-OpenJDK Runtime Environment GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06)
-OpenJDK 64-Bit Server VM GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06, mixed mode, sharing)
+openjdk version "16.0.1" 2021-04-20
+OpenJDK Runtime Environment GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05)
+OpenJDK 64-Bit Server VM GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -108,7 +112,7 @@ Then just run RESTHeart as usual:
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-## Build RESTHeart with default plugins as native image
+## Build stock RESTHeart as native image
 
 RESTHeart's `pom.xml` includes the `native` profile.
 
@@ -116,9 +120,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "11.0.9" 2020-10-20
-OpenJDK Runtime Environment GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06)
-OpenJDK 64-Bit Server VM GraalVM CE 20.3.0 (build 11.0.9+10-jvmci-20.3-b06, mixed mode, sharing)
+openjdk version "16.0.1" 2021-04-20
+OpenJDK Runtime Environment GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05)
+OpenJDK 64-Bit Server VM GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05, mixed mode, sharing)
 ```
 
 You can then simply build it with:
@@ -139,17 +143,38 @@ In order to build RESTHeart with custom plugins as native image you use maven to
 - define a the profile `native` that uses the [Native Image Maven Plugin](https://www.graalvm.org/reference-manual/native-image/NativeImageMavenPlugin/) to build the native image from the uber-jar
 
 {: .bs-callout.bs-callout-info }
-At startup time, RESTHeart dynamically loads the plugins jars found in  the `/plugins` directory. Dynamic class loading is simply not possible with GraalVM. This is why you need to package RESTHeart core and all plugins in a uber-jar.
+At startup time, RESTHeart dynamically loads the plugins jars found in  the `/plugins` directory. Dynamic class loading is simply not possible with GraalVM. This is why you need to package RESTHeart core and all plugins in a uber-jar and provide reflection configuration for the `native-image`.
+
+### uber-jar
 
 Define the Maven `native` profile following this example [pom.xml](https://github.com/SoftInstigate/web-frameworks/blob/native/java/restheart/pom.xml).
+
+
+### Reflection configuration
+
+In order for the custom plugin to work, you need to define the native image `reflect-config.json` file in the directory `src/main/resources/META-INF/native-image/<package-name>/<artifact-id>`
+
+An example is the [reflect-config.json](https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/resources/META-INF/native-image/org.restheart/restheart-test-plugins/reflect-config.json) of the RESTHeart's own `test-plugins` module.
+
+For instance, the following entry is present for the Interceptor [https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/java/org/restheart/test/plugins/interceptors/SnooperHook.java](SnooperHook)
+
+```json
+{
+    "name": "org.restheart.test.plugins.interceptors.SnooperHook",
+    "methods": [
+        { "name": "<init>", "parameterTypes": [] },
+        { "name": "init", "parameterTypes": ["java.util.Map"] }
+    ]
+}
+```
+
+### build
 
 You can now build the native image with:
 
 ```bash
 $ mvn clean package -Pnative
 ```
-
-In order for some java features to work, like reflection, you might need to tweak the native image build properties found in the repo directory [core/src/main/resources/META-INF/native-image/org.restheart/restheart](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/resources/META-INF/native-image/org.restheart/restheart).
 
 For further information, good starting points are:
 
