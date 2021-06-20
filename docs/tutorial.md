@@ -157,11 +157,11 @@ Note the `Location` header in the response, as it contains a link to the newly c
 
 ## PUT a new document
 
-It's possible to PUT a document into the collection by specifying the document identifier at the end of the request, in this case we need to use `?wm=upsert` since PUT default write mode is `updated` by default:
+It's possible to PUT a document into the collection by specifying the document identifier at the end of the request, in this case we need to use the query parameter `?wm=upsert` since PUT default write mode is `update` by default:
 
 {% include code-header.html
     type="Request"
-    link="https://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
+    link="https://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/4"
 %}
 
 ```http
