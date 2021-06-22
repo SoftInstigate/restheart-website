@@ -54,11 +54,9 @@ A SSL certificate must configured in order to enable the https listener.
 
 The SSL certificate must be added to the java keystore set by the `keystore-file` configuration property.
 
-Follow this <a target="_blank" href="https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores">tutorial</a> to add the certificate to the java keystore.
-
 Two scripts are available to help configuring the keystore.
 
-### generate-certauthority-and-keystore.sh]
+### generate-certauthority-and-keystore.sh
 
 This is useful for testing purposes. It generates a CA and uses it to issue a SSL certificate, finally generating the keystore file.
 
@@ -76,8 +74,8 @@ For example, in OSX:
 
 ### convert-letsencrypt-java-keystore.sh
 
-You can get [Let's Encrypt](https://letsencrypt.org) is a popular and nonprofit Certificate Authority providing free TLS certificates.
+[Let's Encrypt](https://letsencrypt.org) is a popular and nonprofit Certificate Authority providing free TLS certificates.
 
-This script generates the java keystore from Let's Encrypt certificate archive
+This script generates the java keystore from Let's Encrypt certificate archive.
 
-[convert-letsencrypt-java-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh)
+Download the script from [convert-letsencrypt-java-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh)
