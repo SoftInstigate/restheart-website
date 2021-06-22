@@ -60,7 +60,7 @@ Two scripts are available to help configuring the keystore.
 
 This is useful for testing purposes. It generates a CA and uses it to issue a SSL certificate, finally generating the keystore file.
 
-[generate-certauthority-and-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh)
+Download the script from [generate-certauthority-and-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh)
 
 After having generated the keystore file and configured RESTHeart to use it, you need to install the CA root certificate into your OS.
 
