@@ -84,7 +84,7 @@ GET /inventory HTTP/1.1
 ## GET filtered Documents from the Collection
 
 It's possible to apply a filter at the end of the request to reduce the number of output documents.
-The following request asks for all documents with a "qty" property greather than 75:
+The following request asks for all documents with a "qty" property greater than 75:
 
 {% include code-header.html
     type="Request"
