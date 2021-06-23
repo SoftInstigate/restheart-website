@@ -5,17 +5,19 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Download and Run](#download-and-run)
-    -   [Get the latest release](#get-the-latest-release)
-    -   [Run with Java](#run-with-java)
--   [Configuration files](#configuration-files)
-    -   [Environment variables](#environment-variables)
-    -   [Run the process in background](#run-the-process-in-background)
--   [Run with Docker](#run-with-docker)
--   [Build it yourself](#build-it-yourself)
-    -   [Integration Tests](#integration-tests)
-    -   [Maven Dependencies](#maven-dependencies)
-    -   [Project structure](#project-structure)
+- [Download and Run](#download-and-run)
+  - [Get the latest release](#get-the-latest-release)
+  - [Run with Java](#run-with-java)
+    - [Default users and ACL](#default-users-and-acl)
+    - [Check that everything works](#check-that-everything-works)
+- [Configuration files](#configuration-files)
+  - [Environment variables](#environment-variables)
+  - [Run the process in background](#run-the-process-in-background)
+- [Run with Docker](#run-with-docker)
+- [Build it yourself](#build-it-yourself)
+  - [Integration Tests](#integration-tests)
+  - [Maven Dependencies](#maven-dependencies)
+  - [Project structure](#project-structure)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -65,9 +67,9 @@ Configuration files are under the `etc/` folder.
 
 ### Run with Java
 
-To run RESTHeart connected to a local instance of MongoDB you need:
+To run RESTHeart 6.x connected to a local instance of MongoDB you need:
 
--   At least Java v11;
+-   At least Java 16;
 -   MongoDB v3 or v4 running on `localhost` on port `27017`.
 
 ```bash
@@ -176,9 +178,6 @@ For example, the parameter `mongo-uri` in the YAML file can be overridden by the
 $ MONGO_URI="mongodb://127.0.0.1" java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
-{: .bs-callout.bs-callout-warning }
-Due to a bug affecting RESTHeart until v5.1.6, environment variables must be prefixed with `RESTHEART_SECURITY_` but for MongoService configuration options, like `mongo-uri` where no prefix is allowed. This has been fixed in RESTHeart v5.1.7.
-
 {: .bs-callout.bs-callout-info }
 Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
 
@@ -242,27 +241,22 @@ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-com
 You should see something similar to the following logs:
 
 ```
-...
-restheart    |  09:50:46.619 [main] INFO  o.r.mongodb.db.MongoClientSingleton - Connecting to MongoDB...
-restheart-mongo | 2020-04-26T09:50:46.633+0000 I  NETWORK  [listener] connection accepted from 172.19.0.3:42898 #2 (2 connections now open)
-restheart-mongo | 2020-04-26T09:50:46.635+0000 I  NETWORK  [conn2] received client metadata from 172.19.0.3:42898 conn2: { driver: { name: "mongo-java-driver|legacy", version: "3.11.2" }, os: { type: "Linux", name: "Linux", architecture: "amd64", version: "4.19.76-linuxkit" }, platform: "Java/Debian/11.0.6+10-post-Debian-1bpo91" }
-restheart-mongo | 2020-04-26T09:50:46.636+0000 I  SHARDING [conn2] Marking collection admin.system.users as collection version: <unsharded>
-restheart-mongo | 2020-04-26T09:50:46.870+0000 I  ACCESS   [conn2] Successfully authenticated as principal restheart on admin from client 172.19.0.3:42898
-restheart    |  09:50:46.892 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.2.1
-restheart    |  09:50:46.893 [main] WARN  o.r.mongodb.db.MongoClientSingleton - MongoDB is a standalone instance.
-restheart    |  09:50:47.156 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
-restheart    |  09:50:47.482 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-restheart    |  09:50:47.483 [main] DEBUG org.restheart.Bootstrapper - Content buffers maximun size is 16777216 bytes
-restheart    |  09:50:47.498 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true
-restheart    |  09:50:47.501 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false
-restheart    |  09:50:47.502 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: false
-restheart    |  09:50:47.503 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: true
-restheart    |  09:50:47.504 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false
-restheart    |  09:50:47.506 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false
-restheart    |  09:50:47.506 [main] DEBUG org.restheart.Bootstrapper - No proxies specified
-restheart    |  09:50:47.515 [main] DEBUG org.restheart.Bootstrapper - Allow unescaped characters in URL: true
-restheart    |  09:50:47.771 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
-restheart    |  09:50:47.773 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+[...]
+
+restheart           |  07:51:02.073 [main] INFO  o.r.s.a.MongoRealmAuthenticator - No user found. Created default user with _id BsonString{value='admin'}
+restheart           |  07:51:02.099 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.2.14
+restheart           |  07:51:02.100 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB is a replica set.
+restheart           |  07:51:02.327 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
+restheart           |  07:51:02.360 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+restheart           |  07:51:02.386 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true, uri match PREFIX
+restheart           |  07:51:02.389 [main] INFO  org.restheart.Bootstrapper - URI /graphql bound to service graphql, secured: true, uri match PREFIX
+restheart           |  07:51:02.390 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false, uri match PREFIX
+restheart           |  07:51:02.391 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: true, uri match PREFIX
+restheart           |  07:51:02.392 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: false, uri match PREFIX
+restheart           |  07:51:02.393 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false, uri match PREFIX
+restheart           |  07:51:02.394 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false, uri match PREFIX
+restheart           |  07:51:02.824 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
+restheart           |  07:51:02.864 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
 Now point your browser to RESTHeart's [ping resource](http://localhost:8080/ping), you'll see the single line of text "**Greetings from RESTHeart!**".
@@ -307,7 +301,7 @@ Watch [Docker / Docker Compose](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=20
 
 ## Build it yourself
 
-Building RESTHeart by yourself is not necessary, but if you want to try then it requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 11** or later.
+Building RESTHeart by yourself is not necessary, but if you want to try then it requires [Maven](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and **Java 16**.
 
 ```bash
 $ mvn clean package
@@ -354,7 +348,7 @@ To compile new plugins, add the `restheart-commons` dependency to your POM file:
     <dependency>
         <groupId>org.restheart</groupId>
         <artifactId>restheart-commons</artifactId>
-        <version>5.1.5</version>
+        <version>6.0.3</version>
     </dependency>
 </dependencies>
 ```
@@ -363,9 +357,8 @@ To compile new plugins, add the `restheart-commons` dependency to your POM file:
 
 ### Project structure
 
-Starting from RESTHeart v5 we have merged all sub-projects into a single [Maven multi module project](https://maven.apache.org/guides/mini/guide-multiple-modules.html) and a single Git repository (this one).
+All sub-projects are merged into a single [Maven multi module project](https://maven.apache.org/guides/mini/guide-multiple-modules.html) and a single Git repository.
 
-> The v4 architecture, in fact, was split into two separate Java processes: one for managing security, identity and access management (restheart-security) and one to access the database layer (restheart). The new v5 architecture is monolithic, like it was RESTHeart v3. This decision was due to the excessive complexity of building and deploying two distinct processes and the little gains we have observed in real applications.
 
 Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapper_ which reads the configuration and starts the HTTP server. The `security` module provides **Authentication** and **Authorization** services, while the `mongodb` module interacts with MongoDB and exposes all of its services via a REST API, as usual. Besides, we added a new `commons` module which is a shared library, including all interfaces and implementations in common among the other modules.
 
@@ -374,6 +367,7 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ├── commons
 ├── core
 ├── mongodb
+├── graphql
 └── security
 ```
 
