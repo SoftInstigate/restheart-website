@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Instant REST, GraphQL and WebSocket API for MongoDB</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">The perfect low code backend for modern Web and Mobile applications</p>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Instant REST, GraphQL and WebSocket API for MongoDB.</h2>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">The perfect backend for all modern Web and Mobile applications.</p>
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
@@ -27,16 +27,14 @@ layout: default
         <span class="cd-words-wrapper waiting restheart-red">
             <b class="is-visible">Blazing fast</b>
             <b>Instant REST, GraphQL and WebSocket API on MongoDB</b>
-            <b>Develop Web Services</b>
+            <b>Develop custom Web Services</b>
             <b>Handle Users and Permissions with no code</b>
-            <b>Use Java, Kotlin, JavaScript or TypeScript</b>
-            <b>Deliver Content to the Web</b>
-            <b>Available as Docker image</b>
-            <b>Run and build it with java or as a native image</b>
-            <b>Develop Interceptors and Initializers</b>
+            <b>Extensible with Java, Kotlin, JavaScript & TypeScript</b>
+            <b>Deliver any content to the Web</b>
+            <b>Available as a Docker image</b>
+            <b>Run and build it with java or as a native binary</b>
             <b>Proxy External Resources</b>
             <b>Notify clients with Hooks</b>
-            <b>Create Open Data solutions</b>
             <b>Threat protection at every layer</b>
         </span>
     </h1>
