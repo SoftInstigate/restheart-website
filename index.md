@@ -10,7 +10,7 @@ layout: default
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
         <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Instant REST, GraphQL and WebSocket API for MongoDB.</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">The perfect backend for all modern Web and Mobile applications.</p>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">The perfect backend for modern Web and Mobile applications.</p>
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
