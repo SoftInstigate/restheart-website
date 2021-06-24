@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Low code Framework for Microservices</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">With Declarative Access Control and Instant Data API on MongoDB</p>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Instant REST, GraphQL and WebSocket API for MongoDB</h2>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">The perfect low code backend for modern Web and Mobile applications</p>
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
@@ -60,18 +60,17 @@ layout: default
         <div class="row mb-2">
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
-                <p>RESTHeart is an Open Source runtime highly suited for back end microservices.
-                It leverages MongoDB to provide the data API out-of-the-box. Get the 80% common requirements out-of-the-box and easily extend the API for the 20%.</p>
+                <p>RESTHeart connects automatically to MongoDB or any compatible database (e.g. Percona Server for MongoDB, AWS DocumentDB and Azure Cosmos DB) exposing all database's features through a comprehensive REST API.</p>
                 <ul class="">
-                    <li>Instant Data API with MongoDB</li>
+                    <li>Instant REST, GraphQL and WebSocket API</li>
                     <li>Built-in Authentication and Authorization</li>
-                    <li>Elegant Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
+                    <li>Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
                 </ul>
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart is tailored for JVM, GraalVM, Docker and Kubernetes, crafted from the best of breed Java libraries and standards, designed to radically simplify server-side development and <strong>deployment</strong>.</p>
+                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that supports a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image. It works perfectly in Kubernetes and AWS ECS clusters.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
                     <li>Available as jar and native binary and Docker container</li>
@@ -113,7 +112,7 @@ layout: default
 </section>
 
 <div class="container">
-    <h2 class="text-center restheart-red m-0 mb-2">Elegant Java and Kotlin Framework to extend the API</h2>
+    <h2 class="text-center restheart-red m-0 mb-2">Java and Kotlin Framework to extend the API</h2>
 </div>
 
 <section id="examples-plugins" class="slice bg-white">
