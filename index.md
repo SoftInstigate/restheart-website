@@ -68,7 +68,7 @@ layout: default
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that supports a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image. It works perfectly in Kubernetes and AWS ECS clusters.</p>
+                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image. It works perfectly in Kubernetes and AWS ECS clusters.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
                     <li>Available as jar and native binary and Docker container</li>
