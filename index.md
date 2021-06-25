@@ -10,7 +10,7 @@ layout: default
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
         <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Ready to use backend for the modern Web.</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">RESTHeart is an open-source runtime with declarative authentication and authorization, instant REST, GraphQL and WebSocket APIs on MongoDB, and fully customizable business logic via plugins.</p>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">Open-source runtime with declarative authentication and authorization, instant REST, GraphQL and WebSocket APIs on MongoDB, and fully customizable business logic via plugins.</p>
     </section>
     <div class="row mt-4">
         <div class="col-md-12 text-center">
