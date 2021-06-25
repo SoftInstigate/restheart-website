@@ -10,16 +10,18 @@ layout: default
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
         <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Ready to use backend for the modern Web.</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-break" style="color:orange">Open-source runtime with declarative authentication and authorization, instant REST, GraphQL and WebSocket APIs on MongoDB, and fully customizable business logic via plugins.</p>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-orange text-break">Open-source runtime with declarative authentication and authorization, instant REST, GraphQL and WebSocket APIs on MongoDB, and fully customizable business logic via plugins.</p>
     </section>
-    <div class="row mt-4">
-        <div class="col-md-12 text-center">
-            <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
+    <section>
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
+            </div>
+            <div class="col-md-12 text-center mt-4">
+                <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
+            </div>
         </div>
-        <div class="col-md-12 text-center mt-4">
-            <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
-        </div>
-    </div>
+    </section>
 </section>
 
 <section class="cd-intro mt-4 mb-1">
@@ -45,7 +47,7 @@ layout: default
         <div class="row mb-1 bg-black">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
                 <h2 class="text-lightcyan">Featured on <strong>MongoDB.com</strong></h2>
-                <p style="color:orange">RESTHeart API for MongoDB simplifies development
+                <p class="text-orange">RESTHeart API for MongoDB simplifies development
                    and frees you to focus on delivering great user experiences</p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
             </div>
