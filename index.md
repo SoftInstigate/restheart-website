@@ -58,7 +58,7 @@ layout: default
         <div class="row mb-2">
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
-                <p>RESTHeart connects automatically to MongoDB or any compatible database (e.g. Percona Server for MongoDB, AWS DocumentDB and Azure Cosmos DB) exposing all database's features through a comprehensive REST API.</p>
+                <p>RESTHeart connects automatically to MongoDB or any compatible database (e.g. Percona Server for MongoDB, AWS DocumentDB and Azure Cosmos DB) exposing all database's features through a comprehensive set of web services.</p>
                 <ul class="">
                     <li>Instant REST, GraphQL and WebSocket API</li>
                     <li>Built-in Authentication and Authorization</li>
@@ -68,11 +68,11 @@ layout: default
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
-                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image. It works perfectly in Kubernetes and AWS ECS clusters.</p>
+                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image, so it works perfectly in Kubernetes and AWS ECS.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
-                    <li>Available as jar and native binary and Docker container</li>
-                    <li>Deploy both on Cloud and on-premises</li>
+                    <li>Available as JAR, native binary and Docker imagine</li>
+                    <li>Deployable both on cloud and on premises</li>
                 </ul>
                 <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
             </div>
@@ -85,7 +85,7 @@ layout: default
 </div>
 
 <div class="container">
-    <h2 class="text-center restheart-red">Clean and ready-to-use Data API for MongoDB</h2>
+    <h2 class="text-center restheart-red">Ready to use data API for MongoDB</h2>
 </div>
 
 <section id="examples" class="slice bg-white my-0 pb-0">
@@ -101,7 +101,7 @@ layout: default
             <div class="container">
                 <div class="row">
                     <div class="col-8 offset-2 call-to-action__item call-to-action__first">
-            RESTHeart is built for stability, coded on a solid Java foundation and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on your feedback, and keep it flexible with an open extension mechanism.
+            RESTHeart is built for stability, coded on solid Java foundations and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on user's feedback, to keep it flexible with an open extension mechanism.
                     </div>
                 </div>
             </div>
@@ -110,7 +110,7 @@ layout: default
 </section>
 
 <div class="container">
-    <h2 class="text-center restheart-red m-0 mb-2">Java and Kotlin Framework to extend the API</h2>
+    <h2 class="text-center restheart-red m-0 mb-2">Java, Kotlin and JavaScript framework to extend the API</h2>
 </div>
 
 <section id="examples-plugins" class="slice bg-white">
