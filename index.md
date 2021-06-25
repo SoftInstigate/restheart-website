@@ -59,7 +59,7 @@ layout: default
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">Build modern apps with RESTHeart</h2>
+                <h2 class="call-to-action__title">Build modern apps</h2>
                 <p>RESTHeart connects automatically to MongoDB or any compatible database (e.g. Percona Server for MongoDB, AWS DocumentDB and Azure Cosmos DB) exposing all database's features through a comprehensive set of web services.</p>
                 <ul class="">
                     <li>Instant REST, GraphQL and WebSocket API</li>
@@ -69,7 +69,7 @@ layout: default
                 <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">Setup RESTHeart in minutes</h2>
+                <h2 class="call-to-action__title">Setup in minutes</h2>
                 <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image, so it works perfectly in Kubernetes and AWS ECS.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
@@ -92,23 +92,6 @@ layout: default
 
 <section id="examples" class="slice bg-white my-0 pb-0">
     {% include examples.html %}
-</section>
-
-<section id="our-commitment" class="mb-5">
-    <div class="row mx-0">
-        <div id="commitment" class="container-fluid my-2">
-            <h2 class="text-center restheart-red">
-                Our commitment
-            </h2>
-            <div class="container">
-                <div class="row">
-                    <div class="col-8 offset-2 call-to-action__item call-to-action__first">
-            RESTHeart is built for stability, coded on solid Java foundations and covered by hundreds of tests. We will evolve RESTHeart rapidly, based on user's feedback, to keep it flexible with an open extension mechanism.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 
 <div class="container">
@@ -151,7 +134,8 @@ layout: default
 </section>
 
 <div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <a href="https://youtu.be/VMaKyQkXByo" target="_blank">
+    <h2 class="text-center restheart-red">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
+    <a href="https://www.mongodb.com/presentations/restful-mongodb-transactions" target="_blank">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>
 </div>
