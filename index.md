@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Ready to use backend for the modern Web.</h2>
-        <p class="mt-2 ml-3 ml-md-5 top-4 text-orange text-break">Open-source runtime with declarative authentication and authorization, instant REST, GraphQL and WebSocket APIs on MongoDB, and fully customizable business logic via plugins.</p>
+        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Ready to use Backend for the Modern Web.</h2>
+        <p class="mt-2 ml-3 ml-md-5 top-4 text-orange text-break">With Declarative Access Control, Instant Data APIs on MongoDB and Polyglot Development Framework.</p>
     </section>
     <section>
         <div class="row mt-4">
