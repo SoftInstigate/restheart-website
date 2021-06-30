@@ -40,7 +40,7 @@ _The WebSocket API is an advanced technology that makes it possible to open a tw
 
 Ref: [https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 
-![Websocket_connection](https://upload.wikimedia.org/wikipedia/commons/1/10/Websocket_connection.png)
+[![Websocket_connection](https://upload.wikimedia.org/wikipedia/commons/1/10/Websocket_connection.png)](https://en.wikipedia.org/wiki/WebSocket)
 
 ### MongoDB Change Streams
 
