@@ -38,13 +38,15 @@ layout: docs
 
 _The WebSocket API is an advanced technology that makes it possible to open a two-way interactive communication session between the user's browser and a server. With this API, you can send messages to a server and receive event-driven responses without having to poll the server for a reply._
 
-Ref: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+Ref: [https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+
+![Websocket_connection](https://upload.wikimedia.org/wikipedia/commons/1/10/Websocket_connection.png)
 
 ### MongoDB Change Streams
 
 _Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will._
 
-Ref: https://docs.mongodb.com/manual/changeStreams/
+Ref: [https://docs.mongodb.com/manual/changeStreams/](https://docs.mongodb.com/manual/changeStreams/)
 
 ### RESTHeart WebSockets
 
