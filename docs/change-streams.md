@@ -23,15 +23,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
-<div class="alert alert-success" role="alert">
-    <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
-    <hr class="my-2">
-    <p>Handle hundreds of thousands of concurrent clients.</p>
-    <p>Check the <a class="alert-link" href="/docs/performances">performance tests</a>!</p>
-</div>
-
 ## Introduction
 
 ### The WebSocket API (WebSockets)
@@ -59,6 +50,13 @@ For example, if the stream `all` is defined on the collection `messages`, client
 <img src="/images/changes-stream.png" width="80%" height="auto" class="image-center img-responsive" />
 
 Exposing a [WebSocket Server](https://tools.ietf.org/html/rfc6455) resource, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
+
+<div class="alert alert-success" role="alert">
+    <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
+    <hr class="my-2">
+    <p>Handle hundreds of thousands of concurrent clients.</p>
+    <p>Check the <a class="alert-link" href="/docs/performances">performance tests</a>!</p>
+</div>
 
 {: .bs-callout.bs-callout-info }
 Change streams require at least MongoDB v3.6 configured as a [Replica Set](https://docs.mongodb.com/manual/replication/).
