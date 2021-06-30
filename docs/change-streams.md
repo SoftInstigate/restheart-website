@@ -1,18 +1,22 @@
 ---
-title: Change Streams
+title: WebSockets and Change Streams
 layout: docs
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Introduction](#introduction)
--   [The *streams* collection metadata](#thestreamscollection-metadata)
-    -   [Stream metadata object format](#stream-metadata-object-format)
-    -   [Escape stage properties informations](#escape-stage-properties-informations)
--   [Examples](#examples)
--   [Passing variables to change streams](#passing-variables-to-change-streams)
-    -   [Variables in stages or query](#variables-in-stages-or-query)
-    -   [Security Informations](#security-informations)
+- [Introduction](#introduction)
+  - [The WebSocket API (WebSockets)](#the-websocket-api-websockets)
+  - [MongoDB Change Streams](#mongodb-change-streams)
+  - [RESTHeart WebSockets](#restheart-websockets)
+- [How it works](#how-it-works)
+  - [The "streams" collection metadata](#the-streams-collection-metadata)
+  - [Stream metadata object format](#stream-metadata-object-format)
+  - [Escape stage properties informations](#escape-stage-properties-informations)
+- [Examples](#examples)
+- [Passing variables to change streams](#passing-variables-to-change-streams)
+  - [Variables in stages or query](#variables-in-stages-or-query)
+  - [Security Informations](#security-informations)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -44,7 +48,9 @@ Ref: https://docs.mongodb.com/manual/changeStreams/
 
 ### RESTHeart WebSockets
 
-RESTHeart embeds a WebSocket server implementation that allows to expose MongoDB's change streams to Web browsers and any kind of HTTP/WebSocket client (for example, [Postman](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/websocket/) offers this feature). With RESTHeart is possibile to create Web or Mobile apps that can be asynchronously notified in real time of data changes. Because change streams use the [aggregation framework](https://docs.mongodb.com/manual/aggregation/), applications can also filter for specific changes.
+__RESTHeart embeds a WebSocket server implementation__ that allows to expose MongoDB's Change Streams to Web browsers and any kind of HTTP/WebSocket client (for example, [Postman](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/websocket/) offers this feature). 
+
+With RESTHeart is possibile to __create Web or Mobile apps that can be asynchronously notified in real time of data changes__. Because change streams use the [aggregation framework](https://docs.mongodb.com/manual/aggregation/), applications can also filter for specific changes.
 
 For example, if the stream `all` is defined on the collection `messages`, clients can connect via WebSocket to `ws://mydomain.com/messages/_streams/all` and receive real time notification of data changes occurring in the collection.
 
@@ -58,7 +64,9 @@ Change streams require at least MongoDB v3.6 configured as a [Replica Set](https
 {: .bs-callout.bs-callout-success }
 Starting from RESTHeart 5.3.0, when the `stream` collection metadata is modified or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
 
-## The *streams* collection metadata
+## How it works
+
+### The "streams" collection metadata
 
 In RESTHeart, not only documents but also databases and collections have
 properties. Some properties are metadata, i.e. they have a special
