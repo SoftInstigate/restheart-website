@@ -19,7 +19,8 @@ layout: default
             </div>
             <div class="col-md-12 text-center mt-4">
                 <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
-            </div>
+                <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn btn-o-white ml-3">Get the product presentation</a>
+        </div>
         </div>
     </section>
 </section>
