@@ -30,12 +30,23 @@ layout: docs
 
 ## Introduction
 
-{: .bs-callout.bs-callout-info}
- If the stream `all` is defined on the collection `messages`, clients can connect via WebSocket to `ws://mydomain.com/messages/_streams/all` and receive real time notification of data changes occurring in the collection.
+### The WebSocket API (WebSockets)
 
-Modern web applications needs to react with promptness and efficiency to data changes in many contexts. RESTHeart _Change Stream_ feature comes in handy to achieve this goal.
+_The WebSocket API is an advanced technology that makes it possible to open a two-way interactive communication session between the user's browser and a server. With this API, you can send messages to a server and receive event-driven responses without having to poll the server for a reply._
 
-> "Change streams allow applications to access real-time data changes. [...] Because change streams use the aggregation framework, applications can also filter for specific changes."
+Ref: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+
+### MongoDB Change Streams
+
+_Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will._
+
+Ref: https://docs.mongodb.com/manual/changeStreams/
+
+### RESTHeart WebSockets
+
+RESTHeart embeds a WebSocket server implementation that allows to expose MongoDB's change streams to Web browsers and any kind of HTTP/WebSocket client (for example, [Postman](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/websocket/) offers this feature). With RESTHeart is possibile to create Web or Mobile apps that can be asynchronously notified in real time of data changes. Because change streams use the [aggregation framework](https://docs.mongodb.com/manual/aggregation/), applications can also filter for specific changes.
+
+For example, if the stream `all` is defined on the collection `messages`, clients can connect via WebSocket to `ws://mydomain.com/messages/_streams/all` and receive real time notification of data changes occurring in the collection.
 
 <img src="/images/changes-stream.png" width="80%" height="auto" class="image-center img-responsive" />
 
@@ -47,12 +58,9 @@ Change streams require at least MongoDB v3.6 configured as a [Replica Set](https
 {: .bs-callout.bs-callout-success }
 Starting from RESTHeart 5.3.0, when the `stream` collection metadata is modified or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
 
-{: .bs-callout.bs-callout-warning }
-With RESTHeart up to 5.2 a restart of the server is required after modifying a stream definition, or deleting its collection, in order to disconnect all clients.
-
 ## The *streams* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections have
+In RESTHeart, not only documents but also databases and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
