@@ -5,12 +5,13 @@ background-color: #eff2f3;
 </style>
 <section class="examples mt-1 mb-0">
     <ul class="nav nav-tabs nav-justified" role="tablist">
-        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#ws" role="tab">Web Service</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor" role="tab">Request Interceptor</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#kotlin" role="tab">Try with Kotlin</a></li>
+        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#service-java" role="tab">Service in Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor-java" role="tab">Interceptor in Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-kotlin" role="tab">Service in Kotlin</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-javascript" role="tab">Service in JavaScript</a></li>
     </ul>
     <div class="tab-content pt-4 pb-5">
-        <div class="tab-pane fade show active" id="ws" role="tabpanel">
+        <div class="tab-pane fade show active" id="service-java" role="tabpanel">
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-md-4 mb-4">
@@ -23,7 +24,7 @@ background-color: #eff2f3;
                         </div>
                         <div class="col-md-8">
 {% highlight java %}
-@RegisterPlugin(name = "greeterService", 
+@RegisterPlugin(name = "greeterService",
     description = "sends a greetings message",
     defaultURI = "/greetings")
 public class GreeterService implements JsonService {
@@ -43,7 +44,7 @@ public class GreeterService implements JsonService {
                     </div>
                 </div>
         </div>
-        <div class="tab-pane fade show" id="kotlin" role="tabpanel">
+        <div class="tab-pane fade show" id="service-kotlin" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-4 mb-4">
@@ -74,7 +75,7 @@ class GreeterServiceKt : JsonService {
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="interceptor" role="tabpanel">
+        <div class="tab-pane fade" id="interceptor-java" role="tabpanel">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-4 mb-4">
@@ -83,14 +84,14 @@ class GreeterServiceKt : JsonService {
                             <p class="examples__desc">
                                 This interceptor applies to requests of the hello web service adding a timestamp to the response content.
                             <br/>
-                                Interceptor can be executed at different points of the request as defined 
+                                Interceptor can be executed at different points of the request as defined
                                 by the <i>interceptPoint</i> parameter of the annotation <i>RegisterPlugin</i>
                             </p>
                         <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white">More examples</a>
                     </div>
                     <div class="col-md-8">
-{% highlight java %}    
-@RegisterPlugin(name = "helloInterceptor", 
+{% highlight java %}
+@RegisterPlugin(name = "helloInterceptor",
     description = "add a timestamp to the response of /hello",
     interceptPoint = InterceptPoint.RESPONSE)
 public class HelloInterceptor implements JsonInterceptor {
@@ -104,12 +105,42 @@ public class HelloInterceptor implements JsonInterceptor {
 
     @Override
     public boolean resolve(JsonRequest request, JsonResponse response) {
-        // apply for request handled by hello service 
+        // apply for request handled by hello service
         // when the response content is a JSON Object
         return request.isHandledBy("hello")
                 && response.getContent() != null
                 && response.getContent().isJsonObject();
     }
+}
+{% endhighlight %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="service-javascript" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Implement plugins in JavaScript.</h2>
+                            <p class="examples__desc">
+                                This is yet another Hello World web service.
+                            <br/>
+                                Running RESTHeart on the GraalVM allows you to deploy JavaScript Services and Interceptors.
+                            </p>
+                        <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+{% highlight javascript %}
+export const options = {
+    name: "helloWorldService",
+    description: "just another Hello World",
+    uri: "/hello"
+}
+
+export function handle(request, response) {
+    response.setContent(JSON.stringify({ msg: 'Hello World' }));
+    response.setContentTypeAsJson();
 }
 {% endhighlight %}
                     </div>
