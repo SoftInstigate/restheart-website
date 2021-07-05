@@ -47,7 +47,9 @@ layout: default
     <div class="container-fluid">
         <div class="row mb-1 bg-black">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
-                <h2 class="text-lightcyan">Featured on <strong>MongoDB.com</strong></h2>
+                <h2 class="text-lightcyan">
+                    <a href="https://www.mongodb.com/customers/softinstigate" target="_blank">Featured on <strong>MongoDB.com</strong></a>
+                </h2>
                 <p class="text-orange">RESTHeart API for MongoDB simplifies development
                    and frees you to focus on delivering great user experiences</p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
