@@ -46,7 +46,7 @@ Click on `Editor` button and open the code of `message.service.ts`. You'll see h
 
 <div id="rh-webchat-demo"></div>
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-webchat/tree/master/client', {
   openFile: 'src/app/services/message.service.ts',
   view: 'preview',
@@ -56,7 +56,7 @@ StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-web
   forceEmbedLayout: true
 });
 </script>
- -->
+
 
 ## Try the API online
 
