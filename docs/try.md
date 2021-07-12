@@ -5,13 +5,18 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [A Simple Web Application](#a-simple-web-application)
--   [Try the API online](#try-the-api-online)
+- [Restheart Webchat](#restheart-webchat)
+- [A Simple Web Application](#a-simple-web-application)
+- [Try the API online](#try-the-api-online)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
+
+{: mt-4}
+## Restheart Webchat
+{% include restheart-webchat.md %}
 
 {: mt-4}
 ## A Simple Web Application
