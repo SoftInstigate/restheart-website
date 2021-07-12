@@ -760,7 +760,8 @@ POST /gql-apps HTTP/1.1
        "sort": {
          "tomatoes.viewer.rating": {
            "$arg":"sort"
-          }
+          },
+          "_id": 1
         },
        "skip": {
          "$arg":"skip"
