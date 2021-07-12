@@ -43,10 +43,7 @@ StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
 
 You can use the online demo service so you can play with API without the need to install MongoDB and RESTHeart.
 
-The online demo API exposes one single collection at `https://beta.mrest.io/demo/messages` without requiring authentication.
-
-{: .bs-callout.bs-callout-info}
-`mrest.io` is the managed service for RESTHeart, currently on beta. It requires an api key, passed via request header `key:demo`
+The online demo API exposes one single collection at `https://demo.restheart.org/messages` without requiring authentication.
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
@@ -56,12 +53,12 @@ The online demo API exposes one single collection at `https://beta.mrest.io/demo
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "key:demo" -H "Content-Type:application/json" -X PUT https://beta.mrest.io/demo/messages/docid -d '{"from":"you", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "Content-Type:application/json" -X PUT https://demo.restheart.org/messages/docid -d '{"from":"you", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 
 {% endhighlight %}
-        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/59" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -72,7 +69,7 @@ HTTP/1.1 201 Created
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -i https://demo.restheart.org/messages/docid
 
 {
 	"_id": "docid",
@@ -81,7 +78,7 @@ $ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
 }
 
 {% endhighlight %}
-    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/4" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -93,14 +90,14 @@ $ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "key:demo" -H "Content-Type:application/json" -X POST https://beta.mrest.io/demo/messages -d '{"from":"you", "message": "MongoDB rocks as well!"}'
+$ curl -i -H "Content-Type:application/json" -X POST https://demo.restheart.org/messages -d '{"from":"you", "message": "MongoDB rocks as well!"}'
 
 HTTP/1.1 201 Created
-Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
+Location: https://demo.restheart.org/messages/563a40d6e4b0ef984cae182b
 ...
 
 {% endhighlight %}
-    <a href="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/3" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -112,13 +109,13 @@ Location: https://beta.mrest.io/demo/messages/563a40d6e4b0ef984cae182b
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "key:demo" -H "Content-Type:application/json" -X PATCH https://beta.mrest.io/demo/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
+$ curl -i -H "Content-Type:application/json" -X PATCH https://demo.restheart.org/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
 
 HTTP/1.1 200 OK
 ...
 
 {% endhighlight %}
-    <a href="http://restninja.io/share/69ddd0c6d311ae99d6596f46d092556f324635d2/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="http://restninja.io/share/69ddd0c6d311ae99d6596f46d092556f324635d2/2" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -130,7 +127,7 @@ HTTP/1.1 200 OK
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
+$ curl -i https://demo.restheart.org/messages/docid
 
 {
 	"_id": "docid",
@@ -144,7 +141,7 @@ $ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
 }
 
 {% endhighlight %}
-    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/5" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -158,7 +155,7 @@ $ curl -i -H "key:demo" https://beta.mrest.io/demo/messages/docid
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -H "key:demo" -G --data-urlencode "filter={'from':'you'}" https://beta.mrest.io/demo/messages?pagesize=2
+$ curl -G --data-urlencode "filter={'from':'you'}" https://demo.restheart.org/messages?pagesize=2
 
 [   {
 		"_id": "docid",
@@ -179,7 +176,7 @@ $ curl -H "key:demo" -G --data-urlencode "filter={'from':'you'}" https://beta.mr
 ]
 
 {% endhighlight %}
-    <a href="http://restninja.io/share/694a0a5c4ae939230544d6dee093d72d27ae2dae/3" class="btn btn-sm float-right mb-2" target="_blank">Open on rest ninja</a>
+    <a href="http://restninja.io/share/694a0a5c4ae939230544d6dee093d72d27ae2dae/10" class="btn btn-sm float-right mb-2" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
