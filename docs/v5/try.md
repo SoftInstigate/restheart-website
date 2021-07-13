@@ -54,7 +54,7 @@ $ curl -i -H "Content-Type:application/json" -X PUT https://demo.restheart.org/m
 HTTP/1.1 201 Created
 
 {% endhighlight %}
-        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/59" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/60" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 

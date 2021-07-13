@@ -1,17 +1,17 @@
-This is a very simple Angular 12 Web Application hosted at StackBlitz.
+This is a very simple Angular 12 Web Application hosted at StackBlitz. 
 
 {: .bs-callout.bs-callout-info}
-Check also `restheart-webchat` official [repository](https://github.com/SoftInstigate/restheart-webchat)! 
+Source code is available at `restheart-webchat`  official Github [repository](https://github.com/SoftInstigate/restheart-webchat)! 
 
 
-It uses Restheart [Websockets and ChangeStreams](https://restheart.org/docs/change-streams/) under the hoods which provide an instant, 
+This example application uses Restheart [Websockets and ChangeStreams](https://restheart.org/docs/change-streams/) under the hood which provide an instant, 
 zero lines of code API for a realtime chat application.
 
 ### Define your stream
 
 The only setup required is to create a stream definition on `messages`. 
 
-The stream `all` will notify our app for every document `insert` operation on the collection:
+The stream `all` that will notify our app for every document `insert` operation on the collection has been defined as follows:
 
 {% highlight bash %}
 
@@ -42,7 +42,7 @@ HTTP/1.1 200 OK
 
 
 {: .bs-callout.bs-callout-info}
-Click on `Editor` button and open the code of `message.service.ts`. You'll see how is easy interacting with the RESTHeart API!
+Click on `Editor` button below and check out the code of `message.service.ts`. You'll see how is easy interacting with the RESTHeart API!
 
 <div id="rh-webchat-demo"></div>
 
@@ -57,66 +57,6 @@ StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-web
 });
 </script>
 
-
-## Try the API online
-
-You can use the online demo service so you can play with API without the need to install MongoDB and RESTHeart.
-
-The online demo API exposes *messages* collection at `https://demo.restheart.org/messages` without requiring authentication.
-
-<div class="row mt-5">
-    <div class="col-lg-3 pt-2">
-        <p><strong>Get</strong> full <i>messages</i> collection<br />
-        <code>GET /db/coll/</code></p>
-    </div>
-    <div class="col-lg-9">
-{% highlight bash %}
-
-$ curl GET https://demo.restheart.org/messages/
-
-[
-    {
-        "_id": {
-            "$oid": "60e6faa1df782f5287cc51a2"
-        },
-        "body": "👀",
-        "timestamp": "2021-07-08T13:16:17.255Z",
-        "nickname": "Maurizio",
-        "_etag": {
-            "$oid": "60e6faa1df782f5287cc51a1"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "60e6f854df782f5287cc51a0"
-        },
-        "body": "😂",
-        "timestamp": "2021-07-08T13:06:28.484Z",
-        "nickname": "mkj6",
-        "_etag": {
-            "$oid": "60e6f854df782f5287cc519f"
-        }
-    },
-    {
-        "_id": {
-            "$oid": "60e6f82bdf782f5287cc519e"
-        },
-        "body": "who's this mkj6? Sounds to me quite mad!",
-        "timestamp": "2021-07-08T13:05:47.526Z",
-        "nickname": "Andrea",
-        "_etag": {
-            "$oid": "60e6f82bdf782f5287cc519d"
-        }
-    }, 
-    ...
-]
-
-{% endhighlight %}
-        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
-    </div>
-</div>
-
-
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
         <p><strong>Create</strong> a simple Websocket connection to <code>all</code> stream on <code>messages</code> collection and log every received message to the console.</p>
@@ -124,7 +64,7 @@ $ curl GET https://demo.restheart.org/messages/
     <div class="col-lg-9">
 
 {% highlight javascript %}
-// Using javascript
+// Using javascript in Google Chrome's console
 
 const w = new WebSocket("wss://demo.restheart.org/messages/_streams/all")
 
@@ -145,24 +85,23 @@ w.onmessage = (e)=>console.log(JSON.parse(e.data))
 
 $ curl -i -H "Content-Type:application/json" -X POST https://demo.restheart.org/messages/ -d '
     {
-        "body": "RESTHeart Rocks!!",
-        "timestamp": "2021-07-12T14:48:05.603Z",
-        "nickname": "you",
+        "message": "RESTHeart Rocks!!",
+        "from": "you"
     }'
 
 HTTP/1.1 201 Created
-Location: https://demo.restheart.org/messages/60ec5e31fc1979075d81fa14
+Location: https://demo.restheart.org/messages/60eda28bfc1979075d81fad6
 ...
 
 {% endhighlight %}
-    <a href="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="https://restninja.io/share/9fa04fa80e839e4928b2c92c462810848ee1addf/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
         <p><strong>Check websocket log</strong></p>
-        Your websocket should have logged something like this.
+        Your websocket should have logged a <a href="https://docs.mongodb.com/manual/reference/change-events/"  target="_blank">Change Event</a> that will look like something like this.
     </div>
     <div class="col-lg-9">
 {% highlight javascript %}
@@ -170,52 +109,54 @@ Location: https://demo.restheart.org/messages/60ec5e31fc1979075d81fa14
 {
     "fullDocument": {
         "_id": {
-            "$oid": "60ec61bffc1979075d81fa1b"
+            "$oid": "60eda28bfc1979075d81fad6"
         },
-        "body": "RESTHeart Rocks!!",
-        "timestamp": "2021-07-12T15:37:35.876Z",
-        "nickname": "you",
+        "message": "RESTHeart Rocks!!",
+        "from": "you",
+        "timestamp": {
+            "$date": 1626186379000
+        },
         "_etag": {
-            "$oid": "60ec61bffc1979075d81fa1a"
+            "$oid": "60eda28bfc1979075d81fad5"
         }
     },
     "documentKey": {
         "_id": {
-            "$oid": "60ec61bffc1979075d81fa1b"
+            "$oid": "60eda28bfc1979075d81fad6"
         }
     },
     "operationType": "insert"
 }
 
 {% endhighlight %}
-    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
-        <p><strong>Get</strong> the created document</p>
+        <p><strong>Get</strong> the created document using the previously returned <code>Location</code> header reference.</p>
     </div>
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i https://demo.restheart.org/messages/60ec5e31fc1979075d81fa14
+$ curl -i https://demo.restheart.org/messages/60eda28bfc1979075d81fad6
 
 {
     "_id": {
-        "$oid": "60ec5e31fc1979075d81fa14"
+        "$oid": "60eda28bfc1979075d81fad6"
     },
-    "body": "RESTHeart Rocks!!",
-    "timestamp": "2021-07-12T14:48:05.603Z",
-    "nickname": "you",
+    "from": "you",
+    "message": "RESTHeart Rocks!!",
+    "timestamp": {
+        "$date": 1626185719000
+    },
     "_etag": {
-        "$oid": "60ec5e31fc1979075d81fa13"
+        "$oid": "60eda28bfc1979075d81fad5"
     }
 }
 
 {% endhighlight %}
-    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
