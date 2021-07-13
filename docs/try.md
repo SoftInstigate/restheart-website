@@ -5,8 +5,9 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [A Simple Web Application](#a-simple-web-application)
--   [Try the API online](#try-the-api-online)
+- [A Simple Web Application](#a-simple-web-application)
+- [Try the API online](#try-the-api-online)
+- [Restheart Webchat](#restheart-webchat)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -19,12 +20,15 @@ layout: docs
 This is a very simple Web Application hosted at StackBlitz. It shows a table of *message* documents stored in a MongoDB collection and provides a simple form to create a new *message* document.
 
 {: .bs-callout.bs-callout-info}
-Click on `Editor` button and open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
+Source code is available at `restheart-ng-demo`  official Github [repository](https://github.com/SoftInstigate/restheart-ng-demo)! 
 
-<div id="demo"></div>
+{: .bs-callout.bs-callout-info}
+Click on `Editor` button below and open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
+
+<div id="ng-demo"></div>
 
 <script type="text/javascript">
-StackBlitzSDK.embedProjectId('demo', 'restheart-ng-demo', {
+StackBlitzSDK.embedGithubProject('ng-demo', 'SoftInstigate/restheart-ng-demo', {
   openFile: 'src/app/service.ts',
   view: 'preview',
   width: "100%",
@@ -48,14 +52,17 @@ The online demo API exposes one single collection at `https://demo.restheart.org
     <div class="col-lg-9">
 {% highlight bash %}
 
-$ curl -i -H "Content-Type:application/json" -X PUT https://demo.restheart.org/messages/docid -d '{"from":"you", "message":"RESTHeart rocks!!" }'
+$ curl -i -H "Content-Type:application/json" -X PUT https://demo.restheart.org/messages/docid?wm=upsert -d '{"from":"you", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
 
 {% endhighlight %}
-        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/59" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+        <a href="http://restninja.io/share/607325d540eaa2eac909116d619be26ad21a9055/60" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
+
+{: .bs-callout.bs-callout-info}
+This request uses _write mode_ set to `upsert`. Since RESTHeart v5.3.0, write mode for `PUT/PATCH` requests is set by default to `update`. Check out [here](https://restheart.org/docs/upgrade-to-v6/#write-mode-in-mongodb-rest-api) for more informations.
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
@@ -110,7 +117,7 @@ HTTP/1.1 200 OK
 ...
 
 {% endhighlight %}
-    <a href="http://restninja.io/share/69ddd0c6d311ae99d6596f46d092556f324635d2/2" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
+    <a href="http://restninja.io/share/69ddd0c6d311ae99d6596f46d092556f324635d2/3" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
     </div>
 </div>
 
@@ -174,5 +181,9 @@ $ curl -G --data-urlencode "filter={'from':'you'}" https://demo.restheart.org/me
     <a href="http://restninja.io/share/694a0a5c4ae939230544d6dee093d72d27ae2dae/10" class="btn btn-sm float-right mb-2" target="_blank">Open on rest ninja</a>
     </div>
 </div>
+
+{: mt-4}
+## Restheart Webchat
+{% include restheart-webchat.md %}
 
 </div>
