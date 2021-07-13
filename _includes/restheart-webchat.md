@@ -47,7 +47,7 @@ Click on `Editor` button and open the code of `message.service.ts`. You'll see h
 <div id="rh-webchat-demo"></div>
 
 <script type="text/javascript">
-StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-webchat/tree/master/client', {
+StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-webchat', {
   openFile: 'src/app/services/message.service.ts',
   view: 'preview',
   width: "100%",
