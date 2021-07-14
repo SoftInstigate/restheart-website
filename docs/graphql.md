@@ -9,20 +9,15 @@ layout: docs
 - [GraphQL Applications](#graphql-applications)
   - [Descriptor](#descriptor)
   - [Schema](#schema)
+  - [Bson types](#bson-types)
   - [Mappings](#mappings)
     - [Field to Field mapping](#field-to-field-mapping)
     - [Field to Query mapping](#field-to-query-mapping)
 - [Queries](#queries)
 - [Responses](#responses)
   - [Example responses](#example-responses)
-    - [200 - OK](#200---ok)
-    - [400 - Bad Request - Invalid GraphQL Query / schema - MongoDB data type mismatch](#400---bad-request---invalid-graphql-query--schema---mongodb-data-type-mismatch)
-    - [400 - Bad Request - Invalid GraphQL App Definition](#400---bad-request---invalid-graphql-app-definition)
-    - [405 - Method Not Allowed](#405---method-not-allowed)
-    - [500 - Internal Server Error](#500---internal-server-error)
 - [Optimization](#optimization)
 - [A complete example](#a-complete-example)
-    - [Before running the example requests](#before-running-the-example-requests)
 
 </div>
 
@@ -69,7 +64,6 @@ A GraphQL application definition is composed by three sections:
 
 ### Descriptor
 
-
 Here you can specify:
 
 -  `name`: GraphQL application name.
@@ -102,19 +96,33 @@ This section must contain GraphQL application's schema written with *Schema Defi
 }
 ```
 
-#### Bson types
+{: .bs-callout.bs-callout-info }
+In order the schema to be a valid, it must contain the type *Query*.
 
-{: .table .table-responsive}
-| Type       | Description | Example               |
-|------------|-------------|-----------------------|
-|ObjectId    |             |                       |
-|BsonDocument|             |                       |
-|Timestamp   |             |                       |
-|DateTime    |             |                       |
-|Decimal128  |             |                       |
-|Regex       |             |                       |
+### Bson types
 
-Remember that, in order to be a valid schema, it must contain type *Query*.
+A set of custom GraphQL scalars types have been added for creating GraphQL schemas handling the MongoDb BSON types:
+
+- `ObjectId`
+- `BsonDocument`
+- `Timestamp`
+- `DateTime`
+- `Decimal128`
+- `Regex`
+
+#### Example
+
+The following GraphQL type `User` defines the property `_id` to be of type `ObjectId`
+
+```graphql
+type User {
+    _id: ObjectId
+    name: String
+    surname: String
+    email: String
+    posts: [Post]
+}
+```
 
 ### Mappings
 
