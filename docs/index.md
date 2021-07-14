@@ -15,9 +15,6 @@ layout: docs
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
-
-{% include doc-in-progress-v6.html %}
-
 > RESTHeart is a modern **backend** for **Web** and **Mobile** apps, designed to _radically simplify server-side development and deployment_.
 
 ## Introduction
