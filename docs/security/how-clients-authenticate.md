@@ -17,8 +17,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
@@ -32,7 +30,7 @@ With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
 
 
 ```
-$ http -a userid:password GET 127.0.0.1:8080/
+$ http -a userid:password GET 127.0.0.1:8080/
 ```
 
 With **curl**, use the –user options
@@ -47,7 +45,7 @@ $ curl -i --user userid:password -X GET 127.0.0.1:8080/
 Basic Authentication requires the client to send its credentials with
 the **Authorization** request header.
 
-The value of the *Authorization* request header must be:** Basic
+The value of the *Authorization* request header must be:** Basic
 base64(&lt;userid&gt; + ':' + &lt;password&gt;)**
 
 In other words:
@@ -80,8 +78,8 @@ Auth-Token-Location: /tokens/user@si.com
 Auth-Token-Valid-Until: 2015-04-16T13:28:10.749Z
 ```
 
-**Note** the URI in the Auth-Token-Location header: the client can issue
-a GET request to obtain information about token or a DELETE request to
+**Note** the URI in the Auth-Token-Location header: the client can issue
+a GET request to obtain information about token or a DELETE request to
 invalidate it. Of course clients can only request their own tokens
 (otherwise response code will be 403 Forbidden).
 
@@ -112,7 +110,7 @@ token-manager:
 
 The default restheart configuration file sets up the useful service **roles**, bound to `/roles/<userid>`
 
-The possible response codes of the request GET `/roles/<userid>`
+The possible response codes of the request GET `/roles/<userid>`
 are:
 
 -   **401 Unauthorized** missing or wrong credentials
@@ -124,7 +122,7 @@ are:
 
 ``` json
  {
-    "authenticated": true, 
+    "authenticated": true,
     "roles": [
         "USER"
     ]
@@ -146,20 +144,20 @@ With basic authentication, browsers can show a awful login popup window
 and this is not what you usually want.
 
 What happens behind the scene, is that the server sends
-the `WWW-Authenticate` response header that actually leads to it. 
+the `WWW-Authenticate` response header that actually leads to it.
 
 You can avoid RESTHeart to actually send this header avoiding the popup
 login window altogether, either specifying
-the `No-Auth-Challenge` request header or using
-the `noauthchallenge` query parameter. In this case, RESTHeart will just
-respond with **401 Unauthorized** in case of missing or wrong
+the `No-Auth-Challenge` request header or using
+the `noauthchallenge` query parameter. In this case, RESTHeart will just
+respond with **401 Unauthorized** in case of missing or wrong
 credentials.
 
 {: .bs-callout.bs-callout-info }
 This feature together with the authentication token, allows you to
 implement a form based authentication experience on top of the simple
-and effective basic authentication mechanism. You can refer to the [blog
-example application](https://github.com/softinstigate/restheart-blog-example) for an example of such implementation.
+and effective basic authentication mechanism. You can refer to the [blog
+example application](https://github.com/softinstigate/restheart-blog-example) for an example of such implementation.
 
 {: .bs-callout.bs-callout-info }
 Watch [An application example (blog)](https://www.youtube.com/watch?v=QVk0aboHayM&t=2262s)

@@ -15,8 +15,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.
@@ -68,7 +66,6 @@ authorizers:
 
 
 For more on collection based authorization check the documentation on [mongoAclAuthorizer](/docs/security/authorization/#mongo-acl-authorizer)
-
 
 ## Understanding RESTHeart security
 
