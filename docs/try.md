@@ -7,7 +7,7 @@ layout: docs
 
 - [A Simple Web Application](#a-simple-web-application)
 - [Try the API online](#try-the-api-online)
-- [Restheart Webchat](#restheart-webchat)
+- [RESTHeart Webchat](#restheart-webchat)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -183,7 +183,7 @@ $ curl -G --data-urlencode "filter={'from':'you'}" https://demo.restheart.org/me
 </div>
 
 {: mt-4}
-## Restheart Webchat
+## RESTHeart Webchat
 {% include restheart-webchat.md %}
 
 </div>

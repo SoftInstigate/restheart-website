@@ -4,7 +4,7 @@ This is a very simple Angular 12 Web Application hosted at StackBlitz.
 Source code is available at `restheart-webchat`  official Github [repository](https://github.com/SoftInstigate/restheart-webchat)! 
 
 
-This example application uses Restheart [Websockets and ChangeStreams](https://restheart.org/docs/change-streams/) under the hood which provide an instant, 
+This example application uses RESTHeart [Websockets and ChangeStreams](https://restheart.org/docs/change-streams/) under the hood which provide an instant, 
 zero lines of code API for a realtime chat application.
 
 ### Define your stream
@@ -159,84 +159,3 @@ $ curl -i https://demo.restheart.org/messages/60eda28bfc1979075d81fad6
 {% endhighlight %}
     </div>
 </div>
-
-
-<!-- <div class="row mt-3">
-    <div class="col-lg-3 pt-2">
-        <p><strong>Update</strong> the first document with <code>PATCH /db/coll/docid</code></p>
-        <p>This request uses the dot notation and the <code>$currentDate</code> operator. These are available in all write requests!</p>
-    </div>
-    <div class="col-lg-9">
-{% highlight bash %}
-
-$ curl -i -H "key:demo" -H "Content-Type:application/json" -X PATCH https://demo.restheart.org/messages/docid -d '{"$currentDate": { "header.timestamp": true}}'
-
-HTTP/1.1 200 OK
-...
-
-{% endhighlight %}
-    <a href="http://restninja.io/share/69ddd0c6d311ae99d6596f46d092556f324635d2/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
-    </div>
-</div>
-
-<div class="row mt-3">
-    <div class="col-lg-3 pt-2">
-        <p><strong>Get</strong> the updated document again.</p>
-        <p>The returned representation contains all the document properties plus few more. The <code>_etag</code> is updated automatically by RESTHeart for Web caching and ghost writes management.</p>
-    </div>
-    <div class="col-lg-9">
-{% highlight bash %}
-
-$ curl -i -H "key:demo" https://demo.restheart.org/messages/docid
-
-{
-	"_id": "docid",
-	"from": "you",
-	"message": "RESTHeart rocks!!",
-	"header": {
-		"timestamp": {
-			"$date": 1475598488601
-		}
-	}
-}
-
-{% endhighlight %}
-    <a href="https://restninja.io/share/7da53c179386d7df995c1e5574984d700cc0aef7/0" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
-    </div>
-</div>
-
-<div class="row mt-3">
-    <div class="col-lg-3 pt-2">
-        <p><strong>Find</strong> documents via query.</p>
-        <p>The <code>filter</code> query parameter allows to specify any MongoDB query.</p>
-        <p>This instance of RESTHeart is configured to always add the <code>np</code> query parameter to the request; it gets rid of the collection properties and 
-        returns just an array of documents.</p>
-    </div>
-    <div class="col-lg-9">
-{% highlight bash %}
-
-$ curl -H "key:demo" -G --data-urlencode "filter={'from':'you'}" https://beta.mrest.io/demo/messages?pagesize=2
-
-[   {
-		"_id": "docid",
-		"from": "you",
-		"message": "RESTHeart rocks!",
-		"header": {
-			"timestamp": {
-				"$date": 1475598488601
-			}
-		}
-	}, {
-		"_id": {
-			"$oid": "563a40d6e4b0ef984cae182b"
-		},
-		"from": "you",
-		"message": "MongoDB rocks as well!"
-	}
-]
-
-{% endhighlight %}
-    <a href="http://restninja.io/share/694a0a5c4ae939230544d6dee093d72d27ae2dae/3" class="btn btn-sm float-right mb-2" target="_blank">Open on rest ninja</a>
-    </div>
-</div>
- -->
