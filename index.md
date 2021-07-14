@@ -13,14 +13,16 @@ layout: default
         <p class="mt-2 ml-2 mr-3 ml-md-5 top-4 text-orange text-break">Open-source Service with Declarative Access Control, Instant Data APIs on MongoDB and Polyglot Development Framework.</p>
     </section>
     <section>
-        <div class="row mt-4">
-            <div class="col-md-12 text-center">
-                <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
+        <div class="container-fluid">
+            <div class="row mt-4">
+                <div class="col-md-12 text-center">
+                    <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
+                </div>
+                <div class="col-md-12 text-center mt-4">
+                    <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
+                    <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn btn-o-white mt-3 mt-md-0 ml-md-3">Get the product presentation</a>
+                </div>
             </div>
-            <div class="col-md-12 text-center mt-4">
-                <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
-                <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn btn-o-white ml-3">Get the product presentation</a>
-        </div>
         </div>
     </section>
 </section>
