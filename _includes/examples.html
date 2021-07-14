@@ -3,6 +3,35 @@
 background-color: #eff2f3;
 }
 </style>
+
+<script type="text/javascript">
+    window['openES6Example'] = () => {
+
+        const html = `<pre id="app"></pre>`;
+        const code = `const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=2');
+
+fetch(url)
+  .then(response => response.json())
+  .then(json => JSON.stringify(json, null, 2))
+  .then(data => document.getElementById('app').innerHTML = data);`;
+
+
+        const project = {
+            files: {
+                "index.html": html,
+                "index.js": code,
+            },
+            title: "ES6 RESTHeart starter",
+            description: "Blank starter project for building ES6 apps.",
+            template: "javascript",
+            tags: ["restheart", "ES6"],
+            dependencies: null
+        };
+
+        StackBlitzSDK.openProject(project);
+    }
+</script>
+
 <section class="examples mt-1 mb-5">
     <ul class="nav nav-tabs nav-justified" role="tablist">
         <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#httpie" role="tab">httpie</a></li>
@@ -111,7 +140,7 @@ $ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/me
                             <br/>
                             Here we use the <a target="_blank" class="text-danger" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>.
                         </p>
-                        <a href="https://stackblitz.com/edit/js-zhzxtl" target="_blank" class="btn btn-o-white">Run it</a>
+                        <a onclick="openES6Example()" class="btn btn-o-white">Run it</a>
                     </div>
                     <div class="col-md-8">
 {% highlight javascript %}
