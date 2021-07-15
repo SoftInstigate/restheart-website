@@ -36,26 +36,9 @@ $ curl -i -H "Content-Type:application/json" -X PATCH https://demo.restheart.org
 
 HTTP/1.1 200 OK
 ...
-
-
 {% endhighlight %}
 
-
-{: .bs-callout.bs-callout-info}
-Click on `Editor` button below and check out the code of `message.service.ts`. You'll see how is easy interacting with the RESTHeart API!
-
-<div id="rh-webchat-demo"></div>
-
-<script type="text/javascript">
-StackBlitzSDK.embedGithubProject('rh-webchat-demo', 'SoftInstigate/restheart-webchat', {
-  openFile: 'src/app/services/message.service.ts',
-  view: 'preview',
-  width: "100%",
-  height: "660px",
-  hideNavigation: true,
-  forceEmbedLayout: true
-});
-</script>
+<iframe src="https://chat.restheart.org" width="100%" height="600px" title="restheat-ng-demo"></iframe>
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
