@@ -17,26 +17,12 @@ layout: docs
 {: mt-4}
 ## A Simple Web Application
 
-This is a very simple Web Application hosted at StackBlitz. It shows a table of *message* documents stored in a MongoDB collection and provides a simple form to create a new *message* document.
+This is a very simple Web Application hosted at [ng-demo.restheart.org](https://ng-demo.restheart.org). It shows a table of *message* documents stored in a MongoDB collection and provides a simple form to create a new *message* document.
+
+<iframe src="https://ng-demo.restheart.org" width="100%" height="600px" title="restheat-ng-demo"></iframe>
 
 {: .bs-callout.bs-callout-info}
-Source code is available at `restheart-ng-demo`  official Github [repository](https://github.com/SoftInstigate/restheart-ng-demo)! 
-
-{: .bs-callout.bs-callout-info}
-Click on `Editor` button below and open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
-
-<div id="ng-demo"></div>
-
-<script type="text/javascript">
-StackBlitzSDK.embedGithubProject('ng-demo', 'SoftInstigate/restheart-ng-demo', {
-  openFile: 'src/app/service.ts',
-  view: 'preview',
-  width: "100%",
-  height: "660px",
-  hideNavigation: true,
-  forceEmbedLayout: true
-});
-</script>
+Source code is available at `restheart-ng-demo`  official [Github repository](https://github.com/SoftInstigate/restheart-ng-demo)! 
 
 ## Try the API online
 
