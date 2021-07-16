@@ -1,5 +1,3 @@
-This is a very simple Angular 12 Web Application hosted at StackBlitz. 
-
 {: .bs-callout.bs-callout-info}
 Source code is available at `restheart-webchat`  official Github [repository](https://github.com/SoftInstigate/restheart-webchat)! 
 
