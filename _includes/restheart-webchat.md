@@ -1,18 +1,18 @@
+This example application uses RESTHeart's [Change Streams](https://restheart.org/docs/change-streams/) to provide an instant, 
+zero lines of code API for a realtime chat application. In short, RESTHeart leverages MongoDB's Change Streams to instantly notify database modifications through WebSockets.
+
+<iframe src="https://chat.restheart.org" width="100%" height="600px" title="restheat-ng-demo"></iframe>
+
 {: .bs-callout.bs-callout-info}
-Source code is available at `restheart-webchat`  official Github [repository](https://github.com/SoftInstigate/restheart-webchat)! 
+The source code is available at `restheart-webchat`  official Github [repository](https://github.com/SoftInstigate/restheart-webchat)! 
 
-
-This example application uses RESTHeart [Websockets and ChangeStreams](https://restheart.org/docs/change-streams/) under the hood which provide an instant, 
-zero lines of code API for a realtime chat application.
-
-### Define your stream
+### Define your own stream
 
 The only setup required is to create a stream definition on `messages`. 
 
-The stream `all` that will notify our app for every document `insert` operation on the collection has been defined as follows:
+The stream `all` that will notify our app for every document `insert` operation on the collection has been defined as follows (this is just an example, you should run it against your own installation of RESTHeart):
 
 {% highlight bash %}
-
 $ curl -i -H "Content-Type:application/json" -X PATCH https://demo.restheart.org/messages/ -d '{
     "streams": [
         {
@@ -35,8 +35,6 @@ $ curl -i -H "Content-Type:application/json" -X PATCH https://demo.restheart.org
 HTTP/1.1 200 OK
 ...
 {% endhighlight %}
-
-<iframe src="https://chat.restheart.org" width="100%" height="600px" title="restheat-ng-demo"></iframe>
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
