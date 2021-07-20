@@ -7,7 +7,7 @@ layout: docs
 
 - [RESTHeart Webchat](#restheart-webchat)
 - [How does it work?](#how-does-it-work)
-- [Send a message using REST api](#send-a-message-using-rest-api)
+- [Send a message with curl](#send-a-message-with-curl)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -27,20 +27,16 @@ The source code is available at `restheart-webchat`  official Github [repository
 
 ## How does it work?
 
-<div style="display: flex; justify-content: center"> 
+<div style="display: flex; justify-content: center">
 <img src="/assets/audio/WEBCHAT-DIAGRAMMA.gif" class="img-fluid">
 </div>
 
 
-## Send a message using REST api
+## Send a message with curl
 
-<p> 
-You can use the online demo service so you can play with API without the need to install MongoDB and RESTHeart.
-</p>
+Chat messages are sent via POST requests to `https://demo.restheart.org/messages`
 
-<p> 
-The online demo API exposes one single collection at https://demo.restheart.org/messages without requiring authentication.
-</p>
+Therefore you can also send a message with `curl` with the following request.
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
@@ -60,6 +56,6 @@ HTTP/1.1 201 Created
 </div>
 
 {: .bs-callout.bs-callout-info}
-To see another example visit [A simple Angular demo](/docs/ng-demo/)! 
+To see another example visit [A simple Angular demo](/docs/ng-demo/)!
 
 </div>
