@@ -28,7 +28,7 @@ The source code is available at `restheart-webchat`  official Github [repository
 ## How does it work?
 
 <div style="display: flex; justify-content: center"> 
-<img src="/assets/audio/WEBCHAT-DIAGRAMMA.gif" style="width: 900px;">
+<img src="/assets/audio/WEBCHAT-DIAGRAMMA.gif" class="img-fluid">
 </div>
 
 
