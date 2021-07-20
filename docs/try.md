@@ -36,26 +36,15 @@ The source code is available at `restheart-webchat`  official Github [repository
 
 Chat messages are sent via POST requests to `https://demo.restheart.org/messages`
 
-Therefore you can also send a message with `curl` with the following request.
+Therefore you can also send a message with `curl` with the following request or <a href="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/3" class="btn btn-sm" target="_blank">execute it on restninja</a>
 
-<div class="row mt-3">
-    <div class="col-lg-3 pt-2">
-        <p><strong>Create</strong> a document with <br>
-        <code>POST /messages</code></p>
-    </div>
-    <div class="col-lg-9">
-{% highlight bash %}
-
+```bash
 $ curl -i -H "Content-Type:application/json" -X POST https://demo.restheart.org/messages/ -d '{"from":"you", "message":"RESTHeart rocks!!" }'
 
 HTTP/1.1 201 Created
+```
 
-{% endhighlight %}
-    <a href="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/3" class="btn btn-sm float-right" target="_blank">Open on rest ninja</a>
-    </div>
-</div>
-
-{: .bs-callout.bs-callout-info}
+{: .bs-callout.bs-callout-info .mt-5}
 To see another example visit [A simple Angular demo](/docs/ng-demo/)!
 
 </div>
