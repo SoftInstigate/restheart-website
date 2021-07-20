@@ -45,7 +45,7 @@ The online demo API exposes one single collection at https://demo.restheart.org/
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">
         <p><strong>Create</strong> a document with <br>
-        <code>POST /db/coll</code></p>
+        <code>POST /messages</code></p>
     </div>
     <div class="col-lg-9">
 {% highlight bash %}
