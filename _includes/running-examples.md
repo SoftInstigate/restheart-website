@@ -1,6 +1,8 @@
 ### Before running the example requests
 
-The following examples assume RESTHeart Platform running on the localhost with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+The following step by step tutorial __assumes that RESTHeart is running on localhost__ with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+
+> To run RESTHeart please first read the [setup](/docs/setup) section.
 
 To create the _restheart_ db, run the following:
 

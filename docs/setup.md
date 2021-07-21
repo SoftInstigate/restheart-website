@@ -24,12 +24,9 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Download and Run
 
-{: .bs-callout.bs-callout-info}
-You can run RESTHeart and MongoDB with __Docker__, go to [Run with Docker](#run-with-docker) for instructions.
+> The easiest way to run RESTHeart and MongoDB is with __Docker__, please go to [Run with Docker](#run-with-docker) for instructions.
 
 ### Get the latest release
 
@@ -105,7 +102,7 @@ HTTP/1.1 201 OK
 RESTHeart will start bound on HTTP port `8080`.
 
 {: .bs-callout.bs-callout-info }
-Watch [Java binaries](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=57s)
+Watch [Java binaries](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=57s) video.
 
 #### Default users and ACL
 
@@ -211,7 +208,7 @@ Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options]
 ```
 
 {: .bs-callout.bs-callout-info }
-Watch [Configuration](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=820s)
+Watch [Configuration](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=820s) video.
 
 ### Run the process in background
 
@@ -297,7 +294,7 @@ Beware the `down` command with `-v` parameter erases the MongoDB attached docker
 Read the [docker compose documentation](https://docs.docker.com/compose/) for more.
 
 {: .bs-callout.bs-callout-info }
-Watch [Docker / Docker Compose](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s)
+Watch [Docker / Docker Compose](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s) video.
 
 ## Build it yourself
 
@@ -372,7 +369,7 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ```
 
 {: .bs-callout.bs-callout-info }
-Watch [Compile source code from scratch](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=605s)
+Watch [Compile source code from scratch](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=605s) video.
 
 </div>
 
