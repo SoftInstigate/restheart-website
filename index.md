@@ -19,7 +19,7 @@ layout: default
                     <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
                 </div>
                 <div class="col-md-12 text-center mt-4">
-                    <a href="/assets/RESTHeart 6 - The Runtime for Microservices.pdf" target="_blank" class="btn btn-o-white">Get the pdf fact sheet</a>
+                    <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn btn-o-white">Get the PDF fact sheet</a>
                     <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn btn-o-white mt-3 mt-md-0 ml-md-3">Get the product presentation</a>
                 </div>
             </div>
