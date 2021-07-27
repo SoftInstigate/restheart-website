@@ -12,9 +12,9 @@ layout: docs
 -   [Examples](#examples)
 -   [Materialized Views](#materialized-views)
 -   [Passing variables to aggregations](#passing-variables-to-aggregations)
+    -   [Predefined variables](#predefined-variables)
     -   [Variables in stages or query](#variables-in-stages-or-query)
     -   [Variables in map reduce functions](#variables-in-map-reduce-functions)
-    -   [Handling paging in aggregations](#handling-paging-in-aggregations)
 -   [Security information](#security-informations)
 
 </div>
@@ -22,30 +22,27 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 {: .bs-callout.bs-callout-info}
-"Aggregations operations process data records and return computed results. Aggregation operations group values from multiple documents together, and can perform a variety of operations on the grouped data to return a single result."
+"Aggregations operations process data records and return computed results. Aggregation operations group values from multiple documents together, and can perform a variety of operations on the grouped data to return a single result."
 
-RESTHeart manages aggregation operations: both *aggregation pipelines*
+RESTHeart manages aggregation operations: both *aggregation pipelines*
 and _map reduce functions_ are supported.
 
 In both cases only _inline_ output type is supported, i.e. no result is directly
 written to the DB server unless the [Materialized Views](#materialized-views) is used.
 
-## The *aggrs* collection metadata
+## The *aggrs* collection metadata
 
 In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
 
-Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of _pipeline_ or *mapReduce *objects:
+Use the collection metadata `aggrs` to define aggregations. `aggrs` is an array of _pipeline_ or *mapReduce* objects:
 
 ```http
 GET /coll/_meta HTTP/1.1
-
 
 {
     "aggrs": [
@@ -164,33 +161,35 @@ Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-N
 
 ## Examples
 
-The following requests upsert a collection defining two aggregation
+The following requests update the collection metadata defining two aggregation
 operations:
 
--   aggregation operation _test_ap_ bound at
-    `/coll/_aggrs/example-pipeline`
--   map reduce operation _test_mr_ bound at
-    `/coll/_aggrs/example-mapreduce`
+-   an aggregation operation bound at `/coll/_aggrs/example-pipeline`
+-   a map reduce operation bound at `/coll/_aggrs/example-mapreduce`
 
-```
+{% include code-header.html type="Request" %}
+```http
 PUT /coll HTTP/1.1
 
-{ "aggrs" : [ 
-      { "stages" : [ { "$match" : { "name" : { "$var" : "n" } } },
-            { "$group" : { "_id" : "$name",
-                  "avg_age" : { "$avg" : "$age" }
-                } }
-          ],
-        "type" : "pipeline",
-        "uri" : "example-pipeline"
-      },
-      { "map" : "function() { emit(this.name, this.age) }",
-        "query" : { "name" : { "$var" : "n" } },
-        "reduce" : "function(key, values) { return Array.avg(values) }",
-        "type" : "mapReduce",
-        "uri" : "example-mapreduce"
-      }
-    ] }
+{
+  "aggrs": [
+    {
+      "stages": [
+        { "$match": { "name": { "$var": "n" } } },
+        { "$group": { "_id": "$name", "avg_age": { "$avg": "$age" } } }
+      ],
+      "type": "pipeline",
+      "uri": "example-pipeline"
+    },
+    {
+      "map": "function() { emit(this.name, this.age) }",
+      "query": { "name": { "$var": "n" } },
+      "reduce": "function(key, values) { return Array.avg(values) }",
+      "type": "mapReduce",
+      "uri": "example-mapreduce"
+    }
+  ]
+}
 ```
 
 ## Materialized Views
@@ -204,31 +203,34 @@ The following example defines the aggregation `/coll/_aggrs/age-by-gender` that 
 {: .bs-callout.bs-callout-warning }
 Materialized Views are available from MongoDB 4.2.
 
-```
+{% include code-header.html type="Request" %}
+```http
 PUT /coll HTTP/1.1
 
 { "aggrs" : [
     { "stages" : [
-        { "$group" : { "_id" : "$gender",  "avg_age" : { "$avg" : "$age" } } },
+        { "$group" : { "_id" : "$gender", "avg_age" : { "$avg" : "$age" } } },
         { "$merge": { "into": "avgAgeByGender" } }
-        ],
-            "type" : "pipeline",
-            "uri" : "age-by-gender"
-        }
-    ]
+      ],
+      "type" : "pipeline",
+      "uri" : "age-by-gender"
+    }
+  ]
 }
 ```
 
 Executing the aggregation request returns no data, but thanks to the `$merge` stage, the new collection `avgAgeByGender` gets created.
 
-```
+{% include code-header.html type="Request" %}
+```http
 GET /coll/_aggrs/avg-by-city HTTP/1.1
 
 HTTP/1.1 200 OK
 []
 ```
 
-```
+{% include code-header.html type="Request" %}
+```http
 GET /avgAgeByGender HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -240,21 +242,22 @@ HTTP/1.1 200 OK
 
 ## Passing variables to aggregations
 
-The query parameter `avars` allows passing variables to the aggregations.
+The query parameter `avars` allows passing variables to the aggregations.
 
 {: .bs-callout.bs-callout-info}
 The value of a variable can be any valid JSON.
 The following query parameter passes two variables, a number and an object: `?avars={ "number": 1, "object": {"a": {"json": "object" }} }`
 
 For example, the previous example aggregations both use a variable named
-"n". \*If the variable is not passed via the `avars` qparam, the request
+`n`. If the variable is not passed via the `avars` qparam, the request
 fails.
 
-```bash
+{% include code-header.html type="Request" %}
+```http
 GET /coll/_aggrs/example-pipeline HTTP/1.1
 
 HTTP/1.1 400 Bad Request
-...
+
 {
     "http status code": 400,
     "http status description": "Bad Request",
@@ -264,11 +267,46 @@ HTTP/1.1 400 Bad Request
 
 Passing the variable n, the request succeeds:
 
-```
+{% include code-header.html type="Request" %}
+```http
 GET /coll/_aggrs/example-pipeline?avars={"n":1} HTTP/1.1
 
 HTTP/1.1 200 OK
-...
+```
+
+### Predefined variables
+
+The following predefined variables can be used in the aggregation definition:
+
+{: .table.table-responsive }
+|variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description
+|-|-|
+|`@user`|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)|
+|`@mongoPermissions`|the `MongoPermissions` object, e.g. `@mongoPermissions.readFilter`|
+|`@page`|the value of the `page` query parameter|
+|`@pagesize`|the value of the `pagesize` query parameter|
+|`@skip`| to be used in `$skip` stage, equals to `(page-1)*pagesize`|
+|`@limit`|to be used in `$limit` stage, equals to the value of the `pagesize` query parameter|
+
+### Handling paging in aggregations
+
+Paging must be handled explicitly by the aggregation-
+
+For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents.
+
+```json
+{
+  "aggrs": [
+    {
+      "uri": "paging",
+      "type": "pipeline",
+      "stages": [
+        { "$skip": { "$var": "@skip" } },
+        { "$limit": { "$var": "@limit" } }
+      ]
+    }
+  ]
+}
 ```
 
 ### Variables in stages or query
@@ -293,22 +331,24 @@ variable _n:_
 
 ### Variables in map reduce functions
 
-Variables are passed also to *map* and *reduce* javascript functions
+Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
 
+{% include code-header.html type="Request" %}
 ```http
 PATCH /coll HTTP/1.1
 
 { "aggrs" : [
-     {  "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
-        "reduce" : "function(key, values) { return Array.avg(values) } }",
-        "type" : "mapReduce",
-        "uri" : "example-mapreduce"
-      }
-] }
+    {
+      "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
+      "reduce" : "function(key, values) { return Array.avg(values) } }",
+      "type" : "mapReduce",
+      "uri" : "example-mapreduce"
+    }
+  ]
+}
 
 HTTP/1.1 200 Ok
-...
 ```
 
 Note the _map_ function; `JSON.parse($vars)` allows to access the
@@ -321,43 +361,7 @@ function() {
 };
 ```
 
-## Handling paging in aggregations
-
-Starting from RESTHeart v4.1.8 paging must be handled explicitly by the aggregation (until this version paging was handled automatically). This allows more flexibility and better performances.
-
-Starting from RESTHeart v4.2.0 the following aggregation variables can be used to allow handling paging in the aggregation via default `page` and `pagesize` query parameters:
-
--   `@page` the value of the `page` query parameter
--   `@pagesize` the value of the `pagesize` query parameter
--   `@skip` to be used in `$skip` stage, equals to `(page-1)*pagesize`
--   `@limit` to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
-
-For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents.
-
-```json
-{
-    "aggrs": [
-        {
-            "uri": "paging",
-            "type": "pipeline",
-            "stages": [
-                {
-                    "$skip": {
-                        "$var": "@skip"
-                    }
-                },
-                {
-                    "$limit": {
-                        "$var": "@limit"
-                    }
-                }
-            ]
-        }
-    ]
-}
-```
-
-### Security Informations
+## Security Informations
 
 By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
 
@@ -368,10 +372,16 @@ Even though is highly discouraged, is possible to disable this check by editing 
 ```yml
 ### Security
 
-# Check if aggregation variables use operators. allowing operators in aggregation variables
-# is risky. requester can inject operators modifying the query
+# Check if aggregation variables use operators. allowing operators in aggregation variables
+# is risky. requester can inject operators modifying the query
 
 aggregation-check-operators: true
 ```
+
+## Transaction Support
+
+Starting from RESTHeart v6.0.6, aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
+
+For more information on how to create a transaction scope refer to [transactions](/docs/transactions) doc page.
 
 </div>
