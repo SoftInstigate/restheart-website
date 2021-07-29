@@ -67,7 +67,10 @@ Configuration files are under the `etc/` folder.
 To run RESTHeart 6.x connected to a local instance of MongoDB you need:
 
 -   At least Java 16;
--   MongoDB v3 or v4 running on `localhost` on port `27017`.
+-   MongoDB running on `localhost` on port `27017`.
+
+{: .bs-callout .bs-callout-info }
+RESTHeart supports MongoDB from version 3 throughout 5 and it is extensively tested with MongoDB 3.6, 4.2, 4.4 and v5.0
 
 ```bash
 $ cd restheart
