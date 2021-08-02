@@ -232,10 +232,12 @@ log-file-path = /usr/local/var/log/restheart.log
 
 The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
 
-To run both RESTHeart and MongoDB services you can use `docker-compose`. Just copy and paste the following shell command:
+To run both RESTHeart and MongoDB services you can use `docker-compose`. Just copy and paste the following shell commands:
 
 ```bash
-curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml && docker-compose up
+curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+docker-compose pull
+docker-compose up
 ```
 
 You should see something similar to the following logs:
@@ -243,20 +245,20 @@ You should see something similar to the following logs:
 ```
 [...]
 
-restheart           |  07:51:02.073 [main] INFO  o.r.s.a.MongoRealmAuthenticator - No user found. Created default user with _id BsonString{value='admin'}
-restheart           |  07:51:02.099 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.2.14
-restheart           |  07:51:02.100 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB is a replica set.
-restheart           |  07:51:02.327 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
-restheart           |  07:51:02.360 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-restheart           |  07:51:02.386 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true, uri match PREFIX
-restheart           |  07:51:02.389 [main] INFO  org.restheart.Bootstrapper - URI /graphql bound to service graphql, secured: true, uri match PREFIX
-restheart           |  07:51:02.390 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false, uri match PREFIX
-restheart           |  07:51:02.391 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: true, uri match PREFIX
-restheart           |  07:51:02.392 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: false, uri match PREFIX
-restheart           |  07:51:02.393 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false, uri match PREFIX
-restheart           |  07:51:02.394 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false, uri match PREFIX
-restheart           |  07:51:02.824 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
-restheart           |  07:51:02.864 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+restheart_1     |  10:44:27.662 [main] INFO  o.r.s.a.MongoRealmAuthenticator - No user found. Created default user with _id BsonString{value='admin'}
+restheart_1     |  10:44:27.676 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.4.7
+restheart_1     |  10:44:27.676 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB is a replica set.
+restheart_1     |  10:44:27.784 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
+restheart_1     |  10:44:27.800 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+restheart_1     |  10:44:27.813 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true, uri match PREFIX
+restheart_1     |  10:44:27.814 [main] INFO  org.restheart.Bootstrapper - URI /graphql bound to service graphql, secured: true, uri match PREFIX
+restheart_1     |  10:44:27.815 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false, uri match PREFIX
+restheart_1     |  10:44:27.815 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: true, uri match PREFIX
+restheart_1     |  10:44:27.816 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: false, uri match PREFIX
+restheart_1     |  10:44:27.817 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false, uri match PREFIX
+restheart_1     |  10:44:27.818 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false, uri match PREFIX
+restheart_1     |  10:44:28.082 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
+restheart_1     |  10:44:28.126 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
 ```
 
 Now point your browser to RESTHeart's [ping resource](http://localhost:8080/ping), you'll see the single line of text "**Greetings from RESTHeart!**".
