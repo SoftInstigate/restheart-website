@@ -9,8 +9,8 @@ layout: default
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-2 ml-3 ml-md-5 top-2 text-lightcyan text-break">Ready to use Backend for the Modern Web.</h2>
-        <p class="mt-2 ml-2 mr-3 ml-md-5 top-4 text-orange text-break">Open-source Service with Declarative Access Control, Instant Data APIs on MongoDB and Polyglot Development Framework.</p>
+        <h2 class="mt-3 ml-3 ml-md-5 top-2 text-lightcyan text-break">The API Service for the Modern Web</h2>
+        <p class="mt-3 ml-2 mr-3 ml-md-5 top-5 text-orange text-break">Instant Data APIs on MongoDB, Declarative Access Control<br>and Polyglot Development Framework</p>
     </section>
     <section>
         <div class="container-fluid">
