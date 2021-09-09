@@ -162,15 +162,6 @@ GET /inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"} HTTP/1.1
 
 Use `_size` keyword after the collection path to retrieve the number of documents that meets the filter condition (if present).
 
-<div class="bs-callout bs-callout-info">
-    <h4 id="impact-on-performances">Impact on performances</h4>
-    <hr class="my-2">
-    <p>
-    Using the <code><strong>_size</strong></code> resources involves querying the collection twice: one for counting
-    and then another to retrieve the data.
-    </p>
-</div>
-
 ### Counting Examples
 
 #### Return the number of documents into "inventory" collection 
