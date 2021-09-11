@@ -8,7 +8,7 @@ layout: docs
 - [GraphQL API](#graphql-api)
 - [GraalVM](#graalvm)
 - [Write Mode in MongoDB REST API](#write-mode-in-mongodb-rest-api)
-- [Security](#security)
+- [Extended and Simplified Security](#extended-and-simplified-security)
 - [Variables in aggregation and permission](#variables-in-aggregation-and-permission)
 - [Dynamic Change Streams](#dynamic-change-streams)
 - [Java 16](#java-16)
@@ -171,7 +171,7 @@ And in a similar way for the `MongoAclAuthorizer`:
 }
 ```
 
-## Security
+## Extended and Simplified Security
 
 {: .bs-callout.bs-callout-warning }
 Breaking change
