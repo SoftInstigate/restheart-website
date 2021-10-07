@@ -205,17 +205,17 @@ it and at least one `ALLOWER` allows it.
 
 The `Service` plugin can be configured to require authentication and authorization.
 
-Prior to v6, the configuration option `secure: true` must be specified in `restheart.yml` in order to secure a `Service`:
+Prior to v6, the configuration option `secured: true` must be specified in `restheart.yml` in order to secure a `Service`:
 
 ```yml
 plugins-args:
   my-plugin:
-    secure: true
+    secured: true
 ```
 
 This forced the `Service` to have a configuration section.
 
-In RESTHeart v6, a `Service` can be programmatically secured via the following attribute of the `@RegisterPlugin` annotation:
+In RESTHeart v6, a `Service` can be programmatically secured (i.e. to require authentication and authorization) via the following attribute of the `@RegisterPlugin` annotation:
 
 ```java
 @RegisterPlugin(name = "myService",
