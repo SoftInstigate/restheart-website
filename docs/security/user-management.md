@@ -44,7 +44,7 @@ With the default configuration, a user is represented as follows:
 ```
 
 {: .bs-callout.bs-callout-info}
-**mongoRealAuthenticatorr** can be configured to use different properties for the username, roles an password. Check [mongoRealAuthenticator](/docs/security/authentication/#mongo-realm-authenticator) for more information.
+**mongoRealAuthenticator** can be configured to use different properties for the username, roles an password. Check [mongoRealAuthenticator](/docs/security/authentication/#mongo-realm-authenticator) for more information.
 
 ## Get existing users
 
