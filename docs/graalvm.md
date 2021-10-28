@@ -39,8 +39,8 @@ Native binaries that start up instantly and deliver peak performance with no war
     <div class="col-6 text-center"><strong>Memory Footprint</strong></div>
 </div>
 <div class="row">
-<div class="col-6"><img class="img-fluid mx-auto d-block" style="max-width: 65%" src="https://www.graalvm.org/resources/img/home/perf.png"></div>
-<div class="col-6"><img class="img-fluid mx-auto d-block" style="max-width: 65%" src="https://www.graalvm.org/resources/img/home/mem.png"></div>
+<div class="col-6"><img class="img-fluid mx-auto d-block" style="max-width: 65%" src="/images/graalvm-perf.png"></div>
+<div class="col-6"><img class="img-fluid mx-auto d-block" style="max-width: 65%" src="/images/graalvm-mem.png"></div>
 </div>
 
 {: .bs-callout.bs-callout-info.mt-3.small}
