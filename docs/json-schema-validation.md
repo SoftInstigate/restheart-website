@@ -70,7 +70,7 @@ Schema resources are documents of the Schema Store. The following
 request creates a valid JSON Schema.
 
 ```http
-PUT /_schemas/address HTTP/1.1
+PUT /_schemas/address?wm=upsert HTTP/1.1
 
 {
   "$schema": "https://json-schema.org/draft-04/schema#",
