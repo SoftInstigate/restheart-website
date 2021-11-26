@@ -36,7 +36,7 @@ layout: default
             </div>
         </div>
     <div class="m-5 text-center">
-        <p><strong>Head office:</strong> SoftInstigate srl - Via Copernico 38, 20125 Milano (Italy)</p>
+        <p><strong>Head office:</strong> SoftInstigate srl - Via Marconi 29, 65126 Pescara (Italy)</p>
         <p><strong>Email:</strong> <a href="mailto:info@softinstigate.com">info@softinstigate.com</a></p>
         <p><strong>VAT code:</strong> 01664640669</p>
     </div>
