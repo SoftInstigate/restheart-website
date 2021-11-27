@@ -5,15 +5,13 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [RESTHeart 5.3](#restheart-53)
-
-* [RESTHeart 6.0](#restheart-60)
-
-* [RESTHeart 6.1](#restheart-61)
+* [RESTHeart 7.0](#restheart-70)
 
 * [RESTHeart Studio](#restheart-studio)
 
 * [Released](#released)
+
+  * [RESTHeart 6.0](#restheart-60)
 
   * [RESTHeart 5.2](#restheart-52)
 
@@ -70,11 +68,11 @@ v7.1 will add query parameters to specify those options at request level.
 
 ## RESTHeart Studio
 
-The new service `restheart-studio` will added to RESTHeart. This is a web application:
+This is a web application:
 
-* for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
+* for developers: to manage dbs, collections (including configuring plugins), users and ACL, define GraphQL applications, aggregations and reading and writing documents and files.
 
-* for users: to manage and publishing content through forms
+* for users: to manage and publishing content through the API
 
 ![](/images/restheart-platform-admin-preview.png){:
 width="800" height="auto" class="mx-auto d-block img-responsive"}
