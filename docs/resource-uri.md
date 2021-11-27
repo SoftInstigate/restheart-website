@@ -16,8 +16,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 This page explains the resource URI format, i.e. how the resources
