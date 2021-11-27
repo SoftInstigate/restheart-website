@@ -32,7 +32,58 @@ layout: docs
 {: .bs-callout.bs-callout-info}
 **We listen to you!** For any feedback or request feel free to [open an issue](https://github.com/SoftInstigate/restheart/issues/new) on github.
 
-## RESTHeart 5.3
+## RESTHeart 7.0
+
+### Upgrade to java 17 and GraalVM 23.1
+
+Java 17 is a LTS version. RESTHeart 7 will use it
+
+### Upgrade to the MongoDB driver version with official support for MongoDb v5
+
+Altrough RESTHeart 6 works already seamlessy with MongoDB 5, RESTHeart 7 will use the latest driver officially supporting MongoDB v5
+
+### Default configuration
+
+RESTHeart can be started without a configuration file, this applies the default configuration
+
+### Imrpoved override of configuration options via env paramenters
+
+The env variable `RHO` allows to override all configuration options, until v6.1 this was limited to scalar options.
+
+```
+$ RHO='mongo-mounts/where->"/api"' java -jar restheart.jar
+```
+
+### New mapping type for GraphQL
+
+RESTHeart 6 supports mapping fields in two ways: `Field to Field` and `Field to Query` mapping.
+
+RESTHeart 7 will add `Field to Aggregation` mapping.
+
+## RESTHeart 7.1
+
+### Support for request level replica set
+
+`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
+
+v7.1 will add query parameters to specify those options at request level.
+
+## RESTHeart Studio
+
+The new service `restheart-studio` will added to RESTHeart. This is a web application:
+
+* for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
+
+* for users: to manage and publishing content through forms
+
+![](/images/restheart-platform-admin-preview.png){:
+width="800" height="auto" class="mx-auto d-block img-responsive"}
+
+## Released
+
+## RESTHeart 6.0
+{: .alert.alert-success }
+Released 18 May 2021
 
 ### write mode
 
@@ -73,7 +124,7 @@ As an example, let's consider that we want to allow the user `uji` with role `US
 }
 ```
 
-v5.3 will also extend the `mongoRealmAuthorizer` to add [role-based fields filtering and request content checker](https://github.com/SoftInstigate/restheart/issues/391).
+v6.0 will also extend the `mongoRealmAuthorizer` to add [role-based fields filtering and request content checker](https://github.com/SoftInstigate/restheart/issues/391).
 
 The following permission document, makes the field `protected` removed from the `GET /blog` response for user with role `editor`. It also forbids an `editor` to write and modify it
 
@@ -90,7 +141,7 @@ The following permission document, makes the field `protected` removed from the 
 }
 ```
 
-v5.3 will also extend the `mongoRealmAuthorizer` to add role-based field override.
+v6 also extends the `mongoRealmAuthorizer` to add role-based field override.
 
 The following permission document, makes the field `author` automatically set to the user id on write requests.
 
@@ -108,18 +159,6 @@ The following permission document, makes the field `author` automatically set to
 }
 ```
 
-## LDAP Authenticator
-
-The new authenticator will update the old Access Manager [ADIdentityManager](https://github.com/SoftInstigate/restheart/blob/3.11.x/src/main/java/org/restheart/security/impl/ADIdentityManager.java) available for restheart 3.x to include:
-
-* caching (extending an abstract class that simplifies implementing cached authenticators)
-
-* configurable LDAP query to retrieve users
-
-* compatible with Active Directory
-
-## RESTHeart 6.0
-
 ### GraphQL API
 
 The [GraphQL](https://graphql.org) plugin will work side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.
@@ -135,27 +174,6 @@ The special collection `/_gqlapps` holds the GraphQL App Definitions. A GraphQL 
 * mappings (information that allows to map GraphQL types and fields to MongoDB queries).
 
 As soon as the GraphQL App Definition document gets created or updated, the GraphQL API is automatically generated and available under the security domain of RESTHeart.
-
-## RESTHeart 6.1
-
-### Support for request level replica set
-
-`readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
-
-v5.3 will add query parameters to specify those options at request level.
-
-## RESTHeart Studio
-
-The new service `restheart-studio` will added to RESTHeart. This is a web application:
-
-* for developers: to manage dbs, collections (including configuring extensions such as *Transformers*, *Hooks*, *Checkers*, etc), users and ACL, and reading and writing documents and files.
-
-* for users: to manage and publishing content through forms
-
-![](/images/restheart-platform-admin-preview.png){:
-width="800" height="auto" class="mx-auto d-block img-responsive"}
-
-## Released
 
 ## RESTHeart 5.2
 
