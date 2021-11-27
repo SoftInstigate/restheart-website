@@ -84,6 +84,7 @@ width="800" height="auto" class="mx-auto d-block img-responsive"}
 ## Released
 
 ## RESTHeart 6.0
+
 {: .alert.alert-success }
 Released 18 May 2021
 
