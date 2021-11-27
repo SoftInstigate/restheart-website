@@ -18,8 +18,6 @@ layout: docs
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## What are Clustering and Load Balancing
 
 **Server Clustering** is a method of turning multiple computer servers into a cluster, which is a group of servers that acts like a single system.
@@ -46,9 +44,9 @@ As RESTHeart instances don't communicate directly (to avoid expensive synchroniz
 
 ## RESTHeart EE capabilities
 
-RESTHeart EE adds a feature to make clustering easier, without the need for any sticky session. This enables a fully **stateless deployment**.
+Purchasing a RESTHeart Commercial license clustering can be configured easier, without the need for sticky sessions. This enables a fully **stateless deployment**.
 
-RESTHeart EE comes with a specialized Token Manager which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
+With the license, you can get a specialized Token Manager which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
 
 For more information refer to the [Token Manager](/docs/plugins/security-plugins/#token-managers) documentation page.
 
