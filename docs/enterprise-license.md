@@ -16,8 +16,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 The [Enterprise License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt) comes into effect by executing the License Key Activation process.
 
 {: .bs-callout .bs-callout-info }
@@ -46,7 +44,7 @@ Download the license activator plugins from `https://download.restheart.com/si-l
  
 Where `<version>` is the version of RESTHeart you are using.
 
-For instance, if you are using RESTHeart v5.1.3 the download URL is `https://download.restheart.com/si-lka-5.1.3.zip`
+For instance, if you are using RESTHeart v5.1.3 the download URL is `https://download.restheart.com/si-lka-6.1.4.zip`
 
 {: .bs-callout .bs-callout-info }
 If the activator plugin for your version of RESTHeart is missing (you get error *404 Not Found*), please email us at support@softinstigate.com and we will upload it.
