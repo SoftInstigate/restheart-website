@@ -44,7 +44,7 @@ Altrough RESTHeart 6 works already seamlessy with MongoDB 5, RESTHeart 7 will us
 
 RESTHeart can be started without a configuration file, this applies the default configuration
 
-### Imrpoved override of configuration options via env paramenters
+### Improved override of configuration options via env paramenters
 
 The env variable `RHO` allows to override all configuration options, until v6.1 this was limited to scalar options.
 
@@ -52,7 +52,7 @@ The env variable `RHO` allows to override all configuration options, until v6.1
 $ RHO='mongo-mounts/where->"/api"' java -jar restheart.jar
 ```
 
-### New mapping type for GraphQL
+### New mapping type for GraphQL
 
 RESTHeart 6 supports mapping fields in two ways: `Field to Field` and `Field to Query` mapping.
 
@@ -65,6 +65,10 @@ RESTHeart 7 will add `Field to Aggregation` mapping.
 `readConcern`, `writeConcern`, `readPreference` can be set globally with the mongo-uri.
 
 v7.1 will add query parameters to specify those options at request level.
+
+### And more...
+
+Still under definition...
 
 ## RESTHeart Studio
 
