@@ -19,8 +19,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 RESTHeart has been designed and developed with lightness and
 performances as fundamental parameters.
 
