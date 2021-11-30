@@ -57,6 +57,8 @@ auth-mechanisms:
         audience: myAudience
 ```
 
+It's not possible to set both `rolesClaim` and `fixedRoles`
+
 ### Basic Authentication
 
 **BasicAuthMechanism** manages the Basic Authentication method, where the client credentials are sent via the `Authorization` request header using the format `Authorization: Basic base64(id:pwd)`. The configuration allows specifying the Authenticator that will be used to verify the credentials.
