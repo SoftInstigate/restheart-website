@@ -45,7 +45,7 @@ For HMAC the `key` configuration option specifies the secret, for RSA the public
 ```yml
 auth-mechanisms:
     jwtAuthenticationMechanism:
-        enabled: false
+        enabled: true
         algorithm: HS256
         key: secret
         base64Encoded: false
