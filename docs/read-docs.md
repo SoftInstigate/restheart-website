@@ -64,7 +64,7 @@ parameter. Its default value is 100, maximum allowable size is 1000.
 
 The pages to return is specified with the `page` query parameter. The
 pagination links (first, last, next, previous) are **only returned on
-hal full mode** (`rep=hal` query parameter); see [HAL
+hal full mode** (`rep=hal&hal=f` query parameter); see [HAL
 mode](https://restheart.org/docs/representation-format/)
 for more information.
 
