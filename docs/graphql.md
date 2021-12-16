@@ -101,14 +101,22 @@ In order the schema to be a valid, it must contain the type *Query*.
 
 ### Bson types
 
-A set of custom GraphQL scalars types have been added for creating GraphQL schemas handling the MongoDb BSON types:
+All primitive GraphQL types have been mapped to corresponding BSON types plus a set of custom GraphQL scalars types have been added:
 
-- `ObjectId`
-- `BsonDocument`
-- `Timestamp`
-- `DateTime`
-- `Decimal128`
-- `Regex`
+{: .table.table-responsive }
+|GraphQL type|Bson Type|Example|
+|-|-|
+|`Boolean`|`BsonBoolean`|`b: true`|
+|`String`|`BsonString`|`s: "foo"`|
+|`Int`|`BsonInt32`|`n: 1`|
+|`Long`|`BsonInt64`|`n: { "$numberLong": "10000000000000000000" }`
+|`Float`|`BsonDouble`|`n: { "$numberDouble": "1.0" }`|
+|`Decimal128`|`BsonDecimal128`|`n: { "$numberDecimal": "123.456" }`|
+|`ObjectId`|`BsonObjectId`|`{ "$oid": "618d18d6d058286395bb5567" }`|
+|`Timestamp`|`BsonTimestamp`|`ts: { "$timestamp": {"t": 1, "i": 1} }`|
+|`DateTime`|`BsonDate`|`d: { "$date": 1639666957000 }`|
+|`Regex`|`BsonRegex`|`r: { "$regex": "<sRegex>", "$options": "<sOptions>" }`|
+|`BsonDocument`|`BsonDocument`|`doc: { "any": 1, "possible": 1, "document": 1 }`
 
 #### Example
 
