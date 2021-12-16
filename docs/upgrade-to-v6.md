@@ -308,6 +308,7 @@ RESTHeart 6 extends this language introducing the following 7 new predicates tha
 |`bson-request-contains`    |`true` if the request content is Bson and contains the specified properties    |`bson-request-contains(foo,bar.sub)`|
 |`bson-request-whitelist`   |`true` if the request content is Bson and only contains whitelisted properties |`bson-request-whitelist(foo,bar.sub)`|
 |`bson-request-blacklist`   |`true` if the request bson content does not contain blacklisted properties     |`bson-request-contains(foo,bar.sub)`|
+|`in`|`true` if *value* is **in** *array* (available from v6.1.5)|`path-template('/{coll}') and in(value=${coll}, array=@user.tenants)`|
 
 Consider the following example:
 
