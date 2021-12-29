@@ -223,6 +223,3 @@ notes:
         </div>
     </article>
 </div>
-
-{: .bs-callout.bs-callout-info}
-Read more about the background of our product in <a href="https://medium.com/softinstigate-team/the-origins-of-our-product-9ed6978c9448">The origins of RESTHeart.</a>
