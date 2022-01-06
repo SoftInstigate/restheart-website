@@ -84,7 +84,7 @@ This creates the directory `lickey` with the following files:
 
 Running RESTHeart will cause the following warning message:
 
-```bash
+```
 *-------------------------------------------------------------------*
 |                                                                   |
 | The License Agreement has not yet been accepted.                  |
@@ -96,7 +96,7 @@ Running RESTHeart will cause the following warning message:
 | a browser running on the same host or edit the configuration.     |
 |                                                                   |
 | More information at                                               |
-| https://restheart.org/docs/enterprise-license                   |
+| https://restheart.org/docs/enterprise-license                     |
 |                                                                   |
 *-------------------------------------------------------------------*
 ```
