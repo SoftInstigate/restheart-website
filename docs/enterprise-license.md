@@ -44,7 +44,7 @@ Download the license activator plugins from `https://download.restheart.com/si-l
  
 Where `<version>` is the version of RESTHeart you are using.
 
-For instance, if you are using RESTHeart v5.1.3 the download URL is `https://download.restheart.com/si-lka-6.1.4.zip`
+For instance, if you are using RESTHeart v6.1.6 the download URL is `https://download.restheart.com/si-lka-6.1.6.zip`
 
 {: .bs-callout .bs-callout-info }
 If the activator plugin for your version of RESTHeart is missing (you get error *404 Not Found*), please email us at support@softinstigate.com and we will upload it.
