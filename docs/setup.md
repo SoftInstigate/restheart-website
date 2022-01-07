@@ -14,6 +14,7 @@ layout: docs
   - [Environment variables](#environment-variables)
   - [Run the process in background](#run-the-process-in-background)
 - [Run with Docker](#run-with-docker)
+- [Run with docker-compose](#run-with-docker-compose)
 - [Build it yourself](#build-it-yourself)
   - [Integration Tests](#integration-tests)
   - [Maven Dependencies](#maven-dependencies)
@@ -26,7 +27,7 @@ layout: docs
 
 ## Download and Run
 
-> The easiest way to run RESTHeart and MongoDB is with __Docker__, please go to [Run with Docker](#run-with-docker) for instructions.
+> The easiest way to run RESTHeart and MongoDB is with __Docker__, please go to [Run with Docker](#run-with-docker) or [Run with docker-compose](#run-with-docker-compose) for instructions.
 
 ### Get the latest release
 
@@ -228,75 +229,77 @@ enable-log-file = true
 log-file-path = /usr/local/var/log/restheart.log
 ```
 
-## Run with Docker
+## Run with docker
 
-The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
+How to manually run RESTHeart + MongoDB with Docker:
 
-To run both RESTHeart and MongoDB services you can use `docker-compose`. Just copy and paste the following shell commands:
+1) Create a Docker network:
 
-```bash
+```
+docker network create restheart-network
+```
+
+2) Run a MongoDB container
+
+```
+docker run -d --name mongodb --network restheart-network mongo:4.2
+```
+
+3) Run a RESTHeart container
+
+```
+docker run -d --rm --network restheart-network -p "8080:8080" -e MONGO_URI="mongodb://mongodb" softinstigate/restheart
+```
+
+4) Point your browser to the "ping" resource at http://localhost:8080/ping. Alternatively, use curl or [httpie](https://httpie.io).
+
+```
+$ http http://localhost:8080/ping
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 45
+Date: Fri, 26 Mar 2021 13:49:20 GMT
+X-Powered-By: restheart.org
+
+Greetings from RESTHeart!
+```
+
+You can now play with the [tutorial](https://restheart.org/docs/tutorial/). 
+
+### Dockerfile
+
+- [Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile)
+
+### Distroless images
+
+ The "distroless" images are for special deployment requirements, where having the smallest possible image size and the very minimal security attack surface is required and their tag contains a `distroless` label. You usually don't need these images unless you exactly know what you are doing.
+
+- [distroless.Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/distroless.Dockerfile)
+
+### Native images
+
+Images tags ending with `-native` are created with the [GraalVM Native Image technology](https://www.graalvm.org/reference-manual/native-image/) starting from stable builds of the product, especially suited for high demanding environments, like Kubernetes. These are experimental and not fully documented yet, please contact us for questions.
+
+> Native Image is a technology to ahead-of-time compile Java code to a standalone executable, called a native image. This executable includes the application classes, classes from its dependencies, runtime library classes, and statically linked native code from JDK. It does not run on the Java VM, but includes necessary components like memory management, thread scheduling, and so on from a different runtime system, called “Substrate VM”.
+
+## Run with docker-compose
+
+To run both RESTHeart and MongoDB services you can use docker-compose. Just copy and paste the following shell command:
+
+```shell
 curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
 docker-compose pull
 docker-compose up
 ```
 
-You should see something similar to the following logs:
+Now point your browser to RESTHeart’s ping resource http://localhost:8080/ping, you’ll see the single line of text “Greetings from RESTHeart!”.
 
-```
-[...]
-
-restheart_1     |  10:44:27.662 [main] INFO  o.r.s.a.MongoRealmAuthenticator - No user found. Created default user with _id BsonString{value='admin'}
-restheart_1     |  10:44:27.676 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.4.7
-restheart_1     |  10:44:27.676 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB is a replica set.
-restheart_1     |  10:44:27.784 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
-restheart_1     |  10:44:27.800 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
-restheart_1     |  10:44:27.813 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true, uri match PREFIX
-restheart_1     |  10:44:27.814 [main] INFO  org.restheart.Bootstrapper - URI /graphql bound to service graphql, secured: true, uri match PREFIX
-restheart_1     |  10:44:27.815 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false, uri match PREFIX
-restheart_1     |  10:44:27.815 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: true, uri match PREFIX
-restheart_1     |  10:44:27.816 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: false, uri match PREFIX
-restheart_1     |  10:44:27.817 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false, uri match PREFIX
-restheart_1     |  10:44:27.818 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false, uri match PREFIX
-restheart_1     |  10:44:28.082 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
-restheart_1     |  10:44:28.126 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
-```
-
-Now point your browser to RESTHeart's [ping resource](http://localhost:8080/ping), you'll see the single line of text "**Greetings from RESTHeart!**".
-
-Alternatively, use curl:
-
-```bash
-$ curl -i http://localhost:8080/ping
-
-HTTP/1.1 200 OK
-Connection: keep-alive
-Access-Control-Allow-Origin: *
-X-Powered-By: restheart.org
-Access-Control-Allow-Credentials: true
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-Content-Length: 25
-Date: Sun, 26 Apr 2020 10:05:43 GMT
-
-Greetings from RESTHeart!
-```
-
-Press `Ctrl+C` to stop the containers:
-
-```
-^CGracefully stopping... (press Ctrl+C again to force)
-Stopping restheart       ... done
-Stopping restheart-mongo ... done
-```
-
-If you want to run the services in background just add the `-d` parameter, like `docker-compose up -d`. In this case you can tail the logs with `docker-compose logs -f`. 
-
-To stop the containers use `docker-compose stop` then `docker-compose start` to start them again. 
-
-To completely shutdown the containers and clean-up everything use `docker-compose down -v`. 
-
-Beware the `down` command with `-v` parameter erases the MongoDB attached docker volume (named `restheart-mongo-volume`) with all its data.
-
-Read the [docker compose documentation](https://docs.docker.com/compose/) for more.
+You can now play with the [tutorial](https://restheart.org/docs/tutorial/). 
 
 {: .bs-callout.bs-callout-info }
 Watch [Docker / Docker Compose](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s) video.
