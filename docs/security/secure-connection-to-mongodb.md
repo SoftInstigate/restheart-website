@@ -5,9 +5,10 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-* [Introduction](#introduction)
-* [Enable MongoDB authentication](#enable-mongodb-authentication)
-* [Restrict permissions of MongoDB user](#restrict-permissions-of-mongodb-user)
+- [Introduction](#introduction)
+- [Enable MongoDB authentication](#enable-mongodb-authentication)
+- [Restrict permissions of MongoDB user](#restrict-permissions-of-mongodb-user)
+- [Connect to MongoDB over TLS/SSL](#connect-to-mongodb-over-tlsssl)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -113,5 +114,38 @@ readWriteAnyDatabase role or you can create a custom role.
 To allow deleting a database the *dropDatabase* permission is needed.
 This permission is granted by the *dbAdmin* role or you can create a
 custom role.
+
+## Connect to MongoDB over TLS/SSL
+
+In case MongoDB uses a __public TLS/SSL certificate__ there is nothing to configure omn RESTHeart, except for the proper [Connection String URI Format](https://docs.mongodb.com/manual/reference/connection-string/) on MongoDB's documentation.
+
+To configure RESTHeart for using instead a __private TLS/SSL certificate__ (read [What’s the Difference Between a Public and Private Trust Certificate?](https://www.entrust.com/it/blog/2019/03/difference-between-a-public-and-private-trust-certificate/)) do as follows:
+
+* create the keystore importing the certificate used by `mongod` using `keytool` (with `keytool`, the java tool to manage `keystores` of cryptographic keys)
+
+
+``` bash
+$ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
+
+# asks for password, use "changeit"
+```
+
+* specify the ssl option in the `mongo-uri` in the restheart yml configuration file:
+
+
+``` yml
+mongo-uri: mongodb://your.mongo-domain.com?ssl=true
+```
+* start restheart with following options:
+
+
+``` bash
+$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar etc/restheart.yml -e etc/default.properties
+```
+
+References on MongoDB docs:
+ - [TLS/SSL Configuration for Clients](https://docs.mongodb.com/manual/tutorial/configure-ssl-clients/#tls-ssl-configuration-for-clients)
+ - [Standard Connection String Format](https://docs.mongodb.com/manual/reference/connection-string/#standard-connection-string-format)
+ - [DNS Seed List Connection Format](https://docs.mongodb.com/manual/reference/connection-string/#dns-seed-list-connection-format)
 
 </div>
