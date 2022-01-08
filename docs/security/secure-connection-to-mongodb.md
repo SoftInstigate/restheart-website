@@ -7,7 +7,6 @@ layout: docs
 
 * [Introduction](#introduction)
 * [Enable MongoDB authentication](#enable-mongodb-authentication)
-* [Connect to MongoDB over TLS](#connect-to-mongodb-over-tls)
 * [Restrict permissions of MongoDB user](#restrict-permissions-of-mongodb-user)
 
 </div>
@@ -31,7 +30,6 @@ from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
 process in background, using the `--fork` parameter.
 
-
 ``` bash
 $ mongod --fork --syslog --auth
 $ mongo
@@ -43,9 +41,7 @@ that provides access to the all operations and all the resources.
 
 However the best practice is to use a MongoDB user with
 restricted access. For instance, it could be restricted to use only a
-single DB in read only mode. For more information refer to [MongoDB
-authentication with just enough
-permissions](#auth-with-jep)section.
+single DB in read only mode.
 
 Create the *admin* user. The procedure is different depending on MongoDB
 version.
@@ -60,7 +56,7 @@ version.
 })
 ```
 
-    We need to provide the MongoDB user authentication credentials in the RESTHeart Core configuration file: see docs.
+We need to provide the MongoDB user authentication credentials in the RESTHeart Core configuration file: see docs.
 
 We’ll use the `restheart.yml` configuration file that comes with RESTHeart download package (you find it in the etc directory)
 
@@ -80,40 +76,11 @@ mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 
 Now start RESTHeart Core specifying the configuration file:
 
-
 ``` bash
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ```
 
 Test the connection open `http://localhost:8080/roles/admin`
-
-## Connect to MongoDB over TLS
-
-MongoDB clients can use TLS/SSL to encrypt connections to `mongod` and `mongos` instances.
-
-To configure RESTHeart for TLS/SSL do as follows:
-
-* create the keystore importing the public certificate used by `mongod` using `keytool` (with `keytool`, the java tool to manage `keystores` of cryptographic keys)
-
-
-``` bash
-$ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
-
-# asks for password, use "changeit"
-```
-
-* specify the ssl option in the `mongo-uri` in the restheart yml configuration file:
-
-
-``` yml
-mongo-uri: mongodb://your.mongo-domain.com?ssl=true
-```
-* start restheart with following options:
-
-
-``` bash
-$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar etc/restheart.yml -e etc/default.properties
-```
 
 ## Restrict permissions of MongoDB user
 
