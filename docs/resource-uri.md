@@ -202,24 +202,24 @@ ObjectId and it is actually a String.
 <table class="table table-responsive">
   <tbody>
     <tr>
-      <td><strong>/db/coll/1</strong></td>
-      <td>{&nbsp;”_id”:&nbsp;”1”&nbsp;}</td>
+      <td><code>/db/coll/1</code></td>
+      <td><code>{ "_id": "1" }</code></td>
     </tr>
     <tr>
-      <td><strong>/db/coll/1?id_type=NUMBER</strong></td>
-      <td>{&nbsp;”_id”:&nbsp;1&nbsp;}</td>
+      <td><code>/db/coll/1?id_type=NUMBER</code></td>
+      <td><code>{ "_id": 1 }</code></td>
     </tr>
     <tr>
-      <td><strong>/db/coll/1?id_type=DATE</strong></td>
-      <td>{&nbsp;”_id”:&nbsp;{&nbsp;”$date”:&nbsp;1}&nbsp;}</td>
+      <td><code>/db/coll/1?id_type=DATE</code></td>
+      <td><code>{ "_id": { "$date": 1} }</code></td>
     </tr>
     <tr>
-      <td><strong>/db/coll/54f77f0fc2e6ea386c0752a5</strong></td>
-      <td>{&nbsp;”_id”:&nbsp;{&nbsp;”$oid”:&nbsp;”54f77f0fc2e6ea386c0752a5”}&nbsp;}</td>
+      <td><code>/db/coll/54f77f0fc2e6ea386c0752a5</code></td>
+      <td><code>{ "_id": { "$oid": "54f77f0fc2e6ea386c0752a5" } }</code></td>
     </tr>
     <tr>
-      <td><strong>/db/coll/54f77f0fc2e6ea386c0752a5?id_type=STRING</strong></td>
-      <td>{&nbsp;”_id”:&nbsp;”54f77f0fc2e6ea386c0752a5”&nbsp;}</td>
+      <td><code>/db/coll/54f77f0fc2e6ea386c0752a5?id_type=STRING</code></td>
+      <td><code>{ "_id": "54f77f0fc2e6ea386c0752a5" }</code></td>
     </tr>
   </tbody>
 </table>

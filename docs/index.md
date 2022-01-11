@@ -35,7 +35,7 @@ RESTHeart provides out-of-the-box:
 
 ## Specifications
 
--   Written in **Java 16**
+-   Written in **Java 17**
 -   Built on top of RedHat’s **Undertow** non-blocking HTTP server.
 -   Uses **MongoDB** and compatible databases for data persistence.
 -   Fully **stateless**.

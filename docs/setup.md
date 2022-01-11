@@ -67,7 +67,7 @@ Configuration files are under the `etc/` folder.
 
 To run RESTHeart 6.x connected to a local instance of MongoDB you need:
 
--   At least Java 16;
+-   At least Java 17;
 -   MongoDB running on `localhost` on port `27017`.
 
 {: .bs-callout .bs-callout-info }
@@ -236,19 +236,19 @@ How to manually run RESTHeart + MongoDB with Docker:
 1) Create a Docker network:
 
 ```
-docker network create restheart-network
+$ docker network create restheart-network
 ```
 
 2) Run a MongoDB container
 
 ```
-docker run -d --name mongodb --network restheart-network mongo:4.2
+$docker run -d --name mongodb --network restheart-network mongo:4.2
 ```
 
 3) Run a RESTHeart container
 
 ```
-docker run -d --rm --network restheart-network -p "8080:8080" -e MONGO_URI="mongodb://mongodb" softinstigate/restheart
+$ docker run -d --rm --network restheart-network -p "8080:8080" -e MONGO_URI="mongodb://mongodb" softinstigate/restheart
 ```
 
 4) Point your browser to the "ping" resource at http://localhost:8080/ping. Alternatively, use curl or [httpie](https://httpie.io).

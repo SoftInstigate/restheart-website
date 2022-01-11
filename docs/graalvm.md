@@ -84,10 +84,10 @@ In some use cases, native image might result in slightly worse peak performance.
 
 We suggest to install GraalVM with [sdkman](https://sdkman.io)
 
-You need at least version 21.1 for Java 16:
+You need at least version 21.3 for Java 17:
 
 ```
-$ sdk install java 21.1.0.r16-grl
+$ sdk install java 21.3.0.r17-grl
 ```
 
 After having installed GraalVM, you can install the `native-image` tool with `gu`

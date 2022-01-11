@@ -10,12 +10,11 @@ jQuery(document).ready(function($){
 		typeLettersDelay = 10,
 		selectionDuration = 500,
 		typeAnimationDelay = selectionDuration + 800,
-		//clip effect 
+		//clip effect
 		revealDuration = 600,
 		revealAnimationDelay = 1500;
-	
+
 	initHeadline();
-	
 
 	function initHeadline() {
 		//insert <i> element for each letter of a changing word

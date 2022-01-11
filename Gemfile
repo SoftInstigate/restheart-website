@@ -6,3 +6,6 @@ gem "jekyll", "~> 4.2"
 gem "jekyll-paginate", "~> 1.1"
 gem "jekyll-sitemap", "~> 1.4"
 gem "webrick", "~> 1.7"
+group :jekyll_plugins do
+  gem 'jekyll-asciidoc'
+end
