@@ -5,12 +5,12 @@ layout: docs
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
--   [Running the example requests](#running-the-example-requests)
--   [GET Documents from the Collection](#get-documents-from-the-collection)
--   [GET filtered Documents from the Collection](#get-filtered-documents-from-the-collection)
+-   [Running the example requests](#before-running-the-example-requests)
+-   [GET Documents](#get-documents)
+-   [GET Documents with filter](#get-documents-with-filter)
 -   [POST a new document](#post-a-new-document)
 -   [PUT a new document](#put-a-new-document)
--   [PATCH a document](#patch-a-document)
+-   [PATCH an existing document](#patch-an-existing-document)
 -   [DELETE a document](#delete-a-document)
 
 </div>
@@ -26,7 +26,7 @@ Watch [Practical testing with Rest Ninja](https://www.youtube.com/watch?v=9KroH-
 
 {% include running-examples.md %}
 
-## GET Documents from the Collection
+### GET Documents
 
 Now let’s get all documents in a row. For this, we send a GET request to the whole collection:
 
@@ -81,7 +81,7 @@ GET /inventory HTTP/1.1
 ]
 ```
 
-## GET filtered Documents from the Collection
+### GET Documents with filter
 
 It's possible to apply a filter at the end of the request to reduce the number of output documents.
 The following request asks for all documents with a "qty" property greater than 75:
@@ -126,7 +126,7 @@ Note that only the retrieved document meets the filter's condition.
 {: .bs-callout.bs-callout-info }
 Watch [How to filter data](https://www.youtube.com/watch?v=9KroH-RvjS0&t=610s)
 
-## POST a new document
+### POST a new document
 
 Now we are going to insert a new document to the collection.
 
@@ -155,9 +155,9 @@ Location: http://localhost:8080/inventory/5d0b47425beb2029a8d1bc72
 {: .bs-callout.bs-callout-info}
 Note the `Location` header in the response, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query.
 
-## PUT a new document
+### PUT a new document
 
-It's possible to PUT a document into the collection by specifying the document identifier at the end of the request, in this case we need to use the query parameter `?wm=upsert` since PUT default write mode is `update` by default:
+It's possible to PUT a document into the collection by specifying the document identifier at the end of the request, in this case we need to use the query parameter `?wm=upsert` since PUT default write mode is `update`:
 
 {% include code-header.html
     type="Request"
@@ -170,7 +170,7 @@ PUT /inventory/newDocument?wm=upsert HTTP/1.1
 { "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }
 ```
 
-## PATCH a document
+### PATCH an existing document
 
 {% include code-header.html
     type="Request"
@@ -208,7 +208,7 @@ PATCH /inventory/newDocument HTTP/1.1
 {: .bs-callout.bs-callout-info}
 The previous request changes the document created in the previous example as indicated in the request body.
 
-## DELETE a document
+### DELETE a document
 
 {% include code-header.html
     type="Request"
