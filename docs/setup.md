@@ -231,7 +231,31 @@ log-file-path = /usr/local/var/log/restheart.log
 
 ## Run with docker
 
-How to manually run RESTHeart + MongoDB with Docker:
+### Run RESTHeart with Docker, MongoDB running on localhost
+
+If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
+
+```
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongo --eval 'if (!rs.status().ok) rs.initiate();'
+```
+
+Run RESTHeart with:
+
+```
+$ docker run -it --rm -p "8080:8080" -e MONGO_URI='mongodb://host.docker.internal' softinstigate/restheart
+```
+
+Point your browser to the "ping" resource at [http://localhost:8080/ping](http://localhost:8080/ping). Alternatively, use curl or [httpie](https://httpie.io).
+
+```
+$ http -b http://localhost:8080/ping
+
+Greetings from RESTHeart!
+```
+
+You can now play with the [tutorial](https://restheart.org/docs/tutorial/).
+
+### Run both RESTHeart and MongoDB with Docker
 
 1) Create a Docker network:
 
@@ -251,25 +275,15 @@ $docker run -d --name mongodb --network restheart-network mongo:4.2
 $ docker run -d --rm --network restheart-network -p "8080:8080" -e MONGO_URI="mongodb://mongodb" softinstigate/restheart
 ```
 
-4) Point your browser to the "ping" resource at http://localhost:8080/ping. Alternatively, use curl or [httpie](https://httpie.io).
+4) Point your browser to the "ping" resource at [http://localhost:8080/ping](http://localhost:8080/ping). Alternatively, use curl or [httpie](https://httpie.io).
 
 ```
-$ http http://localhost:8080/ping
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Credentials: true
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
-Connection: keep-alive
-Content-Encoding: gzip
-Content-Length: 45
-Date: Fri, 26 Mar 2021 13:49:20 GMT
-X-Powered-By: restheart.org
+$ http -b http://localhost:8080/ping
 
 Greetings from RESTHeart!
 ```
 
-You can now play with the [tutorial](https://restheart.org/docs/tutorial/). 
+You can now play with the [tutorial](https://restheart.org/docs/tutorial/).
 
 ### Dockerfile
 
