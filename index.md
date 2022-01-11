@@ -5,12 +5,12 @@ layout: default
 <section id="top" class="text-center pt-4 pb-5">
     <section class="my-0">
         <img src="/images/rh-logo-clean.png" width="128" />
-        <div class="pt-4 ml-3 ml-md-5 top-1 text-lightcyan text-break"><strong>REST</strong>HEART</div>
+        <h1 class="pt-4 ml-3 ml-md-5 top-1 text-break"><strong>REST</strong>HEART</h1>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-3 ml-3 ml-md-5 top-2 text-lightcyan text-break">The Open Source API Service for the Modern Web</h2>
-        <p class="mt-3 ml-2 mr-3 ml-md-5 top-5 text-orange text-break">Instant Data APIs on MongoDB, Declarative Access Control<br>and Polyglot Development Framework</p>
+        <h2 class="mt-3 ml-3 ml-md-5 top-2 text-break">The Open Source API Service for the Modern Web</h2>
+        <p class="mt-3 ml-2 mr-3 ml-md-5 top-5 highlightcolor text-break">Instant Data APIs on MongoDB, Declarative Access Control<br>and Polyglot Development Framework</p>
     </section>
     <section>
         <div class="container-fluid">
@@ -52,7 +52,7 @@ layout: default
                 <h2 class="text-lightcyan">
                     <a href="https://www.mongodb.com/customers/softinstigate" target="_blank">Featured on <strong>MongoDB.com</strong></a>
                 </h2>
-                <p class="text-orange">RESTHeart API for MongoDB simplifies development
+                <p class="highlightcolor">RESTHeart API for MongoDB simplifies development
                    and frees you to focus on delivering great user experiences</p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
             </div>
