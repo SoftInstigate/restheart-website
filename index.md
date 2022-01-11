@@ -78,7 +78,7 @@ layout: default
                 <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image, so it works perfectly in Kubernetes and AWS ECS.</p>
                 <ul class="">
                     <li>Ready-to-run stateless Microservice</li>
-                    <li>Available as JAR, native binary and Docker imagine</li>
+                    <li>Available as JAR, native binary and Docker image</li>
                     <li>Deployable both on cloud and on premises</li>
                 </ul>
                 <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
