@@ -22,6 +22,8 @@ This page summarizes the <a href="/assets/Brochure - RESTHeart 6.pdf" target="_b
 
 **RESTHeart is a Ready-to-use Backend for the Modern Web** designed for *speed* and *simplicity* and downloaded by startups and enterprises to cut time and costs and make development pleasant.
 
+RESTHeart is a complete development platform for HTTP Services, with out-of-the-box security management and data persistence API.
+
 ## Fast development
 
 RESTHeart provides developers with 80% of
