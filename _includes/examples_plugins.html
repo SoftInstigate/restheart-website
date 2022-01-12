@@ -24,15 +24,14 @@ background-color: #eff2f3;
                         </div>
                         <div class="col-md-8">
 {% highlight java %}
-@RegisterPlugin(name = "greeterService",
-    description = "sends a greetings message",
-    defaultURI = "/greetings")
+@RegisterPlugin(name = "greetings", description = "just another Hello World")
 public class GreeterService implements JsonService {
     @Override
     public void handle(JsonRequest request, JsonResponse response) {
         if (request.isGet()) {
             var content = new JsonObject();
             content.addProperty("message", "Hello World!");
+
             response.setContent(content);
         } else {
             response.setStatusCode(400);
@@ -56,17 +55,15 @@ public class GreeterService implements JsonService {
                     </div>
                     <div class="col-md-8">
 {% highlight java %}
-@RegisterPlugin(name = "kotlinGreeterService",
-description = "sends a greetings message, implemented in Kotlin",
-defaultURI = "/greetings")
-class GreeterServiceKt : JsonService {
-    override fun handle(request: JsonRequest?, response: JsonResponse?) {
-        if (request?.isGet!!) {
+@RegisterPlugin(name = "kotlinGreeterService", description = "just another Hello World in Kotlin")
+class GreeterService : JsonService {
+    override fun handle(request: JsonRequest, response: JsonResponse) {
+        if (request.isGet) {
             var greetings = JsonObject()
-            greetings.addProperty("msg", "Hello World!")
-            response?.content = greetings;
+            greetings.addProperty("msg", "Hello World")
+            response.content = greetings;
         } else {
-            response?.statusCode = 400;
+            response.statusCode = 400;
         }
     }
 }
@@ -92,24 +89,19 @@ class GreeterServiceKt : JsonService {
                     <div class="col-md-8">
 {% highlight java %}
 @RegisterPlugin(name = "helloInterceptor",
-    description = "add a timestamp to the response of /hello",
+    description = "add a timestamp to the response of /greetings",
     interceptPoint = InterceptPoint.RESPONSE)
 public class HelloInterceptor implements JsonInterceptor {
     @Override
-    public void handle(JsonRequest request, JsonResponse response) throws Exception {
-        // add timestamp property to the response
+    public void handle(JsonRequest request, JsonResponse response) {
         response.getContent()
-                .getAsJsonObject()
-                .addProperty("timestamp", Instant.now().toString());
+            .getAsJsonObject()
+            .addProperty("timestamp", Instant.now().toString());
     }
 
     @Override
     public boolean resolve(JsonRequest request, JsonResponse response) {
-        // apply for request handled by hello service
-        // when the response content is a JSON Object
-        return request.isHandledBy("hello")
-                && response.getContent() != null
-                && response.getContent().isJsonObject();
+        return request.isHandledBy("greetings");
     }
 }
 {% endhighlight %}

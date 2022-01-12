@@ -8,7 +8,7 @@ background-color: #eff2f3;
     window['openES6Example'] = () => {
 
         const html = `<pre id="app"></pre>`;
-        const code = `const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=2');
+        const code = `const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=1');
 
 fetch(url)
   .then(response => response.json())
@@ -47,7 +47,7 @@ fetch(url)
                         <div class="col-md-4 mb-4">
                             <h2 class="examples__title">Query documents from the command line with httpie.</h2>
                             <p class="examples__desc">
-                                The GET request has two query parameters: <strong>filter</strong> to apply a query and <strong>pagesize</strong> to limit the response to two documents.
+                                The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
                                 <br/>
                                 Here we use the brilliant <a class="text-danger" href="https://httpie.org" target="_blank">httpie</a>, a modern command line HTTP client.
                             </p>
@@ -55,10 +55,7 @@ fetch(url)
                         </div>
                         <div class="col-md-8 sm">
 {% highlight bash %}
-$ http GET https://demo.restheart.org/messages?filter='{"from":"Bob"}'\&pagesize=2
-
-HTTP/1.1 200 OK
-# other response headers omitted
+$ http -b GET https://demo.restheart.org/messages'?filter={"from":"Bob"}&pagesize=1'
 
 [
     {
@@ -66,20 +63,7 @@ HTTP/1.1 200 OK
             "$oid": "5c50963e477870eb8258fa68"
         },
         "from": "Bob",
-        "message": "was here",
-        "timestamp": {
-            "$date": 1548785214114
-        }
-    },
-    {
-        "_id": {
-            "$oid": "5c50962f477870eb8258fa54"
-        },
-        "from": "Bob",
-        "message": "RESTHeart rocks",
-        "timestamp": {
-            "$date": 1548785199983
-        }
+        "message": "was here"
     }
 ]
 {% endhighlight %}
@@ -93,7 +77,7 @@ HTTP/1.1 200 OK
                     <div class="col-md-4 mb-4">
                         <h2 class="examples__title">Query documents from the command line with cURL.</h2>
                         <p class="examples__desc">
-                            The GET request has two query parameters: <strong>filter</strong> to apply a query (that needs to be encoded with --data-urlencode option since it contains the curly brackets) and <strong>pagesize</strong> to limit the response to two documents.
+                            The GET request has two query parameters: <code class="black">filter</code> to apply a query (that needs to be encoded with --data-urlencode option since it contains the curly brackets) and <code class="black">pagesize</code> to limit the response to one document.
                             <br/>
                             Here we use the immortal <a target="_blank" class="text-danger" href="https://curl.haxx.se/">cURL</a>!
                         </p>
@@ -101,7 +85,7 @@ HTTP/1.1 200 OK
                     </div>
                     <div class="col-md-8">
 {% highlight bash %}
-$ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/messages?pagesize=2
+$ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/messages?pagesize=1
 
 [
     {
@@ -110,19 +94,6 @@ $ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/me
         },
         "from": "Bob",
         "message": "was here",
-        "timestamp": {
-            "$date": 1548785214114
-        }
-    },
-    {
-        "_id": {
-            "$oid": "5c50962f477870eb8258fa54"
-        },
-        "from": "Bob",
-        "message": "RESTHeart rocks",
-        "timestamp": {
-            "$date": 1548785199983
-        }
     }
 ]
 {% endhighlight %}
@@ -136,7 +107,7 @@ $ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/me
                     <div class="col-md-4 mb-4">
                         <h2 class="examples__title">Query documents with JavaScript.</h2>
                         <p class="examples__desc">
-                            The GET request has two query parameters: <strong>filter</strong> to apply a query and <strong>pagesize</strong> to limit the response to two documents.
+                            The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
                             <br/>
                             Here we use the <a target="_blank" class="text-danger" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>.
                         </p>
@@ -144,7 +115,7 @@ $ curl -G --data-urlencode 'filter={"from":"Bob"}' https://demo.restheart.org/me
                     </div>
                     <div class="col-md-8">
 {% highlight javascript %}
-const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=2');
+const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=1');
 
 fetch(url)
   .then(response => response.json())
@@ -162,7 +133,7 @@ fetch(url)
                     <div class="col-md-4 mb-4">
                         <h2 class="examples__title">Query documents with Java.</h2>
                         <p class="examples__desc">
-                                The GET request has two query parameters: <strong>filter</strong> to apply a query and <strong>pagesize</strong> to limit the response to two documents.
+                                The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
                                 <br/>
                                 Here we use the <a class="text-danger" href="http://kong.github.io/unirest-java" target="_blank">unirest</a> java http library.
                         </p>
@@ -173,15 +144,12 @@ fetch(url)
 
 public void printOutMessages() throws UnirestException {
     var resp = Unirest.get("https://demo.restheart.org/messages")
-            .queryString("filter", "{\"from\":\"Bob\"}")
-            .queryString("pagesize", "2")
+            .queryString("filter", "{'from':'Bob'}")
+            .queryString("pagesize", "1")
             .asJson();
 
-    // get body as JSON array 
-    var messages = resp.getBody().getArray();
-
     // print out each message
-    messages.forEach(msg -> System.out.println(msg.toString()));
+    resp.getBody().getArray().forEach(msg -> System.out.println(msg.toString()));
 }
 
 {% endhighlight %}
@@ -195,7 +163,7 @@ public void printOutMessages() throws UnirestException {
                     <div class="col-md-4 mb-4">
                         <h2 class="examples__title">Query documents with Swift.</h2>
                         <p class="examples__desc">
-                            The GET request has two query parameters: <strong>filter</strong> to appy a query and <strong>pagesize</strong> to limit the response to two documents.
+                            The GET request has two query parameters: <code class="black">filter</code> to appy a query and <code class="black">pagesize</code> to limit the response to one document.
                             <br/>
                             Here we use the JSONSerialization to parse the response body.
                         </p>
@@ -211,7 +179,7 @@ var urlComponents = URLComponents(string: "https://demo.restheart.org/messages")
 
 // set the query parameters
 var queryItems = [URLQueryItem]()
-queryItems.append(URLQueryItem(name: "pagesize", value: "2"))
+queryItems.append(URLQueryItem(name: "pagesize", value: "1"))
 queryItems.append(URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}"))
 urlComponents?.queryItems = queryItems
 
