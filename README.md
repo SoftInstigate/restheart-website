@@ -3,9 +3,7 @@ restheart-website
 
 [restheart.org](https://restheart.org) Web site.
 
-RESTHeart is the leading Content REST API microservice for MongoDB, fork it on [github](https://github.com/SoftInstigate/restheart)
-RESTHeart connects to MongoDB and exposes a simple REST API to read and write data via plain HTTP requests.
+RESTHeart is The Open Source API Service for the Modern Web, fork it on [github](https://github.com/SoftInstigate/restheart)
 <hr></hr>
 
-_Made with :heart: by [The SoftInstigate Team](https://www.softinstigate.com/). Follow us on [Twitter](https://twitter.com/softinstigate)_.
-
+_Made with :heart: by [SoftInstigate](https://www.softinstigate.com/)_
