@@ -17,6 +17,9 @@ layout: docs
 
 {% include docs-head.html %}
 
+{: .bs-callout.bs-callout-info}
+This page summarizes the <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class=" ">PDF fact sheet</a>
+
 ## Fast development
 
 RESTHeart is a Runtime for microservices that provides developers with 80% of
@@ -52,7 +55,10 @@ RESTHeart automatically connects to MongoDB (or AWS DocumentDB and Azure CosmosD
 binary content to Mobile Apps, Web Apps or Integration Middleware
 - The Instant Data API cuts development complexity and costs up to 90%
 
-![MongoDB Supported Features](/images/mongodb-supported-features.png){: width="70%" height="auto" class="mx-auto d-block img-responsive" style="padding: 20px"}
+<div class="col-md-8 col-12">
+    <img class="mx-auto img-responsive" src="/images/mongodb-supported-features.png"/>
+    <p class="small text-muted text-center">MongoDB features supported by RESTHeart</p>
+</div>
 
 ## Modular and extensible
 
@@ -61,7 +67,10 @@ RESTHeart is modular and can be easily customized.
 - Each functionality, e.g. the GraphQL API, is implemented in its own module
 - Manage modules by adding or removing them from the “plugin” directory
 
-![Modular and extensible](/images/modular-and-extensible.png){: width="70%" height="auto" class="mx-auto d-block img-responsive" style="padding: 20px"}
+<div class="col-md-8 col-12">
+    <img class="mx-auto img-responsive" src="/images/modular-and-extensible.png"/>
+    <p class="small text-muted text-center">RESTHeart architecture</p>
+</div>
 
 ## Extreme Performances
 
