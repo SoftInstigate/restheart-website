@@ -71,7 +71,7 @@ layout: default
                     <li>Built-in Authentication and Authorization</li>
                     <li>Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
                 </ul>
-                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
+                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn background-primary ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup in minutes</h2>
@@ -81,7 +81,7 @@ layout: default
                     <li>Available as JAR, native binary and Docker image</li>
                     <li>Deployable both on cloud and on premises</li>
                 </ul>
-                <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
+                <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn background-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
             </div>
         </div>
     </div>
