@@ -20,9 +20,11 @@ layout: docs
 {: .bs-callout.bs-callout-info}
 This page summarizes the <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class=" ">PDF fact sheet</a>
 
+**RESTHeart is a Ready-to-use Backend for the Modern Web** designed for *speed* and *simplicity* and downloaded by startups and enterprises to cut time and costs and make development pleasant.
+
 ## Fast development
 
-RESTHeart is a Runtime for microservices that provides developers with 80% of
+RESTHeart provides developers with 80% of
 the most common features and a modern framework to develop the remaining
 20%
 - Declarative Authentication and Authorization
