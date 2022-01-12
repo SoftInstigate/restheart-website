@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<section id="top" class="text-center pt-4 pb-5">
+<section id="top" class="black-background text-center pt-4 pb-5">
     <section class="my-0">
         <img src="/images/rh-logo-clean.png" width="128" />
         <h1 class="pt-4 ml-3 ml-md-5 top-1 text-break"><strong>REST</strong>HEART</h1>
@@ -29,7 +29,7 @@ layout: default
 
 <section class="cd-intro mt-4 mb-1">
     <h1 class="cd-headline d-block justify-content-center letters type">
-        <span class="cd-words-wrapper waiting restheart-red">
+        <span class="cd-words-wrapper waiting color-primary">
             <b class="is-visible">Blazing fast</b>
             <b>Instant REST, GraphQL and WebSocket API on MongoDB</b>
             <b>Develop custom Web Services</b>
@@ -45,9 +45,9 @@ layout: default
     </h1>
 </section>
 
-<section id="article-at-mongodb" class="call-to-action">
+<section id="article-at-mongodb" class="call-to-action black-background">
     <div class="container-fluid">
-        <div class="row mb-1 bg-black">
+        <div class="row mb-1">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
                 <h2 class="text-lightcyan">
                     <a href="https://www.mongodb.com/customers/softinstigate" target="_blank">Featured on <strong>MongoDB.com</strong></a>
@@ -71,7 +71,7 @@ layout: default
                     <li>Built-in Authentication and Authorization</li>
                     <li>Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
                 </ul>
-                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-info ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
+                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn bg-primary ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
                 <h2 class="call-to-action__title">Setup in minutes</h2>
@@ -92,18 +92,18 @@ layout: default
 </div>
 
 <div class="container">
-    <h2 class="text-center restheart-red">Ready to use data API for MongoDB</h2>
+    <h2 class="text-center color-primary">Ready to use data API for MongoDB</h2>
 </div>
 
-<section id="examples" class="slice bg-white my-0 pb-0">
+<section id="examples" class="slice my-0 pb-0">
     {% include examples.html %}
 </section>
 
 <div class="container">
-    <h2 class="text-center restheart-red m-0 mb-2">Java, Kotlin and JavaScript framework to extend the API</h2>
+    <h2 class="text-center color-primary m-0 mb-2">Java, Kotlin and JavaScript framework to extend the API</h2>
 </div>
 
-<section id="examples-plugins" class="slice bg-white">
+<section id="examples-plugins" class="slice">
     {% include examples_plugins.html %}
 </section>
 
@@ -114,7 +114,7 @@ layout: default
 <section id="trusted-by">
     <div class="row mx-0">
         <div id="customers" class="container-fluid my-2">
-            <h2 class="text-center restheart-red">
+            <h2 class="text-center color-primary">
                 Trusted by Startups and Corporations
             </h2>
             <div class="customer-logos">
@@ -139,7 +139,7 @@ layout: default
 </section>
 
 <div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <h2 class="text-center restheart-red">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
+    <h2 class="text-center color-primary">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
     <a href="https://www.mongodb.com/presentations/restful-mongodb-transactions" target="_blank">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>

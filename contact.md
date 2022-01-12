@@ -3,7 +3,7 @@ layout: default
 ---
 
 <div class="h-100 jumbotron jumbotron-fluid bg-white mb-0 py-3">
-    <h1 class="my-4 text-center restheart-red">For any questions</h1>
+    <h1 class="my-4 text-center color-primary">For any questions</h1>
     <div class="d-flex justify-content-center align-content-end w-100 h-100">
         <div>
             <a class="write-us-btn btn btn-lg" title="" href="mailto:ask@restheart.org?subject=Question about the RESTHeart Platform" target="blank"> <i style="font-size:18px" class="icon-mail"></i> ask@restheart.org </a>
@@ -11,7 +11,7 @@ layout: default
     </div>
 </div>
 
-<div class="h-100 jumbotron jumbotron-fluid bg-red my-0 pt-3">
+<div class="h-100 jumbotron jumbotron-fluid background-primary my-0 pt-3">
     <h2 class="my-4 text-center text-white">For developers</h2>
     <div class="d-flex justify-content-center align-content-end w-100 h-100">
         <div class="row text-center">
@@ -31,8 +31,8 @@ layout: default
 <div class="mb-5">
         <div class="d-flex justify-content-center">
             <div class="mt-4 mx-auto rounded p-2 bg-white">
-                <h2 class="text-center m-0"><strong>RESTHeart</strong> is a division of <span class="softinstigate-color">
-                <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></span></h2>
+                <h2 class="text-center m-0"><strong>RESTHeart</strong> is a division of
+                <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></h2>
             </div>
         </div>
     <div class="m-5 text-center">
