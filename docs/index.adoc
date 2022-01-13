@@ -3,73 +3,84 @@ title: Documentation
 layout: docs-adoc
 ---
 
-TIP: This page summarizes the link:++/assets/Brochure - RESTHeart 6.pdf++[PDF fact sheet].
+TIP: See also the link:++/assets/Brochure - RESTHeart 6.pdf++[PDF fact sheet].
 
-*RESTHeart is a Ready-to-use Backend for the Modern Web* designed for
-_speed_ and _simplicity_ and downloaded by startups and enterprises to
-cut time and costs and make development pleasant.
+*RESTHeart is a modern, JVM/GraalVM based, platform for building cloud-native microservice applications.*
 
-RESTHeart is a complete development platform for HTTP Services, with
-out-of-the-box security management and data persistence API.
+It is designed from ground for _speed_ and _simplicity_ and crafted from few, best of breed libraries.
 
-== Fast development
+The philosophy of RESTHeart is to provide developers with the _most common features_ on one side,
+and a pleasent framework for _extending_ it on the other.
 
-RESTHeart provides developers with 80% of the most common features and a modern framework to develop the remaining 20%
+++++
+<div class="col-md-8 col-12">
+    <img class="mx-auto img-responsive" src="/images/modular-and-extensible.png"/>
+    <p class="small text-muted text-center">RESTHeart architecture</p>
+</div>
+++++
+
+== Pleasent for developers
+
+RESTHeart is built for developers by developers and evolved by implementing dozens of real world projects following one gold rule: _if it is complex, it is wrong_.
+
+- Only three, simple yet powerfull, building blocks: `Services`, `Intreceptors` and `Initializers`
+- Well documented with many examples and tutorials available. Check link:http://github.com/softInstigate/restheart-examples[this repo] for examples.
+- Each request is handled in a dedicated thread, so all code is _thread-safe_, _simple_ to write and maintain and _scales well_.
+- The framework is polyglot and supports *Java*, *Kotlin*, *JavaScript* and *Typescript*.
+- No need to learn a complex framework, no need to learn a new language, no need to learn a new database.
+
+Here you have the _Hello World_ example in *Java*:
+
+[source,java]
+----
+@RegisterPlugin(name = "greetings", description = "just another Hello World")
+public class GreeterService implements JsonService {
+    @Override
+    public void handle(JsonRequest request, JsonResponse response) {
+        var content = new JsonObject();
+
+        content.addProperty("message", "Hello World!");
+        response.setContent(content);
+    }
+}
+----
+
+And the same in *Javascript*
+
+[source,javascript]
+----
+export const options = { name: "greetings", description: "just another Hello World" }
+
+export function handle(request, response) {
+    response.setContent(JSON.stringify({ msg: 'Hello World' }));
+    response.setContentTypeAsJson();
+}
+----
+
+NOTE: Javascript is executed in a thread safe, multi-threading concurrency environment. So you don't need to deal with async/await, promises, observable or any other fancy stuff. *Just clean and simple code*.
+
+== Packed with features
+
+RESTHeart provides out-of-the-box with the the features required by any application: authentication/authorization and data management.
+
+TIP: Most applications just require this. Then you just run a stock RESTHeart. Really, no code!
 
 - Declarative Authentication and Authorization
-- Instant REST, GraphQL and WebSocket API for MongoDB 
-- GraalVM powered Polyglot Framework to develop Services and Interceptors
-- Fully documented
-
-== Deploy at rest
-
-RESTHeart is tailored for the JVM, GraalVM, Docker or Kubernetes,
-crafted from best of breed libraries and standards, designed to
-radically simplify microservices development and deployment.
-
-- Ready-to-run Runtime
-- Available as a standalone JAR file, native binary or Docker image
-- Deploy it on Cloud and On-Premises
-
-== Dual licensed
-
-RESTHeart is dual-licensed under the AGPL and a Business Friendly
-Enterprise License 
-
-- Enjoy the free AGPL distribution without feature
-restrictions 
-- Purchase the Enterprise License for production-grade
-support and to use RESTHeart in closed source products or services
+- Instant REST, GraphQL and WebSocket API for MongoDB
+- `Interceptors` can easily customize out-of-the-box features.
 
 == The perfect MongoDB’s companion
 
-RESTHeart automatically connects to MongoDB (or AWS DocumentDB and Azure
-CosmosDB)
+RESTHeart is the best API for MongoDB (and AWS DocumentDB and Azure CosmosDB)
 
-- It exposes full database’s capabilities via REST, GraphQL
-and WebSocket APIs
-- Developers don’t need to write a single line of code to serve JSON data and binary content to Mobile Apps, Web Apps or Integration Middleware
+- It exposes full database’s capabilities via REST, GraphQL and WebSocket APIs
+- Developers don’t need to write a single line of backend code to handle data and wit Mobile Apps, Web Apps or Integration Middleware
 - The Instant Data API cuts development complexity and costs up to 90%
 
 ++++
 <div class="col-md-8 col-12">
     <img class="mx-auto img-responsive" src="/images/mongodb-supported-features.png"/>
     <p class="small text-muted text-center">MongoDB features supported by RESTHeart</p>
-</div>
-++++
-
-== Modular and extensible
-
-RESTHeart is modular and can be easily customized. - The Core Runtime is
-the foundation
-
-- Each functionality, e.g. the GraphQL API, is implemented in its own module
-- Manage modules by adding or removing them from the "`plugin`" directory
-
-++++
-<div class="col-md-8 col-12">
-    <img class="mx-auto img-responsive" src="/images/modular-and-extensible.png"/>
-    <p class="small text-muted text-center">RESTHeart architecture</p>
 </div>
 ++++
 
@@ -92,3 +103,20 @@ RESTHeart for GraalVM (supported with the Enterprise License) provides a
 native solution with instant startup time and smaller memory footprint.
 This is perfect when deploying to Kubernetes clusters,
 where regular Java applications usually consume too many resources.
+
+== Deploy at rest
+
+RESTHeart is tailored for the JVM, GraalVM, Docker or Kubernetes,
+designed to radically simplify microservices development and deployment.
+
+- Ready-to-run Runtime
+- Available as a standalone JAR file, native binary or Docker image
+- Deploy it on Cloud and On-Premises
+
+== Dual licensed
+
+RESTHeart is dual-licensed under the AGPL and a Business Friendly
+Enterprise License
+
+- Enjoy the free AGPL distribution without feature restrictions
+- Rely on the Enterprise License for production-grade support and to use RESTHeart in closed source products or services
