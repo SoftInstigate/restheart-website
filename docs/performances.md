@@ -28,13 +28,13 @@ to autonomously reproduce the tests.
 
 ## Change Streams
 
-Measure RESTHeart's notification throughput while _n_ Websockets are listening for targetted notifications.
+Measure RESTHeart's notification throughput while _n_ Websockets are listening for targeted notifications.
 RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every client will wait until all notification have been received.
 
 
 ![change stream test](/images/perftest/change-stream-test.png){: class="img-responsive"}
 
-Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
+Observing the graph, RESTHeart delivers almost real-time notification for a very huge amount of clients:
 
 {: .table }
 |  Clients     |              TPS             | Mean Notification Time (333ms = Real Time) |
@@ -71,7 +71,7 @@ the total execution time:
 
 Measure the execution time to **query a collection 100.000 times**,
 getting 5 documents each time (limit 5) and skipping just 25 documents,
-under different concurrency levels. 
+under different concurrency levels.
 
 ![test 2 execution
 time](https://restheart.org/images/perftest/test-2-et.png){: class="img-responsive"}
