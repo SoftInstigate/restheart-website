@@ -90,7 +90,7 @@ The following tables summarize the different default configuration values.
 
 ### core
 
-{: .table.table-responsive }
+{: .table }
 ||restheart v3|restheart-platform-core v4|
 |-|-|-|
 |listeners|ajp, http, https|ajp|
@@ -101,7 +101,7 @@ The following tables summarize the different default configuration values.
 
 ### security
 
-{: .table.table-responsive}
+{: .table }
 ||restheart v3|restheart-platform-security v4|
 |-|-|-|
 |requestPredicatesAuthorizer configuration file|`etc/users.yml`|`etc/acl.yml`|

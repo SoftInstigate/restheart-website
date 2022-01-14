@@ -278,7 +278,9 @@ HTTP/1.1 200 OK
 
 The following predefined variables can be used in the aggregation definition:
 
-{: .table.table-responsive }
+<div class="table-responsive" markdown="1">
+
+{: .table }
 |variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description
 |-|-|
 |`@user`|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)|
@@ -287,6 +289,8 @@ The following predefined variables can be used in the aggregation definition:
 |`@pagesize`|the value of the `pagesize` query parameter|
 |`@skip`| to be used in `$skip` stage, equals to `(page-1)*pagesize`|
 |`@limit`|to be used in `$limit` stage, equals to the value of the `pagesize` query parameter|
+
+</div>
 
 ### Handling paging in aggregations
 

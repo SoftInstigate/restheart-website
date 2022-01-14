@@ -44,7 +44,7 @@ _While the Enterprise license is perpetual, the subscription is annual and has t
 
 Subscription's levels depends on specific deployment needs. The below table illustrates a summary of usual levels:
 
-{: .table .table-responsive}
+{: .table }
 | Subscription Level | RESTHeart’s instances | Deployment scenario |
 |--------------------|-----------------------|------------------------------------------------------------|
 | Single | 1 | Single node, no HA requirements. |

@@ -354,7 +354,7 @@ DELETE /coll/_indexes/idxid HTTP/1.1
 
 ## Important Query Parameters
 
-{: .table.table-responsive }
+{: .table }
 |qparam|description|example|
 |-|-|
 |`page` and `pagesize`|control pagination|`?page=1&pagesize=5`|

@@ -69,7 +69,7 @@ public class MyPlugin implements JsonService {
 
 The following table described the arguments of the annotation:
 
-{: .table .table-responsive}
+{: .table }
 | param  | plugin  | description  | mandatory  | default value  |
 |---|---|---|---|---|
 | name  | all  | the name of the plugin  | yes  | *none* |

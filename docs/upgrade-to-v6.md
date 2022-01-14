@@ -298,7 +298,7 @@ The ACL permissions use the undertow predicate language to define the condition 
 
 RESTHeart 6 extends this language introducing the following 7 new predicates that extend and simplify the ACL permission definition:
 
-{: .table.table-responsive }
+{: .table }
 |predicate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |-|-|-|
 |`qparams-contain`          |`true` if the request query string contains the specified parameter            |`qparams-contain(page,pagesize)`|
@@ -346,7 +346,7 @@ mongo:
           {"author": "@user.userid"}
 ```
 
-{: .table.table-responsive }
+{: .table }
 |permission&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
 |-|-|
 |`allowManagementRequests`|DB Management Requests are forbidden by default (create/delete/update dbs, collection, file buckets schema stores and schemas, list/create/delete indexes, read db and collection metadata). To allow these requests, `allowManagementRequests` must be set to `true`|
@@ -405,7 +405,7 @@ the property `author` is evaluated to be the `userid` of the authenticated clien
 `@user` is a special variable that allows accessing the properties of the user object. The following variables are available:
 
 
-{: .table.table-responsive }
+{: .table }
 |variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description
 |-|-|
 |`@user`|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)|

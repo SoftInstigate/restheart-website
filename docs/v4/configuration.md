@@ -47,7 +47,7 @@ The RESTHeart Platform the configuration files are under the `etc/` folder.
 
 **Core configuration**
 
-{: .table.table-responsive }
+{: .table }
 |file|description|
 |-|-|
 |`etc/restheart-platform-core.yml`|parametric configuration file|
@@ -58,7 +58,7 @@ The RESTHeart Platform the configuration files are under the `etc/` folder.
 
 **Security configuration**
 
-{: .table.table-responsive }
+{: .table }
 |file|description|
 |-|-|
 |`etc/restheart-platform-security.yml`|parametric configuration file|
@@ -97,7 +97,7 @@ The following tables highlights the most important configuration options.
 
 All the important configuration options of `resthart-platform-core` are defined in the properties file.
 
-{: .table.table-responsive }
+{: .table }
 |property|default|description|
 |-|-|-|-|
 |_Listeners section_|ajp at `localhost:8009`|listeners allow to specify the protocol, ip, port and to use|
@@ -116,7 +116,7 @@ For security reasons RESTHeart by default binds only on `localhost`, so it won't
 
 ### Security
 
-{: .table.table-responsive }
+{: .table }
 |section|default value|description|
 |-|-|-|-|
 |Listeners|https at `0.0.0.0:4443` and http at `0.0.0.0:8080` value|Listeners allow to specify the protocol, ip, port and to use|

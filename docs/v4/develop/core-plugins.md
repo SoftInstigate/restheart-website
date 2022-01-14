@@ -41,7 +41,7 @@ public class FooPlugin implements Service {
 
 Additional attributes of `@RegisterPlugin` annotation:
 
-{: .table.table-responsive }
+{: .table }
 |attribute|description|default value|
 |-|-|-|
 |**priority**|defines execution order for Intializer (less is higher priority)|10|

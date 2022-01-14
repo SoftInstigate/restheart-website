@@ -132,7 +132,7 @@ Transactions are handled in sessions; per each session, one transaction at a tim
 
 The following tables lists all possible transactions status.
 
-{: .table.table-responsive}
+{: .table }
 |status|description|
 |IN|The transaction is in progress|
 |ABORTED|The transaction has been aborted, either explicitly or due to an error or because it expired|
@@ -145,7 +145,7 @@ The client is responsible of handling the following errors when executing reques
 
 The following table shows the most important error status that should be handled.
 
-{: .table.table-responsive}
+{: .table }
 |error|response status|description|
 |-|-|
 |The given transaction is not in-progress|406|A request is executed in a transaction whose status is not IN|

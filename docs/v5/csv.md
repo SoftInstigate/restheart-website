@@ -132,7 +132,7 @@ GET /poi HTTP/1.1
 
 The CSV uploader service is controlled by the following query parameters.
 
-{: .table.table-responsive }
+{: .table }
 |query parameter|description|default value|
 |-|-|
 |`db`|(_required_) the name of the database|no default|

@@ -78,7 +78,7 @@ An example ACL document follows:
 
 The properties of the ACL document are:
 
-{: .table.table-responsive }
+{: .table }
 |property|type|description|
 |-|-|
 |**predicate**|string|If the [undertow predicate](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)|
@@ -103,7 +103,7 @@ The `writeFilter` applies to write request. The example ACL document allows the 
 
 `readFilter` and `writeFilter` can use the following variables:
 
-{: .table.table-responsive }
+{: .table }
 |variable|resolved to|example|
 |-|-|
 |%USER|the string id of the authenticated user|match documents with `author` property equal to the id of the authenticated user `{"author":"%USER"}`|

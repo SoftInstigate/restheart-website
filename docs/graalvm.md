@@ -15,7 +15,7 @@ layout: docs
 
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+< markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
 
@@ -66,7 +66,7 @@ A *RESTHeart application* is a bundle of RESTHeart core and plugins. The plugins
 
 The following table compares RESTHeart (with default plugins) running on a MacBook Pro with OpenJDK, GraalVM CE and GraalVM CE native image.
 
-{: .table .table-responsive}
+{: .table }
 ||OpenJDK|GraalVM CE|GraalVM CE native|
 |-|-|-|-|
 |startup time|2441ms|2042ms|249ms|

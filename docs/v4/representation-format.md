@@ -133,7 +133,7 @@ JSON can only directly represent a subset of the types supported by BSON. To pre
 
 The query parameter `jsonMode` allows to specify the JSON Mode
 
-{: .table.table-responsive}
+{: .table }
 |jsonMode|Description|
 |-|-|
 |none|Standard RESTHeart representation|
@@ -419,7 +419,7 @@ is user defined.
 The other fields are reserved properties (i.e. are managed automatically
 by RESTHeart for you); these always starts with \_:
 
-{: .table.table-responsive}
+{: .table }
 | Property | Description |
 |----------------|---------------------------------------------------------------------------------------------------------|
 | `_type` | the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode) |

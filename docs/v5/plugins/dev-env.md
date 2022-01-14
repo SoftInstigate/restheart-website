@@ -28,7 +28,7 @@ You can start developing a pluging by forking the repository [restheart-plugin-s
 
 This repository includes a sample service and provides you with the following features:
 
-{: .table .table-responsive}
+{: .table }
 |feature|description|
 |-|-|
 |**Easy Execution**|A script allows to automatically download and run RESTHeart with your plugin. docker-compose can be used to start MongoDB configured as a single instance Replica Set to enable transactions and change streams|
@@ -55,7 +55,7 @@ The idea is that tools like curl are very powerful but a bit cumbersome, it is o
 
 ### Commands
 
-{: .table.table-responsive}
+{: .table }
 | command | description | example
 |---|---|---|
 | `h set auth <id> <password>` | opens a dialog to sets the basic authentication credentials to use in further requests | `> set auth` |

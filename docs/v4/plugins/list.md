@@ -23,7 +23,7 @@ This page lists the plugins available out of the box in RESTHeart Platform.
 
 ## List of Plugins
 
-{: .table.table-responsive }
+{: .table }
 |**Plugin**|**Type**|**Description**|**metadata**|
 |**cacheInvalidator**|Service|`POST /ic?db=restheart&coll=inventory` invalidates the metadata cache of `inventory` collection of the database `restheart`|
 |**csvLoader**|Service|Allows uploading data via csv file. More info at [Upload CSV files](/docs/v4/csv/)|

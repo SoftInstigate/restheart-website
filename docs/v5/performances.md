@@ -36,7 +36,7 @@ RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every c
 
 Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
 
-{: .table .table-responsive}
+{: .table }
 |  Clients     |              TPS             | Mean Notification Time (333ms = Real Time) |
 |:-------------|-----------------------------:|-------------------------------------------:|
 | **10**       |      27                      |             357ms                          |
@@ -61,7 +61,7 @@ time](https://restheart.org/images/perftest/test-1-et.png){: class="img-responsi
 In this scenario, RESTHeart introduces just a **2,41% overhead** over
 the total execution time:
 
-{: .table .table-responsive}
+{: .table }
 |               | Execution Time |    TPS   |
 |---------------|:--------------:|:--------:|
 | **RESTHeart** |      250s      | 3990 tps |
@@ -81,7 +81,7 @@ time](https://restheart.org/images/perftest/test-2-et.png){: class="img-responsi
 RESTHeart delivers better performances under any concurrency level over
 direct access via MongoDB driver:
 
-{: .table .table-responsive}
+{: .table }
 | Threads       |   50|  100|  200|  250|   400|   500|
 |---------------|----:|----:|----:|----:|-----:|-----:|
 | **RESTHeart** |  78s|  82s|  78s|  76s|   76s|   76s|
@@ -102,7 +102,7 @@ Thanks to the eager pre-allocation DBCursor engine, queries with
 significant skip parameter executes much faster (50 times in this case)
 with RESTHeart:
 
-{: .table .table-responsive}
+{: .table }
 | Threads       |    1   |   2   |   4   |   5   |   8   |  10  |   20  |   40  |   50  |   80   |  100  |  200  |  400  |   500  |
 |---------------|:------:|:-----:|:-----:|:-----:|:-----:|:----:|:-----:|:-----:|:-----:|:------:|:-----:|:-----:|:-----:|:------:|
 | **RESTHeart** | 16,28s | 6,22s | 5,05s | 2,53s | 3,76s | 3,6s | 2,98s | 5,65s | 9,04s | 10,74s | 6,76s | 9,24s | 6,76s | 12,71s |

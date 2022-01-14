@@ -33,7 +33,7 @@ This section focuses on extending `restheart-platform-core` through the Plugins.
 
 The following table lists the different types of Plugins of `restheart-platform-core`.
 
-{: .table.table-responsive }
+{: .table }
 |**Plugin**|**Use for**|**Example Use Case**|
 |**Transformer**|Manipulate the request or the response|Filter out sensitive properties from the response, such as `password`|
 |**Checker**|Verify the request|Enforce that the write requests on `users` collection contains `email`  and `password` properties|

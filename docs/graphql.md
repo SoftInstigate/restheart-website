@@ -103,7 +103,7 @@ In order the schema to be a valid, it must contain the type *Query*.
 
 All primitive GraphQL types have been mapped to corresponding BSON types plus a set of custom GraphQL scalars types have been added:
 
-{: .table.table-responsive }
+{: .table }
 |GraphQL type|Bson Type|Example|
 |-|-|
 |`Boolean`|`BsonBoolean`|`b: true`|
@@ -332,7 +332,7 @@ Content-Type: application/graphql
 
 In the following table are reported possible RESTHeart GraphQL Service responses:
 
-{: .table .table-responsive}
+{: .table }
 | **HTTP Status code** |                                                                     **description**                                                                     |
 | :------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: |
 |         200          |                                                                      It's all OK!                                                                       |

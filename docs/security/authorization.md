@@ -62,7 +62,7 @@ authorizers:
 
 The properties of the permission document are:
 
-{: .table.table-responsive }
+{: .table }
 |property|type|description|
 |-|-|
 |**predicate**|string|If the [undertow predicate](https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)|
@@ -107,7 +107,7 @@ A simple example of predicate is `(method(GET) or method(POST)) and path('/coll'
 
 RESTHeart 6 extends this language introducing the following 7 new predicates that extend and simplify the ACL permission definition:
 
-{: .table.table-responsive }
+{: .table }
 |predicate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |-|-|-|
 |`qparams-contain`          |`true` if the request query string contains the specified parameter            |`qparams-contain(page,pagesize)`|
@@ -136,7 +136,7 @@ For requests handled by the `MongoService` (i.e. the service that implements the
 }
 ```
 
-{: .table.table-responsive }
+{: .table }
 |mongo permission&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
 |-|-|
 |`allowManagementRequests`|DB Management Requests are forbidden by default (create/delete/update dbs, collection, file buckets schema stores and schemas, list/create/delete indexes, read db and collection metadata). To allow these requests, `allowManagementRequests` must be set to `true`|
@@ -209,7 +209,7 @@ the property `author` is evaluated to be the `userid` of the authenticated clien
 
 `@user` is a special variable that allows accessing the properties of the user object. The following variables are available:
 
-{: .table.table-responsive }
+{: .table }
 |variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description
 |-|-|
 |`@user`|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)|
