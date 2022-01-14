@@ -20,14 +20,41 @@ and a pleasant framework for _extending_ it, on the other.
 </div>
 ++++
 
+== What makes RESTHeart different from other frameworks?
+
+*RESTHeart* is indeed a framework comparable to others, like _Undertow_ (that is actually internally used by RESTHeart), _Vert.x_, _Quarkus_, _Spring Boot_, _Node.js_, etc.
+
+However RESTHeart does not only comprises a framework, but also a set of application level features that allow developers to build their applications without the need to reinvent the wheel.
+
+`restheart-core` is the foundation of the platform, the runtime process responsible for handling the core services, parsing the configuration, registering the plugins, enforce the security policy, route requests to the correct `Services`, executing `Interceptors` and `Initializers`.
+
+If you look at the restheart installation directory structure, you will notice a directory called `plugins`:
+
+[source,bash]
+----
+plugins
+├── restheart-graphql.jar
+├── restheart-mongodb.jar
+├── restheart-polyglot.jar
+└── restheart-security.jar
+----
+
+Those plugins implement application level functionalities that help building applications.
+
+For instance, the plugin `restheart-mongodb` implements the REST API for MongoDB and `restheart-security.jar` implements the ready-to-use Authentication and Authorization features.
+
+A developer can easily deploy a custom plugin, by just adding it into the `plugins` directory. The plugin is just a JAR file, in case of Java or Kotlin and a directory with its `package.json` file in case of JavaScript.
+
+
+
 == Built for developers
 
 RESTHeart is built for developers by developers and evolved by implementing dozens of real world projects and following one golden rule: _if it is complex, it is wrong_.
 
 - Only three, simple yet powerful building blocks: `Services`, `Intreceptors` and `Initializers`.
-- Custom code can consume properties from the `yml` configuration file.
 - Starts in 100~ msecs, so code-deploy-test cycles are smooth and fast.
 - Each request is handled in a dedicated thread, so all code is _thread-safe_, _simple_ to write and maintain and _scales well_.
+- Custom code can consume properties from the `yml` configuration file.
 - The framework is polyglot and supports *Java*, *Kotlin*, *JavaScript* and *Typescript*.
 - Well documented with many examples and tutorials available. Check link:http://github.com/softInstigate/restheart-examples[this repo].
 
