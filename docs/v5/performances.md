@@ -28,13 +28,13 @@ to autonomously reproduce the tests.
 
 ## Change Streams
 
-Measure RESTHeart's notification throughput while _n_ Websockets are listening for targetted notifications.
+Measure RESTHeart's notification throughput while _n_ Websockets are listening for targeted notifications.
 RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every client will wait until all notification have been received.
 
 
 ![change stream test](/images/perftest/change-stream-test.png){: class="img-responsive"}
 
-Observing the graph, RESTHeart delivers almost real-time notification for a very huge amout of clients:
+Observing the graph, RESTHeart delivers almost real-time notification for a very huge amount of clients:
 
 {: .table }
 |  Clients     |              TPS             | Mean Notification Time (333ms = Real Time) |
@@ -116,8 +116,8 @@ with RESTHeart:
 
 MongoDB and RESTHeart running on Sunfire X2200 M2 with 2 CPU with 16
 Gbyte of RAM. See full
-specification [here](https://docs.oracle.com/cd/E19121-01/sf.x2200m2/819-6597-12/Chap1.html).
-This is an *old *server with 2 dual core 2,2GHz AMD Opteron CPUs.
+specification [here](https://docs.oracle.com/cd/E19121-01/sf.x2200m2/819-6597-12/Chap1.html).
+This is an *old *server with 2 dual core 2,2GHz AMD Opteron CPUs.
 
 Test cases run by MacBook Pro client with 2,66 GHz Intel Core i7 and 8
 GB 1067 MHz DDR3
@@ -154,8 +154,7 @@ $numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
 We used the brilliant [load test
 tool](https://github.com/bazhenov/load-test-tool).
 
-The test case code is available on Github as part of the RESTHeart source code baseline. You can find
-it [here](https://github.com/SoftInstigate/restheart/tree/master/core/src/test/java/org/restheart/test/performance).
+The test case code is available on Github as part of the RESTHeart source code baseline. You can find it [here](https://github.com/SoftInstigate/restheart/tree/master/core/src/test/java/org/restheart/test/performance).
 
 ### Change Streams
 
