@@ -9,14 +9,11 @@ layout: docs
 -   [ETag for write requests](#etag-for-write-requests)
 -   [ETag for web caching](#etag-for-web-caching)
 -   [ETag policy](#etag-policy)
--   [An example with AngularJs](#an-example-with-angularjs)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
 {% include docs-head.html %}
-
-{% include doc-in-progress-v6.html %}
 
 ## Introduction
 
@@ -40,38 +37,49 @@ headers are omitted for simplicity) and this is valid for any type of
 resource, included file resources.
 
 ```bash
-PUT /test descr="a db for testing" HTTP/1.1
+PUT /test {"descr": "a db for testing" }
+
 HTTP/1.1 201 Created
-...
 ETag: 55e84b95c2e66d1e0a8e46b2
+(other headers omitted)
+```
 
-PUT /test/coll descr="a collection for testing" HTTP/1.1
+```bash
+PUT /test/coll { "descr": "a collection for testing" }
+
 HTTP/1.1 201 Created
-...
 ETag: 55e84be2c2e66d1e0a8e46b3
- 
-PUT /test/coll/doc descr="a document for testing" HTTP/1.1
-HTTP/1.1 201 Created
-...
-ETag: 55e84c0ac2e66d1e0a8e46b4
+(other headers omitted)
+```
 
-GET /test/coll/doc HTTP/1.1
-HTTP/1.1 200 OK
-...
+```bash
+PUT /test/coll/doc { "descr": "a document for testing" }
+
+HTTP/1.1 201 Created
 ETag: 55e84c0ac2e66d1e0a8e46b4
-... (data follows)
+(other headers omitted)
+```
+
+```bash
+GET /test/coll/doc HTTP/1.1
+
+HTTP/1.1 200 OK
+ETag: 55e84c0ac2e66d1e0a8e46b4
+(other headers omitted)
+
+{ "descr": "a document for testing" }
 ```
 
 ## ETag for write requests
 
-Starting version 2.0 the checking policy is configurable and the default
-policy only requires the ETag for DELETE /db and DELETE /db/collection
+The checking policy is configurable and the default
+policy only requires the ETag for `DELETE /db` and `DELETE /db/collection`
 requests.
 
 Previous versions always require the ETag to be specified for any write
 request.
 
-Let's try to update the document at URI /test/coll/doc forcing the ETag
+Let's try to update the document at URI `/test/coll/doc` forcing the ETag
 check with the `checkEtag` query parameter.
 
 ```http
@@ -84,7 +92,7 @@ HTTP/1.1 409 Conflict
 ETag: 55e84c0ac2e66d1e0a8e46b4
 ```
 
-RESTHeart send back the error message _409 Conflict_, showing that the
+RESTHeart send back the error message `409 Conflict`, showing that the
 document has not been updated.
 
 Note that the _ETag_ header is present in the response.
@@ -101,21 +109,22 @@ HTTP/1.1 412 Precondition Failed
 ETag: 55e84c0ac2e66d1e0a8e46b4
 ```
 
-RESTHeart send back the error message _412 Precondition Failed_, showing
+RESTHeart send back the error message `412 Precondition Failed`, showing
 that the document has not been updated.
 
 Again the correct ETag header is present in the response.
 
-Let's try to pass now the correct ETag via the *If-Match* request header
+Let's try to pass now the correct ETag via the `If-Match` request header
 
-```http
+```bash
 PUT /test/coll/doc?checkEtag HTTP/1.1
 If-Match:55e84c0ac2e66d1e0a8e46b4
-{"descr":"a document for testing but modified"}
+
+{"descr": "a document for testing but modified"}
 
 HTTP/1.1 200 OK
-...
 ETag: 55e84f5ac2e66d1e0a8e46b8
+(other headers omitted)
 ```
 
 Yes, updated! And the response includes the new ETag value.
@@ -128,17 +137,20 @@ include the ETag header.
 The ETag is used by browsers for caching: after the first data
 retrieval, the browser will send further requests with _If-None-Match_
 request header. In case the resource state has not been modified
-(leading to a change in the ETag value), the response will be just *304
+(leading to a change in the ETag value), the response will be just *304
 Not Modified*, without passing back the data and thus saving bandwidth.
 This is especially useful for file resources.
 
-```http
+```bash
 GET /test/coll/doc HTTP/1.1
 HTTP/1.1 200 OK
-...
 ETag: 55e84c0ac2e66d1e0a8e46b4
-... (data follows)
- 
+(other headers omitted)
+
+{"descr": "a document for testing but modified"}
+```
+
+```bash
 GET /test/coll/doc HTTP/1.1
 If-None-Match:55e84c0ac2e66d1e0a8e46b4
 
@@ -167,7 +179,7 @@ etag-check-policy:
 
 The ETag checking policy can also be modified at request level with the
 `checkETag` query parameter and at db or collection level using the
-`etagPolicy` and `etagDocPolicy` metadata.
+`etagPolicy` and `etagDocPolicy` metadata.
 
 For instance specifying the following collection metadata, the ETag will
 be checked for all write requests on the collection resources and its
@@ -179,55 +191,5 @@ documents.
   "etagDocPolicy": "REQUIRED"
 }
 ```
-
-An interesting usage of the _checkETag_ query parameter is avoiding the
-upsert semantic of RESTHeart.
-
-If the client wants to make sure that a write request only creates
-documents without updating them, it can send a random ETag; in case the
-resource does not exist, the ETag is not checked anyway.
-
-```http
-PUT /db/coll/doc?checkEtag HTTP/1.1
-
-If-Match:x
-```
-
-This request leads either to CREATED if the document with id _doc_ was
-not existing or to PRECONDITION FAILED if it already exists.
-
-## An example with AngularJs
-
-The example project
-[restheart-notes-example](https://github.com/softinstigate/restheart-notes-example) on
-github uses AngularJs to interact with RESTHeart.
-
-It allows to create and edit notes.
-
-The following is a snippet the controller
-[notes.js ](https://github.com/SoftInstigate/restheart-notes-example/blob/master/app/scripts/controllers/notes.js)
-
-```js
-$scope.updateNote = function () {
-    if (angular.isUndefined($scope.selected)) {
-        return;
-    }
-    $scope.selected.date = { $date: Date.now() };
-    $scope.selected
-        .put(null, { 'If-Match': $scope.selected._etag.$oid })
-        .then(function (res) {
-            delete dirties[$scope.selected._id.$oid];
-            $scope.loadNotes(true);
-        });
-};
-```
-
-The $scope.selected.put() call passes the *If-Match* header and, as soon
-as the promise is resolved, it reloads the notes calling
-$scope.loadNotes() thus refreshing also the ETags hold by the client.
-
-If a client tries to update a note already changed by a concurrent user,
-it gets back the _412 Precondition Failed_ error message. This is the
-ETag based optimistic concurrency control in action.
 
 </div>
