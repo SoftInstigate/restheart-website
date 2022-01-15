@@ -5,12 +5,12 @@ layout: default
 <section id="top" class="black-background text-center pt-4 pb-5">
     <section class="my-0">
         <img src="/images/rh-logo-clean.png" width="128" />
-        <h1 class="pt-4 ml-3 ml-md-5 top-1 text-break"><strong>REST</strong>HEART</h1>
+        <h1 class="pt-4 top-1 text-break"><strong>REST</strong>HEART</h1>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-3 ml-3 ml-md-5 top-2 text-break">The Open Source API Service for the Modern Web</h2>
-        <p class="mt-3 ml-2 mr-3 ml-md-5 top-5 highlightcolor text-break">Instant Data APIs on MongoDB, Declarative Access Control<br>and Polyglot Development Framework</p>
+        <h2 class="mt-4 mx-md-5 top-2 text-break">Low code platform for building cloud-native HTTP microservices</h2>
+        <p class="mt-3 mx-md-5 top-5 highlightcolor text-break">With Polyglot Development Framework, Declarative Access Control<br/>and Instant Data APIs on MongoDB</p>
     </section>
     <section>
         <div class="container-fluid">
