@@ -372,14 +372,12 @@ To compile new plugins, add the `restheart-commons` dependency to your POM file:
 </dependencies>
 ```
 
-**IMPORTANT**: The `restheart-commons` artifact in the `commons` module has been released using the Apache v2 license instead of the AGPL v3. This is much like MongoDB is doing with the Java driver. It implies **your projects does not incur in the AGPL restrictions when extending RESTHeart with plugins**.
+{: .bs-callout.bs-callout-info }
+The `restheart-commons` artifact in the `commons` module has been released using the Apache v2 license instead of the AGPL v3. This is much like MongoDB is doing with the Java driver. It implies **your projects does not incur in the AGPL restrictions when extending RESTHeart with plugins**.
 
 ### Project structure
 
-All sub-projects are merged into a single [Maven multi module project](https://maven.apache.org/guides/mini/guide-multiple-modules.html) and a single Git repository.
-
-
-Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapper_ which reads the configuration and starts the HTTP server. The `security` module provides **Authentication** and **Authorization** services, while the `mongodb` module interacts with MongoDB and exposes all of its services via a REST API, as usual. Besides, we added a new `commons` module which is a shared library, including all interfaces and implementations in common among the other modules.
+All sub-projects are a single [Maven multi module project](https://maven.apache.org/guides/mini/guide-multiple-modules.html) managed on a Git monorepo.
 
 ```
 .
@@ -387,8 +385,22 @@ Then `core` module now is just [Undertow](http://undertow.io) plus a _bootstrapp
 ├── core
 ├── mongodb
 ├── graphql
+├── polyglot
 └── security
 ```
+
+Then `core` module is the foundation of the platform, i.e. the runtime process responsible for handling the core services, parsing the configuration, registering the plugins, enforcing the security policy, routing requests to the `Services` and executing `Interceptors` and `Initializers`.
+
+The `security` module provides implementations of **Authentication** and **Authorization** services.
+
+The `mongodb` module implements the `MongoService` which exposes the **REST and Websocket API for MongoDB**.
+
+The `graphql` module implements the `GraphQLServicee` which exposes the **GraphQL API for MongoDB**.
+
+The `polyglot` module is in charge of handling the **JavaScript plugins**.
+shared library
+Finally the `commons` module is the **** that includes all interfaces and implementations in common among the other modules. This is the dependency also used to implements custom Java and Kotlin plugins.
+
 
 {: .bs-callout.bs-callout-info }
 Watch [Compile source code from scratch](https://www.youtube.com/watch?v=dzggm7Wp2fU&t=605s) video.
