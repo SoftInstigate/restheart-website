@@ -43,9 +43,21 @@
         font-weight: 900;
       }
     </style>
+    <!-- iubenda cookie banner -->
     <script type="text/javascript">
     var _iub = _iub || [];
     _iub.csConfiguration = {"lang":"en","siteId":1082647,"whitelabel":false,"cookiePolicyId":15571002, "banner":{ "slideDown":false,"applyStyles":false }};
     </script>
-    <script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
+    <script>
+    const host = window.location.hostname;
+    if(host != "localhost" && host != "127.0.0.1") {
+        const head = document.getElementsByTagName('head')[0];
+        const js = document.createElement("script");
+        js.type = "text/javascript";
+        js.src = "//cdn.iubenda.com/cs/iubenda_cs.js";
+        head.appendChild(js);
+    } else {
+        console.log("iubenda disabled on localhost");
+    }
+    </script>
 {% endif %}
