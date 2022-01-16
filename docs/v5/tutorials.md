@@ -11,37 +11,12 @@ layout: docs
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
 
-{% include docs-head.html %} 
-
-<div class="d-block d-md-none alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri">Try RESTHeart blog</a></span>
-    </div>
-</div>
-
-<div class="d-none d-md-block alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri"> RESTHeart blog</a></span>
-    </div>
-</div>
-
-
-<div class="d-block d-md-none alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri">Follow us on medium.com</a></span>
-    </div>
-</div>
+{% include docs-head.html %}
 
 ## From the Team
-* [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart. 
+* [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart.
 
-* [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database. 
+* [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database.
 
 * [**JSON Schema — Form Validation, with Angular & RESTHeart**](https://medium.com/softinstigate-team/json-schema-validazione-e-salvataggio-di-un-form-con-angular-restheart-ec13cbdb5872): The **JSON Schema** makes the creation and the validation of a Form activities relatively simple and fast. The functionality of RESTHeart allows us to have an efficient server-side validation system controlled by the JSON Schema, while the **Angular** Angular6-json-schema-form library transform the JSON Schema in a Form very easily.
 

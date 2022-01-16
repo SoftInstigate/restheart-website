@@ -13,30 +13,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-<div class="d-block d-md-none alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri">Try RESTHeart blog</a></span>
-    </div>
-</div>
-
-<div class="d-none d-md-block alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center">
-    Follow us on <strong class="ml-1 mr-1">medium.com</strong>
-    </div>
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri"> RESTHeart blog</a></span>
-    </div>
-</div>
-
-<div class="d-block d-md-none alert alert-warning" role="alert">
-    <div class="d-flex justify-content-center mt-2">
-        <span class="badge badge-pill badge-light p-1"><a href="https://medium.com/softinstigate-team" class="uri">Follow us on medium.com</a></span>
-    </div>
-</div>
-
 ## From the Team
 
 -   [**Json Web Token Authentication for Angular App with Auht0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart.

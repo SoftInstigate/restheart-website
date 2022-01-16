@@ -1,0 +1,35 @@
+---
+title: Develop Core Plugins in JavaScript
+layout: docs-adoc
+---
+:page-liquid:
+
+++++
+{% include doc-in-progress-v6.html %}
+++++
+
+== Introduction
+
+Services and Interceptors can be developed in JavaScript and TypeScript when running RESTHeart with GraalVM or using `restheart-native`
+
+Here is an example
+
+[source,javascript]
+----
+export const options = {
+    name: "helloWorldService",
+    description: "just another Hello World",
+    uri: "/hello"
+}
+
+export function handle(request, response) {
+    response.setContent(`{ "msg": `Hello ${rc.name || 'World'}` } `);
+    response.setContentTypeAsJson();
+}
+----
+
+TIP:  See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources[example JS plugins]
+
+Just copy the `test-js-plugins` directory into the `plugins` directory to have the JS plugins automatically deployed.
+
+JS plugins can be added or updated without requiring to restart the server, ie v6 supports JS plugins hot deployment.
