@@ -27,9 +27,9 @@ layout: default
     </section>
 </section>
 
-<section class="cd-intro mt-4 mb-1">
+<section class="cd-intro mt-1 mb-1">
     <h1 class="cd-headline d-block justify-content-center letters type">
-        <span class="cd-words-wrapper waiting color-primary">
+        <span class="d-flex align-items-center justify-content-center cd-words-wrapper waiting color-primary">
             <b class="is-visible">Blazing fast</b>
             <b>Instant REST, GraphQL and WebSocket API on MongoDB</b>
             <b>Develop custom Web Services</b>
