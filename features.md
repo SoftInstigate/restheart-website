@@ -147,14 +147,14 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/change-streams/" | prepend: site.baseurl }}">Real-time data</a></h2>
+                    <h2><a href="{{ "/docs/websocket/" | prepend: site.baseurl }}">Real-time data</a></h2>
                 </h5>
                 <div>
                     Handle hundreds of thousands of clients with Change Streams, via WebSocket.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/change-streams/" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/websocket/" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>

@@ -49,11 +49,10 @@ layout: default
     <div class="container-fluid">
         <div class="row mb-1">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
-                <h2 class="text-lightcyan">
+                <h2 class="text-lightcyan mb-2">
                     <a href="https://www.mongodb.com/customers/softinstigate" target="_blank">Featured on <strong>MongoDB.com</strong></a>
                 </h2>
-                <p class="highlightcolor">RESTHeart API for MongoDB simplifies development
-                   and frees you to focus on delivering great user experiences</p>
+                <p class="highlightcolor"><i>RESTHeart API for MongoDB simplifies development and frees you to focus on delivering great user experiences</i></p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
             </div>
         </div>
@@ -132,18 +131,16 @@ layout: default
     </div>
 </section>
 
-<section class="chart mt-3" id="chart">
-
+<section class="chart mt-3 pb-0" id="chart">
     {% include docker_pull_chart.html %}
-
 </section>
 
-<div class="jumbotron bg-white text-white text-center mt-3 mb-0 py-4">
-    <h2 class="text-center color-primary">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
+<section class="bg-white text-white text-center mt-3 mb-5">
+    <h2 class="text-center color-primary mb-3">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
     <a href="https://www.mongodb.com/presentations/restful-mongodb-transactions" target="_blank">
         <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
     </a>
-</div>
+</section>
 
 <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->
 <script src="assets/animated-headline/js/modernizr.js"></script> <!-- Modernizr -->

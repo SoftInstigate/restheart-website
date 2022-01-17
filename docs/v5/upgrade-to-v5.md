@@ -165,7 +165,7 @@ Starting v5.1, support for [transactions](/docs/transactions) is available in RE
 
 ## Change Streams
 
-Starting v5.1, support for [change streams](/docs/change-streams) is available in RESTHeart OSS.
+Starting v5.1, support for [change streams](/docs/v5/change-streams) is available in RESTHeart OSS.
 
 ## Security Plugins
 

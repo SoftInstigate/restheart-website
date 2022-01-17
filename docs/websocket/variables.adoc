@@ -1,0 +1,41 @@
+---
+title: Using Variables in streams
+layout: docs-adoc
+---
+
+== Variables in stages
+
+Variables can be used in change streams query as follows:
+
+[source,json]
+{ "$var": "<var_name>" }
+
+In case of change stream in the *mine* streams of the link:/docs/websocket/examples[example], the variable was used
+to restrict notifications only to changes on documents with a property _name_ matching the variable _n:_
+
+[source,json]
+{ "_$match": { "fullDocument::name": { "_$var": "n" } } }
+
+The variables are passed using the `avars` query parameter.
+
+[source,http]
+GET /coll/_aggrs/mine?avars={"n": "Andrea"}
+
+== Security Informations
+
+By default RESTHeart makes sure that the aggregation variables passed as query parameters don't contains MongoDB operators.
+
+This behavior is required to protect data from undesirable malicious query injection.
+
+Even though is highly discouraged, is possible to disable this check by editing the following property into `restheart.yml` configuration file.
+
+[source]
+----
+## Security
+
+# Check if aggregation variables use operators.
+# Allowing operators in aggregation variables is risky
+# because requester can inject operators modifying the query
+
+aggregation-check-operators: true
+----

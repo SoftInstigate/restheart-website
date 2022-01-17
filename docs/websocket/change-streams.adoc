@@ -1,0 +1,84 @@
+---
+title: WebSocket API - change streams
+layout: docs-adoc
+---
+
+== The "streams" collection metadata
+
+In RESTHeart, not only documents but also databases and collections have
+properties. Some properties are metadata, i.e. they have a special
+meaning for RESTheart that influences its behavior.
+
+The collection metadata property `streams` allows to declare change streams that client can watch for to be aware about changes to documents and bind them to given URI.
+
+Change streams need to be defined as collection metadata. It is
+not possible to define a stream via a query parameter and this is
+by design: clients are not able to open up arbitrary change streams but only those defined (and tested) by the developers.
+
+`streams` is an array of _stream_ objects.
+
+== Stream metadata object format
+
+**stream object format**
+
+```json
+{
+    "uri": <uri>,
+    "stages": [
+        "<stage_1>",
+        "<stage_2>",
+        ...
+    ]
+}
+```
+
+<div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Description</th>
+<th class="text-center">Mandatory</th>
+</tr>
+</thead>
+<tbody>
+<tr class="even">
+<td><strong>uri</strong></td>
+<td>specifies the URI when the stream is bound under the path <code>/&lt;db&gt;/&lt;collection&gt;/_streams</code></td>
+<td class="text-center">yes</td>
+</tr>
+<tr class="odd">
+<td><strong>stages</strong></td>
+<td><p>the MongoDB aggregation pipeline stages.</p>
+<p>For more information refer to <a href="https://docs.mongodb.org/manual/core/aggregation-pipeline/" class="uri">https://docs.mongodb.org/manual/core/aggregation-pipeline/</a></p></td>
+<td class="text-center">yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+Notes:
+
+-   Only a subset of aggregation pipeline stages are allowed for this features. Check MongoDB's [documentation](https://docs.mongodb.com/manual/changeStreams/#modify-change-stream-output) for further informations.
+-   Stages takes as input [Change Events](https://docs.mongodb.com/manual/reference/change-events/) instead of the documents themselves. For example, the modified version of a document after a PATCH request is present at event.fullDocument property of the stages input event. (See [examples](#examples) below).
+
+== Escape stage properties informations
+
+MongoDB does not allow to store fields with names starting with \$ or
+containing _dots_ (.), see [Restrictions on Field
+Names](https://docs.mongodb.org/manual/reference/limits/#Restrictions-on-Field-Names)
+on MongoDB's documentation.
+
+In order to allow storing stages with dollar prefixed operators or using
+the dot notation (to refer to properties of subdocuments), RESTHeart
+_automatically_ and _transparently_ escapes the properties keys as
+follows:
+
+-   the \$ prefix is "underscore escaped", e.g. `$exists` is stored as
+    `_$exists`
+-   if the dot notation has to be used in a key name, dots are replaced
+    with **::** e.g. `SD.prop` is stored as `SD::prop`
+
+In RESTHeart 1.x, these escapes are not managed automatically: the
+developer had to explicitly use them; starting from version 2.0 this is
+not needed anymore.

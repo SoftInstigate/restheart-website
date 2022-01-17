@@ -28,7 +28,7 @@ layout: docs
 
 RESTHeart 6 provides a GraphQL API for MongoDB that works side by side with the good old REST API to get a comprehensive Data API to build modern applications.
 
-For more information see [GraphQL](/docs/graphql/) documentation page that contains the following [example](/docs/graphql/#a-complete-example) (this will make happy those who love GraphQL like us):
+For more information see [GraphQL](/docs/graphql/) documentation page that contains the following [example](/docs/graphql/example/) (this will make happy those who love GraphQL like us):
 
 {% include code-header.html
     type="Request"
