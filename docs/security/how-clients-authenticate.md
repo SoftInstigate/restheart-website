@@ -156,8 +156,7 @@ credentials.
 {: .bs-callout.bs-callout-info }
 This feature together with the authentication token, allows you to
 implement a form based authentication experience on top of the simple
-and effective basic authentication mechanism. You can refer to the [blog
-example application](https://github.com/softinstigate/restheart-blog-example) for an example of such implementation.
+and effective basic authentication mechanism.
 
 {: .bs-callout.bs-callout-info }
 Watch [An application example (blog)](https://www.youtube.com/watch?v=QVk0aboHayM&t=2262s)

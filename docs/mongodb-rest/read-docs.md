@@ -35,7 +35,7 @@ layout: docs
 
 This page provides examples of query operations using the `GET` method.
 
-You will learn how to get documents from a collection, optionally specifying a query, sort criteria, fields projections options and deal with pagination.  
+You will learn how to get documents from a collection, optionally specifying a query, sort criteria, fields projections options and deal with pagination.
 
 You will also learn hot to get a single document knowing its _id.
 
@@ -45,8 +45,8 @@ You will also learn hot to get a single document knowing its _id.
 
 To GET documents in the collection, run the following:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0"
 %}
 
@@ -62,18 +62,18 @@ The response is paginated,  i..e. only a subset of the collection’s document i
 The number of documents to return is controlled via the `pagesize` query
 parameter. Its default value is 100, maximum allowable size is 1000.
 
-The pages to return is specified with the `page` query parameter. The
+The pages to return is specified with the `page` query parameter. The
 pagination links (first, last, next, previous) are **only returned on
-hal full mode** (`rep=hal&hal=f` query parameter); see [HAL
-mode](https://restheart.org/docs/representation-format/)
+HAL full mode** (`rep=hal&hal=f` query parameter); see [HAL
+mode](/docs/mongodb-rest/representation-format/)
 for more information.
 
 ### Paging Examples
 
-#### Return documents on second page when pagesize is 3 
+#### Return documents on second page when pagesize is 3
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/3"
 %}
 
@@ -84,10 +84,10 @@ GET /inventory?page=2&pagesize=3 HTTP/1.1
 
 ## Filtering
 
-The **`filter`** query parameter allows to specify conditions on the
+The **`filter`** query parameter allows to specify conditions on the
 documents to be returned.
 
-The `filter` qparam value is any [mongodb
+The `filter` qparam value is any [mongodb
 query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 
 Note that system properties (properties starting with \_ that are
@@ -120,10 +120,10 @@ managed automatically by RESTHeart) are not affected by this option.
 
 ### Filtering Examples
 
-#### Return documents whose `quantity` is more than 50
+#### Return documents whose `quantity` is more than 50
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0"
 %}
 
@@ -132,11 +132,11 @@ managed automatically by RESTHeart) are not affected by this option.
 GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
 ```
 
-#### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
+#### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0"
 %}
 
@@ -147,8 +147,8 @@ GET /inventory?filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]} HTTP/1.1
 
 or equivalently:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0"
 %}
 
@@ -164,10 +164,10 @@ Use `_size` keyword after the collection path to retrieve the number of document
 
 ### Counting Examples
 
-#### Return the number of documents into "inventory" collection 
+#### Return the number of documents into "inventory" collection
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/1"
 %}
 
@@ -187,7 +187,7 @@ starting with \_ that are managed automatically by RESTHeart).
     <h4 id="multifilter-qparams">Multiple sort properties</h4>
     <hr class="my-2">
     <p>
-    Specify multiple sort options using multiple `sort` query parameters
+    Specify multiple sort options using multiple `sort` query parameters
     </p>
     <p class="black-code">
     <pre><code class="language-bash">> GET /inventory?sort=qty&amp;sort=-status</code></pre>
@@ -205,11 +205,11 @@ sort=[ |-]<fieldname>
 
 ### Sort JSON expression format
 
-`sort` can also be a MongoDB [sort
+`sort` can also be a MongoDB [sort
 expression](https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort).
 
 JSON expression format is available starting from version 2.0.1. See
-improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
+improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
 
 
 ```
@@ -232,7 +232,7 @@ sort={"field": 1}
     </p>
     <p>
     RESTHeart returns data in pages (default being 100) and it is stateless.
-    This means that two requests use different db cursors. A default sorting
+    This means that two requests use different db cursors. A default sorting
     makes sure that requests on different pages returns documents in a well
     defined order.
     </p>
@@ -243,10 +243,10 @@ sort={"field": 1}
         Default sorting could impact performances for some use cases.
         </p>
         <p>
-        To disable default sorting just add the <strong>"sort={}"</strong> query parameter 
+        To disable default sorting just add the <strong>"sort={}"</strong> query parameter
         </p>
         <p>
-        See the <a href="#sorting">sorting</a> section to know how to
+        See the <a href="#sorting">sorting</a> section to know how to
         specify different sorting criteria.
         </p>
     </div>
@@ -256,8 +256,8 @@ sort={"field": 1}
 
 ### Sort by *status* ascending
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
 %}
 
@@ -268,8 +268,8 @@ GET /inventory?sort=status HTTP/1.1
 
 or equivalently:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/dd99c056f88e5ac9f990ffcd3f2a18032007d639/0"
 %}
 
@@ -279,10 +279,10 @@ GET /inventory?sort={"status":1} HTTP/1.1
 ```
 
 {: .mt-4 }
-#### Sort by *status* descending
+#### Sort by *status* descending
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0"
 %}
 
@@ -294,8 +294,8 @@ GET /inventory?sort=-status HTTP/1.1
 or equivalently:
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/e6fe674153926f9834c1aa10e156b0792dc35bc5/0"
 %}
 
@@ -305,10 +305,10 @@ GET /inventory?sort={"status":-1} HTTP/1.1
 ```
 
 {: .mt-4 }
-#### Sort by *status* ascending and *qty* descending
+#### Sort by *status* ascending and *qty* descending
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0"
 %}
 
@@ -319,8 +319,8 @@ GET /inventory?sort=status&sort=-qty HTTP/1.1
 
 or equivalently:
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0"
 %}
 
@@ -337,8 +337,8 @@ This is only possible with json expression format
 
 **create a text index**
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0"
 %}
 
@@ -352,8 +352,8 @@ PUT /inventory/_indexes/text HTTP/1.1
 {: .mt-3 }
 **sort by score**
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0"
 %}
 
@@ -367,7 +367,7 @@ GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$me
 Projection limits the fields to return for all matching documents,
 specifying the inclusion or the exclusion of fields.
 
-This is done via the `keys` query parameter. 
+This is done via the `keys` query parameter.
 
 Note that system properties (properties starting with \_ that are
 managed automatically by RESTHeart) are not affected by this option.
@@ -392,8 +392,8 @@ managed automatically by RESTHeart) are not affected by this option.
 
 #### Only return the property *item*
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0"
 %}
 
@@ -402,10 +402,10 @@ managed automatically by RESTHeart) are not affected by this option.
 GET /inventory?keys={'item':1} HTTP/1.1
 ```
 
-#### Return all but the property *item*
+#### Return all but the property *item*
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0"
 %}
 
@@ -414,10 +414,10 @@ GET /inventory?keys={'item':1} HTTP/1.1
 GET /inventory?keys={'item':0} HTTP/1.1
 ```
 
-#### Only return the properties *item* and *qty*
+#### Only return the properties *item* and *qty*
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0"
 %}
 
@@ -449,15 +449,14 @@ Use `$natural` to force the query to perform a forwards collection scan.
         <div class="black-code highlighter-rouge mt-5"><div class="highlight"><pre class="highlight"><code>&gt; PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre></div></div>
         <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
-    
 </div>
 
 #### Use the index on item field
 
 The following example returns all documents in the collection named **coll** using the index on the **item** field.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0"
 %}
 
@@ -470,8 +469,8 @@ GET /inventory?hint={'item':1} HTTP/1.1
 
 The following example returns the documents using the compound index on the **item** and reverse **status** fields.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0"
 %}
 
@@ -484,8 +483,8 @@ GET /inventory?hint=item&hint=-status HTTP/1.1
 
 The following example returns the documents using a forwards collection scan.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0"
 %}
 
@@ -498,14 +497,14 @@ GET /inventory?hint={'$natural':1} HTTP/1.1
 
 The following example returns the documents using a reverse collection scan.
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0"
 %}
 
 
 ``` http
 GET /inventory?hint={'$natural':-1} HTTP/1.1
-``` 
+```
 
 </div>

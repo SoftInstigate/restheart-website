@@ -386,6 +386,6 @@ aggregation-check-operators: true
 
 Starting from RESTHeart v6.0.6, aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
 
-For more information on how to create a transaction scope refer to [transactions](/docs/transactions) doc page.
+For more information on how to create a transaction scope refer to [transactions](/docs/mongodb-rest/transactions) doc page.
 
 </div>

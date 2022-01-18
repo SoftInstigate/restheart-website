@@ -4,7 +4,7 @@ permalink: "/features"
 layout: page-notitle
 edited: y
 spellCheck: y- UK
-notes: 
+notes: ""
 ---
 
 <div class="row mt-4">
@@ -82,14 +82,14 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/read-docs" | prepend: site.baseurl }}">Read JSON documents</a></h2>
+                    <h2><a href="{{ "/docs/mongodb-rest/read-docs" | prepend: site.baseurl }}">Read JSON documents</a></h2>
                 </h5>
                 <div>
                 Read JSON documents with GET requests; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/read-docs" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/read-docs" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -97,14 +97,14 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/write-docs" | prepend: site.baseurl }}">Write JSON documents</a></h2>
+                    <h2><a href="{{ "/docs/mongodb-rest/write-docs" | prepend: site.baseurl }}">Write JSON documents</a></h2>
                 </h5>
                 <div>
                     Create, modify, and delete JSON documents with POST, PUT, PATCH, and DELETE requests. Use <strong>bulk requests</strong> to deal with multiple documents in one shot.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/write-docs" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/write-docs" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -113,7 +113,7 @@ notes:
             <div class="card-body">
                 <h5 class="card-title">
                     <h2>
-                        <a href="{{ "/docs/files" | prepend: site.baseurl }}">Binary data</a>
+                        <a href="{{ "/docs/mongodb-rest/files" | prepend: site.baseurl }}">Binary data</a>
                     </h2>
                 </h5>
                 <div>
@@ -121,7 +121,7 @@ notes:
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/files" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/files" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -132,14 +132,14 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/aggregations" | prepend: site.baseurl }}">Aggregations</a></h2>
+                    <h2><a href="{{ "/docs/mongodb-rest/aggregations" | prepend: site.baseurl }}">Aggregations</a></h2>
                 </h5>
                 <div>
                     Define and execute parametric <strong>Aggregations</strong>, supporting both map-reduce and aggregation pipelines.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/aggregations" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/aggregations" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -147,14 +147,14 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/websocket/" | prepend: site.baseurl }}">Real-time data</a></h2>
+                    <h2><a href="{{ "/docs/mongodb-websocket/" | prepend: site.baseurl }}">Real-time data</a></h2>
                 </h5>
                 <div>
                     Handle hundreds of thousands of clients with Change Streams, via WebSocket.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/websocket/" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-websocket/" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -163,7 +163,7 @@ notes:
             <div class="card-body">
                 <h5 class="card-title">
                     <h2>
-                        <a href="{{ "/docs/transactions" | prepend: site.baseurl }}">Transactions</a>
+                        <a href="{{ "/docs/mongodb-rest/transactions" | prepend: site.baseurl }}">Transactions</a>
                     </h2>
                 </h5>
                 <div>
@@ -171,7 +171,7 @@ notes:
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/transactions" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/transactions" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -182,13 +182,13 @@ notes:
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <h5 class="card-title">
-                    <h2><a href="{{ "/docs/json-schema-validation/" | prepend: site.baseurl }}">Data validation</a></h2>
+                    <h2><a href="{{ "/docs/mongodb-rest/json-schema-validation/" | prepend: site.baseurl }}">Data validation</a></h2>
                 </h5>
                 <div>Validate write requests with <strong>JSON Schema</strong>. RESTHeart extends MongoDB's support of JSON Schema, applying definitions stored in the internal schema store collection.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/json-schema-validation/" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/json-schema-validation/" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -197,13 +197,13 @@ notes:
             <div class="card-body">
                 <h5 class="card-title">
                     <h2>
-                        <a href="{{ "docs/mgmt/dbs-collections/" | prepend: site.baseurl }}">Database Management API</a>
+                        <a href="{{ "docs/mongodb-rest/dbs-collections/" | prepend: site.baseurl }}">Database Management API</a>
                     </h2>
                 </h5>
                 <div>API-managed creation and deletion of databases and collections. Define indexes and control plugins' behavior via resource metadata.</div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "docs/mgmt/dbs-collections/" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "docs/mongodb-rest/dbs-collections/" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
@@ -212,13 +212,13 @@ notes:
             <div class="card-body">
                 <h5 class="card-title">
                     <h2>
-                        <a href="{{ "/docs/csv" | prepend: site.baseurl }}">Upload data from CSV files</a>
+                        <a href="{{ "/docs/mongodb-rest/csv" | prepend: site.baseurl }}">Upload data from CSV files</a>
                     </h2>
                 </h5>
                 <div>The CSV Uploader imports data from a CSV file into a MongoDB collection, automatically converting rows into JSON documents.</div>
             </div>
             <div class="d-flex w-100 justify-content-end">
-                <a class="btn btn-m" href="{{ "/docs/csv" | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-m" href="{{ "/docs/mongodb-rest/csv" | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>

@@ -21,11 +21,11 @@ layout: docs
 ## Introduction
 
 RESTHeart speedups the execution of GET requests to collections
-resources via its **db cursors pre-allocation engine**. 
+resources via its **db cursors pre-allocation engine**.
 
-This applies when several documents need to be read from a big
+This applies when several documents need to be read from a big
 collection and moderates the effects of the
-MongoDB [cursor.skip()](https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip) method
+MongoDB [cursor.skip()](https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip) method
 **that slows downs linearly**.
 
 In common scenarios, RESTHeart's db cursor pre-allocation engine allows
@@ -37,7 +37,7 @@ and real case results.
 
 Let's first clarify the issue addressed by the engine.
 
-RESTHeart allows to [Read Documents](/docs/read-docs/) via GET requests
+RESTHeart allows to [Read Documents](/docs/mongodb-rest/read-docs/) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 
