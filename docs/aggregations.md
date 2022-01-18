@@ -365,7 +365,7 @@ function() {
 };
 ```
 
-## Security Informations
+## Security considerations
 
 By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
 

@@ -1,21 +1,21 @@
 ---
-title: WebSocket Overview
+title: WebSocket API Overview
 layout: docs-adoc
 ---
 
-== WebSocket API
+== Introduction
+
+This section describes the WebSocket API that allows publishing data events to WebSocket clients.
 
 > The WebSocket API is an advanced technology that makes it possible to open a two-way interactive communication session between the user's browser and a server. With this API, you can send messages to a server and receive event-driven responses without having to poll the server for a reply.
 
 Ref: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
 
-== MongoDB Change Streams
-
-> Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will.
+> MongoDB's Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will.
 
 Ref: https://docs.mongodb.com/manual/changeStreams
 
-== RESTHeart WebSockets
+== RESTHeart Change Stream
 
 __RESTHeart embeds a WebSocket server implementation__ that allows to expose MongoDB's Change Streams to Web browsers and any kind of HTTP/WebSocket client.
 
@@ -38,6 +38,6 @@ Exposing a WebSocket Server, clients may be promptly notified about these change
 </div>
 ++++
 
-NOTE:  Change streams require at least MongoDB v3.6 configured as a link:https://docs.mongodb.com/manual/replication/[Replica Set]
+NOTE:  Change streams require at least MongoDB configured as a link:https://docs.mongodb.com/manual/replication/[Replica Set]
 
-NOTE: Starting from RESTHeart 5.3.0, when the `stream` collection metadata is modified or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
+NOTE: When the `stream` collection metadata is modified or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
