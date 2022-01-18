@@ -5,7 +5,7 @@ layout: default
 <section id="top" class="black-background text-center pt-4 pb-5">
     <section class="my-0">
         <img src="/images/rh-logo-clean.png" width="128" />
-        <h1 class="pt-4 top-1 text-break"><strong>REST</strong>HEART</h1>
+        <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
         <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
