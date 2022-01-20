@@ -28,7 +28,7 @@ background-color: #eff2f3;
 public class GreeterService implements JsonService {
     @Override
     public void handle(JsonRequest req, JsonResponse res) {
-        switch(request.getMethod()) {
+        switch(req.getMethod()) {
             case GET -> res.setContent(object().put("message", "Hello World!"));
             case OPTIONS -> handleOptions(req);
             default -> res.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
