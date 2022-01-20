@@ -27,14 +27,11 @@ background-color: #eff2f3;
 @RegisterPlugin(name = "greetings", description = "just another Hello World")
 public class GreeterService implements JsonService {
     @Override
-    public void handle(JsonRequest request, JsonResponse response) {
-        if (request.isGet()) {
-            var content = new JsonObject();
-            content.addProperty("message", "Hello World!");
-
-            response.setContent(content);
-        } else {
-            response.setStatusCode(400);
+    public void handle(JsonRequest req, JsonResponse res) {
+        switch(request.getMethod()) {
+            case GET -> res.setContent(object().put("message", "Hello World!"));
+            case OPTIONS -> handleOptions(req);
+            default -> res.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
         }
     }
 }
