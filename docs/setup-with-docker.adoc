@@ -8,12 +8,14 @@ layout: docs-adoc
 If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
 
 [source,bash]
+----
 $ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongo --eval 'if (!rs.status().ok) rs.initiate();'
+----
 
 Run RESTHeart with:
 
 [source,bash]
-$ docker run -it --rm -p "8080:8080" -e MONGO_URI='mongodb://host.docker.internal' softinstigate/restheart
+$ docker run -it --rm -p "8080:8080" -e RH_MONGO_URI='mongodb://host.docker.internal' softinstigate/restheart
 
 == Run with docker-compose
 
@@ -42,7 +44,7 @@ $docker run -d --name mongodb --network restheart-network mongo:4.2
 3) Run a RESTHeart container
 
 [source,bash]
-$ docker run -d --rm --network restheart-network -p "8080:8080" -e MONGO_URI="mongodb://mongodb" softinstigate/restheart
+$ docker run -d --rm --network restheart-network -p "8080:8080" -e RH_MONGO_URI="mongodb://mongodb" softinstigate/restheart
 
 [source,bash]
 ----
@@ -51,7 +53,7 @@ $ http -b http://localhost:8080/ping
 Greetings from RESTHeart!
 ----
 
-== Dockerfiles
+== Dockerfile
 
 - link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile[Dockerfile]
 - link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile.distroless[Dockerfile.distroless]

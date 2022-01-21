@@ -61,3 +61,29 @@ The following log entry appears at the very beginning of logs during the startup
 WARNING: Environment variables replacement works only with primitive types: it doesn’t work with YAML structured data in configuration files, like arrays or maps. It's mandatory to use properties files and mustache syntax for that.
 
 TIP: Watch link:https://www.youtube.com/watch?v=dzggm7Wp2fU&t=820s[Configuration] video.
+
+== Change the configuration in Docker container
+
+The configuration file `restheart.yml` and property file `default.properties` can modified in two ways.
+
+If the configuration property to be changes is a scalar, you can use environment variables.
+
+The following example uses `-e RH_INSTANCE_NAME="the-best-api-ever"` to override the configuration parameter `instance-name`.
+
+[source,bash]
+----
+$ docker run -d --rm  -p "8080:8080" -e RH_MONGO_URI='mongodb://host.docker.internal' -e RH_INSTANCE_NAME="the-best-api-ever" softinstigate/restheart
+
+19:50:55.640 [main] WARN  org.restheart.Configuration - >>> Found environment variable 'RH_INSTANCE_NAME': overriding parameter 'instance-name' with value 'the-api'
+ 19:50:55.656 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart instance the-api-best-api-ever
+ .....
+----
+
+If the property to be changed is of a complex type, the configuration file or properties file must be overridden with a Docker volume.
+
+The following command overrides the property file in the container with the file `/host/path/to/default.properties` in the host machine.
+
+[source,bash]
+----
+$ docker run --rm -p 8080:8080 -e RH_MONGO_URI='mongodb://host.docker.internal' -v /host/path/to/default.properties:/opt/restheart/etc/default.properties softinstigate/restheart
+----
