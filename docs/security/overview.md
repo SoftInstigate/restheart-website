@@ -64,7 +64,6 @@ authorizers:
     cache-expire-policy: AFTER_WRITE
 ```
 
-
 For more on collection based authorization check the documentation on [mongoAclAuthorizer](/docs/security/authorization/#mongo-acl-authorizer)
 
 ## Understanding RESTHeart security

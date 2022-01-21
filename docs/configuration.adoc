@@ -1,20 +1,22 @@
 ---
-title: Setup
+title: Configuration
 layout: docs-adoc
 ---
 
-== Update the root user password!
+== Update the `admin` password!
 
-At first startup, RESTHeart initializes the user `admin`, with default password `secret` that can execute any request.
+At first startup, RESTHeart initializes the user `admin`, with the default password `secret`. *This user can execute any request*.
 
-INFO: The role `admin` can execute any request it is set as `root` role in the `mongoAclAuthorizer` configuration.
-
-WARNING: *YOU MUST UPDATE THE DEFAULT PASSWORD!*
+WARNING: *YOU MUST UPDATE THE DEFAULT PASSWORD!* The role `admin` can execute any request as it is set as the `root` role in the `mongoAclAuthorizer` configuration.
 
 To update it, run the following command:
 
 [source,bash]
 $ curl -u admin:secret -X PATCH localhost:8080/users/admin -H "Content-Type: application/json" -d '{ "password": "my-strong-password" }'
+
+Refer to link:/docs/security/user-management/[User Management] for more information on how to create new users, roles and permissions.
+
+NOTE: `mongoAclAuthorizer` is the default ACL authorizer from RESTHeart starting v6.2. For previous releases, the `fileAclAuthorizer` was used. In this case the user password must be updated in the file `etc/users.yml`.
 
 == Configuration files
 

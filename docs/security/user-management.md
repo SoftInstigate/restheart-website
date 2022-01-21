@@ -133,22 +133,12 @@ POST /acl HTTP/1.1
 {
   "predicate": "path-prefix[/inventory] and method[GET]",
   "roles": [ "user" ],
-  "priority": 1,
-  "readFilter": null,
-  "writeFilter": null
+  "priority": 1
 }
 ```
 
 {: .bs-callout.bs-callout-info }
-If the /acl collection has not been created before and you get 404 Not Found, create if first with:
-
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/eff74b1879d09706d2d9a7bdaafb649a4415c9a2/0"
-%}
-
-```http
-PUT /acl HTTP/1.1
-```
+Check [Format of permission](/docs/security/authorization/#format-of-permissions) for more information on ACL permissions.
 
 {: .bs-callout.bs-callout-info }
 Watch [Managing users with practical examples](https://www.youtube.com/watch?v=QVk0aboHayM&t=1828s)
