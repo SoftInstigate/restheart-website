@@ -20,7 +20,8 @@ background-color: #eff2f3;
                                 Implement a simple interface and deploy the web service
                                 by copying its jar file into the plugins directory.
                             </p>
-                            <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white">More examples</a>
+                            <a href="https://github.com/SoftInstigate/restheart-examples/tree/master/greeter-service" target="_blank" class="btn btn-o-white">See it on GitHub</a>
+                            <a href="https://github.com/SoftInstigate/restheart-examples" target="_blank" class="btn btn-o-white mt-2">More examples</a>
                         </div>
                         <div class="col-md-8">
 {% highlight java %}
@@ -31,7 +32,7 @@ public class GreeterService implements JsonService {
         switch(req.getMethod()) {
             case GET -> res.setContent(object().put("message", "Hello World!"));
             case OPTIONS -> handleOptions(req);
-            default -> res.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
+            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
         }
     }
 }
