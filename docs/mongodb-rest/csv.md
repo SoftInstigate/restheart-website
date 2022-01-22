@@ -206,7 +206,7 @@ Build the examples:
 
 ```
 $ cd restheart-examples
-$ mvn package
+$ ./mvnw package
 ```
 
 Deploy the csv-interceptor

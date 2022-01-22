@@ -144,7 +144,7 @@ You can then simply build it with:
 ```bash
 $ git checkout https://github.com/SoftInstigate/restheart.git
 $ cd restheart
-$ mvn clean package -Pnative
+$ ./mvnw clean package -Pnative
 ```
 
 As a result, you'll find the executable binary file `target/restheart-native`.
@@ -187,7 +187,7 @@ For instance, the following entry is present for the Interceptor [https://github
 You can now build the native image with:
 
 ```bash
-$ mvn clean package -Pnative
+$ ./mvnw clean package -Pnative
 ```
 
 For further information, good starting points are:
