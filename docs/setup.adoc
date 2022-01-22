@@ -26,10 +26,14 @@ Un-zip or un-tar
 
 [source,bash]
 ----
-$ # if you downloaded the zip
-$ unzip restheart.zip
 $ # if you downloaded the tar.gz
-$ tar -xzf restheart.tar.gz
+$ tar -xzf restheart.tar.gz && cd restheart
+----
+
+[source,bash]
+----
+$ # if you downloaded the tar.gz
+$ tar -xzf restheart.tar.gz && cd restheart
 ----
 
 == Run
@@ -46,7 +50,6 @@ NOTE: RESTHeart supports MongoDB from version 3 throughout 5 and it is extensive
 $ # start MongoDB as single instance Replica Set
 $ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db &&  mongo --eval 'if (!rs.status().ok) rs.initiate();'
 $ # start RESTHeart
-$ cd restheart
 $ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
 ----
 
@@ -59,7 +62,7 @@ Greetings from RESTHeart!
 
 == Directory structure
 
-[source,bash]
+[source,text]
 ----
 restheart
 ├── LICENSE.txt
