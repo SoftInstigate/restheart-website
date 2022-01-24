@@ -55,13 +55,11 @@ public class GreeterService implements JsonService {
 {% highlight java %}
 @RegisterPlugin(name = "kotlinGreeterService", description = "just another Hello World in Kotlin")
 class GreeterService : JsonService {
-    override fun handle(request: JsonRequest, response: JsonResponse) {
-        if (request.isGet) {
-            var greetings = JsonObject()
-            greetings.addProperty("msg", "Hello World")
-            response.content = greetings;
-        } else {
-            response.statusCode = 400;
+    override fun handle(req: JsonRequest, res: JsonResponse) {
+        when(req.method) {
+            METHOD.GET -> res.content = obj().put("msg", "Hello World").get()
+            METHOD.OPTIONS -> handleOptions(req);
+            else -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
         }
     }
 }
@@ -91,15 +89,15 @@ class GreeterService : JsonService {
     interceptPoint = InterceptPoint.RESPONSE)
 public class HelloInterceptor implements JsonInterceptor {
     @Override
-    public void handle(JsonRequest request, JsonResponse response) {
-        response.getContent()
+    public void handle(JsonRequest req, JsonResponse res) {
+        res.getContent()
             .getAsJsonObject()
             .addProperty("timestamp", Instant.now().toString());
     }
 
     @Override
-    public boolean resolve(JsonRequest request, JsonResponse response) {
-        return request.isHandledBy("greetings");
+    public boolean resolve(JsonRequest req, JsonResponse res) {
+        return req.isHandledBy("greetings");
     }
 }
 {% endhighlight %}
@@ -128,9 +126,9 @@ export const options = {
     uri: "/hello"
 }
 
-export function handle(request, response) {
-    response.setContent(JSON.stringify({ msg: 'Hello World' }));
-    response.setContentTypeAsJson();
+export function handle(req, res) {
+    res.setContent(JSON.stringify({ msg: 'Hello World' }));
+    res.setContentTypeAsJson();
 }
 {% endhighlight %}
                     </div>
