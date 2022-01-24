@@ -94,16 +94,12 @@
 
     $(document).ready(function () {
         // the script /etc/cron.daily/rh-pull-count runs at dbapi.io
-        // and POSTs the stats every day to beta.mrest.io/demo/stats
-
+        // and POSTs the stats every day to demo.restheart.org/stats
         var reqs = [];
 
         for (i = 0; i <= 3; i++) {
             reqs.push($.ajax({
-                url: `https://beta.mrest.io/demo/stats?pagesize=91&page=${i + 1}`,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('key', 'demo');
-                }
+                url: `https://demo.restheart.org/stats?pagesize=91&page=${i + 1}`
             }));
         }
 
@@ -248,8 +244,7 @@
 
         // line chart with total pull in the last 10 days
         // $.ajax({
-        //     url: "https://beta.mrest.io/demo/stats?pagesize=100&page=5",
-        //     beforeSend: function (xhr) { xhr.setRequestHeader('key', 'demo'); },
+        //     url: "https://demo.restheart.org/stats/pagesize=100&page=5",
         //     success: function (result) {
         //         if (result && result.reverse && result.map) {
         //             result.reverse();
