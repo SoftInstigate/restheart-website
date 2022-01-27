@@ -18,7 +18,7 @@ Because RESTHeart eliminates the need for time-consuming integrations, in most c
 <img src="/images/restheart-open-data-and-iot.svg" width="70%" height="auto" class="mx-auto d-block img-responsive" />
 
 {: .text-justify .mb-5}
-RESTHeart allows for high performance, live streaming of real-time data from MongoDB. For more information see [Websocket API](/docs/websocket/) documentation page.
+RESTHeart allows for high performance, live streaming of real-time data from MongoDB. For more information see [Websocket API](/docs/mongodb-websocket/) documentation page.
 
 {: .text-justify .mb-5}
 RESTHeart also leverages MongoDB's Geospatial support and stores GeoJSON objects without the need to write complicated server-side code: geometries are then available to clients such as Google Maps via its API.

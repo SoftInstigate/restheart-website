@@ -119,7 +119,7 @@ are identified.
 <tr class="odd">
 <td>Change Stream</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/_streams/&lt;stream_name&gt;</code></td>
-<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/websocket/">Change Streams</a>).</td>
+<td><code>&lt;stream_name&gt;</code> is the <code>name</code> of the change stream (specified in it declaration, see <a href="/docs/mongodb-websocket/">Change Streams</a>).</td>
 </tr>
 </tbody>
 </table>
