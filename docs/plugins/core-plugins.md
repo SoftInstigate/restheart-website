@@ -6,8 +6,8 @@ layout: docs
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
-    * [Dependency](#Dependency) 
-    * [@RegisterPlugin annotation](#@register-plugin-annotation) 
+    * [Dependency](#Dependency)
+    * [@RegisterPlugin annotation](#@register-plugin-annotation)
     * [Plugin Configuration](#plugin-configuration)
     * [Dependency injection](#dependency-injection)
     * [Request and Response Generic Classes](#request-and-response-generic-classes)
@@ -60,10 +60,11 @@ All plugins must be a annotated with `@RegisterPlugin` to:
 An example follows:
 
 ```java
-@RegisterPlugin(name = "foo service", 
-    description = "just an example service", 
-    defaultUri="/foo",
-    enabledByDefault=false) 
+@RegisterPlugin(name = "foo",
+    description = "just an example service",
+    defaultUri="/foo",      // optional, default /<service-name>
+    secure=false,           // optional, default false
+    enabledByDefault=false) // optional, default true
 public class MyPlugin implements JsonService {
 ...
 }
@@ -72,17 +73,18 @@ public class MyPlugin implements JsonService {
 The following table described the arguments of the annotation:
 
 {: .table }
-| param  | plugin  | description  | mandatory  | default value  | 
+| param  | plugin  | description  | mandatory  | default value  |
 |---|---|---|---|---|
-| name  | all  | the name of the plugin  | yes  | *none* |
-| description | all  | description of the plugin | yes  |  *none* |
-|  enabledByDefault | all  | true to enable the plugin otherwise it can be enabled by setting the configuration argument `enabled: true`  | no  | true |
-|  defaultURI | service  |  the default URI of the Service  | no  | /&lt;srv-name&gt; |
-|  dontIntercept |  service | list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }` | no  | {} |
-|  interceptPoint |  interceptor |  the intercept point: REQUEST_BEFORE_AUTH, REQUEST_AFTER_AUTH, RESPONSE, RESPONSE_ASYNC | no  | REQUEST_AFTER_AUTH |
-|  initPoint |  initializer | specify when the initializer is executed: BEFORE_STARTUP, AFTER_STARTUP |  no | AFTER_STARTUP |
-|  requiresContent | proxy interceptor | Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC) | no  | false |
-|  priority | interceptor, initializer | the execution priority (less is higher priority  | no  | 10 |
+| `name`  | all  | the name of the plugin  | yes  | *none* |
+| `description` | all  | description of the plugin | yes  |  *none* |
+|  `enabledByDefault` | all  | `true` to enable the plugin; can be overridden by the plugin configuration option `enabled` | no  | `true` |
+|  `defaultURI` | service  |  the default URI of the Service; can be overridden by the service configuration option `uji` | no  | /&lt;srv-name&gt; |
+|  `secure` | service  |  `true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secured` | no  | `false` |
+|  `dontIntercept` |  service | list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }` | no  | `{}` |
+|  `interceptPoint` |  interceptor |  the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC` | no  | REQUEST_AFTER_AUTH |
+|  `initPoint` |  initializer | specify when the initializer is executed: `BEFORE_STARTUP`, `AFTER_STARTUP` |  no | `AFTER_STARTUP` |
+|  `requiresContent` | proxy interceptor | Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC) | no  | `false` |
+|  `priority` | interceptor, initializer | the execution priority (less is higher priority  | no  | `10` |
 
 {: .bs-callout.bs-callout-info }
 Watch [Dependencies, annotations and parameters](https://www.youtube.com/watch?v=GReteuiMUio&t=108s)
@@ -91,7 +93,7 @@ Watch [Dependencies, annotations and parameters](https://www.youtube.com/watch?v
 
 A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration for a plugin just use its name under the `plugins-args` yml object:
 
-```
+```yml
 plugins-args:
     ping:
         enabled: true
@@ -190,7 +192,7 @@ public class MongoServerStatusService implements BsonService {
 
     private MongoClient mongoClient;
 
-    private static final BsonDocument COMMAND = new BsonDocument("serverStatus", new BsonInt32(1));
+    private static final BsonDocument COMMAND = document().put("serverStatus", 1);
 
     @InjectMongoClient
     public void init(MongoClient mongoClient) {
@@ -201,7 +203,7 @@ public class MongoServerStatusService implements BsonService {
     public void handle(BsonRequest request, BsonResponse response) throws Exception {
         if (request.isGet()) {
             var serverStatus = mongoClient.getDatabase("admin").runCommand(COMMAND, BsonDocument.class);
-            
+
             response.setContent(serverStatus);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setContentTypeAsJson();
@@ -217,18 +219,17 @@ The key method is `handle()` that is executed when a request to the service URI 
 
 ### Create Service with custom generic type
 
-To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface. 
+To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface.
 
-The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects. 
+The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects.
 
 The following example shows how to handle XML content:
 
 ```java
-@RegisterPlugin(
-        name = "myXmlService",
-        description = "example service consuming XML requests",
-        enabledByDefault = true,
-        defaultURI = "/xml")
+@RegisterPlugin(name = "myXmlService",
+    description = "example service consuming XML requests",
+    enabledByDefault = true,
+    defaultURI = "/xml")
 public class MyXmlService implements Service<XmlRequest, XmlResponse> {
     @Override
     default Consumer<HttpServerExchange> requestInitializer() {
@@ -259,27 +260,27 @@ public class XmlRequest extends ServiceRequest<Document> {
     private XmlRequest(HttpServerExchange exchange) {
         super(exchange);
     }
-    
+
     public static XmlRequest init(HttpServerExchange exchange) {
         var ret = new XmlRequest(exchange);
-        
+
         try {
             ret.injectContent();
         } catch (Throwable ieo) {
             ret.setInError(true);
         }
-        
+
         return ret;
     }
-    
+
     public static XmlRequest of(HttpServerExchange exchange) {
         return of(exchange, XmlRequest.class);
     }
-    
+
     public void injectContent() throws SAXException, IOException {
         var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         var rawContent = ChannelReader.read(wrapped.getRequestChannel());
-	    
+
         setContent(xdBuilder.parse(rawContent)ml);
     }
 }
@@ -295,13 +296,13 @@ Watch [Services](https://www.youtube.com/watch?v=GReteuiMUio&t=680s)
  Interceptors allow to snoop and modify requests and responses at different
  stages of the request lifecycle as defined by the interceptPoint parameter of
  the annotation `@RegisterPlugin`.
- 
+
  An interceptor can intercept either proxied requests or requests handled by
  Services.
- 
+
  An interceptor can intercept requests handled by a Service when its request
  and response types are equal to the ones declared by the Service.
- 
+
  An interceptor can intercept a proxied request, when its request and response
  types extends BufferedRequest and BufferedResponse.
 
@@ -315,7 +316,7 @@ The following implementation are provided by `restheart-commons`:
 The last one is particularly useful as it allows intercepting requests to the MongoDb API.
 
 ```java
-@RegisterPlugin(name = "secretFilter", 
+@RegisterPlugin(name = "secretFilter",
     interceptPoint = InterceptPoint.RESPONSE,
     description = "removes the property 'secret' from GET /coll")
 public class ReadOnlyPropFilter implements MongoInterceptor {
@@ -325,16 +326,16 @@ public class ReadOnlyPropFilter implements MongoInterceptor {
             response.getContent().asDocument().remove("secret");
         } else if (request.getContent().isArray()) {
             response.getContent().asArray().stream()
-                    .map(doc -> doc.asDocument())
-                    .forEach(doc -> doc.remove("secret"));
+                .map(doc -> doc.asDocument())
+                .forEach(doc -> doc.remove("secret"));
         }
     }
 
     @Override
     public boolean resolve(MongoRequest request, MongoResponse response) {
         return request.isGet()
-                && response.getContent() != null
-                && "coll".equalsIgnoreCase(request.getCollectionName();
+            && response.getContent() != null
+            && "coll".equalsIgnoreCase(request.getCollectionName());
     }
 }
 
@@ -349,7 +350,7 @@ Watch [Interceptors](https://www.youtube.com/watch?v=GReteuiMUio&t=986s)
 
 An _Initializer_ allows executing custom logic at startup time.
 
-The Initializer implementation class must extend the `org.restheart.plugins.Initializer` interface: 
+The Initializer implementation class must extend the `org.restheart.plugins.Initializer` interface:
 
 ```java
 public interface Initializer extends ConfigurablePlugin {
@@ -360,11 +361,10 @@ public interface Initializer extends ConfigurablePlugin {
 With the following code the Initializer hangs restheart startup until the user confirms.
 
 ```java
-@RegisterPlugin(
-        name = "confirmStartupInitializer",
-        description = "hangs restheart startup until the user hits <enter>"
-        priority = 100,
-        initPoint = InitPoint.BEFORE_STARTUP)
+@RegisterPlugin(name = "confirmStartupInitializer",
+    description = "hangs restheart startup until the user hits <enter>"
+    priority = 100,
+    initPoint = InitPoint.BEFORE_STARTUP)
 public class confirmStartupInitializer implements Initializer {
     public void init() {
         System.out.println("Hit <enter> to start RESTHeart");

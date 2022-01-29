@@ -11,7 +11,7 @@ layout: docs
 - [Extended and Simplified Security](#extended-and-simplified-security)
 - [Variables in aggregation and permission](#variables-in-aggregation-and-permission)
 - [Dynamic Change Streams](#dynamic-change-streams)
-- [Java 16](#java-16)
+- [Java Version](#java-version)
 
 </div>
 
@@ -499,11 +499,12 @@ Change streams definition can be updated without requiring to restart RESTHeart.
 
 When a change stream definition is updated, all clients connected via WebSocket are automatically disconnected from the old change stream.
 
-## Java 16
+## Java version
 
 {: .bs-callout.bs-callout-warning }
 Breaking change
 
-RESTHeart 6 requires Java 16+ or GraalVM 21.1 (JDK 16).
+RESTHeart 6.0.x and 6.1.x requires Java 16+ or GraalVM 21.1 (JDK 16).
+RESTHeart 6.2.x requires Java 17+ or GraalVM 22.0.0.2 (JDK 17).
 
 </div>
