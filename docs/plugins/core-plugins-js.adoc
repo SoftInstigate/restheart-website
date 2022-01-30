@@ -12,7 +12,7 @@ TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/sr
 
 == Concurrency Model
 
-RESTHeart is a multi-threaded application and it handle each request in a dedicated thread. This makes all code running in a request thread safe, including JavaScript services and interceptor.
+RESTHeart is a multi-threaded application and it handles each request in a dedicated thread. This makes all code running in a request thread safe, and this also applies to JavaScript services and interceptors.
 
 This is very different than usual JavaScript concurrency model, where all code is usually executed in a single thread and requires asynchronous programming, with callbacks, promises, observable, etc.
 
@@ -22,7 +22,7 @@ In RESTHeart, you can write simple JavaScript code that also includes blocking c
 
 The JavaScript code that defines a `Service` must export the object `options` and the function `handle(req, res)`.
 
-The resulting service will be an instance of `StringService`, i.e. the request and response body are treated as strings.
+The resulting service will be an instance of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/plugins/StringService.html[StringService], i.e. the request and response body are treated as strings.
 
 [source,javascript]
 ----
@@ -76,7 +76,7 @@ The `options` object must contain the following properties:
 
 === The function `handle(req, res)`
 
-The `handle` functions accepts two parameters: the request and the response. These are Java objects of `StringRequest` and `StringResponse` respectively.
+The `handle` functions accepts two parameters: the request and the response. These are Java objects of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
 
 == Interceptor
 
@@ -148,7 +148,7 @@ When `resolve()` returns `true` the interceptor will be actually invoked, i.e. t
 
 === The function `handle(req, res)`
 
-The `handle()` functions accepts two parameters: the request and the response. These are Java objects of the classes defined by the `pluginClass`. For the default class `StringInterceptor`, these are `StringRequest` and `StringResponse` respectively.
+The `handle()` functions accepts two parameters: the request and the response. These are Java objects of the classes defined by the `pluginClass`. For the default class `StringInterceptor`, these are link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
 
 == Packaging
 
@@ -169,7 +169,7 @@ The `package.json` muse declare the services in the `rh:services` array and inte
 
 == Modules
 
-The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/require-module-service.js[requre-module-service.js] for an example. 
+The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/require-module-service.js[requre-module-service.js] for an example.
 
 IMPORTANT: The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
 
