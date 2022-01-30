@@ -84,10 +84,10 @@ In some use cases, native image might result in slightly worse peak performance.
 
 We suggest to install GraalVM with [sdkman](https://sdkman.io)
 
-You need at least version 21.3 for Java 17:
+You need at least version 22.0.0.2 for Java 17:
 
 ```
-$ sdk install java 21.3.0.r17-grl
+$ sdk install java 22.0.0.2.r17-grl
 ```
 
 After having installed GraalVM, you can install the `native-image` tool with `gu`
@@ -102,9 +102,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "16.0.1" 2021-04-20
-OpenJDK Runtime Environment GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05)
-OpenJDK 64-Bit Server VM GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05, mixed mode, sharing)
+openjdk version "17.0.2" 2022-01-18
+OpenJDK Runtime Environment GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05)
+OpenJDK 64-Bit Server VM GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -121,7 +121,7 @@ A Docker image of RESTHeart native is available tagged as `softinstigate/resthea
 Example:
 
 ```bash
-$ docker pull softinstigate/restheart:6.0.0-native
+$ docker pull softinstigate/restheart:6.2.0-native
 ```
 
 The [docker-compose-native.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose-native.yml) leveraging restheart-native is available as well. It runs restheart-native and MongoDB stack.
@@ -134,9 +134,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "16.0.1" 2021-04-20
-OpenJDK Runtime Environment GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05)
-OpenJDK 64-Bit Server VM GraalVM CE 21.1.0 (build 16.0.1+9-jvmci-21.1-b05, mixed mode, sharing)
+openjdk version "17.0.2" 2022-01-18
+OpenJDK Runtime Environment GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05)
+OpenJDK 64-Bit Server VM GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05, mixed mode, sharing)
 ```
 
 You can then simply build it with:
