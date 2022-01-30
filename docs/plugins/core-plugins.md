@@ -78,7 +78,8 @@ The following table described the arguments of the annotation:
 | `name`  | all  | the name of the plugin  | yes  | *none* |
 | `description` | all  | description of the plugin | yes  |  *none* |
 |  `enabledByDefault` | all  | `true` to enable the plugin; can be overridden by the plugin configuration option `enabled` | no  | `true` |
-|  `defaultURI` | service  |  the default URI of the Service; can be overridden by the service configuration option `uji` | no  | /&lt;srv-name&gt; |
+|  `defaultURI` | service  | the default URI of the Service; can be overridden by the service configuration option `uri` | no  | /&lt;srv-name&gt; |
+|  `matchPolicy` | service  | `PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>` | no  | `PREFIX` |
 |  `secure` | service  |  `true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secured` | no  | `false` |
 |  `dontIntercept` |  service | list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }` | no  | `{}` |
 |  `interceptPoint` |  interceptor |  the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC` | no  | REQUEST_AFTER_AUTH |

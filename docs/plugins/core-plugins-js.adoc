@@ -4,15 +4,25 @@ layout: docs-adoc
 ---
 :page-liquid:
 
-++++
-{% include doc-in-progress-v6.html %}
-++++
-
 == Introduction
 
-Services and Interceptors can be developed in JavaScript and TypeScript when running RESTHeart with GraalVM or using `restheart-native`
+Services and Interceptors can be developed in JavaScript and TypeScript when running RESTHeart with GraalVM or using RESTHeart native.
 
-Here is an example
+TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources[example JS plugins]
+
+== Concurrency Model
+
+RESTHeart is a multi-threaded application and it handle each request in a dedicated thread. This makes all code running in a request thread safe, including JavaScript services and interceptor.
+
+This is very different than usual JavaScript concurrency model, where all code is usually executed in a single thread and requires asynchronous programming, with callbacks, promises, observable, etc.
+
+In RESTHeart, you can write simple JavaScript code that also includes blocking calls, without incurring in performance problems.
+
+== Service
+
+The JavaScript code that defines a `Service` must export the object `options` and the function `handle(req, res)`.
+
+The resulting service will be an instance of `StringService`, i.e. the request and response body are treated as strings.
 
 [source,javascript]
 ----
@@ -22,14 +32,199 @@ export const options = {
     uri: "/hello"
 }
 
-export function handle(request, response) {
-    response.setContent(`{ "msg": `Hello ${rc.name || 'World'}` } `);
-    response.setContentTypeAsJson();
+export function handle(req, res) {
+    res.setContent(`{ "msg": `Hello ${rc.name || 'World'}` } `);
+    res.setContentTypeAsJson();
 }
 ----
 
-TIP:  See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources[example JS plugins]
+=== The object `options`
 
-Just copy the `test-js-plugins` directory into the `plugins` directory to have the JS plugins automatically deployed.
+The `options` object must contain the following properties:
 
-JS plugins can be added or updated without requiring to restart the server, ie v6 supports JS plugins hot deployment.
+[.table]
+|===
+|param |description |mandatory |default value
+
+|`name`
+|the name of the service
+|yes
+|*none*
+
+|`description`
+|description of the service
+|yes
+|*none*
+
+|`uri`
+|the uri of the service
+|yes
+|*none*
+
+|`secured`
+|`true` to require successful authentication and authorization to be invoked;
+|no
+|`false`
+
+|`matchPolicy`
+| `PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>` | no  | `PREFIX` |
+
+|`modulesReplacements`
+| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
+
+|===
+
+=== The function `handle(req, res)`
+
+The `handle` functions accepts two parameters: the request and the response. These are Java objects of `StringRequest` and `StringResponse` respectively.
+
+== Interceptor
+
+The JavaScript code that defines an `Interceptor` export the object `options` and the functions `handle(req, res)` and `resolve(req)`.
+
+[source,javascript]
+----
+export const options = {
+    name: "helloWorldInterceptor",
+    description: "modifies the response of helloWorldService",
+    interceptPoint: "RESPONSE"
+}
+
+export function handle(request, response) {
+    const rc = JSON.parse(response.getContent() || '{}');
+
+    let modifiedBody = {
+        msg: rc.msg + ' from Italy with Love';
+    }
+
+    response.setContent(JSON.stringify(modifiedBody));
+    response.setContentTypeAsJson();
+}
+
+export function resolve(request) {
+    return request.isHandledBy("helloWorldService");
+}
+----
+
+=== The object `options`
+
+The `options` object must contain the following properties:
+
+[.table]
+|===
+|param |description |mandatory |default value
+
+|`name`
+|the name of the interceptor
+|yes
+|*none*
+
+|`description`
+|description of the interceptor
+|yes
+|*none*
+
+|`interceptPoint`
+| the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC` | no  | REQUEST_AFTER_AUTH |
+
+|`pluginClass`
+| the class of the interceptor that must match the service to intercept (e.g. `MongoInterceptor` can intercept a request handled by the `MongoService`), `StringInterceptor`, `BsonInterceptor`, `ByteArrayProxyInterceptor`, `CsvInterceptor`, `JsonInterceptor`, `MongoInterceptor` |
+|no
+|`StringInterceptor`
+
+
+|`modulesReplacements`
+| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
+
+|===
+
+=== The function `resolve(req)`
+
+The function `resolve()` accepts one parameter `req`.
+
+An interceptor of a given class, can intercept requests handled by all services with matching types, e.g. `MongoInterceptor` can intercept requests handled by the `MongoService`.
+
+When `resolve()` returns `true` the interceptor will be actually invoked, i.e. this function allows to select the requests to intercept.
+
+=== The function `handle(req, res)`
+
+The `handle()` functions accepts two parameters: the request and the response. These are Java objects of the classes defined by the `pluginClass`. For the default class `StringInterceptor`, these are `StringRequest` and `StringResponse` respectively.
+
+== Packaging
+
+The plugins js files must be placed in a folder with a `package.json` file.
+
+The `package.json` muse declare the services in the `rh:services` array and interceptors in the `rh:interceptors` array.
+
+[source,json]
+----
+{
+  "name": "restheart-js-foo",
+  "version": "1.0.0",
+  "description": "test js plugins for RESTHeart",
+  "rh:services": [ "foo.js" ],
+  "rh:interceptors": [ "foo-interceptor.js" ]
+}
+----
+
+== Modules
+
+The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/require-module-service.js[requre-module-service.js] for an example. 
+
+IMPORTANT: The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
+
+For instance, you cannot use the module `http`, and there is no pure JS implementation available. In this case, you can rely on <<interop,Java/Javascript interoperability>>  and use the  standard Java libraries and all the libraries that are available in RESTHeart.
+
+See link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[GraalVM Modules] for more details.
+
+== Deploy
+
+To the JavaScript plugin, just copy the folder containing the scripts and the file `package.json` into the `plugins` directory of RESTHeart.
+
+NOTE: JS plugins can be added or updated without requiring to restart the server, ie RESTHeart supports JS plugins hot deployment.
+
+If you modify the code, you can force RESTHeart to update it by touching the plugin folder.
+
+[source,bash]
+$ touch plugins/my-plugin
+
+== Configuration parameters
+
+It is possible to defined configuration parameters for the plugins by just defining them in the yml configuration file, under the `plugins-args` section.
+
+[source,yml]
+----
+plugins-args:
+    foo: # <-- name of the plugin
+        arg: value
+----
+
+The arguments are available in the `pluginArgs` object.
+
+[source,javascript]
+----
+const arg = pluginArgs.arg
+----
+
+== Java/JavaScript interoperability [[interop]]
+
+GraalVM allows to execute JavaScript code from RESTHeart and allows interoperability with Java code.
+
+This means that all the Java classes shipped with RESTHeart can be used in JavaScript code.
+
+For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/http-client.js[http-client.js] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
+
+== MongoDB driver
+
+The Java MongoDb driver is available in the JavaScript code as `mclient`.
+
+See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/mclient-service.js[]mclient-service.js] for an example of how to use it.
+
+== Logging
+
+The RESTHeart Java logger can be used from JavaScript code.
+
+[source,javascript]
+----
+LOGGER.debug("pluginArgs {}", pluginArgs);
+----
