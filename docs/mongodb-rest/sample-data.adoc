@@ -48,16 +48,20 @@ The sample data consist of the following databases:
 
 Note that the default configuration of RESTHeart does not expose the sample data. It exposes only the database `restheart`.
 
-To expose the sample data, you need to add the following configuration to your RESTHeart configuration file:
+You can expose all databases setting the `mongo-mounts` in the `restheart.yml` configuration file as follows:
 
 [source,yml]
 ----
 mongo-mounts:
-  - what: "*"
+  - what: "*" # default value is /restheart. "*" means expose all databases
     where: /
 ----
 
-Or you can simply add a database mount with the following configuration:
+NOTE: With this configuration the URI of a collection is `/<db>/<collection>` in contrast with the default configuration where it is just `/<collection>` being it this case the `<db>` set to `restheart`.
+
+For this the mount, the URI `/sample_mflix/movies` maps to the collection `sample_mflix.movies`: the request `GET /sample_mflix/movies` retrieves the movies in the database `sample_mflix`.
+
+Alternatively you can simply add one or more database mounts as follows:
 
 [source,yml]
 ----
@@ -67,3 +71,9 @@ mongo-mounts:
   - what: "/sample_mflix"
     where: /mflix
 ----
+
+NOTE: With this configuration the URI of a collection of the database `restheart` is `/<collection>` and the URI of a collection of the database `sample_mflix` is `/mflix/<collection>`.
+
+For the first mount, the URI `/users` maps to the collection `restheart.users`: the request `GET /users` retrieves the users in the database `restheart`.
+
+For the second mount, the URI `/mflix/movies` maps to the collection `sample_mflix.movies`: the request `GET /mflix/movies` retrieves the movies in the database `sample_mflix`.
