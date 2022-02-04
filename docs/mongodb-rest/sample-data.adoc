@@ -1,0 +1,69 @@
+---
+title: Load Sample Data into MongoDB
+layout: docs-adoc
+---
+
+MongoDB provides a sample data set for testing and development.
+
+This section describes the sample data set and how to load it into your MongoDB instance.
+
+== Install the Database tools
+
+You need `mongorestore` that is part of the MongoDB Database Tool.
+
+To install it please refer to link:https://docs.mongodb.com/database-tools/
+
+== Download the sample data
+
+Download the sample data via the curl command:
+
+[source,bash]
+$ curl https://atlas-education.s3.amazonaws.com/sampledata.archive -o sampledata.archive
+
+TIP: the data set is also available on this website at the following address `https://restheart.org/assets/sampledata.archive`
+
+== Restore the sample data
+
+Make sure MongoDB is running on `localhost:27017` (this command assumes it is not running with authentication required).
+
+[source,bash]
+$ mongorestore --archive=sampledata.archive
+
+== The sample data
+
+The sample data consist of the following databases:
+
+[source,json]
+----
+[   "sample_airbnb",
+    "sample_analytics",
+    "sample_geospatial",
+    "sample_mflix",
+    "sample_restaurants",
+    "sample_supplies",
+    "sample_training",
+    "sample_weatherdata"
+]
+----
+
+Note that the default configuration of RESTHeart does not expose the sample data. It exposes only the database `restheart`.
+
+To expose the sample data, you need to add the following configuration to your RESTHeart configuration file:
+
+[source,yml]
+----
+mongo-mounts:
+  - what: "*"
+    where: /
+----
+
+Or you can simply add a database mount with the following configuration:
+
+[source,yml]
+----
+mongo-mounts:
+  - what: "/restheart"
+    where: /
+  - what: "/sample_mflix"
+    where: /mflix
+----
