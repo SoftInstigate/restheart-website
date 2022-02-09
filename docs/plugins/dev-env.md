@@ -26,14 +26,14 @@ This page summarizes our findings and provides you with links and tips to setup 
 
 ## Plugin Project Skeleton
 
-You can start developing a pluging by forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton)
+You can start developing a plugin by forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton)
 
 This repository includes a sample service and provides you with the following features:
 
 {: .table }
 |feature|description|
 |-|-|
-|**Easy Execution**|A script allows to automatically download and run RESTHeart with your plugin. docker-compose can be used to start MongoDB configured as a single instance Replica Set to enable transactions and change streams|
+|**Easy Execution**|A script allows to automatically download and run RESTHeart with your plugin. `docker compose` can be used to start MongoDB configured as a single instance Replica Set to enable transactions and change streams|
 |**Watch Mode**|You can develop in *Watch Mode* so that the code is automatically rebuilt, and RESTHeart automatically restarted as soon as you change a source or configuration file.|
 |**Notifications**| get notifications on OSX when the *watcher* builds and restarts RESTHeart, so you know when you can try your changes.|
 |**microD profile**|Start RESTHeart without the MongoDB Service. We call this profile *microD*, because it is an effective runtime environment for micro-services.|

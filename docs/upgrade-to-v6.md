@@ -128,7 +128,7 @@ RESTHeart can be built as native image. See [GraalVM](/docs/graalvm/) documentat
 The Docker image of restheart-native is available:
 
 ```bash
-$ docker pull softinstigate:restheart:6.0.0-native
+$ docker pull softinstigate:restheart:6.2.0-native
 ```
 
 ## Write Mode in MongoDB REST API

@@ -103,7 +103,7 @@ To use a custom LogBack configuration when running RESTHeart with docker compose
 1. override the `entrypoint` to specify the `logback.configurationFile` JVM property
 2. mount the custom `logback.xml` configuration file into the docker image using `volume`
 
-Replace the `restheart` service definition in the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) with the following:
+Replace the `restheart` service definition in the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/6.2.x/docker-compose.yml) with the following:
 
 ```yml
     restheart:
