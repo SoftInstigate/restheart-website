@@ -178,7 +178,7 @@ $ MONGO_URI="mongodb://127.0.0.1" java -jar restheart.jar etc/restheart.yml -e e
 Due to a bug affecting RESTHeart until v5.1.6, environment variables must be prefixed with `RESTHEART_SECURITY_` but for MongoService configuration options, like `mongo-uri` where no prefix is allowed. This has been fixed in RESTHeart v5.1.7.
 
 {: .bs-callout.bs-callout-info }
-Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
+Have a look at the [docker-compose.yml](https://github.com/SoftInstigate/restheart/blob/5.4.x/docker-compose.yml) file for an example of how to export an environment variable if using Docker.
 
 The following log entry appears at the very beginning of logs during the startup process:
 
@@ -229,12 +229,12 @@ log-file-path = /usr/local/var/log/restheart.log
 
 ## Run with Docker
 
-The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
+The official RESTHeart's public docker image is freely available on [Docker hub](https://hub.docker.com/r/softinstigate/restheart). Have a look at the [Dockerfile](https://github.com/SoftInstigate/restheart/blob/5.4.x/core/Dockerfile).
 
 To run both RESTHeart and MongoDB services you can use `docker-compose`. Just copy and paste the following shell command:
 
 ```bash
-curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml && docker-compose up
+curl https://raw.githubusercontent.com/SoftInstigate/restheart/5.4.x/docker-compose.yml --output docker-compose.yml && docker-compose up
 ```
 
 You should see something similar to the following logs:

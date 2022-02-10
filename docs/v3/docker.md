@@ -42,7 +42,7 @@ Download the example [docker-compose.yml](https://github.com/SoftInstigate/resth
 
 ```bash
 $ mkdir restheart && cd restheart
-$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/3.11.x/docker-compose.yml --output docker-compose.yml
 ```
 
 The file `docker-compose.yml` defines a single micro-service made of a RESTHeart instance on port `8080` and a MongoDB instance configured to work together.
@@ -89,7 +89,7 @@ Then you can tail the logs of both services, to spot any error:
 
 ``` bash
 $ docker-compose logs -f
-```    
+```
 
 Or you could tail the logs of individual services:
 
@@ -144,7 +144,7 @@ $ docker pull softinstigate/restheart:<tag>
 
 ### Dockerfile
 
-* The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile).
+* The Dockefile is [here](https://github.com/SoftInstigate/restheart/blob/3.11.x/Dockerfile).
 
 ### How to Run
 
@@ -171,7 +171,7 @@ $ docker pull softinstigate/restheart:<tag>
 
 If you are running RESTHeart 3.3 and above (`latest` tag) then MongoDB authentication is enabled by default and you must start the mongo container passing the admin username and password via command line:
 
-``` bash
+```bash
 $ docker run -d -e MONGO_INITDB_ROOT_USERNAME='restheart' -e MONGO_INITDB_ROOT_PASSWORD='R3ste4rt!' \
  --name mongodb mongo:3.6 --bind_ip_all --auth
 ```
@@ -186,13 +186,13 @@ If you change the `MONGO_INITDB_ROOT_USERNAME` or `MONGO_INITDB_ROOT_PASSWORD` t
 
 If you are running RESTHeart 3.2 or below.
 
-``` bash
+```bash
 $ docker run -d --name mongodb mongo:3.6
 ```
 
 To make it accessible from your host and add a [persistent data volume](https://docs.docker.com/userguide/dockervolumes/):
 
-``` bash
+```bash
 $ docker run -d -p 27017:27017 --name mongodb -v <db-dir>:/data/db mongo:3.6
 ```
 
