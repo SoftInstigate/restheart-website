@@ -55,10 +55,10 @@ All plugins must be a annotated with `@RegisterPlugin` to:
 An example follows:
 
 ```java
-@RegisterPlugin(name = "foo service", 
-    description = "just an example service", 
+@RegisterPlugin(name = "foo service",
+    description = "just an example service",
     defaultUri="/foo",
-    enabledByDefault=false) 
+    enabledByDefault=false)
 public class MyPlugin implements JsonService {
 ...
 }
@@ -66,7 +66,7 @@ public class MyPlugin implements JsonService {
 
 The following table described the arguments of the annotation:
 
-| param  | plugin  | description  | mandatory  | default value  | 
+| param  | plugin  | description  | mandatory  | default value  |
 |---|---|---|---|---|
 | name  | all  | the name of the plugin  | yes  | *none* |
 | description | all  | description of the plugin | yes  |  *none* |
@@ -278,13 +278,13 @@ In the constructor a call to `super(exchange)` attaches the object to the `HttpS
  Interceptors allow to snoop and modify requests and responses at different
  stages of the request lifecycle as defined by the interceptPoint parameter of
  the annotation `@RegisterPlugin`.
- 
+
  An interceptor can intercept either proxied requests or requests handled by
  Services.
- 
+
  An interceptor can intercept requests handled by a Service when its request
  and response types are equal to the ones declared by the Service.
- 
+
  An interceptor can intercept a proxied request, when its request and response
  types extends BufferedRequest and BufferedResponse.
 
@@ -293,12 +293,12 @@ The following implementation are provided by `restheart-commons`:
 - `ByteArrayInterceptor` intercepts requests handled by services implementing `ByteArrayService`
 - `JsonService` intercepts requests handled by services implementing `JsonService`
 - `BsonService` intercepts requests handled by services implementing `BsonService`
-- `MongoService` intercepts requests handled by the MongoService
+- `MongoService` intercepts requests handled by the `MongoService`
 
 The last one is particularly useful as it allows intercepting requests to the MongoDb API.
 
 ```java
-@RegisterPlugin(name = "secretFilter", 
+@RegisterPlugin(name = "secretFilter",
     interceptPoint = InterceptPoint.RESPONSE,
     description = "removes the property 'secret' from GET /coll")
 public class ReadOnlyPropFilter implements MongoInterceptor {
