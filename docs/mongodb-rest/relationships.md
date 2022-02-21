@@ -130,7 +130,7 @@ PUT /parentcoll HTTP/1.1
             "ref-field": "parent"
         }
     ]
-}	
+}
 
 HTTP/1.1 201 CREATED
 ```
@@ -272,8 +272,8 @@ HTTP/1.1 200 OK
     },
     "albums": [
         "Disintegration",
-        "Three Imaginary Boys",
-        "Seventeen Seconds"
+        "Wish",
+        "Bloodflowers"
     ]
 }
 ```
@@ -310,7 +310,7 @@ PUT /bandsi HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-``` http
+```http
 PUT /albumsi HTTP/1.1
 
 { "descr":"albums published by music bands" }
@@ -354,10 +354,10 @@ PUT /bandsi/The%20Cure HTTP/1.1
 HTTP/1.1 201 CREATED
 ```
 
-If we now get "The Cure" document, we can notice the `albums` link: `/albumsi?filter={'band':'The Cure'}`
+If we now get "The Cure" document, we can notice the `albums` link: `/albumsi?filter={'band':'The Cure'}`
 
 ```http
-GET /test/bandsi/The%20Cure
+GET /test/bandsi/The%20Cure HTTP/1.1
 
 HTTP/1.1 200 OK
 
