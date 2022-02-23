@@ -89,3 +89,66 @@ GET /messages?rep=SHAL HTTP/1.1
     }
 }
 ----
+
+To subscribe to the change streams, we will use `websocat`, a Command-line client for WebSockets, like netcat (or curl) for `ws://`
+
+TIP: You can install `websocat` following the instructions at link:https://github.com/vi/websocat#installation[] or downloading binaries from link:https://github.com/vi/websocat/releases[]
+
+Connect to the change streams using the following command, given that the default user `admin` exists with the default password:
+
+[source,bash]
+$ websocat --text - autoreconnect:ws://admin:secret@127.0.0.1:8080/messages/_streams/all
+
+
+To allow connections without authentication, you can define the following permission
+
+[source,http]
+POST /acl HTTP/1.1
+
+++++
+{% include code-header.html type="Request body" %}
+++++
+[source,json]
+
+
+[source,json]
+----
+{
+    "_id": "unauthenticatedCanConnectToMyWebSocket",
+    "predicate": "path-prefix('/messages/_streams/all')",
+    "priority": 0,
+    "roles": [ "$unauthenticated" ]
+}
+----
+
+With this permission in place, you can connect to the WebSocket without authentication:
+
+[source,bash]
+$ websocat --text - autoreconnect:ws://127.0.0.1:8080/messages/_streams/all
+
+If we now create a new document in the collection `messages`
+
+[source,http]
+POST /messages HTTP/1.1
+
+++++
+{% include code-header.html type="Request body" %}
+++++
+[source,json]
+
+
+[source,json]
+----
+{
+    "message": "Hello WebSockets!",
+    "name": "uji"
+}
+----
+
+We get the following output from `websocat`:
+
+[source,bash]
+----
+$ websocat --text - autoreconnect:ws://admin:secret@127.0.0.1:8080/messages/_streams/all
+{"fullDocument":{"_id":{"$oid":"62166d53ebdcd56455a1a7ab"},"message":"Hello WebSockets!","name":"uji","_etag":{"$oid":"62166d53ebdcd56455a1a7aa"}},"documentKey":{"_id":{"$oid":"62166d53ebdcd56455a1a7ab"}},"operationType":"insert"}
+----
