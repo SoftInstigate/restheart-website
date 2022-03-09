@@ -21,6 +21,9 @@ This section provides instructions on how to enable Transport Layer Security so 
 {:.alert.alert-danger}
 HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. **It is paramount to use HTTPS**
 
+{:.alert.alert-info}
+This section is about securing HTTP requests between Clients and RESTHeart. Read [Secure connection to MongoDB](/docs/mongodb-rest/secure-connection-to-mongodb/) for more information on how to secure the connection between RESTHeart and MongoDB.
+
 ## The HTTPS listener
 
 There are many ways of enabling HTTS; for instance you can setup a web server such as nginx as a reverse proxy in front of RESTHeart or you may rely on cloud services that provides load balancers that manages SSL for you (such are Amazon WS or Google Cloud).
