@@ -77,10 +77,10 @@ An example permission document follows (for more examples check [acl.json](https
 {
   "_id": "userCanGetOwnCollection",
   "roles": ["user"],
-  "predicate": "method(GET) and path-template('/{userid}') and equals(@user.userid, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
+  "predicate": "method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
   "priority": 100,
   "mongo": {
-    "readFilter": { "_$or": [{ "status": "public" }, { "author": "@user.userid" }] },
+    "readFilter": { "_$or": [{ "status": "public" }, { "author": "@user._id" }] },
     "projectResponse": { "log": 0 }
   }
 }
@@ -129,9 +129,9 @@ For requests handled by the `MongoService` (i.e. the service that implements the
     "allowBulkPatch": false,
     "allowBulkDelete": false,
     "allowWriteMode": false,
-    "readFilter": {"$or": [ {"status": "public"}, {"author": "@user.userid"} ] },
-    "writeFilter": {"author": "@user.userid"},
-    "mergeRequest": {"author": "@user.userid"}
+    "readFilter": {"$or": [ {"status": "public"}, {"author": "@user._id"} ] },
+    "writeFilter": {"author": "@user._id"},
+    "mergeRequest": {"author": "@user._id"}
   }
 }
 ```
@@ -200,7 +200,7 @@ In the following example:
   "roles": [ "user" ],
   "predicate": "path-prefix('coll') and method(PATCH)",
   "mongo": {
-    "mergeRequest": {"author": "@user.userid"}
+    "mergeRequest": {"author": "@user._id"}
   }
 }
 ```
@@ -265,11 +265,11 @@ An example follows (for more examples check [acl.yml](https://github.com/SoftIns
 ```yml
   roles: [ "user" ]
   predicate: >
-        method(GET) and path-template('/{userid}') and equals(@user.userid, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)
+        method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)
   priority: 100
   mongo:
     readFilter: >
-        { "_$or": [{ "status": "public" }, { "author": "@user.userid" }] }
+        { "_$or": [{ "status": "public" }, { "author": "@user._id" }] }
     projectResponse: >
         { "log": 0 }
 ```

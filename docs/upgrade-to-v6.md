@@ -253,7 +253,7 @@ Until v5, `mongoAclAuthorizer` offers more options for permissions than the `fil
       predicate: >
         method(GET)
         and path-template('/{userid}')
-        and equals(@user.userid, ${userid})
+        and equals(@user._id, ${userid})
         and qparams-contain(page)
         and qparams-blacklist(filter, sort)
 
@@ -262,7 +262,7 @@ Until v5, `mongoAclAuthorizer` offers more options for permissions than the `fil
         readFilter: >
           { "$or": [
             {"status": "public"},
-            {"author": "@user.userid" }
+            {"author": "@user._id" }
             ]}
         projectResponse: >
           { "log": 0 }
@@ -282,11 +282,11 @@ Until v5, `mongoAclAuthorizer` offers more options for permissions than the `fil
         "the property 'log' is removed from the response <- projectResponse"
     ],
     "roles": ["user"],
-    "predicate": "method(GET) and path-template('/{userid}') and equals(@user.userid, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
+    "predicate": "method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
     "priority": 100,
     "mongo": {
       "readFilter": {
-        "_$or": [{ "status": "public" }, { "author": "@user.userid" }]
+        "_$or": [{ "status": "public" }, { "author": "@user._id" }]
       },
       "projectResponse": { "log": 0 }
     }
@@ -321,7 +321,7 @@ Consider the following example:
       predicate: >
         method(GET)
         and path-template('/{userid}')
-        and equals(@user.userid, ${userid})
+        and equals(@user._id, ${userid})
         and qparams-contain(page)
         and qparams-blacklist(filter, sort)
 ```
@@ -339,11 +339,11 @@ mongo:
     allowBulkDelete: false         # default false
     allowWriteMode: false          # default false
     readFilter: >
-          {"$or": [ {"status": "public"}, {"author": "@user.userid"} ] }
+          {"$or": [ {"status": "public"}, {"author": "@user._id"} ] }
     writeFilter: >
-          {"author": "@user.userid"}
+          {"author": "@user._id"}
     mergeRequest: >
-          {"author": "@user.userid"}
+          {"author": "@user._id"}
 ```
 
 {: .table }
@@ -397,10 +397,10 @@ In the following example:
   predicate: path-prefix('coll') and method(PATCH)
   mongo:
     mergeRequest: >
-        {"author": "@user.userid"}
+        {"author": "@user._id"}
 ```
 
-the property `author` is evaluated to be the `userid` of the authenticated client.
+the property `author` is evaluated to be the `_id` of the authenticated client.
 
 `@user` is a special variable that allows accessing the properties of the user object. The following variables are available:
 
