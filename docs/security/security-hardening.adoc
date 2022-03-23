@@ -12,45 +12,24 @@ IMPORTANT: No system can guarantee 100% security. Security must be achieved thro
 a set of security hardening measures implemented on the whole system stack
 and enforced by strong and efficient security policies.
 
-== Checklist
+*Checklist*
 
-[cols="2,1"]
+[.table]
+[cols="2,1,1"]
 |===
-|Update the `admin` user password
-|Mandatory
-
-|Disable the root role
-|Suggested
-
-|Use HTTPS
-|Mandatory
-
-|Secure connection to MongoDB
-|Mandatory
-
-|Make sure password are stored in an encrypted form
-|Mandatory
-
-|Enforce strong passwords
-|Mandatory
-
-|Enable bruteForceAttackGuard
-|Suggested
-
-|Enable originVetoer
-|Suggested
-
-|Define and test the ACL
-|Mandatory
-
-|Use only aggregations and forbid the filter query parameter
-|Suggested
-
-|Blacklist the $where MongoDB operator
-|Mandatory
-
-|Define role-based GraphQL applications
-|Mandatory
+|*Best practice* |*Priority* |*Impact*
+|Update the `admin` user password|Mandatory|Action required
+|Disable the root role|Suggested|Configuration required
+|Use HTTPS|Mandatory|Action required
+|Secure connection to MongoDB|Mandatory|Action required
+|Make sure password are stored in an encrypted form|Mandatory|No action required if the default authenticator is used
+|Enforce strong passwords|Mandatory|Configuration required
+|Enable bruteForceAttackGuard|Suggested|Configuration required
+|Enable originVetoer|Suggested|Configuration required
+|Define and test the ACL|Mandatory|Action required
+|Use only aggregations and forbid the filter query parameter|Suggested|Action required
+|Blacklist the $where MongoDB operator|Mandatory|No action required from 6.3.0, configuration required otherwise
+|Define role-specific GraphQL applications|Mandatory|Action required
 |===
 
 == Update the `admin` user password
@@ -253,11 +232,9 @@ plugins-args:
       enabled: true
 ----
 
-== Define role-based GraphQL applications
+== Define role-specific GraphQL applications
 
-The GraphQL API is read-only, so you should only pay attention to avoid it to expose sensitive information to users.
-
-NOTE: This very important due to the nature of GraphQL that allows the client to request any data, in any format allowed by the GraphQL schema and related queries.
+NOTE: The GraphQL API is read-only, so you should only pay attention to avoid exposing sensitive information to users. This very important due to the nature of GraphQL that allows the client to request data in any format allowed by the GraphQL schema.
 
 In order secure the GraphQL API, several GraphQL applications should be defined with different read logic and bound to different URIs. In this way, different roles can be granted access to different subsets of the GraphQL apps thus protecting the information.
 
