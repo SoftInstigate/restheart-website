@@ -85,7 +85,7 @@ Test the connection open `http://localhost:8080/roles/admin`
 
 ## Restrict permissions of MongoDB user
 
-In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart Core to execute any command on any MongoDB resource.
+In the previous examples we used a MongoDB user with *root* role for the sake of simplicity. This allows RESTHeart Core to execute any command on any MongoDB resource.
 
 On production environments a strong security isolation is mandatory.
 
