@@ -20,6 +20,7 @@ and enforced by strong and efficient security policies.
 |*Best practice* |*Priority* |*Impact*
 |Update the `admin` user password|Mandatory|Action required
 |Disable the root role|Suggested|Configuration required
+|Disable the auto-creation of the `admin` user|Suggested|Configuration required
 |Use HTTPS|Mandatory|Action required
 |Secure connection to MongoDB|Mandatory|Action required
 |Make sure password are stored in an encrypted form|Mandatory|No action required if the default authenticator is used
@@ -46,6 +47,22 @@ $ curl -u admin:secret -X PATCH localhost:8080/users/admin -H "Content-Type: app
 Refer to link:/docs/security/user-management/[User Management] for more information on how to create new users, roles and permissions.
 
 NOTE: `mongoAclAuthorizer` is the default ACL authorizer from RESTHeart starting v6.2. For previous releases, the `fileAclAuthorizer` was used. In this case the user password must be updated in the file `etc/users.yml`.
+
+== Disable the auto-creation of the admin user
+
+At startup time, the `mongoRealmAuthenticator` checks if the user `admin` exists. If it does not exist, it automatically creates it. This means that whenever the user `admin` is deleted, it will be eventually recreated with the default password `secret`.
+
+To avoid this dangerous behavior, you should disable the auto-creation of the `admin` user:
+
+[source,yml]
+----
+authenticators:
+  mongoRealmAuthenticator:
+    # other options omitted
+    # clients with root-role can execute any request
+    create-user: false # <---- disable auto-creation of the admin user
+    create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
+----
 
 == Disable the root role
 
