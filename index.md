@@ -120,10 +120,6 @@ layout: default
     {% include examples_plugins.html %}
 </section>
 
-<div class="mt-0 pt-0 mb-5">
-{% include http-shell-ad.html %}
-</div>
-
 <section id="trusted-by">
     <div class="row mx-0">
         <div id="customers" class="container-fluid my-2">
@@ -147,13 +143,6 @@ layout: default
 
 <section class="chart mt-3 pb-0" id="chart">
     {% include docker_pull_chart.html %}
-</section>
-
-<section class="bg-white text-white text-center mt-3 mb-5">
-    <h2 class="text-center color-primary mb-3">Our speech about RESTful MongoDB Transactions at MongoDB Live 2020</h2>
-    <a href="https://www.mongodb.com/presentations/restful-mongodb-transactions" target="_blank">
-        <img src="/images/MDB-Live-Speaker-Badge-Horizontal.png" class="img-responsive"/>
-    </a>
 </section>
 
 <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->

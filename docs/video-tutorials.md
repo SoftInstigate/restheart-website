@@ -15,6 +15,29 @@ layout: docs
 
 {% include docs-head.html %}
 
+## Andrea's talk at Docker Community All-Hands 2022
+
+The talk provides an introduction on RESTHeart and shows the
+different options to run it with Docker, including running it and
+connecting to MongoDB running on the host, running a a com-
+plete containerized stack with docker compose, and using the REST-
+Heart native image for instant startup with minimal memory foot-
+print.
+
+<div class="embed-responsive embed-responsive-16by9 mb-3">
+    <iframe src="https://www.youtube.com/embed/NfkZx3AV_Dc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+## Andrea and Maurizio at MongoDB Live 2020
+
+In this talk we discuss how we designed and implemented MongoDB sessions and multi-document transactions within RESTHeart, exposing them via a REST API. After a quick introduction to the main concepts, we show a demo of a simple Angular application applying transactions in a real case.
+
+<div class="mb-3"><a href="https://webassets.mongodb.com/_com_assets/cms/mongodb_restful_mongodb_transactions-bthjnijqhv.pdf?_ga=2.135247668.489607416.1648881834-1481011305.1644320897" target="_blank">View slides</a></div>
+
+<div class="embed-responsive embed-responsive-16by9 mb-3">
+    <iframe src="https://www.youtube.com/embed/VMaKyQkXByo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 ## RESTHeart Overview
 
 <div class="embed-responsive embed-responsive-16by9 mb-3">

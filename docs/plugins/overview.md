@@ -24,14 +24,12 @@ It comes with a complete MongoDB API and a security implementation that allows t
 These functionalities are actually provided by the standard plugins that are distributed with RESTHeart. If you look at the `./plugins` directory you'll find them:
 
 ```
-├── plugins
-│   ├── restheart-mongodb.jar
-│   └── restheart-security.jar
+plugins
+├── restheart-graphql.jar
+├── restheart-mongodb.jar
+├── restheart-polyglot.jar
+└── restheart-security.jar
 ```
-
-`restheart-mongodb.jar` implements the `MongoService` that provides the MongoDB REST API.
-
-`restheart-security.jar` implements the standard security plugins described in the [Securing Requests](/docs/security/overview/) section.
 
 On the other side, real applications often need the API to be extended in some way.
 
