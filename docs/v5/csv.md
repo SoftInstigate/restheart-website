@@ -192,19 +192,19 @@ id,name,city,lat,lon,note
 
 The CSV format allows creating flat documents. Using an Interceptor data can be modified to take advantage of the nested nature of JSON.
 
-We will use [csv-interceptor](https://github.com/SoftInstigate/restheart-examples/tree/master/csv-interceptor) on the restheart-examples repository.
+We will use [csv-interceptor](https://github.com/SoftInstigate/restheart/tree/master/examples/csv-interceptor) from the plugin examples.
 
-Clone the restheart-examples repository
+Clone the RESTHeart repository
 
 ```bash
-$ git clone https://github.com/SoftInstigate/restheart-examples.git
+$ git clone https://github.com/SoftInstigate/restheart/tree/master/examples.git
 ```
 
 Build the examples:
 
 ```
-$ cd restheart-examples
-$ mvn package
+$ cd restheart/examples
+$ ./mvnw package
 ```
 
 Deploy the csv-interceptor

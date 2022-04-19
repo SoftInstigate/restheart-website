@@ -44,7 +44,7 @@ It is also possible developing security plugins to customize the security layer.
 In short, you can develop in java plugins and [deploy](/plugins/deploy) them copying the jar files to the `./plugins` directory.
 
 {: .bs-callout .bs-callout-info}
-Have a look at the GitHub repository [restheart-examples](https://github.com/SoftInstigate/restheart-examples/) for some examples.
+Have a look at the  [plugin examples](https://github.com/SoftInstigate/restheart/tree/master/examples/) for some examples.
 
 ## The proxy microservice pattern
 

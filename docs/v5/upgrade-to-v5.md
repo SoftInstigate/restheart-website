@@ -28,7 +28,7 @@ Notable news in v5 are:
 
 1. Adopt the **open core model**: all features of v4 restricted to Enterprise License (transactions, change streams and advanced security plugins) are now open sourced. We still offer [technical support](/support) and the [business friendly License](https://raw.githubusercontent.com/SoftInstigate/restheart/master/COMM-LICENSE.txt) that covers Enterprise requirements.
 2. RESTHeart is back a **single unit of deployment**, no more need to run a separate security layer (it's muck like it was RESTHeart v3). Unzip the archive and run it.
-3. It's now much easier to extend the API with **plugins** and **interceptors** (see some [examples](https://github.com/SoftInstigate/restheart-examples)). You can build and deploy your own Web Services with few line of code.
+3. It's now much easier to extend the API with **plugins** and **interceptors** (see some [examples](https://github.com/SoftInstigate/restheart/tree/master/examples)). You can build and deploy your own Web Services with few line of code.
 4. Promote plain JSON as the primary representation format and demote [HAL](http://stateless.co/hal_specification.html) as a secondary option (HAL might be removed from future releases).
 
 {: .bs-callout.bs-callout-info}
@@ -56,7 +56,7 @@ Developing a plugins only requires _restheart-commons_. Add the dependency with 
 
 Once you build your plugin, just copy the jar file to the `/plugins` directory and RESTHeart will automatically add it at startup time.
 
-See some plugins examples at [restheart-examples](https://github.com/softInstigate/restheart-examples) repo.
+See some plugins examples at [plugins examples](https://github.com/SoftInstigate/restheart/tree/master/examples).
 
 ### License considerations
 

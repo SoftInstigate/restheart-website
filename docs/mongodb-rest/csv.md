@@ -194,25 +194,25 @@ id,name,city,lat,lon,note
 
 The CSV format allows creating flat documents. Using an Interceptor data can be modified to take advantage of the nested nature of JSON.
 
-We will use [csv-interceptor](https://github.com/SoftInstigate/restheart-examples/tree/master/csv-interceptor) on the restheart-examples repository.
+We will use [csv-interceptor](https://github.com/SoftInstigate/restheart/tree/master/examples/csv-interceptor) from the plugin examples.
 
-Clone the restheart-examples repository
+Clone the RESTHeart repository
 
 ```bash
-$ git clone https://github.com/SoftInstigate/restheart-examples.git
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
 ```
 
 Build the examples:
 
 ```
-$ cd restheart-examples
+$ cd restheart/examples
 $ ./mvnw package
 ```
 
 Deploy the csv-interceptor
 
 ```bash
-$ cp csv-interceptor/target/csv-interceptor.jar <restheart>/plugins
+$ cp csv-interceptor/target/csv-interceptor.jar <RH_HOME>/plugins
 ```
 
 Restarting RESTHeart, the plugins will be automatically deployed.
@@ -222,7 +222,7 @@ Restarting RESTHeart, the plugins will be automatically deployed.
 The code of the coordsToGeoJson follows:
 
 ```java
-@RegisterPlugin(name = "coordsToGeoJson", 
+@RegisterPlugin(name = "coordsToGeoJson",
         description = "transforms cordinates array to GeoJSON point object for csv loader service")
 public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResponse> {
     @Override
@@ -263,7 +263,7 @@ public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResp
 
 Note that the `resolve()` method returns true for POST requests on the /csv URI (where the csvLoader service is bound).
 
-The `handle()` method receives the `BsonFromCsvRequest` object that contains a `BsonArray` of documents parsed from the uploaded CSV data. It uses a stream to process all documents containing the properties `lon` and `lat` to add the corresponding GeoJSON object.
+The `handle()` method receives the `BsonFromCsvRequest` object that contains a `BsonArray` of documents parsed from the uploaded CSV data. It uses a stream to process all documents containing the properties `lon` and `lat` to add the corresponding GeoJSON object.
 
 The interceptor implements the `Interceptor` interface specifying the parametric types `BsonFromCsvRequest` and `BsonResponse`. This is mandatory since an interceptor can intercept requests handled by services that use the same exact types (Check the code of [CsvLoader](https://github.com/SoftInstigate/restheart/blob/master/mongodb/src/main/java/org/restheart/mongodb/services/CsvLoader.java) service, it implements the parametric `Service` interface using those types).
 

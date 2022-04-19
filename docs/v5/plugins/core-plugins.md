@@ -30,7 +30,7 @@ Plugins allow to extend RESTHeart:
 
 It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
-For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repository on GitHub.
+For code examples of Plugins please refer to [RESTHeart Examples](https://github.com/SoftInstigate/restheart/tree/master/examples) repository on GitHub.
 
 {: .bs-callout.bs-callout-info }
 Watch [Introduction](https://www.youtube.com/watch?v=GReteuiMUio&t=0s)
@@ -174,7 +174,7 @@ Depending on the content type, the Service class implements one of the specializ
 - `JsonService`
 - `BsonService`
 
-The code of example [mongo-status-service](https://github.com/SoftInstigate/restheart-examples/tree/master/mongo-status-service) implementing `BsonService` and using the `MongoClient` obtained via `@InjectMongoClient` follows:
+The code of example [mongo-status-service](https://github.com/SoftInstigate/restheart/tree/master/examples/mongo-status-service) implementing `BsonService` and using the `MongoClient` obtained via `@InjectMongoClient` follows:
 
 ```java
 @RegisterPlugin(

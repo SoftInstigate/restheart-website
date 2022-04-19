@@ -16,8 +16,8 @@ layout: docs
 
 To deploy a plugin, just copy its jar file in the `./plugins` directory of restheart.
 
-For examples refer to [RESTHeart Examples](https://github.com/softInstigate/restheart-examples) repo.
+For examples refer to [RESTHeart Examples](https://github.com/SoftInstigate/restheart/tree/master/examples) repo.
 
 If a plugin requires external dependencies that are not bundled with the restheart.jar file you can just copy the jar files in the `./plugins` directory of restheart. 
 
-More information on how to deploy a plugin is available in the [random-string-service](https://github.com/SoftInstigate/restheart-examples/tree/master/random-string-service) plugin example.
+More information on how to deploy a plugin is available in the [random-string-service](https://github.com/SoftInstigate/restheart/tree/master/examples/random-string-service) plugin example.
