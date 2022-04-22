@@ -155,11 +155,15 @@ NOTE: More JavaScript plugins examples are available in the link:https://github.
 
 RESTHeart native can run JavaScript plugins as previously described.
 
-However you cannot deploy Java plugins by merely copying jars file into the plugins directory.
+However* you cannot deploy Java plugins by merely copying jars file into the plugins directory* (this will be allowed in the future).
 
 In order to deploy Java plugins on RESTHeart native you must build RESTHeart native from source together with your plugin.
 
-IMPORTANT: you must add your plugin as a dependency in the RESTHeart Core native profile.
+This involves the following steps:
+
+1. fork restheart repository
+2. add your plugin as a Maven submodule
+3. Add it as a dependency in the `native` profile of the core `pom.xml`.
 
 An example of this can be found in the RESTHeart core link:https://github.com/SoftInstigate/restheart/blob/master/core/pom.xml[pom.xml] file for the `restheart-test-plugins` module, which is commented out by default. Uncomment it and rebuild it to add `restheart-test-plugins` to the native image binary.
 
@@ -182,13 +186,6 @@ An example of this can be found in the RESTHeart core link:https://github.com/So
 
 To build RESTHeart native, use the native profile.
 
-[source,bash]
-----
-$ ./mvnw clean package -Pnative
-----
-
-*Before building it you need few steps:*
-
 Make sure you are using GraalVM.
 
 [source,bash]
@@ -206,7 +203,16 @@ Make sure you have `native-image` installed.
 $ gu install native-image
 ----
 
-Define the native image reflection configuration for your plugin.
+Build it.
+
+[source,bash]
+----
+$ ./mvnw clean package -Pnative
+----
+
+*Before building your plugin you need to define the native image reflection configuration*
+
+NOTE: more on GraalVM reflection configuration can be found at link:https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration[Reflection on Native Image]
 
 For a simple example you can look at link:https://github.com/SoftInstigate/restheart/blob/master/graphql/src/main/resources/META-INF/native-image/org.restheart/restheart-graphql/reflect-config.json[reflect-config.json] file of the GraphQL plugin.
 
@@ -233,7 +239,5 @@ You need to specify the `methods` for:
 2. the method annotated with `@InjectConfiguration` (if any)
 3. the method annotated with `@InjectMongoClient` (if any)
 4. the method annotated with `@InjectPluginsRegistry` (if any)
-
-
 
 NOTE: more information on building native images can be found in file link:https://github.com/SoftInstigate/restheart/blob/master/GRAALVM.md[GRAALVM.md]
