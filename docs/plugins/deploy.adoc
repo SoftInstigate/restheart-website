@@ -1,0 +1,239 @@
+---
+title: Get Started with RESTHeart
+layout: docs-adoc
+---
+
+== Introduction
+
+This section provides information on how to package and deploy plugins.
+
+== Java Plugins
+
+Java and Kotlin plugins must be packaged as jar files.
+
+To deploy a plugin, *just copy its jar file into the directory `./plugins` of RESTHeart*.
+
+IMPORTANT: After deploying a jar plugin, you must restart RESTHeart.
+
+=== Example
+
+As an example we will build and deploy the simple link:https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service[Greeter Service] example plugin.
+
+Let's clone the RESTHeart repository that includes the `examples` directory and build the `greeter-service` example.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cd restheart/examples/greeter-service
+$ ../mvnw clean package
+----
+
+The built plugin jar file is `target/greeter-service.jar`. Copy it into the RESTHeart plugins directory.
+
+[source,bash]
+$ cp target/greeter-service.jar <RH_HOME>/plugins
+
+Restarting RESTHeart will produce the following log message:
+
+[source,bash]
+----
+$ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
+INFO  org.restheart.Bootstrapper - Starting RESTHeart instance default
+...
+INFO  org.restheart.plugins.PluginsFactory - Found plugin jar file:/Users/uji/development/restheart/core/target/plugins/greeter-service.jar
+...
+INFO  org.restheart.Bootstrapper - URI /greetings bound to service greetings, secured: false, uri match PREFIX
+....
+----
+
+Let's test it.
+
+[source,bash]
+----
+$ http -b :8080/greetings
+{
+    "message": "Hello World!"
+}
+----
+
+=== External dependencies
+
+The link:https://github.com/SoftInstigate/restheart/tree/master/examples/random-string-service[Random String Service] example plugin shows how to add to the classpath an external dependency required by a plugin.
+
+By _external dependency_ we mean a dependency that is not included in restheart.jar, thus it must be added to the classpath for the service to work.
+
+IMPORTANT: *To add an external dependency to the classpath just copy it into the RESTHeart plugins directory*.
+
+The plugin link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-string-service/pom.xml[pom.xml] file defines the following dependencies:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.restheart</groupId>
+        <artifactId>restheart-commons</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.10</version>
+    </dependency>
+</dependencies>
+----
+
+The scope of `restheart-commons` is `provided` since it is provided by the RESTHeart runtime, together with many others.
+
+To get a list of all the dependencies included in the RESTHeart runtime, you can use the following command:
+
+[source,bash]
+----
+$ cd <RH_HOME>/core
+$ ../mvnw dependency:tree -Dscope=compile
+----
+
+On the other side, the scope of `commons-lang3` is `compile` as it is not provided by the RESTHeart runtime. Thus it is an external dependency and it must be copied into the RESTHeart plugins directory.
+
+Let's build the plugin.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cd restheart/examples/random-string-service
+$ ../mvnw clean package
+----
+
+The link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-string-service/pom.xml[pom.xml] uses the `maven-dependency-plugin` to copy the jars of the external dependencies into the directory `target/lib`
+
+To deploy the plugin copy its jar file and the jars of the dependencies into the plugins directory.
+
+[source,bash]
+$ cp target/random-string-service.jar target/lib/* <RH_HOME>/plugins/
+
+== JavaScript Plugins
+
+IMPORTANT: JavaScript plugins can be deployed only running link:/docs/graalvm/#run-restheart-with-graalvm[RESTHeart on GraalVM] and on restheart native.
+
+NOTE: Deploying JavaScript plugins does not require restarting RESTHeart, they can be hot-deployed! To update an already deployed JavaScript plugin,  `touch` its root directory.
+
+The JavaScript plugins are packaged in directories containing the JavaScript files and the `package.json` file.
+
+The JavaScript plugin link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/README.md[Credit Card Hider] is an example.
+
+Its link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/package.json[package.json] file declares the Interceptor `cc-hider.js` via the property `rh:interceptors` (Services are declared with `rh:services`):
+
+[source,json]
+----
+{
+  "name": "restheart-demo-cc-hider",
+  "version": "1.0.0",
+  "description": "demo plugins for RESTHeart",
+  "rh:interceptors": [ "cc-hider.js" ]
+}
+----
+
+Let's deploy it.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cp -r restheart/examples/credit-card-hider <RH_HOME>/plugins
+----
+
+RESTHeart log files shows the following message:
+
+[source,bash]
+----
+INFO  o.r.polyglot.PolyglotDeployer - Added interceptor ccHider, description: hides credit card numbers
+----
+
+Refer to the Credit Card Hider link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/README.md[README.md] for more information on how to play with this JavaScript plugin.
+
+NOTE: More JavaScript plugins examples are available in the link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources/test-js-plugins[test-js-plugins] directory.
+
+== Deploy Java plugins on RESTHeart Native
+
+RESTHeart native can run JavaScript plugins as previously described.
+
+However you cannot deploy Java plugins by merely copying jars file into the plugins directory.
+
+In order to deploy Java plugins on RESTHeart native you must build RESTHeart native from source together with your plugin.
+
+IMPORTANT: you must add your plugin as a dependency in the RESTHeart Core native profile.
+
+An example of this can be found in the RESTHeart core link:https://github.com/SoftInstigate/restheart/blob/master/core/pom.xml[pom.xml] file for the `restheart-test-plugins` module, which is commented out by default. Uncomment it and rebuild it to add `restheart-test-plugins` to the native image binary.
+
+[source,xml]
+----
+<profile>
+      <id>native</id>
+      <dependencies>
+        ...
+        <!-- uncomment to add test plugins to the native image -->
+        <!-- <dependency>
+          <groupId>org.restheart</groupId>
+          <artifactId>restheart-test-plugins</artifactId>
+          <version>${project.version}</version>
+        </dependency> -->
+        ...
+      </dependencies>
+</profile>
+----
+
+To build RESTHeart native, use the native profile.
+
+[source,bash]
+----
+$ ./mvnw clean package -Pnative
+----
+
+*Before building it you need few steps:*
+
+Make sure you are using GraalVM.
+
+[source,bash]
+----
+$ java -version
+openjdk version "17.0.2" 2022-01-18
+OpenJDK Runtime Environment GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05)
+OpenJDK 64-Bit Server VM GraalVM CE 22.0.0.2 (build 17.0.2+8-jvmci-22.0-b05, mixed mode, sharing)
+----
+
+Make sure you have `native-image` installed.
+
+[source,bash]
+----
+$ gu install native-image
+----
+
+Define the native image reflection configuration for your plugin.
+
+For a simple example you can look at link:https://github.com/SoftInstigate/restheart/blob/master/graphql/src/main/resources/META-INF/native-image/org.restheart/restheart-graphql/reflect-config.json[reflect-config.json] file of the GraphQL plugin.
+
+In short you need to create in your plugin source project the file `src/main/resources/META-INF/native-image/<group-id>/<artifact-id>/reflect-config.json` and add an entry per each plugin.
+
+The following entry is an example:
+
+[source,json]
+----
+{
+    "name": "org.restheart.graphql.GraphQLService",
+    "methods": [
+      { "name": "<init>", "parameterTypes": [] },
+      { "name": "initConf", "parameterTypes": ["java.util.Map"] },
+      { "name": "initMongoClient", "parameterTypes": ["com.mongodb.client.MongoClient"]
+      }
+    ]
+  }
+----
+
+You need to specify the `methods` for:
+
+1. the default Constructor (always)
+2. the method annotated with `@InjectConfiguration` (if any)
+3. the method annotated with `@InjectMongoClient` (if any)
+4. the method annotated with `@InjectPluginsRegistry` (if any)
+
+
+
+NOTE: more information on building native images can be found in file link:https://github.com/SoftInstigate/restheart/blob/master/GRAALVM.md[GRAALVM.md]
