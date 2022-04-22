@@ -19,10 +19,9 @@ layout: docs
 
 The talk provides an introduction on RESTHeart and shows the
 different options to run it with Docker, including running it and
-connecting to MongoDB running on the host, running a a com-
-plete containerized stack with docker compose, and using the REST-
-Heart native image for instant startup with minimal memory foot-
-print.
+connecting to MongoDB running on the host, running a complete containerized
+stack with docker compose, and using the RESTHeart native image 
+for instant startup with minimal memory footprint.
 
 <div class="embed-responsive embed-responsive-16by9 mb-3">
     <iframe src="https://www.youtube.com/embed/NfkZx3AV_Dc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
