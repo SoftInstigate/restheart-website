@@ -19,52 +19,12 @@ layout: docs
 
 RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.
 
-The default configuration file enables `fileRealmAuthenticator` and `fileAclAuthorizer`. These use the files [/etc/users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) and [/etc/acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) to handle users credentials and permissions respectively.
+The default configuration file enables `mongoRealmAuthenticator` and `mongoAclAuthorizer`. These use MongoDB collections (by default `/users` and `/acl` respectively) to handle users credentials and permissions respectively.
 
-RESTHeart can also handle users and permissions stored on MongoDB collections. This provides more flexibility and control over security and it is the **suggested configuration for production**.
+RESTHeart can also handle users and permissions stored on configuration files via `fileRealmAuthenticator` and `fileAclAuthorizer`. Enabling these plugins requires updating the configuration.
 
 {: .bs-callout.bs-callout-info }
 Watch [Authentication and Authorization in RESTHeart](https://www.youtube.com/watch?v=QVk0aboHayM&t=77s)
-
-## Handle users in MongoDB collection
-
-To enable user authentication from MongoDB collection set `mongoRealmAuthenticator` as the authenticator of the enabled authentication mechanisms where applicable:
-
-```yml
-auth-mechanisms:
-  basicAuthMechanism:
-    enabled: true
-    authenticator: mongoRealmAuthenticator
-  digestAuthMechanism:
-    enabled: true
-    realm: RESTHeart Realm
-    domain: yourdomain.com
-    authenticator: mongoRealmAuthenticator
-```
-
-For more information on collection based authentication check the following documentation pages:
-
-- [mongoRealmAuthenticator](/docs/security/authentication/#mongo-realm-authenticator)
-- [User Management](/docs/security/user-management/)
-
-## Handle permissions in MongoDB collection
-
-Permissions stored in the MongoDB collection `/acl` should be already taken into account because the default configuration  enables the `mongoAclAuthorizer`.
-
-```yml
-authorizers:
-  mongoAclAuthorizer:
-    acl-db: restheart
-    acl-collection: acl
-    # clients with root-role can execute any request
-    root-role: admin
-    cache-enabled: true
-    cache-size: 1000
-    cache-ttl: 5000
-    cache-expire-policy: AFTER_WRITE
-```
-
-For more on collection based authorization check the documentation on [mongoAclAuthorizer](/docs/security/authorization/#mongo-acl-authorizer)
 
 ## Understanding RESTHeart security
 

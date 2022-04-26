@@ -49,7 +49,7 @@ notes: ""
                 <h5 class="card-title">
                     <h2><a href="{{ "/docs/security/overview/#understanding-restheart-security" | prepend: site.baseurl }}">Declarative Access Control</a></h2>
                 </h5>
-                <div><strong>Authentication</strong> and <strong>Authorization</strong> are provided and require just configuration. Security can be easily customized thanks to the pluggable architecture.
+                <div><strong>Authentication</strong> and <strong>Authorization</strong> implementations provide a simple, declarative and a rich, ACL-based security model that requires just configuration. Security can be easily customized thanks to the pluggable architecture.
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-end">

@@ -33,7 +33,9 @@ RESTHeart by default offers two implementations authorizers:
 1. Mongo ACL Authorizer
 1. File ACL Authorizer
 
-However, it's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
+Both authorizers provide a simple, declarative and a rich, ACL-based model for authorization.
+
+It's even possible to develop **custom authorizers**. Please refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
 
 ## Mongo ACL Authorizer
 
