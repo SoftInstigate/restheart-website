@@ -50,9 +50,9 @@ The script `./bin/restart.sh` automatically deploys the plugin and start RESTHea
 
 IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/README.md[README.md] for more information.
 
-== The proxy microservice pattern
+== The Proxy pattern
 
-If you are not familiar with java, there is a different approach that can help you extending the API using the [proxying](/docs/proxy) feature.
+If you are not familiar with java, there is a different approach that can help you extending the API using the link:/docs/proxy[proxying] feature.
 
 You can add a side microservice, for instance using NodeJs, that implements a Web Service. This microservice can execute requests to RESTHeart if it needs to read or write data to MongoDB.
 
@@ -60,9 +60,10 @@ You can then proxy it via RESTHeart so that it is protected under the same secur
 
 Add the following section to the `restheart.yml` configuration file to proxy call to the RESTHeart's URI `/anything` to the web resource `https://httpbin.org/anything`
 
-```yml
+[source,yml]
+----
 proxies:
    - location: /anything
      proxy-pass: https://httpbin.org/anything
      name: anything
-```
+----
