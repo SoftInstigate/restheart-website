@@ -151,7 +151,7 @@ As a result, you'll find the executable binary file `target/restheart-native`.
 
 ## Build RESTHeart with custom plugins as native image
 
-JavaScript plugins can be deployed on RESTHeart native. However you cannot deploy Java plugins in RESTHeart native by merely copying jars file into the plugins directory (this will be allowed in the future).
+JavaScript plugins can be deployed on RESTHeart native. However you cannot deploy Java plugins in RESTHeart native by merely copying jars file into the plugins directory.
 
 In order to use Java or Kotlin plugins on RESTHeart native you must build them as native image together with RESTHeart.
 
