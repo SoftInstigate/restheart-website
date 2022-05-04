@@ -1,21 +1,9 @@
 ---
 title: Plugins
-layout: docs
+layout: docs-adoc
 ---
 
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-
-* [Introduction](#introduction)
-* [The proxy microservice pattern](#the-proxy-microservice-pattern)
-
-</div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
-
-{% include docs-head.html %}
-
-{% include doc-in-progress-v6.html %}
-
-## Introduction
+== Introduction
 
 RESTHeart works *out-of-the-box* by merely installing and configuring it.
 
@@ -23,13 +11,14 @@ It comes with a complete MongoDB API and a security implementation that allows t
 
 These functionalities are actually provided by the standard plugins that are distributed with RESTHeart. If you look at the `./plugins` directory you'll find them:
 
-```
+[source,bash]
+----
 plugins
 ├── restheart-graphql.jar
 ├── restheart-mongodb.jar
 ├── restheart-polyglot.jar
 └── restheart-security.jar
-```
+----
 
 On the other side, real applications often need the API to be extended in some way.
 
@@ -39,14 +28,29 @@ Plugins allow to extend RESTHeart:
 - **Interceptors** snoop and modify requests and responses at different stages of the request lifecycle.
 - **Initializers**  execute initialization logic at system startup time.
 
-It is also possible developing security plugins to customize the security layer. Refer to [Develop Security Plugins](/docs/plugins/security-plugins) for more information.
+It is also possible developing security plugins to customize the security layer. Refer to link:/docs/plugins/security-plugins[Develop Security Plugins] for more information.
 
-In short, you can develop in java plugins and [deploy](/plugins/deploy) them copying the jar files to the `./plugins` directory.
+In short, you can develop plugins in Java, Kotlin and JavaScript and deploy them in RESTHeart. For more information on how to deploy plugins refer to link:/plugins/deploy[How to deploy Plugins].
 
-{: .bs-callout .bs-callout-info}
-Have a look at the  [plugin examples](https://github.com/SoftInstigate/restheart/tree/master/examples/) for some examples.
+IMPORTANT: Have a look at the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples] for some code examples.
 
-## The proxy microservice pattern
+== The Plugin Skeleton Repository
+
+To quick start a new plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository].
+
+[source,bash]
+----
+$ git clone git@github.com:SoftInstigate/restheart-plugin-skeleton.git
+$ cd restheart-plugin-skeleton
+$ ./mvnw clean package
+$ ./bin/restart.sh -p restheart
+----
+
+The script `./bin/restart.sh` automatically deploys the plugin and start RESTHeart with it. At first run, it also automatically downloads the latest version of RESTHeart.
+
+IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/README.md[README.md] for more information.
+
+== The proxy microservice pattern
 
 If you are not familiar with java, there is a different approach that can help you extending the API using the [proxying](/docs/proxy) feature.
 
