@@ -151,49 +151,11 @@ As a result, you'll find the executable binary file `target/restheart-native`.
 
 ## Build RESTHeart with custom plugins as native image
 
-In order to build RESTHeart with custom plugins as native image you use maven to:
+JavaScript plugins can be deployed on RESTHeart native. However you cannot deploy Java plugins in RESTHeart native by merely copying jars file into the plugins directory (this will be allowed in the future).
 
-- build a uber-jar using the [Maven Shade Plugin](https://maven.apache.org/plugins/maven-shade-plugin/)
-- define a the profile `native` that uses the [Native Image Maven Plugin](https://www.graalvm.org/reference-manual/native-image/NativeImageMavenPlugin/) to build the native image from the uber-jar
+In order to use Java or Kotlin plugins on RESTHeart native you must build them as native image together with RESTHeart.
 
-{: .bs-callout.bs-callout-info }
-At startup time, RESTHeart dynamically loads the plugins jars found in  the `/plugins` directory. Dynamic class loading is simply not possible with GraalVM. This is why you need to package RESTHeart core and all plugins in a uber-jar and provide reflection configuration for the `native-image`.
-
-### uber-jar
-
-Define the Maven `native` profile following this example [pom.xml](https://github.com/SoftInstigate/web-frameworks/blob/native/java/restheart/pom.xml).
-
-
-### Reflection configuration
-
-In order for the custom plugin to work, you need to define the native image `reflect-config.json` file in the directory `src/main/resources/META-INF/native-image/<package-name>/<artifact-id>`
-
-An example is the [reflect-config.json](https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/resources/META-INF/native-image/org.restheart/restheart-test-plugins/reflect-config.json) of the RESTHeart's own `test-plugins` module.
-
-For instance, the following entry is present for the Interceptor [https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/java/org/restheart/test/plugins/interceptors/SnooperHook.java](SnooperHook)
-
-```json
-{
-    "name": "org.restheart.test.plugins.interceptors.SnooperHook",
-    "methods": [
-        { "name": "<init>", "parameterTypes": [] },
-        { "name": "init", "parameterTypes": ["java.util.Map"] }
-    ]
-}
-```
-
-### build
-
-You can now build the native image with:
-
-```bash
-$ ./mvnw clean package -Pnative
-```
-
-For further information, good starting points are:
-
-- [Native Image Compatibility and Optimization Guide](https://www.graalvm.org/reference-manual/native-image/Limitations/) on GraalVM website
-- [GRAALVM.md](https://github.com/SoftInstigate/restheart/blob/master/GRAALVM.md) on RESTHeart github repository
+Refer to [Deploy Java Plugins On Restheart Native](https://restheart.org/docs/plugins/deploy/#deploy-java-plugins-on-restheart-native) for detailed instructions on how to do it.
 
 ## A docker image to build Linux native images
 
