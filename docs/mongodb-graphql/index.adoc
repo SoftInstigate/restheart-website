@@ -91,6 +91,7 @@ Two kinds of mapping can be made:
 
 - Field to Field mapping
 - Field to Query mapping
+- Field to Aggregation mapping
 
 ==== Field to Field mapping
 
@@ -150,6 +151,7 @@ type User {
 type Post {
   id: Int!
   text: String
+  category: String
   author: User
 }
 
@@ -178,10 +180,12 @@ with MongoDB data organized in the two collections `users` and `posts``:
 [
   { "_id": {"$oid": "606d963f74744a3fa6f4489a" },
     "text": "Lorem ipsum dolor sit amet",
+    "category": "front-end",
     "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
   },
   { "_id": {"$oid": "606d963f74744a3fa6f4489e" },
     "text": "Lorem ipsum dolor sit amet",
+    "category": "back-end",
     "author_id": {"$oid": "6037732f5fa7d52581015ed9" }
   }
 ]
@@ -249,6 +253,54 @@ As result, we are saying that:
  - asking for `userByName` GraphQL field, the MongoDB documents searched are the ones within the `users` collection with field `name` equal to value of `_name` GraphQL argument. Moreover, we are asking to return at most `_limit` documents, to skip the firsts `_skip` ones and to sort them by name in reverse order.
 
 NOTE: you can use also the *dot notation* with the `$fk` operator.
+
+==== Field to Aggregation mapping
+
+You can map a GraphQL field with a MongoDB query using the following parameters:
+
+  - db (String): database name;
+  - collection (String): collection name;
+  - stages (Array): array of aggregation stages.
+
+As with field to query mapping, `$arg` and `$fk` operators are allowed in aggregation stages. +
+Refering to the previous example of mapping, the following aggregation stages are possible:
+
+[source,json]
+----
+...,
+"Query": {
+    ....,
+    "countPostsByCategory": {
+      "db": "restheart",
+      "collection": "users",
+      "stages": [
+        {
+          "$group": {
+            "_id": "$category",
+            "count": {
+              "$count": {}
+            }
+          }
+        }
+      ]
+    }
+  }
+----
+
+And the Query in the GraphQL schema will now have the following field:
+
+[source,graphql]
+----
+type Stats {
+  _id: String
+  count: Int
+}
+
+type Query {
+  countPostsByCategory: [Stats]
+}
+----
+
 
 == Bson types
 
