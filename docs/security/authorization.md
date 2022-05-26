@@ -107,7 +107,7 @@ The ACL permissions use the [undertow predicate language](https://undertow.io/un
 
 A simple example of predicate is `(method(GET) or method(POST)) and path('/coll')` that authorizes `GET` or `POST` requests when the URI is `/coll`
 
-RESTHeart 6 extends this language introducing the following 7 new predicates that extend and simplify the ACL permission definition:
+RESTHeart 6 extends this language introducing the following new predicates that extend and simplify the ACL permission definition:
 
 {: .table }
 |predicate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
@@ -119,6 +119,7 @@ RESTHeart 6 extends this language introducing the following 7 new predicates tha
 |`bson-request-contains`    |`true` if the request content is Bson and contains the specified properties    |`bson-request-contains(foo,bar.sub)`|
 |`bson-request-whitelist`   |`true` if the request content is Bson and only contains whitelisted properties |`bson-request-whitelist(foo,bar.sub)`|
 |`bson-request-blacklist`   |`true` if the request bson content does not contain blacklisted properties     |`bson-request-contains(foo,bar.sub)`|
+|`in`         | checks if `value` is contained in `array`                              | `path-template('/{tenant}') and in(value=${tenant}, array=@user.tenants)`
 
 ### MongoPermissions
 
