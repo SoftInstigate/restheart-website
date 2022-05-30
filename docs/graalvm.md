@@ -124,7 +124,7 @@ Example:
 $ docker pull softinstigate/restheart:latest-native
 ```
 
-The [docker-compose-native.yml](https://github.com/SoftInstigate/restheart/blob/6.2.x/docker-compose-native.yml) leveraging restheart-native is available as well. It runs restheart-native and MongoDB stack.
+The [docker-compose-native.yml](https://github.com/SoftInstigate/restheart/blob/master/docker-compose-native.yml) leveraging restheart-native is available as well. It runs restheart-native and MongoDB stack.
 
 ### how to build from source
 
