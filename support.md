@@ -74,7 +74,7 @@ _Custom Subscriptions containing multiple licenses for multiple database product
 
 # Happy hour
 
-If you have questions about use cases, support options, professional services or commercial licenses you can also book a [free video call](https://calendly.com/restheart/restheart-free-chat) with us.
+If you have questions about use cases, support options, professional services or commercial licenses you can also book a [free video call](https://calendly.com/restheart) with us.
 
 __Note__: if you need technical help but don't have purchased a paid subscription from us then please refer to the above [Free support](#free-support) section.
 
