@@ -139,6 +139,6 @@ layout: default
     </div>
 </section>
 
-<!-- <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->
-<script src="assets/animated-headline/js/modernizr.js"></script> <!-- Modernizr -->
+<!-- <link rel="stylesheet" href="assets/animated-headline/css/style.css">
+<script src="assets/animated-headline/js/modernizr.js"></script>
 <script src="assets/animated-headline/js/main.js"</script> -->
