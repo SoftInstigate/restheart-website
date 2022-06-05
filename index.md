@@ -5,8 +5,8 @@ layout: default
 <section id="top" class="black-background text-center pt-2 pb-2">
     <section class="mt-0 mb-4">
         <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <p class="m-0 top-2 text-break highlightcolor">Low code Microservices<wbr> Open Platform</p>
-        <p class="top-6 text-break white">with Polyglot Development Framework, Declarative Access Control<wbr> and Instant Data APIs on MongoDB</p>
+        <p class="m-0 top-2 mb-2 text-break highlightcolor lh-1_4">Low code Microservices<wbr> Open Platform</p>
+        <p class="top-6 text-break white">with Polyglot Development Framework,<wbr> Declarative Access Control<br>and the Best Data APIs for <span class="highlightcolor">MongoDB</span></p>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
         <a href="/docs" class="btn ml-1 mt-4 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
@@ -35,21 +35,21 @@ layout: default
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title text-center">Low code</h2>
+                <h2 class="call-to-action__title text-center">Low code Framework</h2>
                 <p>
                 RESTHeart is a <strong>low code platform</strong> providing developers with a pleasant <strong>development framework</strong> and ready-to-use <strong>application level features</strong>:
                 </p>
                 <ul>
-                    <li>The Best Data API from MongoDB</li>
+                    <li>The Best Data API for MongoDB</li>
                     <li>Battle tested Security that just requires configuration</li>
-                    <li>Polyglot Framework for Java, Kotlin, JavaScript and TypeScript</li>
+                    <li>Framework for Java, Kotlin, JavaScript and TypeScript</li>
                 </ul>
                 <div class="text-center pt-3">
                     <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn">Donwload the PDF fact sheet</a>
                 </div>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title text-center">Container first</h2>
+                <h2 class="call-to-action__title text-center top-4">Container friendly</h2>
                 <p>
                 RESTHeart tailors your application for GraalVM and HotSpot with <strong>instant startup time</strong>, <strong>low memory footprint</strong> and <strong>amazing performances</strong>.
                 </p>
