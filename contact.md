@@ -6,16 +6,16 @@ layout: default
     <div class="d-flex justify-content-center align-content-end w-100 h-100 pt-5">
         <div class="row text-center">
             <div class="col-12 my-2">
-                <a class="write-us-btn btn btn-lg" title="Issues" href="https://github.com/SoftInstigate/restheart/issues/new" target="blank"> <i style="font-size:18px" class="icon-code"></i>Open an issue on github</a>
+                <a class="btn-o-white btn btn-lg" title="Issues" href="https://github.com/SoftInstigate/restheart/issues/new" target="blank"> <i style="font-size:18px" class="icon-code"></i>Open an issue on github</a>
             </div>
             <div class="col-12 my-2">
-                <a class="write-us-btn btn btn-lg" title="Chat" href="https://gitter.im/SoftInstigate/restheart" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i>Chat with us on Gitter</a>
+                <a class="btn-o-white btn btn-lg" title="Chat" href="https://gitter.im/SoftInstigate/restheart" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i>Chat with us on Gitter</a>
             </div>
             <div class="col-12 my-2">
-                <a class="write-us-btn btn btn-lg" title="Questions" href="https://stackoverflow.com/questions/ask?tags=restheart" target="blank"> <i style="font-size:18px" class="icon-lightbulb"></i>Ask a question on StackOverflow</a>
+                <a class="btn-o-white btn btn-lg" title="Questions" href="https://stackoverflow.com/questions/ask?tags=restheart" target="blank"> <i style="font-size:18px" class="icon-lightbulb"></i>Ask a question on StackOverflow</a>
             </div>
             <div class="col-12 my-2">
-                <a class="write-us-btn btn btn-lg" title="Demo" href="https://calendly.com/restheart" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a free demo!</a>
+                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a free demo!</a>
             </div>
         </div>
     </div>
@@ -28,9 +28,8 @@ layout: default
                 <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></h2>
             </div>
         </div>
-    <div class="m-5 text-center">
-        <p><strong>Head office:</strong> SoftInstigate srl - Via Marconi 29, 65126 Pescara (Italy)</p>
-        <p><strong>Email:</strong> <a href="mailto:info@softinstigate.com">info@softinstigate.com</a></p>
-        <p><strong>VAT code:</strong> 01664640669</p>
+    <div class="mt-2 text-center">
+        <p>SoftInstigate srl - Via Marconi 29, 65126 Pescara (Italy)</p>
+        <a class="btn btn-lg mt-3" title="Demo" href="https://restheart.com/#contact" target="blank">Contact us</a>
     </div>
 </div>

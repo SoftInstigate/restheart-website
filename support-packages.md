@@ -1,6 +1,6 @@
 ---
 permalink: "/support-packages.html"
 layout: redirect
-redirectUrl: "/support"
+redirectUrl: "https://restheart.com"
 ---
 
