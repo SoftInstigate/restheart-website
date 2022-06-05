@@ -2,32 +2,18 @@
 layout: default
 ---
 
-<section id="top" class="black-background text-center pt-4 pb-5">
-    <section class="my-0">
-        <img src="/images/rh-logo-clean.png" width="128" />
+<section id="top" class="black-background text-center pt-2 pb-2">
+    <section class="mt-0 mb-4">
         <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <a href="/docs/setup" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Download</a>
-        <a href="/docs" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Read the Docs</a>
-        <a href="/docs/try" class="btn btn-o-white ml-1 mt-3 my-0 btn-md">Try Online</a>
-        <h2 class="mt-4 mx-md-5 top-2 text-break">Low code platform for building cloud-native HTTP microservices</h2>
-        <p class="mt-3 mx-md-5 top-5 highlightcolor text-break">With Polyglot Development Framework, Declarative Access Control<br/>and Instant Data APIs on MongoDB</p>
-    </section>
-    <section>
-        <div class="container-fluid">
-            <div class="row mt-4">
-                <div class="col-md-12 text-center">
-                    <a href="/docs/upgrade-to-v6/" class="btn">See What's new in RESTHeart 6</a>
-                </div>
-                <div class="col-md-12 text-center mt-4">
-                    <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn btn-o-white">Get the PDF fact sheet</a>
-                    <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn btn-o-white mt-3 mt-md-0 ml-md-3">Get the product presentation</a>
-                </div>
-            </div>
-        </div>
+        <p class="m-0 top-2 text-break highlightcolor">Low code Microservices Platform</p>
+        <p class="top-6 text-break white">with Polyglot Development Framework, Declarative Access Control<br/>and Instant Data APIs on MongoDB</p>
+        <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
+        <a href="/docs" class="btn ml-1 mt-5 my-0 btn-md">Read the Docs</a>
+        <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
     </section>
 </section>
 
-<section class="cd-intro mt-1 mb-1">
+<!-- <section class="cd-intro mt-1 mb-1">
     <h1 class="cd-headline d-block justify-content-center letters type">
         <span class="d-flex align-items-center justify-content-center cd-words-wrapper waiting color-primary">
             <b class="is-visible">Blazing fast</b>
@@ -43,55 +29,53 @@ layout: default
             <b>Threat protection at every layer</b>
         </span>
     </h1>
-</section>
-
-<section id="article-at-mongodb" class="call-to-action black-background">
-    <div class="container-fluid">
-        <div class="row mb-1">
-            <div class="col-md-12 call-to-action__item call-to-action__first text-center">
-                <h2 class="text-lightcyan mb-2">
-                    <a href="https://github.com/sponsors/SoftInstigate" target="_blank">Become a sponsor to <strong>RESTHeart</strong></a>
-                </h2>
-                <p class="highlightcolor">You can support the development of RESTHeart via GitHub Sponsor program and receive public acknowledgment of your help.</p>
-                <a href="https://github.com/sponsors/SoftInstigate" target="_blank" class="btn btn-o-white">Go and see available sponsor tiers</a>
-            </div>
-        </div>
-    </div>
-</section>
+</section> -->
 
 <section id="call-to-action" class="call-to-action">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">Build modern apps</h2>
-                <p>RESTHeart connects automatically to MongoDB or any compatible database (e.g. Percona Server for MongoDB, AWS DocumentDB and Azure Cosmos DB) exposing all database's features through a comprehensive set of web services.</p>
-                <ul class="">
-                    <li>Instant REST, GraphQL and WebSocket API</li>
-                    <li>Built-in Authentication and Authorization</li>
-                    <li>Java, Kotlin, JavaScript and TypeScript Framework to extend the API</li>
+                <h2 class="call-to-action__title text-center">Low code</h2>
+                <p>
+                RESTHeart is a <strong>low code platform</strong> providing developers with a pleasant <strong>development framework</strong> and ready-to-use <strong>application level features</strong>:
+                </p>
+                <ul>
+                    <li>The Best Data API from MongoDB</li>
+                    <li>Battle tested Security that just requires configuration</li>
+                    <li>Polyglot Framework for Java, Kotlin, JavaScript and TypeScript</li>
                 </ul>
-                <a href="{{ "/docs" | prepend: site.baseurl }}" class="btn background-primary ml-1 mt-3 my-0 btn-md">LEARN MORE</a>
+                <div class="text-center pt-3">
+                    <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn">Donwload the PDF fact sheet</a>
+                </div>
             </div>
             <div class="col-md-6 call-to-action__item call-to-action__first">
-                <h2 class="call-to-action__title">Setup in minutes</h2>
-                <p>RESTHeart fully supports GraalVM, a new virtual machine from Oracle that offers a polyglot runtime environment and the ability to compile Java applications to native images. RESTHeart is also available as a Docker image, so it works perfectly in Kubernetes and AWS ECS.</p>
-                <ul class="">
-                    <li>Ready-to-run stateless Microservice</li>
-                    <li>Available as JAR, native binary and Docker image</li>
-                    <li>Deployable both on cloud and on premises</li>
+                <h2 class="call-to-action__title text-center">Container first</h2>
+                <p>
+                RESTHeart tailors your application for GraalVM and HotSpot with <strong>instant startup time</strong>, <strong>low memory footprint</strong> and <strong>amazing performances</strong>.
+                </p>
+                <ul>
+                    <li>Feels at home on Docker and Kubernetes</li>
+                    <li>Starts up in milliseconds</li>
+                    <li>Reach tens of thousands of TPS with a single instance</li>
                 </ul>
-                <a href="{{ "/docs/setup" | prepend: site.baseurl }}" class="btn background-primary ml-1 mt-3 btn-md">DOWNLOAD</a>
+                <div class="text-center pt-3">
+                    <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn mt-3 mt-md-0 ml-md-3 mx-auto">Donwload the Product presentation</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="article-at-mongodb" class="call-to-action black-background">
+<div class="container text-center mt-0">
+    <img src="/images/restheart.gif" class="img-fluid" width="800"/>
+</div>
+
+<section id="article-at-aws-blog" class="call-to-action black-background">
     <div class="container-fluid">
         <div class="row mb-1">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
                 <h2 class="text-lightcyan mb-2">
-                    <a href="https://www.mongodb.com/customers/softinstigate" target="_blank">Featured on <strong>MongoDB.com</strong></a>
+                    <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank">Featured on <strong>AWS Blog</strong></a>
                 </h2>
                 <p class="highlightcolor"><i>RESTHeart API for MongoDB simplifies development and frees you to focus on delivering great user experiences</i></p>
                 <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
@@ -100,27 +84,23 @@ layout: default
     </div>
 </section>
 
-<div class="container text-center mt-0">
-    <img src="/images/restheart.gif" class="img-fluid">
-</div>
-
-<div class="container">
-    <h2 class="text-center color-primary">Ready to use data API for MongoDB</h2>
+<div class="container mt-5">
+    <h2 class="text-center color-primary font-weight-bold">The Best Data API for MongoDB</h2>
 </div>
 
 <section id="examples" class="slice my-0 pb-0">
     {% include examples.html %}
 </section>
 
-<div class="container">
-    <h2 class="text-center color-primary m-0 mb-2">Java, Kotlin and JavaScript framework to extend the API</h2>
+<div class="container mt-5">
+    <h2 class="text-center color-primary m-0 mb-2 font-weight-bold">Polyglot Development Framework</h2>
 </div>
 
 <section id="examples-plugins" class="slice">
     {% include examples_plugins.html %}
 </section>
 
-<section id="trusted-by">
+<!-- <section id="trusted-by">
     <div class="row mx-0">
         <div id="customers" class="container-fluid my-2">
             <h2 class="text-center color-primary">
@@ -139,10 +119,24 @@ layout: default
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <section class="chart mt-3 pb-0" id="chart">
     {% include docker_pull_chart.html %}
+</section>
+
+<section id="article-at-mongodb" class="call-to-action black-background">
+    <div class="container-fluid">
+        <div class="row mb-1">
+            <div class="col-md-12 call-to-action__item call-to-action__first text-center">
+                <h2 class="text-lightcyan mb-2">
+                    <a href="https://github.com/sponsors/SoftInstigate" target="_blank">Become a sponsor</a>
+                </h2>
+                <p class="highlightcolor">You can support the development of RESTHeart via GitHub Sponsor program and receive public acknowledgment of your help.</p>
+                <a href="https://github.com/sponsors/SoftInstigate" target="_blank" class="btn btn-o-white">Go and see available sponsor tiers</a>
+            </div>
+        </div>
+    </div>
 </section>
 
 <link rel="stylesheet" href="assets/animated-headline/css/style.css"> <!-- Resource style -->
