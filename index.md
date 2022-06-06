@@ -5,7 +5,7 @@ layout: default
 <section id="top" class="black-background text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
         <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <p class="m-0 top-2 mb-2 text-break highlightcolor lh-1_4">Low code Microservices<wbr> Open Platform</p>
+        <p class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">Low code Microservices<wbr> Open Platform</p>
         <p class="top-6 text-break white">with Polyglot Development Framework,<wbr> Declarative Access Control<br>and the Best Data APIs for <span class="highlightcolor">MongoDB</span></p>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
         <a href="/docs" class="btn ml-1 mt-4 my-0 btn-md">Read the Docs</a>
@@ -16,8 +16,8 @@ layout: default
     </div>
 </section>
 
-<div class="container text-center mt-0">
-    <img src="/images/restheart.gif" class="img-fluid" width="800"/>
+<div class="container text-center mt-0 mw-800 px-0">
+    <img src="/images/restheart.gif" class="img-fluid"/>
 </div>
 
 <section id="article-at-aws-blog" class="call-to-action black-background">
