@@ -19,7 +19,7 @@ layout: docs
 The [Enterprise License](https://github.com/SoftInstigate/restheart/blob/master/COMM-LICENSE.txt) comes into effect by executing the License Key Activation process.
 
 {: .bs-callout .bs-callout-info }
-For more information about the Enterprise License and Support please refer to the [support](/support) page.
+For more information about the Enterprise License and Support please refer to [restheart.com](/https://restheart.com) web site.
 
 To activate the license key, you need to download and install the **License Key Activator Plugin**.
 

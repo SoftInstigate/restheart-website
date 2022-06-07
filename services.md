@@ -1,6 +1,6 @@
 ---
 permalink: "/services"
 layout: redirect
-redirectUrl: "/support"
+redirectUrl: "https://restheart.com"
 ---
 

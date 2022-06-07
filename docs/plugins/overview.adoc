@@ -52,11 +52,13 @@ IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-
 
 == The Proxy pattern
 
-If you are not familiar with java, there is a different approach that can help you extending the API using the link:/docs/proxy[proxying] feature.
+A different approach that can help you extending the API us using the link:/docs/proxy[proxying] feature.
 
-You can add a side microservice, for instance using NodeJs, that implements a Web Service. This microservice can execute requests to RESTHeart if it needs to read or write data to MongoDB.
+You can add a side microservice, for instance using NodeJs, that implements a Web Service. This microservice can execute requests to RESTHeart if it needs to interact with RESTHeart, for instance to to read or write data to MongoDB via the REST API.
 
 You can then proxy it via RESTHeart so that it is protected under the same security domain of RESTHeart.
+
+The user id and roles of the authenticated RESTHeart user are passed by RESTHeart to the proxied service via the `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles` request header.
 
 Add the following section to the `restheart.yml` configuration file to proxy call to the RESTHeart's URI `/anything` to the web resource `https://httpbin.org/anything`
 
