@@ -79,7 +79,7 @@ are identified.
 <tr class="odd">
 <td>Bulk Documents</td>
 <td><code>/&lt;db&gt;/&lt;coll&gt;/*?filter=[filter expression]</code></td>
-<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/mongodb-rest/write-docs/">Write Requests</a>.</td>
+<td>The wildcard can be used for bulk updates; in this case the <code>filter</code> query parameter is mandatory, see  <a href="/docs/mongodb-rest/write-docs">Write Requests</a>.</td>
 </tr>
 <tr class="even">
 <td>Indexes</td>

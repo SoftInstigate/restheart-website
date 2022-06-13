@@ -37,7 +37,7 @@ and real case results.
 
 Let's first clarify the issue addressed by the engine.
 
-RESTHeart allows to [Read Documents](/docs/mongodb-rest/read-docs/) via GET requests
+RESTHeart allows to [Read Documents](/docs/mongodb-rest/read-docs) via GET requests
 on collection resources where documents are returned as embedded
 resources.
 

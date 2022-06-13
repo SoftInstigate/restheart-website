@@ -77,7 +77,7 @@ The properties of the ACL document are:
 |**predicate**|string|If the [undertow predicate](http://undertow.io/undertow-docs/undertow-docs-2.0.0/index.html#textual-representation) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)|
 |**roles**|JSON array of strings|The roles that are applied the ACL document. The special role `$unauthenticated` applies to requests that are not authenticated.|
 |**priority**|number|A request might fulfill several predicates; an ACL document with higher priority has higher evaluation precedence.|
-|**readFilter**|`null` or JSON object|An optional [filter](/docs/mongodb-rest/read-docs/#filtering) that is added to GET requests when authorized by this ACL document.|
+|**readFilter**|`null` or JSON object|An optional [filter](/docs/mongodb-rest/read-docs#filtering) that is added to GET requests when authorized by this ACL document.|
 |**writeFilter**|`null` or JSON object|An optional filter that is added to write requests when authorized by this ACL document.|
 
 ### Using readFilter and writeFilter
