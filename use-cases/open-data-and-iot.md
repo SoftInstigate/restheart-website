@@ -1,6 +1,7 @@
 ---
 title: 'Use Case: Open Data and IoT'
 layout: article
+sitemap: false
 ---
 
 {: .text-justify .mt-5}

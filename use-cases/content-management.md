@@ -1,6 +1,7 @@
 ---
 title: 'Use Case: Content Management'
 layout: article
+sitemap: false
 ---
 
 {: .text-justify .mt-5}

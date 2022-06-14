@@ -1,6 +1,7 @@
 ---
 title: 'Use Case: Integration'
 layout: article
+sitemap: false
 ---
 
 # Significant Integration Cost Savings Using RESTHeart

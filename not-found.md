@@ -1,6 +1,7 @@
 ---
 title: Not Found
 layout: page
+sitemap: false
 ---
 
 {: .text-center }

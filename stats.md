@@ -1,5 +1,6 @@
 ---
 layout: default
+sitemap: false
 ---
 
 <section class="chart mt-3" id="chart">
