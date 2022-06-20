@@ -29,7 +29,7 @@ layout: default
                     <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank">Featured on <strong>AWS Blog</strong></a>
                 </h2>
                 <p class="highlightcolor"><i>RESTHeart API for MongoDB simplifies development and frees you to focus on delivering great user experiences</i></p>
-                <a href="https://www.mongodb.com/customers/softinstigate" target="_blank" class="btn btn-o-white">READ THE POST</a>
+                <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank" class="btn btn-o-white">READ THE POST</a>
             </div>
         </div>
         <div class="row mb-1 text-center mb-3">
