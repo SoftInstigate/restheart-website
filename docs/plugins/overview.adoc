@@ -34,7 +34,7 @@ In short, you can develop plugins in Java, Kotlin and JavaScript and deploy them
 
 IMPORTANT: Have a look at the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples] for some code examples.
 
-== The Plugin Skeleton Repository
+== Plugin Skeleton Project
 
 To quick start a new plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository].
 
@@ -42,25 +42,24 @@ To quick start a new plugin, you can clone the link:https://github.com/SoftInsti
 ----
 $ git clone git@github.com:SoftInstigate/restheart-plugin-skeleton.git
 $ cd restheart-plugin-skeleton
-$ ./mvnw clean package
-$ ./bin/restart.sh -p restheart
+$ ./bin/rh.sh
 ----
 
-The script `./bin/restart.sh` automatically deploys the plugin and start RESTHeart with it. At first run, it also automatically downloads the latest version of RESTHeart.
+The script `./bin/rh.sh` automatically builds, deploys the plugin and restart RESTHeart to apply changes. At first run, it also automatically downloads the latest version of RESTHeart.
 
 IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/README.md[README.md] for more information.
 
-== The Proxy pattern
+== Proxying side microservices
 
-A different approach that can help you extending the API us using the link:/docs/proxy[proxying] feature.
+The link:/docs/proxy[proxy] feature of RESTHeart is an alternative to develop custom plugins that can be used to extend the API.
 
-You can add a side microservice, for instance using NodeJs, that implements a Web Service. This microservice can execute requests to RESTHeart if it needs to interact with RESTHeart, for instance to to read or write data to MongoDB via the REST API.
+Side microservices, for instance developed with a completely different technology as NodeJs, can can be proxied by RESTHeart to be served through it and protected by its security layer.
 
-You can then proxy it via RESTHeart so that it is protected under the same security domain of RESTHeart.
+Side microservice can execute requests to RESTHeart, for instance to use its superior MongoDB API.
 
 The user id and roles of the authenticated RESTHeart user are passed by RESTHeart to the proxied service via the `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles` request header.
 
-Add the following section to the `restheart.yml` configuration file to proxy call to the RESTHeart's URI `/anything` to the web resource `https://httpbin.org/anything`
+As an example, the following section to the `restheart.yml` configuration file, proxies requests to the URI `/anything` to the web resource `https://httpbin.org/anything`
 
 [source,yml]
 ----
