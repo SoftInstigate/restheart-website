@@ -3,7 +3,7 @@
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <div class="top-4 mb-4"><span class="highlightcolor">The MongoDB best friend</span></div>
-                <p>RESTHeart unlocks <strong>all the features</strong> of MongoDB. </p>
+                <p>RESTHeart unlocks <strong>all the features</strong> of MongoDB via REST, GraphQL and WebSocket APIs. </p>
                 <p class="mt-1">
                     Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
                 </p>
@@ -34,7 +34,7 @@
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <div class="top-4 mb-4"><span class="highlightcolor">Declarative Access Control</span></div>
-                <p>RESTHeart provides a simple, declarative and policy-based <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
+                <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
