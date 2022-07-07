@@ -5,9 +5,9 @@ layout: default
 <section id="top" class="black-background text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
         <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <h1 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">Low code Microservices<wbr> Open Platform
-        <div class="top-6 text-break white">with Polyglot Development Framework,<wbr> Declarative Security<br>and the Best Data APIs for <span class="highlightcolor">MongoDB</span></div>
-        </h1>
+        <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">Ready to use backend for Web and Mobile apps.
+        <div class="top-6 text-break white">Instant REST, GraphQL and WebSocket APIs for MongoDB.</div>
+        </h2>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
         <a href="/docs" class="btn ml-1 mt-4 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
