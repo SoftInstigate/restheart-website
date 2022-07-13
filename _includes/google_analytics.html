@@ -1,5 +1,5 @@
 {% if site.google_analytics_tracking_id %}
-<script class="_iub_cs_activate" type="text/plain">
+<script>
     if (document.location.hostname.search("{{site.domain}}") !== -1) {
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', '{{ site.google_analytics_tracking_id }}']);
@@ -8,14 +8,15 @@
 
         (function () {
             var ga = document.createElement('script');
-            ga.type = 'text/javascript';
+            ga.class="_iub_cs_activate"
+            ga.type = 'text/plain';
             ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'https://www') + '.google-analytics.com/ga.js';
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(ga, s);
         })();
     } else {
-        //console.log("Disabled Google Analytics: running non-production environment.");
+        console.log("Disabled Google Analytics: running non-production environment.");
     }
 </script>
 
