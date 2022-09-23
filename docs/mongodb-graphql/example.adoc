@@ -53,256 +53,111 @@ POST /gql-apps HTTP/1.1
    "enabled": true,
    "uri":"mflix"
   },
-   "schema": "type Stats { year: Int moviesNum: Int } type Comment{  _id: ObjectId  user: User  movie: Movie  text: String  date: DateTime}type Movie{  _id: ObjectId  title: String  year: Int  runtime: Int  released: DateTime  poster: String  plot: String  fullPlot: String  lastUpdate: String  filmType: String  directors: [String]  imdbRate: Float  imdbVotes: Int  countries: [String]  genres: [String]  tomatoesRate: Float  tomatoesReviewsNum: Int  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]  relatedMovies: [Movie]}type Session{  _id: ObjectId  user: User  jwt: String} type Theater{  theaterId: Int  location: BsonDocument} type User{  _id: ObjectId  name: String  email: String  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]}type Query{  MoviesByTitle(title: String!): [Movie]  MoviesByYear(year: Int!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Movie]  UserByEmail(email: String!): [User] StatsByTomatoesRateRange(min: Float max: Float = 10): [Stats] MoviesByTomatoesRateRange(min: Float, max: Float, sort: Int = 1, skip: Int = 0, limit: Int = 0):[Movie] TheatersByCity(city: String!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Theater]}",
+   "schema": "type Stats { year: Int moviesNum: Int } type Comment{  _id: ObjectId  user: User  movie: Movie  text: String  date: DateTime}type Movie{  _id: ObjectId  title: String  year: Int  runtime: Int  released: DateTime  poster: String  plot: String  fullPlot: String  lastUpdate: String  filmType: String  directors: [String]  imdbRate: Float  imdbVotes: Int  countries: [String]  genres: [String]  tomatoesRate: Float  tomatoesReviewsNum: Int  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]  relatedMovies: [Movie]}type Session{  _id: ObjectId  user: User  jwt: String} type Theater{  theaterId: Int  location: BsonDocument} type User{  _id: ObjectId  name: String  email: String  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]}type Query{  MoviesByTitle(title: String!): [Movie]  MoviesByYear(year: Int!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Movie]  UserByEmail(email: String!): [User] StatsByTomatoesRateRange(min: Float max: Float = 10): [Stats] MoviesByTomatoesRateRange(min: Float, max: Float, sort: Int = 1, skip: Int = 0, limit: Int = 0):[Movie] TheatersByCity(city: String!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Theater] AllMovies(limit: Int = 10, skip: Int = 0): [Movie]}",
  "mappings": {
-   "Comment": {
-     "user": {
-       "db":"sample_mflix",
-       "collection":"users",
-       "find": {
-         "email": {
-           "$fk":"email"
-          }
-        },
-       "dataLoader": {
-         "batching": true,
-         "caching": true
-        }
-      },
-     "movie": {
-       "db":"sample_mflix",
-       "collection":"movies",
-       "find": {
-         "_id": {
-           "$fk":"movie_id"
-          }
-        },
-       "dataLoader": {
-         "batching": true,
-         "caching": false,
-         "maxBatchSize": 30
-        }
-      }
+  "Comment": {
+    "user": {
+      "db":"sample_mflix",
+      "collection":"users",
+      "find": { "email": { "$fk":"email" } },
+      "dataLoader": { "batching": true, "caching": true }
     },
-   "Movie": {
-     "imdbRate":"imdb.rating",
-     "imdbVotes":"imdb.votes",
-     "tomatoesRate":"tomatoes.viewer.rating",
-     "tomatoesReviewsNum":"tomatoes.viewer.numReviews",
-     "lastUpdate":"lastupdated",
-     "fullPlot":"fullplot",
-     "filmType":"type",
-     "comments": {
-       "db":"sample_mflix",
-       "collection":"comments",
-       "find": {
-         "$and": [
-            {
-             "movie_id": {
-               "$fk":"_id"
-              }
-            },
-            {
-             "date": {
-               "$gte": {
-                 "$arg":"startDate"
-                },
-               "$lt": {
-                 "$arg":"endDate"
-                }
-              }
-            }
-          ]
-        },
-       "sort": {
-         "date": {
-           "$arg":"sort"
-          }
-        },
-       "skip": {
-         "$arg":"skip"
-        },
-       "limit": {
-         "$arg":"limit"
-        },
-       "dataLoader": {
-         "batching": true,
-         "caching": false,
-         "maxBatchSize": 30
-        }
-      }
+    "movie": {
+      "db":"sample_mflix",
+      "collection":"movies",
+      "find": { "_id": { "$fk":"movie_id" } },
+      "dataLoader": { "batching": true, "caching": false, "maxBatchSize": 30 }
+    }
+  },
+  "Movie": {
+    "imdbRate":"imdb.rating",
+    "imdbVotes":"imdb.votes",
+    "tomatoesRate":"tomatoes.viewer.rating",
+    "tomatoesReviewsNum":"tomatoes.viewer.numReviews",
+    "lastUpdate":"lastupdated",
+    "fullPlot":"fullplot",
+    "filmType":"type",
+    "comments": {
+      "db":"sample_mflix",
+      "collection":"comments",
+      "find": { "$and": [{ "movie_id": { "$fk":"_id" } }, { "date": { "$gte": { "$arg":"startDate" }, "$lt": { "$arg":"endDate" } } }] },
+      "sort": { "date": { "$arg":"sort" } },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
+    }
+  },
+  "Session": {
+    "user": {
+      "db":"sample_mflix",
+      "collection":"user",
+      "find": { "email": { "$fk":"user_id" } }
+    }
+  },
+  "User": {
+    "comments": {
+      "db":"sample_mflix",
+      "collection":"comments",
+      "find": { "email": { "$fk":"email" } },
+      "sort": { "_id": { "$arg":"sort" } },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
+    }
+  },
+  "Query": {
+    "StatsByTomatoesRateRange": {
+      "db": "sample_mflix",
+      "collection": "movies",
+      "stages": [
+        { "$match": { "imdb.rating": { "$gte": { "$arg":"min" }, "$lte": { "$arg":"max" } }, "year": { "$type": "int" } } },
+        { "$group": { "_id": "$year", "moviesNum": { "$count": {} } } },
+        { "$project": { "_id": 0, "year": "$_id", "moviesNum": 1} },
+        { "$sort": { "year": 1 } }
+    ]
     },
-   "Session": {
-     "user": {
-       "db":"sample_mflix",
-       "collection":"user",
-       "find": {
-         "email": {
-           "$fk":"user_id"
-          }
-        },
-       "dataLoader": {
-         "batching": true,
-         "caching": false,
-         "maxBatchSize": 30
-        }
-      }
+    "MoviesByTitle": {
+      "db":"sample_mflix",
+      "collection":"movies",
+      "find": { "title": { "$arg":"title" } }
     },
-   "User": {
-     "comments": {
-       "db":"sample_mflix",
-       "collection":"comments",
-       "find": {
-         "email": {
-           "$fk":"email"
-          }
-        },
-       "sort": {
-         "_id": {
-           "$arg":"sort"
-          }
-        },
-       "skip": {
-         "$arg":"skip"
-        },
-       "limit": {
-         "$arg":"limit"
-        },
-       "dataLoader": {
-         "batching": true,
-         "caching": false,
-         "maxBatchSize": 30
-        }
-      }
+    "MoviesByYear": {
+      "db":"sample_mflix",
+      "collection":"movies",
+      "find": { "year": { "$arg":"year" } },
+      "sort": { "_id": { "$arg":"sort" } },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
     },
-   "Query": {
-     "StatsByTomatoesRateRange": {
-        "db": "sample_mflix",
-        "collection": "movies",
-        "stages": [
-          {
-            "$match": {
-              "imdb.rating": {
-                "$gte": {
-                  "$arg":"min"
-                },
-                "$lte": {
-                  "$arg":"max"
-                }
-              },
-              "year": {
-                "$type": "int"
-              }
-            }
-          },
-          {
-            "$group": {
-              "_id": "$year",
-              "moviesNum": {
-                "$count": {}
-              }
-            }
-          },
-          {
-            "$project": {
-                "_id": 0,
-                "year": "$_id",
-                "moviesNum": 1
-            }
-          },
-          {
-            "$sort": {
-              "year": 1
-            }
-          }
-      ]
-     },
-     "MoviesByTitle": {
-       "db":"sample_mflix",
-       "collection":"movies",
-       "find": {
-         "title": {
-           "$arg":"title"
-          }
-        }
-      },
-     "MoviesByYear": {
-       "db":"sample_mflix",
-       "collection":"movies",
-       "find": {
-         "year": {
-           "$arg":"year"
-          }
-        },
-       "sort": {
-         "_id": {
-           "$arg":"sort"
-          }
-        },
-       "skip": {
-         "$arg":"skip"
-        },
-       "limit": {
-         "$arg":"limit"
-        }
-      },
-     "UserByEmail": {
-       "db":"sample_mflix",
-       "collection":"users",
-       "find": {
-         "email": {
-           "$arg":"email"
-          }
-        }
-      },
-     "MoviesByTomatoesRateRange": {
-       "db":"sample_mflix",
-       "collection":"movies",
-       "find": {
-         "tomatoes.viewer.rating": {
-           "$gte": {
-             "$arg":"min"
-            },
-           "$lt": {
-             "$arg":"max"
-            }
-          }
-        },
-       "sort": {
-         "tomatoes.viewer.rating": {
-           "$arg":"sort"
-          },
-          "_id": 1
-        },
-       "skip": {
-         "$arg":"skip"
-        },
-       "limit": {
-         "$arg":"limit"
-        }
-      },
-     "TheatersByCity": {
-       "db":"sample_mflix",
-       "collection":"theaters",
-       "find": {
-         "location.address.city": {
-           "$arg":"city"
-          }
-        },
-       "sort": {
-         "location.address.city": {
-           "$arg":"sort"
-          }
-        },
-       "skip": {
-         "$arg":"skip"
-        },
-       "limit": {
-         "$arg":"limit"
-        }
-      }
+    "UserByEmail": {
+      "db":"sample_mflix",
+      "collection":"users",
+      "find": { "email": { "$arg":"email" } }
+    },
+    "MoviesByTomatoesRateRange": {
+      "db":"sample_mflix",
+      "collection":"movies",
+      "find": { "tomatoes.viewer.rating": { "$gte": { "$arg":"min" }, "$lt": { "$arg":"max" } } },
+      "sort": { "tomatoes.viewer.rating": { "$arg":"sort" }, "_id": 1 },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
+    },
+    "TheatersByCity": {
+      "db":"sample_mflix",
+      "collection":"theaters",
+      "find": { "location.address.city": { "$arg":"city" } },
+      "sort": { "location.address.city": { "$arg":"sort" } },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
+    },
+    "AllMovies": {
+      "db":"sample_mflix",
+      "collection":"movies",
+      "find": { },
+      "sort": { "_id_": -1 },
+      "skip": { "$arg":"skip" },
+      "limit": { "$arg":"limit" }
     }
   }
+ }
 }
 ----
 
