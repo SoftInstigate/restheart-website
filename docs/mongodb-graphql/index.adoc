@@ -135,6 +135,21 @@ You can map a GraphQL field with a MongoDB query using the following parameters:
 -  `skip` (Document or Integer): how many documents should be skipped of those resulting;
 -  `limit` (Document or Integer): how many documents should be returned at most of those resulting.
 
+NOTE: Starting from v6.5.1, unlimited queries are not allowed: if the query does not specifies a `limit`, the service configuration `default-limit` is applied. Also the limit cannot exceed the `max-limit`. The default GraphQL service configuration in `restheart.yml` follows:
+
+```yml
+plugins-args:
+  graphql:
+    uri: /graphql
+    db: restheart
+    collection: gql-apps
+    # default-limit is used for queries that don't not specify a limit
+    default-limit: 100
+    # max-limit is the maximum value for a Query limit
+    max-limit: 1000
+    verbose: false
+```
+
 Moreover, a query is **parametric** when the mapped MongoDb query includes one or more `$arg` and `$fk` operators:
 
  - `$arg`: allows to use the arguments of the GraphQL query in the MongoDb query;
@@ -204,44 +219,24 @@ then, possible mappings are:
       "posts": {
         "db": "restheart",
         "collection": "posts",
-        "find": {
-          "_id": {
-            "$in": {
-              "$fk": "posts_ids"
-            }
-          }
-        }
+        "find": { "_id": { "$in": { "$fk": "posts_ids" } } }
       }
     },
     "Post": {
       "author": {
         "db": "restheart",
         "collection": "user",
-        "find": {
-          "_id": {
-            "$fk": "author_id"
-          }
-        }
+        "find": { "_id": { "$fk": "author_id" } }
       }
     },
     "Query": {
       "usersByName": {
         "db": "restheart",
         "collection": "users",
-        "find": {
-          "name": {
-            "$arg": "_name"
-          }
-        },
-        "limit": {
-          "$arg": "_limit"
-        },
-        "skip": {
-          "$arg": "_skip"
-        },
-        "sort": {
-          "name": -1
-        }
+        "find": { "name": { "$arg": "_name" } },
+        "limit": { "$arg": "_limit" },
+        "skip": { "$arg": "_skip" },
+        "sort": { "name": -1 }
       }
     }
   }
@@ -276,14 +271,7 @@ Referring to the previous example of mapping, the following aggregation stages a
       "db": "restheart",
       "collection": "users",
       "stages": [
-        {
-          "$group": {
-            "_id": "$category",
-            "count": {
-              "$count": {}
-            }
-          }
-        }
+        { "$group": { "_id": "$category", "count": { "$count": {} } } }
       ]
     }
   }
