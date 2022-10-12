@@ -11,7 +11,7 @@ The `restheart-graphql` service added to RESTHeart exposes a read-only (no mutat
 
 == Configuration
 
-For each GraphQL application you need to upload on MongoDB a so called *definition*. You can specify the MongoDB's collection reserved for this purpose within the RESTHeart's YAML configuration as follow:
+For each GraphQL application you need to define a so called *GraphQL app definition*. This is a JSON document to create in a MongoDB collection. You can specify the collection that holds the app definitions in the RESTHeart's configuration as follow:
 
 [source,yml]
 ----
@@ -374,6 +374,13 @@ Content-Type: application/graphql
   }
 }
 ----
+
+## Limitations
+
+The GraphQL service has the following limitations:
+
+- **Read-only API**: mutations are not supported; the GraphQL API is only intended for simplifying data fetching. To write data, the REST API must be used.
+- **Not-supported schema keywords**: the schema resolvers do not support the following keywords: `enum`, `union`, `interface` and `input`.
 
 ## Response codes
 
