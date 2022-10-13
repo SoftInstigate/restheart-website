@@ -12,7 +12,7 @@ layout: default
         <a href="/docs" class="btn ml-1 mt-4 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
         <div class="col-12 mt-4">
-                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart/restheart-demo" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a free demo!</a>
+                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart/restheart-demo" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a meeting!</a>
         </div>
     </div>
 </section>

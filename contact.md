@@ -15,7 +15,7 @@ layout: default
                 <a class="btn-o-white btn btn-lg" title="Questions" href="https://stackoverflow.com/questions/ask?tags=restheart" target="blank"> <i style="font-size:18px" class="icon-lightbulb"></i>Ask a question on StackOverflow</a>
             </div>
             <div class="col-12 my-2">
-                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a free demo!</a>
+                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a meeting!</a>
             </div>
         </div>
     </div>
