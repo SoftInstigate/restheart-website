@@ -112,14 +112,14 @@ RESTHeart 6 extends this language introducing the following new predicates that 
 {: .table }
 |predicate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|
 |-|-|-|
-|`qparams-contain`          |`true` if the request query string contains the specified parameter            |`qparams-contain(page,pagesize)`|
-|`qparams-blacklist`        |`true` if the request query string does not contain the blacklisted parameters |`qparams-contain(filter,sort)`|
-|`qparams-whitelist`        |`true` if the request query string contains only whitelisted parameters        |`qparams-whitelist(page,pagesize)`|
-|`qparams-size`             |`true` if the request query string the specified number of parameters          |`qparams-size(3)`|
-|`bson-request-contains`    |`true` if the request content is Bson and contains the specified properties    |`bson-request-contains(foo,bar.sub)`|
-|`bson-request-whitelist`   |`true` if the request content is Bson and only contains whitelisted properties |`bson-request-whitelist(foo,bar.sub)`|
-|`bson-request-blacklist`   |`true` if the request bson content does not contain blacklisted properties     |`bson-request-contains(foo,bar.sub)`|
-|`in`         | checks if `value` is contained in `array`                              | `path-template('/{tenant}') and in(value=${tenant}, array=@user.tenants)`
+|`qparams-contain`          |`true` if the request query string contains the specified parameter              |`qparams-contain(page,pagesize)`|
+|`qparams-blacklist`        |`true` if the request query string does not contain the blacklisted parameters   |`qparams-contain(filter,sort)`|
+|`qparams-whitelist`        |`true` if the request query string contains only whitelisted parameters          |`qparams-whitelist(page,pagesize)`|
+|`qparams-size`             |`true` if the request query string the specified number of parameters            |`qparams-size(3)`|
+|`bson-request-contains`    |`true` if the request content is BSON and contains the specified properties      |`bson-request-contains(foo,bar.sub)`|
+|`bson-request-whitelist`   |`true` if the request content is BSON and only contains whitelisted properties   |`bson-request-whitelist(foo,bar.sub)`|
+|`bson-request-blacklist`   |`true` if the request content is BSON and doesn't contain blacklisted properties |`bson-request-blacklist(foo,bar.sub)`|
+|`in`                       | checks if `value` is contained in `array`                                       | `path-template('/{tenant}') and in(value=${tenant}, array=@user.tenants)`
 
 ### MongoPermissions
 
