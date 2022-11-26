@@ -50,7 +50,7 @@ NOTE: RESTHeart supports MongoDB from version 3 throughout 5 and it is extensive
 $ # start MongoDB as single instance Replica Set
 $ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db &&  mongo --eval 'if (!rs.status().ok) rs.initiate();'
 $ # start RESTHeart
-$ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
+$ java -jar restheart.jar
 ----
 
 [source,bash]
@@ -84,14 +84,13 @@ restheart
 To run RESTHeart as a daemon (i.e. fork) add the `--fork` parameter:
 
 [source,bash]
-$ java -jar restheart.jar --fork etc/restheart.yml -e etc/default.properties
+$ java -jar restheart.jar --fork
 
-To see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that `/usr/local/var/log/restheart.log` is writeable and then edit `etc/default.properties` like this:
+To see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that `/usr/local/var/log/restheart.log` is writeable and then rerun it as follows:
 
-[source,properties]
+[source,bash]
 ----
-enable-log-file = true
-log-file-path = /usr/local/var/log/restheart.log
+$ RHO='/logging/log-to-file->true;/logging/log-file-path->"/usr/local/var/log/restheart.log";' java -jar restheart.jar --fork
 ----
 
 == CLI parameters
@@ -102,14 +101,18 @@ To know the available CLI parameters, run RESTHeart with `--help`:
 ----
 $ java -jar restheart.jar --help
 
-Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [-hv] [--fork]
-       [-e=<envFile>] FILE
-      FILE        Main configuration file
+Usage: java -jar restheart.jar [-chtv] [--fork] [-e=<envFile>] [FILE]
+      [FILE]                 Main configuration file
+  -c, --printConfiguration   Print the effective configuration to the standard
+                               error and exit
   -e, --envFile, --envfile=<envFile>
-                  Environment file name
-      --fork      Fork the process in background
-  -h, --help      This help message
-  -v, --version   Print product version to the output stream and exit
+                             Environment file name
+      --fork                 Fork the process in background
+  -h, --help                 This help message
+  -t, --printConfigurationTemplate
+                             Print the configuration template to the standard
+                               error and exit
+  -v, --version              Print product version to the output stream and exit
 ----
 
 == What's next

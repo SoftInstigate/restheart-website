@@ -62,9 +62,9 @@ parameter wins.
 By default, restheart will only gather high-level metrics that apply to
 all databases and collections. To gather more detailed and fine-grained
 metrics (with the cost of more memory usage), you can enable additional
-collection on a per-database or per-collection level.
+collection on a per-database or per-collection level.
 
-Use config value `metrics-gathering-level`, possible values are
+Use config value `metrics-gathering-level`, possible values are
 
 -   `OFF`
 -   `ROOT (default)`

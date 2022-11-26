@@ -164,7 +164,7 @@ mongo-mounts:
 ```
 
 The env var `RH_MONGO_URI` overrides the parameter `mongo-uri`. 
-The parameters `mongo-mounts`, not being of a primitive type, cannot be ovverriden. 
+The parameters `mongo-mounts`, not being of a primitive type, cannot be overridden. 
 
 RESTHeart v7 introduces a new way to override variables via the environment variable `RHO`.
 
