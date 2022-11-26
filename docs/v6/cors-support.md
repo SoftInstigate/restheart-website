@@ -14,7 +14,7 @@ layout: docs
 
 {% include docs-head.html %} 
 
-{% include doc-in-progress-v7.html %}
+{% include doc-in-progress-v6.html %}
 
 ## Introduction
 

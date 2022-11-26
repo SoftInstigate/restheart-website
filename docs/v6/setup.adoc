@@ -1,0 +1,121 @@
+---
+title: Setup
+layout: docs-adoc
+---
+
+TIP: The easiest way to run RESTHeart and MongoDB is with __Docker__, please go to link:/docs/setup-with-docker[Setup with Docker]
+
+== Download
+
+Download the ZIP or TAR archive.
+
+++++
+<a class="btn btn-md mb-3" id="zipdl" href="https://github.com/SoftInstigate/restheart/releases/latest/download/restheart.zip">zip</a>
+<a class="btn btn-md mb-3" id="tgzdl" href="https://github.com/SoftInstigate/restheart/releases/latest/download/restheart.tar.gz">tgz</a>
+<script async type="text/javascript">
+// avoid caching download link redirects
+var z = document.getElementById("zipdl");
+var t = document.getElementById("tgzdl");
+
+z.href = `${z.href}?nocache=${Math.random()}`;
+t.href = `${t.href}?nocache=${Math.random()}`;
+</script>
+++++
+
+Un-zip or un-tar
+
+[source,bash]
+----
+$ # if you downloaded the tar.gz
+$ tar -xzf restheart.tar.gz && cd restheart
+----
+
+[source,bash]
+----
+$ # if you downloaded the tar.gz
+$ tar -xzf restheart.tar.gz && cd restheart
+----
+
+== Run
+
+To run RESTHeart 6.x connected to a local instance of MongoDB you need:
+
+-   Java 17+;
+-   MongoDB running on `localhost` on port `27017`.
+
+NOTE: RESTHeart supports MongoDB from version 3 throughout 5 and it is extensively tested with MongoDB 3.6, 4.2, 4.4 and v5.0
+
+[source,bash]
+----
+$ # start MongoDB as single instance Replica Set
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db &&  mongo --eval 'if (!rs.status().ok) rs.initiate();'
+$ # start RESTHeart
+$ java -jar restheart.jar etc/restheart.yml -e etc/default.properties
+----
+
+[source,bash]
+----
+$ http -b http://localhost:8080/ping
+
+Greetings from RESTHeart!
+----
+
+== Directory structure
+
+[source,text]
+----
+restheart
+├── LICENSE.txt
+├── etc
+│   ├── acl.yml
+│   ├── default.properties
+│   ├── restheart.yml
+│   └── users.yml
+├── plugins
+│   ├── restheart-graphql.jar
+│   ├── restheart-mongodb.jar
+│   ├── restheart-polyglot.jar
+│   └── restheart-security.jar
+└── restheart.jar
+----
+
+== Run as a daemon
+
+To run RESTHeart as a daemon (i.e. fork) add the `--fork` parameter:
+
+[source,bash]
+$ java -jar restheart.jar --fork etc/restheart.yml -e etc/default.properties
+
+To see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that `/usr/local/var/log/restheart.log` is writeable and then edit `etc/default.properties` like this:
+
+[source,properties]
+----
+enable-log-file = true
+log-file-path = /usr/local/var/log/restheart.log
+----
+
+== CLI parameters
+
+To know the available CLI parameters, run RESTHeart with `--help`:
+
+[source,bash]
+----
+$ java -jar restheart.jar --help
+
+Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [-hv] [--fork]
+       [-e=<envFile>] FILE
+      FILE        Main configuration file
+  -e, --envFile, --envfile=<envFile>
+                  Environment file name
+      --fork      Fork the process in background
+  -h, --help      This help message
+  -v, --version   Print product version to the output stream and exit
+----
+
+== What's next
+
+- Check that RESTHeart is up and running, opening the URL link:http://localhost:8080/ping[http://localhost:8080/ping], you should see the message: `Greetings from RESTHeart!`
+- Check the link:/docs/configuration[Configuration] page
+- Play with the link:/docs/tutorial/[Tutorial]
+- Deploy some plugins from the the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples repo]
+- Load the link:/docs/mongodb-rest/sample-data[sample data] into MongoDB and play with the Data API.

@@ -1,0 +1,171 @@
+---
+title: GraphQL API
+layout: docs-adoc
+---
+
+## The N+1 problem
+
+It's well known that every GraphQL service suffers of *N+1 requests problem*.
+
+In our case this problem arises every time that a relation is mapped through the `$fk` operator with a MongoDB query.
+
+For example, given the following GraphQL schema:
+
+[source,graphql]
+----
+type User {
+  id: Int!
+  name: String
+  posts: [Post]
+}
+
+type Post {
+  id: Int!
+  text: String
+  author: User
+}
+
+type Query {
+  posts(_limit: Int = 0, _skip: Int = 0): [Post]
+}
+----
+
+mapped with:
+
+[source,json]
+----
+{
+  "descriptor": "...",
+  "schema": "...",
+  "mappings": {
+    "User": {
+      "posts": {
+        "db": "restheart",
+        "collection": "posts",
+        "find": {
+          "_id": {
+            "$in": {
+              "$fk": "posts_ids"
+            }
+          }
+        }
+      }
+    },
+    "Post": {
+      "author": {
+        "db": "restheart",
+        "collection": "user",
+        "find": {
+          "_id": {
+            "$fk": "author_id"
+          }
+        }
+      }
+    },
+    "Query": {
+      "posts": {
+        "db": "restheart",
+        "collection": "posts",
+        "limit": {
+          "$arg": "_limit"
+        },
+        "skip": {
+          "$arg": "_skip"
+        }
+      }
+    }
+  }
+}
+----
+
+then, executing the GraphQL query:
+
+[source,graphql]
+----
+{ posts(_limit: 10) {
+    text
+    author {
+      name
+    }
+  }
+}
+----
+
+RESTHeart will execute:
+
+- a MongoDB query to fetch the first 10 documents of `posts` collection;
+- a MongoDB query for each one of the 10 posts returned by the first one.
+
+Precisely, N+1 requests.
+
+== Batching and Caching
+
+In order to mitigate the N+1 problem and optimize performances of yours GraphQL API, RESTHeart allows you to use **per-request DataLoaders** to batch and cache MongoDB queries. This can be done specifying `dataLoader` object within the _Field to Query mapping_. For instance, the author mapping seen above becomes:
+
+[source,json]
+----
+{
+  "descriptor": "...",
+  "schema": "...",
+  "mappings": {
+    "User": "...",
+    "Post": {
+      "author": {
+        "db": "restheart",
+        "collection": "user",
+        "find": {
+          "_id": {
+            "$fk": "author_id"
+          }
+        },
+        "dataLoader": {
+          "batching": true,
+          "caching": true,
+          "maxBatchSize": 20
+        }
+      }
+    },
+    "Query": "..."
+  }
+}
+----
+
+where:
+
+- `batching` (boolean): allows you to specify if queries batching is enabled. By default it's `false`;
+- `caching` (boolean): allows you to specify if queries caching is enabled. By default it's `false`;
+- `maxBatchSize` (int): allows you to specify how many queries batch together at most.
+
+== Tuning
+
+There's no magic number for `maxBatchSize`, so you have to tune it.
+
+For this purpose you can set `verbose: true` under the GraphQL plugin configuration within `restheart.yml`. In this way, RESTHeart will insert DataLoader statistics inside GraphQL queries answers.
+
+[source,json]
+----
+{
+"data":  {"..."},
+  "extensions":  {
+  "dataloader":  {
+      "overall-statistics":  {
+        "loadCount":  0,
+        "loadErrorCount":  0,
+        "loadErrorRatio":  0.0,
+        "batchInvokeCount":  0,
+        "batchLoadCount":  0,
+        "batchLoadRatio":  0.0,
+        "batchLoadExceptionCount":  0,
+        "batchLoadExceptionRatio":  0.0,
+        "cacheHitCount":  0,
+        "cacheHitRatio":  0.0
+      },
+      "individual-statistics":  {
+        "dataLoader1":"...",
+        "dataLoader2":"...",
+        "dataLoader3":"..."
+      }
+    }
+  }
+}
+----

@@ -1,0 +1,86 @@
+---
+title: Setup with Docker
+layout: docs-adoc
+---
+
+== Run RESTHeart with Docker, MongoDB running on localhost
+
+If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
+
+[source,bash]
+----
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongo --eval 'if (!rs.status().ok) rs.initiate();'
+----
+
+Run RESTHeart with:
+
+[.text-muted]
+On OSX and Windows:
+
+[source,bash]
+$ docker run -it --rm -p "8080:8080" softinstigate/restheart
+
+[.text-muted]
+On Linux
+
+[source,bash]
+$ docker run -it --rm -p "8080:8080" --add-host host.docker.internal:host-gateway softinstigate/restheart
+
+NOTE: This command relies on the docker support of `host.docker.internal`. If you are using an old docker version or a docker runtime that does not support it, than you need to configure the docker network accordingly (you can refer to the brilliant link:https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach["From inside of a Docker container, how do I connect to the localhost of the machine?" on StackOverflow]) or use one of the an alternative methods described in the further sections.
+
+NOTE: For versions `6.0.x`` and `6.1.x``, you also need to specify the docker option `-e RH_MONGO_URI='mongodb://host.docker.internal'` to override the default mongo uri. Starting from version `6.2.0`, this is the default uri in the docker image and the override is no more needed.
+
+== Run with docker-compose
+
+To run both RESTHeart and MongoDB services you can use `docker compose`. Just copy and paste the following shell command:
+
+[source,bash]
+----
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/6.2.x/docker-compose.yml --output docker-compose.yml
+$ docker compose up
+----
+
+TIP: Watch link:https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s[Docker / Docker Compose] video.
+
+== Run both RESTHeart and MongoDB with Docker
+
+1) Create a Docker network:
+
+[source,bash]
+$ docker network create restheart-network
+
+2) Run a MongoDB container
+
+[source,bash]
+$ docker run -d --name mongodb --network restheart-network mongo:5.0
+
+3) Run a RESTHeart container
+
+[source,bash]
+$ docker run -d --rm --network restheart-network -p "8080:8080" -e RH_MONGO_URI="mongodb://mongodb" softinstigate/restheart
+
+[source,bash]
+----
+$ http -b http://localhost:8080/ping
+
+Greetings from RESTHeart!
+----
+
+== Dockerfile
+
+- link:https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile[Dockerfile]
+- link:https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.distroless[Dockerfile.distroless]
+- link:https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.graalvm[Dockerfile.graalvm]
+- link:https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.native[Dockerfile.native]
+
+The "distroless" images are for special deployment requirements, where having the smallest possible image size and the very minimal security attack surface is required and their tag contains a `distroless` label. You usually don't need these images unless you exactly know what you are doing.
+
+Images tags ending with `-native` are created with the link:https://www.graalvm.org/reference-manual/native-image/[GraalVM Native Image technology] starting from stable builds of the product, especially suited for high demanding environments, like Kubernetes. These are experimental and not fully documented yet, please contact us for questions.
+
+== What's next
+
+- Check that RESTHeart is up and running, opening the URL link:http://localhost:8080/ping[http://localhost:8080/ping], you should see the message: `Greetings from RESTHeart!`
+- Check the link:/docs/configuration[Configuration] page
+- Play with the link:/docs/tutorial/[Tutorial]
+- Deploy some plugins from the the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples repo]
+- Load the link:/docs/mongodb-rest/sample-data[sample data] into MongoDB and play with the Data API.

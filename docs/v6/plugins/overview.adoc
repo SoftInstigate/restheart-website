@@ -1,0 +1,77 @@
+---
+title: Plugins
+layout: docs-adoc
+---
+
+== Introduction
+
+RESTHeart works *out-of-the-box* by merely installing and configuring it.
+
+It comes with a complete MongoDB API and a security implementation that allows to authenticate users and authorize requests according to a role-based policy.
+
+These functionalities are actually provided by the standard plugins that are distributed with RESTHeart. If you look at the `./plugins` directory you'll find them:
+
+[source,bash]
+----
+plugins
+├── restheart-graphql.jar
+├── restheart-mongodb.jar
+├── restheart-polyglot.jar
+└── restheart-security.jar
+----
+
+On the other side, real applications often need the API to be extended in some way.
+
+Plugins allow to extend RESTHeart:
+
+- **Services** extend the API adding web services.
+- **Interceptors** snoop and modify requests and responses at different stages of the request lifecycle.
+- **Initializers** execute initialization logic at system startup time.
+
+It is also possible developing security plugins to customize the security layer. Refer to link:/docs/plugins/security-plugins[Develop Security Plugins] for more information.
+
+In short, you can develop plugins in Java, Kotlin and JavaScript and deploy them in RESTHeart. For more information on how to deploy plugins refer to link:/docs/plugins/deploy[How to deploy Plugins].
+
+IMPORTANT: Have a look at the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples] for some code examples.
+
+== Plugin Skeleton Project
+
+To quick start a new plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository].
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart-plugin-skeleton.git && cd restheart-plugin-skeleton
+$ ./bin/rh.sh -p microd
+----
+
+The script `./bin/rh.sh` automatically builds, deploys the plugin and restart RESTHeart to apply changes. At first run, it also automatically downloads the latest version of RESTHeart.
+
+The project skeleton defines a dummy Service bound at `/srv`:
+
+[source,bash]
+----
+$ curl localhost:8080/srv
+{"message":"Hello World!","rnd":"njXZksfKFW"}%
+----
+
+IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/README.md[README.md] for more information.
+
+== Proxying side microservices
+
+The link:/docs/proxy[proxy] feature of RESTHeart is an alternative to develop custom plugins that can be used to extend the API.
+
+Side microservices, for instance developed with a completely different technology as NodeJs, can can be proxied by RESTHeart to be served through it and protected by its security layer.
+
+Side microservice can execute requests to RESTHeart, for instance to use its superior MongoDB API.
+
+The user id and roles of the authenticated RESTHeart user are passed by RESTHeart to the proxied service via the `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles` request header.
+
+As an example, the following section to the `restheart.yml` configuration file, proxies requests to the URI `/anything` to the web resource `https://httpbin.org/anything`
+
+[source,yml]
+----
+proxies:
+   - location: /anything
+     proxy-pass: https://httpbin.org/anything
+     name: anything
+----

@@ -44,7 +44,9 @@ As RESTHeart instances don't communicate directly (to avoid expensive synchroniz
 
 ## JWT Token Manager
 
-The specialized `JWT Token Manager` which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
+Purchasing a RESTHeart Commercial license clustering can be configured easier, without the need for sticky sessions. This enables a fully **stateless deployment**.
+
+With the license, you can get the specialized `JWT Token Manager` which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
 
 For more information refer to the [Token Manager](/docs/plugins/security-plugins/#token-managers) documentation page.
 
