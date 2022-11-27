@@ -31,12 +31,12 @@ A different example is the _IdentityAuthMechanism_ that binds the request to a s
 
 RESTHeart allows defining several mechanism. As an in-bound request is received, the `authenticate()` method is called on each mechanism in turn until one of the following occurs:
 
--   A mechanism successfully authenticates the incoming request &#8594; the request proceeds to Authorization phase;
+-   no `VETOER` denies it and at least one `ALLOWER` allows it &#8594; the request proceeds to Authorization phase;
 -   The list of mechanisms is exhausted &#8594; the request fails with code `401 Unauthorized`.
 
 The **Authenticator** verifies the credentials extracted from the request by Authentication Mechanism. For instance, the _BasicAuthMechanism_ extracts the credentials from the request in the form of id and password. The Authenticator can check these credentials against a database or a LDAP server. Note that some Authentication Mechanisms don't actually rely on a Authenticator to build the Account.
 
-The **Authorizer** is responsible of checking if the user can actually perform the request against an Access Control List. For instance the _RequestPredicatesAuthorizer_ checks if the request is allowed by looking at the role based permissions defined using the undertow predicate definition language.
+The **Authorizer** is responsible of checking if the user can actually perform the request against an Access Control List. For instance the `mongoAclAuthorizer` checks if the request is allowed by looking at the permissions defined in a MongoDB collection.
 
 The **Token Manager** is responsible of generating and validating an auth-token. When a client successfully authenticates, the Token Manager generates an auth-token that is returned in the `Auth-Token` response header. It can be used to authenticate further requests. This requires an Authentication Manager to handle it using the Token Manager for token validation.
 

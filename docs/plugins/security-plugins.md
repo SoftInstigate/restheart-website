@@ -20,13 +20,17 @@ layout: docs
 
 ## Introduction
 
-This section provides detailed information on how to implement custom security plugins.
+This  provides detailed information on how to implement custom security plugins.
 
 ## Authentication Mechanisms
 
 An **Authentication Mechanism** authenticates incoming requests.
 
- RESTHeart provides different implementations: [Basic Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/BasicAuthMechanism.java), [Digest Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/DigestAuthMechanism.java), [JSON Web Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/JwtAuthenticationMechanism.java), [Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/mechanisms/TokenBasicAuthMechanism.java)
+ RESTHeart provides different implementations:
+ - [Basic Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/BasicAuthMechanism.java)
+ - [Digest Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/DigestAuthMechanism.java) 
+ - [JSON Web Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/JwtAuthenticationMechanism.java)
+ - [Token Authentication](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/TokenBasicAuthMechanism.java)
 
 These are all different methods for the client to pass some sort of credentials to the server. For example, `BasicAuthMechanism` extracts the credentials from the `Authorization` request header following the Basic Authentication specs [RFC 7617](https://tools.ietf.org/html/rfc7617).
 
@@ -37,17 +41,12 @@ See [Security Overview](/docs/security/overview) for an high level view of the R
 The Authentication Mechanism class must implement the `org.restheart.plugins.security.AuthMechanism` interface.
 
 ```java
-public interface AuthMechanism extends
-        AuthenticationMechanism,
-        ConfigurablePlugin {
+public interface AuthMechanism extends AuthenticationMechanism, ConfigurablePlugin {
     @Override
-    public AuthenticationMechanismOutcome authenticate(
-            final HttpServerExchange exchange,
-            final SecurityContext securityContext);
+    public AuthenticationMechanismOutcome authenticate(final HttpServerExchange exchange, final SecurityContext securityContext);
 
     @Override
-    public ChallengeResult sendChallenge(final HttpServerExchange exchange,
-            final SecurityContext securityContext);
+    public ChallengeResult sendChallenge(final HttpServerExchange exchange, final SecurityContext securityContext);
 
     default String getMechanismName() {
         return PluginUtils.name(this);
@@ -69,24 +68,26 @@ public class MyAuthMechanism implements AuthMechanism {
 
 ### Configuration
 
-The Authentication Mechanism can receive parameters from the configuration file using the `@InjectConfiguration` annotation:
+The Authentication Mechanism can receive parameters from the configuration file using the `@Inject("config")` annotation:
 
 ```java
-@InjectConfiguration
-    public void init(Map<String, Object> args) throws ConfigurationException {
-        // get configuration arguments
-        int number  = argValue(args, "number");
-        String string = argValue(args, "string");
+@Inject("config")
+private Map<String, Object> config;
+
+@OnInit
+public void init() throws ConfigurationException {
+    // get configuration arguments
+    int number  = argValue(this.config, "number");
+    String string = argValue(this., "string");
 }
 ```
 
-The parameters are defined in the configuration file under the `auth-mechanisms` section using the name of the mechanism as defined by the `@RegisterPlugins` annotation:
+The parameters are defined in the configuration using the name of the mechanism as defined by the `@RegisterPlugins` annotation:
 
 ```yml
-auth-mechanisms:
-    myAuthMechanism:
-        number: 10
-        string: a string
+myAuthMechanism:
+    number: 10
+    string: a string
 ```
 
 ### authenticate()
@@ -119,11 +120,11 @@ return AuthenticationMechanismOutcome.AUTHENTICATED;
 
 `sendChallenge()` is executed when the authentication fails.
 
-The mechanism should not set the response code, instead that should be indicated in the `AuthenticationMechanism.ChallengeResult` and the most appropriate overall response code will be selected. 
+The mechanism should not set the response code, instead that should be indicated in the `AuthenticationMechanism.ChallengeResult` and the most appropriate overall response code will be selected.
 
 This is due the fact that several mechanisms can be enabled and, as an in-bound request is received, the authenticate method is called on each mechanism in turn until one of the following occurs: a mechanism successfully authenticates the incoming request or the list of mechanisms is exhausted.
 
-`sendChallenge()` can also be used to set a response header. 
+`sendChallenge()` can also be used to set a response header.
 
 An example is `BasicAuthMechanism` that, in case of failure, indicates  the response code `401 Not Authenticated` and sets the following challenge header:
 
@@ -136,8 +137,8 @@ This is the code:
 ```java
 @Override
 public ChallengeResult sendChallenge(HttpServerExchange exchange, SecurityContext securityContext) {
-        exchange.getResponseHeaders().add(WWW_AUTHENTICATE, challenge);
-        return new ChallengeResult(true, UNAUTHORIZED);
+    exchange.getResponseHeaders().add(WWW_AUTHENTICATE, challenge);
+    return new ChallengeResult(true, UNAUTHORIZED);
 }
 ```
 
@@ -150,11 +151,16 @@ Tip: Use the `@InjectConfiguration` and `@InjectPluginsRegistry` to retrieve the
 ```java
 private Authenticator authenticator;
 
-@InjectConfiguration
-@InjectPluginsRegistry
-public void init(final Map<String, Object> args, PluginsRegistry pluginsRegistry) throws ConfigurationException {
+@Inject
+private Map<String, Object> config;
+
+@Inject("registry")
+private PluginsRegistry registry;
+
+@OnInit
+public void init() throws ConfigurationException {
     // the authenticator specified in auth mechanism configuration
-    this.authenticator = pluginsRegistry.getAuthenticator(argValue(args, "authenticator")).getInstance();
+    this.authenticator = this.registry.getAuthenticator(argValue(this.config, "authenticator")).getInstance();
 }
 
 @Override
@@ -206,31 +212,36 @@ public class MyAuthenticator implements Authenticator {
 
 ### Configuration
 
-The Authenticator can receive parameters from the configuration file using the `@InjectConfiguration` annotation:
+The Authenticator can receive parameters from the configuration file using the `@Inject("config")` annotation:
 
 ```java
-@InjectConfiguration
-    public void init(Map<String, Object> args) throws ConfigurationException {
-        // get configuration arguments
-        int number  = argValue(args, "number");
-        String string = argValue(args, "string");
+@Inject("config")
+private Map<String, Object> config;
+
+@OnInit
+public void init() throws ConfigurationException {
+    // get configuration arguments
+    int number  = argValue(this.config, "number");
+    String string = argValue(this., "string");
 }
 ```
 
-The parameters are defined in the configuration file under the `authenticators` section using the name of the authenticator as defined by the `@RegisterPlugins` annotation:
+The parameters are defined in the configuration using the name of the authenticator as defined by the `@RegisterPlugins` annotation:
 
 ```yml
-authenticators:
-    myAuthenticator:
-        number: 10
-        string: a string
+myAuthenticator:
+    number: 10
+    string: a string
 ```
 
 ## Authorizers
 
 Authorizers check if the authenticated client can execute the request according to the security policy.
 
-RESTHeart provides two implementations of `Authorizer`: [FileAclAuthorizer](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/authorizers/FileAclAuthorizer.java) and [MongoAclAuthorizer](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/authorizers/MongoAclAuthorizer.java) that handle the ACL in a configuration file and on a MongoDb collection respectively.
+RESTHeart provides two implementations of `Authorizer`: 
+
+- [FileAclAuthorizer](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/authorizers/FileAclAuthorizer.java) 
+- [MongoAclAuthorizer](https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/authorizers/MongoAclAuthorizer.java) that handle the ACL in a configuration file and on a MongoDb collection respectively.
 
 The Authorizer implementation class must implement the `org.restheart.plugins.security.Authorizer` interface.
 
@@ -267,24 +278,26 @@ public class MyAuthorizer implements Authorizer {
 
 ### Configuration
 
-The Authorizer can receive parameters from the configuration file using the `@InjectConfiguration` annotation:
+The Authorizer can receive parameters from the configuration file using the `@Inject("config")` annotation:
 
 ```java
-@InjectConfiguration
-    public void init(Map<String, Object> args) throws ConfigurationException {
-        // get configuration arguments
-        int number  = argValue(args, "number");
-        String string = argValue(args, "string");
+@Inject("config")
+private Map<String, Object> config;
+
+@OnInit
+public void init() throws ConfigurationException {
+    // get configuration arguments
+    int number  = argValue(this.config, "number");
+    String string = argValue(this., "string");
 }
 ```
 
-The parameters are defined in the configuration file under the `authorizers` section using the name of the authorizer as defined by the `@RegisterPlugins` annotation:
+The parameters are defined in the configuration using the name of the authorizer as defined by the `@RegisterPlugins` annotation:
 
 ```yml
-authorizers:
-    myAuthorizer:
-        number: 10
-        string: a string
+myAuthorizer:
+    number: 10
+    string: a string
 ```
 
 ## Token Managers
@@ -355,22 +368,24 @@ Only one token manager can be used. If more than one token-manager are defined a
 
 ### Configuration
 
-The Token Manager can receive parameters from the configuration file using the `@InjectConfiguration` annotation:
+The Token Manager can receive parameters from the configuration file using the `@Inject("config")` annotation:
 
 ```java
-@InjectConfiguration
-    public void init(Map<String, Object> args) throws ConfigurationException {
-        // get configuration arguments
-        int number  = argValue(args, "number");
-        String string = argValue(args, "string");
+@Inject("config")
+private Map<String, Object> config;
+
+@OnInit
+public void init() throws ConfigurationException {
+    // get configuration arguments
+    int number  = argValue(this.config, "number");
+    String string = argValue(this.config, "string");
 }
 ```
 
-The parameters are defined in the configuration file under the `token-manager` section using the name of the token manager as defined by the `@RegisterPlugins` annotation:
+The parameters are defined in the configuration using the name of the token manager as defined by the `@RegisterPlugins` annotation:
 
 ```yml
-token-manager:
-    myTokenManager:
-        number: 10
-        string: a string
+myTokenManager:
+    number: 10
+    string: a string
 ```
