@@ -1,30 +1,17 @@
 ---
 title: Configure TLS
-layout: docs
+layout: docs-adoc
 ---
 
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-
--   [Introduction](#introduction)
--   [The HTTPS listener](#the-https-listener)
--   [Configure the SSL certificate](#configure-the-ssl-certificate)
-
-</div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
-
-{% include docs-head.html %}
-
-## Introduction
+== Introduction
 
 This section provides instructions on how to enable Transport Layer Security so that requests can be served over the HTTPS protocol.
 
-{:.alert.alert-danger}
-HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. **It is paramount to use HTTPS**
+WARNING: HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. **It is paramount to use HTTPS**
 
-{:.alert.alert-info}
-This section is about securing HTTP requests between Clients and RESTHeart. Read [Secure connection to MongoDB](/docs/mongodb-rest/secure-connection-to-mongodb/) for more information on how to secure the connection between RESTHeart and MongoDB.
+NOTE: This section is about securing HTTP requests between Clients and RESTHeart. Read [Secure connection to MongoDB](/docs/mongodb-rest/secure-connection-to-mongodb/) for more information on how to secure the connection between RESTHeart and MongoDB.
 
-## The HTTPS listener
+== The HTTPS listener
 
 There are many ways of enabling HTTS; for instance you can setup a web server such as nginx as a reverse proxy in front of RESTHeart or you may rely on cloud services that provides load balancers that manages SSL for you (such are Amazon WS or Google Cloud).
 
@@ -32,38 +19,36 @@ In any case, restheart is able to expose directly the HTTS protocol and this is 
 
 The following configuration file except shows the involved options:
 
-```bash
-#### listeners
-https-listener: true
-https-host: 0.0.0.0
-https-port: 4443
-
-#### SSL configuration
-
-keystore-file: /path/to/keystore/file
-keystore-password: secret
-certpassword: secret
-```
+[source,bash]
+----
+https-listener:
+    enabled: true
+    host: 0.0.0.0
+    port: 4443
+    keystore-file: /path/to/keystore/file
+    keystore-password: secret
+    certpassword: secret
+----
 
 To enable https configure the https listener using the following options:
 
-1.  **https-listener** _true_ to enable it
-2.  **https-host** the ip where to bind the listener
-3.  **https-port** the port where to bind the listener:
+1.  `https-listener/enabled` _true_ to enable it
+2.  `https-listener/host` the ip where to bind the listener
+3.  `https-listener/port` the port where to bind the listener:
 
 A SSL certificate must configured in order to enable the https listener.
 
-## Configure the SSL certificate
+== Configure the SSL certificate
 
 The SSL certificate must be added to the java keystore set by the `keystore-file` configuration property.
 
 Two scripts are available to help configuring the keystore.
 
-### generate-certauthority-and-keystore.sh
+=== generate-certauthority-and-keystore.sh
 
 This is useful for testing purposes. It generates a CA and uses it to issue a SSL certificate, finally generating the keystore file.
 
-Download the script from [generate-certauthority-and-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh)
+Download the script from link:https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh[generate-certauthority-and-keystore.sh]
 
 After having generated the keystore file and configured RESTHeart to use it, you need to install the CA root certificate into your OS.
 
@@ -75,10 +60,10 @@ For example, in OSX:
     - Expand the Trust section
     - Under When using this certificate select `Always Trust`.
 
-### convert-letsencrypt-java-keystore.sh
+=== convert-letsencrypt-java-keystore.sh
 
-[Let's Encrypt](https://letsencrypt.org) is a popular and nonprofit Certificate Authority providing free TLS certificates.
+https://letsencrypt.org[Let's Encrypt] is a popular and nonprofit Certificate Authority providing free TLS certificates.
 
 This script generates the java keystore from Let's Encrypt certificate archive.
 
-Download the script from [convert-letsencrypt-java-keystore.sh](https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh)
+Download the script from https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh[convert-letsencrypt-java-keystore.sh]

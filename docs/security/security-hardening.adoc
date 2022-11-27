@@ -56,12 +56,11 @@ To avoid this dangerous behavior, you should disable the auto-creation of the `a
 
 [source,yml]
 ----
-authenticators:
-  mongoRealmAuthenticator:
-    # other options omitted
-    # clients with root-role can execute any request
-    create-user: false # <---- disable auto-creation of the admin user
-    create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
+mongoRealmAuthenticator:
+# other options omitted
+# clients with root-role can execute any request
+create-user: false # <---- disable auto-creation of the admin user
+create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
 ----
 
 == Disable the root role
@@ -70,8 +69,7 @@ The `mongoAclAuthorizer` by default defines the _root_ role.
 
 [source,yml]
 ----
-authorizers:
-  mongoAclAuthorizer:
+mongoAclAuthorizer:
     # other options omitted
     # clients with root-role can execute any request
     root-role: admin
@@ -83,8 +81,7 @@ When you have setup your ACL, the `root` role can be disabled as follow:
 
 [source,yml]
 ----
-authorizers:
-  mongoAclAuthorizer:
+mongoAclAuthorizer:
     # other options omitted
     # root role disabled!
     root-role: null
@@ -156,19 +153,18 @@ IMPORTANT: if RESTHeart is behind a revers proxy, this must set the header `X-Fo
 
 [source,yml]
 ----
-plugins-args:
-    # defends from brute force password cracking attacks
-    # by returning `429 Too Many Requests` when more than
-    # `max-failed-attempts` wrong requests
-    # are received in last 10 seconds from the same ip
-    bruteForceAttackGuard:
-      enabled: false
-      # if true, the source ip is obtained from X-Forwarded-For header
-      # this requires that header beeing set by the proxy, dangerous otherwise
-      trust-x-forwarded-for: false
-      # max number of failed attempts in 10 seconds sliding window
-      # before returning 429 Too Many Requests
-      max-failed-attempts: 5
+# defends from brute force password cracking attacks
+# by returning `429 Too Many Requests` when more than
+# `max-failed-attempts` wrong requests
+# are received in last 10 seconds from the same ip
+bruteForceAttackGuard:
+    enabled: false
+    # if true, the source ip is obtained from X-Forwarded-For header
+    # this requires that header being set by the proxy, dangerous otherwise
+    trust-x-forwarded-for: false
+    # max number of failed attempts in 10 seconds sliding window
+    # before returning 429 Too Many Requests
+    max-failed-attempts: 5
 ----
 
 == originVetoer
@@ -179,13 +175,12 @@ NOTE: this is disable by default and musts be activated by adding the following 
 
 [source,yml]
 ----
-authorizers:
 # originVetoer protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted
-  originVetoer:
-      enabled: true
-      whitelist:
-        - https://restheart.org
-        - https://restheart.com
+originVetoer:
+    enabled: true
+    whitelist:
+    - https://restheart.org
+    - https://restheart.com
 ----
 
 == Define and test the ACL
@@ -242,11 +237,10 @@ NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where` o
 
 [source,yml]
 ----
-plugins-args:
-    # a global blacklist for mongodb operators in filter query parameter
-    filterOperatorsBlacklist:
-      blacklist: [ "$where" ]
-      enabled: true
+# a global blacklist for mongodb operators in filter query parameter
+filterOperatorsBlacklist:
+    blacklist: [ "$where" ]
+    enabled: true
 ----
 
 == Define role-specific GraphQL applications

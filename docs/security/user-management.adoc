@@ -1,0 +1,139 @@
+---
+title: User Management
+layout: docs-adoc
+---
+
+:page-liquid:
+
+== Introduction
+
+This section provides instructions on how to create, update and delete users with link:/docs/security/authentication/#mongo-realm-authenticator[mongoRealAuthenticator].
+
+It also shows how to manage permissions with link:/docs/security/authorization/#mongo-acl-authorizer[mongoAclAuthorizer].
+
+TUP: **mongoRealAuthenticator** uses the collection `/users` by default.
+
+=== Before running the example requests
+
+The following examples assume RESTHeart running on the localhost with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+
+== User document
+
+With the default configuration, a user is represented as follows:
+
+[source,json]
+----
+{
+    "_id": "username",
+    "roles": [ "list", "of", "roles" ],
+    "password": "secret"
+}
+----
+
+TIP: **mongoRealAuthenticator** can be configured to use different properties for the username, roles an password. Check  link:/docs/security/authentication/#mongo-realm-authenticator[mongoRealAuthenticator] for more information.
+
+## Get existing users
+
+++++
+{% include code-header.html type="Request"
+    link="http://restninja.io/share/b6876216ee3fb0999f7c5178e42a7978f6cc3c4c/0"
+%}
+++++
+
+[source,http]
+GET /users HTTP/1.1
+
+++++
+{% include code-header.html type="Response" %}
+++++
+
+[source,json]
+----
+[
+  {
+    "_id": "admin",
+    "roles": [
+      "admin"
+    ],
+    "_etag": {
+      "$oid": "5d2edb155883c050065d6a8a"
+    }
+  }
+]
+----
+
+NOTE: The password is always hidden on GET requests.
+
+NOTE: For security reasons, it not possible to use the `filter` query parameter on the password field; the following request is forbidden and will cause an error: `GET /users?filter={"password":{"$regex":"^a.*"}}`
+
+## Create a user
+
+++++
+{% include code-header.html type="Request"
+    link="http://restninja.io/share/38c1eb85a21213dd39192ccd474789f4abdbd6bc/0"
+%}
+++++
+
+[source,http]
+----
+POST /users HTTP/1.1
+
+{
+    "_id": "foo",
+    "roles": [ "user" ],
+    "password": "secret"
+}
+----
+
+NOTE: The password is automatically encrypted by RESTHeart.
+
+## Update a user
+
+++++
+{% include code-header.html type="Request"
+    link="http://restninja.io/share/3e541e5b4f1ce82ae255b8f6746d49f5faed9778/0"
+%}
+++++
+
+[source,http]
+----
+PATCH /users/foo HTTP/1.1
+
+{
+    "password": "betterSecret"
+}
+----
+
+## Delete a user
+
+++++
+{% include code-header.html type="Request"
+    link="http://restninja.io/share/ae4858bc59f5ac755f03dc8858220e0a470a3779/0"
+%}
+++++
+
+[source,http]
+DELETE /users/foo HTTP/1.1
+
+## Create an ACL document
+
+++++
+{% include code-header.html type="Request"
+    link="http://restninja.io/share/5ee142fbb84071261e56fc7f1904af6430b0495f/0"
+%}
+++++
+
+[source,http]
+----
+POST /acl HTTP/1.1
+
+{
+  "predicate": "path-prefix[/inventory] and method[GET]",
+  "roles": [ "user" ],
+  "priority": 1
+}
+----
+
+TIP: Check /docs/security/authorization/#format-of-permissions[Format of permission] for more information on ACL permissions.
+
+TIP: Watch https://www.youtube.com/watch?v=QVk0aboHayM&t=1828s[Managing users with practical examples]

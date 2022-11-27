@@ -1,46 +1,30 @@
 ---
 title: How Clients Authenticate
-layout: docs
+layout: docs-adoc
 ---
 
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-
-- [Introduction](#introduction)
-- [Some examples](#some-examples)
-- [Basic Authentication for dummies](#basic-authentication-for-dummies)
-- [Authentication Token](#authentication-token)
-    - [Suggested way to check credentials](#suggested-way-to-check-credentials)
-- [avoid the basic authentication popup in browsers](#avoid-the-basic-authentication-popup-in-browsers)
-
-</div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
-
-{% include docs-head.html %}
-
-## Introduction
+== Introduction
 
 Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
-This section shows how clients can authenticate using the simple [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication),
+This section shows how clients can authenticate using the simple link:https://en.wikipedia.org/wiki/Basic_access_authentication[basic authentication],
 a standard method for an HTTP user agent to provide a *username* and
 *password* when making a request.
 
 ## Some examples
 
-With **[httpie](https://github.com/jkbrzt/httpie)** use the -a option:
+With link:https://github.com/jkbrzt/httpie[httpie] use the `-a` option:
 
 
-```
+[source,bash]
 $ http -a userid:password GET 127.0.0.1:8080/
-```
 
-With **curl**, use the –user options
+With **curl**, use the `–user` options
 
 
-```
+[source,bash]
 $ curl -i --user userid:password -X GET 127.0.0.1:8080/
-```
 
-## Basic Authentication for dummies
+== Basic Authentication for dummies
 
 Basic Authentication requires the client to send its credentials with
 the **Authorization** request header.
@@ -57,7 +41,7 @@ In other words:
 3.  The string "Basic " (**note** the space) is then put before the
     encoded string.
 
-## Authentication Token
+== Authentication Token
 
 RESTHeart default configuration includes the **tokenBasicAuthMechanism** and the **rndTokenManager**.
 
@@ -72,41 +56,40 @@ header can either be calculated from the the Auth-Token itself:
 Auth token information are passed in the following response headers:
 
 
-```
+[source,http]
+----
 Auth-Token: 6a81d622-5e24-4d9e-adc0-e3f7f2d93ac7
 Auth-Token-Location: /tokens/user@si.com
 Auth-Token-Valid-Until: 2015-04-16T13:28:10.749Z
-```
+----
 
-**Note** the URI in the Auth-Token-Location header: the client can issue
+NOTE: the URI in the Auth-Token-Location header: the client can issue
 a GET request to obtain information about token or a DELETE request to
 invalidate it. Of course clients can only request their own tokens
 (otherwise response code will be 403 Forbidden).
 
-{: .bs-callout.bs-callout-info }
-The Authentication Token is a very important feature when you are
+TIP: The Authentication Token is a very important feature when you are
 developing a web application. Since every request needs to include the
 credentials, you need to store them either in a cookie or (better) in
 the session storage. The sign-in form can check the credentials using
 the actual password; if it succeeds, the auth token can be stored and
 used.
 
-{: .bs-callout.bs-callout-warning }
-Pay attention to the authentication token in case of multi-node
+WARNING: Pay attention to the authentication token in case of multi-node
 deployments (horizontal scalability). In this case, you need to either
 disable it or use a load balancer with the sticky session option or a different Token Manager implementation.
 
-The rndTokenManager can be configured as follows (note option `TTL` the auth token Time To Live in minutes):
+The `rndTokenManager` can be configured as follows (note option `TTL` the auth token Time To Live in minutes):
 
 
-``` yml
-token-manager:
-    rndTokenManager:
-      ttl: 15
-      srv-uri: /tokens
-```
+[source,yml]
+----
+rndTokenManager:
+    ttl: 15
+    srv-uri: /tokens
+----
 
-### Suggested way to check credentials
+=== Suggested way to check credentials
 
 The default restheart configuration file sets up the useful service **roles**, bound to `/roles/<userid>`
 
@@ -120,25 +103,25 @@ are:
     sent back:
 
 
-``` json
+[source,json]
+----
  {
     "authenticated": true,
     "roles": [
         "USER"
     ]
 }
-```
+----
 
 Of course, if the request succeeds, the client gets back the auth token
 as well.
 
-{: .bs-callout.bs-callout-info }
-It is easy to check the user credentials from a login form with this
+NOTE: It is easy to check the user credentials from a login form with this
 handler: in case the client gets back 200, they match and the auth token
 can be stored for further request; otherwise passed credentials are
 wrong.
 
-## How to avoid the basic authentication popup in browsers
+== How to avoid the basic authentication popup in browsers
 
 With basic authentication, browsers can show a awful login popup window
 and this is not what you usually want.
@@ -153,12 +136,8 @@ the `noauthchallenge` query parameter. In this case, RESTHeart will just
 respond with **401 Unauthorized** in case of missing or wrong
 credentials.
 
-{: .bs-callout.bs-callout-info }
-This feature together with the authentication token, allows you to
+TIP: This feature together with the authentication token, allows you to
 implement a form based authentication experience on top of the simple
 and effective basic authentication mechanism.
 
-{: .bs-callout.bs-callout-info }
-Watch [An application example (blog)](https://www.youtube.com/watch?v=QVk0aboHayM&t=2262s)
-
-</div>
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=2262s[An application example (blog)]

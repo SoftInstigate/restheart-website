@@ -47,24 +47,29 @@ GET /anything HTTP/1.1
 HTTP/1.1 401 Unauthorized
 ```
 
-With the default configuration RESTHeart uses the Basic Authentication with credentials and permission defined in `users.yml` and `acl.yml` configuration files respectively. Let's add a user and a permission for `/anything`
+With the default configuration RESTHeart uses the Basic Authentication with credentials and permission defined in `/users` and `/acl` MongoDB collections. Let's add a user and a permission for `/anything`
 
-#### users.yml
+User:
 
-```yml
-users:
-    - userid: user
-      password: secret
-      roles: [anything]
+```http
+POST /users HTTP/1.1
+
+{
+    "_id" : "user",
+    "password": "secret",
+    "roles": ["anything"]
+}
 ```
 
 ### acl.yml
 
-```yml
-permissions:
-    # Users with role 'anything' can execute GET /anything
-    - role: anything
-      predicate: path-prefix[path=/anything] and method[GET]
+```http
+POST /acl HTTP/1.1
+
+{
+    "role": "anything"
+    "predicate": "path-prefix[path=/anything] and method[GET]"
+}
 ```
 
 {% include code-header.html type="Request" %}
@@ -105,8 +110,8 @@ HTTP/1.1 200 OK
 ```
 We can note that RESTHeart:
 
--   has checked the credential specified in `users.yml` passed via Basic Authentication and proxied the request
--   has determined the account roles
--   has checked the permission specified in `acl.yml` for the account roles and determined that the request could be executed.
+-   has checked the credential specified in `/users/user` passed via Basic Authentication and proxied the request
+-   has determined the account `roles`
+-   has checked the permission specified in `/acl` for the account roles and determined that the request could be executed.
 - the user id and roles are passed by RESTHeart to the proxied service via the `X-Forwarded-Account-Id` and `X-Forwarded-Account-Roles` request header.
 -   the response headers include the header `Auth-Token`. Its value can be used in place of the actual password in the Basic Authentication until its expiration. This is useful in Web Applications, for storing in the browser the less sensitive auth token instead of full username and password.

@@ -1,21 +1,9 @@
 ---
 title: Security Overview
-layout: docs
+layout: docs-adoc
 ---
 
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-
--   [Introduction](#introduction)
--   [Handle users in MongoDB collection](#handle-users-in-mongodb-collection)
--   [Handle permissions in MongoDB collection](#handle-permissions-in-mongodb-collection)
--   [Understanding RESTHeart security](#understanding-restheart-security)
-
-</div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
-
-{% include docs-head.html %}
-
-## Introduction
+== Introduction
 
 RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.
 
@@ -23,16 +11,18 @@ The default configuration file enables `mongoRealmAuthenticator` and `mongoAclAu
 
 RESTHeart can also handle users and permissions stored on configuration files via `fileRealmAuthenticator` and `fileAclAuthorizer`. Enabling these plugins requires updating the configuration.
 
-{: .bs-callout.bs-callout-info }
-Watch [Authentication and Authorization in RESTHeart](https://www.youtube.com/watch?v=QVk0aboHayM&t=77s)
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=77s[Authentication and Authorization in RESTHeart]
 
-## Understanding RESTHeart security
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=123s[Understanding RESTHeart security]
+
+== Understanding RESTHeart security
 
 RESTHeart is built around a **pluggable architecture**. It comes with a strong security implementation but you can extend it by implementing plugins.
 
 In RESTHeart everything is a plugin including Authentication Mechanisms, Authenticators, Authorizers, Token Managers and Services.
 
-<img class="img-fluid" src="/images/restheart-security-explained.png" alt="restheart-security explained">
+[img-fluid]
+image::/images/restheart-security-explained.png[restheart-security explained]
 
 Different **Authentication Mechanisms** manage different authentication schemes.
 An example is _BasicAuthMechanism_ that handles the Basic Authentication scheme. It extracts the credentials from a request header and passes them to the an Authenticator for verification.
@@ -51,6 +41,3 @@ The **Authorizer** is responsible of checking if the user can actually perform t
 The **Token Manager** is responsible of generating and validating an auth-token. When a client successfully authenticates, the Token Manager generates an auth-token that is returned in the `Auth-Token` response header. It can be used to authenticate further requests. This requires an Authentication Manager to handle it using the Token Manager for token validation.
 
 A **Service** is a quick way of implementing Web Services to expose additional custom logic.
-
-{: .bs-callout.bs-callout-info }
-Watch [Understanding RESTHeart security](https://www.youtube.com/watch?v=QVk0aboHayM&t=123s)
