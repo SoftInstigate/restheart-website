@@ -270,7 +270,8 @@ The Authorizer class must be annotated with `@RegisterPlugin`:
 
 ```java
 @RegisterPlugin(name="myAuthorizer",
-        description = "my custom authorizer")
+        description = "my custom authorizer",
+        authorizerType = ALLOWER)
 public class MyAuthorizer implements Authorizer {
 
 }
