@@ -99,7 +99,7 @@ The ACL permissions use the link:https://undertow.io/undertow-docs/undertow-docs
 
 A simple example of predicate is `(method(GET) or method(POST)) and path('/coll')` that authorizes `GET` or `POST` requests when the URI is `/coll`
 
-RESTHeart 6 extends this language introducing the following new predicates that extend and simplify the ACL permission definition:
+RESTHeart extends this language introducing the following new predicates that extend and simplify the ACL permission definition:
 
 [options="header"]
 [cols="1,2,2"]
@@ -284,6 +284,8 @@ _fileRealmAuthorizer_ allows defining roles permissions in a YAML configuration 
 fileAclAuthorizer:
     conf-file: acl.yml
 ----
+
+The `conf-file` path is either absolute, or relative to the restheart configuration file (if specified) or relative to the plugins directory (if using the default configuration).
 
 The permission's options are fully equivalent to the ones handled by the _mongoAclAuthorizer_, only the yml format is used in place of Json.
 
