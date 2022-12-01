@@ -100,7 +100,7 @@ The configuration of RESTHeart running in a Docker container can be modified in 
 
 === 1 - Using the `RHO` env variable
 
-The following example uses the option `-e RHO="/core/name->'the-best-api-ever'"` to override the configuration parameters `/mclient/connection-string` and `/core/name`.
+The following example uses the option `-e RHO="....."` to override the configuration parameters `/mclient/connection-string` and `/core/name`.
 
 [source,bash]
 ----
@@ -114,18 +114,18 @@ INFO  o.r.configuration.Configuration - 	/core/name -> the-best-api-ever
 
 === 2 - Using a configuration file
 
-The following command overrides the property file in the container with the file `/host/path/to/restheart.yml` in the host machine.
+The following commands add a configuration file to the container:
 
 [source,bash]
 ----
-$ # generate the default configuration file in /tmp/restheart.yml and edit it
+$ # generate the default configuration file in /tmp/restheart.yml (and edit it)
 $ docker run --rm -p 8080:8080 -v /tmp/restheart.yml:/opt/restheart/etc/restheart.yml softinstigate/restheart -t 2> /tmp/restheart.yml
 
 $ # run the RESTHeart container mounting the conf file as a volume
 $ docker run --rm -p 8080:8080 -v /tmp/restheart.yml:/opt/restheart/etc/restheart.yml softinstigate/restheart etc/restheart.yml
 ----
 
-Please note, that the Docker container still defines the following `RHO` variable which will override the paramenter in the configuration file:
+Please note, that the Docker container still defines the following `RHO` variable which will override the parameters in the configuration file:
 
 ```
 ENV RHO='/mclient/connection-string->"mongodb://host.docker.internal";/http-listener/host->"0.0.0.0"'
