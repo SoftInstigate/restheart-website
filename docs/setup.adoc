@@ -43,7 +43,7 @@ To run RESTHeart 6.x connected to a local instance of MongoDB you need:
 -   Java 17+;
 -   MongoDB running on `localhost` on port `27017`.
 
-NOTE: RESTHeart supports MongoDB from version 3 throughout 5 and it is extensively tested with MongoDB 3.6, 4.2, 4.4 and v5.0
+NOTE: RESTHeart supports MongoDB from version 3 throughout 5 and it is extensively tested with MongoDB 3.6, 4.2, 4.4, v5.0 and v6.0
 
 [source,bash]
 ----
@@ -65,17 +65,14 @@ Greetings from RESTHeart!
 [source,text]
 ----
 restheart
+├── COMM-LICENSE.txt
 ├── LICENSE.txt
-├── etc
-│   ├── acl.yml
-│   ├── default.properties
-│   ├── restheart.yml
-│   └── users.yml
 ├── plugins
-│   ├── restheart-graphql.jar
-│   ├── restheart-mongodb.jar
-│   ├── restheart-polyglot.jar
-│   └── restheart-security.jar
+│   ├── restheart-graphql.jar
+│   ├── restheart-mongoclient-provider.jar
+│   ├── restheart-mongodb.jar
+│   ├── restheart-polyglot.jar
+│   └── restheart-security.jar
 └── restheart.jar
 ----
 
@@ -101,14 +98,13 @@ To know the available CLI parameters, run RESTHeart with `--help`:
 ----
 $ java -jar restheart.jar --help
 
-Usage: java -jar restheart.jar [-chtv] [--fork] [-e=<envFile>] [FILE]
-      [FILE]                 Main configuration file
+Usage: java -jar restheart.jar [-chtv] [--fork] [-o=RHO_FILE] [CONF_FILE]
+      [CONF_FILE]            Main configuration file
   -c, --printConfiguration   Print the effective configuration to the standard
                                error and exit
-  -e, --envFile, --envfile=<envFile>
-                             Environment file name
       --fork                 Fork the process in background
   -h, --help                 This help message
+  -o, --rho=RHO_FILE         Configuration overrides file
   -t, --printConfigurationTemplate
                              Print the configuration template to the standard
                                error and exit

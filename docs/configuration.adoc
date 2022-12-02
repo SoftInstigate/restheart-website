@@ -18,7 +18,9 @@ Refer to link:/docs/security/user-management/[User Management] for more informat
 
 == Default configuration
 
-RESTHeart v7 has a default configuration and specifying a configuration file is not required. The following command runs RESTHeart with the link:https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/restheart-default-config.yml[default configuration].
+RESTHeart v7 has a link:https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/restheart-default-config.yml[default configuration] and specifying a configuration file is not required.
+
+The following command runs RESTHeart with the _default configuration_.
 
 [source,bash]
 $ java -jar restheart.jar
@@ -30,8 +32,15 @@ $ java -jar restheart.jar -t
 
 You can generate a configuration file with:
 
+== Configuration file
+
+RESTHeart can also use a configuration file:
+
 [source,bash]
-java -jar core/target/restheart.jar -t 2> restheart.yml
+$ java -jar restheart.jar -t 2> restheart.yml # generate a configuration file with default values
+$ java -jar restheart.jar restheart.yml
+
+NOTE: The default configuration is fine most of the times. You just want to change few options and the suggested way is using the default configuration with the needed overrides.
 
 == Modify the configuration with the RHO env var
 
@@ -79,21 +88,55 @@ The following are invalid:
 /mongo/mongo-mounts[1]->{"where: "/api"     # invalid JSON object
 core/io-threads->8                          # xpath expression does not start with /
 
-== Configuration file
+== Modify the configuration with an override file
 
-RESTHeart can also use a configuration file:
+NOTE: override files are available from RESTHeart v7.1
 
-[source,bash]
-$ java -jar restheart.jar -t 2> restheart.yml # create a configuration file with default values
-$ java -jar restheart.jar restheart.yml
-
-The configuration can still be overridden with the `RHO` env variable or passing an override file with the `-o` option.
+A configuration override file can be specified with the `-o` option to modify the default configuration.
 
 [source,bash]
-$ ROH='/core/name->"foo"' java -jar restheart.jar restheart.yml
+$ java -jar restheart.jar -o conf-overrides.conf
 
-[source,bash]
-$ java -jar restheart.jar restheart.yml -o conf-overrides.conf
+TIP: the link:https://github.com/SoftInstigate/restheart/tree/master/examples/example-conf-files[Example configuration files] directory in the RESTHeart repository contains some examples in the different formats.
+
+The override file can use four formats, `.conf`, `.yml` and `.json`, `.jsonc` (Json with comments).
+
+*Example override file in `.conf` format*
+
+[source,conf]
+----
+/core/name -> "default";
+/http-listener -> {
+    "enabled": true,
+    "host": "localhost",
+    "port": 8080
+};
+----
+
+*Example override file in `.jsonc` format*
+
+[source,jsonc]
+----
+{
+    "/core/name": "default",
+    "/http-listener": {
+        "enabled": true,
+        "host": "localhost",
+        "port": 8080
+    }
+}
+----
+
+*Example override file in `.yml` format*
+
+[source,yml]
+----
+/core/name: default
+/http-listener:
+  enabled: true
+  host: "localhost"
+  port: 8080
+----
 
 == Change the configuration in Docker container
 
