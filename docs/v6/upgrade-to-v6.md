@@ -326,7 +326,7 @@ Consider the following example:
         and qparams-blacklist(filter, sort)
 ```
 
-More examples can be found [here](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)
+More examples can be found [here](https://github.com/SoftInstigate/restheart/blob/6.6.1/core/etc/acl.yml)
 
 ### MongoPermissions
 

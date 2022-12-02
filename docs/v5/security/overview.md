@@ -19,7 +19,7 @@ layout: docs
 
 RESTHeart provides **Authentication** and **Authorization** services. It can handle different authentication and authorization schemes, including handling users and permissions stored in MongoDB collections.
 
-The default configuration file enables `fileRealmAuthenticator` and `fileAclAuthorizer`. These use the files [/etc/users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) and [/etc/acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) to handle users credentials and permissions respectively.
+The default configuration file enables `fileRealmAuthenticator` and `fileAclAuthorizer`. These use the files [/etc/users.yml](https://github.com/SoftInstigate/restheart/blob/5.4.9/core/etc/acl.yml)[(/etc/acl.yml)] and [/etc/acl.yml](https://github.com/SoftInstigate/restheart/blob/5.4.9/core/etc/acl.yml) to handle users credentials and permissions respectively.
 
 RESTHeart can also handle users and permissions stored on MongoDB collections. This provides more flexibility and control over security and it is the **suggested configuration for production**.
 

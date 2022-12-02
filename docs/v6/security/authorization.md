@@ -67,12 +67,12 @@ The properties of the permission document are:
 {: .table }
 |property|type|description|
 |-|-|
-|**predicate**|string|If the [undertow predicate](https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)|
+|**predicate**|string|If the [undertow predicate](https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates) resolves the request then the request is authorized. Many examples of predicates can be found in the file [acl.yml](https://github.com/SoftInstigate/restheart/blob/6.6.1/core/etc/acl.yml)|
 |**roles**|JSON array of strings|The roles that are applied the ACL document. The special role `$unauthenticated` applies to requests that are not authenticated.|
 |**priority**|number|A request might fulfill several predicates; an ACL document with higher priority has higher evaluation precedence.|
 |**mongo**|`null` or JSON `MongoPermissions` object|For requests handled by the `MongoService` (i.e. the service that implements the REST API for MongoDB) the permission can specify the [MongoPermissions](#mongopermissions) object|
 
-An example permission document follows (for more examples check [acl.json](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.json)):
+An example permission document follows (for more examples check [acl.json](https://github.com/SoftInstigate/restheart/blob/6.6.1/core/etc/acl.json)):
 
 
 ```json
@@ -263,7 +263,7 @@ authorizers:
 
 The permission's options are fully equivalent to the ones handled by the _mongoAclAuthorizer_, only the yml format is used in place of Json.
 
-An example follows (for more examples check [acl.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/acl.yml)):
+An example follows (for more examples check [acl.yml](https://github.com/SoftInstigate/restheart/blob/6.6.1/core/etc/acl.yml)):
 
 ```yml
   roles: [ "user" ]

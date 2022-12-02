@@ -38,7 +38,7 @@ JWT Authentication manages the authentication following the <a href="https://jwt
 
 The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`.
 
-Supported alghoritms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
+Supported algorithms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
 
 For HMAC the `key` configuration option specifies the secret, for RSA the public key.
 
@@ -231,8 +231,6 @@ authenticators:
       args:
           conf-file: ./etc/users.yml
 ```
-
-See [users.yml](https://github.com/SoftInstigate/restheart/blob/master/core/etc/users.yml) for an example users definition.
 
 ## Token Managers
 
