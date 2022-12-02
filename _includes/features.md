@@ -51,7 +51,7 @@
                 <div class="top-4 mb-4"><span class="highlightcolor">Pleasant Development Framework</span></div>
                 <div>
                     <p>
-                     <code>Service</code>, <code>Interceptor</code> and <code>Initializer</code> are the <strong>simple yet powerful building blocks</strong> to develop microservices in Java, Kotlin, JavaScript or TypeScript.
+                     <code>Service</code>, <code>Provider</code>, <code>Interceptor</code> and <code>Initializer</code> are the <strong>simple yet powerful building blocks</strong> to develop microservices in Java, Kotlin, JavaScript or TypeScript.
                     </p>
                     <p>
                     <strong>Developers can focus on coding the microservice logic</strong>  taking for granted the complex and costly tasks. The Framework ensures the effective management of the runtime process, security, concurrency, HTTP transport protocol, requests routing, logging, configuration and security.

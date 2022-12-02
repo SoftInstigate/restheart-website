@@ -34,7 +34,7 @@ However RESTHeart does not only comprises a framework, but also a set of applica
 </div>
 ++++
 
-`restheart-core` is the foundation of the platform, the runtime process responsible for handling the core services, parsing the configuration, registering the plugins, enforce the security policy, route requests to the correct `Services`, executing `Interceptors` and `Initializers`.
+`restheart-core` is the foundation of the platform, the runtime process responsible for handling the core services, parsing the configuration, registering the plugins, enforce the security policy, resolve dependency injections with the available `Providers`, route requests to the correct `Services`, executing `Interceptors` and `Initializers`.
 
 If you look at the restheart installation directory structure, you will notice a directory called `plugins`:
 
@@ -42,6 +42,7 @@ If you look at the restheart installation directory structure, you will notice a
 ----
 plugins
 ├── restheart-graphql.jar
+├── restheart-mongoclient-provider.jar
 ├── restheart-mongodb.jar
 ├── restheart-polyglot.jar
 └── restheart-security.jar
@@ -57,10 +58,10 @@ A developer can easily deploy a custom plugin, by just adding it into the `plugi
 
 RESTHeart is built for developers by developers and evolved by implementing dozens of real world projects and following one golden rule: _if it is complex, it is wrong_.
 
-- Only three, simple yet powerful building blocks: `Services`, `Intreceptors` and `Initializers`.
+- Only four, simple yet powerful building blocks: `Services`, `Providers` `Intreceptors` and `Initializers`.
 - Starts in 100~ msecs, so code-deploy-test cycles are smooth and fast.
 - Each request is handled in a dedicated thread, so all code is _thread-safe_, _simple_ to write and maintain and _scales well_.
-- Custom code can consume properties from the `yml` configuration file.
+- Powerful Dependency Injection via `@Inject` annotation and `Provider` plugin.
 - The framework is polyglot and supports *Java*, *Kotlin*, *JavaScript* and *Typescript*.
 - Well documented with many examples and tutorials available. Check link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples].
 
