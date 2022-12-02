@@ -167,7 +167,9 @@ INFO  o.r.configuration.Configuration - 	/core/name -> the-best-api-ever
 === 2 - Using a configuration override file
 
 [source,bash]
-$ docker run -d --rm  -p "8080:8080" softinstigate/restheart -o conf-overrides.conf
+$ docker run -d --rm  -p "8080:8080" -v /path/to/conf-overrides.conf:/opt/restheart/etc/conf-overrides.conf softinstigate/restheart -o etc/conf-overrides.conf
+
+This mounts the host file `/path/to/conf-overrides.conf` into the container directory `/opt/restheart/etc` and executes RESTHeart with the `-o` option pointing to that file.
 
 NOTE: override files are available from RESTHeart v7.1
 
