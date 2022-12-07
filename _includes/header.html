@@ -9,12 +9,18 @@
                     class="sr-only">Toggle navigation</span> &#x2630;</button>
             <div class="collapse navbar-collapse navbar-ex1-collapse" id="scrollTarget">
                 <ul class="nav navbar-nav ml-md-auto">
-                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4">
-                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub">Star</a>
+                    <!-- only bounce slack button on home page-->
+                    {% assign stars_classes = 'nav-item ml-1 ml-lg-2 ml-xl-4' %}
+                    {% if page.stars-bounce != null %}
+                    {% assign stars_classes = stars_classes | append: ' bounce' %}
+                    {% endif %}
+
+                    <li class="{{ stars_classes }} ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
                     </li>
                     <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/docs" | prepend: site.baseurl }}">Docs</a></li>
                     <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/docs/try/" | prepend: site.baseurl }}"><strong>Try online</strong></a></li>
-                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/docs/setup/" | prepend: site.baseurl }}"><strong>Get started</strong></a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/docs/setup/" | prepend: site.baseurl }}"><strong>Download</strong></a></li>
                     <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/#features" | prepend: site.baseurl }}">Features</a></li>
                     <!-- <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/use-cases" | prepend: site.baseurl }}">Use cases</a></li> -->
                     <!-- <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="{{ "/support" | prepend: site.baseurl }}">Support</a></li> -->
@@ -31,3 +37,10 @@
     <strong>RESTHeart 7 is the current stable release. Switch documentation to  <a href="{{ "/docs" | prepend: site.baseurl }}">v7</a></strong>
 </div>
 {% endif %}
+
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'SoftInstigate/restheart'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>

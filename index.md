@@ -1,5 +1,6 @@
 ---
 layout: default
+stars-bounce: true
 ---
 
 <section id="top" class="black-background text-center pt-2 pb-2">
