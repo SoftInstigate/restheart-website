@@ -12,6 +12,9 @@ layout: default
                 <a class="btn-o-white btn btn-lg" title="Chat" href="https://gitter.im/SoftInstigate/restheart" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i>Chat with us on Gitter</a>
             </div>
             <div class="col-12 my-2">
+                <a class="btn-o-white btn btn-lg" title="Chat" href="https://s-i.slack.com/messages/C04DYP7Q9DL" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i>Chat with us on Slack</a>
+            </div>
+            <div class="col-12 my-2">
                 <a class="btn-o-white btn btn-lg" title="Questions" href="https://stackoverflow.com/questions/ask?tags=restheart" target="blank"> <i style="font-size:18px" class="icon-lightbulb"></i>Ask a question on StackOverflow</a>
             </div>
             <div class="col-12 my-2">
