@@ -3,7 +3,7 @@ restheart-website
 
 [restheart.org](https://restheart.org) Web site.
 
-## RESTHeart - Ready to use backend for Web and Mobile apps.
+## RESTHeart - The most effective microservices framework
 
 ### Instant REST, GraphQL and WebSocket APIs for MongoDB.
 
