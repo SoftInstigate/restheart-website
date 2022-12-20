@@ -329,8 +329,8 @@ The following mappings defines the _TypeResolver_ using the `$typeResolver` keyw
 ----
 "Course": {
     "$typeResolver": {
-        "InternalCourse": "not doc-contains(deliveredBy)",
-        "ExternalCourse": "doc-contains(deliveredBy)"
+        "InternalCourse": "not field-exists(deliveredBy)",
+        "ExternalCourse": "field-exists(deliveredBy)"
     }
 }
 ----
@@ -345,8 +345,8 @@ The `$typeResolver` is an object that maps the concrete types' names (`InternalC
 |`and` | boolean `and` operator
 |`or` | boolean `or` operator
 |`not` | boolean `not` operator
-|`doc-contains` | checks if the document contains the specified keys. Multiple keys are permitted as in `doc-contains(foo, bar)`
-|`doc-field-eq` | checks if the specified key is equal to a value. The key can use the dot notation and the value can be any JSON as in `doc-field-eq(field=foo.bar, value="{ 'n': 1 }")`
+|`field-exists` | checks if the document contains the specified keys. Dot notation and multiple keys are permitted as in `field-exists(foo.bar, bar.foo)`
+|`field-eq` | checks if the specified key is equal to a value. The key can use the dot notation and the value can be any JSON as in `field-eq(field=foo.bar, value="{ 'n': 1 }")`
 |===
 
 NOTE: An example GraphQL application that uses `interface` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interfaceTestApp.json[interfaceTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interface.feature[interface.feature]
