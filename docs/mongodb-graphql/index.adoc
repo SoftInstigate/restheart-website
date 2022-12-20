@@ -5,34 +5,33 @@ layout: docs-adoc
 
 == Overview
 
-The GraphQL plugin works side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.
+The `restheart-graphql` plugin exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.
 
-The `restheart-graphql` service added to RESTHeart exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.
+The GraphQL API works side by side with the REST API to build modern applications.
 
 == Configuration
 
-For each GraphQL application you need to define a so called *GraphQL app definition*. This is a JSON document to create in a MongoDB collection. You can specify the collection that holds the app definitions in the RESTHeart's configuration as follow:
+For each GraphQL application you need to define a so called *GraphQL app definition*. This is a JSON document to be created by default in the `/graphql` collection.
+
+The GraphQL plugin default configuration follows:
+ It also allows to specify the collection that holds the app definitions.
 
 [source,yml]
 ----
-plugins-args:
-  graphql:
-    enabled: true
-    secured: false
-    uri: /graphql
-    db: <db_name>
-    collection: <reserved_collection_name>
-    verbose: false
+graphql:
+  uri: /graphql
+  db: restheart
+  collection: gql-apps
+  # default-limit is used for queries that don't not specify a limit
+  default-limit: 100
+  # max-limit is the maximum value for a Query limit
+  max-limit: 1000
+  verbose: false
 ----
 
-by default:
+The GraphQL application can be dynamically created and updated by simply creating or updating the related document in MongoDB.
 
--  `<db_name>`= *restheart*
--  `<reserved_collection_name>`= *gql-apps*
-
-This kind of configuration  allows you to change dynamically the behavior of your GraphQL application by updating the related document on MongoDB.
-
-## GraphQL App Definition
+== GraphQL App Definition
 
 A GraphQL application definition is composed by three sections:
 
@@ -45,14 +44,14 @@ A GraphQL application definition is composed by three sections:
 }
 ----
 
-=== Descriptor
+== Descriptor
 
 Here you can specify:
 
 -  `name`: GraphQL application name.
 -  `description`: GraphQL application description.
--  `enabled`: can be `true` or `false`. If it's `false`, the GraphQL application can't be queried and vice-versa. By default it is `true``.
--  `uri`: it specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If you don't specify the URI, application's name is used instead (so, at least one of `name` or `URI` must be present).
+-  `enabled`: can be `true` or `false`.
+-  `uri`: specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If the `uri` parameter is missing the application's name is used instead.
 
 [source,json]
 ----
@@ -68,7 +67,7 @@ Here you can specify:
 }
 ----
 
-=== Schema
+== Schema
 
 This section must contain GraphQL application's schema written with *Schema Definition Language* (SDL). For example:
 
@@ -83,11 +82,15 @@ This section must contain GraphQL application's schema written with *Schema Defi
 
 NOTE: In order the schema to be a valid, it must contain the type *Query*.
 
-=== Mappings
+== Mappings
 
-In this section you can specify how GraphQL types fields are mapped on MongoDB data. Mappings have to be organized following the same hierarchical structure of GraphQL SDL schema, so for each GraphQL type you can insert a JSON object with a property for each field that you want to map.
+In this section you can specify how GraphQL types are mapped to MongoDB data. For each GraphQL type you should define a mapping object.
 
-Two kinds of mapping can be made:
+=== Object Mappings
+
+The mappings for an Object require to define a property for each field.
+
+The following mappings types are available:
 
 - Field to Field mapping
 - Field to Query mapping
@@ -95,7 +98,7 @@ Two kinds of mapping can be made:
 
 ==== Field to Field mapping
 
-You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array by **dot-notation**. For instance:
+You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array. To map nested fields use the **dot-notation**). For instance:
 
 [source,json]
 ----
@@ -133,20 +136,7 @@ You can map a GraphQL field with a MongoDB query using the following parameters:
 -  `skip` (Document or Integer): how many documents should be skipped of those resulting;
 -  `limit` (Document or Integer): how many documents should be returned at most of those resulting.
 
-NOTE: Starting from v6.5.1, unlimited queries are not allowed: if the query does not specifies a `limit`, the service configuration `default-limit` is applied. Also the limit cannot exceed the `max-limit`. The default GraphQL service configuration in `restheart.yml` follows:
-
-```yml
-plugins-args:
-  graphql:
-    uri: /graphql
-    db: restheart
-    collection: gql-apps
-    # default-limit is used for queries that don't not specify a limit
-    default-limit: 100
-    # max-limit is the maximum value for a Query limit
-    max-limit: 1000
-    verbose: false
-```
+NOTE: Unlimited queries are not allowed: if the query does not specifies a `limit`, the service configuration `default-limit` is applied. Also the limit cannot exceed the `max-limit`.
 
 Moreover, a query is **parametric** when the mapped MongoDb query includes one or more `$arg` and `$fk` operators:
 
@@ -241,9 +231,9 @@ then, possible mappings are:
 }
 ----
 
-As result, we are saying that:
+As result:
 
- - given a `User`, his posts are the MongoDB documents, within the `posts` collection, with value of field `_id` that falls in the `posts_ids` array of `User`'s document;
+ - given a `User`, his posts are the MongoDB documents, within the `posts` collection, with value of field `_id` that are in the `posts_ids` array of `User`'s document;
  - given a `Post`, its author is the MongoDB document, within the `users` collection, with value of field `_id` equal to `author_id` of `Post`'s document;
  - asking for `userByName` GraphQL field, the MongoDB documents searched are the ones within the `users` collection with field `name` equal to value of `_name` GraphQL argument. Moreover, we are asking to return at most `_limit` documents, to skip the firsts `_skip` ones and to sort them by name in reverse order.
 
@@ -251,20 +241,18 @@ NOTE: you can use also the *dot notation* with the `$fk` operator.
 
 ==== Field to Aggregation mapping
 
-You can map a GraphQL field with a MongoDB query using the following parameters:
+You can map a GraphQL field with a MongoDB aggregation using the following parameters:
 
-  - db (String): database name;
-  - collection (String): collection name;
-  - stages (Array): array of aggregation stages.
+- `db` (String): database name;
+- `collection` (String): collection name;
+- `stages` (Array): array of aggregation stages.
 
-As with field to query mapping, `$arg` and `$fk` operators are allowed in aggregation stages. +
+As with field to query mapping, `$arg` and `$fk` operators are allowed in aggregation stages.
 Referring to the previous example of mapping, the following aggregation stages are possible:
 
 [source,json]
 ----
-...,
 "Query": {
-    ....,
     "countPostsByCategory": {
       "db": "restheart",
       "collection": "users",
@@ -289,6 +277,92 @@ type Query {
 }
 ----
 
+=== Enum mappings
+
+NOTE: available from v7.2
+
+The mappings for Enum types specify which value in MongoDB maps to which enum value.
+
+The enum mappings are _optional_. If omitted, the value in the db is supposed to be the same string than the enum value.
+
+For example, the following `enum`:
+
+[source,graphql]
+----
+enum Level { ENTRY, MEDIUM, ADVANCED }
+----
+
+Can be mapped to numeric values as follows:
+
+[source,json]
+----
+"Level": {
+    "ENTRY": 0,
+    "MEDIUM": 1,
+    "ADVANCED": 2
+}
+----
+
+=== Interface mappings
+
+NOTE: available from v7.2
+
+An Interface is an abstract type that includes a certain set of fields that a type must include to implement the interface.
+
+In order to decide which type a concrete value belongs to, a _TypeResolver_ must be defined in the interface mappings.
+
+Given the following _Interface_ and concrete _Objects_
+
+[source,graphql]
+----
+interface Course { _id: ObjectId, title: String }
+type InternalCourse implements Course { _id: ObjectId, title: String }
+type ExternalCourse implements Course { _id: ObjectId, title: String, deliveredBy: String }
+type Query { AllCourses: [Course] }
+----
+
+The following mappings defines the _TypeResolver_ using the `$typeResolver` keyword.
+
+[source,json]
+----
+"Course": {
+    "$typeResolver": {
+        "InternalCourse": "not doc-contains(deliveredBy)",
+        "ExternalCourse": "doc-contains(deliveredBy)"
+    }
+}
+----
+
+The `$typeResolver` is an object that maps the concrete types' names (`InternalCourse` and `ExternalCourse`) with predicates. If the predicate evaluates to `true` against a document than its GraphQL type is used for it.
+
+`$typeResolver` can use the following predicates:
+
+[cols="1,3"]
+|===
+|*predicate*|*description*
+|`and` | boolean `and` operator
+|`or` | boolean `or` operator
+|`not` | boolean `not` operator
+|`doc-contains` | checks if the document contains the specified keys. Multiple keys are permitted as in `doc-contains(foo, bar)`
+|`doc-field-eq` | checks if the specified key is equal to a value. The key can use the dot notation and the value can be any JSON as in `doc-field-eq(field=foo.bar, value="{ 'n': 1 }")`
+|===
+
+=== Union mappings
+
+NOTE: available from v7.2
+
+Union types are very similar to interfaces, but they don't specify any fields.
+
+[source,graphql]
+----
+union Course = InternalCourse | ExternalCourse
+type InternalCourse { _id: ObjectId, title: String }
+type ExternalCourse { _id: ObjectId, title: String, deliveredBy: String }
+----
+
+As for interfaces, a _TypeResolver_ must be defined in the union mappings to decide which type a concrete value belongs to.
+
+The format for union's `$typeResolver` is identical to interface's.
 
 == Bson types
 
@@ -297,17 +371,17 @@ All primitive GraphQL types have been mapped to corresponding BSON types plus a 
 [cols="1,1,3"]
 |===
 |*GraphQL type*|*Bson Type*|*Example*
-|`Boolean` |`BsonBoolean` |`b: true`
-|`String` |`BsonString` |`s: "foo"`
-|`Int` |`BsonInt32` |`n: 1`
-|`Long` |`BsonInt64` |`n: { "$numberLong": "10000000000000000000" }`
-|`Float` |`BsonDouble` |`n: { "$numberDouble": "1.0" }`
-|`Decimal128` |`BsonDecimal128` |`n: { "$numberDecimal": "123.456" }`
+|`Boolean` |`BsonBoolean` |`true`
+|`String` |`BsonString` |`"foo"`
+|`Int` |`BsonInt32` |`1`
+|`Long` |`BsonInt64` |`{ "$numberLong": "10000000000000000000" }`
+|`Float` |`BsonDouble` |`{ "$numberDouble": "1.0" }`
+|`Decimal128` |`BsonDecimal128` |`{ "$numberDecimal": "123.456" }`
 |`ObjectId` |`BsonObjectId` |`{ "$oid": "618d18d6d058286395bb5567" }`
-|`Timestamp` |`BsonTimestamp` |`ts: { "$timestamp": {"t": 1, "i": 1} }`
-|`DateTime` |`BsonDate` |`d: { "$date": 1639666957000 }`
-|`Regex` |`BsonRegex` |`r: { "$regex": "<sRegex>", "$options": "<sOptions>" }`
-|`BsonDocument` |`BsonDocument` |`doc: { "any": 1, "possible": 1, "document": 1 }`|
+|`Timestamp` |`BsonTimestamp` |`{ "$timestamp": {"t": 1, "i": 1} }`
+|`DateTime` |`BsonDate` |`{ "$date": 1639666957000 }`
+|`Regex` |`BsonRegex` |`{ "$regex": "<sRegex>", "$options": "<sOptions>" }`
+|`BsonDocument` |`BsonDocument` |`{ "any": 1, "possible": 1, "document": 1 }`|
 |===
 
 === Example
@@ -378,7 +452,7 @@ Content-Type: application/graphql
 The GraphQL service has the following limitations:
 
 - **Read-only API**: mutations are not supported; the GraphQL API is only intended for simplifying data fetching. To write data, the REST API must be used.
-- **Not-supported schema keywords**: the schema resolvers do not support the following keywords: `enum`, `union`, `interface` and `input`.
+- **Not-supported schema keywords**: the schema resolvers do not support the `input` keyword. RESTHeart versions up to 7.1 don't support the keywords `enum`, `union`, `interface`.
 
 ## Response codes
 
@@ -441,25 +515,5 @@ In the following table are reported possible RESTHeart GraphQL Service responses
   "http status code":  400,
   "http status description":  "Bad Request",
   "message":  "..."
-}
-----
-
-*405 - Method Not Allowed*
-
-[source,json]
-----
-{
-  "http status code":  405,
-  "http status description":  "Method Not Allowed"
-}
-----
-
-*500 - Internal Server Error*
-
-[source,json]
-----
-{
-  "http status code":  500,
-  "http status description":  "Internal Server Error"
 }
 ----
