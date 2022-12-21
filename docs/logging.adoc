@@ -11,8 +11,6 @@ RESTHeart uses for logging the http://logback.qos.ch[LogBack] implementation of 
 
 restheart.jar embeds the following default `logback.xml` configuration.
 
-NOTE: the default configuration defines loggers only for `org.restheart` and `com.restheart` packages. If you are developing a plugin in a different package, you'll need to specify a custom configuration in order to get log messages from your classes.
-
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -28,15 +26,21 @@ NOTE: the default configuration defines loggers only for `org.restheart` and `co
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
-
-    <logger name="org.restheart" level="INFO"/>
-    <logger name="com.restheart" level="INFO"/>
 </configuration>
 ----
 
-== Logging preferences in restheart.yml
+IMPORTANT: the default configuration logs messages only from the packages `org.restheart` and `com.restheart`. If you are developing a plugin, you'll need to modify the configuration to get log messages from your classes.
 
-The configuration file `restheart.yml` allows to modify the log level and other logging options.
+The following command executes RESTHeart overriding the configuration to enable logging from the classes of the package `com.foo.bar` and its sub-packages:
+
+[source,bash]
+----
+$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "com.foo.bar" ]' java -jar restheart.jar
+----
+
+== Logging configuration
+
+The default logging configuration follows:
 
 [source,yml]
 ----
@@ -48,6 +52,7 @@ The configuration file `restheart.yml` allows to modify the log level and other 
 # - ansi-console: use Ansi console for logging. Default to 'true' if parameter missing, for backward compatibility
 # - log-to-file: true => log messages to a file (default value: false)
 # - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
+# - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
 # - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
 # - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
 
@@ -57,6 +62,7 @@ logging:
   ansi-console: true
   log-to-file: false
   log-file-path: restheart.log
+  packages: [ "org.restheart", "com.restheart" ]
   requests-log-mode: 1
   tracing-headers:
   #  - x-b3-traceid      # vv Zipkin headers, see https://github.com/openzipkin/b3-propagation
@@ -70,7 +76,7 @@ logging:
 
 == Specify a custom LogBack configuration
 
-To define a different logging configuration, set the property `logback.configurationFile`, as follows:
+To define a different LogBack configuration, set the property `logback.configurationFile`, as follows:
 
 [source,bash]
 $ java -Dlogback.configurationFile=./logback.xml -jar restheart.jar
@@ -108,7 +114,7 @@ Replace the `restheart` service definition in the link:https://github.com/SoftIn
 
 == Example: print the full stack trace
 
-The following `logback.xml` sets the log level to `TRACE` and replaces the pattern `%throwable{short}` (prints the first line of the stack trace) with `%throwable{full}` that prints the full stack trace
+The following `logback.xml` replaces the pattern `%throwable{short}` (prints the first line of the stack trace) with `%throwable{full}` that prints the full stack trace
 
 [source,xml]
 ----
@@ -124,54 +130,25 @@ The following `logback.xml` sets the log level to `TRACE` and replaces the patte
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
-
-    <logger name="org.restheart" level="INFO"/>
-    <logger name="com.restheart" level="INFO"/>
-    <logger name="org.mongodb" level="ALL"/>
 </configuration>
 ----
 
 == Example: enable logging from the MongoDB driver
 
-The following `logback.xml` adds `<logger name="org.mongodb" level="ALL"/>` to enable trace level logging from the MongoDB driver.
+To enable logging from the MongoDB driver, override the configuration option `/logging/packages` as follows:
 
-[source,xml]
+[source,bash]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <withJansi>true</withJansi>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n %throwable{short}</pattern>
-        </encoder>
-    </appender>
-
-    <root level="ERROR">
-        <appender-ref ref="STDOUT" />
-    </root>
-
-    <logger name="org.restheart" level="INFO"/>
-    <logger name="com.restheart" level="INFO"/>
-    <logger name="org.mongodb" level="ALL"/>
-</configuration>
+$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar 
 ----
 
 == Example: log trace headers
 
 Trace headers allow to trace a request context propagation across service boundaries. See for reference link:https://github.com/openzipkin/b3-propagation[b3-propagation]
 
-In `restheart.yml` configuration, enable `/logging/equests-log-trace-headers:`
+Too enable log trace headers first override the `/logging/equests-log-trace-headers` configuration options
 
-[source,yml]
-----
-logging:
-    requests-log-trace-headers:
-        -x-b3-traceid
-        -uber-trace-id
-        -traceparent
-----
-
-The define a custom `logback.xml` with the following `pattern` (note that is includes `%X{x-b3-traceid}`)
+Then a custom `logback.xml` with the following `pattern` (note that it includes `%X{x-b3-traceid}`) must be used:
 
 [source,xml]
 ----
@@ -187,11 +164,12 @@ The define a custom `logback.xml` with the following `pattern` (note that is inc
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
-
-    <logger name="org.restheart" level="INFO"/>
-    <logger name="com.restheart" level="INFO"/>
-    <logger name="org.mongodb" level="ALL"/>
 </configuration>
+----
+
+[source,bash]
+----
+$ RHO='/logging/requests-log-trace-headers -> [ "x-b3-traceid", "uber-trace-id", "traceparent" ]' java -Dlogback.configurationFile=./logback.xml -jar restheart.jar
 ----
 
 {: .bs-callout.bs-callout-info }
