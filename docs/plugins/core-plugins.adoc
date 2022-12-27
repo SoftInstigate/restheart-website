@@ -37,7 +37,7 @@ With maven:
 
 All plugins must be a annotated with `@RegisterPlugin` to:
 - allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
-- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+- specify parameters such us the URI of a `Service` or the intercept point of an `Interceptor`.
 
 An example follows:
 
@@ -170,8 +170,9 @@ TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=356s[Plugin config
 
 Available providers allow to inject the following objects:
 
--   `@Inject("rh-config")` - allows the plugin to get the RESTHeart `org.restheart.configuration.Configuration` object.
--   `@Inject("registry")` - `PluginsRegistry` allows a plugin to get the reference of other plugins.
+-   `@Inject("config")` - injects the plugins configuration as a `Map<String, Object>`
+-   `@Inject("rh-config")` - injects the RESTHeart `org.restheart.configuration.Configuration` object.
+-   `@Inject("registry")` - injects the `PluginsRegistry` singleton that allows a plugin to get the reference of other plugins.
 -   `@Inject("mclient")` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
 -   `@Inject("mclient-reactive")` - injects the reactive `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
 
@@ -189,9 +190,9 @@ private MongoClient mclient;
 
 === Request and Response Generic Classes
 
-*Services* and *Interceptor* are generic classes. They use type parameters for Request and Response classes.
+*Services* and *Interceptor* are generic classes. They use type parameters for `Request` and `Response` classes.
 
-Many concrete implementations of specialized Request and Response exist in the `org.restheart.exchange` package to simplify development:
+Many concrete implementations of specialized `Request` and `Response` exist in the `org.restheart.exchange` package to simplify development:
 
 - `JsonRequest` and `JsonResponse`
 - `BsonRequest` and `BsonResponse`
@@ -199,6 +200,7 @@ Many concrete implementations of specialized Request and Response exist in the `
 - `ByteArrayRequest` and `ByteArrayResponse`
 - `StringRequest` and `StringResponse`
 - `BsonFromCsvRequest`
+- `UninitializedRequest` and `UninitializedResponse`
 
 Those implementations differ on the data type used to hold the request and response content. For example, `ByteArrayRequest` and `BsonRequest` hold content as `byte[]` and `BsonValue` respectively.
 
@@ -215,7 +217,7 @@ Depending on the content type, the Service class implements one of the specializ
 - `JsonService`
 - `BsonService`
 
-The code of example link:https://github.com/SoftInstigate/restheart/tree/master/examples/mongo-status-service[mongo-status-service] implementing `BsonService` and using the `MongoClient` obtained via `@InjectMongoClient` follows:
+The code of example link:https://github.com/SoftInstigate/restheart/tree/master/examples/mongo-status-service[mongo-status-service] implementing `BsonService` and using the `MongoClient` obtained via `@Inject("mclient")` follows:
 
 [source,java]
 ----
