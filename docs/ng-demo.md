@@ -63,7 +63,7 @@ HTTP/1.1 201 Created
 </div>
 
 {: .bs-callout.bs-callout-info}
-This request uses _write mode_ set to `upsert`. Since RESTHeart v5.3.0, write mode for `PUT/PATCH` requests is set by default to `update`. Check out [here](https://restheart.org/docs/upgrade-to-v6/#write-mode-in-mongodb-rest-api) for more informations.
+This request uses _write mode_ set to `upsert`.
 
 <div class="row mt-3">
     <div class="col-lg-3 pt-2">

@@ -23,6 +23,21 @@ $ java -jar restheart.jar -t
 
 NOTE: The default configuration is fine most of the times. You just want to change few options and the suggested way is using the default configuration with the needed overrides. See link:http://127.0.0.1:4000/docs/configuration#modify-the-configuration-with-the-rho-env-var[modify the configuration with overrides]
 
+== Standalone configuration
+
+The default configuration enables several plugins that require MongoDB. If you are using RESTHeart without MongoDB an alternative default configuration can be used with the `-s` option, where `s` stands for _standalone_.
+
+NOTE: standalone configuration is available from RESTHeart v7.2
+
+This configuration enables the `fileRealmAuthenticator` and the `fileAclAuthorizer` and disables the MongoDB data APIs.
+
+It defines the user `admin` but the password must be set overriding the configuration. The following command sets the password of the `admin` user as `secret` using the `RHO` environment variable:
+
+[source,bash]
+----
+$ RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret'" java -jar core/target/restheart.jar -s
+----
+
 == Listeners
 
 [source,yml]

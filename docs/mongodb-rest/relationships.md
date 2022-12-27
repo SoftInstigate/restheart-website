@@ -17,8 +17,6 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include doc-in-progress-v6.html %}
-
 ## Introduction
 
 In MongoDB, documents can have relationships with other documents (see
@@ -30,7 +28,7 @@ collection, so that it automatically adds the links to related documents
 in its representation.**
 
 {: bs-callout.bs-callout-info}
-Declaring relationships adds the `_links` property to the documents only in the HAL representation format. This is not available in the default representation format. Add the query parameter `?rep=HAL` to display the `_links` property.
+Declaring relationships adds the `_links` property to the documents only in the HAL representation format. This is not available in the default representation format. Add the query parameters `?rep=HAL&hal=f` to display the `_links` property.
 
 ## The _rels_ collection metadata
 

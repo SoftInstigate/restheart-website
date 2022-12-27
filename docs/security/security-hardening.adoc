@@ -29,7 +29,7 @@ and enforced by strong and efficient security policies.
 |Enable originVetoer|Suggested|Configuration required
 |Define and test the ACL|Mandatory|Action required
 |Use only aggregations and forbid the filter query parameter|Suggested|Action required
-|Blacklist the $where MongoDB operator|Mandatory|No action required from 6.3.0, configuration required otherwise
+|Blacklist the $where MongoDB operator|Mandatory|No action required
 |Define role-specific GraphQL applications|Mandatory|Action required
 |===
 
@@ -45,8 +45,6 @@ To update it, run the following command:
 $ curl -u admin:secret -X PATCH localhost:8080/users/admin -H "Content-Type: application/json" -d '{ "password": "my-strong-password" }'
 
 Refer to link:/docs/security/user-management/[User Management] for more information on how to create new users, roles and permissions.
-
-NOTE: `mongoAclAuthorizer` is the default ACL authorizer from RESTHeart starting v6.2. For previous releases, the `fileAclAuthorizer` was used. In this case the user password must be updated in the file `etc/users.yml`.
 
 == Disable the auto-creation of the admin user
 
@@ -140,14 +138,10 @@ mongoRealmAuthenticator:
     minimum-password-strength: 3
 ----
 
-NOTE: `enforce-minimum-password-strenght` is available from RESTHeart v6.3.0.
-
 == bruteForceAttackGuard
 
 `bruteForceAttackGuard` defends from brute force password cracking attacks
 by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests are received in last 10 seconds from the same ip.
-
-NOTE: `bruteForceAttackGuard` is available from RESTHeart v6.3.0.
 
 IMPORTANT: if RESTHeart is behind a revers proxy, this must set the header `X-Forwarded-For` with the client IP. In this case set the option `trust-x-forwarded-for: true`
 
@@ -233,15 +227,7 @@ If you cannot disable the `filter` query parameter, you can blacklist unused ope
 
 The `$where` MongoDB query operator is dangerous and should not be used in any case.
 
-NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where` only starting from RESTHeart v6.3.0. For previous versions, it should be enabled by adding the following configuration to your `restheart.yml` file:
-
-[source,yml]
-----
-# a global blacklist for mongodb operators in filter query parameter
-filterOperatorsBlacklist:
-    blacklist: [ "$where" ]
-    enabled: true
-----
+NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`.
 
 == Define role-specific GraphQL applications
 

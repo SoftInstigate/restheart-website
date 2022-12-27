@@ -52,7 +52,7 @@ The GraalVM is faster than OpenJDK and it is also a polyglot runtime environment
 
 RESTHeart leverages the GraalVM to allow developing [services](/docs/plugins/core-plugins/#services) and [interceptors](https://restheart.org/docs/plugins/core-plugins/#interceptors) using JavaScript.
 
-See [Polyglot JavaScript Services and Interceptors on GraalVM](/docs/upgrade-to-v6/#graalvm) for more details.
+See [Polyglot JavaScript Services and Interceptors](/docs/plugins/core-plugins-js) for more details.
 
 {: .bs-callout.bs-callout-info}
 Want to see some code? Several [code examples](https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources/test-js-plugins) are available as well.

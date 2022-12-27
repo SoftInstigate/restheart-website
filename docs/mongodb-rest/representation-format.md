@@ -73,9 +73,6 @@ GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
 
 ### JSON Mode
 
-{: .alert.alert-info}
-JSON Mode is available from RESTHeart v4.1
-
 JSON can only directly represent a subset of the types supported by BSON. To preserve type information, RESTHeart adds the following extensions to the JSON format.
 
 The query parameter `jsonMode` allows to specify the JSON Mode
@@ -491,9 +488,6 @@ Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
 When `hal=f` is specified, the representation is more verbose and includes special properties (such as links).
 
 ### Simplified HAL
-
-{: .bs-callout.bs-callout-info }
-Up to RESTHeart 3.x SHAL was also called `PLAIN_JSON`
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 

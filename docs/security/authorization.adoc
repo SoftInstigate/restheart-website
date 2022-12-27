@@ -277,13 +277,19 @@ The following only returns the property `public` (you can use the dot notation!)
 
 == File ACL Authorizer
 
-_fileRealmAuthorizer_ allows defining roles permissions in a YAML configuration file.
+_fileRealmAuthorizer_ allows defining roles permissions in the configuration or in a separate YAML configuration file.
 
 [source,yml]
 ----
 fileAclAuthorizer:
-    conf-file: acl.yml
+  #conf-file: ./acl.yml
+  permissions:
+    - role: admin
+      predicate: path-prefix('/')
+      priority: 0
 ----
+
+NOTE: defining the ACL directly in the configuration rather than on a separate `acl.yml` file is available from RESTHeart v7.2
 
 The `conf-file` path is either absolute, or relative to the restheart configuration file (if specified) or relative to the plugins directory (if using the default configuration).
 

@@ -136,22 +136,36 @@ mongoRealmAuthenticator:
     cache-size: 1000
     cache-ttl: 60000
     cache-expire-policy: AFTER_WRITE
+    enforce-minimum-password-strenght: false
+    # Integer from 0 to 4
+    # 0 Weak        （guesses < 3^10）
+    # 1 Fair        （guesses < 6^10）
+    # 2 Good        （guesses < 8^10）
+    # 3 Strong      （guesses < 10^10）
+    # 4 Very strong （guesses >= 10^10）
+    minimum-password-strength: 3
 ----
 
 === File Realm Authenticator
 
-**fileRealmAuthenticator** defines users credentials and roles in a simple yml configuration file.
+**fileRealmAuthenticator** defines users credentials and roles in the configuration or in a simple yml configuration file.
 
 [source,yml]
 ----
 fileRealmAuthenticator:
     enabled: true
-    conf-file: ./etc/users.yml
+    #conf-file: ./etc/users.yml
+    users:
+    - userid: admin
+      password: null
+      roles: [admin]
 ----
 
 The `conf-file` path is either absolute, or relative to the restheart configuration file (if specified) or relative to the plugins directory (if using the default configuration).
 
 See link:https://github.com/SoftInstigate/restheart/blob/master/examples/example-conf-files/users.yml[users.yml] for an example users definition.
+
+NOTE: defining users directly in the configuration rather than on a separate `users.yml` file is available from RESTHeart v7.2
 
 == Token Managers
 
