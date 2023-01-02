@@ -53,6 +53,7 @@ The default logging configuration follows:
 # - log-to-file: true => log messages to a file (default value: false)
 # - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
 # - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
+# - full-stacktrace: true to log the full stackstrace of exceptions
 # - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
 # - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
 
@@ -63,6 +64,7 @@ logging:
   log-to-file: false
   log-file-path: restheart.log
   packages: [ "org.restheart", "com.restheart" ]
+  full-stacktrace: false
   requests-log-mode: 1
   tracing-headers:
   #  - x-b3-traceid      # vv Zipkin headers, see https://github.com/openzipkin/b3-propagation
@@ -114,24 +116,14 @@ Replace the `restheart` service definition in the link:https://github.com/SoftIn
 
 == Example: print the full stack trace
 
-The following `logback.xml` replaces the pattern `%throwable{short}` (prints the first line of the stack trace) with `%throwable{full}` that prints the full stack trace
+The following command sets the configuration option `/logging/full-stacktrace` to `true` to configure the logback appender to log the full stack trace of exceptions
 
-[source,xml]
+[source,bash]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <withJansi>true</withJansi>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n %throwable{full}</pattern>
-        </encoder>
-    </appender>
+$ RHO='/logging/full-stacktrace->true' java -jar restheart.jar
+----
 
-    <root level="ERROR">
-        <appender-ref ref="STDOUT" />
-    </root>
-</configuration>
-----
+NOTE: `/logging/full-stacktrace` is available from RESTHeart 7.2.0. For previous releases you need to specify a custom `logback.xml` configuration file.
 
 == Example: enable logging from the MongoDB driver
 
@@ -139,7 +131,7 @@ To enable logging from the MongoDB driver, override the configuration option `/l
 
 [source,bash]
 ----
-$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar 
+$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar
 ----
 
 == Example: log trace headers
