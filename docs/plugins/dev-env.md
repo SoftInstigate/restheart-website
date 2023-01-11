@@ -1,6 +1,7 @@
 ---
 title: Development Environment Setup
 layout: docs
+menu: framework
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
