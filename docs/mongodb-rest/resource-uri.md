@@ -27,7 +27,7 @@ are identified.
       Default RESTHeart configuration binds <code>/</code> to the database <code>restheart</code>.
     </p>
     <p>
-      Being the most general case, the following table refers to the configuration exposing all MongoDB resources (<code>root-mongo-resource='*'</code>)
+      Being the most general case, the following table refers to the configuration exposing all MongoDB resources (<code>/mongo/mongo-mounts[0]/what->'*'</code>)
     </p>
 </div>
 
