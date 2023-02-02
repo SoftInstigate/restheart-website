@@ -10,10 +10,11 @@ stars-bounce: true
         <div class="top-6 text-break white mt-2">with REST, GraphQL and WebSocket APIs for MongoDB and Declarative Security.</div>
         </h2>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
-        <a href="/docs" class="btn ml-1 mt-4 my-0 btn-md">Read the Docs</a>
+        <a href="/docs" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Read the Docs</a>
         <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
+        <a href="https://calendly.com/restheart/restheart-demo" class="btn btn-o-white ml-1 mt-4 my-0 btn-md" target="blank">Book a meeting!</a>
         <div class="col-12 mt-4">
-                <a class="btn-o-white btn btn-lg" title="Demo" href="https://calendly.com/restheart/restheart-demo" target="blank"> <i style="font-size:18px" class="icon-calendar"></i>Book a meeting!</a>
+                <a class="btn btn-lg mr-3" title="Slack" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ" target="blank"> <i style="font-size:18px" class="icon-chat"></i>Join us on Slack</a>
         </div>
     </div>
 </section>
