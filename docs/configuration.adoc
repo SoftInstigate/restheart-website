@@ -151,7 +151,7 @@ The configuration of RESTHeart running in a Docker container can be modified in 
 
 === 1 - Using the `RHO` env variable
 
-The following example uses the option `-e RHO="....."` to override the configuration parameters `/mclient/connection-string` and `/core/name`.
+The following example uses the option `-e RHO="..."` to override the configuration parameters `/mclient/connection-string` and `/core/name`.
 
 [source,bash]
 ----
@@ -175,9 +175,17 @@ When defining your `RHO` variable always set `/http-listener/host->"0.0.0.0"` an
 === 2 - Using a configuration override file
 
 [source,bash]
-$ docker run -d --rm  -p "8080:8080" -v /path/to/conf-overrides.conf:/opt/restheart/etc/conf-overrides.conf softinstigate/restheart -o etc/conf-overrides.conf
+$ docker run --rm  -p "8080:8080" -e RHO="" -v /path/to/conf-overrides.conf:/opt/restheart/etc/conf-overrides.conf softinstigate/restheart -o etc/conf-overrides.conf
 
 This mounts the host file `/path/to/conf-overrides.conf` into the container directory `/opt/restheart/etc` and executes RESTHeart with the `-o` option pointing to that file.
+
+WARNING: RESTHeart Docker image defines the following `RHO` environment variable which has precedence over the configuration override file. To avoid the `RHO` of the Docker image to apply, you can add `-e RHO=""` to the `docker run` command.
+
+```
+ENV RHO='/mclient/connection-string->"mongodb://host.docker.internal";/http-listener/host->"0.0.0.0"'
+```
+
+To avoid this, just can add `-e RHO=""` to your `docker run` command.
 
 NOTE: override files are available from RESTHeart v7.1
 
@@ -194,14 +202,17 @@ $ # run the RESTHeart container mounting the conf file as a volume
 $ docker run --rm -p 8080:8080 -v /tmp/restheart.yml:/opt/restheart/etc/restheart.yml softinstigate/restheart etc/restheart.yml
 ----
 
-WARNING: the RESTHeart Docker container defines the following `RHO` variable which will override the parameters in your configuration file:
+WARNING: the RESTHeart Docker image defines the following `RHO` variable which will override the parameters in your configuration file:
 
 ```
 ENV RHO='/mclient/connection-string->"mongodb://host.docker.internal";/http-listener/host->"0.0.0.0"'
 ```
 
-To avoid this, just specify your RHO overrides:
+To avoid this, just can add `-e RHO=""` to your `docker run` command:
 
-```
-$ docker run --rm -p 8080:8080 -e RHO="/mclient/connection-string->'mongodb://host.docker.internal';"  -v /tmp/restheart.yml:/opt/restheart/etc/restheart.yml softinstigate/restheart etc/restheart.yml
+```bash
+# generate a configuration file
+$ docker run --rm -p 8080:8080  softinstigate/restheart -c 2> /tmp/restheart.yml
+# run restheart with it
+$ docker run --rm -p 8080:8080 -e RHO="" -v /tmp/restheart.yml:/opt/restheart/etc/restheart.yml softinstigate/restheart etc/restheart.yml
 ```
