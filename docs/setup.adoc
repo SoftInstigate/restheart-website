@@ -27,38 +27,58 @@ Un-zip or un-tar
 
 [source,bash]
 ----
-$ # if you downloaded the tar.gz
+# if you downloaded the tar.gz
 $ tar -xzf restheart.tar.gz && cd restheart
 ----
 
 [source,bash]
 ----
-$ # if you downloaded the tar.gz
-$ tar -xzf restheart.tar.gz && cd restheart
+# if you downloaded the zip
+$ unzip restheart.zip && cd restheart
 ----
 
-== Run
+== Requirements
 
-To run RESTHeart connected to a local instance of MongoDB you need:
+RESTHeart only requires Java 17 or GraalVM >= 22.3.0 (Java 17 based).
 
--   Java 17+;
--   MongoDB running on `localhost` on port `27017`.
+== Run in standalone mode
 
-NOTE: RESTHeart supports MongoDB from version 3 throughout 6 and it is extensively tested with MongoDB 3.6, 4.2, 4.4, v5.0 and v6.0
+NOTE: standalone mode is available from RESTHeart 7.2
+
+When you run RESTHeart in standalone mode, it switches to a different default configuration that turns off all plugins that rely on MongoDB. This means you won't have access to the handy built-in features that make RESTHeart so great. But don't worry, you'll still be able to play with it and add your own custom plugins.
+
+Use the option `-s` to run RESTHeart in standalone mode.
 
 [source,bash]
 ----
-$ # start MongoDB as single instance Replica Set
-$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db &&  mongo --eval 'if (!rs.status().ok) rs.initiate();'
-$ # start RESTHeart
-$ java -jar restheart.jar
+$ RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret'" java -jar restheart.jar -s
 ----
+
+NOTE: the `RHO` environment variable sets the password for the user `admin`.
 
 [source,bash]
 ----
 $ http -b http://localhost:8080/ping
 
 Greetings from RESTHeart!
+----
+
+== Run with MongoDB
+
+RESTHeart's default configuration has all the MongoDB plugins activated, giving you all the cool features like the REST, GraphQL, and Websocket APIs.
+
+If you want to use the Websocket API and handle Transactions, you'll need to run MongoDB as a Replica Set.
+
+NOTE: RESTHeart is extensively tested with MongoDB 3.6, 4.2, 4.4, v5.0 and v6.0
+
+To get RESTHeart and MongoDB up and running, use these commands:
+
+[source,bash]
+----
+# start MongoDB as single instance Replica Set
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongosh --quiet --eval 'if (!rs.isMaster().ismaster) rs.initiate({});'
+# start RESTHeart
+$ java -jar restheart.jar
 ----
 
 == Directory structure
@@ -82,7 +102,9 @@ restheart
 To run RESTHeart as a daemon (i.e. fork) add the `--fork` parameter:
 
 [source,bash]
+----
 $ java -jar restheart.jar --fork
+----
 
 To see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that `/usr/local/var/log/restheart.log` is writeable and then rerun it as follows:
 
@@ -97,15 +119,17 @@ To know the available CLI parameters, run RESTHeart with `--help`:
 
 [source,bash]
 ----
-$ java -jar restheart.jar --help
+$ java -jar restheart.jar -h
 
-Usage: java -jar restheart.jar [-chtv] [--fork] [-o=RHO_FILE] [CONF_FILE]
+Usage: java -jar restheart.jar [-chstv] [--fork] [-o=RHO_FILE] [CONF_FILE]
       [CONF_FILE]            Main configuration file
   -c, --printConfiguration   Print the effective configuration to the standard
                                error and exit
       --fork                 Fork the process in background
   -h, --help                 This help message
   -o, --rho=RHO_FILE         Configuration overrides file
+  -s, --standalone           Use an alternate configuration that disables all
+                               plugins depending from MongoDb
   -t, --printConfigurationTemplate
                              Print the configuration template to the standard
                                error and exit

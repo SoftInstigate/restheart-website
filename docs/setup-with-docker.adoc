@@ -4,6 +4,40 @@ layout: docs-adoc
 menu: setup
 ---
 
+== The RESTHeart Docker tags
+
+RESTHeart Docker images come in four different versions, labeled with these tags:
+
+[cols="1,1,3"]
+|===
+|**Tag**|**Example**|**Description**
+|`<version>`|`latest`, `7.2.5`|**The standard image.**  This is usually the one you want to use. Keep in mind it doesn't support running JavaScript plugins.
+|`<version>-distroless`|`latest-distroless`, `7.2.5-distroless` | Similar to the standard image, this image contains only RESTHeart and its runtime dependencies. It does not contain a package manager, shells or any other programs you would expect to find in a standard Linux distribution.
+|`<version>-graalvm`|`latest-graalvm`, `7.2.5-graalvm` | RESTHeart running on the GraalVM that will let you JavaScript plugins. Check out the link:/docs/plugins/core-plugins-js[Plugins in JavaScript] for more info. This is biggest image (about 600Mbytes).
+|`<version>-native`|`latest-native`, `7.2.5-native` | RESTHeart built as a native binary. It is the smallest image with lightning-fast startup time. This is the perfect choice for deploying in a Kubernetes cluster. It can only execute JavaScript plugins. Check out link:/docs/plugins/deploy#deploy-java-plugins-on-restheart-native[Deploy Java plugins on RESTHeart Native] for more info.
+
+|===
+
+== Run RESTHeart with Docker in standalone mode
+
+NOTE: standalone mode is available from RESTHeart 7.2
+
+When you run RESTHeart in standalone mode, it switches to a different default configuration that turns off all plugins that rely on MongoDB. This means you won't have access to the handy built-in features that make RESTHeart so great. But don't worry, you'll still be able to play with it and add your own custom plugins.
+
+[.text-muted]
+On OSX and Windows:
+
+[source,bash]
+$ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
+
+[.text-muted]
+On Linux
+
+[source,bash]
+$ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
+
+NOTE: the `RHO` environment variable sets the password for the user `admin`.
+
 == Run RESTHeart with Docker, MongoDB running on localhost
 
 If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
@@ -19,13 +53,13 @@ Run RESTHeart with:
 On OSX and Windows:
 
 [source,bash]
-$ docker run -it --rm -p "8080:8080" softinstigate/restheart
+$ docker run --rm -p "8080:8080" softinstigate/restheart
 
 [.text-muted]
 On Linux
 
 [source,bash]
-$ docker run -it --rm -p "8080:8080" --add-host host.docker.internal:host-gateway softinstigate/restheart
+$ docker run --rm -p "8080:8080" --add-host host.docker.internal:host-gateway softinstigate/restheart
 
 NOTE: This command relies on the docker support of `host.docker.internal`. If you are using an old docker version or a docker runtime that does not support it, than you need to configure the docker network accordingly (you can refer to the brilliant link:https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach["From inside of a Docker container, how do I connect to the localhost of the machine?" on StackOverflow]) or use one of the an alternative methods described in the further sections.
 
