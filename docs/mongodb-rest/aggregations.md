@@ -12,11 +12,14 @@ menu: mongodb
     -   [Map-Reduce](#map-reduce)
 -   [Examples](#examples)
 -   [Materialized Views](#materialized-views)
--   [Passing variables to aggregations](#passing-variables-to-aggregations)
+-   [Parametric Aggregations](#parametric-aggregations)
+    -   [Variables with default values](#variables-with-default-values)
+    -   [Optional Stages](#optional-stages)
     -   [Predefined variables](#predefined-variables)
-    -   [Variables in stages or query](#variables-in-stages-or-query)
-    -   [Variables in map reduce functions](#variables-in-map-reduce-functions)
--   [Security information](#security-informations)
+    -   [Handling paging in aggregations](#handling-paging-in-aggregations)
+-   [Security considerations](#security-considerations)
+-   [Transaction Support](#transaction-support)
+-   [Variables in map reduce functions](#variables-in-map-reduce-functions)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -241,13 +244,15 @@ HTTP/1.1 200 OK
 ]
 ```
 
-## Passing variables to aggregations
+## Parametric Aggregations
+
+In the aggregation definitions, the special operator `{"$var": "name" }` can be used to define parametric aggregations.
 
 The query parameter `avars` allows passing variables to the aggregations.
 
 {: .bs-callout.bs-callout-info}
 The value of a variable can be any valid JSON.
-The following query parameter passes two variables, a number and an object: `?avars={ "number": 1, "object": {"a": {"json": "object" }} }`
+The following query parameter passes two variables, a string and an object: `?avars={ "name": "foo", "obj": {"a": { "json": "object" }} }`
 
 For example, the previous example aggregations both use a variable named
 `n`. If the variable is not passed via the `avars` qparam, the request
@@ -270,9 +275,88 @@ Passing the variable n, the request succeeds:
 
 {% include code-header.html type="Request" %}
 ```http
-GET /coll/_aggrs/example-pipeline?avars={"n":1} HTTP/1.1
+GET /coll/_aggrs/example-pipeline?avars={"n":"foo"} HTTP/1.1
 
 HTTP/1.1 200 OK
+```
+
+### Variables with default values
+
+{: .bs-callout.bs-callout-info}
+Variables with default values are available from RESTHeart 7.3
+
+A variable can have a default value. In this case, if the request does not specify it, the default value is used.
+
+To define a variable with a default value use the syntax `{"$var": [ "name", "default-value" ] }`.
+
+{: .bs-callout.bs-callout-info}
+The default value can be any json as in `{"$var": [ "s", {"name":1} ] }` where the default value is `{"name":1}`
+
+An example aggregation that uses the variable `s` with a default value in the `$sort` stage follows:
+
+```json
+{
+  "aggrs": [
+    {
+        "uri": "sort-with-default-example",
+        "type": "pipeline",
+        "stages": [
+            { "$sort": { "$var": [ "s", { "name": 1 } ] } }
+        ]
+    }
+  ]
+}
+```
+
+
+### Optional stages
+
+{: .bs-callout.bs-callout-info}
+Optional stages are available from RESTHeart 7.3
+
+An aggregation pipeline can define an optional stage, i.e. a stage that is included in the pipeline only if a defined set of variables are specified via the `?avar` query parameter.
+
+Use the operator `$ifvar` to define an optional stage:
+
+With one required variable use `{ "$ifvar": [ "required-variable", <stage> ] }`. Example:
+
+```json
+{
+    "uri": "by-name",
+    "type": "pipeline",
+    "stages": [
+        { "$match": { "name": "foo" } },
+        { "$ifvar": [ "s", { "$sort": { "$var": "s" } } ] }
+    ]
+}
+```
+
+To specify more than one required variable, use `{ "$ifvar": [ [ <required-variables> ], <stage> }`. Example:
+
+```json
+{
+    "uri": "by-name",
+    "type": "pipeline",
+    "stages": [
+        { "$match": { "name": "foo" } },
+        { "$ifvar": [ ["a", "b" ] , { "$match": { "foo": { "$var": "a" }, "bar": { "$var": "b" } } } ] }
+    ]
+}
+```
+
+It is also possible to specify an _else_ stage, i.e. an alternative stage that is included in the aggregation, if the required variables are not passed via the `?avar` query parameter.
+
+To specify an _else_ stage, use  `{ "$ifvar": [ [ <required-variables> ], <stage>, <else-stage> }`. Example:
+
+```json
+{
+    "uri": "by-name",
+    "type": "pipeline",
+    "stages": [
+        { "$match": { "name": "foo" } },
+        { "$ifvar": [ ["a", "b" ], { "$match": { "foo": { "$var": "a" }, "bar": { "$var": "b" } } }, { "$match": { "foo": 1, "bar": 2 } } ] }
+    ]
+}
 ```
 
 ### Predefined variables
@@ -314,27 +398,30 @@ For example, the following defines the aggregation `/aggrs/paging` that uses the
 }
 ```
 
-### Variables in stages or query
+## Security considerations
 
-Variables can be used in aggregation pipeline stages and map reduce
-query as follows:
+By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
 
-```js
-{ "$var": "<var_name>" }
+This behavior is required to protect data from undesirable malicious query injection.
+
+Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart.yml` configuration file.
+
+```yml
+### Security
+
+# Check if aggregation variables use operators. allowing operators in aggregation variables
+# is risky. requester can inject operators modifying the query
+
+aggregation-check-operators: true
 ```
 
-In case of map reduce operation previous example, the variable was used
-to filter the documents to have the _name_ property matching the
-variable _n:_
+## Transaction Support
 
-```js
-{
-  "query": { "name": { "$var": "n" } },
-  ...
-}
-```
+Aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
 
-### Variables in map reduce functions
+For more information on how to create a transaction scope refer to [transactions](/docs/mongodb-rest/transactions) doc page.
+
+## Variables in map reduce functions
 
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:
@@ -365,28 +452,5 @@ function() {
  if (this.age > minage ) { emit(this.name, this.age); }
 };
 ```
-
-## Security considerations
-
-By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
-
-This behavior is required to protect data from undesirable malicious query injection.
-
-Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart.yml` configuration file.
-
-```yml
-### Security
-
-# Check if aggregation variables use operators. allowing operators in aggregation variables
-# is risky. requester can inject operators modifying the query
-
-aggregation-check-operators: true
-```
-
-## Transaction Support
-
-Aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
-
-For more information on how to create a transaction scope refer to [transactions](/docs/mongodb-rest/transactions) doc page.
 
 </div>
