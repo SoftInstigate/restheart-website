@@ -1,0 +1,127 @@
+---
+title: Interceptors
+layout: docs-adoc
+menu: framework
+---
+
+Interceptors allow to snoop and modify requests and responses at different
+stages of the request lifecycle as defined by the `interceptPoint` parameter of
+the annotation `@RegisterPlugin`.
+
+The `Interceptor.handle(req, res)` method is invoked when `Interceptor.resolve(req, res)` returns `true`.
+
+== The Interceptor class
+
+An `Interceptor` consists of a class implementing one of the `Interceptor` interfaces such as `MongoInterceptor` and annotated with `@RegisterPlugin`.
+
+The key method is `handle(req, res)` that is executed when `resolve(req,res)` returns `true`.
+
+The `req` and `res` arguments allow to retrieve and modify the content, query parameters and headers of both the request and response objects.
+
+The special interceptor interface `WildcardInterceptor` intercepts requests handled by any `Service`. All other interceptors can only handle requests with matching types between the Service and the Interceptor:
+
+- `WildcardInterceptor` intercepts requests handled by any service
+- `ByteArrayInterceptor` intercepts requests handled by services implementing `ByteArrayService`
+- `JsonInterceptor` intercepts requests handled by services implementing `JsonService`
+- `BsonInterceptor` intercepts requests handled by services implementing `BsonService`
+- `MongoInterceptor` intercepts requests handled by the MongoService
+- `ProxyInterceptor`  intercepts proxied requests
+
+NOTE: `MongoInterceptor` is particularly useful as it allows intercepting requests to the `MongoService` adding logic to its data API. For instance the following response interceptor, removes the property `secret` from `GET /coll`
+
+[source,java]
+----
+@RegisterPlugin(name = "secretFilter",
+    interceptPoint = InterceptPoint.RESPONSE,
+    description = "removes the property 'secret' from GET /coll")
+public class ReadOnlyPropFilter implements MongoInterceptor {
+    @Override
+    public void handle(MongoRequest request, MongoResponse response) throws Exception {
+        if (response.getContent().isDocument()) {
+            response.getContent().asDocument().remove("secret");
+        } else if (request.getContent().isArray()) {
+            response.getContent().asArray().stream()
+                .map(doc -> doc.asDocument())
+                .forEach(doc -> doc.remove("secret"));
+        }
+    }
+
+    @Override
+    public boolean resolve(MongoRequest request, MongoResponse response) {
+        return request.isGet()
+            && response.getContent() != null
+            && "coll".equalsIgnoreCase(request.getCollectionName());
+    }
+}
+----
+
+TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=986s[Interceptors]
+
+== @RegisterPlugin annotation
+
+All plugins must be a annotated with `@RegisterPlugin` to:
+
+- allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
+- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+
+An example follows:
+
+[source,java]
+----
+@RegisterPlugin(name = "foo",
+    description = "just an example service",
+    defaultUri="/foo",      // optional, default /<service-name>
+    secure=false,           // optional, default false
+    enabledByDefault=false) // optional, default true
+public class MyPlugin implements JsonService {
+...
+}
+----
+
+The following table describes the arguments of the annotation:
+
+[options="header"]
+[cols="1,3,1,1"]
+|===
+|param |description |mandatory |default value
+|`name`
+|the name of the Interceptor
+|yes
+|*none*
+|`description`
+|description of the Interceptor
+|yes
+|*none*
+|`enabledByDefault`
+|`true` to enable the plugin; can be overridden by the plugin configuration option `enabled`
+|no
+|`true`
+|`interceptPoint`
+|the intercept point: `REQUEST_BEFORE_EXCHANGE_INIT`, `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
+|no
+|`requiresContent`
+|proxy interceptor
+|Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to `true` to make available the content of the request (if interceptPoint is `REQUEST_BEFORE_AUTH` or `REQUEST_AFTER_AUTH`) or of the response (if interceptPoint is `RESPONSE` or `RESPONSE_ASYNC`)
+|no
+|`false`
+|`priority`
+|the execution priority (less is higher priority)
+|no
+|`10`
+|===
+
+== Transform the request content format
+
+Imagine you want to send a request to the `MongoService` using XML. You must transform the request content from XML to Bson, because the `MongoService` expects the request to be in the latter format.
+
+`Interceptors` at `REQUEST_BEFORE_EXCHANGE_INIT` can snoop and modify the request
+before it is actually initialized.
+
+IMPORTANT: Only `WildcardInterceptor` can use this intercept point.
+
+The `Interceptor.handle(req, res)` receives the request as `UninitializedRequest`
+and the response as `UninitializedResponse`.
+
+It can set a custom initializer with `PluginUtils.attachCustomRequestInitializer()` or can modify the raw request content (not yet parsed to the Service content type) using `Request.setRawContent()`
+
+The example link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] shows how to transform the request and response content to and from a different format than expected by a Service.
