@@ -71,7 +71,7 @@ To replace a document use the `PUT` method.
 
 [source,http]
 ----
-PUT /inventory/newItem?wm=insert HTTP/1.1
+PUT /inventory/newItem HTTP/1.1
 
 
 { "item": "pencil", "qty": 55, "size": { "h": 10, "w": 0.5, "uom": "cm" }, "status": "B", "suppliers": ["brand_1", "brand_2", "brand_3"] }
@@ -152,15 +152,18 @@ PATCH /inventory/newItem HTTP/1.1
 { "size.h": 20 }
 ----
 
-== Update Operators
+== Update with Operators
 
-Refer to MongoDB link:https://docs.mongodb.org/manual/reference/operator/update/[Update
-Operators] documentation
-for more information.
+Update with operators allows applying MongoDb's update operators to a document. For example, you can use `$unset` to remove a property from a document.
 
-IMPORTANT: RESTHeart allows to use all MongoDB update operators on `PATCH` requests. `PUT` and `POST` can only use `$currentDate` update operator.
+NOTE: See link:https://www.mongodb.com/docs/manual/reference/operator/update/[Update
+Operators] in MongoDb documentation for more information.
 
-=== Apply given update operators to "newItem" document
+Use the `PATCH` verb to update a document with update operators, passing an update operator expression document.
+
+NOTE: To use update operators you need to use the verb `PATCH`. Anyway `PUT` and `POST` can still use the `$currentDate` update operator.
+
+Example: update `newItem` document with update operators:
 
 ++++
 {% include code-header.html
@@ -179,6 +182,25 @@ PATCH /inventory/newItem HTTP/1.1
   "$unset": { "status": null },
   "$currentDate": { "timestamp": true }
 }
+----
+
+== Update with Aggregation Pipeline
+
+WARNING: Update with Aggregation Pipeline are available from RESTHeart 7.3
+
+Update with aggregation pipeline allows for a more expressive update statement.
+
+NOTE: See link:https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/[Updates with Aggregation Pipeline] in MongoDb documentation for more information.
+
+Use the `PATCH` verb to update a document with an Aggregation Pipeline, passing an array or aggregation stages.
+
+Example: update `newItem` adding two items to the current `suppliers` array:
+
+[source,http]
+----
+PATCH /inventory/newItem HTTP/1.1
+
+[ { "$set": { "suppliers": { "$concatArrays": [ "$suppliers", [ "brand_4", "brand_5",  ]  ] } } } ]
 ----
 
 == Bulk Write Requests
@@ -271,13 +293,13 @@ The MongoDB write operation depends on the request method and on the write mode 
 | write mode | method  | URI            | MongoDB write operation             | write operation argument
 | *insert*   | *POST*  | `/coll`        | `insertOne`                         | *document*
 | insert     | PUT     | `/coll/docid`  | `insertOne`                         | document
-| insert     | PATCH   | `/coll/docid`  | `findOneAndUpdate(upsert:true)` (1) | update operator expression
+| insert     | PATCH   | `/coll/docid`  | `findOneAndUpdate(upsert:true)` (1) | update operator expression or update aggregation pipeline
 | update     | POST    | `/coll`        | `findOneAndReplace(upsert:false)`   | document
 | *update*   | *PUT*   | `/coll/docid`  | `findOneAndReplace(upsert:false)`   | *document*
-| *update*   | *PATCH* | `/coll/docid`  | `findOneAndUpdate(upsert:false)`    | *update operator expression*
+| *update*   | *PATCH* | `/coll/docid`  | `findOneAndUpdate(upsert:false)`    | *update operator expression or update aggregation pipeline*
 | upsert     | POST    | `/coll`        | `findOneAndReplace(upsert:true)`    | document
 | upsert     | PUT     | `/coll/docid`  | `findOneAndReplace(upsert:true)`    | document
-| upsert     | PATCH   | `/coll/docid`  | `findOneAndUpdate(upsert:true)`     | update operator expression
+| upsert     | PATCH   | `/coll/docid`  | `findOneAndUpdate(upsert:true)`     | update operator expression or update aggregation pipeline
 |============================================================================================
 
 (1) uses a find condition that won't match any existing document, making sure the operation is an insert
