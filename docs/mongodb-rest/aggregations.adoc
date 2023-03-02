@@ -10,9 +10,9 @@ The RESTHeart API provides powerful aggregation capabilities to developers, incl
 
 To execute an aggregation query, simply send a GET request to `/coll/_aggrs/<aggregation-uri>` with the appropriate parameters!
 
-NOTE: Only inline output type is supported - meaning that no results are written directly to the database. However, if you wish to have results written to the database, then link:(#materialized-views)[Materialized Views] is the solution for you.
+NOTE: Only inline output type is supported - meaning that no results are written directly to the database. However, if you wish to have results written to the database, then link:#materialized-views[Materialized Views] is the solution for you.
 
-ùIn both cases only _inline_ output type is supported, i.e. no result is directly
+In both cases only _inline_ output type is supported, i.e. no result is directly
 written to the DB server unless the link:#materialized-views[Materialized Views] are used.
 
 == Aggregation definition
@@ -20,7 +20,6 @@ written to the DB server unless the link:#materialized-views[Materialized Views]
 NOTE: In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
 meaning for RESTheart that influences its behavior.
-
 
 You can define aggregation by setting the aggrs collection metadata property via a `PATCH /coll` request. Here is an example of how to structure the request body:
 
@@ -43,7 +42,6 @@ The _aggregation definition objects_ have the following format:
 [source,json]
 ----
 {
-    "type":"pipeline",
     "uri": "<uri>",
     "stages": [
         "<stage_1>",
@@ -54,19 +52,24 @@ The _aggregation definition objects_ have the following format:
 }
 ----
 
+WARNING: For RESTHeart versions < 7.3, you also need to specify `"type": "pipeline"`
+
 [options="header"]
 [cols="1,5,1"]
 |===
 |Property |Description |Mandatory
 |type
-|for aggregation pipeline operations is "pipeline"
-|yes
+|for aggregation pipeline operations is `pipeline`
+|no default `pipeline` (prior to v7.3, `type` is required)
 |uri
 |specifies the URI when the operation is bound under the path `/<collection>/_aggrs`
 |yes
 |stages
 |the MongoDB aggregation pipeline stages. For more information refer to link:https://docs.mongodb.org/manual/core/aggregation-pipeline[Aggregation Pipeline] on MongoDb documentation.
 |yes
+|allowDiskUse
+|Allow pipeline stages that require more than 100 megabytes of memory to write temporary files to disk
+|no, default `false`
 |===
 
 == Example
@@ -84,7 +87,6 @@ PATCH /coll HTTP/1.1
         { "$match": { "name": { "$var": "name" } } },
         { "$group": { "_id": "$name", "avg_age": { "$avg": "$age" } } }
       ],
-      "type": "pipeline",
       "uri": "example-pipeline"
     }
   ]
@@ -147,7 +149,6 @@ An example aggregation that uses the variable `s` with a default value in the `$
   "aggrs": [
     {
         "uri": "sort-with-default-example",
-        "type": "pipeline",
         "stages": [
             { "$sort": { "$var": [ "s", { "name": 1 } ] } }
         ]
@@ -155,6 +156,8 @@ An example aggregation that uses the variable `s` with a default value in the `$
   ]
 }
 ----
+
+WARNING: for RESTHeart versions < 7.3, you also need to specify `"type": "pipeline"`
 
 === Predefined variables
 
@@ -189,7 +192,6 @@ For example, the following defines the aggregation `/aggrs/paging` that uses the
   "aggrs": [
     {
       "uri": "paging",
-      "type": "pipeline",
       "stages": [
         { "$skip": { "$var": "@skip" } },
         { "$limit": { "$var": "@limit" } }
@@ -213,7 +215,6 @@ With one required variable use `{ "$ifvar": [ "required-variable", <stage> ] }`.
 ----
 {
     "uri": "by-name",
-    "type": "pipeline",
     "stages": [
         { "$match": { "name": "foo" } },
         { "$ifvar": [ "s", { "$sort": { "$var": "s" } } ] }
@@ -227,7 +228,6 @@ To specify more than one required variable, use `{ "$ifvar": [ [ <required-varia
 ----
 {
     "uri": "by-name",
-    "type": "pipeline",
     "stages": [
         { "$match": { "name": "foo" } },
         { "$ifvar": [ ["a", "b" ] , { "$match": { "foo": { "$var": "a" }, "bar": { "$var": "b" } } } ] }
@@ -243,7 +243,6 @@ To specify an _else_ stage, use  `{ "$ifvar": [ <required-variable> | [ <require
 ----
 {
     "uri": "by-name",
-    "type": "pipeline",
     "stages": [
         { "$match": { "name": "foo" } },
         { "$ifvar": [ ["a", "b" ],
@@ -270,7 +269,6 @@ PUT /coll HTTP/1.1
         { "$group" : { "_id" : "$gender", "avg_age" : { "$avg" : "$age" } } },
         { "$merge": { "into": "avgAgeByGender" } }
       ],
-      "type" : "pipeline",
       "uri" : "age-by-gender"
     }
   ]
@@ -319,7 +317,7 @@ mongo:
 
 Aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
 
-For more information on how to create a transaction scope refer to [transactions](/docs/mongodb-rest/transactions) doc page.
+For more information on how to create a transaction scope refer to link:/docs/mongodb-rest/transactions[Transactions] doc page.
 
 == Map-Reduce
 
@@ -336,45 +334,26 @@ WARNING: map reduce are deprecated. Use aggregation pipeline instead. See link:h
 }
 ----
 
-<div class="table-responsive">
-<table class="ts">
-<thead>
-<tr class="header">
-<th>Property</th>
-<th>Description</th>
-<th class="text-center">Mandatory</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>type</strong></td>
-<td>for aggregation pipeline operations is &quot;mapReduce&quot;</td>
-<td class="text-center">yes</td>
-</tr>
-<tr class="even">
-<td><strong>uri</strong></td>
-<td>specifies the URI when the operation is bound under /&lt;db&gt;/&lt;collection&gt;/_aggrs path.</td>
-<td class="text-center">yes</td>
-</tr>
-<tr class="odd">
-<td><strong>map</strong></td>
-<td><p>the map function</p>
-<p>For more information refer to <a href="https://docs.mongodb.org/manual/core/map-reduce/" class="uri">https://docs.mongodb.org/manual/core/map-reduce/</a></p></td>
-<td class="text-center">yes</td>
-</tr>
-<tr class="even">
-<td>reduce</td>
-<td>the reduce function</td>
-<td class="text-center">yes</td>
-</tr>
-<tr class="odd">
-<td>query</td>
-<td>the filter query</td>
-<td class="text-center">no</td>
-</tr>
-</tbody>
-</table>
-</div>
+[options="header"]
+[cols="1,3,1"]
+|===
+|Property |Description |Mandatory
+|type
+|for aggregation pipeline operations is "mapReduce"
+|yes
+|uri
+|specifies the map reduce URI under `/<db>/<collection>/_aggrs` path.
+|yes
+|map
+|the map function
+|yes
+|reduce
+|the reduce function
+|yes
+|query
+|the query
+|yes
+|===
 
 === Example
 
