@@ -31,16 +31,31 @@ HTTP/1.1 201 Created
 
 NOTE: the request body must be encoded as `multipart/form-data`. This is obtained in the following example with the `--form` option in the `http` command
 
-The following example request done using HTTPie POSTs the binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata into `/mybucket.files`
+The following example request POSTs the binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata into `/mybucket.files`
+
+With httpie:
 
 [source,bash]
 ----
-$ http --form POST localhost:8080/mybucket.files @/path/to/my/binary/example.jpg metadata='{"author":"SoftInstigate", "filename": "example.jpg"}'
+$ http -a admin:secret --form POST localhost:8080/mybucket.files @/path/to/my/binary/example.jpg metadata='{"author":"SoftInstigate", "filename": "example.jpg"}'
 
 HTTP/1.1 201 Created
 Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
 (other response headers omitted)
 ----
+
+With curl:
+
+[source,bash]
+----
+$ curl -i -X POST -u admin:secret --form metadata='{"author":"SoftInstigate", "filename": "example.jpg"}' --form file= @/path/to/my/binary/example.jpg localhost:8080/mybucket.files
+
+HTTP/1.1 201 Created
+Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
+(other response headers omitted)
+----
+
+curl -i -X POST -u admin:secret --form metadata='{"filename":"hello.json"}' --form file=@/tmp/hello2.json localhost:8080/my.files
 
 The `Location` HTTP header returns the file's URI. The last part is the `_id`.
 
@@ -52,9 +67,22 @@ NOTE: file bucket does not support write mode. The `POST` verb is always an inse
 
 NOTE: the request body must be encoded as `multipart/form-data`. This is obtained in the following example with the `--form` option in the `http` command
 
+With httpie:
+
 [source,bash]
 ----
-$ http --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg metadata='{"author": "SoftInstigate", "filename": "example.jgp"}'
+$ http -a admin:secret --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg metadata='{"author": "SoftInstigate", "filename": "example.jgp"}'
+
+HTTP/1.1 201 Created
+----
+
+With curl:
+
+[source,bash]
+----
+$ curl -i -X PUT -u admin:secret --form metadata='{"author":"SoftInstigate", "filename": "example.jpg"}' --form file=@/path/to/my/binary/example.jpg localhost:8080/mybucket.files/example
+
+HTTP/1.1 201 Created
 ----
 
 NOTE: file bucket does not support write mode. The `PUT` verb is always an upsert. If the file exists, it will be updated (response code `200 Ok`) otherwise it will be created (response code `201 Created`)
