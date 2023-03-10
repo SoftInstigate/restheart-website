@@ -9,9 +9,9 @@ menu: framework
 
 _Services_ and _Interceptors_ can be developed in _JavaScript_ and _TypeScript_ when running RESTHeart with the GraalVM or using RESTHeart native.
 
-TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources[example JS plugins]
+TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin[example JS plugins]
 
-NOTE: The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the `native-image` tool. See link:/docs/graalvm/#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native-image]
+NOTE: The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the `native-image` tool. See link:https://restheart.org/docs/graalvm#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native-image]
 
 == RESTHeart Concurrency Model
 
@@ -175,7 +175,7 @@ The `package.json` muse declare the services in the `rh:services` array and inte
 
 == Modules
 
-The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/require-module-service.js[require-module-service.js] for an example.
+The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/require-module-service.mjs[require-module-service.mjs] for an example.
 
 IMPORTANT: The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
 
@@ -217,13 +217,13 @@ GraalVM allows to execute JavaScript code from RESTHeart and allows interoperabi
 
 This means that all the Java classes shipped with RESTHeart can be used in JavaScript code.
 
-For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/http-client.js[http-client.js] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
+For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/http-client.mjs[http-client.mjs] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
 
 == MongoDB driver
 
 The MongoDb Java driver, configured by RESTHeart configuration file and already connected to MongoDB, is available in the JavaScript code as `mclient`.
 
-See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/mclient-service.js[mclient-service.js] for an example of how to use it.
+See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/mclient-service.mjs[mclient-service.mjs] for an example of how to use it.
 
 == Logging
 
