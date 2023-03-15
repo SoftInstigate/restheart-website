@@ -13,8 +13,7 @@ menu: mongodb
 - [Configuration options](#configuration-options)
 - [Reading data](#reading-data)
 - [Examples](#examples)
-- [What's new in 3.9](#whats-new-in-39)
-  - [Prometheus database and collection labels for request to root metrics](#prometheus-database-and-collection-labels-for-request-to-root-metrics)
+- [Prometheus root metrics](#prometheus-root-metrics)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
@@ -535,16 +534,13 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 }
 ```
 
-## What's new in 3.9 ##
+## Prometheus root metrics
 
-### Prometheus database and collection labels for request to root metrics ###
-
-The Prometheus metrics requested on endpoint `/ _metrics` no longer include only
-the aggregated parent metrics, but all metrics collected. To distinguish metrics
-per database and collection there are two new prometheus labels `database` and
+The Prometheus metrics requested on endpoint `/ _metrics` collected all metrics. 
+To distinguish metrics per database and collection there are the prometheus labels `database` and
 `collection` containing the corresponding database and collection names.
 
-The following example demonstrates the new label values requesting `/_metrics` using
+The following example demonstrates the label values requesting `/_metrics` using
 the prometheus format. The data contains an existing database named mydatabase
 including a single collection named mycollection. All aggregated metrics contain the
 value \_all\_, i.e. metrics for database mydatabase and all contained collections,
