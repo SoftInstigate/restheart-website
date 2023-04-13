@@ -12,6 +12,57 @@ You will learn how to insert, update and delete documents in a collection.
 
 {% include running-examples.adoc %}
 
+== Content-Type
+
+For write requests use `Content-Type: application/json`
+
+In this case the request body is just the JSON representation of the MongoDB BSON format, see link:/docs/mongodb-rest/representation-format[Representation format] for more information.
+
+See the following example:
+
+[source,http]
+----
+POST /coll HTTP/1.1
+Content-Type: application/json
+
+{
+    "b": true,
+    "n": 1,
+    "ns": "1",
+    "obj": {
+        "foo": "bar"
+    }
+}
+----
+
+Starting from RESTHeart 7.4.0, the MongoService also supports the content types `application/x-www-form-urlencoded` and `multipart/form-data`.
+
+In those cases the request body is transformed to a BSON document by parsing the fields/parts. The example below will help make it clearer to understand how this works:
+
+[source,http]
+----
+POST /coll HTTP/1.1
+Content-Type: application/x-www-form-urlencoded; charset=utf-8
+
+n=1&ns=%221%22&b=true&obj=%7B%22foo%22%3A+%22bar%22%7D
+----
+
+In this case, the request content (whose url-decoded value is `n=1&ns="1"&b=true&obj={"foo":"bar"}`) is transformed in the following document:
+
+[source,json]
+----
+{
+    "b": true,
+    "n": 1,
+    "ns": "1",
+    "obj": {
+        "foo": "bar"
+    }
+}
+----
+
+NOTE: The karate test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/mongoservice-multipart-form-content-type.feature[mongoservice-multipart-form-content-type.feature] includes more examples on how `form-urlencoded` and `multipart` requests are handled.
+
 == Write Mode
 
 The default write modes for each HTTP verb are:
