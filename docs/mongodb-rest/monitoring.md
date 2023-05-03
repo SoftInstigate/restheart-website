@@ -39,7 +39,7 @@ The current implementation supports both the [Prometheus
 format](https://prometheus.io/docs/instrumenting/exposition_formats/) (which is popular in kubernetes environments), as well as the [classical
 JSON
 format](https://github.com/iZettle/dropwizard-metrics/blob/master/metrics-json/src/main/java/io/dropwizard/metrics/json/MetricsModule.java) generated
-by dopwizard metrics. The prometheus format is the default one, but you
+by Dropwizard Metrics. The Prometheus format is the default one, but you
 can explicitly request one of the formats:
 
 ### using restheart `rep` query parameter
