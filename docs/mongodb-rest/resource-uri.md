@@ -33,7 +33,7 @@ are identified.
 
 ## Resources URIs
 <div class="table-responsive">
-<table class="table table-responsive">
+<table class="table">
 <colgroup>
 <col class="w-20" />
 <col class="w-40" />
@@ -141,7 +141,7 @@ this reason, only a subset of \_id types are supported.
 The following table shows the supported types:
 
 <div>
-<table class="table table-responsive">
+<table class="table">
   <thead>
     <tr>
       <th>type</th>
@@ -200,7 +200,7 @@ ObjectId and it is actually a String.
 ### Examples
 
 <div>
-<table class="table table-responsive">
+<table class="table">
   <tbody>
     <tr>
       <td><code>/db/coll/1</code></td>

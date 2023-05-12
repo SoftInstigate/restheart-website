@@ -18,8 +18,6 @@ menu: mongodb
 
 {% include docs-head.html %}
 
-## Representation Format
-
 The following table summarizes how resources are represented
 
 {: .table }
