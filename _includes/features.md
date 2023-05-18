@@ -48,16 +48,16 @@
     <article class="mt-4 mt-lg-0 col-lg-8 offset-lg-2 zoom">
         <div class="card newsText text-justified h-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">Pleasant Development Framework</span></div>
+                <div class="top-4 mb-4"><span class="highlightcolor">Enhanced Development Framework</span></div>
                 <div>
                     <p>
-                     <code>Service</code>, <code>Provider</code>, <code>Interceptor</code> and <code>Initializer</code> are the <strong>simple yet powerful building blocks</strong> to develop microservices in Java, Kotlin, JavaScript or TypeScript.
+                     Unlock the Power of Microservices with Ease: discover our innovative development framework that simplifies the creation of microservices in Java, Kotlin, JavaScript, or TypeScript. Our framework provides a set of simple yet robust building blocks: Service, Provider, Interceptor, and Initializer.
                     </p>
                     <p>
-                    <strong>Developers can focus on coding the microservice logic</strong>  taking for granted the complex and costly tasks. The Framework ensures the effective management of the runtime process, security, concurrency, HTTP transport protocol, requests routing, logging, configuration and security.
+                    <strong>Focus on Your Microservice Logic, Not the Complexity.</strong> Experience the freedom to code your microservice logic without worrying about complex and time-consuming tasks. Our framework takes care of crucial aspects such as runtime process management, security, concurrency, HTTP transport protocol, request routing, logging, configuration, and data protection.
                     </p>
                     <p>
-                    The RESTHeart runtime solves the <a href="http://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/" target="blank">colored function problem</a>: leveraging a scalable and pooled thread-per-request concurrency model, <strong>developers don't need to cope with complex asynchronous programming</strong> (and this applies too JavaScript as well)!
+                    The RESTHeart runtime leverages a scalable and pooled thread-per-request concurrency model. This means that developers, including those working with JavaScript, can enjoy a streamlined development process <strong>without the complexities of asynchronous programming</strong>.
                     </p>
                 </div>
             </div>
