@@ -7,7 +7,7 @@ stars-bounce: true
     <div class="mt-0 mb-4">
         <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
-        Low-code API development framework
+        Open Source Low-code API development framework
         <div class="top-6 text-break white mt-2">Featuring ready-to-go Security and MongoDB API</div>
         </h2>
         <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
