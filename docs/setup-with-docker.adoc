@@ -6,15 +6,22 @@ menu: setup
 
 == The RESTHeart Docker tags
 
-RESTHeart Docker images come in four different versions, labeled with these tags:
+RESTHeart Docker images come in four different versions:
+
+- Standard multi-arch (FROM eclipse-temurin:17-jre)
+- Graalvm (FROM softinstigate/graalvm:latest)
+- distroless (FROM gcr.io/distroless/java17-debian11:latest)
+- native (FROM debian:buster-slim)
+
+These are example tags:
 
 [cols="1,1,3"]
 |===
 |**Tag**|**Example**|**Description**
-|`<version>`|`latest`, `7`, `7.4`, `7.4.2`|**The standard image.**  This is usually the one you want to use. Keep in mind it doesn't support running JavaScript plugins.
-|`<version>-distroless`|`latest-distroless`, `7-distroless`, `7.4-distroless`, `7.4.2-distroless` | Similar to the standard image, this image contains only RESTHeart and its runtime dependencies. It does not contain a package manager, shells or any other programs you would expect to find in a standard Linux distribution.
-|`<version>-graalvm`|`latest-graalvm`, `7-graalvm`, `7.4-graalvm`, `7.4.2-graalvm` | RESTHeart running on the GraalVM that will let you JavaScript plugins. Check out the link:/docs/plugins/core-plugins-js[Plugins in JavaScript] for more info. This is biggest image (about 600Mbytes).
-|`<version>-native`|`latest-native`, `7-native`, `7.4-native`, `7.4.2-native` | RESTHeart built as a native binary. It is the smallest image with lightning-fast startup time. This is the perfect choice for deploying in a Kubernetes cluster. It can only execute JavaScript plugins. Check out link:/docs/plugins/deploy#deploy-java-plugins-on-restheart-native[Deploy Java plugins on RESTHeart Native] for more info.
+|`<version>`|`latest`, `7`, `7.4`, `7.4.2`|**The standard image.**  This is usually the one you want to use. Keep in mind it doesn't support running JavaScript plugins. `docker pull softinstigate/restheart:latest`
+|`<version>-distroless`|`latest-distroless`, `7-distroless`, `7.4-distroless`, `7.4.2-distroless` | Similar to the standard image, this image contains only RESTHeart and its runtime dependencies. It does not contain a package manager, shells or any other programs you would expect to find in a standard Linux distribution. `docker pull softinstigate/restheart:latest-distroless`
+|`<version>-graalvm`|`latest-graalvm`, `7-graalvm`, `7.4-graalvm`, `7.4.2-graalvm` | RESTHeart running on the GraalVM that will let you JavaScript plugins. Check out the link:/docs/plugins/core-plugins-js[Plugins in JavaScript] for more info. This is the biggest image (about 600Mbytes). `docker pull softinstigate/restheart:latest-graalvm`
+|`<version>-native`|`latest-native`, `7-native`, `7.4-native`, `7.4.2-native` | RESTHeart built as a native binary. It is the smallest image with lightning-fast startup time. This is the perfect choice for deploying in a Kubernetes cluster. It can only execute JavaScript plugins. Check out link:/docs/plugins/deploy#deploy-java-plugins-on-restheart-native[Deploy Java plugins on RESTHeart Native] for more info. `docker pull softinstigate/restheart:latest-native`
 
 |===
 
