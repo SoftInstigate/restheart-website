@@ -130,6 +130,11 @@ RESTHeart extends this language introducing the following new predicates that ex
 |`in`
 |checks if `value` is contained in `array`
 |`path-template('/{tenant}') and in(value=${tenant}, array=@user.tenants)`
+|`bson-request-prop-equals` *Available from v7.5*
+|`true` if the request content is bson and the value of the property `key` (can use the dot notation) is equal to `value`
+| `bson-request-prop-equals(key=sub.foo, value='"bar"')`  resolves to `true` if the request content is `{"sub": { "foo": "bar" }}` **note** the double quotes in `value` that must be valid bson such as `"bar"` or `{"foo": "bar"}`
+|`bson-request-prop-contains` *Available from v7.5*
+|`true` if the request content is bson and the property `key` (can use the dot notation) is an array that contains `value` |`bson-request-prop-contains(key=sub.foo, value='"bar"')` resolves to `true` if the request content is `{"sub": { "foo": [ "bar" ] }}` **note** the double quotes in `value` that must be valid bson such as `"bar"` or `{"foo": "bar"}`
 |===
 
 === MongoPermissions
