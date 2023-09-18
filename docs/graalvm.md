@@ -88,7 +88,7 @@ We suggest to install GraalVM with [sdkman](https://sdkman.io)
 You need at least version 22.1.0 for Java 17:
 
 ```bash
-$ sdk install java 22.1.0.r17-grl
+$ sdk install java 17.0.8-graal
 ```
 
 After having installed GraalVM, you can install the `native-image` tool with `gu`
@@ -103,9 +103,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "17.0.3" 2022-04-19
-OpenJDK Runtime Environment GraalVM CE 22.1.0 (build 17.0.3+7-jvmci-22.1-b06)
-OpenJDK 64-Bit Server VM GraalVM CE 22.1.0 (build 17.0.3+7-jvmci-22.1-b06, mixed mode, sharing)
+java version "17.0.8" 2023-07-18 LTS
+Java(TM) SE Runtime Environment Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -135,9 +135,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "17.0.3" 2022-04-19
-OpenJDK Runtime Environment GraalVM CE 22.1.0 (build 17.0.3+7-jvmci-22.1-b06)
-OpenJDK 64-Bit Server VM GraalVM CE 22.1.0 (build 17.0.3+7-jvmci-22.1-b06, mixed mode, sharing)
+java version "17.0.8" 2023-07-18 LTS
+Java(TM) SE Runtime Environment Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14, mixed mode, sharing)
 ```
 
 You can then simply build it with:
