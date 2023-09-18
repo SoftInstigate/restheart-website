@@ -20,6 +20,10 @@ menu: mongodb
 
 {% include docs-head.html %}
 
+## Removed starting v7.5
+
+The MongoService monitoring feature has been replaced with generic the [Monitoring](/docs/monitoring) feature starting form RESTHeart v7.5
+
 ## Introduction
 
 Gathering metrics about your production (and staging) environments can
