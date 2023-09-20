@@ -20,9 +20,15 @@ menu: mongodb
 
 {% include docs-head.html %}
 
-## Removed starting v7.5
-
-The MongoService monitoring feature has been replaced with generic the [Monitoring](/docs/monitoring) feature starting form RESTHeart v7.5
+<div class="bs-callout bs-callout-danger mt-3">
+<h3><strong>DEPRECATED</strong></h3>
+    <p>
+        Beginning with version 7.5, this has been marked as <strong>deprecated</strong> and substituted with the all-encompassing <a href="/docs/monitoring">Monitoring</a> feature.
+    </p>
+    <p>
+      <strong>CAUTION</strong>: It is scheduled for removal in RESTHeart v8.0.
+    </p>
+</div>
 
 ## Introduction
 
