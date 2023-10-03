@@ -292,6 +292,7 @@ NOTE: the `$arg` operator allows dot notation from RESTHeart v7.6 onwards.
 
 NOTE: `rootDoc` is available from RESTHeart v7.6
 
+TIP: more details about this feature are available on github link:https://github.com/SoftInstigate/restheart/issues/469[issue 469]
 
 The `{"$arg": "rootDoc"}` argument is a versatile tool that can be employed in both _Field to Query_ and _Field to Aggregation_ mappings.
 
@@ -300,6 +301,8 @@ It enables the utilization of properties from the root document when crafting qu
 The root document, in this context, is the first document retrieved from the source.
 
 To provide a clear example, let's consider a document from the collection `authors-and-posts`:
+
+The example is implemented in test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/rootDoc/rootDoc.feature[rootDoc.feature]
 
 [source,json]
 ----
@@ -342,8 +345,8 @@ In order to filter the nested posts objects according to the argument `visible` 
       "collection": "authors-and-posts",
       "stages": [
         { "$match": { "_id": { "$arg": "rootDoc._id" } } },
-        { "$unwind" : "$posts"  },
-        { "$replaceRoot": {"newRoot": "$posts"} },
+        { "$unwind" : "$sub.posts"  },
+        { "$replaceRoot": {"newRoot": "$sub.posts"} },
         { "$match": { "visible": { "$arg": "visible" } } }
     ]
     }
@@ -351,7 +354,7 @@ In order to filter the nested posts objects according to the argument `visible` 
 }
 ----
 
-The field to aggregation mapping selects the root user using the `rootDoc` and filters the objects in the array `posts` that match the argument `visible`.
+The field to aggregation mapping selects the root user using the `rootDoc` and filters the objects in the nested array `sub.posts` that match the argument `visible`.
 
 === Enum mappings
 
