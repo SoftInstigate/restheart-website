@@ -96,13 +96,39 @@ Using variables to define parameters in an aggregation allows you to include dyn
 
 === Variables
 
-In aggregation definitions, the special operator `{"$var": "name" }` can be used to define parametric aggregations.
+**Defining Parametric Aggregations with `$var` Operator**
 
-On the other side, the query parameter `?avars` allows passing variables to aggregations as in `?avars={"name":"Bob"}`
+In aggregation definitions, you have the flexibility to create parametric aggregations using the special operator `{"$var": "name" }`. This operator enables you to dynamically customize aggregations based on variable values.
 
-NOTE: The value of a variable can be any valid JSON. The following query parameter passes two variables, a string and an object: `?avars={ "name": "Bob", "obj": {"a": { "json": "object" }} }`
+**Passing Variables to Aggregations**
 
-The previous example aggregation uses the variable `name`. If the variable is not passed via the `?avars` qparam, the request fails.
+To leverage this feature, you can utilize the `?avars` query parameter when making requests. By including `?avars={"name":"Bob"}`, you can pass variables to aggregations. This allows you to adapt the aggregation behavior on the fly.
+
+**Variable Value Format**
+
+It's important to note that the value of a variable can be any valid JSON. This means you can pass various data types, including strings and complex objects. For instance:
+
+[source,http]
+----
+?avars={ "name": "Bob", "obj": {"a": { "json": "object" }} }
+----
+
+In this example, we are passing two variables: a string (`"name"`) and an object (`"obj"`).
+
+**Handling Missing Variables**
+
+A crucial point to remember is that if an aggregation relies on a variable, such as `name`, and that variable is not passed via the `?avars` query parameter, the request will fail unless you define a variable with a default value. Therefore, ensure that all required variables are provided to avoid issues during aggregation execution.
+
+**Dot Notation Support**
+
+Starting from RESTHeart version 7.6, the `$var` operator also supports dot notation. This means you can navigate through nested JSON structures within variables. For instance:
+
+[source,http]
+----
+?avars={ "foo": {"bar": 1 }
+----
+
+In this case, the value of `{"$var": "foo.bar" }` will be resolved as `1`. This enhances the flexibility and versatility of parametric aggregations, allowing for more complex and dynamic data processing.
 
 [source,http]
 ----
@@ -113,7 +139,7 @@ HTTP/1.1 400 Bad Request
 {
     "http status code": 400,
     "http status description": "Bad Request",
-    "message": "error executing aggreation pipeline: variable n not bound"
+    "message": "error executing aggreation pipeline: variable name not bound"
 }
 ----
 
@@ -130,15 +156,26 @@ HTTP/1.1 200 OK
 
 === Variables with default values
 
-NOTE: Variables with default values are available from RESTHeart 7.3
+In RESTHeart version 7.3 and onwards, you can enhance the flexibility of your aggregation requests by specifying default values for variables. This feature ensures that your aggregations gracefully handle cases where a variable is not explicitly provided in the request using the `?avar` query parameter.
 
-You can specify a default value for an aggregation variable. When making the request, if you don't pass in a value for it with `?avar` query parameter, the specified default value will be used instead.
+**Defining Variables with Default Values**
 
-To define a variable with a default value use the syntax `{"$var": [ "name", "default-value" ] }`.
+To define a variable with a default value, utilize the following syntax: `{"$var": [ "name", "default-value" ] }`. This structure allows you to set a fallback value that will be used when a specific variable is not included in the request.
 
-NOTE: The default value can be any json as in `{"$var": [ "s", {"name":1} ] }` where the default value is `{"name":1}`
+**Default Values in JSON Format**
 
-An example aggregation that uses the variable `s` with a default value in the `$sort` stage follows:
+It's essential to note that default values can take any valid JSON format. For instance, you can set a default value like this:
+
+[source,json]
+----
+{"$var": [ "s", {"name":1} ]}
+----
+
+In this example, the default value for variable `s` is `{"name":1}`.
+
+**Example: Using a Variable with Default Value in `$sort` Stage**
+
+To illustrate this concept, consider an example aggregation that incorporates a variable `s` with a default value in the `$sort` stage:
 
 [source,json]
 ----
@@ -153,6 +190,8 @@ An example aggregation that uses the variable `s` with a default value in the `$
   ]
 }
 ----
+
+In this aggregation, if the `s` variable is not provided in the request, it will default to `{"name": 1}`. This powerful feature simplifies aggregation requests and ensures consistent behavior even when specific variables are not explicitly set.
 
 === Predefined variables
 
@@ -182,7 +221,8 @@ Paging must be handled explicitly by the aggregation-
 
 For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents.
 
-```json
+[source,json]
+----
 {
   "aggrs": [
     {
@@ -194,17 +234,33 @@ For example, the following defines the aggregation `/aggrs/paging` that uses the
     }
   ]
 }
-```
+----
 
-=== Optional stages
+[[optional-stages]]
+=== Optional Stages
 
-NOTE: Optional stages are available from RESTHeart 7.3
+NOTE: Optional stages are available from RESTHeart 7.3.
 
-A pipeline can include optional stages, which only get included if certain variables are set through the use of a `?avar` query parameter.
+A pipeline in RESTHeart can include optional stages, which are included only if certain variables are set using the `?avar` query parameter.
 
-Use the operator `$ifvar` to define an optional stage:
+To define an optional stage, you can use the `$ifvar` operator.
 
-With one required variable use `{ "$ifvar": [ "required-variable", <stage> ] }`. Example:
+==== With One Required Variable
+
+For one required variable, use the following format:
+
+[source,json]
+----
+{
+    "uri": "by-name",
+    "stages": [
+        { "$match": { "name": "foo" } },
+        { "$ifvar": [ "required-variable", <stage> ] }
+    ]
+}
+----
+
+Here's an example:
 
 [source,json]
 ----
@@ -217,7 +273,22 @@ With one required variable use `{ "$ifvar": [ "required-variable", <stage> ] }`.
 }
 ----
 
-To specify more than one required variable, use `{ "$ifvar": [ [ <required-variables> ], <stage> }`. Example:
+==== With Multiple Required Variables
+
+If you need to specify more than one required variable, you can use the following format:
+
+[source,json]
+----
+{
+    "uri": "by-name",
+    "stages": [
+        { "$match": { "name": "foo" } },
+        { "$ifvar": [ [ <required-variables> ], <stage> ] }
+    ]
+}
+----
+
+TIP: Starting from RESTHeart v7.6, the `$ifvar` operator supports the dot notation for specifying variables, so it is possible to define an optional stage as `{ "$ifvar": [ "a.nested.var", <stage> ] }`
 
 [source,json]
 ----
@@ -230,9 +301,11 @@ To specify more than one required variable, use `{ "$ifvar": [ [ <required-varia
 }
 ----
 
-It is also possible to specify an _else_ stage, i.e. an alternative stage that is included in the aggregation, if the required variables are not passed via the `?avar` query parameter.
+==== Specifying an Else Stage
 
-To specify an _else_ stage, use  `{ "$ifvar": [ <required-variable> | [ <required-variables> ], <stage>, <else-stage> }`. Example:
+It is also possible to specify an _else_ stage, i.e., an alternative stage that is included in the aggregation if the required variables are not passed via the `?avar` query parameter.
+
+To specify an _else_ stage, use the following format:
 
 [source,json]
 ----
@@ -246,6 +319,7 @@ To specify an _else_ stage, use  `{ "$ifvar": [ <required-variable> | [ <require
     ]
 }
 ----
+
 
 == Materialized Views
 
