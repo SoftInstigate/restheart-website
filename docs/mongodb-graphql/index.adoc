@@ -91,17 +91,9 @@ GraphQL types are connected to MongoDB data through mappings.
 
 Mappings are applicable to a range of types, including Object, Query, `enum`, `interfaces`, and `union`.
 
-=== Object Mapping
+=== Field to Field mapping
 
-GraphQL Objects and Queries are mapped to MongoDB data via the following mapping types:
-
-- Field to Field Mapping
-- Field to Query Mapping
-- Field to Aggregation Mapping
-
-==== Field to Field mapping
-
-You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array. To map nested fields use the **dot-notation**.
+You can map a GraphQL Object field with a specific MongoDB document field or with an element of a MongoDB array. To map nested fields use the **dot-notation**.
 
 An example follows:
 
@@ -130,9 +122,9 @@ The `email` field is connected to the first element of the `emails` array within
 
 NOTE: if you don't explicitly define a mapping for a field, RESTHeart will automatically map it to the MongoDB document field with the same name.
 
-==== Field to Query mapping
+=== Field to Query mapping
 
-You can establish a mapping between a GraphQL field and a MongoDB query using the following parameters:
+You can establish a mapping between a GraphQL Object field and a MongoDB query using the following parameters:
 
 - `db` (String): The name of the database.
 - `collection` (String): The name of the collection.
@@ -143,9 +135,9 @@ You can establish a mapping between a GraphQL field and a MongoDB query using th
 
 NOTE: It's important to note that unlimited queries are not allowed. If the query doesn't specify a `limit`, the service configuration's `default-limit` is applied. Additionally, the limit cannot exceed the `max-limit`.
 
-==== Field to Aggregation mapping
+=== Field to Aggregation mapping
 
-You can link a GraphQL field with a MongoDB aggregation using the following parameters:
+You can link a GraphQL Object field with a MongoDB aggregation using the following parameters:
 
 - `db` (String): The name of the database.
 - `collection` (String): The name of the collection.
@@ -179,6 +171,16 @@ type Query {
   countPostsByCategory: [Stats]
 }
 ----
+
+==== Optional Stages
+
+Starting from RESTHeart v7.6, field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
+
+NOTE: Optional Stages are available from RESTHeart v7.6.
+
+Optional Stages in field-to-aggregation mapping are similar to Optional Stages in regular aggregations. The main difference lies in the conditional operators used. In field-to-aggregation mapping, the optional stage operator is `$ifarg`, whereas in regular aggregations, it is `$ifvar`.
+
+For a more in-depth understanding of how to use optional stages in both field-to-aggregation mapping and regular aggregations, please refer to the link:/docs/mongodb-rest/aggregations#optional-stages[Aggregation documentation].
 
 === Mappings operators
 
@@ -287,6 +289,51 @@ As a result of using these mapping operators:
 NOTE: the `$fk` and `$arg` operators allow the usage of dot notation to traverse document fields.
 
 NOTE: the `$arg` operator allows dot notation from RESTHeart v7.6 onwards.
+
+=== Dot Notation support for `$arg` and `$fk`
+
+The `$fk` and `$arg` operator can utilize dot notation to access nested properties.
+
+NOTE: Dot Notation support for `$arg` is available from RESTHeart v7.6
+
+The Dot Notation support for `$arg` feature enables the handling of `InputTypes`. The following example  will clarify:
+
+[source,graphql]
+----
+input Filters {
+  type: String
+  author: String
+}
+
+type Query {
+  getPosts(filters: Filters!): [Post]
+}
+----
+
+The Query mapping can use the dot notation as follows to cope the `Filters InputType`:
+
+[source,json]
+{ "mappings": {
+    "Query": {
+        "getPosts": {
+            "db": "restheart",
+            "collection": "the-posts",
+            "find": { "author": { "$arg": "filters.author" }, "type": { "$arg": "filters.type" } }
+        }
+    }
+}
+
+=== Arguments with Default Values
+
+The `$arg` operator can specify a default value. This default value is utilized when an optional argument is not provided in the GraphQL Query.
+
+NOTE: Arguments with Default Values are available from RESTHeart v7.6.
+
+Arguments with Default Values in GraphQL mappings are similar to those in regular aggregations. The primary distinction lies in the operators used. In GraphQL mappings, the operator is `$arg`, whereas in regular aggregations, it is `$var`.
+
+For example, the following code specifies the default value `Andrea` for the argument `name`: `{"$arg": [ "name", "Andrea"]}`.
+
+For a more comprehensive understanding of how to use arguments with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
 
 === The `rootDoc` argument
 

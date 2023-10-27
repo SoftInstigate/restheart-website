@@ -23,15 +23,19 @@ The `$match` stage uses the variable `n`, specified as `{ "$var": "n" }`.
 The client can pass the variable using the `avars` query parameter.
 
 [source,http]
-.GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
+----
+GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
+----
 
 In case of the change stream *mine* described in the link:/docs/mongodb-websocket/examples[examples], the variable `n` is used to restrict notifications only to changes on documents with the property _name_ matching it.
 
-== Variable Dot Notation
+== Dot Notation support for `$var`
 
-Variables in RESTHeart change streams can utilize dot notation to access nested properties. This allows you to specify a complex variable structure and reference its components for more flexible filtering.
+`$var` in RESTHeart change streams can utilize dot notation to access nested properties. This allows you to specify a complex variable structure and reference its components for more flexible filtering.
 
-For example, if a client passes a variable as `avar={"options": {"name": 1}}`, you can access the nested property `name` using the dot notation within an aggregation stage, like this:
+NOTE: Variable Dot Notation is available from RESTHeart v7.6
+
+For example, if a client passes a variable as `avar={"options": {"name": "Andrea"}}`, you can access the nested property `name` using the dot notation within an aggregation stage, like this:
 
 [source,json]
 ----
@@ -43,14 +47,17 @@ For example, if a client passes a variable as `avar={"options": {"name": 1}}`, y
 }
 ----
 
-Given the following `?avars` query parameters:
-
-[source,http]
-.GET /messages/_streams/mine?avars={"options": {"name":"Andrea"}} HTTP/1.1
-
-The `$match` stage in the previous example uses the dot notation in `{ "$var": "options.name" }` to reference the nested property `name`.
+The `$match` stage in the previous example uses the dot notation in `{ "$var": "options.name" }` to reference the nested property `name`, in this case `Andrea`.
 
 By employing dot notation, you can work with structured and nested data effectively and make your change stream filtering more versatile and powerful.
+
+== Variables with Default Values
+
+Variables can have a default value. This default value is used when the variable is not specified in the `?avar` query parameter.
+
+NOTE: Variables with Default Values are available from RESTHeart v7.6
+
+For more detailed information on using variables with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
 
 == Predefined variables
 
