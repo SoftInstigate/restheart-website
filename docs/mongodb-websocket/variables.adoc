@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: mongodb
 ---
 
-== Passing variables to change stream
+== Passing Variables to Change Stream
 
 The aggregation stages of the change stream can use _variables_, as in the following example:
 
@@ -20,12 +20,37 @@ The aggregation stages of the change stream can use _variables_, as in the follo
 
 The `$match` stage uses the variable `n`, specified as `{ "$var": "n" }`.
 
-The client can pass the variable using the `avar` query parameter.
+The client can pass the variable using the `avars` query parameter.
 
 [source,http]
-GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
+.GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
 
 In case of the change stream *mine* described in the link:/docs/mongodb-websocket/examples[examples], the variable `n` is used to restrict notifications only to changes on documents with the property _name_ matching it.
+
+== Variable Dot Notation
+
+Variables in RESTHeart change streams can utilize dot notation to access nested properties. This allows you to specify a complex variable structure and reference its components for more flexible filtering.
+
+For example, if a client passes a variable as `avar={"options": {"name": 1}}`, you can access the nested property `name` using the dot notation within an aggregation stage, like this:
+
+[source,json]
+----
+{
+    "uri": "mine",
+    "stages": [
+        { "$match": { "fullDocument::name": { "$var": "options.name" } } }
+    ]
+}
+----
+
+Given the following `?avars` query parameters:
+
+[source,http]
+.GET /messages/_streams/mine?avars={"options": {"name":"Andrea"}} HTTP/1.1
+
+The `$match` stage in the previous example uses the dot notation in `{ "$var": "options.name" }` to reference the nested property `name`.
+
+By employing dot notation, you can work with structured and nested data effectively and make your change stream filtering more versatile and powerful.
 
 == Predefined variables
 
@@ -49,7 +74,7 @@ Refer to link:/docs/mongodb-rest/aggregations#predefined-variables[Aggregation] 
 
 == Security considerations
 
-By default RESTHeart makes sure that the variables passed as query parameters don't contains MongoDB operators.
+By default RESTHeart makes sure that the variables passed as query parameters don't contain MongoDB operators.
 
 This behavior is required to protect data from undesirable malicious query injection.
 
