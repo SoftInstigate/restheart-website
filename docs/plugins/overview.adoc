@@ -176,14 +176,12 @@ ping:
 
 WARNING: Service have `secure: false` by default. If a service is deployed and has no configuration it will be fully open. If your service needs to be protected, add a configuration for it with `secure: true`
 
-The plugin consumes the configuration with a method annotated with `@InjectConfiguration`:
+The plugin consumes the configuration with a field annotated with `@Inject("conf")`:
 
 [source,java]
 ----
-@InjectConfiguration
-public void init(Map<String, Object> args) throws ConfigurationException {
-    this.msg = argValue(args, "msg");
-}
+@Inject("conf")
+Map<String, Object> conf;
 ----
 
 `argValue()` is an helper method to simplify retrieving the value of the configuration argument.
