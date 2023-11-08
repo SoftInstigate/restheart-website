@@ -5,7 +5,7 @@
                 <div class="top-4 mb-4"><span class="highlightcolor">The MongoDB best friend</span></div>
                 <p>RESTHeart unlocks <strong>all the features</strong> of MongoDB via REST, GraphQL and WebSocket APIs. </p>
                 <p class="mt-1">
-                    Also supports <strong>Mongo Atlas</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
+                    Also supports <strong>Mongo Atlas</strong>, <strong>FerretDB</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
