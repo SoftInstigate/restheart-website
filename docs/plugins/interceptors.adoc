@@ -4,30 +4,29 @@ layout: docs-adoc
 menu: framework
 ---
 
-Interceptors allow to snoop and modify requests and responses at different
-stages of the request lifecycle as defined by the `interceptPoint` parameter of
-the annotation `@RegisterPlugin`.
+Interceptors allow you to observe and modify requests and responses at various stages of the request lifecycle, as defined by the `interceptPoint` parameter of the `@RegisterPlugin` annotation.
 
 The `Interceptor.handle(req, res)` method is invoked when `Interceptor.resolve(req, res)` returns `true`.
 
-== The Interceptor class
+== The Interceptor Class
 
-An `Interceptor` consists of a class implementing one of the `Interceptor` interfaces such as `MongoInterceptor` and annotated with `@RegisterPlugin`.
+An `Interceptor` is comprised of a class implementing one of the `Interceptor` interfaces, such as `MongoInterceptor`, and annotated with `@RegisterPlugin`.
 
-The key method is `handle(req, res)` that is executed when `resolve(req,res)` returns `true`.
+The crucial method is `handle(req, res)`, executed when `resolve(req, res)` returns `true`.
 
-The `req` and `res` arguments allow to retrieve and modify the content, query parameters and headers of both the request and response objects.
+The `req` and `res` arguments allow you to retrieve and modify the content, query parameters, and headers of both the request and response objects.
 
-The special interceptor interface `WildcardInterceptor` intercepts requests handled by any `Service`. All other interceptors can only handle requests with matching types between the Service and the Interceptor:
+The special interceptor interface, `WildcardInterceptor`, intercepts requests handled by any `Service`. Other interceptors can handle requests with matching types between the Service and the Interceptor:
 
-- `WildcardInterceptor` intercepts requests handled by any service
-- `ByteArrayInterceptor` intercepts requests handled by services implementing `ByteArrayService`
-- `JsonInterceptor` intercepts requests handled by services implementing `JsonService`
-- `BsonInterceptor` intercepts requests handled by services implementing `BsonService`
-- `MongoInterceptor` intercepts requests handled by the MongoService
-- `ProxyInterceptor`  intercepts proxied requests
+- `WildcardInterceptor`: Intercepts requests handled by any service
+- `ByteArrayInterceptor`: Intercepts requests handled by services implementing `ByteArrayService`
+- `JsonInterceptor`: Intercepts requests handled by services implementing `JsonService`
+- `BsonInterceptor`: Intercepts requests handled by services implementing `BsonService`
+- `MongoInterceptor`: Intercepts requests handled by the `MongoService`
+- `GraphQLInterceptor`: Intercepts GraphQL requests (available from v7.6.2)
+- `ProxyInterceptor`: Intercepts proxied requests
 
-NOTE: `MongoInterceptor` is particularly useful as it allows intercepting requests to the `MongoService` adding logic to its data API. For instance the following response interceptor, removes the property `secret` from `GET /coll`
+NOTE: `MongoInterceptor` is particularly useful as it allows intercepting requests to the `MongoService`, adding logic to its data API. For instance, the following response interceptor removes the property `secret` from `GET /coll`.
 
 [source,java]
 ----
@@ -57,12 +56,12 @@ public class ReadOnlyPropFilter implements MongoInterceptor {
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=986s[Interceptors]
 
-== @RegisterPlugin annotation
+== @RegisterPlugin Annotation
 
-All plugins must be a annotated with `@RegisterPlugin` to:
+All plugins must be annotated with `@RegisterPlugin` to:
 
-- allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
-- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+- Allow RESTHeart to discover plugins' implementation classes in deployed JARs (see link:/docs/plugins/deploy[How to Deploy Plugins])
+- Specify parameters such as the URI of a Service or the intercept point of an Interceptor.
 
 An example follows:
 
@@ -110,11 +109,11 @@ The following table describes the arguments of the annotation:
 |`10`
 |===
 
-== Transform the request content format
+== Transform the Request Content Format
 
-Imagine you want to send a request to the `MongoService` using XML. You must transform the request content from XML to Bson, because the `MongoService` expects the request to be in the latter format.
+Imagine you want to send a request to the `MongoService` using XML. You must transform the request content from XML to Bson because the `MongoService` expects the request to be in the latter format.
 
-`Interceptors` at `REQUEST_BEFORE_EXCHANGE_INIT` can snoop and modify the request
+`Interceptors` at `REQUEST_BEFORE_EXCHANGE_INIT` can inspect and modify the request
 before it is actually initialized.
 
 IMPORTANT: Only `WildcardInterceptor` can use this intercept point.
@@ -122,6 +121,6 @@ IMPORTANT: Only `WildcardInterceptor` can use this intercept point.
 The `Interceptor.handle(req, res)` receives the request as `UninitializedRequest`
 and the response as `UninitializedResponse`.
 
-It can set a custom initializer with `PluginUtils.attachCustomRequestInitializer()` or can modify the raw request content (not yet parsed to the Service content type) using `Request.setRawContent()`
+It can set a custom initializer with `PluginUtils.attachCustomRequestInitializer()` or modify the raw request content (not yet parsed to the Service content type) using `Request.setRawContent()`.
 
-The example link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] shows how to transform the request and response content to and from a different format than expected by a Service.
+The example link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] demonstrates how to transform the request and response content to and from a different format than expected by a Service.
