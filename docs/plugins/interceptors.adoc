@@ -4,15 +4,13 @@ layout: docs-adoc
 menu: framework
 ---
 
-Interceptors allow you to observe and modify requests and responses at various stages of the request lifecycle, as defined by the `interceptPoint` parameter of the `@RegisterPlugin` annotation.
-
-The `Interceptor.handle(req, res)` method is invoked when `Interceptor.resolve(req, res)` returns `true`.
+Interceptors play a crucial role in the RESTHeart framework, allowing developers to observe and modify requests and responses throughout the request lifecycle. This document provides an overview of the Interceptor class, available interceptor interfaces, and usage examples.
 
 == The Interceptor Class
 
 An `Interceptor` is comprised of a class implementing one of the `Interceptor` interfaces, such as `MongoInterceptor`, and annotated with `@RegisterPlugin`.
 
-The crucial method is `handle(req, res)`, executed when `resolve(req, res)` returns `true`.
+The `Interceptor` interface encompasses two pivotal methods: `handle(req, res)` and `resolve(req, res)`. The paramount method is `handle(req, res)`, which is triggered only when `resolve(req, res)` evaluates to `true`. This design ensures that the interceptor's logic is selectively applied, allowing developers to execute customized actions precisely when conditions specified in the `resolve()` method are met.
 
 The `req` and `res` arguments allow you to retrieve and modify the content, query parameters, and headers of both the request and response objects.
 
@@ -58,12 +56,12 @@ TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=986s[Interceptors]
 
 == @RegisterPlugin Annotation
 
-All plugins must be annotated with `@RegisterPlugin` to:
+All plugins, including `Interceptors`, must be annotated with `@RegisterPlugin`. This annotation serves two primary purposes:
 
-- Allow RESTHeart to discover plugins' implementation classes in deployed JARs (see link:/docs/plugins/deploy[How to Deploy Plugins])
-- Specify parameters such as the URI of a Service or the intercept point of an Interceptor.
+- *Discovery*: Allows RESTHeart to discover plugin implementation classes in deployed JARs (see link:/docs/plugins/deploy[How to Deploy Plugins]).
+- *Configuration*: Specifies parameters such as the URI of a service or the intercept point of an interceptor.
 
-An example follows:
+**Example**:
 
 [source,java]
 ----
@@ -77,7 +75,7 @@ public class MyPlugin implements JsonService {
 }
 ----
 
-The following table describes the arguments of the annotation:
+**Annotation Parameters:**
 
 [options="header"]
 [cols="1,3,1,1"]
@@ -109,18 +107,30 @@ The following table describes the arguments of the annotation:
 |`10`
 |===
 
-== Transform the Request Content Format
+== Transforming Request Content Format
 
-Imagine you want to send a request to the `MongoService` using XML. You must transform the request content from XML to Bson because the `MongoService` expects the request to be in the latter format.
+Interceptors at `REQUEST_BEFORE_EXCHANGE_INIT` can inspect and modify the request before it is initialized. `The handle(req, res)` and `resolve(req, res)` methods receive the request as `UninitializedRequest` and the response as `UninitializedResponse`. This is particularly useful for transforming request content formats.
 
-`Interceptors` at `REQUEST_BEFORE_EXCHANGE_INIT` can inspect and modify the request
-before it is actually initialized.
+Example:
 
-IMPORTANT: Only `WildcardInterceptor` can use this intercept point.
+[source,java]
+----
+@RegisterPlugin(name = "xmlToBsonTransformer",
+    interceptPoint = InterceptPoint.REQUEST_BEFORE_EXCHANGE_INIT,
+    description = "transforms XML request to Bson for MongoService")
+public class XmlToBsonTransformer implements WildcardInterceptor {
+    @Override
+    public void handle(UninitializedRequest req, UninitializedResponse res) throws Exception {
+        // Transforming XML to Bson
+    }
 
-The `Interceptor.handle(req, res)` receives the request as `UninitializedRequest`
-and the response as `UninitializedResponse`.
+    @Override
+    public boolean resolve(UninitializedRequest req, UninitializedResponse res) {
+        // Logic to determine when to apply the transformer
+    }
+}
+----
 
-It can set a custom initializer with `PluginUtils.attachCustomRequestInitializer()` or modify the raw request content (not yet parsed to the Service content type) using `Request.setRawContent()`.
+IMPORTANT: Only `WildcardInterceptor` can use the `REQUEST_BEFORE_EXCHANGE_INIT` intercept point.
 
-The example link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] demonstrates how to transform the request and response content to and from a different format than expected by a Service.
+For a practical example of transforming request and response content to and from a different format than expected by a service, refer to the link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] example.
