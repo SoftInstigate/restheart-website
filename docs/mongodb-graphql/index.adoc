@@ -29,6 +29,8 @@ graphql:
   default-limit: 100
   # max-limit is the maximum value for a Query limit
   max-limit: 1000
+  # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
+  query-time-limit: 0
   verbose: false
 ----
 
@@ -605,66 +607,32 @@ The GraphQL service has the following limitations:
 
 - **Read-only API**: mutations are not supported; the GraphQL API is only intended for simplifying data fetching. To write data, the REST API must be used.
 
-## Response codes
+## Response
 
-In the following table are reported possible RESTHeart GraphQL Service responses:
+Starting from RESTHeart v7.6, the GraphQL API always responds with the content type `application/graphql-response+json`, following the link:https://github.com/graphql/graphql-over-http/blob/main/spec/GraphQLOverHTTP.md[GraphQL Over HTTP specs].
 
-[cols="1,4"]
+**Possible Response Codes:**
+
+[cols="1,4", options="header"]
 |===
-|*HTTP Status code*|*description*
-|200
-|It's all OK!
-|400
-|Invalid GraphQL query (e.g. required fields are not in the schema, argument type mismatch), schema - MongoDB data type mismatch, invalid app definition
-|401
-|Unauthorized
-|404
-|There is no GraphQL app bound to the requested endpoint
-|405
-|HTTP method used not supported
-|500
-|Internal Server Error|
+| *HTTP Status Code* | *Description*
+
+| 200
+| A valid GraphQL response has been generated, even if it contains errors (partial data).
+
+| 400
+| The request is invalid (e.g., incorrect JSON, malformed GraphQL query, non-existent fields in selection, etc.) or when the response only contains errors (i.e., `data: null`).
+
+| 404
+| The GraphQL app does not exist.
+
+| 405
+| Incorrect method used (not POST or OPTIONS).
+
+| 408
+| Request timed out due to the `query-time-limit` option.
+
+| 500
+| Connection error with MongoDB.
+
 |===
-
-== Example responses
-
-*200 - OK*
-
-[source,json]
-----
-{
-  "data":{
-    "userByName":[
-      {
-        "firstName": "nameUser1",
-        "lastName": "surnameUser1"
-      },
-      {
-        "firstName": "nameUser2",
-        "lastName": "surnameUser2"
-      }
-    ]
-  }
-}
-----
-
-*400 - Bad Request - Invalid GraphQL Query / schema - MongoDB data type mismatch*
-
-[source,json]
-----
-{
-  "data": "...",
-  "errors" : "..."
-}
-----
-
-*400 - Bad Request - Invalid GraphQL App Definition*
-
-[source,json]
-----
-{
-  "http status code":  400,
-  "http status description":  "Bad Request",
-  "message":  "..."
-}
-----
