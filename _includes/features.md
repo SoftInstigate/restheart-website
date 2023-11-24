@@ -9,7 +9,7 @@
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
-                <a class="btn btn-sm" href="{{ '/use-cases/rest-api' | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-sm" href="{{ '/docs/mongodb-rest/tutorial' | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>

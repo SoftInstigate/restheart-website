@@ -20,6 +20,23 @@ stars-bounce: true
     </div>
 </section>
 
+<section id="features-content" class="pb-2 mt-5">
+    <div class="containe-fluid">
+        <h2 class="text-center color-primary font-weight-bold mb-5">Key points about RESTHeart</h2>
+        <div class="d-flex flex-wrap justify-content-around gap-3 text-center">
+            <div  class="zoom card newsText mw-keypoint black-background align-self-center text-primary  font-weight-bold">RESTHeart is a framework for building HTTP microservices that aims to empower developers with intuitive APIs out of the box.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It is built for developers, with a focus on simplicity, speed and ease of use. The programming model uses simple building blocks like Services, Providers, Interceptors and Initializers.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It has a modular architecture where core functionality is provided by restheart-core, and additional features are implemented as plugins.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It provides features commonly needed by applications like authentication/authorization and data management through MongoDB integration.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">The MongoDB plugin exposes the full database capabilities through REST, GraphQL and websockets with no backend code required. This cuts development time significantly.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">Performance is a priority with support for huge throughput, horizontal scaling, and GraalVM for better performance in containers.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It is designed for microservices deployment in Docker/Kubernetes and can run as a standalone JAR, native binary or Docker image.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It supports Java, Kotlin, JavaScript and TypeScript. Hello World examples are very simple to implement in any of these languages.</div>
+            <div class="zoom card newsText mw-keypoint align-self-center text-primary font-weight-bold">It has an AGPL open source license as well as a commercial enterprise license for production use cases.</div>
+        </div>
+    </div>
+</section>
+
 <div class="container text-center mt-0 mw-800 px-0">
     <img src="/images/restheart.gif" class="img-fluid"/>
 </div>
