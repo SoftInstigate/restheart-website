@@ -3,9 +3,9 @@ restheart-website
 
 [restheart.org](https://restheart.org) Web site.
 
-## RESTHeart - The most effective microservices framework
+## RESTHeart - Ready to use backend for the modern Web.
 
-### Instant REST, GraphQL and WebSocket APIs for MongoDB.
+### Automatic REST, GraphQL and WebSocket APIs for MongoDB and any compatible database.
 
 fork it on [GitHub](https://github.com/SoftInstigate/restheart)
 <hr></hr>
