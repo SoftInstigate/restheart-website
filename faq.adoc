@@ -37,22 +37,36 @@ RESTHeart offers comprehensive authentication and authorization services, suppor
 
 RESTHeart is classified as a low-code framework because it offers developers customizable APIs that are ready to go. It aims to empower developers with an intuitive framework that encompasses essential features, allowing them to build applications without the need to reinvent the wheel. RESTHeart provides pre-configured APIs that cover a broad range of functionality and are highly customizable to fit specific application needs. This approach reduces the amount of code developers need to write, streamlining the development process and making it easier and faster to build cloud-native HTTP microservices.
 
-### What about performances?
+### How can I extend the API?
 
-Performance is a priority with support for huge throughput, horizontal scaling, and GraalVM for better performance in containers.
+A plugin is a software component that extends the functionality of RESTHeart, allowing you to add additional features and capabilities to the basic API. RESTHeart supports the development of plugins in Java, Kotlin, and JavaScript.
 
-It is designed for microservices deployment in Docker/Kubernetes and can run as a standalone JAR, native binary or Docker image.
+To add a plugin to RESTHeart, you need to follow these steps:
+
+1. Package your plugin as a JAR file for Java or Kotlin plugins, or as a JavaScript file and its companion package.json for JavaScript plugins.
+2. Copy the JAR or JavaScript plugin into the `./plugins` directory of your RESTHeart installation.
+3. Restart RESTHeart to apply the changes and load the plugin.
+
+Once the plugin is added and RESTHeart is restarted, it will be automatically detected and integrated into the RESTHeart framework, extending its functionality according to the features implemented in the plugin.
+
+Please note that for JavaScript plugins, you need to run RESTHeart on GraalVM or on RESTHeart native.
 
 ### What categories of plugins are available?
 
 There are four types of plugins in RESTHeart:
 
-1. Services: These plugins extend the API by adding web services.
-2. Interceptors: These plugins snoop and modify requests and responses at different stages of the request lifecycle.
-3. Initializers: These plugins execute initialization logic at system startup time.
-4. Providers: These plugins provide objects to other plugins via the `@Inject` annotation.
+1. `Service`: These plugins extend the API by adding web services.
+2. `Interceptor`: These plugins snoop and modify requests and responses at different stages of the request lifecycle.
+3. `Initializer`: These plugins execute initialization logic at system startup time.
+4. `Provider`: These plugins provide objects to other plugins via the `@Inject` annotation.
 
 Additionally, it is also possible to develop security plugins to customize the security layer.
+
+### What about performances?
+
+In RESTHeart performance is a priority with support for huge throughput, horizontal scaling, and GraalVM for better performance in containers.
+
+It is designed for microservices deployment in Docker/Kubernetes and can run as a standalone JAR, native binary or Docker image.
 
 ### Does the SDK provide a Dependency Injection feature?
 
