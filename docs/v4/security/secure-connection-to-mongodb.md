@@ -15,21 +15,21 @@ layout: docs
 
 {% include docs-head.html %}
 
-## Introduction 
+## Introduction
 
-This section provides instructions on how to secure the connection between RESTHeart Platform and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart.
+This section provides instructions on how to secure the connection between RESTHeart and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart.
 
 ## Enable MongoDB authentication
 
 This section assumes using MongoDB 3.2 or later. For other versions, the security
-configuration is similar but different. Refer to the [MongoDB
+configuration is similar but different. Refer to the [MongoDB
 documentation](https://docs.mongodb.org/manual/tutorial/enable-authentication/)
 for more information.
 
 Start MongoDB with authentication and connect to the MongoDB instance
 from a client running on the same system. This access is made possible
 by the localhost exception. Again, you might prefer to run the MongoDB
-process in background, using the `--fork` parameter.
+process in background, using the `--fork` parameter.
 
 ```bash
 $ mongod --fork --syslog --auth
@@ -37,14 +37,12 @@ $ mongo
 ```
 
 In this section we will use the MongoDB superuser
-role [root](https://docs.mongodb.org/manual/reference/built-in-roles/#superuser-roles)
+role [root](https://docs.mongodb.org/manual/reference/built-in-roles/#superuser-roles)
 that provides access to the all operations and all the resources.
 
 However the best practice is to use a MongoDB user with
-restricted access. For instance, it could be restricted to use only a
-single DB in read only mode. For more information refer to [MongoDB
-authentication with just enough
-permissions](#auth-with-jep)section.
+restricted access. For instance, it could be restricted to use only a
+single DB in read only mode. For more information refer to [MongoDB authentication with just enough permissions](#auth-with-jep)section.
 
 Create the _admin_ user. The procedure is different depending on MongoDB
 version.
@@ -58,26 +56,28 @@ version.
 })
 ```
 
-    We need to provide the MongoDB user authentication credentials in the RESTHeart Platform Core configuration file: see docs. 
+    We need to provide the MongoDB user authentication credentials in the RESTHeart configuration file.
 
-We’ll use the restheart-platform-core.yml example configuration file that comes with RESTHeart Platform download package (you find it in the etc directory)
+We’ll define a restheart.yml configuration file.
+
+Fist create a configuration file with default values with:
 
 ```bash
-$ vi etc/restheart-platform-core.yml
+$ java restheart.jar -t 2> ./etc/restheart.yml
 ```
 
-Find and modify the following section providing the user-name, password
-and authentication db (the db where the MongoDB user is defined, in our
+Open the file `./etc/restheart.yml` with an editor,  Find and modify the following section
+providing the user-name, password and authentication db (the db where the MongoDB user is defined, in our
 case ‘admin’).
 
 ```yml
 mongo-uri: mongodb://admin:changeit@127.0.0.1/?authSource=admin
 ```
 
-Now start RESTHeart Platform Core specifying the configuration file:
+Now start RESTHeart specifying the configuration file:
 
 ```bash
-$ java -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
+$ java -jar restheart.jar etc/restheart.yml
 ```
 
 Test the connection open `http://localhost:8080/roles/admin`
@@ -86,9 +86,9 @@ Test the connection open `http://localhost:8080/roles/admin`
 
 MongoDB clients can use TLS/SSL to encrypt connections to mongod and mongos instances.
 
-To configure RESTHeart Platform for TLS/SSL do as follows:
+To configure RESTHeart for TLS/SSL do as follows:
 
--   create the keystore importing the public certificate used by mongod using keytool (with keytool, the java tool to manage keystores of cryptographic keys)
+-  create the keystore importing the public certificate used by mongod using `keytool` (`keytool` is the java tool to manage `keystores` of cryptographic keys)
 
 ```bash
 $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
@@ -102,22 +102,22 @@ $ keytool -importcert -file mongo.cer -alias mongoCert -keystore rhTrustStore
 mongo-uri: mongodb://your.mongo-domain.com?ssl=true
 ```
 
--   start restheart with following options:
+-  start restheart with following options:
 
 ```bash
-$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart-platform-core.jar etc/restheart-platform-core.yml -e etc/standalone.properties
+$ java -Dfile.encoding=UTF-8 -server -Djavax.net.ssl.trustStore=rhTrustStore -Djavax.net.ssl.trustStorePassword=changeit -Djavax.security.auth.useSubjectCredsOnly=false -jar restheart.jar etc/restheart.yml
 ```
 
 ## Restrict permissions of MongoDB user
 
-In the previous examples we used a MongoDB user with *root *role for the sake of simplicity. This allows RESTHeart Platform Core to execute any command on any MongoDB resource.
+In the previous examples we used a MongoDB user with *root* role for the sake of simplicity. This allows RESTHeart to execute any command on any MongoDB resource.
 
 On production environments a strong security isolation is mandatory.
 
 In order to achieve it, the best practice is:
 
-1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart Platform Core;
-2. use a MongoDB user with just enough permission: _read_ or *readWrite* on mounted databases
+1. use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart;
+2. use a MongoDB user with just enough permission: _read_ or *readWrite* on mounted databases
 
 The following example, creates a MongoDB user with appropriate roles to expose the databases \*restheart.
 

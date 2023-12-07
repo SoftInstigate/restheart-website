@@ -1,0 +1,70 @@
+---
+title: Authenticators
+layout: docs-adoc
+menu: framework
+---
+
+Authenticators verify credentials passed by the client and build the `Account`.
+
+An Authentication Mechanism can delegate the verification of credentials to an Authenticator. For example, the default configuration enables the `basicAuthMechanism` that uses by default the `mongoRealmAuthenticator`.
+
+RESTHeart provides two implementations of `Authenticator`:
+
+* link:https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/authenticators/FileRealmAuthenticator.java[FileRealmAuthenticator] that handle credentials in a configuration file
+* link:https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/plugins/authenticators/MongoRealmAuthenticator.java[MongoRealmAuthenticator] that handle credentials on a MongoDB collection.
+
+== Implementations
+
+The Authenticator class must implement the `org.restheart.plugins.security.Authenticator` interface.
+
+[source,java]
+----
+public interface Authenticator extends IdentityManager {
+  @Override
+  public Account verify(Account account);
+
+  @Override
+  public Account verify(String id, Credential credential);
+
+  @Override
+  public Account verify(Credential credential);
+}
+----
+
+== Registering
+
+The Authenticator class must be annotated with `@RegisterPlugin`:
+
+[source,java]
+----
+@RegisterPlugin(name="myAuthenticator",
+        description = "my custom authenticator")
+public class MyAuthenticator implements Authenticator {
+
+}
+----
+
+== Configuration
+
+The Authenticator can receive parameters from the configuration file using the `@Inject("config")` annotation:
+
+[source,java]
+----
+@Inject("config")
+private Map<String, Object> config;
+
+@OnInit
+public void init() throws ConfigurationException {
+    // get configuration arguments
+    int number  = argValue(this.config, "number");
+    String string = argValue(this.config, "string");
+}
+----
+
+The parameters are defined in the configuration using the name of the authenticator as defined by the `@RegisterPlugins` annotation:
+
+```yaml
+myAuthenticator:
+    number: 10
+    string: a string
+```
