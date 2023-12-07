@@ -51,7 +51,7 @@ If MongoDB is not already running, the following command will start a replica se
 
 [source,bash]
 ----
-$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongo --eval 'if (!rs.status().ok) rs.initiate();'
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongosh --quiet --eval 'if (!rs.isMaster().ismaster) rs.initiate();'
 ----
 
 Run RESTHeart with:
@@ -92,7 +92,7 @@ $ docker network create restheart-network
 2) Run a MongoDB container
 
 [source,bash]
-$ docker run -d --name mongodb --network restheart-network mongo:5.0
+$ docker run -d --name mongodb --network restheart-network mongo:7.0
 
 3) Run a RESTHeart container
 
