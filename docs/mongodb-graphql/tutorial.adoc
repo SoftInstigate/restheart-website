@@ -12,9 +12,9 @@ NOTE: While this tutorial provides buttons for executing requests using "Rest Ni
 
 == Create the Star Wars GraphQL API
 
-WARNING: This tutorial requires RESTHeart v7.6.4+
+IMPORTANT: This tutorial requires RESTHeart v7.6.4+
 
-IMPORTANT: You won't write a single line of code! The GraphQL API just requires to define a json configuration, known as GraphQL App Definition and store it in the special collection `/gql-apps`.
+NOTE: You won't write a single line of code! The GraphQL API just requires to define a json configuration, known as GraphQL App Definition and store it in the special collection `/gql-apps`.
 
 **1 Start RESTHeart and MongoDB**
 
@@ -252,7 +252,7 @@ enum Episode { NEWHOPE EMPIRE JEDI }
 
 The enum type requires a mapping unless the value in the database is identical to the string representation of the enum value. If you look at the data, the episode are stored with Int codes. Thus we need a mapping to link the Int codes to the enum values.
 
-TIP: for more information on enum mappings see XXXXX
+TIP: for more information on enum mappings see link:/docs/mongodb-graphql/graphql-apps#enum-mappings[Enum mappings]
 
 [source,json]
 ----
@@ -274,7 +274,7 @@ union SearchResult = Human | Droid | Starship
 
 The union requires a `$typeResolver`
 
-TIP: for more information on union mappings see XXXXX
+TIP: for more information on union mappings see link:/docs/mongodb-graphql/graphql-apps#union-mappings[Union Mappings]
 
 [source,json]
 ----
@@ -307,7 +307,7 @@ interface Character {
 
 The interface requires a `$typeResolver`
 
-TIP: for more information on interface mappings see XXXXX
+TIP: for more information on interface mappings see link:/docs/mongodb-graphql/graphql-apps#interface-mappings[Interface Mappings]
 
 [source,json]
 ----
@@ -338,7 +338,7 @@ type Starship {
 
 No mapping is required since default field-to-field mappings are fine
 
-TIP: for more information on field-to-field mappings see XXXXX
+TIP: for more information on field-to-field mappings see link:/docs/mongodb-graphql/graphql-apps#field-to-field-mapping[Field-to-field mapping]
 
 === objects Human and Droid
 
@@ -365,9 +365,9 @@ type Droid implements Character {
 
 Those object types have the field `friends` in common, actually derived by the fact that they both implement the interface `Character`. This field requires a field-to-query mapping.
 
-TIP: for more information on field-to-query mappings see XXXXX
+TIP: for more information on field-to-query mappings see link:/docs/mongodb-graphql/graphql-apps#field-to-query-mapping[Field-to-query Mapping]
 
-ùTIP: for more information on the `$fk` operator see XXXXX
+TIP: for more information on the `$fk` operator see link:/docs/mongodb-graphql/graphql-apps#mappings-operators[Mapping Operators]
 
 [source,json]
 ----
@@ -405,7 +405,7 @@ type Query {
 
 Queries always require mappings.
 
-TIP: for more information on query mappings see XXXXX
+TIP: for more information on query mappings see link:/docs/mongodb-graphql/graphql-apps#field-to-query-mapping[Field-to-query Mapping]
 
 [source,json]
 ----
