@@ -1,5 +1,5 @@
 ---
-title: Tutorial
+title: REST API Tutorial with RESTHeart
 layout: docs
 menu: mongodb
 ---
