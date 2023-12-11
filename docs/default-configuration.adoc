@@ -99,8 +99,8 @@ jwtAuthenticationMechanism:
   rolesClaim: null
   fixedRoles:
   #  - jwt-role
-  issuer: myIssuer
-  audience: myAudience
+  issuer: restheart.org
+  audience: null
 
 # Digest Authentication
 # see https://restheart.org/docs/security/authentication#digest-authentication
@@ -131,7 +131,11 @@ identityAuthMechanism:
 # see https://restheart.org/docs/security/authentication#file-realm-authenticator
 fileRealmAuthenticator:
   enabled: false
-  conf-file: ./users.yml
+  #conf-file: ./users.yml
+  users:
+    - userid: admin
+      password: null
+      roles: [admin]
 
 # mongoRealAuthenticator authenticates users defined in a MongoDB collection.
 # see https://restheart.org/docs/security/authentication#mongo-realm-authenticator
@@ -144,7 +148,7 @@ mongoRealmAuthenticator:
   json-path-roles: $.roles
   bcrypt-hashed-password: true
   bcrypt-complexity: 12
-  enforce-minimum-password-strenght: false
+  enforce-minimum-password-strength: false
   # Integer from 0 to 4
   # 0 Weak        （guesses < 3^10）
   # 1 Fair        （guesses < 6^10）
@@ -171,7 +175,11 @@ mongoRealmAuthenticator:
 # see https://restheart.org/docs/security/authorization#file-acl-authorizer
 fileAclAuthorizer:
   enabled: false
-  conf-file: ./acl.yml
+  #conf-file: ./acl.yml
+  permissions:
+    - role: admin
+      predicate: path-prefix('/')
+      priority: 0
 
 # mongoAclAuthorizer authorizes requests according to the Access Control List defined in a MongoDB collection.
 # see https://restheart.org/docs/security/authorization#mongo-acl-authorizer
@@ -234,16 +242,21 @@ jwtTokenManager:
   ttl: 15
   srv-uri: /tokens
   issuer: restheart.org
+  audience: null
+  # additional JWT claims from accounts properties
+  account-properties-claims:
+    # - foo # property name
+    # - /nested/property # xpath expr for nested properties
 ----
 
 == Mongo Client Provider
 
 [source,yml]
 ----
-# Provider the MongoClient via @Inject('mclient') and @Inject('mclient-reactive')
+# Provide the MongoClient via @Inject('mclient') and @Inject('mclient-reactive')
 mclient:
   # see https://docs.mongodb.com/manual/reference/connection-string/
-  connection-string:  mongodb://127.0.0.1
+  connection-string: mongodb://127.0.0.1
 ----
 
 == MongoService: MongoDB REST and Websocket API
@@ -303,6 +316,7 @@ mongo:
     doc: OPTIONAL
 
   # get collection cache speedups GET /coll?cache requests
+  get-collection-cache-enabled: true
   get-collection-cache-size: 100
   get-collection-cache-ttl: 10_000 # Time To Live, default 10 seconds
   get-collection-cache-docs: 1000 # number of documents to cache for each request
@@ -336,11 +350,13 @@ mongo:
   # TTL in milliseconds; specify a value < 0 to never expire cached entries
   schema-cache-ttl: 60000
 
-  # Time limit in milliseconds for processing queries on the server (without network latency). 0 means no time limit
+  # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
   query-time-limit: 0
-  # Time limit in milliseconds for processing aggregations on the server (without network latency). 0 means no time limit
+  # The time limit in milliseconds for processing aggregations. Set to 0 for no time limit.
   aggregation-time-limit: 0
 
+  # Deprecated: it will be removed in RH v8.0
+  # use requestsMetricsCollector instead, see https://restheart.org/docs/monitoring
   # see https://restheart.org/docs/mongodb-rest/monitoring
   # OFF => no gathering, ROOT => gathering at root level, DATABASE => at db level, COLLECTION => at collection level
   metrics-gathering-level: "OFF"
@@ -356,10 +372,14 @@ graphql:
   uri: /graphql
   db: restheart
   collection: gql-apps
+  # app definitions are cached. this sets the time to live in msecs
+  app-def-cache-ttl: 10_000
   # default-limit is used for queries that don't not specify a limit
   default-limit: 100
   # max-limit is the maximum value for a Query limit
   max-limit: 1000
+  # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
+  query-time-limit: 0
   verbose: false
 ----
 
@@ -453,6 +473,7 @@ bruteForceAttackGuard:
 # - log-to-file: true => log messages to a file (default value: false)
 # - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
 # - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
+# - full-stacktrace: true to log the full stacktrace of exceptions
 # - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
 # - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
 
@@ -463,6 +484,7 @@ logging:
   log-to-file: false
   log-file-path: restheart.log
   packages: [ "org.restheart", "com.restheart" ]
+  full-stacktrace: false
   requests-log-mode: 1
   tracing-headers:
   #  - x-b3-traceid      # vv Zipkin headers, see https://github.com/openzipkin/b3-propagation
@@ -474,6 +496,21 @@ logging:
   #  - tracestate        # ^^
 ----
 
+== Metrics
+
+[source,yml]
+----
+# Metrics
+# see https://restheart.org/docs/metrics
+requestsMetricsCollector:
+  enabled: false
+  uri: /metrics
+  include: [ "/*" ]
+  exclude: [ "/metrics", "/metrics/*" ]
+
+jvmMetricsCollector:
+  enabled: false
+----
 == Core module configuration
 
 [source,yml]
@@ -488,6 +525,16 @@ core:
   # Just add the plugins jar to plugins-directory and they will be automatically
   # added to the classpath and registered.
   plugins-directory: plugins
+
+  # Limit the scanning of classes annotated with @RegisterPlugin
+  # to the specified packages. It can speedup the boot time
+  # in case of huge plugin jars. It is usually not required.
+  # Use an empty array to not limit scanning.
+  # Alsways add the package org.restheart to the list
+  plugins-packages: []
+
+  # Set to true for verbose logging of jar scanning for plugins
+  plugins-scanning-verbose: false
 
   # Optionally define the base url of this instance
   # Useful when RESTHeart is mediated by a reverse proxy or an API gateway to determine the instance's correct URL
