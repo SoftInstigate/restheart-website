@@ -16,7 +16,9 @@ See link:/docs/security/overview[Security Overview] for an high level view of th
 
 JWT Authentication manages the authentication following the link:https://jwt.io[JSON Web Token standard].
 
-The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`.
+The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`. If you want to disable checking `issuer` or  `audience`, set them to `null`. The property `audience` can be `null`, a String or an array of Strings.
+
+The authenticated client will gain the roles included in the JWT claim set by `rolesClaim` or the roles specified by the configuration option `fixedRoles`. It's not possible to set both `rolesClaim` and `fixedRoles`
 
 Supported algorithms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
 
@@ -36,8 +38,6 @@ jwtAuthenticationMechanism:
     issuer: myIssuer
     audience: myAudience
 ----
-
-It's not possible to set both `rolesClaim` and `fixedRoles`
 
 === Basic Authentication
 
