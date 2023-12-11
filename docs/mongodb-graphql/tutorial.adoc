@@ -1,25 +1,45 @@
 ---
-title: GraphQL API Tutorial
+title: GraphQL API Tutorial with RESTHeart
 layout: docs-adoc
 menu: mongodb
 ---
 
 :page-liquid:
 
-This tutorial resembles the link:https://graphql.org/learn/schema/#type-system[GraphQL.org tutorial] showing how to implement it with RESTHeart.
+This tutorial guides you through the process of implementing a GraphQL API using RESTHeart, following the structure and concepts presented in the link:https://graphql.org/learn/schema/#type-system[GraphQL.org tutorial]  on Star Wars characters and episodes, demonstrating the implementation using RESTHeart.
 
-== Before running the example
+NOTE: While this tutorial provides buttons for executing requests using "Rest Ninja," please be aware that it may not seamlessly function with Safari due to HTTPS requirements. For a smoother experience, we recommend using Chrome or Firefox browsers (refer to [Configure TLS](link:/docs/security/tls/)).
 
-The following example assume:
+== Create the Star Wars GraphQL API
 
-- RESTHeart running on the localhost with the default configuration: the database *restheart* is bound to `/`, the user *admin* exists with default password *secret*, *gql-apps* is the collection, within `restheart` database, reserved to GraphQL apps definitions and the GraphQL service is reachable at `/graphql`.
+WARNING: This tutorial requires RESTHeart v7.6.4+
 
-NOTE: *Execute on rest ninja* doesn't work with Safari because it requires HTTPS. Since configuring HTTPS requires a valid certificate and takes some time to link:/docs/security/tls/[configure], we suggest to just use Chrome or Firefox for this tutorial.
+IMPORTANT: You won't write a single line of code! The GraphQL API just requires to define a json configuration, known as GraphQL App Definition and store it in the special collection `/gql-apps`.
 
+**1 Start RESTHeart and MongoDB**
 
-## Create the GraphQL app
+The following one-liner uses docker compose to start both RESTHeart and MongoDb. If you prefer not using docker, please refer to link:/docs/setup[setup] section to install RESTHeart and MongoDB.
 
-To create the *gql-apps* collection, run the following:
+[source,bash]
+----
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml && docker compose up
+----
+
+**2 Create collections**
+
+Create the *star-wars-characters* collection. This is where the data will be inserted.
+
+++++
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/36f1499c310f74ec7092e47e488666c69abf45f5/0"
+%}
+++++
+
+[source,http]
+PUT /star-wars-characters HTTP/1.1
+
+Create the *gql-apps* collection. This is where the GraphQL App definition will be inserted.
 
 ++++
 {% include code-header.html
@@ -31,213 +51,65 @@ To create the *gql-apps* collection, run the following:
 [source, http]
 PUT /gql-apps HTTP/1.1
 
-To upload the example GraphQL app definition, run the following:
+**3 Insert data**
+
+Create documents in the *star-wars-characters* collection:
 
 ++++
 {% include code-header.html
     type="Request"
-    link="https://restninja.io/share/cb7df9b7270fd8eb1657b925f3f8c7e2277af350/1"
+    link="https://restninja.io/share/1dd617582b894304fe3968dc2c97feff08c0adcb/1"
 %}
 ++++
 
 [source,http]
-POST /gql-apps HTTP/1.1
+----
+POST /star-wars-characters?wm=upsert HTTP/1.1
+----
 
 [.text-muted]
 *Request body*
 [source,json]
 ----
-{
- "_id": "mflix-gql-def",
- "descriptor": {
-   "name":"MFlix",
-   "description":"GraphQL App example using MongoDB sample_mflix dataset",
-   "enabled": true,
-   "uri":"mflix"
-  },
-   "schema": "type Stats { year: Int moviesNum: Int } type Comment{  _id: ObjectId  user: User  movie: Movie  text: String  date: DateTime}type Movie{  _id: ObjectId  title: String  year: Int  runtime: Int  released: DateTime  poster: String  plot: String  fullPlot: String  lastUpdate: String  filmType: String  directors: [String]  imdbRate: Float  imdbVotes: Int  countries: [String]  genres: [String]  tomatoesRate: Float  tomatoesReviewsNum: Int  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]  relatedMovies: [Movie]}type Session{  _id: ObjectId  user: User  jwt: String} type Theater{  theaterId: Int  location: BsonDocument} type User{  _id: ObjectId  name: String  email: String  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]}type Query{  MoviesByTitle(title: String!): [Movie]  MoviesByYear(year: Int!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Movie]  UserByEmail(email: String!): [User] StatsByTomatoesRateRange(min: Float max: Float = 10): [Stats] MoviesByTomatoesRateRange(min: Float, max: Float, sort: Int = 1, skip: Int = 0, limit: Int = 0):[Movie] TheatersByCity(city: String!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Theater] AllMovies(limit: Int = 10, skip: Int = 0): [Movie]}",
- "mappings": {
-  "Comment": {
-    "user": {
-      "db":"sample_mflix",
-      "collection":"users",
-      "find": { "email": { "$fk":"email" } },
-      "dataLoader": { "batching": true, "caching": true }
-    },
-    "movie": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "_id": { "$fk":"movie_id" } },
-      "dataLoader": { "batching": true, "caching": false, "maxBatchSize": 30 }
-    }
-  },
-  "Movie": {
-    "imdbRate":"imdb.rating",
-    "imdbVotes":"imdb.votes",
-    "tomatoesRate":"tomatoes.viewer.rating",
-    "tomatoesReviewsNum":"tomatoes.viewer.numReviews",
-    "lastUpdate":"lastupdated",
-    "fullPlot":"fullplot",
-    "filmType":"type",
-    "comments": {
-      "db":"sample_mflix",
-      "collection":"comments",
-      "find": { "$and": [{ "movie_id": { "$fk":"_id" } }, { "date": { "$gte": { "$arg":"startDate" }, "$lt": { "$arg":"endDate" } } }] },
-      "sort": { "date": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  },
-  "Session": {
-    "user": {
-      "db":"sample_mflix",
-      "collection":"user",
-      "find": { "email": { "$fk":"user_id" } }
-    }
-  },
-  "User": {
-    "comments": {
-      "db":"sample_mflix",
-      "collection":"comments",
-      "find": { "email": { "$fk":"email" } },
-      "sort": { "_id": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  },
-  "Query": {
-    "StatsByTomatoesRateRange": {
-      "db": "sample_mflix",
-      "collection": "movies",
-      "stages": [
-        { "$match": { "imdb.rating": { "$gte": { "$arg":"min" }, "$lte": { "$arg":"max" } }, "year": { "$type": "int" } } },
-        { "$group": { "_id": "$year", "moviesNum": { "$count": {} } } },
-        { "$project": { "_id": 0, "year": "$_id", "moviesNum": 1} },
-        { "$sort": { "year": 1 } }
-    ]
-    },
-    "MoviesByTitle": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "title": { "$arg":"title" } }
-    },
-    "MoviesByYear": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "year": { "$arg":"year" } },
-      "sort": { "_id": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "UserByEmail": {
-      "db":"sample_mflix",
-      "collection":"users",
-      "find": { "email": { "$arg":"email" } }
-    },
-    "MoviesByTomatoesRateRange": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "tomatoes.viewer.rating": { "$gte": { "$arg":"min" }, "$lt": { "$arg":"max" } } },
-      "sort": { "tomatoes.viewer.rating": { "$arg":"sort" }, "_id": 1 },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "TheatersByCity": {
-      "db":"sample_mflix",
-      "collection":"theaters",
-      "find": { "location.address.city": { "$arg":"city" } },
-      "sort": { "location.address.city": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "AllMovies": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { },
-      "sort": { "_id_": -1 },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  }
- }
-}
+[
+    {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
+    {"_id":1001,"name":"Darth Vader","friends":[1004],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":5},
+    {"_id":1002,"name":"Han Solo","friends":[1000,1003,2001],"appearsIn":[4,5,6],"homePlanet":"Corellia"},
+    {"_id":1003,"name":"Leia Organa","friends":[1000,1002,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Alderaan"},
+    {"_id":1004,"name":"Wilhuff Tarkin","friends":[1001],"appearsIn":[4],"homePlanet":"Eriadu"},{"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
+    {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
+    {"_id":3000,"name":"TIE Advanced x1","length":9.2}
+]
 ----
 
-== query with `application/json`
+**4 Insert the GraphQL App Definition**
 
-To execute a GraphQL request to *Mflix* app with *Content-Type* `application/json`, run the following:
+To insert the GraphQL app definition, run the following:
 
 ++++
 {% include code-header.html
     type="Request"
-    link="https://restninja.io/share/e2aed3eb5867ee201b0bee790e3924a16da2219b/0"
+    link="https://restninja.io/share/8d48b4efb6c042ea3ae6fff72823d42356494514/0"
 %}
 ++++
 
 [source,http]
-POST /graphql/mflix HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,json]
 ----
-{
-   "query":"query exampleOperation($year: Int!, $limit: Int = 0){MoviesByYear(year: $year, limit: $limit){ title comments{ text user{name} date} tomatoesRate}}",
-   "variables":{
-      "year":2008,
-      "limit":2
-   }
-}
+POST /gql-apps?wm=upsert HTTP/1.1
 ----
 
-++++
-{% include code-header.html
-    type="Response"
-%}
-++++
+NOTE: Request body omitted because is quite long. Find it in the link:#the-full-graphql-app-definition[The full GraphQL APP definition] section.
 
-[source,json]
-----
-{
-  "data": {
-    "MoviesByYear": [
-      {
-        "title": "The Bank Job",
-        "comments": [
-          {
-            "text": "Pariatur voluptatibus placeat quo architecto soluta non...",
-            "user": {
-              "name": "Shireen Baratheon"
-            },
-            "date": {
-              "$date": 954044557000
-            }
-          },
-          {
-            "text": "Facilis ea voluptatem et velit rerum animi corrupti...",
-            "user": {
-              "name": "Lisa Russo"
-            },
-            "date": {
-              "$date": 976465077000
-            }
-          }
-        ],
-        "tomatoesRate": 3.5
-      },
-      {
-        "title": "The Flyboys",
-        "comments": [],
-        "tomatoesRate": 3.6
-      }
-    ]
-  }
-}
-----
+[.mt-4]
+.That's it
+****
+[.text-center]
+The GraphQL API is ready to use!
+****
 
-== query with `application/graphql`
+== Execute queries
 
-To execute a GraphQL request to *Mflix* app with *Content-Type* `application/graphql`, run the following:
+=== hero
 
 ++++
 {% include code-header.html
@@ -247,20 +119,24 @@ To execute a GraphQL request to *Mflix* app with *Content-Type* `application/gra
 ++++
 
 [source,http]
-POST /graphql/mflix HTTP/1.1
+POST /graphql/star-wars HTTP/1.1
 
 [.text-muted]
 *Request body*
 [source,graphql]
 ----
 {
-    MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
-        title
-        comments {
-            text
-            user { name }
+	hero(episode: JEDI) {
+        name
+        friends {
+            name
         }
-        tomatoesRate
+        ... on Droid {
+            primaryFunction
+        }
+        ... on Human {
+            homePlanet
+        }
     }
 }
 ----
@@ -274,38 +150,386 @@ POST /graphql/mflix HTTP/1.1
 [source,json]
 ----
 {
-  "data": {
-    "MoviesByTomatoesRateRange": [
-      {
-        "title": "The Wages of Fear",
-        "comments": [
-          {
-            "text": "Commodi accusamus totam eaque sunt. Nihil reiciendis commodi molestiae esse...",
-            "user": {
-              "name": "Doreah"
+    "data": {
+        "hero": {
+            "name": "R2-D2",
+            "friends": [
+                {
+                    "name": "Luke Skywalker"
+                },
+                {
+                    "name": "Han Solo"
+                },
+                {
+                    "name": "Leia Organa"
+                }
+            ],
+            "primaryFunction": "Astromech"
+        }
+    }
+}
+----
+
+NOTE: Please note that the response content-type is `application/graphql-response+json`. It is treated as a binary format by RestNinja, which results in a less user-friendly display. To circumvent this issue and view the response more effectively, you can opt to use HTTPie, a command-line HTTP client:
+
+[source,bash]
+$ echo '{ hero(episode: JEDI) { name friends { name } ... on Droid { primaryFunction } ... on Human { homePlanet } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
+
+=== search
+
+++++
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/985a919c91ef4b62f895a9c7996bef40e04a85dc/0"
+%}
+++++
+
+[source,http]
+POST /graphql/star-wars HTTP/1.1
+
+[.text-muted]
+*Request body*
+[source,graphql]
+----
+{
+	search(text: "an") {
+        ... on Character {
+            name
+        }
+        ... on Starship {
+            name
+            length
+        }
+    }
+}
+----
+
+++++
+{% include code-header.html
+    type="Response"
+%}
+++++
+
+[source,json]
+----
+{
+    "data": {
+        "search": [
+            {
+                "name": "Han Solo"
+            },
+            {
+                "name": "Leia Organa"
+            },
+            {
+                "name": "TIE Advanced x1",
+                "length": 9.2
             }
-          }
-        ],
-        "tomatoesRate": 4.4
-      },
-      {
-        "title": "Chicago Deadline",
-        "comments": [
-          {
-            "text": "Nihil itaque a architecto. Illo veritatis totam at quibusdam. Doloremque...",
-            "user": {
-              "name": "Patricia Good"
+        ]
+    }
+}
+----
+
+NOTE: Please note that the response content-type is `application/graphql-response+json`. It is treated as a binary format by RestNinja, which results in a less user-friendly display. To circumvent this issue and view the response more effectively, you can opt to use HTTPie, a command-line HTTP client:
+
+[source,bash]
+$ echo '{ search(text: "an") { ... on Character { name } ... on Starship { name length } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
+
+== Understanding the GraphQL App Definition
+
+GraphQL types are connected to MongoDB data through mappings.
+
+NOTE: If you don’t explicitly define a mapping for a field, RESTHeart will automatically map it to the MongoDB document field with the same name.
+
+=== enum Episode
+
+The GraphQL schema defines the enum `Episode`:
+
+[source,graphql]
+----
+enum Episode { NEWHOPE EMPIRE JEDI }
+----
+
+The enum type requires a mapping unless the value in the database is identical to the string representation of the enum value. If you look at the data, the episode are stored with Int codes. Thus we need a mapping to link the Int codes to the enum values.
+
+TIP: for more information on enum mappings see XXXXX
+
+[source,json]
+----
+{
+    "mappings": {
+        "Episode": { "NEWHOPE": 4, "EMPIRE": 5, "JEDI": 6 }
+    }
+}
+----
+
+=== union SearchResult
+
+The GraphQL schema defines the union `SearchResult`:
+
+[source,graphql]
+----
+union SearchResult = Human | Droid | Starship
+----
+
+The union requires a `$typeResolver`
+
+TIP: for more information on union mappings see XXXXX
+
+[source,json]
+----
+{
+    "mappings": {
+        "SearchResult": {
+            "$typeResolver": {
+                "Human": "field-exists(homePlanet)",
+                "Droid": "field-exists(primaryFunction)",
+                "Starship": "field-exists(length)"
             }
-          }
-        ],
-        "tomatoesRate": 4.4
-      },
-      {
-        "title": "The Passion of Joan of Arc",
-        "comments": [],
-        "tomatoesRate": 4.4
-      }
-    ]
-  }
+        }
+    }
+}
+----
+
+=== interface Character
+
+The GraphQL schema defines the interface `Character`:
+
+[source,graphql]
+----
+interface Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+}
+----
+
+The interface requires a `$typeResolver`
+
+TIP: for more information on interface mappings see XXXXX
+
+[source,json]
+----
+{
+    "mappings": {
+        "Character": {
+            "$typeResolver": {
+                "Human": "field-exists(homePlanet)",
+                "Droid": "field-exists(primaryFunction)"
+            }
+        }
+    }
+}
+----
+
+=== object Starship
+
+The GraphQL schema defines the object type `Starship`:
+
+[source,graphql]
+----
+type Starship {
+  _id: Int!
+  name: String!
+  length(unit: LengthUnit = METER): Float
+}
+----
+
+No mapping is required since default field-to-field mappings are fine
+
+TIP: for more information on field-to-field mappings see XXXXX
+
+=== objects Human and Droid
+
+The GraphQL schema defines the object types `Human` and `Droids`:
+
+[source,graphql]
+----
+type Human implements Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+  homePlanet: String!
+}
+
+type Droid implements Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+  primaryFunction: String!
+}
+----
+
+Those object types have the field `friends` in common, actually derived by the fact that they both implement the interface `Character`. This field requires a field-to-query mapping.
+
+TIP: for more information on field-to-query mappings see XXXXX
+
+ùTIP: for more information on the `$fk` operator see XXXXX
+
+[source,json]
+----
+{
+    "mappings": {
+        "Human": {
+            "friends": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "_id": { "$in": { "$fk": "friends" } } }
+            }
+        },
+        "Droid": {
+            "friends": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "_id": { "$in": { "$fk": "friends" } } }
+            }
+        }
+    }
+}
+----
+
+=== Query
+
+The GraphQL schema defines the queries `hero` and `search`
+
+[source,graphql]
+----
+type Query {
+  hero(episode: Episode!): Character
+  search(text: String!): [SearchResult]
+}
+----
+
+Queries always require mappings.
+
+TIP: for more information on query mappings see XXXXX
+
+[source,json]
+----
+{
+    "mappings": {
+        "Query": {
+            "hero": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "heroOf": { "$arg": "episode" } }
+            },
+            "search": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "name": { "$regex": { "$arg": "text" } , "$options": "i" } } }
+        }
+    }
+}
+----
+
+== The full GraphQL Schema
+
+[source,graphql]
+----
+union SearchResult = Human | Droid | Starship
+
+enum LengthUnit {
+  METER
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+type Starship {
+  _id: Int!
+  name: String!
+  length(unit: LengthUnit = METER): Float
+}
+
+interface Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+}
+
+type Human implements Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+  homePlanet: String!
+}
+
+type Droid implements Character {
+  _id: Int!
+  name: String!
+  friends: [Character]!
+  appearsIn: [Episode]!
+  primaryFunction: String!
+}
+
+type Query {
+  hero(episode: Episode!): Character
+  search(text: String!): [SearchResult]
+}
+----
+
+== The full GraphQL APP definition
+
+[source,json]
+----
+{
+    "_id": "star-wars",
+    "descriptor": {
+        "name": "star-wars",
+        "description": "GraphQL application used in the Star Wars Tutorial",
+        "enabled": true,
+        "uri": "star-wars"
+    },
+    "schema": "union SearchResult = Human | Droid | Starship enum LengthUnit { METER } enum Episode { NEWHOPE EMPIRE JEDI } type Starship { _id: Int! name: String!  length(unit: LengthUnit = METER): Float } interface Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! } type Human implements Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! homePlanet: String! } type Droid implements Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! primaryFunction: String! } type Query { hero(episode: Episode!): Character search(text: String!): [SearchResult] }",
+    "mappings": {
+        "Episode": { "NEWHOPE": 4, "EMPIRE": 5, "JEDI": 6 },
+        "SearchResult": {
+            "$typeResolver": {
+                "Human": "field-exists(homePlanet)",
+                "Droid": "field-exists(primaryFunction)",
+                "Starship": "field-exists(length)"
+            }
+        },
+        "Character": {
+            "$typeResolver": {
+                "Human": "field-exists(homePlanet)",
+                "Droid": "field-exists(primaryFunction)"
+            }
+        },
+        "Human": {
+            "friends": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "_id": { "$in": { "$fk": "friends"} } }
+            }
+        },
+        "Droid": {
+            "friends": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "_id": { "$in": { "$fk": "friends"} } }
+            }
+        },
+        "Query": {
+            "hero": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "heroOf": { "$arg": "episode" } }
+            },
+            "search": {
+                "db": "restheart",
+                "collection": "star-wars-characters",
+                "find": { "name": { "$regex": { "$arg": "text" } , "$options": "i" } } }
+        }
+    }
 }
 ----
