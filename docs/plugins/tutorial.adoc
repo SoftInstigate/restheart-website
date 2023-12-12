@@ -22,14 +22,14 @@ NOTE: Source code available at https://github.com/SoftInstigate/restheart/tree/m
 
 1. Clone the restheart repo and navigate to the `user-signup` directory.
 2. Build the plugin. This step uses the `maven-dependency-plugin` to copy the jar of the external dependency to `/target/lib`.
-3. Copy the plugin JARs (`user-signup/target/user-signup.jar` and `user-signup/target/lib/*`) to the `<RH_HOME>/plugins` directory.
+3. Copy the plugin JARs (`user-signup/target/user-signup.jar` and `user-signup/target/lib/*`) to the `$RH_HOME/plugins` directory.
 
 [source,bash]
 ----
 $ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
 $ cd restheart/examples/user-signup
 $ ../mvnw clean package
-% cp target/user-signup.jar target/lib/* <RH_HOME>/plugins
+$ cp target/user-signup.jar target/lib/* $RH_HOME/plugins
 ----
 
 == Configuration
@@ -38,7 +38,7 @@ Configure the `emailVerificationSender` interceptor with your SMTP server detail
 
 [source,yml]
 ----
-emailVerificationSender:
+/emailVerificationSender:
   verifier-srv-url: http://127.0.0.1:8080/verify
   from: <your-email-address>
   from-name: <your-name>
@@ -48,7 +48,7 @@ emailVerificationSender:
   smtp-password: <your-gmail-password>
 ----
 
-> Note: For Gmail, create a third-party password as described link:https://support.google.com/accounts/answer/185833?hl=en[here].
+IMPORTANT: For Gmail, create a third-party password as described link:https://support.google.com/accounts/answer/185833?hl=en[here].
 
 == Run restheart with the configuration
 
@@ -74,7 +74,7 @@ $ http -a admin:secret PUT :8080/_schemas
 +
 [source,bash]
 ----
-$ echo '{"_id":"user","$schema":"http://json-schema.org/draft-04/schema#","type":"object","properties":{"_id":{"type":"string","pattern":"^\\w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$"},"password":{"type":"string"},"roles":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"required":["_id","password"],"additionalProperties":false}' | http -a admin:secret POST :8080/_schemas
+$ echo '{"_id":"user","$schema":"http://json-schema.org/draft-04/schema#","type":"object","properties":{"_id":{"type":"string","pattern":"^\\\w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$"},"password":{"type":"string"},"roles":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"required":["_id","password"],"additionalProperties":false}' | http -a admin:secret POST :8080/_schemas
 ----
 
 3. *Apply Schema to Users*:
@@ -117,7 +117,7 @@ $ http POST :8080/users _id=<your-email-address> password=<your-password>
 +
 [source,bash]
 ----
-$ http :8080/roles/<your-email-address> -a <your-email-address>:<your-password>
+$ http -a <your-email-address>:<your-password> :8080/roles/<your-email-address>
 ----
 
 == Testing Permissions
