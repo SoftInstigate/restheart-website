@@ -1,0 +1,138 @@
+---
+title: RESTHeart User Signup Tutorial
+layout: docs-adoc
+menu: framework
+---
+
+== Overview
+
+This tutorial demonstrates an implementation of a user signup process, including user document creation, verification code generation, and email verification and provides guidance on using the development framework to implement microservices.
+
+NOTE: Source code available at https://github.com/SoftInstigate/restheart/tree/master/examples/user-signup[here].
+
+== Process Flow
+
+* *User Creation*: An unauthenticated client sends a POST request to `/users` to create a new user document.
+* *Verification Code*: The `verificationCodeGenerator` interceptor adds a verification code to the user document upon creation.
+* *User Roles*: The newly created user is assigned `roles: ["UNVERIFIED"]`. This is set by the `mergeRequest` statement in the permission, allowing unauthenticated clients to create user documents. The role `UNVERIFIED` is defined in the ACL with no permissions.
+* *Email Verification*: The `emailVerificationSender` async response interceptor sends a verification email. This email contains a link to the `userVerifier` service, passing the verification code as a query parameter.
+* *User Verification*: The `userVerifier` service plays a crucial role in the verification process. Upon receiving the verification code, it authenticates the code's validity. Once verified, the service updates the user's role to `["USER"]`. This updated role is significant as it is predefined in the Access Control List (ACL) with specific permissions. Notably, it grants the verified user the ability to access the collection `/coll`. This access is essential as it enables the verified user to interact with the core data of the dummy application, marking a successful transition from an unverified to a fully authenticated and functional user within the system.
+
+== Deployment Steps
+
+1. Clone the restheart repo and navigate to the `user-signup` directory.
+2. Build the plugin. This step uses the `maven-dependency-plugin` to copy the jar of the external dependency to `/target/lib`.
+3. Copy the plugin JARs (`user-signup/target/user-signup.jar` and `user-signup/target/lib/*`) to the `<RH_HOME>/plugins` directory.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cd restheart/examples/user-signup
+$ ../mvnw clean package
+% cp target/user-signup.jar target/lib/* <RH_HOME>/plugins
+----
+
+== Configuration
+
+Configure the `emailVerificationSender` interceptor with your SMTP server details for sending verification emails. Add the following in `conf.yml`:
+
+[source,yml]
+----
+emailVerificationSender:
+  verifier-srv-url: http://127.0.0.1:8080/verify
+  from: <your-email-address>
+  from-name: <your-name>
+  host: smtp.gmail.com
+  port: 465
+  smtp-username: <your-gmail-address>
+  smtp-password: <your-gmail-password>
+----
+
+> Note: For Gmail, create a third-party password as described link:https://support.google.com/accounts/answer/185833?hl=en[here].
+
+== Run restheart with the configuration
+
+NOTE: this command uses the link:/docs/configuration#modify-the-configuration-with-an-override-file[configuration override file]
+
+[source,bash]
+----
+$ java -jar restheart.jar -o conf.yml
+----
+
+== Schema Validation
+
+link:https://restheart.org/docs/json-schema-validation/[JSON Schema Validation] is used to ensure the user document adheres to a defined schema.
+
+1. *Create Schema Store*:
++
+[source,bash]
+----
+$ http -a admin:secret PUT :8080/_schemas
+----
+
+2. *Define JSON Schema for User*:
++
+[source,bash]
+----
+$ echo '{"_id":"user","$schema":"http://json-schema.org/draft-04/schema#","type":"object","properties":{"_id":{"type":"string","pattern":"^\\w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$"},"password":{"type":"string"},"roles":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"required":["_id","password"],"additionalProperties":false}' | http -a admin:secret POST :8080/_schemas
+----
+
+3. *Apply Schema to Users*:
++
+[source,bash]
+----
+$ echo '{"jsonSchema":{"schemaId":"user"}}' | http -a admin:secret PUT :8080/users
+----
+
+== Access Control List (ACL)
+
+1. *Allow Unauthenticated User Creation*: Add permission to `/acl` for unauthenticated clients to create user documents.
++
+NOTE: The permission sets `roles: ["UNVERIFIED"]` using the `mergeRequest` statement.
++
+[source,bash]
+----
+$ echo '{"_id":"allowToRegister","predicate":"path[/users] and method[POST]", "roles":["$unauthenticated"], "mongo": {"mergeRequest":{"roles":["UNVERIFIED"]}}, "priority":1}' | http -a admin:secret POST :8080/acl
+----
+
+2. *Assign Permissions to `USER` Role*:
++
+NOTE: The permission restricts user access to own documents using `mergeRequest`, `readFilter` and  `writeFilter` statements.
+
++
+[source,bash]
+----
+$ echo '{"_id":"allowUsersToAccessColl","predicate":"path[/coll] and (method[POST] or method[GET])","roles":["USER"], "mongo": { "mergeRequest":{"author": "@user._id"},"readFilter":{"author": "@user._id"},"writeFilter":{"author": "@user._id"} }, "priority":1}' | http -a admin:secret POST :8080/acl
+----
+
+== User Creation and Verification
+1. *Create User*: Unauthenticated request to create a user document.
++
+[source,bash]
+----
+$ http POST :8080/users _id=<your-email-address> password=<your-password>
+----
+2. *Verify Email Address*: Click the link in the verification email. This changes the user's role to `USER`.
+3. *Check User Roles*: Use the `/roles` service to verify user credentials and roles.
++
+[source,bash]
+----
+$ http :8080/roles/<your-email-address> -a <your-email-address>:<your-password>
+----
+
+== Testing Permissions
+
+1. *Access Collection as `UNVERIFIED` User*: Expect `403 Forbidden`.
++
+[source,bash]
+----
+http GET :8080/coll -a <your-email-address>:<your-password>
+----
+2. *Access Collection as `USER`*: Post-verification, expect successful access.
++
+[source,bash]
+----
+http GET :8080/coll -a <your-email-address>:<your-password>
+----
+
+For a complete guide on credential checking, refer to link:https://restheart.org/docs/security/how-clients-authenticate/#suggested-way-to-check-credentials[Suggested way to check credentials].
