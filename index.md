@@ -5,7 +5,8 @@ stars-bounce: true
 
 <section id="top" class="black-background text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
-        <h1 class="pt-4 top-1 text-break"><strong>REST</strong>Heart</h1>
+        <img width="192" src="/images/RESTHeart-logo.png">
+        <h1 class="top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
         Open Source Low-code API development framework
         <div class="top-6 text-break white mt-2">Featuring ready-to-go Security and MongoDB API</div>
