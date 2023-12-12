@@ -15,6 +15,11 @@ menu: overview
 {% include docs-head.html %}
 
 ## From the Team
+
+* [**Easily Create a Star Wars GraphQL API with RESTHeart**](https://medium.com/softinstigate-team/easily-create-a-star-wars-graphql-api-with-restheart-5746e337da7c): How to create a GraphQL API using RESTHeart, inspired by the classic Star Wars characters and episodes
+
+* [**RESTHeart with FerretDB: a tutorial**](https://medium.com/p/1b43432ed2e0): This tutorial introduces FerretDB, an open-source alternative to MongoDB built on PostgreSQL. Utilizing FerretDB in conjunction with RESTHeart, a powerful API server for MongoDB, this guide demonstrates how to set up the FerretDB stack using Docker and interact with it using RESTHeart’s REST API.
+
 * [**Json Web Token Authentication for Angular App with Auth0 and RESTHeart**](https://medium.com/softinstigate-team/json-web-token-authentication-for-angular-app-with-auht0-and-restheart-214e3ce8a1cb?source=your_stories_page---------------------------    ) : How to create an Angular application that uses the **Auth0** service to manage user authentication with RESTHeart.
 
 * [**How to create a Web API for AWS DocumentDB**](https://medium.com/softinstigate-team/how-to-create-a-web-api-for-aws-documentdb-using-restheart-987921df3ced) : The compatibility of **DocumentDB** with MongoDB makes RESTHeart an extremely effective tool for creating a RESTful API on top of the **Amazon** database. So as we would configure RESTHeart to point to a MongoDB database, we can configure it to access a DocumentDB database.
