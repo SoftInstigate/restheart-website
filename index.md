@@ -32,14 +32,14 @@ stars-bounce: true
                 <h2 class="text-lightcyan mb-2">
                     <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank">Featured on <strong>AWS Blog</strong></a>
                 </h2>
-                <p class="highlightcolor"><i>RESTHeart API for MongoDB simplifies development and frees you to focus on delivering great user experiences</i></p>
+                <p class="highlightcolor"><i>The RESTHeart API for MongoDB simplifies development and frees you to focus on delivering a great users experience</i></p>
                 <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank" class="btn btn-o-white">READ THE POST</a>
             </div>
         </div>
         <div class="row mb-1 text-center mb-3">
             <div class="col-md-12 text-center">
-                <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn">Donwload the PDF fact sheet</a>
-                <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn mt-3 mt-md-0 ml-md-3 mx-auto">Donwload the Product presentation</a>
+                <a href="/assets/Brochure - RESTHeart 6.pdf" target="_blank" class="btn">Download the PDF fact sheet</a>
+                <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn mt-3 mt-md-0 ml-md-3 mx-auto">Download the Product presentation</a>
             </div>
         </div>
     </div>
