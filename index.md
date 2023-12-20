@@ -11,13 +11,20 @@ stars-bounce: true
         Open Source Low-code API development framework
         <div class="top-6 text-break white mt-2">Featuring ready-to-go Security and MongoDB API</div>
         </h2>
-        <a href="/docs/setup" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Download</a>
-        <a href="/docs" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Read the Docs</a>
-        <a href="/docs/try" class="btn btn-o-white ml-1 mt-4 my-0 btn-md">Try Online</a>
-        <a href="https://calendly.com/restheart/restheart-demo" class="btn btn-o-white ml-1 mt-4 my-0 btn-md" target="blank">Book a meeting!</a>
-        <div class="col-12 mt-4">
-                <a class="btn btn-lg mr-3" title="Slack" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ" target="blank"> <i style="font-size:18px" class="icon-chat"></i>Join us on Slack</a>
+        <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
+        <div class="container">
+            <div class="listingblock my-0">
+                <div class="content">
+<pre class="rouge highlight text-center">
+<code data-lang="bash"><span class="nv">$ </span>curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker compose up</code>
+</pre>
+                </div>
+            </div>
         </div>
+        <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
+        <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
+        <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
+        <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
     </div>
 </section>
 
@@ -56,7 +63,7 @@ stars-bounce: true
 </section>
 
 <div class="container mt-5">
-    <h2 class="text-center color-primary font-weight-bold">The Data API</h2>
+    <h2 class="text-center color-primary font-weight-bold">Data API</h2>
 </div>
 
 <section id="examples" class="slice my-0 pb-0">
@@ -64,7 +71,7 @@ stars-bounce: true
 </section>
 
 <div class="container mt-5">
-    <h2 class="text-center color-primary m-0 mb-2 font-weight-bold">Example Code</h2>
+    <h2 class="text-center color-primary m-0 mb-2 font-weight-bold">Polyglot Framework</h2>
 </div>
 
 <section id="examples-plugins" class="slice">

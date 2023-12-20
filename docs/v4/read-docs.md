@@ -59,9 +59,9 @@ The response is paginated, i..e. only a subset of the collection’s document is
 The number of documents to return is controlled via the `pagesize` query
 parameter. Its default value is 100, maximum allowable size is 1000.
 
-The pages to return is specified with the `page` query parameter. The
+The pages to return is specified with the `page` query parameter. The
 pagination links (first, last, next, previous) are **only returned on
-hal full mode** (`hal=f` query parameter); see [HAL
+hal full mode** (`hal=f` query parameter); see [HAL
 mode](https://restheart.org/docs/v4/representation-format/)
 for more information.
 
@@ -80,10 +80,10 @@ GET /inventory?page=2&pagesize=3 HTTP/1.1
 
 ## Filtering
 
-The **`filter`** query parameter allows to specify conditions on the
+The **`filter`** query parameter allows to specify conditions on the
 documents to be returned.
 
-The `filter` qparam value is any [mongodb
+The `filter` qparam value is any [mongodb
 query](https://docs.mongodb.org/manual/tutorial/query-documents/).
 
 Note that system properties (properties starting with \_ that are
@@ -115,7 +115,7 @@ managed automatically by RESTHeart) are not affected by this option.
 
 ### Filtering Examples
 
-#### Return documents whose `quantity` is more than 50
+#### Return documents whose `quantity` is more than 50
 
 {% include code-header.html
     type="Request"
@@ -126,7 +126,7 @@ managed automatically by RESTHeart) are not affected by this option.
 GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
 ```
 
-#### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
+#### Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
 {% include code-header.html
     type="Request"
@@ -208,9 +208,6 @@ sort=[ |-]<fieldname>
 `sort` can also be a MongoDB [sort
 expression](https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort).
 
-JSON expression format is available starting from version 2.0.1. See
-improvement [RH-190](https://softinstigate.atlassian.net/browse/RH-190)
-
 ```
 sort={"field": 1}
 ```
@@ -231,7 +228,7 @@ sort={"field": 1}
     </p>
     <p>
     RESTHeart returns data in pages (default being 100) and it is stateless.
-    This means that two requests use different db cursors. A default sorting
+    This means that two requests use different db cursors. A default sorting
     makes sure that requests on different pages returns documents in a well
     defined order.
     </p>
@@ -242,10 +239,10 @@ sort={"field": 1}
         Default sorting could impact performances for some use cases.
         </p>
         <p>
-        To disable default sorting just add the <strong>"sort={}"</strong> query parameter 
+        To disable default sorting just add the <strong>"sort={}"</strong> query parameter
         </p>
         <p>
-        See the <a href="#sorting">sorting</a> section to know how to
+        See the <a href="#sorting">sorting</a> section to know how to
         specify different sorting criteria.
         </p>
     </div>
@@ -279,7 +276,7 @@ GET /inventory?sort={"status":1} HTTP/1.1
 
 {: .mt-4 }
 
-#### Sort by *status* descending
+#### Sort by *status* descending
 
 {% include code-header.html
     type="Request"
@@ -305,7 +302,7 @@ GET /inventory?sort={"status":-1} HTTP/1.1
 
 {: .mt-4 }
 
-#### Sort by _status_ ascending and *qty* descending
+#### Sort by _status_ ascending and *qty* descending
 
 {% include code-header.html
     type="Request"
@@ -400,7 +397,7 @@ managed automatically by RESTHeart) are not affected by this option.
 GET /inventory?keys={'item':1} HTTP/1.1
 ```
 
-#### Return all but the property *item*
+#### Return all but the property *item*
 
 {% include code-header.html
     type="Request"
@@ -411,7 +408,7 @@ GET /inventory?keys={'item':1} HTTP/1.1
 GET /inventory?keys={'item':0} HTTP/1.1
 ```
 
-#### Only return the properties *item* and _qty_
+#### Only return the properties *item* and _qty_
 
 {% include code-header.html
     type="Request"
@@ -446,7 +443,6 @@ Use `$natural` to force the query to perform a forwards collection scan.
         <div class="black-code highlighter-rouge mt-5"><div class="highlight"><pre class="highlight"><code>&gt; PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre></div></div>
         <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
     </p>
-    
 </div>
 
 #### Use the index on item field
