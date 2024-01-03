@@ -6,7 +6,8 @@ menu: overview
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-- [A Simple Web Application](#a-simple-web-application)
+- [Overview](#overview)
+- [The Web app](#the-web-app)
 - [Try the API online](#try-the-api-online)
 
 </div>
@@ -15,12 +16,14 @@ menu: overview
 {% include docs-head.html %}
 
 {: mt-4}
-## A Simple Web Application
+## Overview
 
 This is a very simple [Angular](https://angular.io) Web Application hosted at [ng-demo.restheart.org](https://ng-demo.restheart.org). It shows a table of *message* documents stored in a MongoDB collection and provides a simple form to create a new *message* document.
 
 {: .bs-callout.bs-callout-info}
 Click on `Editor` button below and open the code of `service.ts`. You'll see how is easy interacting with the RESTHeart API!
+
+## The Web app
 
 <div id="ng-demo"></div>
 
@@ -36,7 +39,7 @@ StackBlitzSDK.embedGithubProject('ng-demo', 'SoftInstigate/restheart-ng-demo', {
 </script>
 
 {: .bs-callout.bs-callout-info}
-Source code is available at `restheart-ng-demo`  official [Github repository](https://github.com/SoftInstigate/restheart-ng-demo)!
+Source code is available at `restheart-ng-demo` official [Github repository](https://github.com/SoftInstigate/restheart-ng-demo)!
 
 For a more complete Angular application that uses exactly the same REST API, please have a look at our [Webchat example](/docs/try).
 
