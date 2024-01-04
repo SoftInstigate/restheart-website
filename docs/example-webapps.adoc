@@ -1,0 +1,98 @@
+---
+title: Example Web Apps built with RESTHeart
+layout: docs-adoc
+menu: overview
+---
+:page-liquid:
+
+== Introduction
+
+In this section, we'll introduce you to two web applications developed using Angular and RESTHeart, showcasing the capabilities of RESTHeart for Web Applications development.
+
+NOTE: here we use Angular. Of course you can use RESTHeart with any frontend framework!
+
+These examples demonstrate the versatility and ease of use of RESTHeart, which can be seamlessly integrated with various frontend frameworks to build dynamic web applications. Whether you are using Angular, React, or any other framework, RESTHeart provides a robust backend solution for your web development needs.
+
+== Webchat
+
+The Webchat application is a real-time chat app hosted at link:https://chat.restheart.org[chat.restheart.org^]. It enables users to engage in real-time conversations with others. What's remarkable about this application is that it requires zero lines of code for creating a real-time chat API, thanks to RESTHeart.
+
+To explore the source code and get a deeper understanding, you can access the GitHub repository at link:https://github.com/SoftInstigate/restheart-webchat[restheart-webchat GitHub repository^].
+
+Moreover, the app leverage RESTHeart link:/docs/mongodb-websocket[Change Streams]'s, allowing instant notifications to clients about any data modifications through WebSockets.
+
+[.iframe]
+++++
+<iframe src="https://chat.restheart.org" width="100%" height="600px" title="restheat-webchat"></iframe>
+++++
+
+[.mt-4]
+To gain insights into the communication flow between the web clients and RESTHeart, refer to the following diagram:
+
+[.img-fluid]
+image::/images/webchat-diagram.gif[Webchat Communication Diagram]
+
+== Messages Table View
+
+The Messages Table View application offers a simple and intuitive way to display a tabular view of _message_ documents stored in a MongoDB collection. Additionally, it provides a user-friendly form to create new messages. This application is hosted at link:https://ng-demo.restheart.org[ng-demo.restheart.org^].
+
+For those interested in exploring the source code, the GitHub repository can be found at link:https://github.com/SoftInstigate/restheart-ng-demo[restheart-ng-demo GitHub repository^].
+
+By utilizing RESTHeart, you can effortlessly build and manage this type of web application, making it a valuable tool for frontend developers looking to create interactive and data-driven experiences.
+
+Here's a live demo of the Messages Table View application:
+
+[.iframe]
+++++
+<iframe src="https://ng-demo.restheart.org" width="100%" height="600px" title="restheart-ng-demo"></iframe>
+++++
+
+[.mt-4]
+Let's examine the advantages of using RESTHeart. With the REST MongoDB API plugin, there's no need for any backend code, and the only frontend code required to interact with it is as follows:
+
+[source,typescript]
+----
+@Injectable()
+export class Service {
+  url = 'https://demo.restheart.org/messages';
+
+  constructor(private http: HttpClient) {
+  }
+
+  public get(page: number = 1): Observable<Array<any>> {
+    return this.http.get<Array<any>>(`${this.url}?pagesize=5&page=${page}`);
+  }
+
+  public size(): Observable<any> {
+    return this.http.get(`${this.url}/_size`);
+  }
+
+  public post(data: any): Observable<any> {
+    const _data = {
+      message: data.message,
+      from: data.from
+    };
+
+    return this.http.post(this.url, _data);
+  }
+}
+----
+
+== Sending a Message Using cURL
+
+In this section, we'll demonstrate how to send a chat message using the API with `curl`. By sending a POST request to link:https://demo.restheart.org/messages[demo.restheart.org/messages^], you can interact with the chat application programmatically.
+
+To send a message, use the following cURL command:
+
+[source,bash]
+----
+$ curl -i -H "Content-Type: application/json" -X POST https://demo.restheart.org/messages/ -d '{"from":"you", "message":"RESTHeart rocks!!" }'
+
+HTTP/1.1 201 Created
+----
+
+++++
+{% include code-header.html
+    link="http://restninja.io/share/1fd808b1f51037c8b2b36d43d6bc315a0325029c/3"
+%}
+++++
