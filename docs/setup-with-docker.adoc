@@ -70,12 +70,17 @@ $ docker network create restheart-network
 2) Run a MongoDB container
 
 [source,bash]
-$ docker run -d --name mongodb --network restheart-network mongo:7.0
+$ docker run -d --name mongodb --network restheart-network mongo:7.0 --replSet=rs0
 
-3) Run a RESTHeart container
+3) Initiate MongoDB as a single node Replica Set
 
 [source,bash]
-$ docker run -d --rm --network restheart-network -p "8080:8080" -e RHO='/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+$ docker exec -it mongodb /bin/bash -c 'mongosh --quiet --eval "rs.initiate()"'
+
+4) Run a RESTHeart container
+
+[source,bash]
+$ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
 
 [source,bash]
 ----
