@@ -4,9 +4,11 @@ layout: docs-adoc
 menu: setup
 ---
 
+TIP: If Docker isn’t your thing, check out the link:/docs/setup[setup] section for alternative installation methods.
+
 == Run with docker compose
 
-NOTE: This is the easiest way to run RESTHeart.
+NOTE: This is the quickest way to run RESTHeart.
 
 To run both RESTHeart and MongoDB services you can use `docker compose`. Just copy and paste the following shell command:
 
@@ -36,6 +38,8 @@ $ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/
 NOTE: the `RHO` environment variable sets the password for the user `admin`.
 
 == Run RESTHeart with Docker, MongoDB running on localhost
+
+This runs RESTHeart with Docker connecting to MongoDB running on the localhost.
 
 If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
 
@@ -132,7 +136,7 @@ $ docker run --name restheart --rm --network restheart-network -p 8080:8080 -e R
 [source,bash]
 $ docker run -it --network restheart-network --rm mongo mongosh --host mongodb
 
-## Run RESTHeart and MongoDB with Docker
+## For development: run RESTHeart and open MongoDB with Docker
 
 WARNING: This setup is insecure and should be only used for developing or testing purposes.
 
@@ -147,21 +151,21 @@ Launch a MongoDB container within the created network:
 [source,bash]
 $ docker run -d --name mongodb -p 27017:27017 mongo --replSet=rs0
 
-3) **Initialize MongoDB as a Single Node Replica Set**
+2) **Initialize MongoDB as a Single Node Replica Set**
 
 Initialize the MongoDB instance to work as a single node replica set:
 
 [source,bash]
 $ docker exec mongodb mongosh --quiet --eval "rs.initiate()"
 
-4) **Launch RESTHeart Container**
+3) **Launch RESTHeart Container**
 
 Run the RESTHeart container, linking it to the MongoDB container:
 
 [source,bash]
 $ docker run --name restheart --rm -p "8080:8080" softinstigate/restheart
 
-5) **Test the Setup**
+4) **Test the Setup**
 
 Execute a test request to verify that RESTHeart is running:
 
@@ -196,7 +200,7 @@ $ docker run --name restheart --rm -p "8080:8080" softinstigate/restheart
 
 If the plugin jar file is in the directory `./target`, this command starts RESTHeart with the plugin integrated:
 
-[surce,bash]
+[source,bash]
 $ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart
 
 NOTE: This command requires RESTHeart version equal or greater than 7.7.
@@ -205,7 +209,7 @@ NOTE: This command requires RESTHeart version equal or greater than 7.7.
 
 This runs RESTHeart enabling remove debugging (port 4000).
 
-[surce,bash]
+[source,bash]
 $ docker run --rm -p 8080:8080 -p 4000:4000 --entrypoint "java" softinstigate/restheart -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:4000 -jar restheart.jar
 
 ### How to connect to MongoDB with mongosh
