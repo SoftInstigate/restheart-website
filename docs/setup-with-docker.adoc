@@ -72,52 +72,49 @@ This setup only needs to be completed once. Follow these steps:
 
 1. **Create a Docker Network**
 
-   Create a dedicated network for RESTHeart and MongoDB communication:
+Create a dedicated network for RESTHeart and MongoDB communication:
 
-   ```bash
-   $ docker network create restheart-network
-   ```
+[source,bash]
+$ docker network create restheart-network
 
 2. **Start MongoDB Container**
 
-   Launch a MongoDB container within the created network:
+Launch a MongoDB container within the created network:
 
-   ```bash
-   $ docker run -d --name mongodb --network restheart-network mongo:7.0 --replSet=rs0
-   ```
+[source,bash]
+$ docker run -d --name mongodb --network restheart-network mongo:7.0 --replSet=rs0
 
 3. **Initialize MongoDB as a Single Node Replica Set**
 
-   Initialize the MongoDB instance to work as a single node replica set:
+Initialize the MongoDB instance to work as a single node replica set:
 
-   ```bash
-   $ docker exec -it mongodb /bin/bash -c 'mongosh --quiet --eval "rs.initiate()"'
-   ```
+[source,bash]
+$ docker exec -it mongodb /bin/bash -c 'mongosh --quiet --eval "rs.initiate()"'
 
 4. **Launch RESTHeart Container**
 
-   Run the RESTHeart container, linking it to the MongoDB container:
+Run the RESTHeart container, linking it to the MongoDB container:
 
-   ```bash
+[source,bash]
    $ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
-   ```
+[source,bash]
 
 5. **Test the Setup**
 
-   Execute a test request to verify that RESTHeart is running:
+Execute a test request to verify that RESTHeart is running:
 
-   ```bash
+[source,bash]
+----
    $ http -b http://localhost:8080/ping
    # Expected Output: Greetings from RESTHeart!
-   ```
+----
 
 ### Stopping the Containers
 
 To stop both RESTHeart and MongoDB containers, use the following command:
 
-```bash
+[source,bash]
 $ docker stop restheart mongodb
-```
 
 ### Restarting the Containers
 
@@ -125,15 +122,13 @@ The RESTHeart container is stateless and is removed upon stopping (due to the `-
 
 1. **Start MongoDB Container**
 
-   ```bash
-   $ docker start mongodb
-   ```
+[source,bash]
+$ docker start mongodb
 
 2. **Run RESTHeart Container**
 
-   ```bash
-   $ docker run --name restheart --rm --network restheart-network -p 8080:8080 -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
-   ```
+[source,bash]
+$ docker run --name restheart --rm --network restheart-network -p 8080:8080 -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
 
 == The RESTHeart Docker tags
 
