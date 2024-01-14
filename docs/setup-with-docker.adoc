@@ -60,34 +60,80 @@ $ docker run --rm -p "8080:8080" --add-host host.docker.internal:host-gateway so
 
 NOTE: This command relies on the docker support of `host.docker.internal`. If you are using an old docker version or a docker runtime that does not support it, than you need to configure the docker network accordingly (you can refer to the brilliant link:https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach["From inside of a Docker container, how do I connect to the localhost of the machine?" on StackOverflow]) or use one of the an alternative methods described in the further sections.
 
-== Run both RESTHeart and MongoDB with Docker
+Your RESTHeart setup documentation is quite detailed, but it can be further refined for clarity and ease of use. Here's an improved version:
 
-1) Create a Docker network:
+---
 
-[source,bash]
-$ docker network create restheart-network
+## Run RESTHeart and MongoDB with Docker
 
-2) Run a MongoDB container
+### Setup Procedure
 
-[source,bash]
-$ docker run -d --name mongodb --network restheart-network mongo:7.0 --replSet=rs0
+This setup only needs to be completed once. Follow these steps:
 
-3) Initiate MongoDB as a single node Replica Set
+1. **Create a Docker Network**
 
-[source,bash]
-$ docker exec -it mongodb /bin/bash -c 'mongosh --quiet --eval "rs.initiate()"'
+   Create a dedicated network for RESTHeart and MongoDB communication:
 
-4) Run a RESTHeart container
+   ```bash
+   $ docker network create restheart-network
+   ```
 
-[source,bash]
-$ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+2. **Start MongoDB Container**
 
-[source,bash]
-----
-$ http -b http://localhost:8080/ping
+   Launch a MongoDB container within the created network:
 
-Greetings from RESTHeart!
-----
+   ```bash
+   $ docker run -d --name mongodb --network restheart-network mongo:7.0 --replSet=rs0
+   ```
+
+3. **Initialize MongoDB as a Single Node Replica Set**
+
+   Initialize the MongoDB instance to work as a single node replica set:
+
+   ```bash
+   $ docker exec -it mongodb /bin/bash -c 'mongosh --quiet --eval "rs.initiate()"'
+   ```
+
+4. **Launch RESTHeart Container**
+
+   Run the RESTHeart container, linking it to the MongoDB container:
+
+   ```bash
+   $ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+   ```
+
+5. **Test the Setup**
+
+   Execute a test request to verify that RESTHeart is running:
+
+   ```bash
+   $ http -b http://localhost:8080/ping
+   # Expected Output: Greetings from RESTHeart!
+   ```
+
+### Stopping the Containers
+
+To stop both RESTHeart and MongoDB containers, use the following command:
+
+```bash
+$ docker stop restheart mongodb
+```
+
+### Restarting the Containers
+
+The RESTHeart container is stateless and is removed upon stopping (due to the `--rm` option). However, the MongoDB container retains its state and is not removed on stop. To restart, use the following commands:
+
+1. **Start MongoDB Container**
+
+   ```bash
+   $ docker start mongodb
+   ```
+
+2. **Run RESTHeart Container**
+
+   ```bash
+   $ docker run --name restheart --rm --network restheart-network -p 8080:8080 -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+   ```
 
 == The RESTHeart Docker tags
 
