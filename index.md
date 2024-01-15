@@ -25,6 +25,7 @@ stars-bounce: true
         <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
         <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
         <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
+        <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
     </div>
 </section>
 
