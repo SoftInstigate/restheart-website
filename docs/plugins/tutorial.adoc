@@ -1,167 +1,142 @@
 ---
-title: RESTHeart User Signup Tutorial
+title: RESTHeart Greetings Services Tutorial
 layout: docs-adoc
 menu: framework
 ---
 
-== Overview
+This tutorial introduces two straightforward web services from the **RESTHeart examples collection**: `textGreeter` and `jsonGreeter`. These services generate greeting messages in different formats: `textGreeter` delivers messages in `text/plain` format, while `jsonGreeter` uses `application/json`.
 
-This tutorial demonstrates an implementation of a user signup process, including user document creation, verification code generation, and email verification and provides guidance on using the development framework to implement microservices.
+This plugin serves as an example of how to create services in RESTHeart by implementing various specialized `Service` interfaces, such as `JsonService` and `ByteArrayService`. It demonstrates handling requests and responses, retrieving query parameters, and setting the `Content-Type` header.
 
-NOTE: Source code available https://github.com/SoftInstigate/restheart/tree/master/examples/user-signup[here].
+IMPORTANT: **Explore Comprehensive RESTHeart Examples!** If you're looking to dive deeper into developing with RESTHeart, visit the link:https://github.com/SoftInstigate/restheart/blob/master/examples/README.md[RESTHeart examples^] to discover a rich collection of use cases and code samples. **Highly recommended for an in-depth learning experience!**
 
-== Process Flow
+== What you need
 
-* *User Creation*: An unauthenticated client sends a POST request to `/users` to create a new user document.
-* *Verification Code*: The `verificationCodeGenerator` interceptor adds a verification code to the user document upon creation.
-* *User Roles*: The newly created user is assigned `roles: ["UNVERIFIED"]`. This is set by the `mergeRequest` statement in the permission, allowing unauthenticated clients to create user documents. The role `UNVERIFIED` is defined in the ACL with no permissions.
-* *Email Verification*: The `emailVerificationSender` async response interceptor sends a verification email. This email contains a link to the `userVerifier` service, passing the verification code as a query parameter.
-* *User Verification*: The `userVerifier` service plays a crucial role in the verification process. Upon receiving the verification code, it authenticates the code's validity. Once verified, the service updates the user's role to `["USER"]`. This updated role is significant as it is predefined in the Access Control List (ACL) with specific permissions. Notably, it grants the verified user the ability to access the collection `/coll`. This access is essential as it enables the verified user to interact with the core data of the dummy application, marking a successful transition from an unverified to a fully authenticated and functional user within the system.
+To run this tutorial, the following are required:
+
+1) **Java 17**: Install it using link:https://sdkman.io[sdkman^]
+
+[source,bash]
+$ sdk install java 17.0.9-tem
+
+2) **Docker**: Necessary for running RESTHeart.
+
+3) **HTTPie**: A command-line HTTP client for testing, available at link:https://httpie.io/cli[httpie.io/cli^]
+
+NOTE: The examples use Maven, but it's accessible through the included Maven wrapper (`mvnw`), so a separate installation is not required.
 
 == Building the Plugin
 
-Use the following command to build the plugin. Ensure you are in the project's root directory before executing it:
-
-[source,bash]
-$ ../mvnw clean package
-
-## Running RESTHeart with the plugin
-
-To run the RESTHeart with the plugin, use Docker as follows. This command maps the host's port 8080 to the container's port 8080 and mounts the build directory as a volume:
-
-1) **Start MongoDB Container**
-
-**For First-Time Setup:**
-
-Use the following commands to start a MongoDB container and initialize it as a single node replica set.
-
-[source,bash]
-$ docker run -d --name mongodb -p 27017:27017 mongo --replSet=rs0 # Launch a MongoDB container
-
-[source,bash]
-$ docker exec mongodb mongosh --quiet --eval "rs.initiate()" # Initialize the MongoDB instance to work as a single node replica set
-
-**For Subsequent Uses:**
-
-If you've previously created the MongoDB container and just need to start it again, you can simply use the following command:
-
-[source,bash]
-$ docker start mongodb
-
-2) **Launch RESTHeart Container**
-
-Run the RESTHeart container, linking it to the MongoDB container and using the configuration override file `conf.yml`:
-
-[source,bash]
-$ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom -v ./conf.yml:/opt/restheart/etc/conf.yml softinstigate/restheart:latest -o etc/conf.yml
-
-For more information see: link:/docs/setup-with-docker#for-development-run-restheart-and-open-mongodb-with-docker[For development: run RESTHeart and open MongoDB with Docker]
-
-**Important Configuration Step**: Before executing this script, ensure you have customized the `conf.yml` file with your SMTP server details. This configuration is crucial for the script to facilitate the sending of verification emails.
-
-For detailed instructions on configuring your SMTP server in `conf.yml`, refer to the upcoming section titled **Configuration**.
-
-== Configuration
-
-Configure the `emailVerificationSender` interceptor with your SMTP server details for sending verification emails. Add the following in `conf.yml`:
-
-[source,yml]
-----
-/emailVerificationSender:
-  verifier-srv-url: http://127.0.0.1:8080/verify
-  from: <your-email-address>
-  from-name: <your-name>
-  host: smtp.gmail.com
-  port: 465
-  smtp-username: <your-gmail-address>
-  smtp-password: <your-gmail-password>
-----
-
-IMPORTANT: For Gmail, create a third-party password as described link:https://support.google.com/accounts/answer/185833?hl=en[here].
-
-== Run restheart with the configuration
-
-NOTE: this command uses the link:/docs/configuration#modify-the-configuration-with-an-override-file[configuration override file]
+To build the plugin, run the following commands:
 
 [source,bash]
 ----
-$ java -jar restheart.jar -o conf.yml
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git # clone restheart repo
+$ cd examples/greeter-service # cd into the greeter-service example project root
+$ ../mvnw clean package build the project
 ----
 
-== Schema Validation
+== Running RESTHeart with the Plugin
 
-link:https://restheart.org/docs/json-schema-validation/[JSON Schema Validation] is used to ensure the user document adheres to a defined schema.
+This plugin doesn't require MongoDB, so you can run RESTHeart in standalone mode using the `-s` option.
 
-1. *Create Schema Store*:
-+
+Use Docker to start RESTHeart with the plugin:
+
 [source,bash]
 ----
-$ http -a admin:secret PUT :8080/_schemas
+$ docker run --rm -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart:latest -s
 ----
 
-2. *Define JSON Schema for User*:
-+
+For more information, see link:/docs/setup-with-docker#run-restheart-with-custom-plugin[RESTHeart with custom Plugin] documentation.
+
+== Testing the Service
+
+You can test the service with the following HTTP requests:
+
+=== GET request, no query parameter
+
 [source,bash]
 ----
-$ echo '{"_id":"user","$schema":"http://json-schema.org/draft-04/schema#","type":"object","properties":{"_id":{"type":"string","pattern":"^\\\w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$"},"password":{"type":"string"},"roles":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"required":["_id","password"],"additionalProperties":false}' | http -a admin:secret POST :8080/_schemas
+$ http -b :8080/textGreeter
+Hello, World
 ----
 
-3. *Apply Schema to Users*:
-+
+===  GET request, with name query parameter
+
 [source,bash]
 ----
-$ echo '{"jsonSchema":{"schemaId":"user"}}' | http -a admin:secret PUT :8080/users
+$ http -b :8080/textGreeter?name=Andrea
+Hello, Andrea
 ----
 
-== Access Control List (ACL)
+=== POST request, with content body
 
-1. *Allow Unauthenticated User Creation*: Add permission to `/acl` for unauthenticated clients to create user documents.
-+
-NOTE: The permission sets `roles: ["UNVERIFIED"]` using the `mergeRequest` statement.
-+
 [source,bash]
 ----
-$ echo '{"_id":"allowToRegister","predicate":"path[/users] and method[POST]", "roles":["$unauthenticated"], "mongo": {"mergeRequest":{"roles":["UNVERIFIED"]}}, "priority":1}' | http -a admin:secret POST :8080/acl
+$ http --raw 'Sara' :8080/textGreeter
+Hello, Sara
 ----
 
-2. *Assign Permissions to `USER` Role*:
-+
-NOTE: The permission restricts user access to own documents using `mergeRequest`, `readFilter` and  `writeFilter` statements.
+Note: Using HTTP verbs other than `OPTIONS`, `GET`, or `POST` for `/textGreeter` will result in a `HTTP 405 Method Not Allowed` response.
 
-+
-[source,bash]
-----
-$ echo '{"_id":"allowUsersToAccessColl","predicate":"path[/coll] and (method[POST] or method[GET])","roles":["USER"], "mongo": { "mergeRequest":{"author": "@user._id"},"readFilter":{"author": "@user._id"},"writeFilter":{"author": "@user._id"} }, "priority":1}' | http -a admin:secret POST :8080/acl
-----
+== Plugin Code Description
 
-== User Creation and Verification
-1. *Create User*: Unauthenticated request to create a user document.
-+
-[source,bash]
-----
-$ http POST :8080/users _id=<your-email-address> password=<your-password>
-----
-2. *Verify Email Address*: Click the link in the verification email. This changes the user's role to `USER`.
-3. *Check User Roles*: Use the `/roles` service to verify user credentials and roles.
-+
-[source,bash]
-----
-$ http -a <your-email-address>:<your-password> :8080/roles/<your-email-address>
-----
+Below is the code of the `TextGreeterService` class that implements the Web Service `/textGreeter`:
 
-== Testing Permissions
+[source,java]
+----
+@RegisterPlugin(
+        name = "textGreeter",
+        description = "just another text/plain Hello World")
+public class TextGreeterService implements ByteArrayService {
+    @Override
+    public void handle(ByteArrayRequest req, ByteArrayResponse res) {
+        res.setContentType("text/plain; charset=utf-8");
 
-1. *Access Collection as `UNVERIFIED` User*: Expect `403 Forbidden`.
-+
-[source,bash]
-----
-http GET :8080/coll -a <your-email-address>:<your-password>
-----
-2. *Access Collection as `USER`*: Post-verification, expect successful access.
-+
-[source,bash]
-----
-http GET :8080/coll -a <your-email-address>:<your-password>
+        switch (req.getMethod()) {
+            case OPTIONS -> handleOptions(req);
+
+            case GET -> {
+                var name = req.getQueryParameters().get("name");
+                res.setContent("Hello, " + (name == null ? "Anonymous" : name.getFirst()));
+            }
+
+            case POST -> {
+                var content = req.getContent();
+                res.setContent("Hello, " + (content == null ? "Anonymous" : new String(content)));
+            }
+
+            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+        }
+    }
+}
 ----
 
-For a complete guide on credential checking, refer to link:https://restheart.org/docs/security/how-clients-authenticate/#suggested-way-to-check-credentials[Suggested way to check credentials].
+The Java class `TextGreeterService` is defined as a plugin for a RESTful service, as indicated by the `@RegisterPlugin` annotation. This class is an implementation of the `ByteArrayService` interface. Let's break down its structure and functionality:
+
+1. **Annotation - @RegisterPlugin**:
+   * This annotation is used to register the class as a RESTHeart plugin.
+   * It has two parameters:
+   ** `name`: the identifier for this service. The endpoint defaults to `/textGreeter` since it is not explicitly defined by the annotation parameter `defaultURI`.
+   ** `description`: provides a brief description of what this service does.
+
+2. **Class Declaration**:
+   * `public class TextGreeterService implements ByteArrayService`: this indicates that `TextGreeterService` is a public class implementing the `ByteArrayService` interface.
+
+3. **Method - handle(ByteArrayRequest req, ByteArrayResponse res)**:
+   * This method is an override from the `ByteArrayService` interface.
+   * It takes two parameters: a `ByteArrayRequest` (named `req`) and a `ByteArrayResponse` (named `res`).
+
+4. **Setting the Content-Type**:
+   * `res.setContentType("text/plain; charset=utf-8")`:
+   * This line sets the content type of the response to `text/plain` with `UTF-8` charset, indicating that the response will be plain text.
+
+5. **Handling Different HTTP Methods**:
+   * The service uses a switch statement to handle different HTTP request methods.
+   * For each case, there's a different way to handle the request:
+     ** `OPTIONS`: Calls a method `handleOptions(req)`, an inherited convenient method that handles it for you providing CORS support.
+     ** `GET`: Retrieves a query parameter `name` from the request. If `name` is not provided, it defaults to `World`. The response content is set to "Hello, [name]".
+     ** `POST`: Gets the content of the request. If no content is provided, it defaults to `World`. The response is similar to the GET method, greeting the content of the request.
+   *For any other HTTP method, the service sets the response status code to `HttpStatus.SC_METHOD_NOT_ALLOWED`, indicating that the method is not supported.
+
+In summary, `TextGreeterService` is a RESTHeart service plugin designed to respond with a simple text greeting. It handles GET and POST requests differently based on the input it receives (either through query parameters or request body) and defaults to greeting "World" if no specific input is provided. It also handles OPTIONS requests and rejects unsupported methods.
