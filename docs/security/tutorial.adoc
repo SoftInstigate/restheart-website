@@ -1,12 +1,224 @@
 ---
-title: Auth^2 Tutorial
+title: Authentication and Authorization tutorial
 layout: docs-adoc
 menu: security
 ---
 
-In this upcoming tutorial, we will delve into the world of authentication and authorization for RESTHeart, exploring the fundamental aspects of securing your RESTful APIs.
+== Introduction
+This tutorial is designed to provide you with a clear understanding of how to secure your RESTHeart applications effectively.
 
-While the work is currently in progress, we're excited to provide you with a comprehensive guide on how to implement robust authentication and authorization mechanisms to safeguard your RESTHeart-powered applications. Stay tuned for this valuable resource that will empower you to take control of your API security.
+RESTHeart offers robust security features. **Authentication** and **Authorization** are key components of these features, ensuring that only authenticated users can access your API and that they can only perform actions they are authorized to do.
 
-[.img-fluid.mx-auto]
-image::https://http.cat/404[not found]
+In this guide, we'll explore the various methods of client authentication, including basic authentication and token-based authentication. You'll learn how to use different tools such as httpie and curl for authentication, understand the importance of tokens, and how to manage them effectively.
+
+Additionally, we will delve into the concept of authorization in RESTHeart. You'll get to understand the role of Access Control Lists (ACLs) and how they define permissions within your RESTHeart setup. We'll provide examples of ACL configurations and explain the significance of each property in the ACL documents.
+
+By the end of this tutorial, you will have a solid foundation in managing security for your RESTHeart applications. Whether you're developing a new project or enhancing an existing one, these skills will be invaluable in ensuring your data remains secure and accessible only to authorized users.
+
+Let's get started on your journey to mastering authentication and authorization in RESTHeart!
+
+== Authentication
+
+RESTHeart allows clients to authenticate using various methods. This guide focuses on the basic authentication process where a client provides a *username* and *password* with each request.
+
+=== Example http clients authentication
+
+**With httpie**: Use the `-a` option:
+
+[source,bash]
+----
+$ http -a userid:password GET 127.0.0.1:8080/
+----
+
+**With curl**: Use the `--user` option:
+
+[source,bash]
+----
+$ curl -i --user userid:password -X GET 127.0.0.1:8080/
+----
+
+**With JavaScrip**:
+
+Paste this in a browser console, with RESTHeart running on localhost:
+
+[source,javascript]
+----
+fetch("http://127.0.0.1:8080/", { method:'GET', headers: {'Authorization': 'Basic ' + btoa('admin:secret')}}).then(res => res.json()).then(collections => console.log(collections));
+----
+
+The list of MongoDB collection should be logged in the console.
+
+=== Auth Tokens
+
+RESTHeart generates an auth token on successful authentication, which can used in subsequent requests in place of the actual password.
+
+Auth token details are provided in response headers. Use the `Auth-Token-Location` URI to manage the token.
+
+TIP: Store auth tokens in web application cookies or session storage.
+
+=== Verifying User Credentials
+
+Use the **roles** service at `/roles/<userid>` to verify credentials passed via basic authentication request header, i.e. `Authorization: Basic base64(id:pwd)`. Possible responses:
+
+- **401 Unauthorized**: Invalid credentials.
+- **403 Forbidden**: Userid mismatch.
+- **200 OK**: Credentials valid, auth token included.
+
+NOTE: To prevent browser login popups, avoid sending the `WWW-Authenticate` header by using the `No-Auth-Challenge` header or `noauthchallenge` query parameter.
+
+For an application example, watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=2262s[this video].
+
+=== Users management
+
+With the default configuration, a user is represented in the collection `/users` as follows:
+
+[source,json]
+----
+{
+    "_id": "username",
+    "roles": [ "list", "of", "roles" ],
+    "password": "secret"
+}
+----
+
+**Get existing users**
+
+[source,bash]
+----
+$ http -a admin:secret /users
+
+[
+  {
+    "_id": "admin",
+    "roles": [
+      "admin"
+    ],
+    "_etag": {
+      "$oid": "5d2edb155883c050065d6a8a"
+    }
+  }
+]
+----
+
+NOTE: The password is always removed from `GET /users` response.
+
+NOTE: For security reasons, it not possible to use the `filter` query parameter on the password field; the following request is forbidden and will cause an error: `GET /users?filter={"password":{"$regex":"^a.*"}}`
+
+**Create a user**
+
+[source,bash]
+$ http -a admin:secret :8080/users _id=foo roles:='[ "user" ]' password=secret
+
+NOTE: The password is automatically encrypted by RESTHeart.
+
+**Update a user**
+
+[source,bash]
+$ http PATCH :8080/users/foo password=betterSecret
+
+**Delete a user**
+
+[source,bash]
+$ http -a admin:secret DELETE /users/foo
+
+**Create a permssion**
+
+[source,bash]
+$ http -a admin:secret /acl _id="userCanGetInventory" predicate="path-prefix[/inventory] and method[GET]" roles:='["user"]' priority:=1
+
+== Authorization
+
+RESTHeart uses `mongoAclAuthorizer` as the default authorizer, managing access based on MongoDB collection-defined Access Control Lists (ACL).
+
+=== Understanding ACL Properties
+
+An ACL is defined by a set of permissions with the following properties:
+
+- **Predicate**: An undertow predicate that determines when a request is authorized.
+- **Roles**: An array of strings specifying roles that apply to the ACL document.
+- **Priority**: Determines precedence when multiple ACL documents match a request.
+- **Mongo**: Specifies special permissions for requests handled by `MongoService`.
+
+NOTE: The `fileAclAuthorizer` is an alternative that defines roles permissions in YAML file.
+
+=== Example Permissions
+
+Here are some example permissions provided in RESTHeart's link:https://github.com/SoftInstigate/restheart/blob/master/examples/example-conf-files/acl.json[example ACL^]:
+
+**powerUserCanDoEverything**
+
+[source,json]
+----
+{
+    "_id": "powerUserCanDoEverything",
+    "predicate": "path-prefix('/')",
+    "roles": ["power-user"],
+    "priority": 0,
+    "mongo": {
+        "allowManagementRequests": true,
+        "allowBulkPatch": true,
+        "allowBulkDelete": true,
+        "allowWriteMode": true
+    }
+}
+----
+This permission grants `power-user` full system access.
+
+**userCanGetOwnCollection**
+
+[source,json]
+----
+{
+    "_id": "userCanGetOwnCollection",
+    "roles": ["user"],
+    "predicate": "method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {
+        "_$or": [{ "status": "public" }, { "author": "@user._id" }]
+      },
+      "projectResponse": { "log": 0 }
+    }
+}
+----
+
+Grants `user` role permission to GET documents from `/{userid}`. The read filter applies so only documents with `status=public` or `author=userid` are returned. Users must use the `page` query parameter and cannot use `filter` and `sort` query parameters. The property `log` is removed from the response.
+
+**userCanCreateDocumentsInOwnCollection**
+
+[source,json]
+----
+{
+    "_id": "userCanCreateDocumentsInOwnCollection",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(POST) and path-template('/{userid}') and equals(@user._id, ${userid}) and bson-request-whitelist(title, content) and bson-request-contains(title, content) and qparams-whitelist()",
+    "mongo": {
+      "mergeRequest": {
+        "author": "@user._id",
+        "status": "draft",
+        "log": "@request"
+      }
+    }
+}
+----
+
+Allows `user` role to create documents under `/{userid}`. The request must contain `title` and `content`, and no other properties or query parameters are allowed. Properties `author`, `status`, and `log` are added server-side.
+
+**userCanModifyDraftsInOwnCollection**
+
+[source,json]
+----
+{
+    "_id": "userCanModifyDraftsInOwnCollection",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(PATCH) and path-template('/{userid}/{docid}') and equals(@user._id, ${userid}) and bson-request-whitelist(title, content, status) and (bson-request-contains(title, content) or bson-request-contains(status)) and qparams-whitelist()",
+    "mongo": {
+      "mergeRequest": { "author": "@user._id" },
+      "writeFilter": { "status": "draft" }
+    }
+}
+----
+
+Allows `user` role to modify documents under `/{userid}/{docid}`. The request must contain `title` and `content` or status, and no other properties or query parameters are allowed. Property author is added server-side, and a write filter ensures users can only modify their own documents.
