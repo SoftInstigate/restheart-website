@@ -44,7 +44,7 @@ Using `admin`, create the `/secrets` collection:
 [source,bash]
 $ http -a admin:secret PUT :8080/secrets
 
-== Creating Users *alice* and *bob*
+== Creating Users alice and bob
 
 Next, create two users, `alice` and `bob`, each with the `user` role:
 
@@ -78,56 +78,70 @@ IMPORTANT: A `403 Forbidden` response means authentication succeeded, but the cl
 
 RESTHeart's default authorizer, `mongoAclAuthorizer`, enforces permissions based on user roles and ACL configurations.
 
-== Configuring Access for `user` Role on `/secrets`
+== Configuring Access for user Role on /secrets
 
 We aim to allow `user` role to create and access their own documents in `/secrets`, and to modify only their documents.
 
-1. **Allow `GET` on `/secrets`**:
-   Users can only access documents they created.
+1) **Allow `GET` on `/secrets`**:
 
-   ----json
-   {
-     "_id": "userCanAccessOwnSecret",
-     "roles": [ "user" ],
-     "predicate": "method(GET) and path('/secrets')",
-     "priority": 100,
-     "mongo": { "readFilter": "{ author: @user._id }" }
-   }
-   ----
+Users can only access documents they created.
 
-2. **Allow `POST` on `/secrets`**:
-   Users can create new documents, setting the `author` to their `_id`.
+[source,bash]
+----
+{
+    "_id": "userCanAccessOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(GET) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "readFilter": "{ author: @user._id }" }
+}
+----
 
-   ----json
-   {
-     "_id": "userCanCreateOwnSecret",
-     "roles": [ "user" ],
-     "predicate": "method(POST) and path('/secrets')",
-     "priority": 100,
-     "mongo": { "mergeRequest": { "author": "@user._id" } }
-   }
-   ----
+2) **Allow `POST` on `/secrets`**:
 
-3. **Allow `PATCH` on `/secrets/{id}`**:
-   Users can modify only their documents.
+Users can create new documents, setting the `author` to their `_id`.
 
-   ----json
-   {
-     "_id": "userCanModifyOwnSecret",
-     "roles": [ "user" ],
-     "predicate": "method(PATCH) and path-template('/secrets/{id}')",
-     "priority": 100,
-     "mongo": { "writeFilter": { "author": "@user._id" } }
-   }
-   ----
+[source,bash]
+----
+{
+    "_id": "userCanCreateOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(POST) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "mergeRequest": { "author": "@user._id" } }
+}
+----
+
+3) **Allow `PATCH` on `/secrets/{id}`**:
+
+Users can modify only their documents.
+
+[source,bash]
+----
+{
+    "_id": "userCanModifyOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(PATCH) and path-template('/secrets/{id}')",
+    "priority": 100,
+    "mongo": { "writeFilter": { "author": "@user._id" } }
+}
+----
 
 To create these permissions, use the following commands:
 
 [source,bash]
 ----
-$ http -a admin:secret POST :8080/acl _id=userCanAccessOwnSecret roles:='["user"]' ...
-$ http -a admin:secret POST :8080/acl _id=userCanCreateOwnSecret roles:='["user"]' ...
-$ http -a admin:secret POST :8080/acl _id=userCanModifyOwnSecret roles:='["user"]' ...
+$ http -a admin:secret POST :8080/acl _id=userCanAccessOwnSecret roles:='["user"]' priority:=100 predicate="method(GET) and path('/secrets')" mongo.readFilter:='{ "author": "@user._id" }'
+----
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/acl _id=userCanCreateOwnSecret roles:='["user"]' priority:=100 predicate="method(POST) and path('/secrets')" mongo.mergeRequest:='{ "author": "@user._id" }'
+----
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/acl _id=userCanModifyOwnSecret roles:='["user"]' priority:=100 predicate="method(PATCH) and path-template('/secrets/{id}')" mongo.writeFilter:='{ "author": "@user._id" }'
 ----
 
 == Creating Secret Documents
