@@ -6,7 +6,7 @@ menu: mongodb
 
 :page-liquid:
 
-The following requests upsert a collection defining two change streams:
+The following requests upsert a collection defining three change streams:
 
 - *all* bound at `/messages/_streams/all`
 - *mine* bound at `/messages/_streams/mine`
@@ -44,6 +44,7 @@ PUT /messages HTTP/1.1
 ----
 
 Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
+
 This is because the Change Event looks like:
 
 [source,json]
@@ -88,6 +89,22 @@ GET /messages?rep=SHAL HTTP/1.1
             "href": "/messages/_streams/mine"
         }
     }
+}
+----
+
+Alternatively, we can define a single change stream that either returns all messages or only those sent by a specific `name``. This can be achieved through a definition that utilizes optional stages:
+
+
+[source,json]
+----
+{
+    "streams" : [
+{ "stages" : [
+          { "$ifvar": [ "n", { "_$match" : { "fullDocument::name" : { "_$var" : "n" } } } ] }
+        ],
+        "uri" : "withOptionalStage"
+      }
+    ]
 }
 ----
 
