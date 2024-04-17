@@ -133,7 +133,7 @@ Now we are going to insert a new document to the collection.
 
 {% include code-header.html
     type="Request"
-    link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/0"
+    link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/5"
 %}
 
 ```http
@@ -162,7 +162,7 @@ It's possible to PUT a document into the collection by specifying the document i
 
 {% include code-header.html
     type="Request"
-    link="https://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/4"
+    link="https://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/9"
 %}
 
 ```http
@@ -175,7 +175,7 @@ PUT /inventory/newDocument?wm=upsert HTTP/1.1
 
 {% include code-header.html
     type="Request"
-    link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/0"
+    link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/5"
 %}
 
 ```http
