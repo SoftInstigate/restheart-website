@@ -8,8 +8,9 @@ stars-bounce: true
         <img width="160" src="/images/RESTHeart-logo.png">
         <h1 class="mt-1 top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
-        Open Source Low-code API development framework
-        <div class="top-6 text-break white mt-2">Featuring ready-to-go Security and MongoDB API</div>
+        Open source low-code API development framework
+        <div class="top-6 text-break white mt-2">Ready to use backend for Web and Mobile Apps.</div>
+        <div class="top-6 text-break white mt-2">REST, GraphQL and WebSocket APIs for <a href="https://www.mongodb.com/" target="_blank">MongoDB</a> and compatible databases.</div>
         </h2>
         <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
         <div class="container">
