@@ -2,7 +2,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">The MongoDB best friend</span></div>
+                <div class="top-4 mb-4"><span class="highlightcolor">MongoDB's best friend</span></div>
                 <p>RESTHeart unlocks <strong>all the features</strong> of MongoDB via REST, GraphQL and WebSocket APIs. </p>
                 <p class="mt-1">
                     Also supports <strong>Mongo Atlas</strong>, <strong>FerretDB</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
