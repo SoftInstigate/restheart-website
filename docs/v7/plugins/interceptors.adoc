@@ -1,0 +1,136 @@
+---
+title: Interceptors
+layout: docs-adoc
+menu: framework
+---
+
+Interceptors play a crucial role in the RESTHeart framework, allowing developers to observe and modify requests and responses throughout the request lifecycle. This document provides an overview of the Interceptor class, available interceptor interfaces, and usage examples.
+
+== The Interceptor Class
+
+An `Interceptor` is comprised of a class implementing one of the `Interceptor` interfaces, such as `MongoInterceptor`, and annotated with `@RegisterPlugin`.
+
+The `Interceptor` interface encompasses two pivotal methods: `handle(req, res)` and `resolve(req, res)`. The paramount method is `handle(req, res)`, which is triggered only when `resolve(req, res)` evaluates to `true`. This design ensures that the interceptor's logic is selectively applied, allowing developers to execute customized actions precisely when conditions specified in the `resolve()` method are met.
+
+The `req` and `res` arguments allow you to retrieve and modify the content, query parameters, and headers of both the request and response objects.
+
+The special interceptor interface, `WildcardInterceptor`, intercepts requests handled by any `Service`. Other interceptors can handle requests with matching types between the Service and the Interceptor:
+
+- `WildcardInterceptor`: Intercepts requests handled by any service
+- `ByteArrayInterceptor`: Intercepts requests handled by services implementing `ByteArrayService`
+- `JsonInterceptor`: Intercepts requests handled by services implementing `JsonService`
+- `BsonInterceptor`: Intercepts requests handled by services implementing `BsonService`
+- `MongoInterceptor`: Intercepts requests handled by the `MongoService`
+- `GraphQLInterceptor`: Intercepts GraphQL requests (available from v7.6.2)
+- `ProxyInterceptor`: Intercepts proxied requests
+
+NOTE: `MongoInterceptor` is particularly useful as it allows intercepting requests to the `MongoService`, adding logic to its data API. For instance, the following response interceptor removes the property `secret` from `GET /coll`.
+
+[source,java]
+----
+@RegisterPlugin(name = "secretFilter",
+    interceptPoint = InterceptPoint.RESPONSE,
+    description = "removes the property 'secret' from GET /coll")
+public class ReadOnlyPropFilter implements MongoInterceptor {
+    @Override
+    public void handle(MongoRequest request, MongoResponse response) throws Exception {
+        if (response.getContent().isDocument()) {
+            response.getContent().asDocument().remove("secret");
+        } else if (request.getContent().isArray()) {
+            response.getContent().asArray().stream()
+                .map(doc -> doc.asDocument())
+                .forEach(doc -> doc.remove("secret"));
+        }
+    }
+
+    @Override
+    public boolean resolve(MongoRequest request, MongoResponse response) {
+        return request.isGet()
+            && response.getContent() != null
+            && "coll".equalsIgnoreCase(request.getCollectionName());
+    }
+}
+----
+
+TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=986s[Interceptors]
+
+== @RegisterPlugin Annotation
+
+All plugins, including `Interceptors`, must be annotated with `@RegisterPlugin`. This annotation serves two primary purposes:
+
+- *Discovery*: Allows RESTHeart to discover plugin implementation classes in deployed JARs (see link:/docs/plugins/deploy[How to Deploy Plugins]).
+- *Configuration*: Specifies parameters such as the URI of a service or the intercept point of an interceptor.
+
+**Example**:
+
+[source,java]
+----
+@RegisterPlugin(name = "foo",
+    description = "just an example service",
+    defaultUri="/foo",      // optional, default /<service-name>
+    secure=false,           // optional, default false
+    enabledByDefault=false) // optional, default true
+public class MyPlugin implements JsonService {
+...
+}
+----
+
+**Annotation Parameters:**
+
+[options="header"]
+[cols="1,3,1,1"]
+|===
+|param |description |mandatory |default value
+|`name`
+|the name of the Interceptor
+|yes
+|*none*
+|`description`
+|description of the Interceptor
+|yes
+|*none*
+|`enabledByDefault`
+|`true` to enable the plugin; can be overridden by the plugin configuration option `enabled`
+|no
+|`true`
+|`interceptPoint`
+|the intercept point: `REQUEST_BEFORE_EXCHANGE_INIT`, `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
+|no
+|`requiresContent`
+|proxy interceptor
+|Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to `true` to make available the content of the request (if interceptPoint is `REQUEST_BEFORE_AUTH` or `REQUEST_AFTER_AUTH`) or of the response (if interceptPoint is `RESPONSE` or `RESPONSE_ASYNC`)
+|no
+|`false`
+|`priority`
+|the execution priority (less is higher priority)
+|no
+|`10`
+|===
+
+== Transforming Request Content Format
+
+Interceptors at `REQUEST_BEFORE_EXCHANGE_INIT` can inspect and modify the request before it is initialized. `The handle(req, res)` and `resolve(req, res)` methods receive the request as `UninitializedRequest` and the response as `UninitializedResponse`. This is particularly useful for transforming request content formats.
+
+Example:
+
+[source,java]
+----
+@RegisterPlugin(name = "xmlToBsonTransformer",
+    interceptPoint = InterceptPoint.REQUEST_BEFORE_EXCHANGE_INIT,
+    description = "transforms XML request to Bson for MongoService")
+public class XmlToBsonTransformer implements WildcardInterceptor {
+    @Override
+    public void handle(UninitializedRequest req, UninitializedResponse res) throws Exception {
+        // Transforming XML to Bson
+    }
+
+    @Override
+    public boolean resolve(UninitializedRequest req, UninitializedResponse res) {
+        // Logic to determine when to apply the transformer
+    }
+}
+----
+
+IMPORTANT: Only `WildcardInterceptor` can use the `REQUEST_BEFORE_EXCHANGE_INIT` intercept point.
+
+For a practical example of transforming request and response content to and from a different format than expected by a service, refer to the link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] example.

@@ -11,7 +11,14 @@ layout: default
                         v{{ page.docs_version }}
                     </button>
                     <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                      <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                            {% if page.docs_version == 8 %}
+                            <strong>v8</strong>
+                            {% else %}
+                            v8
+                            {% endif %}
+                        </a>
+                        <a class="dropdown-item" href="{{ "/docs/v7" | prepend: site.baseurl }}">
                             {% if page.docs_version == 7 %}
                             <strong>v7</strong>
                             {% else %}
@@ -83,6 +90,8 @@ layout: default
                     {% include docs-v5-sidebar.html %}
                 {% elsif page.docs_version == 6 %}
                     {% include docs-v6-sidebar.html %}
+                {% elsif page.docs_version == 7 %}
+                    {% include docs-v7-sidebar.html %}
                 {% else %}
                     {% include docs-sidebar.html %}
                 {% endif %}

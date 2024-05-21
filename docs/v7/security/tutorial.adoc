@@ -1,0 +1,183 @@
+---
+title: Authentication and Authorization tutorial
+layout: docs-adoc
+menu: security
+---
+
+This tutorial aims to provide a thorough understanding of securing RESTHeart applications. RESTHeart offers robust security features, with **Authentication** and **Authorization** being central to these. This guide will explore the basic authentication. We'll also delve into authorization, focusing on Access Control Lists (ACLs) and their role in defining permissions.
+
+By the end of this tutorial, you'll have a solid foundation in securing RESTHeart applications, ensuring data security and controlled access.
+
+== What you need
+
+1. **Docker**: For running RESTHeart.
+2. **HTTPie**: A user-friendly command-line HTTP client. Download at link:https://httpie.io/cli[httpie.io/cli^].
+
+== Starting RESTHeart and MongoDB
+
+To begin, create a directory for RESTHeart and use Docker Compose to start both RESTHeart and MongoDB:
+
+[source,bash]
+----
+$ mkdir restheart && cd restheart
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+$ docker compose up --attach restheart
+----
+
+== The Admin User
+
+Upon first launch, `mongoRealmAuthenticator` creates an `admin` user with default password `secret` and the `admin` role. This role is configured as the root role in `mongoAclAuthorizer`, granting full permissions.
+
+WARNING: **Always change the `admin` user's password** to maintain security.
+
+To change the `admin` password:
+
+[source,bash]
+$ http -a admin:secret PATCH :8080/users/admin password="my-strong-password"
+
+== Creating Collection /secrets
+
+Using `admin`, create the `/secrets` collection:
+
+[source,bash]
+$ http -a admin:secret PUT :8080/secrets
+
+== Creating Users alice and bob
+
+Next, create two users, `alice` and `bob`, each with the `user` role:
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/users _id=alice password=secret roles:='["user"]'
+$ http -a admin:secret POST :8080/users _id=bob password=secret roles:='["user"]'
+----
+
+== Understanding Status Codes
+
+The `/users/{id}` endpoint can verify credentials. For example, using incorrect credentials for `alice`:
+
+[source,bash]
+----
+$ http -a alice:wrong GET :8080/secrets
+HTTP/1.1 401 Unauthorized
+----
+
+IMPORTANT: A `401 Unauthorized` response indicates failed authentication due to incorrect credentials. RESTHeart blocks requests to secure services without proper authentication.
+
+Attempting access with correct credentials:
+
+[source,bash]
+----
+$ http -a alice:secret GET :8080/secrets
+HTTP/1.1 403 Forbidden
+----
+
+IMPORTANT: A `403 Forbidden` response means authentication succeeded, but the client lacks permission to access the resource.
+
+RESTHeart's default authorizer, `mongoAclAuthorizer`, enforces permissions based on user roles and ACL configurations.
+
+== Configuring Access for user Role on /secrets
+
+We aim to allow `user` role to create and access their own documents in `/secrets`, and to modify only their documents.
+
+1) **Allow `GET` on `/secrets`**:
+
+Users can only access documents they created.
+
+[source,bash]
+----
+{
+    "_id": "userCanAccessOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(GET) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "readFilter": "{ author: @user._id }" }
+}
+----
+
+2) **Allow `POST` on `/secrets`**:
+
+Users can create new documents, setting the `author` to their `_id`.
+
+[source,bash]
+----
+{
+    "_id": "userCanCreateOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(POST) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "mergeRequest": { "author": "@user._id" } }
+}
+----
+
+3) **Allow `PATCH` on `/secrets/{id}`**:
+
+Users can modify only their documents.
+
+[source,bash]
+----
+{
+    "_id": "userCanModifyOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(PATCH) and path-template('/secrets/{id}')",
+    "priority": 100,
+    "mongo": { "writeFilter": { "author": "@user._id" } }
+}
+----
+
+To create these permissions, use the following commands:
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/acl _id=userCanAccessOwnSecret roles:='["user"]' priority:=100 predicate="method(GET) and path('/secrets')" mongo.readFilter:='{ "author": "@user._id" }'
+----
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/acl _id=userCanCreateOwnSecret roles:='["user"]' priority:=100 predicate="method(POST) and path('/secrets')" mongo.mergeRequest:='{ "author": "@user._id" }'
+----
+
+[source,bash]
+----
+$ http -a admin:secret POST :8080/acl _id=userCanModifyOwnSecret roles:='["user"]' priority:=100 predicate="method(PATCH) and path-template('/secrets/{id}')" mongo.writeFilter:='{ "author": "@user._id" }'
+----
+
+== Creating Secret Documents
+
+Let's have `alice` and `bob` create their secrets:
+
+[source,bash]
+----
+$ http -a bob:secret POST :8080/secrets message="Bob loves Alice"
+$ http -a alice:secret POST :8080/secrets message="Alice loves Bob"
+----
+
+== Reading Secret Documents
+
+Viewing with `admin`:
+
+[source,bash]
+----
+$ http -a admin:secret -b GET :8080/secrets
+# Output includes both Alice's and Bob's messages
+----
+
+NOTE: The `author` property is correctly set for each document.
+
+Accessing `/secrets` as `alice`:
+
+[source,bash]
+----
+$ http -a alice:secret -b GET :8080/secrets
+# Output includes only Alice's message
+----
+
+Similarly, accessing as `bob`:
+
+[source,bash]
+----
+$ http -a bob:secret -b GET :8080/secrets
+# Output includes only Bob's message
+----
+
+Let's take a moment to acknowledge the story of Alice and Bob. These two characters are entwined in an 'impossible love' story that symbolizes the challenges of secure communication in the digital age. And RESTHeart is no exception keeping their love hidden in the /secrets collection.
