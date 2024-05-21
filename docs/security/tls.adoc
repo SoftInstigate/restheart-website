@@ -34,11 +34,10 @@ https-listener:
 Example:
 [source,bash]
 ----
-$ sudo vi /etc/hosts # ...and map 127.0.0.1 to restheart.local domain
 $ http -d https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh # download the script generate-certauthority-and-keystore.sh
-$ ./generate-certauthority-and-keystore.sh -d restheart.local -a /tmp -p secret # generate a test keystore and certificate authority
-$ RHO='/https-listener->{ "enabled": true, "host": "restheart.local", "port": 4443, "keystore-path": "/tmp/restheart.local.jks", "keystore-password": "secret", "certificate-password": "secret" }' java -jar restheart.jar # run RESTHeart with TLS enabled
-$ http -b --verify /tmp/devCA.pem https://restheart.local:4443/ping # execute a test request
+$ ./generate-certauthority-and-keystore.sh -d localhost -a /tmp -p secret # generate a test keystore and certificate authority
+$ RHO='/https-listener->{ "enabled": true, "host": "localhost", "port": 4443, "keystore-path": "/tmp/localhost.jks", "keystore-password": "secret", "certificate-password": "secret" }' java -jar restheart.jar # run RESTHeart with TLS enabled
+$ http -b --verify /tmp/devCA.pem https://restheart.local:4443/ping # execute a test TLS request
 Greetings from RESTHeart!
 ----
 
@@ -46,7 +45,10 @@ To enable https configure the https listener using the following options:
 
 1.  `/https-listener/enabled` _true_ to enable it
 2.  `/https-listener/host` the ip where to bind the listener
-3.  `/https-listener/port` the port where to bind the listener:
+3.  `/https-listener/port` the port where to bind the listener
+4.  `/https-listener/keystore-path` the path of the keystore
+5.  `/https-listener/keystore-password` the password of the keystore
+6.  `/https-listener/certificate-password` the password of the certificate
 
 A SSL certificate must configured in order to enable the https listener.
 
