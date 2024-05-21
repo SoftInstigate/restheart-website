@@ -26,9 +26,20 @@ https-listener:
     enabled: true
     host: 0.0.0.0
     port: 4443
-    keystore-file: /path/to/keystore/file
+    keystore-path: /path/to/keystore/file
     keystore-password: secret
-    certpassword: secret
+    certificate-password: secret
+----
+
+Example:
+[source,bash]
+----
+$ sudo vi /etc/hosts # ...and map 127.0.0.1 to restheart.local domain
+$ http -d https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh # download the script generate-certauthority-and-keystore.sh
+$ ./generate-certauthority-and-keystore.sh -d restheart.local -a /tmp -p secret # generate a test keystore and certificate authority
+$ RHO='/https-listener->{ "enabled": true, "host": "restheart.local", "port": 4443, "keystore-path": "/tmp/restheart.local.jks", "keystore-password": "secret", "certificate-password": "secret" }' java -jar restheart.jar # run RESTHeart with TLS enabled
+$ http -b --verify /tmp/devCA.pem https://restheart.local:4443/ping # execute a test request
+Greetings from RESTHeart!
 ----
 
 To enable https configure the https listener using the following options:
