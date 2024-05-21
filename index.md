@@ -16,7 +16,7 @@ stars-bounce: true
             <div class="listingblock my-0">
                 <div class="content">
 <pre class="rouge highlight text-center">
-<code data-lang="bash"><span class="nv">$ </span>curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker compose up</code>
+<code data-lang="bash"><span class="nv">$ </span>docker pull softinstigate/restheart && curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker compose up --attach restheart</code>
 </pre>
                 </div>
             </div>
