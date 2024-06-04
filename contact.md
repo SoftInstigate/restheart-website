@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<div class="h-100 jumbotron jumbotron-fluid background-primary my-0 pt-3">
+<div class="h-100 jumbotron jumbotron-fluid background-black my-0 pt-3">
     <div class="d-flex justify-content-center align-content-end w-100 h-100 pt-5">
         <div class="row text-center">
         <div class="col-12 my-2">
@@ -23,7 +23,7 @@ layout: default
 
 <div class="mb-5">
         <div class="d-flex justify-content-center">
-            <div class="mt-4 mx-auto rounded p-2 bg-white">
+            <div class="mt-4 mx-auto rounded p-2">
                 <h2 class="text-center m-0"><strong>RESTHeart</strong> is a division of
                 <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></h2>
             </div>

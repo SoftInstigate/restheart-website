@@ -3,7 +3,7 @@ layout: default
 stars-bounce: true
 ---
 
-<section id="top" class="black-background text-center pt-2 pb-2">
+<section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
         <img width="160" src="/images/RESTHeart-logo.png">
         <h1 class="mt-1 top-1 text-break"><strong>REST</strong>Heart</h1>
@@ -33,7 +33,7 @@ stars-bounce: true
     <img src="/images/restheart.gif" class="img-fluid"/>
 </div>
 
-<section id="article-at-aws-blog" class="call-to-action black-background">
+<!-- <section id="article-at-aws-blog" class="call-to-action black-background">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 call-to-action__item call-to-action__first text-center">
@@ -51,7 +51,7 @@ stars-bounce: true
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- just to make anchor link go to the right height -->
 <div id="features" class="pb-4"></div>
