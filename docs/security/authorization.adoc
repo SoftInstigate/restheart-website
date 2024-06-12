@@ -131,13 +131,13 @@ RESTHeart extends this language introducing the following new predicates that ex
 |checks if `value` is contained in `array`
 |`path-template('/{tenant}') and in(value=${tenant}, array=@user.tenants)`
 
-|`bson-request-prop-equals` _from v7.5_
+|`bson-request-prop-equals`
 |`true` if the request content is bson and the value of the property `key` (can use the dot notation) is equal to `value`
 |if the request content is `{"sub": { "foo": "bar" }}` then `bson-request-prop-equals(key=sub.foo, value='"bar"')` and `bson-request-prop-equals(key=sub, value='{"foo": "bar"}')` are `true`;  `bson-request-prop-equals(key=sub.foo, value='"baz"')` is `false`
-|`bson-request-array-contains` _from v7.5_
+|`bson-request-array-contains`
 |`true` if the request content is bson and the property `key` (can use the dot notation) is an array that contains all `values`
 |if the request content is `{ "a": [ "foo", "bar" ] }` then `bson-request-array-contains(key=a, values='"foo"' )` and `bson-request-array-contains(key=a, values={ '"foo"', '"bar"' } )` are `true`; `bson-request-array-contains(key=a, values={ '"foo"', '"baz"' } )` is `false`
-|`bson-request-array-is-subset` _from v7.5_
+|`bson-request-array-is-subset`
 |`true` if the request content is bson and the property `key` (can use the dot notation) is an array that is a subset of `values` |if the request content is `{ "a": [ "foo", "bar" ] }` then `bson-request-array-is-subset(key=a, values={ '"foo"', '"bar"', '"baz"' })` is `true`; `bson-request-array-is-subset(key=a, values={ '"foo"', '"baz"'  })` is `false`
 |===
 
@@ -301,8 +301,6 @@ fileAclAuthorizer:
       predicate: path-prefix('/')
       priority: 0
 ----
-
-NOTE: defining the ACL directly in the configuration rather than on a separate `acl.yml` file is available from RESTHeart v7.2
 
 The `conf-file` path is either absolute, or relative to the restheart configuration file (if specified) or relative to the plugins directory (if using the default configuration).
 

@@ -176,9 +176,7 @@ type Query {
 
 ==== Optional Stages
 
-Starting from RESTHeart v7.6, field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
-
-NOTE: Optional Stages are available from RESTHeart v7.6.
+Field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
 
 Optional Stages in field-to-aggregation mapping are similar to Optional Stages in regular aggregations. The main difference lies in the conditional operators used. In field-to-aggregation mapping, the optional stage operator is `$ifarg`, whereas in regular aggregations, it is `$ifvar`.
 
@@ -290,13 +288,9 @@ As a result of using these mapping operators:
 
 NOTE: the `$fk` and `$arg` operators allow the usage of dot notation to traverse document fields.
 
-NOTE: the `$arg` operator allows dot notation from RESTHeart v7.6 onwards.
-
 === Dot Notation support for `$arg` and `$fk`
 
 The `$fk` and `$arg` operator can utilize dot notation to access nested properties.
-
-NOTE: Dot Notation support for `$arg` is available from RESTHeart v7.6
 
 The Dot Notation support for `$arg` feature enables the handling of `InputTypes`. The following example  will clarify:
 
@@ -329,8 +323,6 @@ The Query mapping can use the dot notation as follows to cope the `Filters Input
 
 The `$arg` operator can specify a default value. This default value is utilized when an optional argument is not provided in the GraphQL Query.
 
-NOTE: Arguments with Default Values are available from RESTHeart v7.6.
-
 Arguments with Default Values in GraphQL mappings are similar to those in regular aggregations. The primary distinction lies in the operators used. In GraphQL mappings, the operator is `$arg`, whereas in regular aggregations, it is `$var`.
 
 For example, the following code specifies the default value `Andrea` for the argument `name`: `{"$arg": [ "name", "Andrea"]}`.
@@ -338,8 +330,6 @@ For example, the following code specifies the default value `Andrea` for the arg
 For a more comprehensive understanding of how to use arguments with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
 
 === The `rootDoc` argument
-
-NOTE: `rootDoc` is available from RESTHeart v7.6
 
 TIP: more details about this feature are available on github link:https://github.com/SoftInstigate/restheart/issues/469[issue 469]
 
@@ -407,8 +397,6 @@ The field to aggregation mapping selects the root user using the `rootDoc` and f
 
 === Enum mappings
 
-NOTE: available from v7.2
-
 Enum type mappings serve to define the correspondence between values in MongoDB and the corresponding enum values.
 
 However, it's essential to note that enum mappings are optional. When omitted, it is assumed that the value in the database is identical to the string representation of the enum value.
@@ -434,8 +422,6 @@ Can be mapped to numeric values as follows:
 NOTE: An example GraphQL application that uses `enum` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/enumTestApp.json[enumTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/enum.feature[enum.feature]
 
 === Interface mappings
-
-NOTE: available from v7.2
 
 An interface in GraphQL is an abstract type that specifies a particular set of fields that any concrete type implementing the interface must include.
 
@@ -498,8 +484,6 @@ WARNING: the value of the `field-eq` predicate must be valid JSON. In particular
 NOTE: An example GraphQL application that uses `interface` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interfaceTestApp.json[interfaceTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interface.feature[interface.feature]
 
 === Union mappings
-
-NOTE: available from v7.2
 
 Union types in GraphQL are similar to interfaces in that they represent a way to include multiple types in a single field. However, unlike interfaces, union types do not specify any fields that the types within the union must have in common.
 
@@ -609,7 +593,7 @@ The GraphQL service has the following limitations:
 
 ## Response
 
-Starting from RESTHeart v7.6, the GraphQL API always responds with the content type `application/graphql-response+json`, following the link:https://github.com/graphql/graphql-over-http/blob/main/spec/GraphQLOverHTTP.md[GraphQL Over HTTP specs].
+The GraphQL API always responds with the content type `application/graphql-response+json`, following the link:https://github.com/graphql/graphql-over-http/blob/main/spec/GraphQLOverHTTP.md[GraphQL Over HTTP specs].
 
 **Possible Response Codes:**
 
