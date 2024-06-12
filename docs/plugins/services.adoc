@@ -84,7 +84,7 @@ The following table describes the arguments of the annotation for Services:
 |no
 |`false`
 |`dontIntercept`
-|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }`
+|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
 |no
 |`{}`
 |===
@@ -140,26 +140,22 @@ public class XmlRequest extends ServiceRequest<Document> {
     }
 
     public static XmlRequest init(HttpServerExchange exchange) {
-        var ret = new XmlRequest(exchange);
-
-        try {
-            ret.injectContent();
-        } catch (Throwable ieo) {
-            ret.setInError(true);
-        }
-
-        return ret;
+        return new XmlRequest(exchange);
     }
 
     public static XmlRequest of(HttpServerExchange exchange) {
         return of(exchange, XmlRequest.class);
     }
 
-    public void injectContent() throws SAXException, IOException {
-        var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        var rawContent = ChannelReader.read(wrapped.getRequestChannel());
-
-        setContent(dBuilder.parse(rawContent)ml);
+    @Override
+    public Document parseContent() throws IOException, BadRequestException {
+        try {
+            var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            var rawContent = ChannelReader.read(wrapped.getRequestChannel());
+            return dBuilder.parse(rawContent);
+        } catch(SAXException se) {
+            throw new BadRequestException("Invalid XML", se);
+        }
     }
 }
 ----

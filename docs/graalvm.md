@@ -85,27 +85,20 @@ In some use cases, native image might result in slightly worse peak performance.
 
 We suggest to install GraalVM with [sdkman](https://sdkman.io)
 
-You need at least version 22.1.0 for Java 17:
+You need at least version 23.1.2 for Java 21:
 
 ```bash
-$ sdk install java 17.0.8-graal
+$ sdk install java 21.0.2-graalce
 ```
-
-After having installed GraalVM, you can install the `native-image` tool with `gu`
-
-```bash
-$ gu install native-image
-```
-
 ## Run RESTHeart with GraalVM
 
 Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-java version "17.0.8" 2023-07-18 LTS
-Java(TM) SE Runtime Environment Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14)
-Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14, mixed mode, sharing)
+java version "21.0.2" 2024-01-16 LTS
+Java(TM) SE Runtime Environment Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -135,9 +128,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-java version "17.0.8" 2023-07-18 LTS
-Java(TM) SE Runtime Environment Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14)
-Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14, mixed mode, sharing)
+java version "21.0.2" 2024-01-16 LTS
+Java(TM) SE Runtime Environment Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30)
+Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30, mixed mode, sharing)
 ```
 
 You can then simply build it with:

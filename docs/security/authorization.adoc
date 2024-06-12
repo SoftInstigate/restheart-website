@@ -322,3 +322,66 @@ An example follows (for more examples check link:https://github.com/SoftInstigat
 ----
 
 TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=1553s[Authorization via file and MongoDB]
+
+== Programmatic Configuration of ACL
+
+Security policy rules can be defined programmatically by allowing both inclusive and exclusive security policies through veto and permission predicates.
+
+The `ACLRegistry` can be injected with `@Inject("acl-registry")` and allows defining Access Control Lists (ACLs) programmatically:
+
+```java
+public interface ACLRegistry {
+    /**
+     * Registers a veto predicate that determines if a request should be denied.
+     * When the predicate evaluates to true, the request is immediately forbidden (vetoed).
+     * Additionally, a request will also be denied if it is not explicitly authorized by any
+     * allow predicates or any other active allowing authorizers.
+     *
+     * @param veto The veto predicate to register. This predicate should return true to veto (deny) the request,
+     *             and false to let the decision be further evaluated by allow predicates or other authorizers.
+     */
+    public void registerVeto(Predicate<Request<?>> veto);
+
+    /**
+     * Registers an allow predicate that determines if a request should be authorized.
+     * The request is authorized if this predicate evaluates to true, provided that no veto predicates
+     * or other active vetoer authorizers subsequently deny the request. This method helps in setting up
+     * conditions under which requests can proceed unless explicitly vetoed.
+     *
+     * @param allow The allow predicate to register. This predicate should return true to authorize the request,
+     *              unless it is vetoed by any veto predicates or other vetoing conditions.
+     */
+    public void registerAllow(Predicate<Request<?>> allow);
+
+    /**
+     * Registers a predicate that determines whether requests handled by the ACLRegistryAllower
+     * require authentication. This method is used to specify conditions under which authentication
+     * is mandatory. Typically, authentication is required unless there are allow predicates
+     * explicitly authorizing requests that are not authenticated.
+     *
+     * @param authenticationRequired The predicate to determine if authentication is necessary.
+     *                               It should return true if the request must be authenticated,
+     *                               otherwise false if unauthenticated requests might be allowed.
+     */
+    public void registerAuthenticationRequirement(Predicate<Request<?>> authenticationRequired);
+}
+```
+
+This registry is utilized by the `ACLRegistryVetoer` and `ACLRegistryAllower` authorizers to manage request permissions. The `ACLRegistryVetoer` denies requests based on veto predicates, while the `ACLRegistryAllower` grants permission to proceed with requests based on allow predicates.
+
+A request is permitted to proceed if it is not denied by any `ACLRegistryVetoer` and at least one `ACLRegistryAllower` approves it.
+
+=== Example
+
+The following code registers a veto that denies all request to `/deny` and a permission that allows any request to `/allow`:
+
+```java
+@Inject("acl-registry")
+ACLRegistry registry;
+
+@OnInit
+public void init() {
+  registry.registerVeto(r -> r.getPath().equals("/deny"));
+  registry.registerAllow(r -> r.getPath().equals("/allow"));
+}
+```

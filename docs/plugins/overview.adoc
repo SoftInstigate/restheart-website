@@ -128,7 +128,7 @@ The following table describes the arguments of the annotation:
 |`false`
 |`dontIntercept`
 |service
-|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.REQUEST_BEFORE_AUTH, InterceptPoint.RESPONSE }`
+|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
 |no
 |`{}`
 |`interceptPoint`
@@ -197,6 +197,7 @@ Available providers allow to inject the following objects:
 -   `@Inject("registry")` - injects the `PluginsRegistry` singleton that allows a plugin to get the reference of other plugins.
 -   `@Inject("mclient")` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
 -   `@Inject("mclient-reactive")` - injects the reactive `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
+-   `@Inject("acl-registru")` - injects the ACL registry to define permission programmatically
 
 [source,java]
 ----
@@ -208,6 +209,12 @@ private PluginsRegistry registry;
 ----
 @Inject("mclient")
 private MongoClient mclient;
+----
+
+[source,java]
+----
+@Inject("acl-registry")
+ACLRegistry registry;
 ----
 
 == Request and Response Generic Classes
@@ -228,3 +235,23 @@ Those implementations differ on the data type used to hold the request and respo
 Different implementation can also provide some helper methods to cope with specific request parameter. For instance, the `MongoRequest`, i.e. the request used by the MongoService, has the method `getPageSize()` because this is a query parameter used by that service.
 
 When a request hits RESTHeart, it determines which service will handle it. The Service implementation is responsible of instantiating the correct Request and Response objects that will be used along the whole exchange processing chain.
+
+The `ServiceRequest` class features an abstract method to read and parse the request content:
+
+```java
+/**
+ * Parses the content from the exchange and converts it into an instance of the specified type {@code T}.
+ *
+ * This method retrieves data from the exchange, interprets it according to the expected format, and converts
+ * this data into an object of type {@code T}.
+ *
+ * @return an instance of {@code T} representing the parsed content
+ * @throws IOException if an I/O error occurs
+ * @throws BadRequestException if the content doesn't conform to the expected format of type {@code T}
+ */
+public abstract T parseContent() throws IOException, BadRequestException;
+```
+
+`ServiceRequest.parseContent()` is called by `ServiceRequest.getContent()` on its first invocation. The parsed content is then cached and linked to the request, ensuring that any subsequent calls will reuse the already parsed content object.
+
+This approach makes handling request content more efficient by reducing unnecessary parsing and processing overhead.
