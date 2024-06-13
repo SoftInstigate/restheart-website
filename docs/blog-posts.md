@@ -1,5 +1,5 @@
 ---
-title: Other tutorials
+title: Blog posts
 layout: docs
 menu: overview
 ---
@@ -15,6 +15,8 @@ menu: overview
 {% include docs-head.html %}
 
 ## From the Team
+
+* [**What’s new in RESTHeart 8**](https://medium.com/@andreadicesare/whats-new-in-restheart-v8-c87d8a77a1c6): RESTHeart 8 new features and improvements.
 
 * [**Easily Create a Star Wars GraphQL API with RESTHeart**](https://medium.com/softinstigate-team/easily-create-a-star-wars-graphql-api-with-restheart-5746e337da7c): How to create a GraphQL API using RESTHeart, inspired by the classic Star Wars characters and episodes
 
