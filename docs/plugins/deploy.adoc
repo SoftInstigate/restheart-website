@@ -10,13 +10,37 @@ This section provides information on how to package and deploy plugins.
 
 NOTE: To quick start a new Java plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository]. It contains a basic skeleton for a plugin and an helper script that allows to build, deploy the plugin.
 
-== Java Plugins
+== Deploying Java Plugins in RESTHeart
 
-Java and Kotlin plugins must be packaged as jar files.
+Java (and Kotlin, Scala, etc.) plugins must be packaged as JAR files. Deploying a plugin is straightforward: **just copy its JAR file into the `./plugins` directory of RESTHeart**.
 
-To deploy a plugin, *just copy its jar file into the directory `./plugins` of RESTHeart*.
+**IMPORTANT:** After deploying a JAR plugin, you must restart RESTHeart.
 
-IMPORTANT: After deploying a jar plugin, you must restart RESTHeart.
+You can also nest your JARs into the `./plugins` directory up to two levels deep. This is particularly useful when developing a custom plugin. In this scenario, your Java project directory structure might look like this:
+
+[source]
+----
+.
+├── LICENSE
+├── README.md
+├── pom.xml
+├── src
+│   ├── main
+│   └── test
+└── target
+    ├── classes
+    ├── lib
+    │   ├── lib1.jar
+    │   └── lib2.jar
+    ├── plugin.jar
+----
+
+In this case, you need to deploy `plugin.jar` along with the dependency libraries `lib1.jar` and `lib2.jar`.
+
+To deploy, you can simply copy the entire `target` directory into the `./plugins` directory. If you are using Docker, you can mount the `target` directory under `/opt/restheart/plugins/custom` with the following command:
+
+[source,bash]
+$ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart
 
 === Example
 

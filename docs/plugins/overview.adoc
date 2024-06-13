@@ -40,10 +40,8 @@ To quick start a new plugin, you can clone the link:https://github.com/SoftInsti
 [source,bash]
 ----
 $ git clone --depth 1 git@github.com:SoftInstigate/restheart-plugin-skeleton.git && cd restheart-plugin-skeleton
-$ ./bin/rh.sh build -o "-s"
+$ ./mvnw clean package && docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart -s
 ----
-
-The script `./bin/rh.sh` automatically builds, deploys the plugin and restart RESTHeart to apply changes. At first run, it also automatically downloads the latest version of RESTHeart.
 
 The project skeleton defines a dummy Service bound at `/srv`:
 
@@ -198,7 +196,7 @@ Available providers allow to inject the following objects:
 -   `@Inject("registry")` - injects the `PluginsRegistry` singleton that allows a plugin to get the reference of other plugins.
 -   `@Inject("mclient")` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
 -   `@Inject("mclient-reactive")` - injects the reactive `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
--   `@Inject("acl-registru")` - injects the ACL registry to define permission programmatically
+-   `@Inject("acl-registry")` - injects the ACL registry to define permission programmatically
 
 [source,java]
 ----
