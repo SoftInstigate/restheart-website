@@ -137,6 +137,32 @@ To deploy the plugin copy its jar file and the jars of the dependencies into the
 [source,bash]
 $ cp target/random-string-service.jar target/lib/* <RH_HOME>/plugins/
 
+== Speeding Up Plugin Scanning at Startup
+
+If a custom plugin has many dependencies, you may need to copy numerous JAR files into the `./plugins` directory. All JARs are scanned to find plugins (classes annotated with `@RegisterPlugin`), which can slow down the bootstrap process.
+
+To address this, the configuration option `/core/plugins-packages` allows you to limit the scanning to specific packages (and their subpackages).
+
+```yml
+core:
+  ...
+  # Limit the scanning of classes annotated with @RegisterPlugin
+  # to the specified packages. This can speed up the boot time
+  # for large plugin JARs. It is usually not required.
+  # Use an empty array to not limit scanning.
+  # Always add the package org.restheart to the list.
+  plugins-packages: [ org.restheart, com.acme ]
+```
+
+For example, the following command limits the scanning to `org.restheart` and `com.acme`:
+
+[source,bash]
+----
+$ RHO='/core/plugins-packages->[ "org.restheart", "com.acme" ]' java -jar restheart.jar
+----
+
+By specifying only the necessary packages, you can significantly reduce startup times when dealing with large plugin JARs.
+
 == JavaScript Plugins
 
 IMPORTANT: JavaScript plugins can be deployed only running link:/docs/graalvm/#run-restheart-with-graalvm[RESTHeart on GraalVM] and on restheart native.
