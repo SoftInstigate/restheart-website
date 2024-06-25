@@ -96,8 +96,8 @@ public class MyPlugin implements JsonService {
 |`interceptPoint`
 |the intercept point: `REQUEST_BEFORE_EXCHANGE_INIT`, `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
 |no
+|`REQUEST_AFTER_AUTH`
 |`requiresContent`
-|proxy interceptor
 |Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to `true` to make available the content of the request (if interceptPoint is `REQUEST_BEFORE_AUTH` or `REQUEST_AFTER_AUTH`) or of the response (if interceptPoint is `RESPONSE` or `RESPONSE_ASYNC`)
 |no
 |`false`
@@ -106,6 +106,19 @@ public class MyPlugin implements JsonService {
 |no
 |`10`
 |===
+
+**Intercept Point Note: `REQUEST_BEFORE_EXCHANGE_INIT`**
+
+An interceptor using this intercept point will handle requests before the exchange initialization occurs. Such interceptors must implement the `WildcardInterceptor` interface, ensuring that the `Interceptor.handle(request, response)` method receives both `UninitializedRequest` and `UninitializedResponse` objects.
+
+Additionally, interceptors at this stage may:
+
+- Provide a custom initializer for requests by using `PluginUtils.attachCustomRequestInitializer()`.
+- Modify the raw content of the request using `Request.setRawContent()`.
+
+This setup allows for preliminary modifications and configurations to be applied to requests at an early stage in the processing pipeline.
+
+---
 
 == Transforming Request Content Format
 
