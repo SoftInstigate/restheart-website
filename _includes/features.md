@@ -3,9 +3,9 @@
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
                 <div class="top-4 mb-4"><span class="highlightcolor">MongoDB's best friend</span></div>
-                <p>RESTHeart unlocks <strong>all the features</strong> of MongoDB via REST, GraphQL and WebSocket APIs. </p>
+                <p>RESTHeart unlocks all the features of MongoDB via <strong>REST</strong>, <strong>GraphQL</strong> and <strong>WebSocket</strong> APIs. </p>
                 <p class="mt-1">
-                    Also supports <strong>Mongo Atlas</strong>, <strong>FerretDB</strong>, <strong>AWS DocumentDB,</strong> and <strong>Azure Cosmos DB</strong>
+                    Also supports Mongo Atlas, FerretDB, AWS DocumentDB, and Azure Cosmos DB
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
