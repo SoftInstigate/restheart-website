@@ -9,8 +9,12 @@ stars-bounce: true
         <h1 class="mt-1 top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
         Virtual Threads Powered API Framework
-        <div class="top-6 text-break white mt-2">Featuring MongoDB API and ready-to-go Security</div>
         </h2>
+        <p class="top-6 text-break white mt-2 mx-4">
+            ✅&nbsp;Instant REST, GraphQL and Websockets APIs for <strong>MongoDB</strong>.
+            ✅&nbsp;Declarative Security, no code required.
+            ✅&nbsp;Implement your Backend in minutes.
+        </p>
         <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
         <div class="container">
             <div class="listingblock my-0">
