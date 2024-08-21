@@ -22,7 +22,7 @@ menu: setup
 
 ## Introduction
 
-[GraalVM](https://www.graalvm.org/) is a new virtual machine from Oracle that supports a polyglot runtime environment and the ability to compile Java applications to native images.
+[GraalVM](https://www.graalvm.org/) is a new virtual machine that supports a polyglot runtime environment and the ability to compile Java applications to native images.
 
 RESTHeart fully supports the GraalVM:
 
@@ -96,9 +96,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-java version "21.0.2" 2024-01-16 LTS
-Java(TM) SE Runtime Environment Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30)
-Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30, mixed mode, sharing)
+openjdk version "21.0.2" 2024-01-16
+OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
+OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -128,9 +128,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-java version "21.0.2" 2024-01-16 LTS
-Java(TM) SE Runtime Environment Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30)
-Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 21.0.2+13.1 (build 21.0.2+13-LTS-jvmci-23.1-b30, mixed mode, sharing)
+openjdk version "21.0.2" 2024-01-16
+OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
+OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
 ```
 
 You can then simply build it with:

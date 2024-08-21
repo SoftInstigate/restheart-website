@@ -87,9 +87,11 @@ $ http -b :8080/greetings
 
 The link:https://github.com/SoftInstigate/restheart/tree/master/examples/random-string-service[Random String Service] example plugin shows how to add to the classpath an external dependency required by a plugin.
 
-By _external dependency_ we mean a dependency that is not included in restheart.jar, thus it must be added to the classpath for the service to work.
+By _external dependency_ we mean a dependency that is not included in restheart, thus it must be added to the classpath for the service to work.
 
 IMPORTANT: *To add an external dependency to the classpath just copy it into the RESTHeart plugins directory*.
+
+IMPORTANT: Starting from v8.1.0, Restheart will no longer scan library jars for plugins. A jar file will be categorized as a library if it resides in a subdirectory of the ./plugins directory that includes "lib", "-lib", or "_lib" in its relative path.
 
 The plugin link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-string-service/pom.xml[pom.xml] file defines the following dependencies:
 
@@ -135,13 +137,23 @@ The link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-
 To deploy the plugin copy its jar file and the jars of the dependencies into the plugins directory.
 
 [source,bash]
-$ cp target/random-string-service.jar target/lib/* <RH_HOME>/plugins/
+----
+$ mkdir <RH_HOME>/plugins/lib
+$ cp target/random-string-service.jar target/lib/* <RH_HOME>/plugins/lib
+----
+
+With Docker this is ever more straightforward. Mounting the `target` directory in the container `/opt/restheart/plugins/custom` directory, will deploy it together with the library jar contained in `target/lib`.
+
+[source,bash]
+----
+$ docker run --name restheart --rm -e RHO="/http-listener/host->'0.0.0.0';/mclient/connection-string->'mongodb://host.docker.internal';/helloWorldService/message->'Ciao Mondo!'" -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart -s
+----
 
 == Speeding Up Plugin Scanning at Startup
 
 If a custom plugin has many dependencies, you may need to copy numerous JAR files into the `./plugins` directory. All JARs are scanned to find plugins (classes annotated with `@RegisterPlugin`), which can slow down the bootstrap process.
 
-To address this, the configuration option `/core/plugins-packages` allows you to limit the scanning to specific packages (and their subpackages).
+To address this, the configuration option `/core/plugins-packages` allows you to limit the scanning to specific packages (and their sub-packages).
 
 ```yml
 core:
@@ -227,17 +239,9 @@ Make sure you are using GraalVM.
 [source,bash]
 ----
 $ java -version
-java version "17.0.8" 2023-07-18 LTS
-Java(TM) SE Runtime Environment Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14)
-Java HotSpot(TM) 64-Bit Server VM Oracle GraalVM 17.0.8+9.1 (build 17.0.8+9-LTS-jvmci-23.0-b14, mixed mode, sharing)
-----
-
-Make sure you have `native-image` and `graalvm.js` installed.
-
-[source,bash]
-----
-$ gu install native-image
-$ gu install graalvm.js
+openjdk version "21.0.2" 2024-01-16
+OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
+OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
 ----
 
 Build it.

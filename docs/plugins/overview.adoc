@@ -195,8 +195,8 @@ Available providers allow to inject the following objects:
 -   `@Inject("rh-config")` - injects the RESTHeart `org.restheart.configuration.Configuration` object.
 -   `@Inject("registry")` - injects the `PluginsRegistry` singleton that allows a plugin to get the reference of other plugins.
 -   `@Inject("mclient")` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
--   `@Inject("mclient-reactive")` - injects the reactive `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
 -   `@Inject("acl-registry")` - injects the ACL registry to define permission programmatically
+-   `@Inject("gql-app-definition-cache")` - injects the `LoadingCache<String, GraphQLApp> gqlAppDefsCache` object that allows to use the GQL App definition cache to implement custom invalidation logic. Available from v8.0.9.
 
 [source,java]
 ----
@@ -214,6 +214,12 @@ private MongoClient mclient;
 ----
 @Inject("acl-registry")
 ACLRegistry registry;
+----
+
+[source,java]
+----
+@Inject("gql-app-definition-cache")
+LoadingCache<String, GraphQLApp> gqlAppDefsCache;
 ----
 
 == Request and Response Generic Classes
