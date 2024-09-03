@@ -398,10 +398,10 @@ graphql:
   uri: /graphql
   db: restheart
   collection: gql-apps
-  # app definitions are cached. this sets the time to live in msecs
-  app-def-cache-ttl: 10_000 # Not used anymore from v8.0.8, see https://github.com/SoftInstigate/restheart/issues/523
+  # app cache can be disabled if needed, such as during testing or development
+  app-cache-enabled: true
   # app cache entries are automatically revalidated every TTR milliseconds
-  app-cache-ttr: 60_000 # in msecs # from v8.0.9, see https://github.com/SoftInstigate/restheart/issues/523
+  app-cache-ttr: 60_000 # in msecs
   # default-limit is used for queries that don't not specify a limit
   default-limit: 100
   # max-limit is the maximum value for a Query limit
@@ -410,6 +410,8 @@ graphql:
   query-time-limit: 0
   verbose: false
 ----
+
+NOTE: `app-cache-enabled` and `app-cache-ttr` are available from v8.0.9 and v8.0.11, respectively. Earlier versions use an expiring cache policy with TTL configurable via the now-deprecated `graphql/app-def-cache-ttl` option. See link:https://github.com/SoftInstigate/restheart/issues/523[issue #523].
 
 == Proxied resources
 
