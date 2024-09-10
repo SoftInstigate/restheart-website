@@ -15,6 +15,10 @@ stars-bounce: true
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
+        <div class="mb-5">
+            <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
+            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
+        </div>
         <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
         <div class="container">
             <div class="listingblock my-0">
@@ -33,25 +37,20 @@ stars-bounce: true
     </div>
 </section>
 
-<div class="mb-5">
-    <p class="color-primary text-center">Ask Sophia AI about RESTHeart</p>
-    <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
-</div>
-
 <script>
   iframeResize({
     license: 'GPLv3',
     waitForLoad: true,
     onResized: ({ iframe, height, width, type }) => {
-        if (type === 'overflowChanged' && document.readyState == 'complete') {
-            window.scrollTo({top: height+200, left: 0, behavior: 'auto'});
-        }
+        // if (type === 'overflowChanged' && document.readyState == 'complete') {
+            window.scrollTo({top: height-120, left: 0, behavior: 'auto'});
+        // }
     }
   }, '#sophiaFrame' );
 </script>
 
 <div class="container text-center mt-5 mw-800 px-0">
-    <p class="color-primary">MongoDB REST API in action</p>
+    <h3 class="font-weight-bold highlightcolor mt-3">MongoDB REST API in action</h3>
     <img src="/images/restheart.gif" class="img-fluid"/>
 </div>
 
