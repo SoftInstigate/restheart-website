@@ -42,9 +42,9 @@ stars-bounce: true
     license: 'GPLv3',
     waitForLoad: true,
     onResized: ({ iframe, height, width, type }) => {
-        // if (type === 'overflowChanged' && document.readyState == 'complete') {
+        if (type === 'overflowChanged' && document.readyState == 'complete') {
             window.scrollTo({top: height-120, left: 0, behavior: 'auto'});
-        // }
+        }
     }
   }, '#sophiaFrame' );
 </script>
