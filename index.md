@@ -48,7 +48,6 @@ stars-bounce: true
         license: 'GPLv3',
         waitForLoad: true,
         onResized: ({ iframe, height, width, type }) => {
-            console.log(preventFirst);
             if (document.readyState === 'complete') {
                 preventFirst++;
                 // const start = document.getElementById('start');
