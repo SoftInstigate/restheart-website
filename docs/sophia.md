@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: no-footer
 ---
 
 <div class="iframe-parent m-0 p-0">

@@ -38,18 +38,33 @@ stars-bounce: true
     </div>
 </section>
 
+<!-- <span id="start" class="hline"></span>
+<span id="end" class="hline"></span>
+<span id="st" class="hline"></span> -->
+
 <script>
-  iframeResize({
-    license: 'GPLv3',
-    waitForLoad: true,
-    onResized: ({ iframe, height, width, type }) => {
-        if (type === 'overflowChanged' && document.readyState == 'complete') {
-            const offset = iframe.offsetTop;
-            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-            window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
+    var preventFirst = 0; // dirty trick to avoid scrolling on first load
+    iframeResize({
+        license: 'GPLv3',
+        waitForLoad: true,
+        onResized: ({ iframe, height, width, type }) => {
+            console.log(preventFirst);
+            if (document.readyState === 'complete') {
+                preventFirst++;
+                // const start = document.getElementById('start');
+                // const end = document.getElementById('end');
+                // const st = document.getElementById('st');
+                if (preventFirst > 1) {
+                    const offset = iframe.offsetTop;
+                    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+                    // start.style.top = (offset)+'px';
+                    // end.style.top = (height+offset)+'px';
+                    // st.style.top = (height+offset-vh)+'px';
+                    window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
+                }
+            }
         }
-    }
-  }, '#sophiaFrame' );
+    }, '#sophiaFrame' );
 </script>
 
 <div class="container text-center mt-5 mw-800 px-0">
