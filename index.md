@@ -2,6 +2,7 @@
 layout: default
 stars-bounce: true
 ---
+{% include run-restheart-seriously-banner.html %}
 
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
@@ -15,7 +16,7 @@ stars-bounce: true
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
-        <div class="mb-5">
+        <div>
             <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
             <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
         </div>
@@ -43,7 +44,9 @@ stars-bounce: true
     waitForLoad: true,
     onResized: ({ iframe, height, width, type }) => {
         if (type === 'overflowChanged' && document.readyState == 'complete') {
-            window.scrollTo({top: height-120, left: 0, behavior: 'auto'});
+            const offset = iframe.offsetTop;
+            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+            window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
         }
     }
   }, '#sophiaFrame' );
