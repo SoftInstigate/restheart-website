@@ -33,7 +33,25 @@ stars-bounce: true
     </div>
 </section>
 
-<div class="container text-center mt-0 mw-800 px-0">
+<div class="mb-5">
+    <p class="color-primary text-center">Ask Sophia AI about RESTHeart</p>
+    <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
+</div>
+
+<script>
+  iframeResize({
+    license: 'GPLv3',
+    waitForLoad: true,
+    onResized: ({ iframe, height, width, type }) => {
+        if (type === 'overflowChanged' && document.readyState == 'complete') {
+            window.scrollTo({top: height+200, left: 0, behavior: 'auto'});
+        }
+    }
+  }, '#sophiaFrame' );
+</script>
+
+<div class="container text-center mt-5 mw-800 px-0">
+    <p class="color-primary">MongoDB REST API in action</p>
     <img src="/images/restheart.gif" class="img-fluid"/>
 </div>
 
