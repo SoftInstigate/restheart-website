@@ -43,23 +43,26 @@ stars-bounce: true
 <span id="st" class="hline"></span> -->
 
 <script>
-    var preventFirst = 0; // dirty trick to avoid scrolling on first load
+    var preventScroll = 0; // dirty trick to avoid scrolling on first load
+    document.addEventListener("DOMContentLoaded", () => preventScroll = 0);
+
     iframeResize({
         license: 'GPLv3',
         waitForLoad: true,
         onResized: ({ iframe, height, width, type }) => {
             if (document.readyState === 'complete') {
-                preventFirst++;
                 // const start = document.getElementById('start');
                 // const end = document.getElementById('end');
                 // const st = document.getElementById('st');
-                if (preventFirst > 1) {
+                if (preventScroll > 3) {
                     const offset = iframe.offsetTop;
                     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
                     // start.style.top = (offset)+'px';
                     // end.style.top = (height+offset)+'px';
                     // st.style.top = (height+offset-vh)+'px';
                     window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
+                } else {
+                    preventScroll++;
                 }
             }
         }
