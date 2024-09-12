@@ -1,5 +1,6 @@
 ---
 layout: no-footer
+slack: false
 ---
 
 <div class="iframe-parent m-0 p-0">
