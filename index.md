@@ -38,35 +38,26 @@ stars-bounce: true
     </div>
 </section>
 
-<!-- <span id="start" class="hline"></span>
-<span id="end" class="hline"></span>
-<span id="st" class="hline"></span> -->
-
+<!-- scroll to bottom of sophia iframe chat when it resizes -->
 <script>
-    var preventScroll = 0; // dirty trick to avoid scrolling on first load
-    document.addEventListener("DOMContentLoaded", () => preventScroll = 0);
-
-    iframeResize({
-        license: 'GPLv3',
-        waitForLoad: true,
-        onResized: ({ iframe, height, width, type }) => {
-            if (document.readyState === 'complete') {
-                // const start = document.getElementById('start');
-                // const end = document.getElementById('end');
-                // const st = document.getElementById('st');
-                if (preventScroll > 3) {
-                    const offset = iframe.offsetTop;
-                    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-                    // start.style.top = (offset)+'px';
-                    // end.style.top = (height+offset)+'px';
-                    // st.style.top = (height+offset-vh)+'px';
-                    window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
-                } else {
-                    preventScroll++;
-                }
-            }
+  var preventScroll = 0; // trick to avoid scrolling on first load
+  document.addEventListener("DOMContentLoaded", () => preventScroll = 0);
+  iframeResize({
+    license: 'GPLv3',
+    waitForLoad: true,
+    onResized: ({ iframe, height, width, type }) => {
+      console.log('onResized');
+      if (document.readyState === 'complete') {
+        if (preventScroll > 3) {
+          const offset = iframe.offsetTop;
+          const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+          window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
+        } else {
+          preventScroll++;
         }
-    }, '#sophiaFrame' );
+      }
+    }
+  }, '#sophiaFrame' );
 </script>
 
 <div class="container text-center mt-5 mw-800 px-0">
