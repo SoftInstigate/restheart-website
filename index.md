@@ -59,15 +59,15 @@ stars-bounce: true
   }, '#sophiaFrame' );
 </script>
 
-<section id="demo-webapp" class="pt-2 pb-2">
+<!-- <section id="demo-webapp" class="pt-2 pb-2">
     <h3 class="font-weight-bold highlightcolor mt-3 text-center">Simple Demo Web App</h3>
-    <p class="codepen" data-height="800" data-theme-id="dark" data-default-tab="result" data-slug-hash="yLmyvEd" data-pen-title="RESTHeart Demo Web App" data-user="ujibang" style="height: 800px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+    <p class="codepen" data-height="900" data-theme-id="dark" data-default-tab="result" data-slug-hash="yLmyvEd" data-pen-title="RESTHeart Demo Web App" data-user="ujibang" style="height: 900px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
     <span>See the Pen <a href="https://codepen.io/ujibang/pen/yLmyvEd">
     RESTHeart Demo Web App</a> by Andrea Di Cesare (<a href="https://codepen.io/ujibang">@ujibang</a>)
     on <a href="https://codepen.io">CodePen</a>.</span>
     </p>
     <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
-</section>
+</section> -->
 
 <!-- <section id="article-at-aws-blog" class="call-to-action black-background">
     <div class="container-fluid">
