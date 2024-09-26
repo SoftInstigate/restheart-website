@@ -1,0 +1,142 @@
+---
+title: Demo WebApp
+layout: default
+menu: mongodb
+---
+
+<header class="container mt-5">
+  <hgroup>
+    <h2>Post & View Messages</h2>
+    <p class="mt-10">A simple web app to view and post messages using RESTHeart's built-in REST API on MongoDB.</p>
+    <p class="mt-6"><small class="mt-10">Backend made with <a href="https://restheart.org">RESTHeart</a> • Frontend made with <a href="https://alpinejs.dev/" target="_blank">Alpine.js</a> and <a href="https://picocss.com/" target="_blank">Picocss</a> • <a href="https://codepen.io/ujibang/pen/yLmyvEd" target="_blank">Source Code</a></p>
+  </hgroup>
+</header>
+
+<main class="container" x-data="{ page: 1, docs: [], from: '', message: '' }">
+  <div class="d-flex-end">
+    <button class="outline" @click="postMsgDialog.showModal()">New Message</button>
+  </div>
+  <section class="mt-5">
+    <div class="d-flex-wrap">
+      <template x-init="docs = await fetchDocs(page)" x-for="doc in docs" :key="doc._id.$oid">
+        <blockquote>
+          <span x-text="doc.message"></span>
+          <footer>
+            <cite>- </span> <span x-text="doc.from"></span> on <span x-text="new Date(doc.timestamp['$date']).toLocaleDateString('it-IT')"></span></cite>
+          </footer>
+        </blockquote>
+    </div>
+    </template>
+    </div>
+    <div class="d-flex text-center">
+      <a href="#" class="no-decoration" @click="if (page > 1) docs = await fetchDocs(--page)">
+        <h5>&lt;</h5>
+      </a>
+      <h5 x-text="page"></h5>
+      <a href="#" class="no-decoration" @click="docs = await fetchDocs(++page)">
+        <h5>&gt;</h5>
+      </a>
+    </div>
+  </section>
+  <dialog id="postMsgDialog">
+    <form>
+      <article class="mw-600 p-4">
+        <header>
+          <button aria-label="Close" rel="prev" @click="postMsgDialog.close()"></button>
+          <h3>Post your message</h3>
+        </header>
+
+        <hgroup>
+          <input type="text" name="from" placeholder="Your name..." aria-label="Your name..." required x-model="from" />
+          <textarea rows="3" name="message" placeholder="Your Message..." aria-label="Your Message..." required x-model="message"></textarea>
+        </hgroup>
+
+        <footer>
+          <button @click="post(from, message); page = 1; docs = await fetchDocs(page)">Post</button>
+        </footer>
+      </article>
+    </form>
+  </dialog>
+</main>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+<script src="//unpkg.com/alpinejs" defer></script>
+<script>
+const fetchDocs = (page) =>
+  fetch(
+    encodeURI(`https://demo.restheart.org/messages?page=${page}&pagesize=8`)
+  ).then((response) => response.json());
+
+const post = (from, message) =>
+  fetch("https://demo.restheart.org/messages", {
+    method: "post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ from, message })
+  });
+
+const postMsgDialog = document.getElementById('postMsgDialog');
+</script>
+
+<style>
+
+header {
+  padding: 0 !important;
+}
+
+blockquote footer {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-6 {
+  margin-top: 6px;
+}
+
+.mw-260 {
+  max-width: 260px;
+}
+
+.mw-600 {
+  min-width: 600px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.no-decoration {
+  text-decoration: none;
+}
+
+blockquote {
+  width:240px;
+}
+
+.d-flex-end {
+  display: flex;
+  justify-content: flex-end
+}
+
+.d-flex-wrap {
+  justify-content: center;
+  display: flex;
+  row-gap: 46px;
+  column-gap: 16px;
+  flex-wrap: wrap;
+}
+
+.d-flex {
+  display: flex; justify-content: center; gap: 16px;
+}
+
+blockquote cite {
+  color: grey;
+}
+</style>
