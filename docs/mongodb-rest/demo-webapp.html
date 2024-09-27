@@ -39,7 +39,7 @@ menu: mongodb
     </div>
   </section>
   <dialog id="postMsgDialog">
-    <form>
+    <form id="postMsgForm">
       <article class="mw-600 p-4">
         <header>
           <button aria-label="Close" rel="prev" @click="postMsgDialog.close()"></button>
@@ -52,7 +52,7 @@ menu: mongodb
         </hgroup>
 
         <footer>
-          <button @click="post(from, message); page = 1; docs = await fetchDocs(page)">Post</button>
+          <button type="button" @click="if (document.getElementById('postMsgForm').checkValidity()) { await post(from, message); page = 1; docs = await fetchDocs(page); postMsgDialog.close(); postMsgForm.reset(); }">Post</button>
         </footer>
       </article>
     </form>
@@ -64,7 +64,7 @@ menu: mongodb
 <script>
 const fetchDocs = (page) =>
   fetch(
-    encodeURI(`https://demo.restheart.org/messages?page=${page}&pagesize=8`)
+    encodeURI(`https://demo.restheart.org/messages?page=${page}&pagesize=8&filter={"from":{"$exists":true},"message":{"$exists":true}}`)
   ).then((response) => response.json());
 
 const post = (from, message) =>
@@ -104,7 +104,8 @@ blockquote footer {
 }
 
 .mw-600 {
-  min-width: 600px;
+  width: 90vw;
+  max-width: 600px;
 }
 
 .text-center {
