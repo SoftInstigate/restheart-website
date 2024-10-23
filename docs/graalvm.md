@@ -159,8 +159,6 @@ Build image for local OS
 $ ./mvnw clean package -Pnative -DskipTests
 ```
 
-__Note__: Linux needs to use the `G1` garbage collector. This is obtained by passing the `-Dnative.gc="--gc=G1"` property to maven.
-
 ## A docker image to build Linux native images
 
 [SoftInstigate](https://softinstigate.com) maintains the Debian based, docker image [softinstigate/graalvm-maven](https://github.com/SoftInstigate/graalvm-maven-docker) with GraalVM and Maven and `native-image`.
@@ -178,7 +176,7 @@ $ docker run -it --rm \
     -v "$PWD":/opt/app  \
     -v "$HOME"/.m2:/root/.m2 \
     softinstigate/graalvm-maven \
-    clean package -Pnative -DskipTests -Dnative.gc="--gc=G1"
+    clean package -Pnative -DskipTests
 ```
 
 native-image arguments are defined in [this file](https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/META-INF/native-image/org.restheart/restheart/native-image.properties).
