@@ -177,6 +177,39 @@ type Query {
 }
 ----
 
+Starting with RESTHeart 8.2, the `@user` predefined argument is now available in aggregation stages when using Field-to-Aggregation mapping. This enables dynamic filtering based on the authenticated user. For example, the following mapping is supported:
+
+```graphql
+type User { 
+  _id: String, 
+  name: String 
+}
+
+type Query {
+  me: User
+}
+
+# Mapping: 'me' always returns the authenticated user
+"Query": {
+  "me": {
+    "db": "restheart",
+    "collection": "users",
+    "stages": [
+      {
+        "$match": {
+          "$or": [
+            { "_id": { "$arg": ["@user._id", null] } },
+            { "_id": { "$arg": ["@user.sub", null] } }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+With this configuration, the `me` query will return the `User` object corresponding to the authenticated user.
+
 ==== Optional Stages
 
 Field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
