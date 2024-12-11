@@ -6,7 +6,7 @@ stars-bounce: true
 
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
-        <img width="160" src="/images/RESTHeart-logo.png">
+        <img width="160" class="bg-whites p-3 rounded" src="/images/RESTHeart-logo.png">
         <h1 class="mt-1 top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
         Virtual Threads Powered API Framework
