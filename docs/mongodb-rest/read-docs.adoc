@@ -319,7 +319,9 @@ Hint allows overriding MongoDB’s default index selection and query optimizatio
 
 This is done via the `hint` query parameter.
 
-Specify the index by the index specification document, either using a json document or the compact string representation; specifying the index by name is not supported.
+Specify the index using an index specification document, either as a JSON object or a compact string representation (e.g., `?hint=+key` or `?hint=-key`). Starting from version 8.3, you can also specify the index by name (e.g., `?hint=indexName`).
+
+For version 8.3: Use the compact string representation by prefixing the field name with `+` or `-`. Note that the `+` sign must be URL-encoded as `%2B`; otherwise, it will be interpreted as a space. If the `?hint` value does not start with `+` or `-`, it will be treated as an index name.
 
 Use `$natural` to force the query to perform a forwards collection scan.
 
@@ -368,10 +370,9 @@ The following example returns all documents in the collection named **coll** usi
 [source,http]
 GET /inventory?hint={'item':1} HTTP/1.1
 
+==== Use the index on item and status fields using the compact string format
 
-==== Use the compound index on age and timestamp fields using the compact string format
-
-The following example returns the documents using the compound index on the **item** and reverse **status** fields.
+The following example returns the documents using the indexes **item** and reverse **status**.
 
 ++++
 {% include code-header.html
@@ -381,7 +382,7 @@ The following example returns the documents using the compound index on the **it
 ++++
 
 [source,http]
-GET /inventory?hint=item&hint=-status HTTP/1.1
+GET /inventory?hint=+item&hint=-status HTTP/1.1
 
 ==== Perform a forwards collection scan
 
