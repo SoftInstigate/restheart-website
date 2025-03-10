@@ -3,7 +3,7 @@ title: Security Hardening
 layout: docs-adoc
 ---
 
-== Introduction
+=== Introduction
 
 This section describes the security hardening features available with RESTHeart
 and some best practices to protect against common attacks.
@@ -33,7 +33,7 @@ and enforced by strong and efficient security policies.
 |Define role-specific GraphQL applications|Mandatory|Action required
 |===
 
-== Update the `admin` user password
+=== Update the `admin` user password
 
 At first startup, RESTHeart initializes the user `admin`, with the default password `secret`. *This user can execute any request*.
 
@@ -48,7 +48,7 @@ Refer to link:/docs/security/user-management/[User Management] for more informat
 
 NOTE: `mongoAclAuthorizer` is the default ACL authorizer from RESTHeart starting v6.2. For previous releases, the `fileAclAuthorizer` was used. In this case the user password must be updated in the file `etc/users.yml`.
 
-== Disable the auto-creation of the admin user
+=== Disable the auto-creation of the admin user
 
 At startup time, the `mongoRealmAuthenticator` checks if the user `admin` exists. If it does not exist, it automatically creates it. This means that whenever the user `admin` is deleted, it will be eventually recreated with the default password `secret`.
 
@@ -64,7 +64,7 @@ authenticators:
     create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
 ----
 
-== Disable the root role
+=== Disable the root role
 
 The `mongoAclAuthorizer` by default defines the _root_ role.
 
@@ -90,7 +90,7 @@ authorizers:
     root-role: null
 ----
 
-== Use HTTPS
+=== Use HTTPS
 
 WARNING: *IT IS PARAMOUNT TO SECURE RESTHEART WITH TLS.*
 
@@ -99,13 +99,13 @@ or by configuring RESTHeart to only use the https-listener.
 
 To configure RESTHeart to use TLS, follow the instructions at link:/docs/security/tls/[Configure TLS].
 
-== Secure connection to MongoDB
+=== Secure connection to MongoDB
 
 To configure RESTHeart to connect to MongoDB over TLS, follow the instructions at link:/docs/mongodb-rest/secure-connection-to-mongodb/[Secure connection to MongoDB].
 
 It is also very important to restrict the access to the MongoDB database to only the resources that are required by RESTHeart; for this refer to link:/docs/mongodb-rest/secure-connection-to-mongodb/#restrict-permissions-of-mongodb-user[Restrict permissions of MongoDb User].
 
-== Make sure password are stored in an encrypted form
+=== Make sure password are stored in an encrypted form
 
 Passwords must be stored in an encrypted form.
 
@@ -123,7 +123,7 @@ The `fileRealmAuthenticator` is for testing and development purposes only and no
 
 IMPORTANT: If you use a custom _Authenticator_ you must make sure that the passwords are stored in an encrypted form.
 
-== Enforce strong passwords
+=== Enforce strong passwords
 
 If users can update their password, it is important enforcing that user-defined passwords are strong enough and avoid a user to chose a weak password like `123456`.
 
@@ -145,7 +145,7 @@ mongoRealmAuthenticator:
 
 NOTE: `enforce-minimum-password-strenght` is available from RESTHeart v6.3.0.
 
-== bruteForceAttackGuard
+=== bruteForceAttackGuard
 
 `bruteForceAttackGuard` defends from brute force password cracking attacks
 by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests are received in last 10 seconds from the same ip.
@@ -171,7 +171,7 @@ plugins-args:
       max-failed-attempts: 5
 ----
 
-== originVetoer
+=== originVetoer
 
 `originVetoer` protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted
 
@@ -188,7 +188,7 @@ authorizers:
         - https://restheart.com
 ----
 
-== Define and test the ACL
+=== Define and test the ACL
 
 The `mongoAclAuthorizer` allows to define a very fine grained, role based ACL.
 
@@ -226,13 +226,13 @@ Refer to link:/docs/security/authorization/#format-of-permissions[Format of perm
 
 NOTE: When the permission language cannot be used and you need more control, you can define a custom `Vetoer` or an `Request Interceptor` that can enforce additional checking logic.
 
-== Use only aggregations and forbid the `filter` query parameter
+=== Use only aggregations and forbid the `filter` query parameter
 
 The `filter` query parameter for the Mongo REST API allows clients to execute any MongoDB query.
 
 This is very convenient at development time, however when you are ready to deploy your application, you should blacklist the `filter` query parameter in your ACL and rely on link:/docs/mongodb-rest/aggregations/[Aggregations] to expose, well defined and secured queries.
 
-== Blacklist the `$where` MongoDB operator
+=== Blacklist the `$where` MongoDB operator
 
 If you cannot disable the `filter` query parameter, you can blacklist unused operators, using the `filterOperatorsBlacklist` plugin.
 
@@ -249,7 +249,7 @@ plugins-args:
       enabled: true
 ----
 
-== Define role-specific GraphQL applications
+=== Define role-specific GraphQL applications
 
 NOTE: The GraphQL API is read-only, so you should only pay attention to avoid exposing sensitive information to users. This very important due to the nature of GraphQL that allows the client to request data in any format allowed by the GraphQL schema.
 

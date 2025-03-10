@@ -4,7 +4,7 @@ layout: docs-adoc
 ---
 :page-liquid:
 
-== Introduction
+=== Introduction
 
 _Services_ and _Interceptors_ can be developed in _JavaScript_ and _TypeScript_ when running RESTHeart with the GraalVM or using RESTHeart native.
 
@@ -12,7 +12,7 @@ TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/polyglot/sr
 
 NOTE: The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the `native-image` tool. See link:/docs/graalvm/#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native-image]
 
-== RESTHeart Concurrency Model
+=== RESTHeart Concurrency Model
 
 RESTHeart is a multi-threaded application and it handles each request in a dedicated thread. This makes all code running in a request thread safe, and this also applies to JavaScript services and interceptors.
 
@@ -20,7 +20,7 @@ This is different than usual JavaScript concurrency model, where all code is usu
 
 In RESTHeart, you can write simple JavaScript code that also includes blocking calls, without incurring in performance problems.
 
-== Service
+=== Service
 
 The JavaScript code that defines a `Service` must export the object `options` and the function `handle(req, res)`.
 
@@ -40,7 +40,7 @@ export function handle(req, res) {
 }
 ----
 
-=== The object `options`
+==== The object `options`
 
 The `options` object must contain the following properties:
 
@@ -76,11 +76,11 @@ The `options` object must contain the following properties:
 
 |===
 
-=== The function `handle(req, res)`
+==== The function `handle(req, res)`
 
 The `handle` functions accepts two parameters: the request and the response. These are Java objects of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
 
-== Interceptor
+=== Interceptor
 
 The JavaScript code that defines an `Interceptor` export the object `options` and the functions `handle(req, res)` and `resolve(req)`.
 
@@ -108,7 +108,7 @@ export function resolve(request) {
 }
 ----
 
-=== The object `options`
+==== The object `options`
 
 The `options` object must contain the following properties:
 
@@ -140,7 +140,7 @@ The `options` object must contain the following properties:
 
 |===
 
-=== The function `resolve(req)`
+==== The function `resolve(req)`
 
 The function `resolve()` accepts one parameter `req`, a Java object of the concrete subclass of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] defined by the parameter `pluginClass`, e.g. with  `pluginClass: "StringInterceptor"`, the request class is link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest].
 
@@ -148,12 +148,12 @@ An interceptor of a given class, can intercept requests handled by all services 
 
 When `resolve()` returns `true` the interceptor will be actually invoked, i.e. this function allows to select the requests to intercept.
 
-=== The function `handle(req, res)`
+==== The function `handle(req, res)`
 
 The `handle()` functions accepts two parameters: the request and the response.
 These a Java objects of the concrete subclasses of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Response.html[Response] respectively.  For the default `pluginClass: "StringInterceptor"`, these are link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
 
-== Packaging
+=== Packaging
 
 The plugins js files must be placed in a folder with a `package.json` file.
 
@@ -172,7 +172,7 @@ The `package.json` muse declare the services in the `rh:services` array and inte
 }
 ----
 
-== Modules
+=== Modules
 
 The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/require-module-service.js[require-module-service.js] for an example.
 
@@ -182,7 +182,7 @@ For instance, you cannot use the module `http`, and there is no pure JS implemen
 
 See link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[GraalVM Modules] for more details.
 
-== Deploy
+=== Deploy
 
 To the JavaScript plugin, just copy the folder containing the scripts and the file `package.json` into the `plugins` directory of RESTHeart.
 
@@ -193,7 +193,7 @@ If you modify the code, you can force RESTHeart to update it by touching the plu
 [source,bash]
 $ touch plugins/my-plugin
 
-== Configuration parameters
+=== Configuration parameters
 
 It is possible to defined configuration parameters for the plugins by just defining them in the yml configuration file, under the `plugins-args` section.
 
@@ -211,7 +211,7 @@ The arguments are available in the `pluginArgs` object.
 const arg = pluginArgs.arg
 ----
 
-== Java/JavaScript interoperability [[interop]]
+=== Java/JavaScript interoperability [[interop]]
 
 GraalVM allows to execute JavaScript code from RESTHeart and allows interoperability with Java code.
 
@@ -219,13 +219,13 @@ This means that all the Java classes shipped with RESTHeart can be used in JavaS
 
 For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/http-client.js[http-client.js] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
 
-== MongoDB driver
+=== MongoDB driver
 
 The MongoDb Java driver, configured by RESTHeart configuration file and already connected to MongoDB, is available in the JavaScript code as `mclient`.
 
 See link:https://github.com/SoftInstigate/restheart/blob/master/polyglot/src/test/resources/test-js-plugins/mclient-service.js[mclient-service.js] for an example of how to use it.
 
-== Logging
+=== Logging
 
 The RESTHeart Java logger can be used from JavaScript code.
 

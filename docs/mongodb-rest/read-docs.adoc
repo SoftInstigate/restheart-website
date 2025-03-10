@@ -6,7 +6,7 @@ menu: mongodb
 
 :page-liquid:
 
-== Introduction
+=== Introduction
 
 This page provides examples of query operations using the `GET` method.
 
@@ -16,7 +16,7 @@ You will also learn hot to get a single document knowing its `_id`.
 
 {% include running-examples.adoc %}
 
-== GETting Documents from a Collection
+=== GETting Documents from a Collection
 
 To GET documents from a collection, run the following:
 
@@ -30,7 +30,7 @@ To GET documents from a collection, run the following:
 [source,http]
 GET /inventory HTTP/1.1
 
-== Paging
+=== Paging
 
 The response is paginated, i.e. only a subset of the collection’s document is returned in the response array.
 
@@ -39,9 +39,9 @@ parameter. Its default value is 100, maximum allowable size is 1000.
 
 The page to return is specified with the `page` query parameter.
 
-=== Paging Examples
+==== Paging Examples
 
-==== Return documents of second page with 3 documents per page
+===== Return documents of second page with 3 documents per page
 
 ++++
 {% include code-header.html
@@ -53,7 +53,7 @@ The page to return is specified with the `page` query parameter.
 [source,http]
 GET /inventory?page=2&pagesize=3 HTTP/1.1
 
-== Dot notation
+=== Dot notation
 
 It's possible to use the "dot notation" to specify fields within an
 sub-document, for example:
@@ -61,14 +61,14 @@ sub-document, for example:
 [source,http]
 GET /inventory?keys={'header.item':1}&sort={'header.status':1} HTTP/1.1
 
-== Filtering
+=== Filtering
 
 The `filter` query parameter allows to specify conditions on the
 documents to be returned in the form of a link:https://docs.mongodb.org/manual/tutorial/query-documents/[mongodb query].
 
-=== Filtering Examples
+==== Filtering Examples
 
-==== Return documents whose `quantity` is more than 50
+===== Return documents whose `quantity` is more than 50
 
 ++++
 {% include code-header.html
@@ -80,7 +80,7 @@ documents to be returned in the form of a link:https://docs.mongodb.org/manual/t
 [source,http]
 GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
 
-==== Return documents whose `quantity` is more than 25 and with `status` set to "D" value
+===== Return documents whose `quantity` is more than 25 and with `status` set to "D" value
 
 ++++
 {% include code-header.html
@@ -104,13 +104,13 @@ or equivalently:
 [source,http]
 GET /inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"} HTTP/1.1
 
-== Counting
+=== Counting
 
 Use `_size` keyword after the collection path to retrieve the number of documents that meets the filter condition (if present).
 
-=== Counting Examples
+==== Counting Examples
 
-==== Return the number of documents of "inventory" collection
+===== Return the number of documents of "inventory" collection
 
 ++++
 {% include code-header.html
@@ -122,11 +122,11 @@ Use `_size` keyword after the collection path to retrieve the number of document
 [source,http]
 GET /inventory/_size?filter={"status":"A"} HTTP/1.1
 
-== Sorting
+=== Sorting
 
 Sorting is controlled by the `sort` query parameter.
 
-=== Sort simple format
+==== Sort simple format
 
 The `sort` simplified format is :
 
@@ -138,14 +138,14 @@ NOTE: Specify multiple sort options using multiple `sort` query parameters
 [source,http]
 GET /inventory?sort=qty&sort=-status HTTP/1.1
 
-=== Sort JSON expression format
+==== Sort JSON expression format
 
 `sort` can also be a MongoDB link:https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort[sort expression].
 
 [source]
 sort={"field": 1}
 
-=== Default sorting
+==== Default sorting
 
 The default sorting of the documents is by the *id descending*.
 
@@ -160,9 +160,9 @@ defined order.
 
 TIP: Default sorting could impact performances for some use cases. To _disable_ default sorting add the`sort={}` query parameter
 
-=== Sorting Examples
+==== Sorting Examples
 
-==== Sort by *status* ascending
+===== Sort by *status* ascending
 
 ++++
 {% include code-header.html
@@ -187,7 +187,7 @@ or equivalently:
 [source,http]
 GET /inventory?sort={"status":1} HTTP/1.1
 
-==== Sort by *status* descending
+===== Sort by *status* descending
 
 ++++
 {% include code-header.html
@@ -211,7 +211,7 @@ or equivalently:
 [source,http]
 GET /inventory?sort={"status":-1} HTTP/1.1
 
-==== Sort by *status* ascending and *qty* descending
+===== Sort by *status* ascending and *qty* descending
 
 ++++
 {% include code-header.html
@@ -236,7 +236,7 @@ or equivalently:
 GET /inventory?sort={"status":1,"qty":-1} HTTP/1.1
 
 
-==== Sort by search score
+===== Sort by search score
 
 NOTE: This is only possible with json expression format
 
@@ -268,16 +268,16 @@ PUT /inventory/_indexes/text HTTP/1.1
 [source,http]
 GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}} HTTP/1.1
 
-== Projection
+=== Projection
 
 Projection limits the fields to return for all matching documents,
 specifying the inclusion or the exclusion of fields.
 
 This is done via the `keys` query parameter.
 
-=== Projection Examples
+==== Projection Examples
 
-==== Only return the property *item*
+===== Only return the property *item*
 
 ++++
 {% include code-header.html
@@ -289,7 +289,7 @@ This is done via the `keys` query parameter.
 [source,http]
 GET /inventory?keys={'item':1} HTTP/1.1
 
-==== Return all but the property *item*
+===== Return all but the property *item*
 
 ++++
 {% include code-header.html
@@ -301,7 +301,7 @@ GET /inventory?keys={'item':1} HTTP/1.1
 [source,http]
 GET /inventory?keys={'item':0} HTTP/1.1
 
-==== Only return the properties *item* and *qty*
+===== Only return the properties *item* and *qty*
 
 ++++
 {% include code-header.html
@@ -313,7 +313,7 @@ GET /inventory?keys={'item':0} HTTP/1.1
 [source,http]
 GET /inventory?keys={'item':1}&keys={'qty':1} HTTP/1.1
 
-== Hint
+=== Hint
 
 Hint allows overriding MongoDB’s default index selection and query optimization process. See link:https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint[cursor hint] on MongoDB documentation.
 
@@ -325,7 +325,7 @@ For version 8.3: Use the compact string representation by prefixing the field na
 
 Use `$natural` to force the query to perform a forwards collection scan.
 
-=== Hint Examples
+==== Hint Examples
 
 Before running the following examples create the following indexes:
 
@@ -356,7 +356,7 @@ PUT /inventory/_indexes/status HTTP/1.1
 {"keys":{"status": 1 }}
 ----
 
-==== Use the index on item field
+===== Use the index on item field
 
 The following example returns all documents in the collection named **coll** using the index on the **item** field.
 
@@ -370,7 +370,7 @@ The following example returns all documents in the collection named **coll** usi
 [source,http]
 GET /inventory?hint={'item':1} HTTP/1.1
 
-==== Use the index on item and status fields using the compact string format
+===== Use the index on item and status fields using the compact string format
 
 The following example returns the documents using the indexes **item** and reverse **status**.
 
@@ -384,7 +384,7 @@ The following example returns the documents using the indexes **item** and rever
 [source,http]
 GET /inventory?hint=+item&hint=-status HTTP/1.1
 
-==== Perform a forwards collection scan
+===== Perform a forwards collection scan
 
 The following example returns the documents using a forwards collection scan.
 
@@ -399,7 +399,7 @@ The following example returns the documents using a forwards collection scan.
 GET /inventory?hint={'$natural':1} HTTP/1.1
 
 
-==== Perform a reverse collection scan
+===== Perform a reverse collection scan
 
 The following example returns the documents using a reverse collection scan.
 

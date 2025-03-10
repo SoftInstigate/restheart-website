@@ -10,7 +10,7 @@ This plugin serves as an example of how to create services in RESTHeart by imple
 
 IMPORTANT: **Explore Comprehensive RESTHeart Examples!** If you're looking to dive deeper into developing with RESTHeart, visit the link:https://github.com/SoftInstigate/restheart/blob/master/examples/README.md[RESTHeart examples^] to discover a rich collection of use cases and code samples. **Highly recommended for an in-depth learning experience!**
 
-== What you need
+=== What you need
 
 To run this tutorial, the following are required:
 
@@ -25,7 +25,7 @@ $ sdk install java 21.0.3-tem
 
 NOTE: The examples use Maven, but it's accessible through the included Maven wrapper (`mvnw`), so a separate installation is not required.
 
-== Building the Plugin
+=== Building the Plugin
 
 To build the plugin, run the following commands:
 
@@ -36,7 +36,7 @@ $ cd examples/greeter-service # cd into the greeter-service example project root
 $ ../mvnw clean package build the project
 ----
 
-== Running RESTHeart with the Plugin
+=== Running RESTHeart with the Plugin
 
 This plugin doesn't require MongoDB, so you can run RESTHeart in standalone mode using the `-s` option.
 
@@ -49,11 +49,11 @@ $ docker run --rm -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='adm
 
 For more information, see link:/docs/setup-with-docker#run-restheart-with-custom-plugin[RESTHeart with custom Plugin] documentation.
 
-== Testing the Service
+=== Testing the Service
 
 You can test the service with the following HTTP requests:
 
-=== GET request, no query parameter
+==== GET request, no query parameter
 
 [source,bash]
 ----
@@ -61,7 +61,7 @@ $ http -b :8080/textGreeter
 Hello, World
 ----
 
-===  GET request, with name query parameter
+====  GET request, with name query parameter
 
 [source,bash]
 ----
@@ -69,7 +69,7 @@ $ http -b :8080/textGreeter?name=Andrea
 Hello, Andrea
 ----
 
-=== POST request, with content body
+==== POST request, with content body
 
 [source,bash]
 ----
@@ -79,7 +79,7 @@ Hello, Sara
 
 Note: Using HTTP verbs other than `OPTIONS`, `GET`, or `POST` for `/textGreeter` will result in a `HTTP 405 Method Not Allowed` response.
 
-== Plugin Code Description
+=== Plugin Code Description
 
 Below is the code of the `TextGreeterService` class that implements the Web Service `/textGreeter`:
 

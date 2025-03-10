@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: framework
 ---
 
-== Authentication Mechanisms
+=== Authentication Mechanisms
 
 An *Authentication Mechanism* authenticates incoming requests.
 
@@ -21,7 +21,7 @@ Once the Authentication Mechanism has retrieved the credentials from the request
 
 Multiple Authentication Mechanisms can be enabled. The request is authenticated if any of the enabled Authentication Mechanisms successfully verifies the request.
 
-=== Implementation
+==== Implementation
 
 The Authentication Mechanism class must implement the `org.restheart.plugins.security.AuthMechanism` interface.
 
@@ -40,7 +40,7 @@ public interface AuthMechanism extends AuthenticationMechanism, ConfigurablePlug
 }
 ----
 
-==== Registering
+===== Registering
 
 The Authentication Mechanism implementation class must be annotated with `@RegisterPlugin`:
 
@@ -53,7 +53,7 @@ public class MyAuthMechanism implements AuthMechanism {
 }
 ----
 
-==== Configuration
+===== Configuration
 
 The Authentication Mechanism can receive parameters from the configuration file using the `@Inject("config")` annotation:
 
@@ -78,7 +78,7 @@ myAuthMechanism:
     string: a string
 ```
 
-==== authenticate()
+===== authenticate()
 
 The method `authenticate()` must return:
 
@@ -104,7 +104,7 @@ securityContext.authenticationComplete(account, getMechanismName(), false);
 return AuthenticationMechanismOutcome.AUTHENTICATED;
 ```
 
-==== sendChallenge()
+===== sendChallenge()
 
 `sendChallenge()` is executed when the authentication fails.
 
@@ -130,7 +130,7 @@ public ChallengeResult sendChallenge(HttpServerExchange exchange, SecurityContex
 }
 ```
 
-==== Build the Account
+===== Build the Account
 
 To build the account, the Authentication Mechanism can use a configurable `Authenticator`. This allows extending the Authentication Mechanism with different `Authenticator` implementations. For instance, the _BasicAuthMechanism_ can use Authenticator implementations that hold accounts information on a DB or on an LDAP server.
 

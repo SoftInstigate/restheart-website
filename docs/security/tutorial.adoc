@@ -8,12 +8,12 @@ This tutorial aims to provide a thorough understanding of securing RESTHeart app
 
 By the end of this tutorial, you'll have a solid foundation in securing RESTHeart applications, ensuring data security and controlled access.
 
-== What you need
+=== What you need
 
 1. **Docker**: For running RESTHeart.
 2. **HTTPie**: A user-friendly command-line HTTP client. Download at link:https://httpie.io/cli[httpie.io/cli^].
 
-== Starting RESTHeart and MongoDB
+=== Starting RESTHeart and MongoDB
 
 To begin, create a directory for RESTHeart and use Docker Compose to start both RESTHeart and MongoDB:
 
@@ -24,7 +24,7 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 $ docker compose up --attach restheart
 ----
 
-== The Admin User
+=== The Admin User
 
 Upon first launch, `mongoRealmAuthenticator` creates an `admin` user with default password `secret` and the `admin` role. This role is configured as the root role in `mongoAclAuthorizer`, granting full permissions.
 
@@ -35,14 +35,14 @@ To change the `admin` password:
 [source,bash]
 $ http -a admin:secret PATCH :8080/users/admin password="my-strong-password"
 
-== Creating Collection /secrets
+=== Creating Collection /secrets
 
 Using `admin`, create the `/secrets` collection:
 
 [source,bash]
 $ http -a admin:secret PUT :8080/secrets
 
-== Creating Users alice and bob
+=== Creating Users alice and bob
 
 Next, create two users, `alice` and `bob`, each with the `user` role:
 
@@ -52,7 +52,7 @@ $ http -a admin:secret POST :8080/users _id=alice password=secret roles:='["user
 $ http -a admin:secret POST :8080/users _id=bob password=secret roles:='["user"]'
 ----
 
-== Understanding Status Codes
+=== Understanding Status Codes
 
 The `/users/{id}` endpoint can verify credentials. For example, using incorrect credentials for `alice`:
 
@@ -76,7 +76,7 @@ IMPORTANT: A `403 Forbidden` response means authentication succeeded, but the cl
 
 RESTHeart's default authorizer, `mongoAclAuthorizer`, enforces permissions based on user roles and ACL configurations.
 
-== Configuring Access for user Role on /secrets
+=== Configuring Access for user Role on /secrets
 
 We aim to allow `user` role to create and access their own documents in `/secrets`, and to modify only their documents.
 
@@ -142,7 +142,7 @@ $ http -a admin:secret POST :8080/acl _id=userCanCreateOwnSecret roles:='["user"
 $ http -a admin:secret POST :8080/acl _id=userCanModifyOwnSecret roles:='["user"]' priority:=100 predicate="method(PATCH) and path-template('/secrets/{id}')" mongo.writeFilter:='{ "author": "@user._id" }'
 ----
 
-== Creating Secret Documents
+=== Creating Secret Documents
 
 Let's have `alice` and `bob` create their secrets:
 
@@ -152,7 +152,7 @@ $ http -a bob:secret POST :8080/secrets message="Bob loves Alice"
 $ http -a alice:secret POST :8080/secrets message="Alice loves Bob"
 ----
 
-== Reading Secret Documents
+=== Reading Secret Documents
 
 Viewing with `admin`:
 

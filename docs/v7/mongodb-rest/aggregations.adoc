@@ -12,7 +12,7 @@ To execute an aggregation query, simply send a GET request to `/coll/_aggrs/<agg
 
 NOTE: Only inline output type is supported - meaning that no results are written directly to the database. However, if you wish to have results written to the database, then link:#materialized-views[Materialized Views] is the solution for you.
 
-== Aggregation definition
+=== Aggregation definition
 
 NOTE: In RESTHeart, not only documents but also dbs and collections have
 properties. Some properties are metadata, i.e. they have a special
@@ -69,7 +69,7 @@ WARNING: For RESTHeart versions < 7.3, you also need to specify `"type": "pipeli
 |No, default is `false`
 |===
 
-== Example
+=== Example
 
 The following request sets an aggregation pipeline bound at `/coll/_aggrs/example-pipeline`
 
@@ -90,19 +90,19 @@ PATCH /coll HTTP/1.1
 }
 ----
 
-== Variables
+=== Variables
 
 Using variables to define parameters in an aggregation allows you to include dynamic queries and create a more customized output. This can help to make the query much more specific and efficient when retrieving data from the database.
 
-=== The `$var` Operator
+==== The `$var` Operator
 
 In aggregation definitions, you have the flexibility to create parametric aggregations using the special operator `{"$var": "name" }`. This operator enables you to dynamically customize aggregations based on variable values.
 
-=== Passing Variables to Aggregations
+==== Passing Variables to Aggregations
 
 To leverage this feature, you can utilize the `?avars` query parameter when making requests. By including `?avars={"name":"Bob"}`, you can pass variables to aggregations. This allows you to adapt the aggregation behavior on the fly.
 
-=== Variable Value Format
+==== Variable Value Format
 
 It's important to note that the value of a variable can be any valid JSON. This means you can pass various data types, including strings and complex objects. For instance:
 
@@ -113,7 +113,7 @@ It's important to note that the value of a variable can be any valid JSON. This 
 
 In this example, we are passing two variables: a string (`"name"`) and an object (`"obj"`).
 
-=== Handling Missing Variables
+==== Handling Missing Variables
 
 A crucial point to remember is that if an aggregation relies on a variable, such as `name`, and that variable is not passed via the `?avars` query parameter, the request will fail unless you define a variable with a default value. Therefore, ensure that all required variables are provided to avoid issues during aggregation execution.
 
@@ -130,7 +130,7 @@ HTTP/1.1 400 Bad Request
 }
 ----
 
-=== Dot Notation Support
+==== Dot Notation Support
 
 Starting from RESTHeart version 7.6, the `$var` operator also supports dot notation. This means you can navigate through nested JSON structures within variables. For instance:
 
@@ -141,15 +141,15 @@ Starting from RESTHeart version 7.6, the `$var` operator also supports dot notat
 
 In this case, the value of `{"$var": "foo.bar" }` will be resolved as `1`. This enhances the flexibility and versatility of parametric aggregations, allowing for more complex and dynamic data processing.
 
-=== Variables with default values
+==== Variables with default values
 
 In RESTHeart version 7.3 and onwards, you can enhance the flexibility of your aggregation requests by specifying default values for variables. This feature ensures that your aggregations gracefully handle cases where a variable is not explicitly provided in the request using the `?avar` query parameter.
 
-==== Defining Variables with Default Values
+===== Defining Variables with Default Values
 
 To define a variable with a default value, utilize the following syntax: `{"$var": [ "name", "default-value" ] }`. This structure allows you to set a fallback value that will be used when a specific variable is not included in the request.
 
-==== Default Values Format
+===== Default Values Format
 
 It's essential to note that default values can take any valid JSON format. For instance, you can set a default value like this:
 
@@ -160,7 +160,7 @@ It's essential to note that default values can take any valid JSON format. For i
 
 In this example, the default value for variable `s` is `{"name":1}`.
 
-==== Example: Using a Variable with Default Value in `$sort` Stage
+===== Example: Using a Variable with Default Value in `$sort` Stage
 
 To illustrate this concept, consider an example aggregation that incorporates a variable `s` with a default value in the `$sort` stage:
 
@@ -180,7 +180,7 @@ To illustrate this concept, consider an example aggregation that incorporates a 
 
 In this aggregation, if the `s` variable is not provided in the request, it will default to `{"name": 1}`. This powerful feature simplifies aggregation requests and ensures consistent behavior even when specific variables are not explicitly set.
 
-== Predefined variables
+=== Predefined variables
 
 The following predefined variables can be used in the aggregation definition:
 
@@ -202,7 +202,7 @@ The following predefined variables can be used in the aggregation definition:
 |to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
 |===
 
-== Handling paging in aggregations
+=== Handling paging in aggregations
 
 Paging must be handled explicitly by the aggregation-
 
@@ -224,7 +224,7 @@ For example, the following defines the aggregation `/aggrs/paging` that uses the
 ----
 
 [[optional-stages]]
-== Optional Stages
+=== Optional Stages
 
 NOTE: Optional stages are available from RESTHeart 7.3.
 
@@ -232,7 +232,7 @@ A pipeline in RESTHeart can include optional stages, which are included only if 
 
 To define an optional stage, you can use the `$ifvar` operator.
 
-=== With One Required Variable
+==== With One Required Variable
 
 For one required variable, use the following format:
 
@@ -260,7 +260,7 @@ Here's an example:
 }
 ----
 
-=== With Multiple Required Variables
+==== With Multiple Required Variables
 
 If you need to specify more than one required variable, you can use the following format:
 
@@ -288,7 +288,7 @@ TIP: Starting from RESTHeart v7.6, the `$ifvar` operator supports the dot notati
 }
 ----
 
-=== Specifying an Else Stage
+==== Specifying an Else Stage
 
 It is also possible to specify an _else_ stage, i.e., an alternative stage that is included in the aggregation if the required variables are not passed via the `?avar` query parameter.
 
@@ -307,7 +307,7 @@ To specify an _else_ stage, use the following format:
 }
 ----
 
-== Materialized Views
+=== Materialized Views
 
 The `$merge` stage for the pipelines delivers the ability to create collections based on an aggregation and update those created collections efficiently, i.e. it just updates the generated results collection rather than rebuild it completely (like it would with the `$out` stage).
 
@@ -353,7 +353,7 @@ HTTP/1.1 200 OK
 ----
 
 
-== Security considerations
+=== Security considerations
 
 By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
 
@@ -368,13 +368,13 @@ mongo:
     aggregation-check-operators: true
 ----
 
-== Transaction Support
+=== Transaction Support
 
 Aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
 
 For more information on how to create a transaction scope refer to link:/docs/mongodb-rest/transactions[Transactions] doc page.
 
-== Map-Reduce
+=== Map-Reduce
 
 WARNING: map reduce are deprecated. Use aggregation pipeline instead. See link:https://www.mongodb.com/docs/manual/core/map-reduce/[Map-Reduce] in MongoDb documentation.
 
@@ -410,7 +410,7 @@ WARNING: map reduce are deprecated. Use aggregation pipeline instead. See link:h
 |yes
 |===
 
-=== Example
+==== Example
 
 The following request update the collection metadata defining a map reduce operation bound at `/coll/_aggrs/example-mapreduce`
 
@@ -431,13 +431,13 @@ PUT /coll HTTP/1.1
 }
 ----
 
-=== Variables
+==== Variables
 
-==== in query
+===== in query
 
 You can use the variable in queries using the `$var` operator.
 
-==== in map reduce functions
+===== in map reduce functions
 
 Variables are passed also to *map* and *reduce* javascript functions
 where the variable `$vars` can be used. For instance:

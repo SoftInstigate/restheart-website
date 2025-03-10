@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: security
 ---
 
-== Introduction
+=== Introduction
 
 See link:/docs/security/overview#understanding-restheart-security[Understanding RESTHeart Security] for an high level view of the RESTHeart security model.
 
@@ -19,7 +19,7 @@ Both authorizers provide a simple, declarative and a rich, ACL-based model for a
 
 It's even possible to develop **custom authorizers**. Please refer to link:/docs/plugins/security-plugins[Develop Security Plugins] for more information.
 
-== Mongo ACL Authorizer
+=== Mongo ACL Authorizer
 
 _mongoAclAuthorizer_ authorizes requests according to the _Access Control List_ defined in a **MongoDB collection**.
 
@@ -42,7 +42,7 @@ mongoAclAuthorizer:
     cache-expire-policy: AFTER_WRITE
 ----
 
-=== Format of permissions
+==== Format of permissions
 
 The properties of the permission document are:
 
@@ -94,7 +94,7 @@ If the request is authorized by this permission then:
 - the property `log` is removed from the response, due to `projectResponse`
 - a `readFilter` applies, so only document with `status=public` or `author=<userid>` are returned
 
-=== Predicates
+==== Predicates
 
 The ACL permissions use the link:https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates[undertow predicate language] to define the condition a request must met to be authorized.
 
@@ -143,7 +143,7 @@ RESTHeart extends this language introducing the following new predicates that ex
 
 *Note*:   the double quotes in `values` since each element must be valid bson such as `1` (number), `"1"` (string), `"bar"`  (string) or `{"foo": "bar"}`  (object)
 
-=== MongoPermissions
+==== MongoPermissions
 
 For requests handled by the `MongoService` (i.e. the service that implements the REST API for MongoDB) the permission can specify the `MongoPermissions` object.
 
@@ -207,7 +207,7 @@ The next request allows to PATCH the collection `coll` and all documents in it, 
 }
 ----
 
-==== readFilter and writeFilter
+===== readFilter and writeFilter
 
 TIP: `readFilter` and `writeFilter` allows to partition data by roles.
 
@@ -219,7 +219,7 @@ The `writeFilter` applies to write request to allow updating only the documents 
 
 WARNING: `writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using `mongo.mergeRequest`.
 
-==== mergeRequest
+===== mergeRequest
 
 `mergeRequest` allows to merge the specified properties to the request content. In this way, server-side evaluated properties can be enforced.
 
@@ -256,7 +256,7 @@ the property `author` is evaluated to be the `userid` of the authenticated clien
 |the value of the `filter` query parameter
 |===
 
-==== projectResponse
+===== projectResponse
 
 `projectResponse` allows to project the response content, i.e. to remove properties.
 
@@ -288,7 +288,7 @@ The following only returns the property `public` (you can use the dot notation!)
 }
 ----
 
-== File ACL Authorizer
+=== File ACL Authorizer
 
 _fileAclAuthorizer_ allows defining roles permissions in the configuration or in a separate YAML configuration file.
 

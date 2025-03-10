@@ -3,13 +3,13 @@ title: GraphQL API
 layout: docs-adoc
 ---
 
-== Overview
+=== Overview
 
 The GraphQL plugin works side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.
 
 The `restheart-graphql` service added to RESTHeart exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.
 
-== Configuration
+=== Configuration
 
 For each GraphQL application you need to define a so called *GraphQL app definition*. This is a JSON document to create in a MongoDB collection. You can specify the collection that holds the app definitions in the RESTHeart's configuration as follow:
 
@@ -45,7 +45,7 @@ A GraphQL application definition is composed by three sections:
 }
 ----
 
-=== Descriptor
+==== Descriptor
 
 Here you can specify:
 
@@ -68,7 +68,7 @@ Here you can specify:
 }
 ----
 
-=== Schema
+==== Schema
 
 This section must contain GraphQL application's schema written with *Schema Definition Language* (SDL). For example:
 
@@ -83,7 +83,7 @@ This section must contain GraphQL application's schema written with *Schema Defi
 
 NOTE: In order the schema to be a valid, it must contain the type *Query*.
 
-=== Mappings
+==== Mappings
 
 In this section you can specify how GraphQL types fields are mapped on MongoDB data. Mappings have to be organized following the same hierarchical structure of GraphQL SDL schema, so for each GraphQL type you can insert a JSON object with a property for each field that you want to map.
 
@@ -95,7 +95,7 @@ Two kinds of mapping can be made:
 
 NOTE: (*) the new _Field to Aggregation mapping_ is only available on snapshot release and foreseen for future releases.
 
-==== Field to Field mapping
+===== Field to Field mapping
 
 You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array by **dot-notation**. For instance:
 
@@ -124,7 +124,7 @@ Whit this configuration:
 
 Notice that, if you don't specify a mapping for a field, RESTHeart will map it with a MongoDB document field with the same name.
 
-==== Field to Query mapping
+===== Field to Query mapping
 
 You can map a GraphQL field with a MongoDB query using the following parameters:
 
@@ -251,7 +251,7 @@ As result, we are saying that:
 
 NOTE: you can use also the *dot notation* with the `$fk` operator.
 
-==== Field to Aggregation mapping
+===== Field to Aggregation mapping
 
 You can map a GraphQL field with a MongoDB query using the following parameters:
 
@@ -292,7 +292,7 @@ type Query {
 ----
 
 
-== Bson types
+=== Bson types
 
 All primitive GraphQL types have been mapped to corresponding BSON types plus a set of custom GraphQL scalars types have been added:
 
@@ -312,7 +312,7 @@ All primitive GraphQL types have been mapped to corresponding BSON types plus a 
 |`BsonDocument` |`BsonDocument` |`doc: { "any": 1, "possible": 1, "document": 1 }`|
 |===
 
-=== Example
+==== Example
 
 The following GraphQL type `User` defines the property `_id` to be of type `ObjectId`
 
@@ -327,11 +327,11 @@ type User {
 }
 ----
 
-== Queries
+=== Queries
 
 Up to now, only GraphQL Query can be made, so no subscription or mutation. In order to make a query you can use HTTP request with POST method and both content-type `application/json` and `application/graphql`. For instance:
 
-=== `application/json`
+==== `application/json`
 
 [source,http]
 ----
@@ -351,7 +351,7 @@ Content-Type: application/json
 }
 ----
 
-=== `application/graphql`
+==== `application/graphql`
 
 
 [source,http]
@@ -403,7 +403,7 @@ In the following table are reported possible RESTHeart GraphQL Service responses
 |Internal Server Error|
 |===
 
-== Example responses
+=== Example responses
 
 *200 - OK*
 

@@ -12,7 +12,7 @@ The `req` and `res` arguments allow to retrieve request content, query parameter
 
 NOTE: No need to worry about the actual HTTP data transmission - RESTHeart will handle that for you automatically using the data set in the `res` object.
 
-== The Service class
+=== The Service class
 
 A `Service` consists of a class implementing one of the `Service` interfaces such as `JsonService` and annotated with `@RegisterPlugin`.
 
@@ -46,7 +46,7 @@ The key method is `handle(req, res)` that is executed when a request matching th
 
 NOTE: the verb `OPTIONS` is handled by the ready-to-use `handleOptions(req)` method. It copes with link:/docs/plugins/cors[CORS headers] making sure the Web Service can be safely invoked by browsers.
 
-== @RegisterPlugin annotation
+=== @RegisterPlugin annotation
 
 The class implementing the `Service` interfaces must be a annotated with `@RegisterPlugin` to:
 
@@ -89,7 +89,7 @@ The following table describes the arguments of the annotation for Services:
 |`{}`
 |===
 
-== Service with custom generic types
+=== Service with custom generic types
 
 To implement a `Service` that handles different types of `Request` and `Response`, it must implement the base `Service` interface.
 
@@ -168,7 +168,7 @@ In the constructor a call to `super(exchange)` attaches the object to the `HttpS
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=680s[Services]
 
-== CORS Headers
+=== CORS Headers
 
 CORS stands for link:https://en.wikipedia.org/wiki/Cross-origin_resource_sharing[Cross-origin resource sharing]
 and it is a mechanism to allow resources on a web page to be requested
@@ -189,7 +189,7 @@ can modify data, the CORS specification mandates that browsers
 with an HTTP OPTIONS request header, and then, upon "approval" from the
 server, sending the actual request with the actual HTTP request method.
 
-=== CORS Support
+==== CORS Support
 
 RESTHeart always returns CORS headers to allow requests originated
 from different domains.
@@ -214,7 +214,7 @@ Access-Control-Allow-Origin: *
 Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
 ----
 
-=== Customize CORS Headers
+==== Customize CORS Headers
 
 The `Service` interface extends the following interface:
 

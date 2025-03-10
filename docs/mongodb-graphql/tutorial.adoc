@@ -12,7 +12,7 @@ Dive into the world of GraphQL and RESTHeart, and may the force be with your dat
 
 NOTE: While this tutorial provides buttons for executing requests using "Rest Ninja," please be aware that it may not seamlessly function with Safari due to HTTPS requirements. For a smoother experience, we recommend using Chrome or Firefox browsers (refer to link:/docs/security/tls[Configure TLS]).
 
-== Create the Star Wars GraphQL API
+=== Create the Star Wars GraphQL API
 
 IMPORTANT: This tutorial requires RESTHeart v7.6.4+
 
@@ -109,9 +109,9 @@ NOTE: Request body omitted because is quite long. Find it in the link:#the-full-
 The GraphQL API is ready to use!
 ****
 
-== Execute queries
+=== Execute queries
 
-=== hero
+==== hero
 
 ++++
 {% include code-header.html
@@ -177,7 +177,7 @@ NOTE: Please note that the response content-type is `application/graphql-respons
 [source,bash]
 $ echo '{ hero(episode: JEDI) { name friends { name } ... on Droid { primaryFunction } ... on Human { homePlanet } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
 
-=== search
+==== search
 
 ++++
 {% include code-header.html
@@ -237,13 +237,13 @@ NOTE: Please note that the response content-type is `application/graphql-respons
 [source,bash]
 $ echo '{ search(text: "an") { ... on Character { name } ... on Starship { name length } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
 
-== Understanding the GraphQL App Definition
+=== Understanding the GraphQL App Definition
 
 GraphQL types are connected to MongoDB data through mappings.
 
 NOTE: If you don’t explicitly define a mapping for a field, RESTHeart will automatically map it to the MongoDB document field with the same name.
 
-=== enum Episode
+==== enum Episode
 
 The GraphQL schema defines the enum `Episode`:
 
@@ -265,7 +265,7 @@ TIP: for more information on enum mappings see link:/docs/mongodb-graphql/graphq
 }
 ----
 
-=== union SearchResult
+==== union SearchResult
 
 The GraphQL schema defines the union `SearchResult`:
 
@@ -293,7 +293,7 @@ TIP: for more information on union mappings see link:/docs/mongodb-graphql/graph
 }
 ----
 
-=== interface Character
+==== interface Character
 
 The GraphQL schema defines the interface `Character`:
 
@@ -325,7 +325,7 @@ TIP: for more information on interface mappings see link:/docs/mongodb-graphql/g
 }
 ----
 
-=== object Starship
+==== object Starship
 
 The GraphQL schema defines the object type `Starship`:
 
@@ -342,7 +342,7 @@ No mapping is required since default field-to-field mappings are fine
 
 TIP: for more information on field-to-field mappings see link:/docs/mongodb-graphql/graphql-apps#field-to-field-mapping[Field-to-field mapping]
 
-=== objects Human and Droid
+==== objects Human and Droid
 
 The GraphQL schema defines the object types `Human` and `Droids`:
 
@@ -393,7 +393,7 @@ TIP: for more information on the `$fk` operator see link:/docs/mongodb-graphql/g
 }
 ----
 
-=== Query
+==== Query
 
 The GraphQL schema defines the queries `hero` and `search`
 
@@ -428,7 +428,7 @@ TIP: for more information on query mappings see link:/docs/mongodb-graphql/graph
 }
 ----
 
-== The full GraphQL Schema
+=== The full GraphQL Schema
 
 [source,graphql]
 ----
@@ -479,7 +479,7 @@ type Query {
 }
 ----
 
-== The full GraphQL APP definition
+=== The full GraphQL APP definition
 
 [source,json]
 ----

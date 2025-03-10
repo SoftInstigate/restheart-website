@@ -8,9 +8,9 @@ RESTHeart v7 introduces many news features, improvements and changes.
 
 This page summarizes the new features and provide guidance on upgrading from previous versions.
 
-== Summary
+=== Summary
 
-=== Core
+==== Core
 
 [options="header"]
 [cols="1,2"]
@@ -44,7 +44,7 @@ This page summarizes the new features and provide guidance on upgrading from pre
 |Simplify performance tuning
 |===
 
-=== MongoService
+==== MongoService
 
 [options="header"]
 [cols="1,2"]
@@ -60,7 +60,7 @@ This page summarizes the new features and provide guidance on upgrading from pre
 |Improve Performance for `GET /coll` requests
 |===
 
-=== GraphQLService
+==== GraphQLService
 
 [options="header"]
 [cols="1,2"]
@@ -72,7 +72,7 @@ This page summarizes the new features and provide guidance on upgrading from pre
 |Allow to intercept requests to GraphQL endpoints
 |===
 
-=== New Plugins
+==== New Plugins
 
 [options="header"]
 [cols="1,2"]
@@ -82,7 +82,7 @@ This page summarizes the new features and provide guidance on upgrading from pre
 |Remove dependency to the MongoService for plugins that use `@Inject("mclient")` and `@Inject("mclient-reactive")`
 |===
 
-=== Security
+==== Security
 
 [options="header"]
 [cols="1,2"]
@@ -96,9 +96,9 @@ This page summarizes the new features and provide guidance on upgrading from pre
 |issues and verifies auth tokens in a cluster compatible way
 |===
 
-== Details
+=== Details
 
-=== New Dependency Injection mechanism and new plugin type Provider
+==== New Dependency Injection mechanism and new plugin type Provider
 
 The annotations `@InjectMongoClient`, `@InjectConfiguration` and `@InjectPluginRegistry` are removed in favor of the generic DI annotations `@Inject` and `@OnInit`
 
@@ -142,7 +142,7 @@ public class GreeterService implements JsonService {
 }
 ----
 
-=== Blocking and Non Blocking Services
+==== Blocking and Non Blocking Services
 
 In RESTHeart v6 all services are executed on a Multi-threading concurrency model: when a request comes, it is dispatched and executed by a working thread obtained from a pool whose size is defined by the configuration parameter `worker-threads`.
 
@@ -167,7 +167,7 @@ public class MyPlugin implements JsonService {
 
 With `blocking = false` the execution of the service is not dispatched to a working thread and executed by the io-thread, thus avoiding the overhead of the thread handling and switching.
 
-=== Default configuration
+==== Default configuration
 
 RESTheart v6 requires a configuration file. The configuration file can be parametrized, and parameters can be specified with an additional properties file, eg.
 
@@ -181,7 +181,7 @@ So RESTHeart v7 can be started with:
 [source,java]
 $ java -jar restheart.jar
 
-=== New way to override configuration options with environment variables
+==== New way to override configuration options with environment variables
 
 RESTHeart v6 allows to override a configuration options with an environment variable only if the parameters is a primitive type.
 
@@ -210,13 +210,13 @@ or even
 [source,bash]
 $ RHO='/mongo-uri->"mongodb://127.0.0.1";/mongo-mounts[1]->{"where: "/api", "what": "mydb"}' java -jar restheart.jar
 
-=== Java 17
+==== Java 17
 
 RESTHeart v7 requires Java 17.
 
 Note that Java 17 is a LTS released.
 
-=== New configuration file format
+==== New configuration file format
 
 Since v5, in RESTHeart *everything is a plugin* but still the configuration file resembles the old times where RESTHeart was just an API for MongoDB.
 
@@ -268,13 +268,13 @@ basicAuthMechanism:
 
 Check the draft configuration format at link:https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/restheart-default-config.yml[restheart-default-config.yml]
 
-=== Wildcard Interceptor
+==== Wildcard Interceptor
 
 In RESTHeart v6 an Interceptor can intercept a request only if the handling service uses the very same `Request` and `Response` class implementations so, as an example, an Interceptor that implements `JsonInterceptor` can intercept requests to services that implements the interfaces `JsonService`, both using the classes `JsonRequest` and `JsonResponse`.
 
 RESTHeart v7 features the `WildcardInterceptor` interface that allows to intercept any request/response.
 
-=== New `InterceptPoint.BEFORE_EXCHANGE_INIT`
+==== New `InterceptPoint.BEFORE_EXCHANGE_INIT`
 
 RESTHeart v7 also adds the new `InterceptPoint.BEFORE_EXCHANGE_INIT`
 
@@ -282,7 +282,7 @@ A use case for this is a client sending a POST with an XML payload to the `Mongo
 
 See the example plugin link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] that shows how to transform the request and response content to and from a different format than expected by a Service. 
 
-=== Simplify CORS headers management
+==== Simplify CORS headers management
 
 In RESTHeart v7 the `Service` interface extends the following interface:
 
@@ -321,20 +321,20 @@ public interface CORSHeaders {
 
 RESTHeart uses those methods to return the CORS headers. Overriding the methods allow to set or add custom CORS headers.
 
-=== Support HTTP2
+==== Support HTTP2
 
 In RESTHeart v7 supports HTTP2 and it is enabled by default.
 
 Note that HTTP2 only works with the `https-listener` (TLS). See [Configure TLS](/docs/security/tls) for more information.
 
-=== Automatic reflection configuration of plugins for native images
+==== Automatic reflection configuration of plugins for native images
 
 At startup, RESTHEart snoops and initialize plugins (classes annotated with `@RegisterPlugin` using reflection.
 In order to build the native image with GraalVM, the `reflect-config.json` configuration file must be defined.
 
 RESTHeart v7 implements a GraalVM link:https://www.graalvm.org/22.2/reference-manual/native-image/dynamic-features/Reflection/#configuration-with-features[features], that automates this task and streamlines the development of plugins to be bundled in restheart native builds.
 
-=== Automatic configuration for `io-threads` and `worker-threads`
+==== Automatic configuration for `io-threads` and `worker-threads`
 
 `io-threads` and `worker-threads` are key configuration parameters for performance.
 
@@ -351,7 +351,7 @@ RESTHeart v7 allows to auto detect suggested values that depend on number of ava
   worker-threads: -1
 ----
 
-=== PATCH document to accept update operators expr also with `?writeMode=insert`
+==== PATCH document to accept update operators expr also with `?writeMode=insert`
 
 In RESTHeart v7 allows creating documents using update operators with `PATCH /coll/doc?wm=insert` (with writeMode=insert)
 
@@ -409,7 +409,7 @@ The following table summarizes the write operations on request method and write 
 
 *) uses a find condition that won't match any existing document, making sure the operation is an insert
 
-=== Allow to specify `ReadConcern`, `WriteConcern` and `ReadPreference` at request level
+==== Allow to specify `ReadConcern`, `WriteConcern` and `ReadPreference` at request level
 
 RESTHeart v7 extends MongoDB write API coverage with support for the following query parameters:
 
@@ -423,15 +423,15 @@ POST /coll?writeConcern=majority
 GET /coll?readConcern=majority&readPreference=primary
 ----
 
-=== MongoService to use mongo-driver-sync
+==== MongoService to use mongo-driver-sync
 
 In RESTHeart v7 the `MongoService` was refactored to use `mongodb-driver-sync`.
 
-=== New caching mechanism
+==== New caching mechanism
 
 Reuse the MongoDB cursor batch data to speedup `GET /coll` requests. See link:https://github.com/SoftInstigate/restheart/issues/442[github issue #442]
 
-=== GraphQL Field to Aggregation Mapping
+==== GraphQL Field to Aggregation Mapping
 
 In RESTHeart v6, the GraphQL application definition allows two types of link:https://restheart.org/docs/graphql/#mappings[field mapping]
 
@@ -442,13 +442,13 @@ RESTHeart v7 adds a new mapping: *Field to Aggregation* mapping.
 
 As the name suggests, a GraphQL type can have a field that maps to an aggregation. An example would be a numeric field that is a count of some data executed via an aggregation.
 
-=== Move `GraphQLRequest` to restheart-commons
+==== Move `GraphQLRequest` to restheart-commons
 
 Currently the `Request` implementation used by the `GraphQLService` in incapsulated in the `graphql` module.
 
 RESTHeart v7 moves it to `restheart-commons`. This allows implementing an Interceptors that can intercept requests handled by GraphQL services.
 
-=== New Provider to init and inject the `MongoClient`
+==== New Provider to init and inject the `MongoClient`
 
 In RESTHeart v6, the singleton object `MongoClient` is initialized by the `MongoService`.
 
@@ -458,9 +458,9 @@ An example is the authenticator `MongoRealmAuthenticator` that handles the user 
 
 RESTHeart v7 moves the `MongoClient` handling logic to its own plugin (implemented in the module link:https://github.com/SoftInstigate/restheart/tree/master/mongoclient[mongoclient]), allowing to seamlessly use MongoDB even in use cases where the MongoDB REST API is not required.
 
-=== Security
+==== Security
 
-=== Avoid weak password
+==== Avoid weak password
 
 Using weak password is dangerous. RESTHeart v7 uses the password strength estimator link:https://github.com/nulab/zxcvbn4j[zxcvbn4j] to check user password handled by MongoRealmAuthenticator and reject user document upserts containing a weak password.
 
@@ -496,19 +496,19 @@ mongoRealmAuthenticator:
     cache-expire-policy: AFTER_WRITE
 ----
 
-=== Brute force password cracking attacks detection
+==== Brute force password cracking attacks detection
 
 RESTHeart v7 allows to detect when the number of requests with failed authentication overcome a given threshold in a given period.
 When this happens, any authentication attempts will be rejected anyway with status code 429 TOO MANY REQUESTS for n seconds, lowering the effectiveness of brute force attacks. 
 
-=== JWT Token Manager
+==== JWT Token Manager
 
 An implementation of link:/docs/plugins/security-plugins/#token-managers[Token Manger] that issues and verifies auth tokens in a cluster compatible way.
 
 Each token can be verified by any node of the cluster regardless which one actually issued it (as long as they share the same `secret`)
 
 
-==== Configuration
+===== Configuration
 
 [source,yml]
 ----
@@ -522,7 +522,7 @@ jwtTokenManager:
 
 Note: All nodes must share the same configuration
 
-==== Renew the token
+===== Renew the token
 
 The query parameter `renew-auth-token` forces the token to be renewed.
 

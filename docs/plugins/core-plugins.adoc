@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: framework
 ---
 
-== Introduction
+=== Introduction
 
 Plugins allow to extend RESTHeart:
 
@@ -19,7 +19,7 @@ For code examples of Plugins please refer to link:https://github.com/SoftInstiga
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=0s[Introduction]
 
-=== Dependency
+==== Dependency
 
 The only required dependency to develop a plugin is `restheart-commons`.
 
@@ -34,7 +34,7 @@ With maven:
 </dependency>
 ----
 
-=== @RegisterPlugin annotation
+==== @RegisterPlugin annotation
 
 All plugins must be a annotated with `@RegisterPlugin` to:
 - allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
@@ -129,7 +129,7 @@ The following table describes the arguments of the annotation:
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=108s[Dependencies, annotations and parameters]
 
-=== Plugin Configuration
+==== Plugin Configuration
 
 A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration object for a plugin just use its name in the configuration:
 
@@ -190,7 +190,7 @@ private PluginsRegistry registry;
 private MongoClient mclient;
 ----
 
-=== Request and Response Generic Classes
+==== Request and Response Generic Classes
 
 *Services* and *Interceptor* are generic classes. They use type parameters for `Request` and `Response` classes.
 
@@ -211,7 +211,7 @@ Different implementation can also provide some helper methods to cope with speci
 When a request hits RESTHeart, it determines which service will handle it. The Service implementation is responsible of instantiating the correct Request and Response objects that will be used along the whole exchange processing chain.
 
 
-== Services
+=== Services
 
 Depending on the content type, the Service class implements one of the specialized `org.restheart.plugins.Service` interfaces. The following implementation are provided by `restheart-commons`:
 
@@ -255,7 +255,7 @@ public class MongoServerStatusService implements BsonService {
 
 The key method is `handle()` that is executed when a request to the service URI hits RESTHeart.
 
-=== Create Service with custom generic type
+==== Create Service with custom generic type
 
 To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface.
 
@@ -330,7 +330,7 @@ In the constructor a call to `super(exchange)` attaches the object to the `HttpS
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=680s[Services]
 
-== Interceptors
+=== Interceptors
 
 Interceptors allow to snoop and modify requests and responses at different
 stages of the request lifecycle as defined by the interceptPoint parameter of
@@ -383,7 +383,7 @@ The `handle()` method is invoked only if the `resolve()` method returns true.
 
 TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=986s[Interceptors]
 
-== Initializers
+=== Initializers
 
 An _Initializer_ allows executing custom logic at startup time.
 
@@ -414,7 +414,7 @@ public class confirmStartupInitializer implements Initializer {
 
 TIP: Watch https://www.youtube.com/watch?v=GReteuiMUio&t=1274s[Initializers]
 
-== Providers
+=== Providers
 
 `@Inject` works together with the plugin type `Provider`, as in the following example:
 

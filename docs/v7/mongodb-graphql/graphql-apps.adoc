@@ -4,13 +4,13 @@ layout: docs-adoc
 menu: mongodb
 ---
 
-== Overview
+=== Overview
 
 The `restheart-graphql` plugin exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.
 
 The GraphQL API works side by side with the REST API to build modern applications.
 
-== Configuration
+=== Configuration
 
 For each GraphQL application you need to define a so called *GraphQL app definition*. This is a JSON document to be created by default in the `/graphql` collection.
 
@@ -36,7 +36,7 @@ graphql:
 
 The GraphQL application can be dynamically created and updated by simply creating or updating the related document in MongoDB.
 
-== GraphQL App Definition
+=== GraphQL App Definition
 
 A GraphQL application definition is composed by three sections:
 
@@ -49,7 +49,7 @@ A GraphQL application definition is composed by three sections:
 }
 ----
 
-== Descriptor
+=== Descriptor
 
 Here you can specify:
 
@@ -72,7 +72,7 @@ Here you can specify:
 }
 ----
 
-== Schema
+=== Schema
 
 This section must contain GraphQL application's schema written with *Schema Definition Language* (SDL). For example:
 
@@ -87,13 +87,13 @@ This section must contain GraphQL application's schema written with *Schema Defi
 
 NOTE: In order the schema to be a valid, it must contain the type *Query*.
 
-== Mappings
+=== Mappings
 
 GraphQL types are connected to MongoDB data through mappings.
 
 Mappings are applicable to a range of types, including Object, Query, `enum`, `interfaces`, and `union`.
 
-=== Field to Field mapping
+==== Field to Field mapping
 
 You can map a GraphQL Object field with a specific MongoDB document field or with an element of a MongoDB array. To map nested fields use the **dot-notation**.
 
@@ -124,7 +124,7 @@ The `email` field is connected to the first element of the `emails` array within
 
 NOTE: if you don't explicitly define a mapping for a field, RESTHeart will automatically map it to the MongoDB document field with the same name.
 
-=== Field to Query mapping
+==== Field to Query mapping
 
 You can establish a mapping between a GraphQL Object field and a MongoDB query using the following parameters:
 
@@ -137,7 +137,7 @@ You can establish a mapping between a GraphQL Object field and a MongoDB query u
 
 NOTE: It's important to note that unlimited queries are not allowed. If the query doesn't specify a `limit`, the service configuration's `default-limit` is applied. Additionally, the limit cannot exceed the `max-limit`.
 
-=== Field to Aggregation mapping
+==== Field to Aggregation mapping
 
 You can link a GraphQL Object field with a MongoDB aggregation using the following parameters:
 
@@ -174,7 +174,7 @@ type Query {
 }
 ----
 
-==== Optional Stages
+===== Optional Stages
 
 Starting from RESTHeart v7.6, field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
 
@@ -184,7 +184,7 @@ Optional Stages in field-to-aggregation mapping are similar to Optional Stages i
 
 For a more in-depth understanding of how to use optional stages in both field-to-aggregation mapping and regular aggregations, please refer to the link:/docs/mongodb-rest/aggregations#optional-stages[Aggregation documentation].
 
-=== Mappings operators
+==== Mappings operators
 
 _Field to Query_ and _Field to Aggregation_ mappings provide the flexibility to employ the `$arg` and `$fk` operators:
 
@@ -292,7 +292,7 @@ NOTE: the `$fk` and `$arg` operators allow the usage of dot notation to traverse
 
 NOTE: the `$arg` operator allows dot notation from RESTHeart v7.6 onwards.
 
-=== Dot Notation support for `$arg` and `$fk`
+==== Dot Notation support for `$arg` and `$fk`
 
 The `$fk` and `$arg` operator can utilize dot notation to access nested properties.
 
@@ -325,7 +325,7 @@ The Query mapping can use the dot notation as follows to cope the `Filters Input
     }
 }
 
-=== Arguments with Default Values
+==== Arguments with Default Values
 
 The `$arg` operator can specify a default value. This default value is utilized when an optional argument is not provided in the GraphQL Query.
 
@@ -337,7 +337,7 @@ For example, the following code specifies the default value `Andrea` for the arg
 
 For a more comprehensive understanding of how to use arguments with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
 
-=== The `rootDoc` argument
+==== The `rootDoc` argument
 
 NOTE: `rootDoc` is available from RESTHeart v7.6
 
@@ -405,7 +405,7 @@ In order to filter the nested posts objects according to the argument `visible` 
 
 The field to aggregation mapping selects the root user using the `rootDoc` and filters the objects in the nested array `sub.posts` that match the argument `visible`.
 
-=== Enum mappings
+==== Enum mappings
 
 NOTE: available from v7.2
 
@@ -433,7 +433,7 @@ Can be mapped to numeric values as follows:
 
 NOTE: An example GraphQL application that uses `enum` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/enumTestApp.json[enumTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/enum.feature[enum.feature]
 
-=== Interface mappings
+==== Interface mappings
 
 NOTE: available from v7.2
 
@@ -483,7 +483,7 @@ This mechanism allows for dynamic determination of the GraphQL type for a docume
 
 WARNING: the value of the `field-eq` predicate must be valid JSON. In particular pay attention to string values that require two quotes as in `field-eq(field=foo, value='"bar"')`.
 
-==== Examples of `field-eq` predicates
+===== Examples of `field-eq` predicates
 
 [cols="1,1"]
 |===
@@ -497,7 +497,7 @@ WARNING: the value of the `field-eq` predicate must be valid JSON. In particular
 
 NOTE: An example GraphQL application that uses `interface` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interfaceTestApp.json[interfaceTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/interface.feature[interface.feature]
 
-=== Union mappings
+==== Union mappings
 
 NOTE: available from v7.2
 
@@ -518,7 +518,7 @@ The format for union's `$typeResolver` is identical to interface's.
 
 NOTE: An example GraphQL application that uses `union` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/unionTestApp.json[unionTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/union.feature[union.feature]
 
-== Bson types
+=== Bson types
 
 All primitive GraphQL types have been mapped to corresponding BSON types plus a set of custom GraphQL scalars types have been added:
 
@@ -538,7 +538,7 @@ All primitive GraphQL types have been mapped to corresponding BSON types plus a 
 |`BsonDocument` |`BsonDocument` |`{ "any": 1, "possible": 1, "document": 1 }`|
 |===
 
-=== Example
+==== Example
 
 The following GraphQL type `User` defines the property `_id` to be of type `ObjectId`
 
@@ -553,11 +553,11 @@ type User {
 }
 ----
 
-== Queries
+=== Queries
 
 In order to make a query you can use HTTP request with POST method and both content-type `application/json` and `application/graphql`. For instance:
 
-=== `application/json`
+==== `application/json`
 
 [source,http]
 ----
@@ -577,7 +577,7 @@ Content-Type: application/json
 }
 ----
 
-=== `application/graphql`
+==== `application/graphql`
 
 
 [source,http]

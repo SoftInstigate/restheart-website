@@ -8,7 +8,7 @@ RESTHeart offers complete binary files management. It's possible to **create**, 
 
 You can read more about GridFS link:https://docs.mongodb.org/manual/core/gridfs/[here].
 
-== Create a File Bucket
+=== Create a File Bucket
 
 File buckets are special collections whose aim is to store binary data and the associated metadata. Start by creating a new one for uploading binaries.
 
@@ -25,7 +25,7 @@ PUT /mybucket.files HTTP/1.1
 HTTP/1.1 201 Created
 ----
 
-== Upload a file with POST
+=== Upload a file with POST
 
 `POST /bucket.files` is used to insert a file.
 
@@ -61,7 +61,7 @@ The `Location` HTTP header returns the file's URI. The last part is the `_id`.
 
 NOTE: file bucket does not support write mode. The `POST` verb is always an insert. If an `_id` is specified in the request content and a file with this `_id` already exists, the request will fail with status code `409 Conflict`
 
-== Upsert a file with PUT
+=== Upsert a file with PUT
 
 `PUT /bucket.files/fileid` is used to upsert a file.
 
@@ -87,7 +87,7 @@ HTTP/1.1 201 Created
 
 NOTE: file bucket does not support write mode. The `PUT` verb is always an upsert. If the file exists, it will be updated (response code `200 Ok`) otherwise it will be created (response code `201 Created`)
 
-== GET the file metadata
+=== GET the file metadata
 
 The file metadata is returned with `GET /bucket.files` and  `GET /bucket.files/fileid` requests.
 
@@ -118,7 +118,7 @@ IMPORTANT: the file `contentType` is automatically detected by RESTHeart and use
 
 NOTE: Uploaded files metadata can be filtered and treated as regular collection documents. For example, `http://localhost:8080/mybucket.files?filter={"metadata.author":"SoftInstigate"}` returns all the file metadata that satisfy the query.
 
-== GET the file binary data
+=== GET the file binary data
 
 The binary content is available by appending `/binary` to the file URI:
 
@@ -127,7 +127,7 @@ The binary content is available by appending `/binary` to the file URI:
 GET http://localhost:8080/mybucket.files/example/binary HTTP/1.1
 ----
 
-== Update file metadata
+=== Update file metadata
 
 `PUT /bucket.files/docid` and `PATCH /bucket.files/docid` are used to update the file metadata.
 

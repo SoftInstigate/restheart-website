@@ -4,11 +4,11 @@ layout: docs-adoc
 menu: setup
 ---
 
-== Introduction
+=== Introduction
 
 RESTHeart uses for logging the http://logback.qos.ch[LogBack] implementation of http://www.slf4j.org[SLF4J].
 
-== Default LogBack configuration
+=== Default LogBack configuration
 
 restheart.jar embeds the following default `logback.xml` configuration.
 
@@ -39,7 +39,7 @@ The following command executes RESTHeart overriding the configuration to enable 
 $ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "com.foo.bar" ]' java -jar restheart.jar
 ----
 
-== Logging configuration
+=== Logging configuration
 
 The default logging configuration follows:
 
@@ -77,14 +77,14 @@ logging:
   #  - tracestate        # ^^
 ----
 
-== Specify a custom LogBack configuration
+=== Specify a custom LogBack configuration
 
 To define a different LogBack configuration, set the property `logback.configurationFile`, as follows:
 
 [source,bash]
 $ java -Dlogback.configurationFile=./logback.xml -jar restheart.jar
 
-== Custom LogBack with docker compose
+=== Custom LogBack with docker compose
 
 To use a custom LogBack configuration when running RESTHeart with docker compose:
 
@@ -115,7 +115,7 @@ Replace the `restheart` service definition in the link:https://github.com/SoftIn
         - "8080:8080"
 ----
 
-== Example: print the full stack trace
+=== Example: print the full stack trace
 
 The following command sets the configuration option `/logging/full-stacktrace` to `true` to configure the logback appender to log the full stack trace of exceptions
 
@@ -126,7 +126,7 @@ $ RHO='/logging/full-stacktrace->true' java -jar restheart.jar
 
 NOTE: `/logging/full-stacktrace` is available from RESTHeart 7.2.0. For previous releases you need to specify a custom `logback.xml` configuration file.
 
-== Example: enable logging from the MongoDB driver
+=== Example: enable logging from the MongoDB driver
 
 To enable logging from the MongoDB driver, override the configuration option `/logging/packages` as follows:
 
@@ -135,7 +135,7 @@ To enable logging from the MongoDB driver, override the configuration option `/l
 $ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar
 ----
 
-== Example: log trace headers
+=== Example: log trace headers
 
 Trace headers allow to trace a request context propagation across service boundaries. See for reference link:https://github.com/openzipkin/b3-propagation[b3-propagation]
 

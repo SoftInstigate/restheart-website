@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: setup
 ---
 
-== Update the `admin` password!
+=== Update the `admin` password!
 
 At first startup, RESTHeart initializes the user `admin`, with the default password `secret`. *This user can execute any request*.
 
@@ -17,7 +17,7 @@ $ curl -u admin:secret -X PATCH localhost:8080/users/admin -H "Content-Type: app
 
 Refer to link:/docs/security/user-management/[User Management] for more information on how to create new users, roles and permissions.
 
-== Default configuration
+=== Default configuration
 
 RESTHeart v7 has a link:/docs/default-configuration[default configuration] and specifying a configuration file is not required.
 
@@ -31,7 +31,7 @@ The following command prints the default configuration to the console.
 [source,bash]
 $ java -jar restheart.jar -t
 
-== Configuration file
+=== Configuration file
 
 RESTHeart can also use a configuration file:
 
@@ -41,7 +41,7 @@ $ java -jar restheart.jar restheart.yml
 
 NOTE: The default configuration is fine most of the times. You just want to change few options and the suggested way is using the default configuration with the needed overrides.
 
-== Modify the configuration with the RHO env var
+=== Modify the configuration with the RHO env var
 
 The environment variable `RHO` allows to modify and add any configuration option.
 
@@ -89,7 +89,7 @@ The following are invalid:
 /mongo/mongo-mounts[1] -> {"where: "/api"    # invalid JSON object
 core/io-threads -> 8                         # xpath expression does not start with /
 
-== Modify the configuration with an override file
+=== Modify the configuration with an override file
 
 NOTE: override files are available from RESTHeart v7.1
 
@@ -145,11 +145,11 @@ YML format, with keys as xpath expressions to select the options to override or 
   port: 8080
 ----
 
-== Change the configuration in Docker container
+=== Change the configuration in Docker container
 
 The configuration of RESTHeart running in a Docker container can be modified in three ways.
 
-=== 1 - Using the `RHO` env variable
+==== 1 - Using the `RHO` env variable
 
 The following example uses the option `-e RHO="..."` to override the configuration parameters `/mclient/connection-string` and `/core/name`.
 
@@ -172,7 +172,7 @@ ENV RHO='/mclient/connection-string->"mongodb://host.docker.internal";/http-list
 
 When defining your `RHO` variable always set `/http-listener/host->"0.0.0.0"` and your `/mclient/connection-string`.
 
-=== 2 - Using a configuration override file
+==== 2 - Using a configuration override file
 
 [source,bash]
 $ docker run --rm  -p "8080:8080" -e RHO="" -v /path/to/conf-overrides.conf:/opt/restheart/etc/conf-overrides.conf softinstigate/restheart -o etc/conf-overrides.conf
@@ -189,7 +189,7 @@ To avoid this, just can add `-e RHO=""` to your `docker run` command.
 
 NOTE: override files are available from RESTHeart v7.1
 
-=== 3 - Using a configuration file
+==== 3 - Using a configuration file
 
 The following commands add a configuration file to the container:
 
