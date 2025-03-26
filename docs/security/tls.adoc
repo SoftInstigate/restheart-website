@@ -81,3 +81,81 @@ link:https://letsencrypt.org[Let's Encrypt] is a popular and nonprofit Certifica
 This script generates the java keystore from Let's Encrypt certificate archive.
 
 Download the script from link:https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh[convert-letsencrypt-java-keystore.sh]
+
+I'll improve the documentation section with better structure, clearer instructions, and more helpful guidance:
+
+
+==== Example: Generating SSL Certificates with Lego
+
+https://go-acme.github.io/lego/[Lego] is a robust Let's Encrypt client and ACME library written in Go that simplifies the process of generating SSL certificates through various verification methods.
+
+This example demonstrates using Lego with the DNS route53 provider, assuming AWS credentials are already configured in your environment. The process can be adapted to use any of the https://go-acme.github.io/lego/dns/index.html[supported DNS providers].
+
+===== Step 1: Generate the Certificate
+
+Replace `restheart.org` with your domain name throughout these examples.
+
+[source,bash]
+----
+$ lego --email andrea@restheart.org --dns route53 -d restheart.org run
+2025/03/26 09:49:44 [INFO] [restheart.org] acme: Obtaining bundled SAN certificate
+2025/03/26 09:49:45 [INFO] [restheart.org] AuthURL: https://acme-v02.api.letsencrypt.org/acme/authz/2302497476/495306646876
+2025/03/26 09:49:45 [INFO] [restheart.org] acme: authorization already valid; skipping challenge
+2025/03/26 09:49:45 [INFO] [restheart.org] acme: Validations succeeded; requesting certificates
+2025/03/26 09:49:46 [INFO] [restheart.org] Server responded with a certificate
+
+$ ls .lego/certificates
+restheart.org.crt        restheart.org.issuer.crt restheart.org.json       restheart.org.key
+----
+
+After execution, Lego creates the certificate files in the `.lego/certificates` directory.
+
+===== Step 2: Convert Certificates to Java Keystore
+
+Use the provided script to convert the Let's Encrypt certificates into a Java keystore format:
+
+[source,bash]
+----
+./convert-letsencrypt-java-keystore.sh \
+  -d restheart.org \
+  -c .lego/certificates/restheart.org.crt \
+  -k .lego/certificates/restheart.org.key \
+  -i .lego/certificates/restheart.org.issuer.crt \
+  -p secret
+----
+
+Output:
+[source]
+----
+Convert Let's Encrypt certificates to PKCS 12 archive
+Import certificates into a keystore file.
+Keystore import .lego/certificates/restheart.org.p12 in .lego/certificates/restheart.org.jks in corso...
+Add the necessary Let's Encrypt intermediate certs.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  1826  100  1826    0     0  13977      0 --:--:-- --:--:-- --:--:-- 14046
+The certificate has been added to the keystore
+----
+
+This creates a Java keystore file at `.lego/certificates/restheart.org.jks` with the password `secret`.
+
+===== Step 3: Configure RESTHeart with HTTPS
+
+Run RESTHeart with the HTTPS listener enabled using the generated keystore:
+
+[source,bash]
+----
+$ RHO='/https-listener->{
+  "enabled": true,
+  "host": "restheart.org",
+  "port": 4443,
+  "keystore-path": ".lego/certificates/restheart.org.jks",
+  "keystore-password": "secret",
+  "certificate-password": "secret"
+}' java -jar restheart.jar
+----
+
+[TIP]
+====
+For production use, choose a strong password instead of "secret" and secure your keystore file with appropriate permissions.
+====
