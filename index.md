@@ -102,10 +102,6 @@ stars-bounce: true
     {% include examples_plugins.html %}
 </section>
 
-<section class="chart mt-3 pb-0" id="chart">
-    {% include docker_pull_chart.html %}
-</section>
-
 <section id="article-at-mongodb" class="call-to-action black-background">
     <div class="container-fluid">
         <div class="row mb-1">
