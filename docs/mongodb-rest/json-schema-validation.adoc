@@ -1,0 +1,325 @@
+---
+title: JSON Schema Validation
+layout: docs-adoc
+menu: mongodb
+---
+
+== Validating Documents with JSON Schema
+
+RESTHeart provides robust document validation capabilities through JSON Schema, allowing you to enforce structure and data quality in your MongoDB collections.
+
+=== Introduction
+
+Data validation ensures that documents conform to a predefined structure before they're stored in the database. RESTHeart supports two complementary approaches to validation:
+
+1. *MongoDB's built-in schema validation*: Available in MongoDB 3.6+ using JSON Schema
+2. *RESTHeart's jsonSchema Interceptor*: A more flexible approach with additional features
+
+The jsonSchema Interceptor in RESTHeart offers several advantages over MongoDB's native validation:
+
+* Schemas are stored in a dedicated schema store (`/_schemas`) and are validated themselves
+* Schemas can be reused across multiple collections
+* Support for complex schemas with sub-schemas using the `$ref` keyword
+* Integration with online schemas
+* Performance optimization through schema caching
+
+=== Understanding JSON Schema
+
+JSON Schema is a vocabulary that allows you to annotate and validate JSON documents. It provides a contract for what JSON data is required for a given application and how it can be modified.
+
+[quote]
+____
+JSON Schema specifies a JSON-based format to define the structure of JSON data for validation, documentation, and interaction control.
+____
+
+JSON Schema lets you define:
+
+* Required and optional fields
+* Field types (string, number, object, etc.)
+* Value constraints (minimum, maximum, pattern, etc.)
+* Nested object structures
+* Array validations
+
+For comprehensive information about JSON Schema, visit link:https://json-schema.org/[json-schema.org] or the excellent guide at link:https://json-schema.org/understanding-json-schema/[Understanding JSON Schema].
+
+=== Setting Up Schema Validation
+
+==== Step 1: Create the Schema Store
+
+First, create a schema store to hold your JSON Schema definitions:
+
+[source,http]
+----
+PUT /_schemas HTTP/1.1
+
+HTTP/1.1 201 Created
+----
+
+==== Step 2: Define a Schema
+
+Create a schema document that defines the structure for your data:
+
+[source,http]
+----
+PUT /_schemas/address?wm=upsert HTTP/1.1
+Content-Type: application/json
+
+{
+  "$schema": "https://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "address": { "type": "string" },
+    "city": { "type": "string" },
+    "postal-code": { "type": "string" },
+    "country": { "type": "string"}
+  },
+  "required": ["address", "city", "country"]
+}
+
+HTTP/1.1 201 Created
+----
+
+This schema defines an address format that requires the address, city, and country fields.
+
+NOTE: RESTHeart automatically generates an `id` property for the schema (not to be confused with the `_id` field).
+
+[source,http]
+----
+GET /_schemas/address HTTP/1.1
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "$schema": "https://json-schema.org/draft-04/schema#",
+  "id": "https://schema-store/restheart/address#",
+  "_id": "address",
+  "type": "object",
+  "properties": {
+    "address": { "type": "string" },
+    "city": { "type": "string" },
+    "postal-code": { "type": "string" },
+    "country": { "type": "string"}
+  },
+  "required": ["address", "city", "country"]
+}
+----
+
+==== Step 3: Apply the Schema to a Collection
+
+To enforce the schema on a collection, update the collection's metadata:
+
+[source,http]
+----
+PUT /addresses HTTP/1.1
+Content-Type: application/json
+
+{
+  "jsonSchema": {
+    "schemaId": "address"
+  }
+}
+
+HTTP/1.1 201 Created
+----
+
+The collection metadata's `jsonSchema` property has the following options:
+
+[cols="1,3,1", options="header"]
+|===
+|Property |Description |Required
+|`schemaId` |The _id of the JSON schema to enforce |Yes
+|`schemaStoreDb` |The database containing the schema |No (defaults to current database)
+|===
+
+=== Validating MongoDB BSON Types
+
+MongoDB uses BSON (Binary JSON) which supports additional data types not available in standard JSON. To validate these types, you can define schema definitions for BSON types.
+
+==== Example: Defining BSON Types Schema
+
+[source,http]
+----
+PUT /_schemas/bson HTTP/1.1
+Content-Type: application/json
+
+{
+  "_id": "bson",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "date": {
+      "type": "object",
+      "properties": {
+        "$date": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "objectid": {
+      "type": "object",
+      "properties": {
+        "$oid": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
+
+HTTP/1.1 201 Created
+----
+
+==== Using BSON Types in Schemas
+
+You can reference these BSON type definitions in other schemas using the `$ref` keyword:
+
+[source,http]
+----
+PUT /_schemas/post HTTP/1.1
+Content-Type: application/json
+
+{
+  "_id": "post",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "_id": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+    "_etag": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+    "title": { "type": "string" },
+    "content": { "type": "string" },
+    "published": { "type": "boolean" },
+    "publishDate": { "$ref": "http://schema-store/restheart/bson#/definitions/date" }
+  },
+  "required": ["title", "content"]
+}
+
+HTTP/1.1 201 Created
+----
+
+=== Testing the Validation
+
+Let's see validation in action by attempting to create both valid and invalid documents.
+
+==== Trying to Create an Invalid Document
+
+[source,http]
+----
+POST /addresses HTTP/1.1
+Content-Type: application/json
+
+{
+  "address": "Via D'Annunzio 28"
+}
+
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Request content violates schema 'address': 2 schema violations found, required key [city] not found, required key [country] not found"
+}
+----
+
+The request is rejected because it's missing required fields defined in the schema.
+
+==== Creating a Valid Document
+
+[source,http]
+----
+POST /addresses HTTP/1.1
+Content-Type: application/json
+
+{
+  "address": "Via D'Annunzio, 28",
+  "city": "L'Aquila",
+  "country": "Italy",
+  "postal-code": "67100"
+}
+
+HTTP/1.1 201 Created
+----
+
+This document passes validation because it includes all required fields with the correct data types.
+
+=== Advanced Schema Features
+
+==== Composite Schemas
+
+You can create complex validation rules by combining schemas:
+
+[source,json]
+----
+{
+  "allOf": [
+    { "$ref": "#/definitions/address" },
+    { "$ref": "#/definitions/contact" }
+  ]
+}
+----
+
+==== Conditional Validation
+
+Apply different validation rules based on document properties:
+
+[source,json]
+----
+{
+  "if": {
+    "properties": { "type": { "enum": ["business"] } }
+  },
+  "then": {
+    "required": ["taxId", "companyName"]
+  },
+  "else": {
+    "required": ["firstName", "lastName"]
+  }
+}
+----
+
+=== Limitations
+
+The jsonSchema validator has some limitations to be aware of:
+
+* *Bulk Operations*: By default, the validator doesn't support bulk PATCH requests:
+
+[source,http]
+----
+PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
+Content-Type: application/json
+
+{ "updated": true }
+
+HTTP/1.1 501 Not Implemented
+Content-Type: application/json
+
+{
+  "http status code": 501,
+  "http status description": "Not Implemented",
+  "message": "'jsonSchema' checker does not support bulk PATCH requests. Set 'skipNotSupported:true' to allow them."
+}
+----
+
+To allow bulk PATCH operations without validation, add the `skipNotSupported` metadata property:
+
+[source,http]
+----
+PATCH /addresses HTTP/1.1
+Content-Type: application/json
+
+{
+  "jsonSchema": {
+    "schemaId": "address",
+    "skipNotSupported": true
+  }
+}
+
+HTTP/1.1 200 OK
+----
+
+=== Best Practices
+
+1. *Start simple*: Begin with basic schemas and refine them as your application evolves
+2. *Reuse common patterns*: Use `$ref` to reference shared definitions
+3. *Test thoroughly*: Verify both valid and invalid document scenarios
+4. *Use descriptive error messages*: Set `errorMessage` properties to guide users
+5. *Leverage additional keywords*: Explore pattern, minimum/maximum, and other constraints for precise validation
+6. *Document your schemas*: Include descriptions for fields to generate helpful documentation

@@ -4,217 +4,182 @@ layout: docs-adoc
 menu: mongodb
 ---
 
-> Aggregations operations process data records and return computed results. Aggregation operations group values from multiple documents together, and can perform a variety of operations on the grouped data to return a single result.
+== MongoDB Aggregations
 
-The RESTHeart API provides powerful aggregation capabilities to developers, including the ability to run both aggregation pipelines and map reduce functions using just a GET request.
+Aggregations are powerful operations that process data records and return computed results. They allow you to analyze data, perform calculations, and transform documents through a series of stages called a pipeline.
 
-To execute an aggregation query, simply send a GET request to `/coll/_aggrs/<aggregation-uri>` with the appropriate parameters!
+With RESTHeart, you can easily execute MongoDB aggregations through simple REST API calls.
 
-NOTE: Only inline output type is supported - meaning that no results are written directly to the database. However, if you wish to have results written to the database, then link:#materialized-views[Materialized Views] is the solution for you.
+=== Running Aggregations
 
-=== Aggregation definition
+To execute an aggregation, send a `GET` request to:
 
-NOTE: In RESTHeart, not only documents but also dbs and collections have
-properties. Some properties are metadata, i.e. they have a special
-meaning for RESTheart that influences its behavior.
+[source]
+----
+GET /collection/_aggrs/aggregation-name?avars={"var1":"value1"}
+----
 
-You can define aggregation by setting the aggrs collection metadata property via a `PATCH /coll` request. Here is an example of how to structure the request body:
+RESTHeart will process the request and return the computed results in the response body.
+
+TIP: By default, aggregation results are returned directly in the response without being written to the database. For persistent results, use link:#materialized-views[Materialized Views].
+
+=== Defining Aggregations
+
+Aggregations must be defined in the collection's metadata before they can be used.
+
+==== Creating an Aggregation
+
+To define an aggregation, use a `PATCH` request to update the collection metadata:
 
 [source,http]
 ----
-PATCH /coll HTTP/1.1
-
-{
-    "aggrs": [
-        { <aggregation_1> },
-        { <aggregation_2> },
-        ...,
-        { <aggregation_n> }
-    ]
-}
-----
-
-The _aggregation definition objects_ have the following format:
-
-[source,json]
-----
-{
-    "uri": "<uri>",
-    "stages": [
-        "<stage_1>",
-        "<stage_2>",
-        "..."
-    ],
-    "allowDiskUse": true
-}
-----
-
-WARNING: For RESTHeart versions < 7.3, you also need to specify `"type": "pipeline"`
-
-[options="header"]
-[cols="1,5,1"]
-|===
-|Property |Description |Mandatory
-|type
-|for aggregation pipeline operations is `pipeline`
-|No, default is `pipeline`
-|uri
-|specifies the URI when the operation is bound under the path `/<collection>/_aggrs`
-|Yes
-|stages
-|the MongoDB aggregation pipeline stages. For more information refer to link:https://docs.mongodb.org/manual/core/aggregation-pipeline[Aggregation Pipeline] on MongoDb documentation.
-|Yes
-|allowDiskUse
-|Allow pipeline stages that require more than 100 megabytes of memory to write temporary files to disk
-|No, default is `false`
-|===
-
-=== Example
-
-The following request sets an aggregation pipeline bound at `/coll/_aggrs/example-pipeline`
-
-[source,http]
-----
-PATCH /coll HTTP/1.1
+PATCH /mycollection HTTP/1.1
+Content-Type: application/json
 
 {
   "aggrs": [
     {
+      "uri": "sales-by-region",
       "stages": [
-        { "$match": { "name": { "$var": "name" } } },
-        { "$group": { "_id": "$name", "avg_age": { "$avg": "$age" } } }
-      ],
-      "uri": "example-pipeline"
+        { "$match": { "status": "completed" } },
+        { "$group": {
+            "_id": "$region",
+            "total": { "$sum": "$amount" }
+          }
+        },
+        { "$sort": { "total": -1 } }
+      ]
     }
   ]
 }
 ----
 
-=== Variables
+This defines an aggregation named `sales-by-region` that:
+1. Filters for completed sales
+2. Groups documents by region
+3. Calculates the total amount for each region
+4. Sorts the results by total in descending order
 
-Using variables to define parameters in an aggregation allows you to include dynamic queries and create a more customized output. This can help to make the query much more specific and efficient when retrieving data from the database.
+==== Aggregation Properties
 
-==== The `$var` Operator
+[cols="1,3,1", options="header"]
+|===
+|Property |Description |Required
+|`uri` |The name used in the URL path: `/collection/_aggrs/uri` |Yes
+|`stages` |Array of MongoDB aggregation pipeline stages |Yes
+|`allowDiskUse` |Allows operations to use more than 100MB of memory |No (default: false)
+|===
 
-In aggregation definitions, you have the flexibility to create parametric aggregations using the special operator `{"$var": "name" }`. This operator enables you to dynamically customize aggregations based on variable values.
+=== Parameterizing Aggregations
 
-==== Passing Variables to Aggregations
+Make your aggregations dynamic by using variables that can be passed at runtime.
 
-To leverage this feature, you can utilize the `?avars` query parameter when making requests. By including `?avars={"name":"Bob"}`, you can pass variables to aggregations. This allows you to adapt the aggregation behavior on the fly.
+==== The $var Operator
 
-==== Variable Value Format
-
-It's important to note that the value of a variable can be any valid JSON. This means you can pass various data types, including strings and complex objects. For instance:
-
-[source]
-----
-?avars={ "name": "Bob", "obj": {"a": { "json": "object" }} }
-----
-
-In this example, we are passing two variables: a string (`"name"`) and an object (`"obj"`).
-
-==== Handling Missing Variables
-
-A crucial point to remember is that if an aggregation relies on a variable, such as `name`, and that variable is not passed via the `?avars` query parameter, the request will fail unless you define a variable with a default value. Therefore, ensure that all required variables are provided to avoid issues during aggregation execution.
-
-[source,http]
-----
-GET /coll/_aggrs/example-pipeline HTTP/1.1
-
-HTTP/1.1 400 Bad Request
-
-{
-    "http status code": 400,
-    "http status description": "Bad Request",
-    "message": "error executing aggreation pipeline: variable name not bound"
-}
-----
-
-==== Dot Notation Support
-
-Starting from RESTHeart version 7.6, the `$var` operator also supports dot notation. This means you can navigate through nested JSON structures within variables. For instance:
-
-[source]
-----
-?avars={ "foo": {"bar": 1 }
-----
-
-In this case, the value of `{"$var": "foo.bar" }` will be resolved as `1`. This enhances the flexibility and versatility of parametric aggregations, allowing for more complex and dynamic data processing.
-
-==== Variables with default values
-
-In RESTHeart version 7.3 and onwards, you can enhance the flexibility of your aggregation requests by specifying default values for variables. This feature ensures that your aggregations gracefully handle cases where a variable is not explicitly provided in the request using the `?avar` query parameter.
-
-===== Defining Variables with Default Values
-
-To define a variable with a default value, utilize the following syntax: `{"$var": [ "name", "default-value" ] }`. This structure allows you to set a fallback value that will be used when a specific variable is not included in the request.
-
-===== Default Values Format
-
-It's essential to note that default values can take any valid JSON format. For instance, you can set a default value like this:
-
-[source,json]
-----
-{"$var": [ "s", {"name":1} ]}
-----
-
-In this example, the default value for variable `s` is `{"name":1}`.
-
-===== Example: Using a Variable with Default Value in `$sort` Stage
-
-To illustrate this concept, consider an example aggregation that incorporates a variable `s` with a default value in the `$sort` stage:
+Use the `$var` operator in your aggregation stages to reference variables:
 
 [source,json]
 ----
 {
   "aggrs": [
     {
-        "uri": "sort-with-default-example",
-        "stages": [
-            { "$sort": { "$var": [ "s", { "name": 1 } ] } }
-        ]
+      "uri": "sales-by-product",
+      "stages": [
+        { "$match": { "product": { "$var": "productName" } } },
+        { "$group": { "_id": "$month", "sales": { "$sum": "$amount" } } }
+      ]
     }
   ]
 }
 ----
 
-In this aggregation, if the `s` variable is not provided in the request, it will default to `{"name": 1}`. This powerful feature simplifies aggregation requests and ensures consistent behavior even when specific variables are not explicitly set.
+==== Passing Variables
 
-=== Predefined variables
+When executing the aggregation, provide variable values using the `avars` query parameter:
 
-The following predefined variables can be used in the aggregation definition:
+[source,http]
+----
+GET /mycollection/_aggrs/sales-by-product?avars={"productName":"Widget Pro"} HTTP/1.1
+----
 
-[options="header"]
-[cols="1,3"]
-|===
-|variable|description
-|`@user`
-|the user object (excluding the password), e.g. `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`) or `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`)
-|`@mongoPermissions`
-|the `MongoPermissions` object, e.g. `@mongoPermissions.readFilter`
-|`@page`
-|the value of the `page` query parameter
-|`@pagesize`
-|the value of the `pagesize` query parameter
-|`@skip`
-|to be used in `$skip` stage, equals to `(page-1)*pagesize`
-|`@limit`
-|to be used in `$limit` stage, equals to the value of the `pagesize` query parameter
-|===
+This returns sales data only for the "Widget Pro" product.
 
-=== Handling paging in aggregations
+==== Default Values
 
-Paging must be handled explicitly by the aggregation-
+Since RESTHeart 7.3, you can specify default values for variables:
 
-For example, the following defines the aggregation `/aggrs/paging` that uses the `@skip` and `@limit` variables. As a result, the request `GET /coll/_aggrs/paging?page=3&pagesize=25` skips 50 documents, returning the following 25 documents.
+[source,json]
+----
+{ "$var": [ "sortField", { "date": -1 } ] }
+----
+
+This uses the provided `sortField` value if available, otherwise defaults to sorting by date in descending order.
+
+Example with default value:
 
 [source,json]
 ----
 {
   "aggrs": [
     {
-      "uri": "paging",
+      "uri": "recent-orders",
       "stages": [
+        { "$sort": { "$var": [ "sortBy", { "date": -1 } ] } },
+        { "$limit": 10 }
+      ]
+    }
+  ]
+}
+----
+
+==== Dot Notation for Nested Variables
+
+Since RESTHeart 7.6, you can access nested properties in variables using dot notation:
+
+[source,http]
+----
+GET /mycollection/_aggrs/my-pipeline?avars={"config":{"limit":10,"skip":20}} HTTP/1.1
+----
+
+In the aggregation definition:
+
+[source,json]
+----
+{ "$limit": { "$var": "config.limit" } }
+----
+
+This resolves to `{ "$limit": 10 }`.
+
+=== Predefined Variables
+
+RESTHeart provides several predefined variables that you can use in your aggregations:
+
+[cols="1,3", options="header"]
+|===
+|Variable |Description
+|`@user` |The authenticated user object (e.g., `@user._id`)
+|`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`)
+|`@page` |Current page number from query parameter
+|`@pagesize` |Page size from query parameter
+|`@skip` |Calculated as `(page-1)*pagesize`
+|`@limit` |Same as `@pagesize`
+|===
+
+=== Pagination in Aggregations
+
+Unlike regular document queries, pagination in aggregations must be handled explicitly using the `$skip` and `$limit` stages.
+
+Use the predefined variables to implement pagination:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "paginated-results",
+      "stages": [
+        { "$match": { "active": true } },
+        { "$sort": { "lastName": 1 } },
         { "$skip": { "$var": "@skip" } },
         { "$limit": { "$var": "@limit" } }
       ]
@@ -223,249 +188,205 @@ For example, the following defines the aggregation `/aggrs/paging` that uses the
 }
 ----
 
-[[optional-stages]]
-=== Optional Stages
-
-NOTE: Optional stages are available from RESTHeart 7.3.
-
-A pipeline in RESTHeart can include optional stages, which are included only if certain variables are set using the `?avar` query parameter.
-
-To define an optional stage, you can use the `$ifvar` operator.
-
-==== With One Required Variable
-
-For one required variable, use the following format:
-
-[source,json]
-----
-{
-    "uri": "by-name",
-    "stages": [
-        { "$match": { "name": "foo" } },
-        { "$ifvar": [ "required-variable", <stage> ] }
-    ]
-}
-----
-
-Here's an example:
-
-[source,json]
-----
-{
-    "uri": "by-name",
-    "stages": [
-        { "$match": { "name": "foo" } },
-        { "$ifvar": [ "s", { "$sort": { "$var": "s" } } ] }
-    ]
-}
-----
-
-==== With Multiple Required Variables
-
-If you need to specify more than one required variable, you can use the following format:
-
-[source,json]
-----
-{
-    "uri": "by-name",
-    "stages": [
-        { "$match": { "name": "foo" } },
-        { "$ifvar": [ [ <required-variables> ], <stage> ] }
-    ]
-}
-----
-
-TIP: The `$ifvar` operator supports the dot notation for specifying variables, so it is possible to define an optional stage as `{ "$ifvar": [ "a.nested.var", <stage> ] }`
-
-[source,json]
-----
-{
-    "uri": "by-name",
-    "stages": [
-        { "$match": { "name": "foo" } },
-        { "$ifvar": [ ["a", "b" ] , { "$match": { "foo": { "$var": "a" }, "bar": { "$var": "b" } } } ] }
-    ]
-}
-----
-
-==== Specifying an Else Stage
-
-It is also possible to specify an _else_ stage, i.e., an alternative stage that is included in the aggregation if the required variables are not passed via the `?avar` query parameter.
-
-To specify an _else_ stage, use the following format:
-
-[source,json]
-----
-{
-    "uri": "by-name",
-    "stages": [
-        { "$match": { "name": "foo" } },
-        { "$ifvar": [ ["a", "b" ],
-            { "$match": { "foo": { "$var": "a" }, "bar": { "$var": "b" } } },
-            { "$match": { "foo": 1, "bar": 2 } } ] }
-    ]
-}
-----
-
-=== Materialized Views
-
-The `$merge` stage for the pipelines delivers the ability to create collections based on an aggregation and update those created collections efficiently, i.e. it just updates the generated results collection rather than rebuild it completely (like it would with the `$out` stage).
-
-It's as simple as adding `$merge` as the last stage of the pipeline.
-
-The following example defines the aggregation `/coll/_aggrs/age-by-gender` that computes average ages grouping data by gender. `$merge` is used as the last stage of the pipeline to write computed data to the `avgAgeByGender` collection.
+Request with pagination:
 
 [source,http]
 ----
-PUT /coll HTTP/1.1
+GET /mycollection/_aggrs/paginated-results?page=3&pagesize=25 HTTP/1.1
+----
 
-{ "aggrs" : [
-    { "stages" : [
-        { "$group" : { "_id" : "$gender", "avg_age" : { "$avg" : "$age" } } },
-        { "$merge": { "into": "avgAgeByGender" } }
-      ],
-      "uri" : "age-by-gender"
+This skips the first 50 documents and returns the next 25.
+
+=== Conditional Stages with $ifvar
+
+Since RESTHeart 7.3, you can include stages conditionally based on whether specific variables are provided.
+
+==== Basic Conditional Stage
+
+Include a stage only if a variable is provided:
+
+[source,json]
+----
+{
+  "uri": "conditional-pipeline",
+  "stages": [
+    { "$match": { "type": "product" } },
+    { "$ifvar": [ "category", { "$match": { "category": { "$var": "category" } } } ] }
+  ]
+}
+----
+
+The second stage only applies if the `category` variable is provided.
+
+==== Multiple Required Variables
+
+Require multiple variables for a stage:
+
+[source,json]
+----
+{ "$ifvar": [ ["minPrice", "maxPrice"],
+  { "$match": {
+      "price": {
+        "$gte": { "$var": "minPrice" },
+        "$lte": { "$var": "maxPrice" }
+      }
+    }
+  }
+]}
+----
+
+==== Else Clause
+
+Provide an alternative stage when variables are missing:
+
+[source,json]
+----
+{ "$ifvar": [ "sortBy",
+  { "$sort": { "$var": "sortBy" } },
+  { "$sort": { "createdAt": -1 } }
+]}
+----
+
+This sorts by the provided field if `sortBy` is given, otherwise sorts by creation date.
+
+=== Materialized Views
+
+Create persistent collections based on aggregation results using the `$merge` stage:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "sales-summary",
+      "stages": [
+        { "$group": { "_id": "$category", "totalSales": { "$sum": "$amount" } } },
+        { "$merge": { "into": "categorySalesSummary" } }
+      ]
     }
   ]
 }
 ----
 
-Executing the aggregation request returns no data, but thanks to the `$merge` stage, the new collection `avgAgeByGender` gets created.
-
-
-[source,http]
-----
-GET /coll/_aggrs/avg-by-city HTTP/1.1
-
-HTTP/1.1 200 OK
-[]
-----
+When this aggregation is executed, results are written to the `categorySalesSummary` collection:
 
 [source,http]
 ----
-GET /avgAgeByGender HTTP/1.1
+GET /mycollection/_aggrs/sales-summary HTTP/1.1
+----
+
+The response will be empty, but a new collection is created or updated:
+
+[source,http]
+----
+GET /categorySalesSummary HTTP/1.1
 
 HTTP/1.1 200 OK
 [
-    { "_id": "male", "avg_age": 34.5 }
-    { "_id": "female", "avg_age": 35.6 }
+  { "_id": "electronics", "totalSales": 253489.99 },
+  { "_id": "furniture", "totalSales": 187245.50 }
 ]
 ----
 
+==== Incremental Updates
 
-=== Security considerations
+The `$merge` stage is more efficient than the older `$out` stage because it can update existing documents rather than replacing the entire collection each time.
 
-By default RESTHeart makes sure that the aggregation variables passed as query parameters don't include MongoDB operators.
+=== Security Considerations
 
-This behavior is required to protect data from undesirable malicious query injection.
-
-Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart.yml` configuration file.
+RESTHeart checks variables for MongoDB operators to prevent injection attacks. This protection can be disabled in the configuration file, but this is strongly discouraged.
 
 [source,yml]
 ----
-# Check if aggregation variables use operators. https://restheart.org/docs/mongodb-rest/aggregations/#security-considerations
 mongo:
-    aggregation-check-operators: true
+    aggregation-check-operators: true  # Default setting
 ----
 
 === Transaction Support
 
-Aggregations are executed in the transaction scope if specified via the `sid` and `txn` query parameters.
+Execute aggregations within a transaction by including the `sid` and `txn` parameters:
 
-For more information on how to create a transaction scope refer to link:/docs/mongodb-rest/transactions[Transactions] doc page.
+[source,http]
+----
+GET /mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id HTTP/1.1
+----
 
-=== Map-Reduce
+See the link:/docs/mongodb-rest/transactions[Transactions] documentation for details.
 
-WARNING: map reduce are deprecated. Use aggregation pipeline instead. See link:https://www.mongodb.com/docs/manual/core/map-reduce/[Map-Reduce] in MongoDb documentation.
+=== Example Use Cases
+
+==== Monthly Sales Report
 
 [source,json]
 ----
 {
-    "type": "mapReduce",
-    "uri": "<uri>",
-    "map": "<map_function>",
-    "reduce": "<reduce_function>",
-    "query": "<query>"
+  "uri": "monthly-sales",
+  "stages": [
+    { "$match": {
+        "date": {
+          "$gte": { "$var": [ "startDate", { "$date": "2023-01-01T00:00:00Z" } ] },
+          "$lte": { "$var": [ "endDate", { "$date": "2023-12-31T23:59:59Z" } ] }
+        }
+      }
+    },
+    { "$group": {
+        "_id": { "$dateToString": { "format": "%Y-%m", "date": "$date" } },
+        "count": { "$sum": 1 },
+        "totalAmount": { "$sum": "$amount" }
+      }
+    },
+    { "$sort": { "_id": 1 } }
+  ]
 }
 ----
 
-[options="header"]
-[cols="1,3,1"]
-|===
-|Property |Description |Mandatory
-|type
-|for aggregation pipeline operations is "mapReduce"
-|yes
-|uri
-|specifies the map reduce URI under `/<db>/<collection>/_aggrs` path.
-|yes
-|map
-|the map function
-|yes
-|reduce
-|the reduce function
-|yes
-|query
-|the query
-|yes
-|===
+==== User Activity Analytics
 
-==== Example
-
-The following request update the collection metadata defining a map reduce operation bound at `/coll/_aggrs/example-mapreduce`
-
-[source,http]
+[source,json]
 ----
-PUT /coll HTTP/1.1
-
 {
-  "aggrs": [
-    {
-      "map": "function() { emit(this.name, this.age) }",
-      "query": { "name": { "$var": "n" } },
-      "reduce": "function(key, values) { return Array.avg(values) }",
-      "type": "mapReduce",
-      "uri": "example-mapreduce"
-    }
+  "uri": "user-activity",
+  "stages": [
+    { "$match": { "userId": { "$var": "userId" } } },
+    { "$group": {
+        "_id": "$activityType",
+        "count": { "$sum": 1 },
+        "lastActivity": { "$max": "$timestamp" }
+      }
+    },
+    { "$sort": { "count": -1 } }
   ]
 }
 ----
 
-==== Variables
+=== Map-Reduce (Deprecated)
 
-===== in query
+WARNING: Map-reduce operations are deprecated in MongoDB. Use aggregation pipelines instead.
 
-You can use the variable in queries using the `$var` operator.
+For legacy systems, RESTHeart still supports map-reduce:
 
-===== in map reduce functions
-
-Variables are passed also to *map* and *reduce* javascript functions
-where the variable `$vars` can be used. For instance:
-
-[source,http]
+[source,json]
 ----
-PATCH /coll HTTP/1.1
-
-{ "aggrs" : [
-    {
-      "map" : "function() { var minage = JSON.parse($vars).minage; if (this.age > minage ) { emit(this.name, this.age); }; }",
-      "reduce" : "function(key, values) { return Array.avg(values) } }",
-      "type" : "mapReduce",
-      "uri" : "example-mapreduce"
-    }
-  ]
+{
+  "type": "mapReduce",
+  "uri": "word-count",
+  "map": "function() { var words = this.text.split(' '); words.forEach(function(word) { emit(word.toLowerCase(), 1); }); }",
+  "reduce": "function(key, values) { return Array.sum(values); }",
+  "query": { "type": { "$var": "documentType" } }
 }
-
-HTTP/1.1 200 Ok
 ----
 
-Note the _map_ function; `JSON.parse($vars)` allows to access the
-variables passed with the query parameter `avars`
+Variables can be used in both the query and JavaScript functions. In JavaScript functions, use `JSON.parse($vars)` to access variables:
 
 [source,js]
 ----
 function() {
- var minage = JSON.parse($vars).minage;// <-- here we get minage from avars qparam
- if (this.age > minage ) { emit(this.name, this.age); }
-};
+  var minLength = JSON.parse($vars).minLength || 0;
+  var words = this.text.split(' ');
+  words.forEach(function(word) {
+    if (word.length > minLength) {
+      emit(word.toLowerCase(), 1);
+    }
+  });
+}
 ----
