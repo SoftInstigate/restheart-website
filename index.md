@@ -101,17 +101,3 @@ stars-bounce: true
 <section id="examples-plugins" class="slice">
     {% include examples_plugins.html %}
 </section>
-
-<section id="article-at-mongodb" class="call-to-action black-background">
-    <div class="container-fluid">
-        <div class="row mb-1">
-            <div class="col-md-12 call-to-action__item call-to-action__first text-center">
-                <h2 class="text-lightcyan mb-2">
-                    <a href="https://github.com/sponsors/SoftInstigate" target="_blank">Become a sponsor</a>
-                </h2>
-                <p class="highlightcolor">You can support the development of RESTHeart via GitHub Sponsor program and receive public acknowledgment of your help.</p>
-                <a href="https://github.com/sponsors/SoftInstigate" target="_blank" class="btn btn-o-white">Go and see available sponsor tiers</a>
-            </div>
-        </div>
-    </div>
-</section>
