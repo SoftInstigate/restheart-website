@@ -6,11 +6,8 @@ stars-bounce: true
 
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
-        <img width="160" class="bg-whites p-3 rounded" src="/images/RESTHeart-logo.png">
-        <h1 class="mt-1 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <h2 class="my-0 top-2 mx-2 mx-md-5 mb-2 highlightcolor lh-1_4">
-        Virtual Threads Powered API Framework
-        </h2>
+        <img width="160" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
+        <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart Framework</h1>
         <p class="top-6 text-break white mt-2 mx-4">
             ✅&nbsp;Instant REST, GraphQL and Websockets APIs for <strong>MongoDB</strong>.
             ✅&nbsp;Declarative Security, no code required.

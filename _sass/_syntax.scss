@@ -1,0 +1,211 @@
+// Syntax highlighting styles
+// Based on rouge-vim.css but cleaned up and organized
+
+// Code blocks
+pre {
+  color: $code-text;
+  background-color: $code-background;
+  border: 2px solid rgba($color-primary, 0.3);
+  border-radius: $border-radius;
+
+  code {
+    white-space: pre-wrap;
+    background-color: transparent;
+    border-radius: 0;
+  }
+}
+
+.highlight {
+  pre {
+    background-color: $code-background;
+  }
+
+  .hll {
+    background-color: $code-background;
+  }
+
+  // Base styles
+  .c,
+  .cm,
+  .cp,
+  .c1 {
+    color: $code-comment;
+  } /* Comment */
+  .err {
+    color: $code-text;
+  } /* Error */
+  .g {
+    color: $code-text;
+  } /* Generic */
+  .k,
+  .kc,
+  .kn,
+  .kp,
+  .kr {
+    color: #f8a839;
+  } /* Keyword */
+  .kd,
+  .kt,
+  .nb {
+    color: #00cd00;
+  } /* Keyword Declaration, Type, Builtin */
+  .l {
+    color: $code-text;
+  } /* Literal */
+  .n,
+  .na,
+  .nd,
+  .ni,
+  .ne,
+  .nf,
+  .nl,
+  .nn,
+  .nx,
+  .py,
+  .nt {
+    color: $code-text;
+  } /* Name */
+  .o {
+    color: $code-text;
+  } /* Operator */
+  .x {
+    color: $code-text;
+  } /* Other */
+  .p {
+    color: $code-text;
+  } /* Punctuation */
+
+  // Comment styles
+  .cm {
+    color: $code-comment;
+  } /* Comment.Multiline */
+  .cp {
+    color: $code-comment;
+  } /* Comment.Preproc */
+  .c1 {
+    color: $code-comment;
+  } /* Comment.Single */
+  .cs {
+    color: #cd0000;
+    font-weight: bold;
+  } /* Comment.Special */
+
+  // Generic styles
+  .gd {
+    color: #cd0000;
+  } /* Generic.Deleted */
+  .ge {
+    color: $code-text;
+    font-style: italic;
+  } /* Generic.Emph */
+  .gr {
+    color: #ff0000;
+  } /* Generic.Error */
+  .gh {
+    color: $code-comment;
+    font-weight: bold;
+  } /* Generic.Heading */
+  .gi {
+    color: #00cd00;
+  } /* Generic.Inserted */
+  .go {
+    color: #808080;
+  } /* Generic.Output */
+  .gp {
+    color: $code-comment;
+    font-weight: bold;
+  } /* Generic.Prompt */
+  .gs {
+    color: $code-text;
+    font-weight: bold;
+  } /* Generic.Strong */
+  .gu {
+    color: #800080;
+    font-weight: bold;
+  } /* Generic.Subheading */
+  .gt {
+    color: $code-variable;
+  } /* Generic.Traceback */
+
+  // Literal styles
+  .ld {
+    color: $code-text;
+  } /* Literal.Date */
+  .m,
+  .mf,
+  .mh,
+  .mi,
+  .mo,
+  .il {
+    color: $code-variable;
+  } /* Literal.Number */
+  .s,
+  .sb,
+  .sc,
+  .sd,
+  .s2,
+  .se,
+  .sh,
+  .si,
+  .sx,
+  .sr,
+  .s1,
+  .ss {
+    color: $code-string;
+  } /* Literal.String */
+
+  // Name styles
+  .nc {
+    color: #f8a839;
+  } /* Name.Class */
+  .no {
+    color: $code-text;
+  } /* Name.Constant */
+  .nv,
+  .vc,
+  .vg,
+  .vi {
+    color: $code-variable;
+  } /* Name.Variable */
+
+  // Operator styles
+  .ow {
+    color: $code-variable;
+  } /* Operator.Word */
+
+  // Text styles
+  .w {
+    color: $code-text;
+  } /* Text.Whitespace */
+
+  // Special outputs
+  .bp {
+    color: $code-string;
+  } /* Name.Builtin.Pseudo */
+}
+
+// Special styling for language display
+.listingblock {
+  position: relative;
+
+  code[data-lang]:before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 0.8em;
+    color: rgba($code-text, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &:hover code[data-lang]:before {
+    color: rgba($code-text, 0.8);
+  }
+}
+
+// Terminal/command styling
+.listingblock.terminal pre .command:before {
+  content: "$ ";
+  color: $code-comment;
+}
