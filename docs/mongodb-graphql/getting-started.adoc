@@ -1,0 +1,189 @@
+---
+title: Getting Started with GraphQL
+layout: docs-adoc
+menu: mongodb
+---
+
+= Getting Started with RESTHeart GraphQL
+
+This guide will help you quickly set up and create your first GraphQL API with RESTHeart. We'll cover installation, basic configuration, and creating a simple GraphQL application.
+
+== Prerequisites
+
+Before starting, ensure you have:
+
+* RESTHeart v7.6.4 or later
+* MongoDB 4.2 or later
+* A REST client (like cURL, Postman, or RESTNinja)
+
+== Quick Setup
+
+=== 1. Start RESTHeart and MongoDB
+
+The fastest way to get started is using Docker Compose:
+
+[source,bash]
+----
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml
+$ docker compose up
+----
+
+This starts both RESTHeart and MongoDB with default configurations.
+
+=== 2. Create Required Collections
+
+Create the collection for storing GraphQL app definitions:
+
+[source,http]
+----
+PUT /gql-apps HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+----
+
+=== 3. Create Your First GraphQL App
+
+Let's create a simple book catalog API. First, create a collection for books:
+
+[source,http]
+----
+PUT /books HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+----
+
+Add some sample data:
+
+[source,http]
+----
+POST /books HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+[
+    {
+        "_id": 1,
+        "title": "The GraphQL Guide",
+        "author": "Sarah Smith",
+        "year": 2023,
+        "genres": ["Technical", "Programming"]
+    },
+    {
+        "_id": 2,
+        "title": "MongoDB Basics",
+        "author": "John Doe",
+        "year": 2022,
+        "genres": ["Database", "Technical"]
+    }
+]
+----
+
+Now, create your GraphQL app definition:
+
+[source,http]
+----
+POST /gql-apps HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "_id": "book-catalog",
+    "descriptor": {
+        "name": "Book Catalog",
+        "description": "A simple book catalog API",
+        "enabled": true,
+        "uri": "books"
+    },
+    "schema": "type Book { _id: Int! title: String! author: String! year: Int genres: [String] } type Query { books(year: Int): [Book] booksByGenre(genre: String!): [Book] }",
+    "mappings": {
+        "Query": {
+            "books": {
+                "db": "restheart",
+                "collection": "books",
+                "find": {
+                    "year": { "$arg": "year" }
+                }
+            },
+            "booksByGenre": {
+                "db": "restheart",
+                "collection": "books",
+                "find": {
+                    "genres": { "$arg": "genre" }
+                }
+            }
+        }
+    }
+}
+----
+
+== Testing Your GraphQL API
+
+=== 1. Query All Books
+
+[source,http]
+----
+POST /graphql/books HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/graphql
+
+{
+    books {
+        title
+        author
+        year
+    }
+}
+----
+
+=== 2. Query Books by Genre
+
+[source,http]
+----
+POST /graphql/books HTTP/1.1
+Host: localhost:8080
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/graphql
+
+{
+    booksByGenre(genre: "Technical") {
+        title
+        author
+    }
+}
+----
+
+== Understanding the Components
+
+1. *GraphQL App Definition*:
+   - `descriptor`: Metadata about your GraphQL API
+   - `schema`: Your GraphQL schema in SDL format
+   - `mappings`: Connects GraphQL types to MongoDB queries
+
+2. *Schema*:
+   - Defines available types (`Book`)
+   - Specifies queries (`books`, `booksByGenre`)
+   - Declares field types and requirements
+
+3. *Mappings*:
+   - Links queries to MongoDB collections
+   - Handles query parameters using `$arg`
+   - Supports complex MongoDB queries
+
+== Next Steps
+
+Now that you have your first GraphQL API running, you can:
+
+1. Learn about link:/docs/mongodb-graphql/schema[Schema Design] for more complex APIs
+2. Explore link:/docs/mongodb-graphql/mappings[MongoDB Mappings] for advanced queries
+3. Try the link:/docs/mongodb-graphql/tutorial[Star Wars Tutorial] for a more complex example
+4. Read about link:/docs/mongodb-graphql/optimization[Performance Optimization]
+
+[.mt-4]
+.Need More Examples?
+****
+[.text-center]
+Check out our link:/docs/mongodb-graphql/complex-app-example[Complex App Example] for a full-featured GraphQL API!
+****

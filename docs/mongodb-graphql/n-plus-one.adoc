@@ -1,0 +1,171 @@
+---
+title: The N+1 Problem in GraphQL
+layout: docs-adoc
+menu: mongodb
+---
+
+When working with GraphQL APIs, especially those connected to databases like MongoDB, one of the most common performance challenges is the N+1 query problem. This article explains what this problem is, how it affects RESTHeart GraphQL applications, and how to solve it.
+
+== What is the N+1 Problem?
+
+The N+1 problem occurs when your GraphQL query needs to resolve related data, resulting in N additional database queries on top of the initial query. This typically happens when resolving lists of objects that have relationships to other objects.
+
+=== Example Scenario
+
+Consider the following GraphQL schema:
+
+[source,graphql]
+----
+type Post {
+  id: ID!
+  title: String!
+  author: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+  posts: [Post!]!
+}
+
+type Query {
+  posts(limit: Int = 10): [Post!]!
+}
+----
+
+When executing a query like:
+
+[source,graphql]
+----
+{
+  posts(limit: 10) {
+    title
+    author {
+      name
+    }
+  }
+}
+----
+
+This leads to:
+1. One query to fetch 10 posts
+2. Ten additional queries (N=10) to fetch each post's author
+
+Thus, 11 total queries (1 + N) are executed instead of what could potentially be done in 1-2 optimized queries.
+
+== Impact on Performance
+
+The N+1 problem can significantly impact your API's performance:
+
+* *Increased Latency*: Each additional query adds network round-trip time
+* *Database Load*: Multiple individual queries stress the database more than fewer optimized queries
+* *Network Traffic*: More queries mean more network overhead
+* *Resource Usage*: Higher CPU and memory usage on both server and database
+
+== Solutions in RESTHeart
+
+RESTHeart provides several built-in solutions to mitigate the N+1 problem:
+
+=== 1. DataLoader Integration
+
+RESTHeart includes DataLoader support out of the box. Enable it in your field mappings:
+
+[source,json]
+----
+{
+  "mappings": {
+    "Post": {
+      "author": {
+        "db": "mydb",
+        "collection": "users",
+        "find": { "_id": { "$fk": "author_id" } },
+        "dataLoader": {
+          "batching": true,
+          "caching": true,
+          "maxBatchSize": 100
+        }
+      }
+    }
+  }
+}
+----
+
+=== 2. Field-Level Caching
+
+Enable caching for frequently accessed, relatively static data:
+
+[source,json]
+----
+{
+  "mappings": {
+    "Post": {
+      "author": {
+        "db": "mydb",
+        "collection": "users",
+        "find": { "_id": { "$fk": "author_id" } },
+        "dataLoader": {
+          "caching": true,
+          "ttl": 300  // Cache for 5 minutes
+        }
+      }
+    }
+  }
+}
+----
+
+=== 3. Optimized Query Strategies
+
+Use MongoDB's aggregation capabilities for more efficient data fetching:
+
+[source,json]
+----
+{
+  "mappings": {
+    "Query": {
+      "posts": {
+        "db": "mydb",
+        "collection": "posts",
+        "stages": [
+          { "$limit": { "$arg": "limit" } },
+          {
+            "$lookup": {
+              "from": "users",
+              "localField": "author_id",
+              "foreignField": "_id",
+              "as": "author"
+            }
+          },
+          { "$unwind": "$author" }
+        ]
+      }
+    }
+  }
+}
+----
+
+== Best Practices
+
+1. *Analyze Query Patterns*
+- Use RESTHeart's verbose logging to identify N+1 issues
+- Monitor query execution times and patterns
+
+2. *Strategic DataLoader Usage*
+- Enable batching for related data fetching
+- Set appropriate batch sizes based on your data patterns
+- Use caching when data is relatively static
+
+3. *Schema Design*
+- Consider denormalization for frequently accessed data
+- Use pagination to limit result sets
+- Structure queries to minimize nested relationships
+
+4. *Monitor and Tune*
+- Watch database performance metrics
+- Adjust batch sizes and cache settings based on real usage
+- Use the DataLoader statistics in development mode
+
+== Next Steps
+
+- Learn about link:/docs/mongodb-graphql/batching[Query Batching] in detail
+- Explore link:/docs/mongodb-graphql/caching[Response Caching] options
+- Check out link:/docs/mongodb-graphql/best-practices[Best Practices] for GraphQL performance
