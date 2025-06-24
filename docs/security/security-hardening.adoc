@@ -162,21 +162,100 @@ bruteForceAttackGuard:
     max-failed-attempts: 5
 ----
 
-=== originVetoer
+== originVetoer
 
-`originVetoer` protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted
+The `originVetoer` authorizer protects from CSRF attacks by *forbidding requests whose `Origin` header is not whitelisted*.
+It supports both exact origins and flexible patterns for allowed origins.
 
-NOTE: this is disable by default and musts be activated by adding the following configuration with the correct whitelist to your `restheart.yml` file:
+[NOTE]
+====
+This feature is *disabled by default*.  
+To activate it, add the configuration below to your `restheart.yml` file and specify the allowed origins.
+====
 
-[source,yml]
+=== Configuration Example
+
+[source,yaml]
 ----
-# originVetoer protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted
 originVetoer:
-    enabled: true
-    whitelist:
+  enabled: true
+  whitelist:
     - https://restheart.org
     - https://restheart.com
+  whitelist-patterns:
+    - https://*.mydomain.com
+    - http://localhost:*
+  ignore-paths:
+    - /public/*
 ----
+
+=== Configuration Properties
+
+* `whitelist` +
+A list of exact origins or prefixes. Requests with an `Origin` header that matches (or starts with) any entry in this list are allowed.
++
+[source,yaml]
+----
+whitelist:
+  - https://restheart.org
+  - https://restheart.com
+----
+
+* `whitelist-patterns` +
+A list of glob-like patterns for allowed origins. Use `*` as a wildcard for any sequence of characters.
++
+Examples:
+- `https://*.mydomain.com` allows any subdomain of `mydomain.com`
+- `http://localhost:*` allows any port on `localhost`
++
+[source,yaml]
+----
+whitelist-patterns:
+  - https://*.mydomain.com
+  - http://localhost:*
+----
+
+* `ignore-paths` +
+(Optional) A list of path patterns to ignore. Requests to these paths are accepted without checking the `Origin` header.
++
+[source,yaml]
+----
+ignore-paths:
+  - /public/*
+  - /health
+----
+
+=== How It Works
+
+. If the request path matches any `ignore-paths` entry, the request is accepted without checking the `Origin` header.
+. If neither `whitelist` nor `whitelist-patterns` is defined, all origins are accepted.
+. If the `Origin` header is missing, the request is rejected.
+. The `Origin` header is checked against the `whitelist` (exact/prefix match).
+. If not matched, the `Origin` header is checked against the `whitelist-patterns` (wildcard match).
+. If the origin does not match any entry, the request is rejected.
+
+=== Example
+
+[source,yaml]
+----
+originVetoer:
+  enabled: true
+  whitelist:
+    - https://restheart.org
+    - https://restheart.com
+  whitelist-patterns:
+    - https://*.mydomain.com
+    - http://localhost:*
+  ignore-paths:
+    - /public/*
+----
+
+With this configuration:
+
+* Requests from `https://restheart.org` or `https://restheart.com` are allowed.
+* Requests from `https://api.mydomain.com` or `http://localhost:8080` are allowed.
+* Requests to `/public/*` are always allowed, regardless of the `Origin` header.
+* All other origins are rejected.
 
 === Define and test the ACL
 
