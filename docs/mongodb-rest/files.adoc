@@ -1,22 +1,26 @@
 ---
-title: Binary Files
+title: Managing Binary Files
 layout: docs-adoc
 menu: mongodb
 ---
 
-RESTHeart offers complete binary files management. It's possible to **create**, **read** and **delete** even huge files. RESTHeart makes use of MongoDB's **GridFS**, a specification for storing and retrieving files that exceed the BSON-document size limit of 16 MB.
+== Managing Binary Files with RESTHeart
 
-You can read more about GridFS link:https://docs.mongodb.org/manual/core/gridfs/[here].
+RESTHeart provides full support for storing and retrieving binary files of any size in MongoDB. This functionality uses MongoDB's **GridFS**, which allows storing files that exceed the BSON document size limit of 16MB.
 
-=== Create a File Bucket
+TIP: GridFS automatically splits large files into smaller chunks and stores them in separate documents.
 
-File buckets are special collections whose aim is to store binary data and the associated metadata. Start by creating a new one for uploading binaries.
+=== File Buckets
 
-NOTE: A file bucket name must end with _.files_ (e.g. `mybucket.files` is a valid file bucket name)
+==== What is a File Bucket?
 
-Create the default `restheart` database, if none exists yet:
+A file bucket is a special collection designed for storing binary files along with their metadata. In MongoDB terms, it's a GridFS bucket.
 
-Create the file bucket.
+IMPORTANT: File bucket names must end with `.files` (e.g., `images.files` is a valid file bucket name)
+
+==== Creating a File Bucket
+
+To store binary files, first create a file bucket:
 
 [source,http]
 ----
@@ -25,135 +29,235 @@ PUT /mybucket.files HTTP/1.1
 HTTP/1.1 201 Created
 ----
 
-=== Upload a file with POST
+=== Uploading Files
 
-`POST /bucket.files` is used to insert a file.
+==== POST - Upload a New File
 
-NOTE: the request body must be encoded as `multipart/form-data`. This is obtained in the following example with the `--form` option in the `http` command
-
-The following example request POSTs the binary image `example.jpg` with `{"author":"SoftInstigate"}` metadata into `/mybucket.files`
-
-With httpie:
-
-[source,bash]
-----
-$ http -a admin:secret --form POST localhost:8080/mybucket.files @/path/to/my/binary/example.jpg metadata='{"author":"SoftInstigate", "filename": "example.jpg"}'
-
-HTTP/1.1 201 Created
-Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
-(other response headers omitted)
-----
-
-With curl:
-
-[source,bash]
-----
-$ curl -i -X POST -u admin:secret --form metadata='{"author":"SoftInstigate", "filename": "example.jpg"}' --form file= @/path/to/my/binary/example.jpg localhost:8080/mybucket.files
-
-HTTP/1.1 201 Created
-Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
-(other response headers omitted)
-----
-
-curl -i -X POST -u admin:secret --form metadata='{"filename":"hello.json"}' --form file=@/tmp/hello2.json localhost:8080/my.files
-
-The `Location` HTTP header returns the file's URI. The last part is the `_id`.
-
-NOTE: file bucket does not support write mode. The `POST` verb is always an insert. If an `_id` is specified in the request content and a file with this `_id` already exists, the request will fail with status code `409 Conflict`
-
-=== Upsert a file with PUT
-
-`PUT /bucket.files/fileid` is used to upsert a file.
-
-NOTE: the request body must be encoded as `multipart/form-data`. This is obtained in the following example with the `--form` option in the `http` command
-
-With httpie:
-
-[source,bash]
-----
-$ http -a admin:secret --form PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg metadata='{"author": "SoftInstigate", "filename": "example.jgp"}'
-
-HTTP/1.1 201 Created
-----
-
-With curl:
-
-[source,bash]
-----
-$ curl -i -X PUT -u admin:secret --form metadata='{"author":"SoftInstigate", "filename": "example.jpg"}' --form file=@/path/to/my/binary/example.jpg localhost:8080/mybucket.files/example
-
-HTTP/1.1 201 Created
-----
-
-NOTE: file bucket does not support write mode. The `PUT` verb is always an upsert. If the file exists, it will be updated (response code `200 Ok`) otherwise it will be created (response code `201 Created`)
-
-=== GET the file metadata
-
-The file metadata is returned with `GET /bucket.files` and  `GET /bucket.files/fileid` requests.
+To upload a file, use a `POST` request with `multipart/form-data` encoding:
 
 [source,http]
 ----
-GET http://localhost:8080/mybucket.files/example HTTP/1.1
+POST /mybucket.files HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="example.jpg"
+Content-Type: image/jpeg
+
+(binary data)
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="metadata"
+
+{"author":"SoftInstigate", "category":"documentation"}
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+----
+
+The request has two parts:
+* `file`: The binary content of the file
+* `metadata`: A JSON object with custom metadata (optional)
+
+Using command-line tools:
+
+With cURL::
+
+[source,bash]
+----
+$ curl -X POST \
+  -u admin:secret \
+  -F "file=@/path/to/example.jpg" \
+  -F 'metadata={"author":"SoftInstigate","category":"documentation"}' \
+  http://localhost:8080/mybucket.files
+----
+
+With HTTPie::
+
+[source,bash]
+----
+$ http -a admin:secret --form POST \
+  localhost:8080/mybucket.files \
+  file@/path/to/example.jpg \
+  metadata='{"author":"SoftInstigate","category":"documentation"}'
+----
+
+A successful upload returns:
+
+[source,http]
+----
+HTTP/1.1 201 Created
+Location: http://localhost:8080/mybucket.files/60f8a7b9e4b053f542c13ece
+----
+
+The `Location` header contains the URI of the newly created file, with the automatically generated ID.
+
+==== PUT - Upload with a Custom ID
+
+To upload a file with a specific ID, use a `PUT` request:
+
+[source,bash]
+----
+$ curl -X PUT \
+  -u admin:secret \
+  -F "file=@/path/to/example.jpg" \
+  -F 'metadata={"author":"SoftInstigate","category":"documentation"}' \
+  http://localhost:8080/mybucket.files/my-custom-id
+----
+
+=== Retrieving Files
+
+==== GET - File Metadata
+
+To retrieve a file's metadata:
+
+[source,http]
+----
+GET /mybucket.files/my-custom-id HTTP/1.1
+
+HTTP/1.1 200 OK
+Content-Type: application/json
 
 {
-    "_id": "example.jpg",
+    "_id": "my-custom-id",
     "chunkSize": 261120,
-    "filename": "example.jgp",
+    "filename": "example.jpg",
     "length": 66273,
     "metadata": {
         "_etag": {
-            "$oid": "5e5fcdd8ddfa017301e00330"
+            "$oid": "60f8a7b9e4b053f542c13ecd"
         },
         "author": "SoftInstigate",
-        "contentType": "image/jpeg",
-        "filename": "example.jgp"
+        "category": "documentation",
+        "contentType": "image/jpeg"
     },
     "uploadDate": {
-        "$date": 1583336920114
+        "$date": 1626955705283
     }
 }
 ----
 
-IMPORTANT: the file `contentType` is automatically detected by RESTHeart and used to define the `Content-Type` response header.
+The response includes:
 
-NOTE: Uploaded files metadata can be filtered and treated as regular collection documents. For example, `http://localhost:8080/mybucket.files?filter={"metadata.author":"SoftInstigate"}` returns all the file metadata that satisfy the query.
+* `_id`: The file identifier
+* `chunkSize`: The size of each chunk in bytes
+* `filename`: The original filename
+* `length`: Total file size in bytes
+* `metadata`: Custom metadata plus system-generated fields
+* `uploadDate`: When the file was uploaded
 
-=== GET the file binary data
+==== GET - File Binary Content
 
-The binary content is available by appending `/binary` to the file URI:
-
-[source,http]
-----
-GET http://localhost:8080/mybucket.files/example/binary HTTP/1.1
-----
-
-=== Update file metadata
-
-`PUT /bucket.files/docid` and `PATCH /bucket.files/docid` are used to update the file metadata.
-
-IMPORTANT: to update the metadata, use a normal requests with `Content-Type: application/json`. This differ from upserting a file that uses a multi-part request, i.e. `Content-Type: multipart/form-data`
-
-The following request, adds the two field `foo` and `bar` to the file metadata.
+To retrieve the actual binary file:
 
 [source,http]
 ----
-PATCH http://localhost:8080/mybucket.files/example HTTP/1.1
+GET /mybucket.files/my-custom-id/binary HTTP/1.1
+
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 66273
+
+(binary data)
+----
+
+RESTHeart automatically sets the appropriate `Content-Type` header based on the detected file type.
+
+==== Filtering Files by Metadata
+
+You can query files by their metadata just like regular documents:
+
+[source,http]
+----
+GET /mybucket.files?filter={"metadata.author":"SoftInstigate"} HTTP/1.1
+----
+
+This returns metadata for all files with the specified author.
+
+=== Updating File Metadata
+
+==== PATCH - Update Specific Metadata Fields
+
+To update specific metadata fields:
+
+[source,http]
+----
+PATCH /mybucket.files/my-custom-id HTTP/1.1
+Content-Type: application/json
 
 {
-    "foo": 1,
-    "bar": 2
+    "metadata.category": "images",
+    "metadata.tags": ["example", "documentation"]
 }
 ----
 
-The following request replaces the whole file `metadata` with the given document:
+IMPORTANT: When updating metadata, use `Content-Type: application/json`, not multipart/form-data.
+
+==== PUT - Replace All Metadata
+
+To completely replace the metadata:
 
 [source,http]
 ----
-PUT http://localhost:8080/mybucket.files/example HTTP/1.1
+PUT /mybucket.files/my-custom-id HTTP/1.1
+Content-Type: application/json
 
 {
-    "author": "uji"
+    "metadata": {
+        "author": "New Author",
+        "category": "updated"
+    }
 }
 ----
 
-NOTE: update operators and update aggregation pipelines cannot be used in files updates.
+NOTE: Update operators and aggregation pipelines cannot be used with file metadata updates.
+
+=== Deleting Files
+
+To delete a file and all its chunks:
+
+[source,http]
+----
+DELETE /mybucket.files/my-custom-id HTTP/1.1
+----
+
+=== Important Notes
+
+1. RESTHeart automatically detects and sets the file's content type
+2. File operations don't support write modes - POST is always insert, PUT is always upsert
+3. File metadata can be queried with the same operators as regular documents
+4. File buckets have two underlying collections in MongoDB: `<bucket-name>.files` for metadata and `<bucket-name>.chunks` for content
+5. Binary content is accessed with the `/binary` suffix
+
+=== Examples
+
+==== Example 1: Upload and serve an image
+
+[source,bash]
+----
+# Upload an image
+curl -X POST \
+  -u admin:secret \
+  -F "file=@/path/to/logo.png" \
+  -F 'metadata={"purpose":"website"}' \
+  http://localhost:8080/images.files
+
+# Access the image in a web page
+<img src="http://localhost:8080/images.files/60f8a7b9e4b053f542c13ece/binary" alt="Logo">
+----
+
+==== Example 2: Upload a document and track versions
+
+[source,bash]
+----
+# Upload initial version
+curl -X PUT \
+  -u admin:secret \
+  -F "file=@/path/to/document.pdf" \
+  -F 'metadata={"version":"1.0","author":"John"}' \
+  http://localhost:8080/documents.files/contract-2023
+
+# Update the file and increment version
+curl -X PUT \
+  -u admin:secret \
+  -F "file=@/path/to/document_updated.pdf" \
+  -F 'metadata={"version":"1.1","author":"John","updated":"2023-07-15"}' \
+  http://localhost:8080/documents.files/contract-2023
+----

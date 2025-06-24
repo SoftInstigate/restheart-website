@@ -1,24 +1,18 @@
 ---
-title: Read Documents
+title: Reading Documents
 layout: docs-adoc
 menu: mongodb
 ---
 
 :page-liquid:
 
-=== Introduction
+== Reading Documents
 
-This page provides examples of query operations using the `GET` method.
+This page demonstrates how to query MongoDB collections through RESTHeart's REST API using the `GET` method.
 
-You will learn how to get documents from a collection, optionally specifying a query, sort criteria, fields projections options and deal with pagination.
+=== Basic Document Retrieval
 
-You will also learn hot to get a single document knowing its `_id`.
-
-{% include running-examples.adoc %}
-
-=== GETting Documents from a Collection
-
-To GET documents from a collection, run the following:
+To retrieve documents from a collection, send a `GET` request to the collection URI:
 
 ++++
 {% include code-header.html
@@ -28,20 +22,22 @@ To GET documents from a collection, run the following:
 ++++
 
 [source,http]
+----
 GET /inventory HTTP/1.1
+----
 
-=== Paging
+This returns all documents in the collection, subject to pagination limits.
 
-The response is paginated, i.e. only a subset of the collection’s document is returned in the response array.
+=== Pagination
 
-The number of documents to return is controlled via the `pagesize` query
-parameter. Its default value is 100, maximum allowable size is 1000.
+RESTHeart always paginates results to prevent performance issues with large collections. By default, only 100 documents are returned per request.
 
-The page to return is specified with the `page` query parameter.
+Control pagination with these query parameters:
 
-==== Paging Examples
+* `page`: Which page of results to return (starting from 1)
+* `pagesize`: Number of documents per page (1-1000, default is 100)
 
-===== Return documents of second page with 3 documents per page
+Example - get the second page with 3 documents per page:
 
 ++++
 {% include code-header.html
@@ -51,24 +47,13 @@ The page to return is specified with the `page` query parameter.
 ++++
 
 [source,http]
+----
 GET /inventory?page=2&pagesize=3 HTTP/1.1
+----
 
-=== Dot notation
+=== Filtering Documents
 
-It's possible to use the "dot notation" to specify fields within an
-sub-document, for example:
-
-[source,http]
-GET /inventory?keys={'header.item':1}&sort={'header.status':1} HTTP/1.1
-
-=== Filtering
-
-The `filter` query parameter allows to specify conditions on the
-documents to be returned in the form of a link:https://docs.mongodb.org/manual/tutorial/query-documents/[mongodb query].
-
-==== Filtering Examples
-
-===== Return documents whose `quantity` is more than 50
+Use the `filter` parameter to specify which documents to return using MongoDB query syntax:
 
 ++++
 {% include code-header.html
@@ -78,9 +63,15 @@ documents to be returned in the form of a link:https://docs.mongodb.org/manual/t
 ++++
 
 [source,http]
+----
 GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
+----
 
-===== Return documents whose `quantity` is more than 25 and with `status` set to "D" value
+This returns only documents where the quantity is greater than 50.
+
+==== Complex Filters
+
+Combine multiple conditions using MongoDB operators like `$and`:
 
 ++++
 {% include code-header.html
@@ -90,9 +81,11 @@ GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
 ++++
 
 [source,http]
+----
 GET /inventory?filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]} HTTP/1.1
+----
 
-or equivalently:
+Alternatively, you can use multiple filter parameters:
 
 ++++
 {% include code-header.html
@@ -102,15 +95,13 @@ or equivalently:
 ++++
 
 [source,http]
+----
 GET /inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"} HTTP/1.1
+----
 
-=== Counting
+=== Counting Documents
 
-Use `_size` keyword after the collection path to retrieve the number of documents that meets the filter condition (if present).
-
-==== Counting Examples
-
-===== Return the number of documents of "inventory" collection
+Instead of retrieving documents, you can count them by appending `_size` to the collection URI:
 
 ++++
 {% include code-header.html
@@ -120,164 +111,17 @@ Use `_size` keyword after the collection path to retrieve the number of document
 ++++
 
 [source,http]
+----
 GET /inventory/_size?filter={"status":"A"} HTTP/1.1
-
-=== Sorting
-
-Sorting is controlled by the `sort` query parameter.
-
-==== Sort simple format
-
-The `sort` simplified format is :
-
-[source]
-sort=[ |-]<fieldname>
-
-NOTE: Specify multiple sort options using multiple `sort` query parameters
-
-[source,http]
-GET /inventory?sort=qty&sort=-status HTTP/1.1
-
-==== Sort JSON expression format
-
-`sort` can also be a MongoDB link:https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort[sort expression].
-
-[source]
-sort={"field": 1}
-
-==== Default sorting
-
-The default sorting of the documents is by the *id descending*.
-
-In the usual case, where the type of the ids of the documents is
-ObjectId, this makes the documents sorted by creation time by default
-(ObjectId have a timestamp in the most significant bits).
-
-RESTHeart returns data in pages (default being 100) and it is stateless.
-This means that two requests use different db cursors. A default sorting
-makes sure that requests on different pages returns documents in a well
-defined order.
-
-TIP: Default sorting could impact performances for some use cases. To _disable_ default sorting add the`sort={}` query parameter
-
-==== Sorting Examples
-
-===== Sort by *status* ascending
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
-%}
-++++
-
-
-[source,http]
-GET /inventory?sort=status HTTP/1.1
-
-or equivalently:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/dd99c056f88e5ac9f990ffcd3f2a18032007d639/0"
-%}
-++++
-
-[source,http]
-GET /inventory?sort={"status":1} HTTP/1.1
-
-===== Sort by *status* descending
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0"
-%}
-++++
-
-[source,http]
-GET /inventory?sort=-status HTTP/1.1
-
-or equivalently:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/e6fe674153926f9834c1aa10e156b0792dc35bc5/0"
-%}
-++++
-
-[source,http]
-GET /inventory?sort={"status":-1} HTTP/1.1
-
-===== Sort by *status* ascending and *qty* descending
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0"
-%}
-++++
-
-[source,http]
-GET /inventory?sort=status&sort=-qty HTTP/1.1
-
-or equivalently:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0"
-%}
-++++
-
-[source,http]
-GET /inventory?sort={"status":1,"qty":-1} HTTP/1.1
-
-
-===== Sort by search score
-
-NOTE: This is only possible with json expression format
-
-**create a text index**
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0"
-%}
-++++
-
-[source,http]
-----
-PUT /inventory/_indexes/text HTTP/1.1
-
-{"keys": {"item": "text" }}
 ----
 
-**sort by score**
+This returns the count of documents with status "A".
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0"
-%}
-++++
+=== Projection (Selecting Fields)
 
-[source,http]
-GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}} HTTP/1.1
+Use the `keys` parameter to specify which fields to include or exclude from the results:
 
-=== Projection
-
-Projection limits the fields to return for all matching documents,
-specifying the inclusion or the exclusion of fields.
-
-This is done via the `keys` query parameter.
-
-==== Projection Examples
-
-===== Only return the property *item*
+==== Include only specific fields
 
 ++++
 {% include code-header.html
@@ -287,9 +131,13 @@ This is done via the `keys` query parameter.
 ++++
 
 [source,http]
+----
 GET /inventory?keys={'item':1} HTTP/1.1
+----
 
-===== Return all but the property *item*
+This returns only the `_id` and `item` fields for each document.
+
+==== Exclude specific fields
 
 ++++
 {% include code-header.html
@@ -299,9 +147,13 @@ GET /inventory?keys={'item':1} HTTP/1.1
 ++++
 
 [source,http]
+----
 GET /inventory?keys={'item':0} HTTP/1.1
+----
 
-===== Only return the properties *item* and *qty*
+This returns all fields except `item` for each document.
+
+==== Include multiple specific fields
 
 ++++
 {% include code-header.html
@@ -311,23 +163,100 @@ GET /inventory?keys={'item':0} HTTP/1.1
 ++++
 
 [source,http]
+----
 GET /inventory?keys={'item':1}&keys={'qty':1} HTTP/1.1
+----
 
-=== Hint
+This returns only the `_id`, `item`, and `qty` fields.
 
-Hint allows overriding MongoDB’s default index selection and query optimization process. See link:https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint[cursor hint] on MongoDB documentation.
+=== Sorting Results
 
-This is done via the `hint` query parameter.
+Control the order of results with the `sort` parameter:
 
-Specify the index using an index specification document, either as a JSON object or a compact string representation (e.g., `?hint=+key` or `?hint=-key`). Starting from version 8.3, you can also specify the index by name (e.g., `?hint=indexName`).
+==== Simple Format
 
-For version 8.3: Use the compact string representation by prefixing the field name with `+` or `-`. Note that the `+` sign must be URL-encoded as `%2B`; otherwise, it will be interpreted as a space. If the `?hint` value does not start with `+` or `-`, it will be treated as an index name.
+For simple sorting, use `sort=fieldname` for ascending order or `sort=-fieldname` for descending order:
 
-Use `$natural` to force the query to perform a forwards collection scan.
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
+%}
+++++
 
-==== Hint Examples
+[source,http]
+----
+GET /inventory?sort=status HTTP/1.1
+----
 
-Before running the following examples create the following indexes:
+This sorts documents by status in ascending order.
+
+For descending order:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0"
+%}
+++++
+
+[source,http]
+----
+GET /inventory?sort=-status HTTP/1.1
+----
+
+==== Multiple Fields Sorting
+
+Use multiple `sort` parameters to sort by multiple fields:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0"
+%}
+++++
+
+[source,http]
+----
+GET /inventory?sort=status&sort=-qty HTTP/1.1
+----
+
+This sorts first by status (ascending) and then by quantity (descending).
+
+==== JSON Expression Format
+
+You can also use MongoDB's sort expression format:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0"
+%}
+++++
+
+[source,http]
+----
+GET /inventory?sort={"status":1,"qty":-1} HTTP/1.1
+----
+
+=== Accessing Nested Properties
+
+Use dot notation to access nested document fields or array elements:
+
+[source,http]
+----
+GET /inventory?keys={'size.h':1}&sort={'size.uom':1} HTTP/1.1
+----
+
+This returns only the height field from the size subdocument and sorts by the unit of measure.
+
+=== Using Indexes with Hint
+
+Override MongoDB's default index selection with the `hint` parameter:
+
+==== Create Indexes First
+
+Before using hints, create the indexes:
 
 ++++
 {% include code-header.html
@@ -335,6 +264,7 @@ Before running the following examples create the following indexes:
     link="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0"
 %}
 ++++
+
 [source,http]
 ----
 PUT /inventory/_indexes/item HTTP/1.1
@@ -356,9 +286,9 @@ PUT /inventory/_indexes/status HTTP/1.1
 {"keys":{"status": 1 }}
 ----
 
-===== Use the index on item field
+==== Using Hint
 
-The following example returns all documents in the collection named **coll** using the index on the **item** field.
+Specify which index to use:
 
 ++++
 {% include code-header.html
@@ -368,11 +298,11 @@ The following example returns all documents in the collection named **coll** usi
 ++++
 
 [source,http]
+----
 GET /inventory?hint={'item':1} HTTP/1.1
+----
 
-===== Use the index on item and status fields using the compact string format
-
-The following example returns the documents using the indexes **item** and reverse **status**.
+Or use the compact string format:
 
 ++++
 {% include code-header.html
@@ -382,11 +312,17 @@ The following example returns the documents using the indexes **item** and rever
 ++++
 
 [source,http]
+----
 GET /inventory?hint=+item&hint=-status HTTP/1.1
+----
 
-===== Perform a forwards collection scan
+NOTE: When using the `+` sign in URLs, encode it as `%2B` to prevent it being interpreted as a space.
 
-The following example returns the documents using a forwards collection scan.
+=== Special Query Operations
+
+==== Collection Scan
+
+Force a collection scan instead of using indexes:
 
 ++++
 {% include code-header.html
@@ -396,12 +332,11 @@ The following example returns the documents using a forwards collection scan.
 ++++
 
 [source,http]
+----
 GET /inventory?hint={'$natural':1} HTTP/1.1
+----
 
-
-===== Perform a reverse collection scan
-
-The following example returns the documents using a reverse collection scan.
+For a reverse collection scan:
 
 ++++
 {% include code-header.html
@@ -411,4 +346,40 @@ The following example returns the documents using a reverse collection scan.
 ++++
 
 [source,http]
+----
 GET /inventory?hint={'$natural':-1} HTTP/1.1
+----
+
+==== Text Search
+
+If you have a text index, you can perform text searches:
+
+First, create the text index:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0"
+%}
+++++
+
+[source,http]
+----
+PUT /inventory/_indexes/text HTTP/1.1
+
+{"keys": {"item": "text" }}
+----
+
+Then search and sort by relevance score:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0"
+%}
+++++
+
+[source,http]
+----
+GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}} HTTP/1.1
+----

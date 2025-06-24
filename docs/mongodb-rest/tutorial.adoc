@@ -1,0 +1,232 @@
+---
+title: REST API Tutorial
+layout: docs-adoc
+menu: mongodb
+---
+
+== REST API Tutorial with RESTHeart
+
+This tutorial introduces RESTHeart's MongoDB REST API through simple examples. You'll learn the basics of querying and modifying data using standard HTTP methods.
+
+=== Before running the examples
+
+All examples in this tutorial use the `inventory` collection. Make sure you have:
+
+1. RESTHeart running on your local machine with default configuration
+2. A MongoDB instance running and connected to RESTHeart
+3. Created the `inventory` collection
+
+TIP: You can use tools like curl, Postman, or Rest Ninja to execute these examples. For this tutorial, examples use the link:http://restninja.io[Rest Ninja] web interface.
+
+WARNING: The "Execute on Rest Ninja" feature requires Chrome or Firefox. It doesn't work with Safari due to HTTPS requirements.
+
+=== Retrieving documents
+
+To retrieve all documents from a collection, send a `GET` request:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/1"
+%}
+++++
+
+[source,http]
+----
+GET /inventory HTTP/1.1
+----
+
+The response will contain an array of all documents in the collection (limited by the default page size):
+
+[source,json]
+----
+[
+  {
+    "_id": {
+      "$oid": "5d0b3dbc2ec9ff0d92ddc2aa"
+    },
+    "_etag": {
+      "$oid": "5d0b3dbc2ec9ff0d92ddc2a5"
+    },
+    "item": "postcard",
+    "qty": 45,
+    "size": {
+      "h": 10,
+      "w": 15.25,
+      "uom": "cm"
+    },
+    "status": "A"
+  },
+  {
+    "_id": {
+      "$oid": "5d0b3dbc2ec9ff0d92ddc2a9"
+    },
+    "_etag": {
+      "$oid": "5d0b3dbc2ec9ff0d92ddc2a5"
+    },
+    "item": "planner",
+    "qty": 75,
+    "size": {
+      "h": 22.85,
+      "w": 30,
+      "uom": "cm"
+    },
+    "status": "D"
+  }
+]
+----
+
+=== Filtering documents
+
+You can filter documents using the `filter` query parameter with MongoDB query syntax:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/1"
+%}
+++++
+
+[source,http]
+----
+GET /inventory?filter={"qty":{"$gt":75}} HTTP/1.1
+----
+
+This returns only documents where the quantity is greater than 75:
+
+[source,json]
+----
+[
+    {
+        "_id": {
+            "$oid": "5d0b3dbc2ec9ff0d92ddc2a8"
+        },
+        "_etag": {
+            "$oid": "5d0b3dbc2ec9ff0d92ddc2a5"
+        },
+        "item": "paper",
+        "qty": 100,
+        "size": {
+            "h": 8.5,
+            "w": 11,
+            "uom": "in"
+        },
+        "status": "D"
+    }
+]
+----
+
+=== Creating documents
+
+To create a new document, use the `POST` method with a JSON body:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/5"
+%}
+++++
+
+[source,http]
+----
+POST /inventory HTTP/1.1
+
+{"item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C"}
+----
+
+The server responds with headers including a `Location` that points to the newly created document:
+
+[source,http]
+----
+HTTP/1.1 201 Created
+ETag: 5d0b47422ec9ff0d92ddc2ad
+Location: http://localhost:8080/inventory/5d0b47425beb2029a8d1bc72
+Content-Type: application/json
+----
+
+TIP: The `Location` header contains the URI of the new document. You can use this URI to access the document directly.
+
+=== Creating documents with a specified ID
+
+You can create a document with a specific ID using the `PUT` method with the `?wm=upsert` query parameter:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="https://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/9"
+%}
+++++
+
+[source,http]
+----
+PUT /inventory/newDocument?wm=upsert HTTP/1.1
+
+{ "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }
+----
+
+NOTE: The `wm=upsert` parameter is needed because the default write mode for `PUT` is "update". The "upsert" mode creates the document if it doesn't exist.
+
+=== Updating documents
+
+To modify specific properties of an existing document, use the `PATCH` method:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/5"
+%}
+++++
+
+[source,http]
+----
+PATCH /inventory/newDocument HTTP/1.1
+
+{ "qty": 40, "status": "A", "newProperty": "value" }
+----
+
+This updates only the specified fields and adds any new fields:
+
+[source,json]
+----
+{
+    "_id": "newDocument",
+    "item": "yetAnotherItem",
+    "qty": 40,
+    "size": {
+        "h": 3,
+        "w": 4,
+        "uom": "cm"
+    },
+    "status": "A",
+    "_etag": {
+        "$oid": "5d0b4b9e2ec9ff0d92ddc2af"
+    },
+    "newProperty": "value"
+}
+----
+
+=== Deleting documents
+
+To delete a document, use the `DELETE` method:
+
+++++
+{% include code-header.html
+    type="Request"
+    link="http://restninja.io/share/311d230363a4c073a1e67ef327bd403cadb1238f/0"
+%}
+++++
+
+[source,http]
+----
+DELETE /inventory/newDocument HTTP/1.1
+----
+
+A successful deletion returns a `204 No Content` status.
+
+=== Next steps
+
+Now that you understand the basics, explore more advanced features:
+
+* link:/docs/mongodb-rest/read-docs[Read Documents] - Learn about pagination, sorting, and projection
+* link:/docs/mongodb-rest/write-docs[Write Documents] - Learn about bulk operations and update operators
+* link:/docs/mongodb-rest/aggregations[Aggregations] - Run MongoDB aggregation pipelines via REST
