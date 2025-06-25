@@ -1,0 +1,109 @@
+= Read Preferences, Read Concerns, and Write Concerns
+
+RESTHeart provides flexible ways to configure read and write operations for MongoDB, allowing you to specify these concerns at both the connection and request levels.
+
+== Configuration Options
+
+You can specify read and write concerns in two primary ways:
+
+=== 1. MongoDB Connection String Configuration
+
+In the MongoDB client configuration, you can set default read and write concerns using the connection string:
+
+[source]
+----
+mongodb://localhost:27017/mydb?readPreference=primaryPreferred&readConcern=majority&writeConcern=majority
+----
+
+=== 2. Request-Level Query Parameters
+
+RESTHeart extends the MongoDB write API by allowing you to specify read and write concerns directly in the request query parameters.
+
+==== Read Preferences
+
+You can specify the read preference using the `readPreference` query parameter:
+
+[source]
+----
+GET /mycollection?readPreference=primary
+GET /mycollection?readPreference=primaryPreferred
+GET /mycollection?readPreference=secondary
+GET /mycollection?readPreference=secondaryPreferred
+GET /mycollection?readPreference=nearest
+----
+
+==== Read Concerns
+
+Set read concerns with the `readConcern` query parameter:
+
+[source]
+----
+GET /mycollection?readConcern=local
+GET /mycollection?readConcern=majority
+GET /mycollection?readConcern=linearizable
+GET /mycollection?readConcern=snapshot
+----
+
+==== Write Concerns
+
+Specify write concerns using the `writeConcern` query parameter:
+
+[source]
+----
+POST /mycollection?writeConcern=majority
+PUT /mycollection?writeConcern=w:2
+DELETE /mycollection?writeConcern=w:1
+----
+
+== Supported Values
+
+=== Read Preferences
+* `primary`: Reads only from the primary node
+* `primaryPreferred`: Reads from primary, falls back to secondary
+* `secondary`: Reads only from secondary nodes
+* `secondaryPreferred`: Reads from secondary, falls back to primary
+* `nearest`: Reads from the node with the lowest network latency
+
+=== Read Concerns
+* `local`: Returns the most recent data available
+* `majority`: Returns data that has been acknowledged by a majority of replica set members
+* `linearizable`: Ensures read operations reflect the most recent write operations
+* `snapshot`: Returns data from a snapshot of the data at the time of the read operation
+
+=== Write Concerns
+* `w:0`: No acknowledgment
+* `w:1`: Acknowledgment from primary
+* `w:majority`: Acknowledgment from a majority of replica set members
+* Numeric values (w:2, w:3) specify the number of nodes that must acknowledge the write
+
+== Example Use Cases
+
+=== Reading from Nearest Node
+[source]
+----
+GET /users?readPreference=nearest
+----
+
+=== Writing with Majority Acknowledgment
+[source]
+----
+POST /transactions?writeConcern=majority
+----
+
+=== Consistent Read After Write
+[source]
+----
+GET /orders?readConcern=majority&readPreference=primary
+----
+
+== Best Practices
+
+* Use `majority` write concern for important transactions to ensure data durability
+* Choose read preferences based on your application's consistency and latency requirements
+* Consider network topology and replica set configuration when selecting read and write concerns
+
+== Notes
+
+* Request-level query parameters override connection string configurations
+* Not all combinations of read and write concerns are appropriate for every use case
+* Carefully evaluate performance implications of your chosen read and write concerns
