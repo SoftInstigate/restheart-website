@@ -15,23 +15,22 @@ Build a complete product management system with inventory, categories, and searc
 ===== Setup (2 minutes)
 [source,bash]
 ----
-# Create database and collections
-curl -X PUT https://[instance].restheart.com/ecommerce -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/ecommerce/products -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/ecommerce/categories -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/ecommerce/inventory -H "Authorization: Bearer [token]"
+# Create collections
+curl -X PUT https://[instance].restheart.com/products -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/categories -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/inventory -H "Authorization: Bearer [token]"
 ----
 
 ===== Sample Data
 [source,bash]
 ----
 # Add categories
-curl -X POST https://[instance].restheart.com/ecommerce/categories \
+curl -X POST https://[instance].restheart.com/categories \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
-curl -X POST https://[instance].restheart.com/ecommerce/products \
+curl -X POST https://[instance].restheart.com/products \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
@@ -50,16 +49,16 @@ curl -X POST https://[instance].restheart.com/ecommerce/products \
 [source,bash]
 ----
 # Search products by name
-curl "https://[instance].restheart.com/ecommerce/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
+curl "https://[instance].restheart.com/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
 
 # Filter by price range
-curl "https://[instance].restheart.com/ecommerce/products?filter={'price':{\$gte:50,\$lte:150}}"
+curl "https://[instance].restheart.com/products?filter={'price':{\$gte:50,\$lte:150}}"
 
 # Get products with low inventory
-curl "https://[instance].restheart.com/ecommerce/products?filter={'quantity':{\$lt:10}}"
+curl "https://[instance].restheart.com/products?filter={'quantity':{\$lt:10}}"
 
 # Category-based filtering with sorting
-curl "https://[instance].restheart.com/ecommerce/products?filter={'category':'electronics'}&sort={price:1}"
+curl "https://[instance].restheart.com/products?filter={'category':'electronics'}&sort={price:1}"
 ----
 
 ==== Content Management System
@@ -70,12 +69,12 @@ Create a headless CMS for blogs, news sites, or documentation.
 [source,bash]
 ----
 # Create content collections
-curl -X PUT https://[instance].restheart.com/cms/articles -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/cms/authors -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/cms/media -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/articles -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/authors -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/media -H "Authorization: Bearer [token]"
 
 # Create author
-curl -X POST https://[instance].restheart.com/cms/authors \
+curl -X POST https://[instance].restheart.com/authors \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
@@ -85,7 +84,7 @@ curl -X POST https://[instance].restheart.com/cms/authors \
   }'
 
 # Create article
-curl -X POST https://[instance].restheart.com/cms/articles \
+curl -X POST https://[instance].restheart.com/articles \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
@@ -107,13 +106,13 @@ curl -X POST https://[instance].restheart.com/cms/articles \
 [source,bash]
 ----
 # Get published articles
-curl "https://[instance].restheart.com/cms/articles?filter={'status':'published'}&sort={publishedAt:-1}"
+curl "https://[instance].restheart.com/articles?filter={'status':'published'}&sort={publishedAt:-1}"
 
 # Get article by slug
-curl "https://[instance].restheart.com/cms/articles?filter={'slug':'getting-started-restheart-cloud'}"
+curl "https://[instance].restheart.com/articles?filter={'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-curl "https://[instance].restheart.com/cms/articles?filter={\$text:{\$search:'RESTHeart API'}}"
+curl "https://[instance].restheart.com/articles?filter={\$text:{\$search:'RESTHeart API'}}"
 ----
 
 === Mobile Applications
@@ -126,12 +125,12 @@ Build a complete social platform with users, posts, likes, and real-time feature
 [source,bash]
 ----
 # Create social app collections
-curl -X PUT https://[instance].restheart.com/social/profiles -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/social/posts -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/social/followers -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/profiles -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/posts -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/followers -H "Authorization: Bearer [token]"
 
 # Create user profile
-curl -X POST https://[instance].restheart.com/social/profiles \
+curl -X POST https://[instance].restheart.com/profiles \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
@@ -149,7 +148,7 @@ curl -X POST https://[instance].restheart.com/social/profiles \
   }'
 
 # Create a post
-curl -X POST https://[instance].restheart.com/social/posts \
+curl -X POST https://[instance].restheart.com/posts \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
@@ -168,13 +167,13 @@ curl -X POST https://[instance].restheart.com/social/posts \
 [source,bash]
 ----
 # Get user timeline (posts from followed users)
-curl "https://[instance].restheart.com/social/posts?filter={'author':{\$in:['user1','user2','user3']}}&sort={createdAt:-1}"
+curl "https://[instance].restheart.com/posts?filter={'author':{\$in:['user1','user2','user3']}}&sort={createdAt:-1}"
 
 # Search posts by hashtag
-curl "https://[instance].restheart.com/social/posts?filter={'hashtags':{\$in:['#api']}}"
+curl "https://[instance].restheart.com/posts?filter={'hashtags':{\$in:['#api']}}"
 
 # Get user's posts
-curl "https://[instance].restheart.com/social/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
+curl "https://[instance].restheart.com/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
 ----
 
 ==== Fitness Tracking App
@@ -185,13 +184,12 @@ Create a comprehensive fitness backend with workouts, progress tracking, and goa
 [source,bash]
 ----
 # Setup fitness collections
-curl -X PUT https://[instance].restheart.com/fitness/users -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/fitness/workouts -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/fitness/exercises -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/fitness/progress -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/workouts -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/exercises -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/progress -H "Authorization: Bearer [token]"
 
 # Add exercise definitions
-curl -X POST https://[instance].restheart.com/fitness/exercises \
+curl -X POST https://[instance].restheart.com/exercises \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
@@ -203,7 +201,7 @@ curl -X POST https://[instance].restheart.com/fitness/exercises \
   }'
 
 # Log workout
-curl -X POST https://[instance].restheart.com/fitness/workouts \
+curl -X POST https://[instance].restheart.com/workouts \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
@@ -235,12 +233,12 @@ Collect and analyze data from home sensors and devices.
 [source,bash]
 ----
 # Create IoT collections
-curl -X PUT https://[instance].restheart.com/smarthome/devices -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/smarthome/readings -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/smarthome/alerts -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/devices -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/readings -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/alerts -H "Authorization: Bearer [token]"
 
 # Register device
-curl -X POST https://[instance].restheart.com/smarthome/devices \
+curl -X POST https://[instance].restheart.com/devices \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -253,7 +251,7 @@ curl -X POST https://[instance].restheart.com/smarthome/devices \
   }'
 
 # Submit sensor reading
-curl -X POST https://[instance].restheart.com/smarthome/readings \
+curl -X POST https://[instance].restheart.com/readings \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -271,10 +269,10 @@ curl -X POST https://[instance].restheart.com/smarthome/readings \
 [source,bash]
 ----
 # Get recent readings
-curl "https://[instance].restheart.com/smarthome/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
+curl "https://[instance].restheart.com/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
 
 # Average temperature by location
-curl -X POST https://[instance].restheart.com/smarthome/readings/_aggrs/avg-temp-by-location \
+curl -X POST https://[instance].restheart.com/readings/_aggrs/avg-temp-by-location \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
@@ -294,11 +292,11 @@ Track air quality, weather conditions, and environmental data.
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -X PUT https://[instance].restheart.com/environment/stations -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/environment/measurements -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/stations -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/measurements -H "Authorization: Bearer [token]"
 
 # Register monitoring station
-curl -X POST https://[instance].restheart.com/environment/stations \
+curl -X POST https://[instance].restheart.com/stations \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -313,7 +311,7 @@ curl -X POST https://[instance].restheart.com/environment/stations \
   }'
 
 # Submit environmental measurement
-curl -X POST https://[instance].restheart.com/environment/measurements \
+curl -X POST https://[instance].restheart.com/measurements \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -344,12 +342,12 @@ Create a comprehensive analytics backend for business metrics.
 [source,bash]
 ----
 # Business analytics setup
-curl -X PUT https://[instance].restheart.com/analytics/sales -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/analytics/customers -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/analytics/products -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/sales -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/customers -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/analytics-products -H "Authorization: Bearer [token]"
 
 # Record sale
-curl -X POST https://[instance].restheart.com/analytics/sales \
+curl -X POST https://[instance].restheart.com/sales \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
@@ -376,7 +374,7 @@ curl -X POST https://[instance].restheart.com/analytics/sales \
 [source,bash]
 ----
 # Daily sales aggregation
-curl -X POST https://[instance].restheart.com/analytics/sales/_aggrs/daily-sales \
+curl -X POST https://[instance].restheart.com/sales/_aggrs/daily-sales \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
@@ -390,7 +388,7 @@ curl -X POST https://[instance].restheart.com/analytics/sales/_aggrs/daily-sales
   ]'
 
 # Top products by revenue
-curl -X POST https://[instance].restheart.com/analytics/sales/_aggrs/top-products \
+curl -X POST https://[instance].restheart.com/sales/_aggrs/top-products \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
@@ -415,12 +413,12 @@ Build a real-time messaging platform with presence and typing indicators.
 [source,bash]
 ----
 # Chat collections
-curl -X PUT https://[instance].restheart.com/chat/rooms -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/chat/messages -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/chat/presence -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/rooms -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/messages -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/presence -H "Authorization: Bearer [token]"
 
 # Create chat room
-curl -X POST https://[instance].restheart.com/chat/rooms \
+curl -X POST https://[instance].restheart.com/rooms \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "General Discussion",
@@ -436,7 +434,7 @@ curl -X POST https://[instance].restheart.com/chat/rooms \
   }'
 
 # Send message
-curl -X POST https://[instance].restheart.com/chat/messages \
+curl -X POST https://[instance].restheart.com/messages \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "roomId": "general-discussion",
@@ -475,11 +473,11 @@ Create real-time polls and surveys with live result updates.
 [source,bash]
 ----
 # Polling collections
-curl -X PUT https://[instance].restheart.com/polls/questions -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/polls/votes -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/questions -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/votes -H "Authorization: Bearer [token]"
 
 # Create poll
-curl -X POST https://[instance].restheart.com/polls/questions \
+curl -X POST https://[instance].restheart.com/questions \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "What is your favorite programming language?",
@@ -498,7 +496,7 @@ curl -X POST https://[instance].restheart.com/polls/questions \
   }'
 
 # Cast vote
-curl -X POST https://[instance].restheart.com/polls/votes \
+curl -X POST https://[instance].restheart.com/votes \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "pollId": "programming-languages-poll",
@@ -520,12 +518,12 @@ Build a SaaS platform with proper tenant isolation and billing.
 [source,bash]
 ----
 # SaaS collections
-curl -X PUT https://[instance].restheart.com/saas/tenants -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/saas/subscriptions -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/saas/usage -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/tenants -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/subscriptions -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/usage -H "Authorization: Bearer [token]"
 
 # Create tenant
-curl -X POST https://[instance].restheart.com/saas/tenants \
+curl -X POST https://[instance].restheart.com/tenants \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "tenantId": "acme-corp",
@@ -549,7 +547,7 @@ curl -X POST https://[instance].restheart.com/saas/tenants \
 [source,bash]
 ----
 # Track API usage
-curl -X POST https://[instance].restheart.com/saas/usage \
+curl -X POST https://[instance].restheart.com/usage \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "tenantId": "acme-corp",
@@ -576,7 +574,7 @@ curl -X POST https://[instance].restheart.com/saas/usage \
 [source,bash]
 ----
 # Enable caching for frequently accessed data
-curl -X PUT https://[instance].restheart.com/app/products \
+curl -X PUT https://[instance].restheart.com/products \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "cachePolicy": {
@@ -591,7 +589,7 @@ curl -X PUT https://[instance].restheart.com/app/products \
 [source,bash]
 ----
 # Create indexes for better query performance
-curl -X PUT https://[instance].restheart.com/ecommerce/products/_indexes/category-price \
+curl -X PUT https://[instance].restheart.com/products/_indexes/category-price \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "keys": {"category": 1, "price": -1},
@@ -599,7 +597,7 @@ curl -X PUT https://[instance].restheart.com/ecommerce/products/_indexes/categor
   }'
 
 # Text index for search
-curl -X PUT https://[instance].restheart.com/ecommerce/products/_indexes/text-search \
+curl -X PUT https://[instance].restheart.com/products/_indexes/text-search \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "keys": {"name": "text", "description": "text", "tags": "text"},
