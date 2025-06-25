@@ -1,93 +1,77 @@
 ---
 title: Representation Format
-layout: docs
 menu: mongodb
+layout: docs-adoc
 ---
-
-<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
-
--   [Representation Format](#representation-format)
-    -   [BSON types](#bson-types)
-    -   [Json Mode](#json-mode)
-- [Other representation formats](#other-representation-formats)
-    -   [HAL](#hal)
-    -   [Simplified HAL](#simplified-hal)
-</div>
-
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
-
-{% include docs-head.html %}
-
 The following table summarizes how resources are represented
 
-{: .table }
-|resource|represented as|example|
-|-|-|-|
-|root `/`|paginated array of existing db names|`["db1", "db2"]`|
-|db `/<db-name>`|paginated array of collection/buckets names that exist in the db|`["collection1", "file.bucket"]`|
-|collection `<db-name>/<collection-name>`|paginated array of documents of the collection|`[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]`|
+[%header,cols="1,1,1"]
+|===
+|resource|represented as|example
+|root `/`|paginated array of existing db names|`["db1", "db2"]`
+|db `/<db-name>`|paginated array of collection/buckets names that exist in the db|`["collection1", "file.bucket"]`
+|collection `<db-name>/<collection-name>`|paginated array of documents of the collection|`[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]`
 |document|JSON object|`{"_id": "doc1, "foo": "bar" }`
+|===
 
-### BSON types
+=== BSON types
 
-MongoDB uses the [BSON](https://en.wikipedia.org/wiki/BSON) data format
-which type system is a superset of JSON’s. To preserve type information,
+MongoDB uses the https://en.wikipedia.org/wiki/BSON[BSON] data format
+which type system is a superset of JSON's. To preserve type information,
 MongoDB adds this extension to the JSON.
 
 For instance, the `_id` of the following JSON document is an ObjectId.
 
-```json
-  {
-    "_id": {
-      "$oid": "5d0b4e325beb2029a8d1bd5e"
-    },
-    "item": "paper"
+[source,json]
+----
+{
+  "_id": {
+    "$oid": "5d0b4e325beb2029a8d1bd5e"
+  },
+  "item": "paper"
+  ...
+}
+----
 
-    ...
-  }
-```
-
-{: .bs-callout.bs-callout-info }
+[NOTE]
+====
 The strict mode is used on both request and response resource representation and also on the query parameter `filter`
+====
 
-The following `filter` won’t find the document since the `_id` is an ObjectId (and not a String).
+The following `filter` won't find the document since the `_id` is an ObjectId (and not a String).
 
-{% include code-header.html
-    type="Request"
-%}
-
-```http
+[source,http]
+----
 GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
-```
+----
 
 The correct request is:
 
-{% include code-header.html
-    type="Request"
-%}
-
-```http
+[source,http]
+----
 GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
-```
+----
 
-### JSON Mode
+=== JSON Mode
 
 JSON can only directly represent a subset of the types supported by BSON. To preserve type information, RESTHeart adds the following extensions to the JSON format.
 
 The query parameter `jsonMode` allows to specify the JSON Mode
 
-{: .table}
-|jsonMode|Description|
-|-|-|
-|none|Standard RESTHeart representation|
-|STRICT|JSON representation with type information for specific cases|
-|EXTENDED|Extended JSON representation with full type information|
-|RELAXED|Standard relaxed extended JSON representation|
-|SHELL|This output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results|
+[%header,cols="1,1"]
+|===
+|jsonMode|Description
+|none|Standard RESTHeart representation
+|STRICT|JSON representation with type information for specific cases
+|EXTENDED|Extended JSON representation with full type information
+|RELAXED|Standard relaxed extended JSON representation
+|SHELL|This output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results
+|===
 
-#### Standard RESTHeart representation
+==== Standard RESTHeart representation
 
-```http
+[source,http]
+----
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
 {
@@ -104,11 +88,12 @@ GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
         "$date": 1568295769260
     }
 }
-```
+----
 
-#### Strict representation
+==== Strict representation
 
-```http
+[source,http]
+----
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -129,11 +114,12 @@ HTTP/1.1 200 OK
         "$date": 1568295769260
     }
 }
-```
+----
 
-#### Extended representation
+==== Extended representation
 
-```http
+[source,http]
+----
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -160,11 +146,12 @@ HTTP/1.1 200 OK
         }
     }
 }
-```
+----
 
-#### Relaxed representation
+==== Relaxed representation
 
-```http
+[source,http]
+----
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -183,14 +170,17 @@ HTTP/1.1 200 OK
         "$date": "2019-09-12T13:42:49.26Z"
     }
 }
-```
+----
 
-#### Shell representation
+==== Shell representation
 
-{: .bs-callout.bs-callout-success }
-SHELL JSON Mode is very useful since it **allows to use the response body directly in the mongoshell!**
+[TIP]
+====
+SHELL JSON Mode is very useful since it *allows to use the response body directly in the mongoshell!*
+====
 
-```http
+[source,http]
+----
 GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell HTTP/1.1
 
 HTTP/1.1 200 OK
@@ -198,62 +188,52 @@ HTTP/1.1 200 OK
 Content-Type: application/javascript
 
 {"_id":ObjectId("5d7a4b59cf6eeb5fb1686613"),"_etag":ObjectId("5d7a6d13bd8a0d69516bbf56"),"timestamp":ISODate("2019-09-12T13:42:49.260Z"),"a":1,"b":1.0,"big":NumberLong("1568295769260"),"verybig":NumberLong("5887391606")}
-```
+----
 
-## Other representation formats
+=== Other representation formats
 
 RESTHeart has different options for representing the resources: `STANDARD`, `HAL` and `SHAL` (Simplified HAL).
 
-{: .bs-callout.bs-callout-warning }
+[WARNING]
+====
 `HAL` and `SHAL` are deprecated in version 6.0 and will likely be removed in a future release.
+====
 
-The default representation can be controlled by the configuration option `default-representation-format` .
+The default representation can be controlled by the configuration option `default-representation-format`.
 
-```properties
+[source,properties]
+----
 default-representation-format: STANDARD
-```
+----
 
 The `rep` query parameter can also be used for switching between representations.
 
-```http
+[source,http]
+----
 GET /inventory?rep=s HTTP/1.1
-```
-
-```http
 GET /inventory?rep=hal HTTP/1.1
-```
-
-```http
 GET /inventory?rep=shal HTTP/1.1
-```
+----
 
-### HAL
+=== HAL
 
-[HAL](http://stateless.co/hal_specification.html) up on 2 simple concepts: **Resources** and **Links**
+https://stateless.co/hal_specification.html[HAL] is based on 2 simple concepts: **Resources** and **Links**
 
--   **Resources** have state (plain JSON), embedded resources and links
--   **Links** have target (href URI) and relations (aka rel)
+- **Resources** have state (plain JSON), embedded resources and links
+- **Links** have target (href URI) and relations (aka rel)
 
-![](/images/info-model.png){: width="800" height="600" class="img-responsive"}
+==== Example
 
-#### Example
-
-We’ll get the `inventory` collection resource and analyze it.
+We'll get the `inventory` collection resource and analyze it.
 A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
 
-{% include code-header.html
-    type="Request"
-%}
-
-```http
+[source,http]
+----
 GET /inventory?rep=hal HTTP/1.1
-```
+----
 
-{% include code-header.html
-    type="Response"
-%}
-
-```http
+[source,http]
+----
 HTTP/1.1 200 OK
 
 Access-Control-Allow-Credentials: true
@@ -296,9 +276,9 @@ X-Powered-By: restheart.org
       ]
    }
 }
-```
+----
 
-#### Properties
+==== Properties
 
 In this case, the collection properties comprise the field *metadata_field*; this
 is user defined.
@@ -306,22 +286,24 @@ is user defined.
 The other fields are reserved properties (i.e. are managed automatically
 by RESTHeart for you); these always starts with \_:
 
-{: .table }
-| Property | Description |
-|----------------|---------------------------------------------------------------------------------------------------------|
-| `_type` | the type of this resource. in this case ‘COLLECTION’ (only returned on HAL full mode) |
-| `_id` | the name of the collection |
-| `_etag` | entity tag, used for caching and to avoid ghost writes. |
-| `_returned` | the number of the documents embedded in this representation |
+[%header,cols="1,1"]
+|===
+| Property | Description
+| `_type` | the type of this resource. in this case 'COLLECTION' (only returned on HAL full mode)
+| `_id` | the name of the collection
+| `_etag` | entity tag, used for caching and to avoid ghost writes.
+| `_returned` | the number of the documents embedded in this representation
+|===
 
-#### Documents as embedded resources
+==== Documents as embedded resources
 
 Collection's embedded resources are the collection documents,
 recursively represented as HAL documents.
 
 The `_embedded` property looks like:
 
-```json
+[source,json]
+----
 {
     "_embedded": {
         "rh:doc": [
@@ -360,85 +342,35 @@ The `_embedded` property looks like:
         ]
     }
 }
-```
+----
 
-#### Links
+==== Links
 
-<div class="anchor-offset" id="dot-notation">
-</div>
+[NOTE]
+====
+`_links` are only returned on *hal full mode*. The only exception are with relationships. If a collection defines a relationship, the representation of the documents always include the links to related data.
+====
 
-<div class="bs-callout bs-callout-info mt-3" role="alert">
-    <p>
-    <code>_links</code> are only returned on <strong>hal full mode</strong>. The only exception are with
-    <a href="{{ '../mgmt/relationships' | prepend: site.baseurl }}">relationships</a>. If a collection defines a relationship,
-    the representation of the documents always include the links to related
-    data.
-    </p>
-</div>
+[%header,cols="1,1"]
+|===
+| Link | Description
+| `self` | link to itself
+| `first` | link to the first page
+| `last` | link to the last page
+| `rh:db` | templated link for db
+| `rh:coll` | templated link for collection
+| `rh:document` | templated link for document
+| `rh:filter` | templated link for filtering
+| `rh:sort` | templated link for sorting
+| `rh:indexes` | link to the collection indexes resource
+| `rh:paging` | templated link for paging
+| `curies` | (compacts URIes) bind links to documentation
+|===
 
-<div class="table-responsive">
-<table class="ts">
-<colgroup>
-<col class="w-50" />
-<col class="w-50" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Link</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>self</code></td>
-<td>link to itself</td>
-</tr>
-<tr class="even">
-<td><code>first</code></td>
-<td>link to the first page</td>
-</tr>
-<tr class="odd">
-<td><code>last</code></td>
-<td>link to the last page</td>
-</tr>
-<tr class="even">
-<td><code>rh:db</code></td>
-<td>templated link for db</td>
-</tr>
-<tr class="odd">
-<td><code>rh:coll</code></td>
-<td>templated link for collection</td>
-</tr>
-<tr class="even">
-<td><code>rh:document</code></td>
-<td>templated link for document</td>
-</tr>
-<tr class="odd">
-<td><code>rh:filter</code></td>
-<td>templated link for filtering</td>
-</tr>
-<tr class="even">
-<td><code>rh:sort</code></td>
-<td>templated link for sorting</td>
-</tr>
-<tr class="odd">
-<td><code>rh:indexes</code></td>
-<td>link to the collection indexes resource</td>
-</tr>
-<tr class="even">
-<td><code>rh:paging</code></td>
-<td>templated link for paging</td>
-</tr>
-<tr class="odd">
-<td><code>curies</code></td>
-<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="#" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
-</tr>
-</tbody>
-</table>
-</div>
 The `_links` property looks like:
 
-```json
+[source,json]
+----
 { "_links": {
   "self": {
     "href": "/inventory?hal=f"
@@ -473,12 +405,9 @@ The `_links` property looks like:
     "templated": true
   }
 }
-```
+----
 
-<div class="anchor-offset" id="hal-mode">
-</div>
-
-#### HAL Mode
+==== HAL Mode
 
 The query parameter `hal` controls the verbosity of HAL representation.
 Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
@@ -486,23 +415,17 @@ Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
 
 When `hal=f` is specified, the representation is more verbose and includes special properties (such as links).
 
-### Simplified HAL
+=== Simplified HAL
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-{% include code-header.html
-    type="Request"
-%}
-
-```http
+[source,http]
+----
 GET /inventory?rep=shal HTTP/1.1
-```
+----
 
-{% include code-header.html
-    type="Response"
-%}
-
-```http
+[source,http]
+----
 HTTP/1.1 200 OK
 
 ...
@@ -533,6 +456,4 @@ HTTP/1.1 200 OK
   "metadata_field": "metadata_value",
   "_returned": 6
 }
-```
-
-</div>
+----

@@ -6,7 +6,7 @@ menu: mongodb
 
 RESTHeart provides flexible ways to configure read and write operations for MongoDB, allowing you to specify these concerns at both the connection and request levels.
 
-== Configuration Options
+=== Configuration Options
 
 You can specify read and write concerns in two primary ways:
 
@@ -59,9 +59,9 @@ PUT /mycollection?writeConcern=w:2
 DELETE /mycollection?writeConcern=w:1
 ----
 
-== Supported Values
+=== Supported Values
 
-=== Read Preferences
+==== Read Preferences
 * `primary`: Reads only from the primary node
 * `primaryPreferred`: Reads from primary, falls back to secondary
 * `secondary`: Reads only from secondary nodes
@@ -80,9 +80,9 @@ DELETE /mycollection?writeConcern=w:1
 * `w:majority`: Acknowledgment from a majority of replica set members
 * Numeric values (w:2, w:3) specify the number of nodes that must acknowledge the write
 
-== Example Use Cases
+=== Example Use Cases
 
-=== Reading from Nearest Node
+==== Reading from Nearest Node
 [source]
 ----
 GET /users?readPreference=nearest
@@ -100,13 +100,13 @@ POST /transactions?writeConcern=majority
 GET /orders?readConcern=majority&readPreference=primary
 ----
 
-== Best Practices
+=== Best Practices
 
 * Use `majority` write concern for important transactions to ensure data durability
 * Choose read preferences based on your application's consistency and latency requirements
 * Consider network topology and replica set configuration when selecting read and write concerns
 
-== Notes
+=== Notes
 
 * Request-level query parameters override connection string configurations
 * Not all combinations of read and write concerns are appropriate for every use case

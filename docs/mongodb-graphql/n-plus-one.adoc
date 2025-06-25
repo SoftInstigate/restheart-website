@@ -6,11 +6,11 @@ menu: mongodb
 
 When working with GraphQL APIs, especially those connected to databases like MongoDB, one of the most common performance challenges is the N+1 query problem. This article explains what this problem is, how it affects RESTHeart GraphQL applications, and how to solve it.
 
-== What is the N+1 Problem?
+=== What is the N+1 Problem?
 
 The N+1 problem occurs when your GraphQL query needs to resolve related data, resulting in N additional database queries on top of the initial query. This typically happens when resolving lists of objects that have relationships to other objects.
 
-=== Example Scenario
+==== Example Scenario
 
 Consider the following GraphQL schema:
 
@@ -53,7 +53,7 @@ This leads to:
 
 Thus, 11 total queries (1 + N) are executed instead of what could potentially be done in 1-2 optimized queries.
 
-== Impact on Performance
+=== Impact on Performance
 
 The N+1 problem can significantly impact your API's performance:
 
@@ -62,11 +62,11 @@ The N+1 problem can significantly impact your API's performance:
 * *Network Traffic*: More queries mean more network overhead
 * *Resource Usage*: Higher CPU and memory usage on both server and database
 
-== Solutions in RESTHeart
+=== Solutions in RESTHeart
 
 RESTHeart provides several built-in solutions to mitigate the N+1 problem:
 
-=== 1. DataLoader Integration
+==== 1. DataLoader Integration
 
 RESTHeart includes DataLoader support out of the box. Enable it in your field mappings:
 
@@ -90,7 +90,7 @@ RESTHeart includes DataLoader support out of the box. Enable it in your field ma
 }
 ----
 
-=== 2. Field-Level Caching
+==== 2. Field-Level Caching
 
 Enable caching for frequently accessed, relatively static data:
 
@@ -113,7 +113,7 @@ Enable caching for frequently accessed, relatively static data:
 }
 ----
 
-=== 3. Optimized Query Strategies
+==== 3. Optimized Query Strategies
 
 Use MongoDB's aggregation capabilities for more efficient data fetching:
 
@@ -143,7 +143,7 @@ Use MongoDB's aggregation capabilities for more efficient data fetching:
 }
 ----
 
-== Best Practices
+=== Best Practices
 
 1. *Analyze Query Patterns*
 - Use RESTHeart's verbose logging to identify N+1 issues
