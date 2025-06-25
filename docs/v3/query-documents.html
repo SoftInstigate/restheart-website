@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Queries</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Queries">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/query-documents">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/query-documents.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#example">Example</a></li>
+        <li><a href="#default-sorting">Default sorting</a></li>
+      </ul>
+    </li>
+    <li><a href="#filtering">Filtering</a>
+      <ul>
+        <li><a href="#filtering-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#counting">Counting</a></li>
+    <li><a href="#paging">Paging</a></li>
+    <li><a href="#sorting">Sorting</a>
+      <ul>
+        <li><a href="#sort-simple-format">Sort simple format</a></li>
+        <li><a href="#sort-json-expression-format">Sort JSON expression format</a></li>
+        <li><a href="#sorting-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#projection">Projection</a>
+      <ul>
+        <li><a href="#projection-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#hint">Hint</a>
+      <ul>
+        <li><a href="#hint-examples">Examples</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Queries</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>In RESTHeart, <code class="language-plaintext highlighter-rouge">GET</code> collection resource requests
+(<code class="language-plaintext highlighter-rouge">GET /db/coll</code>) retrieve documents from the collection as embedded
+resources.</p>
+
+  <p>Refer to <a href="/docs/v3/representation-format">Representation
+Format</a> for more information about the representation format.</p>
+
+  <p>This section also applies to File Bucket and Schema Store resources,
+that embed File and JSON schema resources respectively.</p>
+
+  <h3 id="example">Example</h3>
+
+  <p>To retrieve the first 100 documents of a collection:</p>
+
+  <p><strong>Request</strong></p>
+
+  <pre><code class="language-plain">GET /test/coll?pagesize=100&amp;np
+</code></pre>
+
+  <p><strong>Response (headers omitted)</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+...
+
+<span class="o">{</span>
+    <span class="s2">"_embedded"</span>: <span class="o">[</span>
+        <span class="o">{</span> &lt;DOC1&gt; <span class="o">}</span>, <span class="o">{</span> &lt;DOC2&gt; <span class="o">}</span>, <span class="o">{</span> &lt;DOC3&gt; <span class="o">}</span>, ..., <span class="o">{</span> &lt;DOC100&gt; <span class="o">}</span>
+    <span class="o">]</span>, 
+    <span class="s2">"_returned"</span>: 100
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Excluding collection properties</p>
+
+  <p>The query parameter <strong><code class="language-plaintext highlighter-rouge">np</code></strong> (No Properties) excludes the collection
+properties from the response.</p>
+
+  <h3 id="default-sorting">Default sorting</h3>
+
+  <p>The default sorting of the documents is by the <strong><code class="language-plaintext highlighter-rouge">_id</code> descending</strong>.</p>
+
+  <p>In the usual case, where the type of the ids of the documents is
+ObjectId, this makes the documents sorted by creation time by default
+(ObjectId have a timestamp in the most significant bits).</p>
+
+  <p>RESTHeart returns data in pages (default being 100) and it is stateless.
+This means that two requests use different db cursors. A default sorting
+makes sure that requests on different pages returns documents in a well
+defined order.</p>
+
+  <p><strong>Disable default sorting</strong></p>
+
+  <p>Default sorting could impact performances for some use cases.</p>
+
+  <p>To disable default sorting just add the <code class="language-plaintext highlighter-rouge">sort={}</code> query parameter </p>
+
+  <p>See the <a href="#Sorting">sorting</a> section to know how to
+specify different sorting criteria.</p>
+
+  <h2 id="filtering">Filtering</h2>
+
+  <p>The <strong><code class="language-plaintext highlighter-rouge">filter</code></strong> query parameter allows to specify conditions on the
+documents to be returned.</p>
+
+  <p>The <code class="language-plaintext highlighter-rouge">filter</code> qparam value is any <a href="https://docs.mongodb.org/manual/tutorial/query-documents/">mongodb
+query</a>.</p>
+
+  <p>Note that system properties (properties starting with _ that are
+managed automatically by RESTHeart) are not affected by this option.</p>
+
+  <h3 id="filtering-examples">Filtering Examples</h3>
+
+  <h4 id="return-documents-whosetitlestarts-with-star-trek">Return documents whose <code class="language-plaintext highlighter-rouge">title</code> starts with “Star Trek”</h4>
+
+  <pre><code class="language-plain">GET /test/coll?filter={'title':{'$regex':'(?i)^STAR TREK.*'}}
+</code></pre>
+
+  <p>This query uses the
+mongodb <a href="https://docs.mongodb.org/manual/reference/operator/query/regex/">$regex</a> operator
+where the <em>i</em> option performs a case-insensitive match for documents
+with title value that starts with the string “STAR TREK”.</p>
+
+  <h4 id="return-documents-whosetitlestarts-with-star-trek-andpublishingdateis-later-than-492015-8am">Return documents whose <code class="language-plaintext highlighter-rouge">title</code> starts with “Star Trek” and <code class="language-plaintext highlighter-rouge">publishing_date </code>is later than 4/9/2015, 8AM</h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?filter<span class="o">={</span><span class="s1">'$and'</span>:[<span class="o">{</span><span class="s1">'title'</span>:<span class="o">{</span><span class="s1">'$regex'</span>:<span class="s1">'(?i)^STAR TREK.*'</span><span class="o">}</span>,<span class="o">{</span><span class="s1">'publishing_date'</span>:<span class="o">{</span><span class="s1">'$gte'</span>:<span class="o">{</span><span class="s1">'$date'</span>:<span class="s1">'2015-09-04T08:00:00Z'</span><span class="o">}}}]}</span>
+ 
+or
+ 
+GET /test/coll?filter<span class="o">={</span><span class="s1">'title'</span>:<span class="o">{</span><span class="s1">'$regex'</span>:<span class="s1">'(?i)^STAR TREK.*'</span><span class="o">}</span>&amp;filter<span class="o">={</span><span class="s1">'publishing_date'</span>:<span class="o">{</span><span class="s1">'$gte'</span>:<span class="o">{</span><span class="s1">'$date'</span>:<span class="s1">'2015-09-04T08:00:00Z'</span><span class="o">}}}</span>
+</code></pre></div>  </div>
+
+  <p>multifilter qparams</p>
+
+  <p>Note the second form of the last example. If multiple filter query
+parameters are specified, they are logically composed with the AND
+operator.</p>
+
+  <p>This can be very useful in conjunction with path based security
+permission.</p>
+
+  <p>For instance the following permission can be used with the simple file
+based Access Manager to restrict users to GET a collection only
+specifying a filter on the author property to be equal to their
+username:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]
+</code></pre></div>  </div>
+
+  <h2 id="counting">Counting</h2>
+
+  <p>Specifying the <em>count</em> query parameter (e.g. <code class="language-plaintext highlighter-rouge">?count=true</code> ), RESTHeart
+returns:</p>
+
+  <ul>
+    <li>the total number of documents in the collection with the
+<code class="language-plaintext highlighter-rouge">_size</code><em> </em>parameter</li>
+    <li>the total number of available pages with
+the <code class="language-plaintext highlighter-rouge">_total_pages</code> parameter. It also add the <code class="language-plaintext highlighter-rouge">last</code> link, i.e. the
+link to the last page, to the _links; The pagination links (first,
+last, next, previous) are only returned on hal full mode (hal=f
+query parameter); see HAL mode for more information.</li>
+  </ul>
+
+  <p>Impact on performances</p>
+
+  <p><strong><code class="language-plaintext highlighter-rouge">count</code></strong> involves querying the collection twice: once for counting
+and once of actually retrieving the data; this has performance
+implications!</p>
+
+  <h2 id="paging">Paging</h2>
+
+  <p>Embedded documents are always paginated, i.e. only a subset of the
+collection’s document is returned on each request.</p>
+
+  <p>The number of documents to return is controlled via the <code class="language-plaintext highlighter-rouge">pagesize</code> query
+parameter. Its default value is 100, maximum allowable size is 1000.</p>
+
+  <p>The pages to return is specified with the <code class="language-plaintext highlighter-rouge">page</code> query parameter. The
+pagination links (first, last, next, previous) are <strong>only returned on
+hal full mode</strong> (<code class="language-plaintext highlighter-rouge">hal=f</code> query parameter); see <a href="https://restheart.org/docs/v3/representation-format/">HAL
+mode</a>
+for more information.</p>
+
+  <p>For instance, to return documents from 20 to 29 (page 3):</p>
+
+  <p><strong>Request</strong></p>
+
+  <pre><code class="language-plain">GET /test/coll?count&amp;page=3&amp;pagesize=10&amp;hal=f&amp;np
+</code></pre>
+
+  <p><strong>Response (headers omitted)</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+...
+<span class="o">{</span>
+    <span class="s2">"_embedded"</span>: <span class="o">[</span>
+        <span class="o">{</span> &lt;DOC30&gt; <span class="o">}</span>, <span class="o">{</span> &lt;DOC31&gt; <span class="o">}</span>, ... <span class="o">{</span> &lt;DOC39&gt; <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"_returned"</span>: 10,
+    <span class="s2">"_size"</span>: 343
+    <span class="s2">"_total_pages"</span>: 35
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="sorting">Sorting</h2>
+
+  <p>Sorting is controlled by the <code class="language-plaintext highlighter-rouge">sort</code> query parameter.</p>
+
+  <p>Note that documents cannot be sorted by system properties (properties
+starting with _ that are managed automatically by RESTHeart).</p>
+
+  <h3 id="sort-simple-format">Sort simple format</h3>
+
+  <p>The <code class="language-plaintext highlighter-rouge">sort</code> simplified format is :</p>
+
+  <pre><code class="language-plain">sort=[ |-]&lt;fieldname&gt;
+</code></pre>
+
+  <p>multiple sort properties</p>
+
+  <p>Specify multiple sort options using multiple <code class="language-plaintext highlighter-rouge">sort</code> query parameters</p>
+
+  <pre><code class="language-plain">GET /db/coll?sort=name&amp;sort=-age
+</code></pre>
+
+  <h3 id="sort-json-expression-format">Sort JSON expression format</h3>
+
+  <p><code class="language-plaintext highlighter-rouge">sort</code> can also be a MongoDB <a href="https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort">sort
+expression</a>.</p>
+
+  <p>JSON expression format is available starting from version 2.0.1. See
+improvement <a href="https://softinstigate.atlassian.net/browse/RH-190">RH-190</a></p>
+
+  <pre><code class="language-plain">sort={"field": 1}
+</code></pre>
+
+  <h3 id="sorting-examples">Sorting Examples</h3>
+
+  <h3 id="sort-by-thedate-ascending">Sort by the <em>date</em> ascending</h3>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?sort<span class="o">=</span><span class="nb">date
+
+</span>GET /test/coll?sort<span class="o">={</span><span class="s2">"date"</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="sort-by-thedatedescending">Sort by the <em>date</em> descending</h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?sort<span class="o">=</span><span class="nt">-date</span>
+
+GET /test/coll?sort<span class="o">={</span><span class="s2">"date"</span>:-1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="sort-by-thedatedescending-and-title-ascending">Sort by the <em>date</em> descending and title ascending </h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?sort<span class="o">=</span><span class="nt">-date</span>&amp;sort<span class="o">=</span>title
+
+GET /test/coll?sort<span class="o">={</span><span class="s2">"date"</span>:-1, <span class="s2">"title"</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="sort-by-search-score">Sort by search score</h4>
+
+  <p>This is only possible with json expression format</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// create a text index
+PUT /test/coll/_indexes/text <span class="o">{</span><span class="s2">"keys"</span>: <span class="o">{</span><span class="s2">"title"</span>: <span class="s2">"text }}
+ 
+// sort by {"</span><span class="nv">$meta</span><span class="s2">": "</span>textScore<span class="s2">"}
+GET /test/coll?filter={"</span><span class="nv">$text</span><span class="s2">":{"</span><span class="nv">$search</span><span class="s2">":"</span>a search string<span class="s2">"}}&amp;keys={"</span>title<span class="s2">":1,"</span>score<span class="s2">":{"</span><span class="nv">$meta</span><span class="s2">":"</span>textScore<span class="s2">"}}&amp;sort={"</span>score<span class="s2">":{"</span><span class="nv">$meta</span><span class="s2">":"</span>textScore<span class="s2">"}}
+</span></code></pre></div>  </div>
+
+  <h2 id="projection">Projection</h2>
+
+  <p>Projection limits the fields to return for all matching documents,
+specifying the inclusion or the exclusion of fields.</p>
+
+  <p>This is done via the <code class="language-plaintext highlighter-rouge">keys</code> query parameter. </p>
+
+  <p>Note that system properties (properties starting with _ that are
+managed automatically by RESTHeart) are not affected by this option.</p>
+
+  <h3 id="projection-examples">Projection Examples</h3>
+
+  <h4 id="only-return-the-property-title">Only return the property title</h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?keys<span class="o">={</span><span class="s1">'title'</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="return-all-but-the-propertytitle">Return all but the property <em>title</em></h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?keys<span class="o">={</span><span class="s1">'title'</span>:0<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="only-return-the-propertiestitle-and-summary">Only return the properties <em>title</em> and <em>summary</em></h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?keys<span class="o">={</span><span class="s1">'title'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'summary'</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>It’s possible to use the “dot notation” to specify fields within an
+object, for example, let’s say that both <strong>title</strong> and <strong>summary</strong> are
+part of an <strong>header</strong> object:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?keys<span class="o">={</span><span class="s1">'header.title'</span>:1<span class="o">}</span>&amp;keys<span class="o">={</span><span class="s1">'header.summary'</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="hint">Hint</h2>
+
+  <p>Hint allows overriding MongoDB’s default index selection and query optimization process. See <a href="https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint">cursor hint</a> on MongoDB documentation.</p>
+
+  <p>This is done via the <code class="language-plaintext highlighter-rouge">hint</code> query parameter.</p>
+
+  <p>Specify the index by the index specification document, either using a json document or the compact string representation; specifying the index by name is not supported.</p>
+
+  <p>Use <code class="language-plaintext highlighter-rouge">$natural</code> to force the query to perform a forwards collection scan.</p>
+
+  <h3 id="hint-examples">Hint Examples</h3>
+
+  <h4 id="use-the-index-on-age-field">Use the index on age field</h4>
+
+  <p>The following example returns all documents in the collection named <strong>coll</strong> using the index on the <strong>age</strong> field.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?hint<span class="o">={</span><span class="s1">'age'</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="use-the-compound-index-on-age-and-timestamp-fields-using-the-compact-string-format">Use the compound index on age and timestamp fields using the compact string format</h4>
+
+  <p>The following example returns the documents in the collection named <strong>coll</strong> using the compound index on the <strong>age</strong> and reverse <strong>timestamp</strong> fields.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?hint<span class="o">=</span>age&amp;hint<span class="o">=</span><span class="nt">-timestamp</span>
+</code></pre></div>  </div>
+
+  <h4 id="perform-a-forwards-collection-scan">Perform a forwards collection scan</h4>
+
+  <p>The following example returns the documents in the collection named <strong>coll</strong> using aforwards collection scan.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?hint<span class="o">={</span><span class="s1">'$natural'</span>:1<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h4 id="perform-a-reverse-collection-scan">Perform a reverse collection scan</h4>
+
+  <p>The following example returns the documents in the collection named <strong>coll</strong> using a reverse collection scan.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /test/coll?hint<span class="o">={</span><span class="s1">'$natural'</span>:-1<span class="o">}</span>
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

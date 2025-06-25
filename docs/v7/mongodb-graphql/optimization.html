@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - GraphQL API</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - GraphQL API">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v7/mongodb-graphql/optimization">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v7
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            <strong>v7</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v7/mongodb-graphql/optimization.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/v7">Overview</a></li>
+    <li><a href="/docs/v7/faq">FAQ</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/v7/performances">Performances</a></li>
+    <li><a href="/docs/v7/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v7/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v7/upgrade-to-v7"><strong>Upgrade to v7</strong></a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/v7/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v7/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v7/configuration">Configuration</a></li>
+    <li><a href="/docs/v7/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/v7/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/v7/security/user-management">User Management</a></li>
+    <li><a href="/docs/v7/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v7/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/v7/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v7/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v7/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v7/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v7/logging">Logging</a></li>
+    <li><a href="/docs/v7/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v7/auditing">Auditing</a></li>
+    <li><a href="/docs/v7/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v7/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/v7/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/v7/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/v7/plugins/services">Services</a></li>
+    <li><a href="/docs/v7/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/v7/plugins/providers">Providers</a></li>
+    <li><a href="/docs/v7/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/v7/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/v7/security/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/v7/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/v7/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/v7/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v7/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v7/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/read-docs">Read Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/write-docs">Write Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v7/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v7/mongodb-rest/caching">Caching</a></li>
+    <li><a href="/docs/v7/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v7/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v7/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v7/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v7/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v7/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v7/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v7/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v7/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v7/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v7/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v7/mongodb-rest/monitoring">Monitoring</a></li>
+
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/v7/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/graphql-apps">GraphQL App Definition</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/complex-app-example">A complex GraphQL App</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/v7/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'mongodb';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel1">
+<li><a href="#the-n1-problem">The N+1 problem</a>
+<ul class="sectlevel2">
+<li><a href="#batching-and-caching">Batching and Caching</a></li>
+<li><a href="#tuning">Tuning</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>GraphQL API</span>
+    </h2>
+</div>
+            <div class="sect1">
+<h2 id="the-n1-problem">The N+1 problem</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It&#8217;s well known that every GraphQL service suffers of <strong>N+1 requests problem</strong>.</p>
+</div>
+<div class="paragraph">
+<p>In our case this problem arises every time that a relation is mapped through the <code>$fk</code> operator with a MongoDB query.</p>
+</div>
+<div class="paragraph">
+<p>For example, given the following GraphQL schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">posts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Post</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Post</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">text</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">author</span><span class="p">:</span><span class="w"> </span><span class="n">User</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">posts</span><span class="p">(</span><span class="n">_limit</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">0</span><span class="p">,</span><span class="w"> </span><span class="n">_skip</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">0):</span><span class="w"> </span><span class="p">[</span><span class="n">Post</span><span class="p">]</span><span class="w">
+</span><span class="err">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>mapped with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"User"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"posts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"posts"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$in"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"$fk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"posts_ids"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Post"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$fk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"author_id"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"posts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"posts"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"limit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"$arg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_limit"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"skip"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"$arg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_skip"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then, executing the GraphQL query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="p">{</span><span class="w"> </span><span class="n">posts</span><span class="p">(</span><span class="n">_limit</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">text</span><span class="w">
+    </span><span class="n">author</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RESTHeart will execute:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a MongoDB query to fetch the first 10 documents of <code>posts</code> collection;</p>
+</li>
+<li>
+<p>a MongoDB query for each one of the 10 posts returned by the first one.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Precisely, N+1 requests.</p>
+</div>
+<div class="sect2">
+<h3 id="batching-and-caching">Batching and Caching</h3>
+<div class="paragraph">
+<p>In order to mitigate the N+1 problem and optimize performances of yours GraphQL API, RESTHeart allows you to use <strong>per-request DataLoaders</strong> to batch and cache MongoDB queries. This can be done specifying <code>dataLoader</code> object within the <em>Field to Query mapping</em>. For instance, the author mapping seen above becomes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"User"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Post"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$fk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"author_id"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"dataLoader"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"batching"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"caching"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"maxBatchSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>batching</code> (boolean): allows you to specify if queries batching is enabled. By default it&#8217;s <code>false</code>;</p>
+</li>
+<li>
+<p><code>caching</code> (boolean): allows you to specify if queries caching is enabled. By default it&#8217;s <code>false</code>;</p>
+</li>
+<li>
+<p><code>maxBatchSize</code> (int): allows you to specify how many queries batch together at most.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tuning">Tuning</h3>
+<div class="paragraph">
+<p>There&#8217;s no magic number for <code>maxBatchSize</code>, so you have to tune it.</p>
+</div>
+<div class="paragraph">
+<p>For this purpose you can set <code>verbose: true</code> under the GraphQL plugin configuration within <code>restheart.yml</code>. In this way, RESTHeart will insert DataLoader statistics inside GraphQL queries answers.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+</span><span class="nl">"data"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="s2">"..."</span><span class="p">},</span><span class="w">
+  </span><span class="nl">"extensions"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"dataloader"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"overall-statistics"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"loadCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"loadErrorCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"loadErrorRatio"</span><span class="p">:</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"batchInvokeCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"batchLoadCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"batchLoadRatio"</span><span class="p">:</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"batchLoadExceptionCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"batchLoadExceptionRatio"</span><span class="p">:</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"cacheHitCount"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"cacheHitRatio"</span><span class="p">:</span><span class="w">  </span><span class="mf">0.0</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"individual-statistics"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dataLoader1"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"dataLoader2"</span><span class="p">:</span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"dataLoader3"</span><span class="p">:</span><span class="s2">"..."</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

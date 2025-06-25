@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Develop Security Plugins</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Develop Security Plugins">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v4/develop/security-plugins">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v4
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            <strong>v4</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v4/develop/security-plugins.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="getting-started"><a href="/docs">Intoduction</a></h2>
+
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+    <li><a href="/docs/v4/setup">Setup</a></li>
+    <li><a href="/docs/v4/configuration">Configuration</a></li>
+    <li><a href="/docs/v4/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v4/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v4/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v4/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v4/blog-posts">Tutorials</a></li>
+    <li><a href="/docs/v4/performances">Performances</a></li>
+    <li><a href="/docs/v4/clustering">Clustering & Load Balancing</a></li>
+</ul>
+
+<h2 id="upgrading-from-3"><a href="/docs/v4/upgrade-to-v4">Upgrade to v4</a></h2>
+<h2 id="upgrading-from-3"><a href="/docs/v4/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v4/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v4/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v4/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v4/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v4/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v4/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v4/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v4/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v4/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v4/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v4/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v4/security/overview">Overview</a></li>
+    <li><a href="/docs/v4/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v4/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v4/security/user-management">User Management</a></li>
+    <li><a href="/docs/v4/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v4/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v4/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v4/plugins/apply">Apply plugins</a></li>
+    <li><a href="/docs/v4/plugins/list">Available plugins</a></li>
+</ul>
+
+<h2 id="develop-core-plugins">Develop Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/develop/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v4/develop/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v4/develop/packaging">Packaging Plugins</a></li>
+    <li><a href="/docs/v4/develop/best-practices">Best practices</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul class="mb-5">
+    <li><a href="/docs/v4/etag">ETag</a></li>
+    <li><a href="/docs/v4/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v4/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v4/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v4/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v4/auditing">Auditing</a></li>
+</ul>
+
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="#authenticators">Authenticators</a></li>
+    <li><a href="#authorizers">Authorizers</a></li>
+    <li><a href="#token-managers">Token Managers</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#initializers">Initializers</a></li>
+    <li><a href="#interceptors">Interceptors</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Develop Security Plugins</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>This section provides detailed information on how to implement custom security plugins for the <a href="https://restheart.org/get">RESTHeart Platform</a>. If you are looking for the OSS Edition, please refer to its <a href="https://github.com/SoftInstigate/restheart-security/">GitHub repository</a></p>
+
+  <p>See <a href="/docs/v4/security/overview/#understanding-restheart-security">Understanding RESTHeart Security</a> for an high level view of the RESTHeart security model.</p>
+
+  <h2 id="authentication-mechanisms">Authentication Mechanisms</h2>
+
+  <p>The Authentication Mechanism class must implement the <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.AuthMechanism</code> interface.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthMechanism</span> <span class="kd">implements</span> <span class="nc">AuthenticationMechanism</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">AuthenticationMechanismOutcome</span> <span class="nf">authenticate</span><span class="o">(</span>
+          <span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+          <span class="kd">final</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">);</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">ChallengeResult</span> <span class="nf">sendChallenge</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+          <span class="kd">final</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">);</span>
+
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getMechanismName</span><span class="o">();</span>
+</code></pre></div>  </div>
+
+  <h3 id="configuration">Configuration</h3>
+
+  <p>The Authentication Mechanism must be declared in the yml configuration file. 
+Of course the implementation class must be in the java classpath.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">auth-mechanisms</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;name&gt;</span>
+      <span class="na">class</span><span class="pi">:</span> <span class="s">&lt;full-class-name&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
+        <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+        <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span>
+</code></pre></div>  </div>
+
+  <h3 id="constructor">Constructor</h3>
+
+  <p>The Authentication Mechanism implementation class must have the following constructor:</p>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthMechanism</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+
+  <span class="c1">// use argValue() helper method to get the arguments specified in the configuration file</span>
+  <span class="nc">Integer</span> <span class="n">_number</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+  <span class="nc">String</span> <span class="n">_string</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"string"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is not specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthMechanism</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="authenticate">authenticate()</h3>
+
+  <p>The method <code class="language-plaintext highlighter-rouge">authenticate()</code> must return:</p>
+
+  <ul>
+    <li>NOT_ATTEMPTED: the request cannot be authenticated because it doesn’t fulfill the authentication mechanism requirements. An example is <em>BasicAutMechanism</em> when the request does not include the header <code class="language-plaintext highlighter-rouge">Authotization</code> or its value does not start by <code class="language-plaintext highlighter-rouge">Basic </code></li>
+    <li>NOT_AUTHENTICATED: the Authentication Mechanism handled the request but could not authenticate the client, for instance because of wrong credentials.</li>
+    <li>AUTHENTICATED: the Authentication Mechanism successfully authenticated the request.</li>
+  </ul>
+
+  <p>To mark the authentication as failed in <code class="language-plaintext highlighter-rouge">authenticate()</code>:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationFailed</span><span class="o">(</span><span class="s">"authentication failed"</span><span class="o">,</span> <span class="n">getMechanismName</span><span class="o">());</span>
+<span class="k">return</span> <span class="nc">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">NOT_AUTHENTICATED</span><span class="o">;</span>
+</code></pre></div>  </div>
+
+  <p>To mark the authentication as successful in <code class="language-plaintext highlighter-rouge">authenticate()</code>:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// build the account</span>
+<span class="kd">final</span> <span class="nc">Account</span> <span class="n">account</span><span class="o">;</span>
+
+<span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationComplete</span><span class="o">(</span><span class="n">account</span><span class="o">,</span> <span class="n">getMechanismName</span><span class="o">(),</span> <span class="kc">false</span><span class="o">);</span>
+
+<span class="k">return</span> <span class="nc">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">AUTHENTICATED</span><span class="o">;</span>
+</code></pre></div>  </div>
+
+  <h3 id="sendchallenge">sendChallenge()</h3>
+
+  <p><code class="language-plaintext highlighter-rouge">sendChallenge()</code> is executed when the authentication fails.</p>
+
+  <p>An example is <em>BasicAuthMechanism</em> that sends the <code class="language-plaintext highlighter-rouge">401 Not Authenticated</code> response with the following challenge header:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WWW-Authenticate: Basic realm="RESTHeart Realm"
+</code></pre></div>  </div>
+
+  <h3 id="build-the-account">Build the Account</h3>
+
+  <p>To build the account, the Authentication Mechanism can use a configurable Authenticator. This allows to extends the Authentication Mechanism with different Authenticator implementations. For instance the <em>BasicAuthMechanism</em> can use different Authenticator implementations that hold accounts information in a DB or in a LDAP server.</p>
+
+  <p>Tip: Use the <code class="language-plaintext highlighter-rouge">PluginsRegistry</code> to get the instance of the Authenticator from its name.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// get the name of the authenticator from the arguments</span>
+<span class="nc">String</span> <span class="n">authenticatorName</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"authenticator"</span><span class="o">);</span>
+
+<span class="nc">Authenticator</span> <span class="n">authenticator</span> <span class="o">=</span> <span class="nc">PluginsRegistry</span>
+                                <span class="o">.</span><span class="na">getInstance</span><span class="o">()</span>
+                                <span class="o">.</span><span class="na">getAuthenticator</span><span class="o">(</span><span class="n">authenticatorName</span><span class="o">);</span>
+
+<span class="c1">// get the client id and credential from the request</span>
+<span class="nc">String</span> <span class="n">id</span><span class="o">;</span>
+<span class="nc">Credential</span> <span class="n">credential</span><span class="o">;</span>
+
+
+<span class="nc">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="n">authenticator</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">credential</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <h2 id="authenticators">Authenticators</h2>
+
+  <p>The Authenticator class must implement the <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.Authenticator</code> interface.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Authenticator</span> <span class="kd">extends</span> <span class="nc">IdentityManager</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">Account</span> <span class="n">account</span><span class="o">);</span>
+  
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">,</span> <span class="nc">Credential</span> <span class="n">credential</span><span class="o">);</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">Credential</span> <span class="n">credential</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="configuration-1">Configuration</h3>
+
+  <p>The Authenticator must be declared in the yml configuration file. 
+Of course the implementation class must be in the java classpath.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">authenticators</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;name&gt;</span>
+      <span class="na">class</span><span class="pi">:</span> <span class="s">&lt;full-class-name&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
+        <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+        <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span>
+</code></pre></div>  </div>
+
+  <h3 id="constructor-1">Constructor</h3>
+
+  <p>The Authenticator implementation class must have the following constructor:</p>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthenticator</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+
+  <span class="c1">// use argValue() helper method to get the arguments specified in the configuration file</span>
+  <span class="nc">Integer</span> <span class="n">_number</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+  <span class="nc">String</span> <span class="n">_string</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"string"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is not specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthenticator</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="authorizers">Authorizers</h2>
+
+  <p>The Authorizer implementation class must implement the <code class="language-plaintext highlighter-rouge">org.restheart.security.Authorizer</code> interface.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Authorizer</span> <span class="o">{</span>
+    <span class="cm">/**
+     *
+     * @param exchange
+     * @param context
+     * @return true if request is allowed
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">isAllowed</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">);</span>
+
+    <span class="cm">/**
+     *
+     * @param exchange
+     * @return true if not authenticated user won't be allowed
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">isAuthenticationRequired</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="configuration-2">Configuration</h3>
+
+  <p>The Authorizer must be declared in the yml configuration file. 
+Of course the implementation class must be in the java classpath.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">authorizers</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;name&gt;</span>
+      <span class="na">class</span><span class="pi">:</span> <span class="s">&lt;full-class-name&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
+        <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+        <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span>
+</code></pre></div>  </div>
+
+  <h3 id="constructor-2">Constructor</h3>
+
+  <p>The Authorizer implementation class must have the following constructor:</p>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthorizer</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+
+  <span class="c1">// use argValue() helper method to get the arguments specified in the configuration file</span>
+  <span class="nc">Integer</span> <span class="n">_number</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+  <span class="nc">String</span> <span class="n">_string</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"string"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is not specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyAuthorizer</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="token-managers">Token Managers</h2>
+
+  <p>The Token Manager implementation class must implement the <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.TokenManager</code> interface.</p>
+
+  <p>Note that TokenManager extends Authenticator for token verification methods.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">PluggablTokenManager</span> <span class="kd">extends</span> <span class="nc">Authenticator</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="nc">HttpString</span> <span class="no">AUTH_TOKEN_HEADER</span> <span class="o">=</span> <span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"Auth-Token"</span><span class="o">);</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="nc">HttpString</span> <span class="no">AUTH_TOKEN_VALID_HEADER</span> <span class="o">=</span> <span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"Auth-Token-Valid-Until"</span><span class="o">);</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="nc">HttpString</span> <span class="no">AUTH_TOKEN_LOCATION_HEADER</span> <span class="o">=</span> <span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"Auth-Token-Location"</span><span class="o">);</span>
+
+  <span class="cm">/**
+   * retrieves of generate a token valid for the account
+   * @param account
+   * @return the token for the account
+   */</span>
+  <span class="kd">public</span> <span class="nc">PasswordCredential</span> <span class="nf">get</span><span class="o">(</span><span class="nc">Account</span> <span class="n">account</span><span class="o">);</span>
+
+  <span class="cm">/**
+   * updates the account bound to a token
+   * @param account
+   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="nc">Account</span> <span class="n">account</span><span class="o">);</span>
+
+  <span class="cm">/**
+   * invalidates the token bound to the account
+   * @param account
+   * @param token 
+   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invalidate</span><span class="o">(</span><span class="nc">Account</span> <span class="n">account</span><span class="o">);</span>
+
+  <span class="cm">/**
+   * injects the token headers in the response
+   * 
+   * @param exchange
+   * @param token 
+   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">injectTokenHeaders</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">PasswordCredential</span> <span class="n">token</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="configuration-3">Configuration</h3>
+
+  <p>The Token Manager must be declared in the yml configuration file. 
+Of course the implementation class must be in the java classpath.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">token-manager</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;name&gt;</span>
+    <span class="na">class</span><span class="pi">:</span> <span class="s">&lt;full-class-name&gt;</span>
+    <span class="na">args</span><span class="pi">:</span>
+      <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+      <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span>
+</code></pre></div>  </div>
+
+  <h3 id="constructor-3">Constructor</h3>
+
+  <p>The Token Manager implementation class must have the following constructor:</p>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyTM</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+
+  <span class="c1">// use argValue() helper method to get the arguments specified in the configuration file</span>
+  <span class="nc">Integer</span> <span class="n">_number</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+  <span class="nc">String</span> <span class="n">_string</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="n">args</span><span class="o">,</span> <span class="s">"string"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If the property <code class="language-plaintext highlighter-rouge">args</code> is not specified in configuration:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyTM</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="services">Services</h2>
+
+  <p>The Service implementation class must extend the <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.Service</code> abstract class, implementing the following method</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Service</span> <span class="kd">extends</span> <span class="nc">PipedHttpHandler</span> <span class="kd">implements</span> <span class="nc">ConfigurablePlugin</span> <span class="o">{</span>
+  <span class="cm">/**
+   *
+   * @param exchange
+   * @throws Exception
+   */</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>An example service implementation follows. It sends the usual <code class="language-plaintext highlighter-rouge">Hello World</code> message, however if the request specifies <code class="language-plaintext highlighter-rouge">?name=Bob</code> it responds with <code class="language-plaintext highlighter-rouge">Hello Bob</code>.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+  <span class="kt">var</span> <span class="n">msg</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="s">"Hello "</span><span class="o">);</span>
+  
+  <span class="kt">var</span> <span class="n">_name</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="na">getQueryParameters</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">);</span>
+  
+  <span class="k">if</span> <span class="o">(</span><span class="n">_name</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">_name</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">msg</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"World"</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">msg</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">_name</span><span class="o">.</span><span class="na">getFirst</span><span class="o">());</span>
+  <span class="o">}</span>
+
+  <span class="kt">var</span> <span class="n">response</span> <span class="o">=</span> <span class="nc">ByteArrayResponse</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">exchange</span><span class="o">);</span>
+
+  <span class="n">response</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_OK</span><span class="o">);</span>
+  <span class="n">response</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/plain"</span><span class="o">);</span>
+  <span class="n">response</span><span class="o">.</span><span class="na">writeContent</span><span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="configuration-4">Configuration</h3>
+
+  <p>The <em>Service</em> must be declared in the yml configuration file. 
+Of course the implementation class must be in the java classpath.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">services</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">&lt;name&gt;</span>
+      <span class="na">class</span><span class="pi">:</span> <span class="s">&lt;full-class-name&gt;</span>
+      <span class="na">uri</span><span class="pi">:</span> <span class="s">&lt;the-service-uri&gt;</span>
+      <span class="na">secured</span><span class="pi">:</span> <span class="s">&lt;boolean&gt;</span>
+      <span class="na">args</span><span class="pi">:</span>
+        <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+        <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span>
+</code></pre></div>  </div>
+
+  <p>The <em>uri</em> property allows to bind the service under the specified path. E.g., with <code class="language-plaintext highlighter-rouge">uri: /mysrv</code> the service responds at URL <code class="language-plaintext highlighter-rouge">https://domain.io/mysrv</code></p>
+
+  <p>With <code class="language-plaintext highlighter-rouge">secured: true</code> the service request goes thought the  authentication and authorization phases. With <code class="language-plaintext highlighter-rouge">secured: false</code> the service is fully open.</p>
+
+  <h3 id="constructor-4">Constructor</h3>
+
+  <p>The Service abstract class implements the following constructor:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyService</span><span class="o">(</span><span class="nc">PipedHttpHandler</span> <span class="n">next</span><span class="o">,</span>
+          <span class="nc">String</span> <span class="n">name</span><span class="o">,</span>
+          <span class="nc">String</span> <span class="n">uri</span><span class="o">,</span>
+          <span class="nc">Boolean</span> <span class="n">secured</span><span class="o">,</span>
+          <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <h2 id="initializers">Initializers</h2>
+
+  <p>An <em>Initializer</em> allows executing custom logic at startup time.</p>
+
+  <p>Notably it allows to define <em>Interceptors</em> and <em>Global Permission Predicates</em>.</p>
+
+  <p>The Initializer implementation class must extend the <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.Initializer</code> interface, implementing the following method:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Initializer</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>It must also registered via the <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> annotation, example:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">"testInitializer"</span><span class="o">,</span>
+        <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"The initializer used to test interceptors and global predicates"</span><span class="o">,</span>
+        <span class="n">enabledByDefault</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestInitializer</span> <span class="kd">implements</span> <span class="nc">Initializer</span> <span class="o">{</span>
+
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If the initializer is not enabled by default (i.e.e<code class="language-plaintext highlighter-rouge">enabledByDefault=false</code>), it can be enabled via configuration file as follows:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plugins-args:
+  testInitializer:
+    enabled: true
+</code></pre></div>  </div>
+
+  <p>An example Initializer is <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.initializers.TestInitializer</code>.</p>
+
+  <h3 id="defining-interceptors">Defining Interceptors</h3>
+
+  <p>The <code class="language-plaintext highlighter-rouge">PluginsRegistry</code> class allows to define Interceptors.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">RequestInterceptor</span> <span class="n">requestInterceptor</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="nc">ResponseInterceptor</span> <span class="n">responseIterceptor</span> <span class="o">=</span> <span class="o">...;</span>
+
+<span class="nc">PluginsRegistry</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getRequestInterceptors</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">requestInterceptor</span><span class="o">);</span>
+
+<span class="nc">PluginsRegistry</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getResponseInterceptors</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">responseIterceptor</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <h3 id="defining-global-permission-predicates">Defining Global Permission Predicates</h3>
+
+  <p>The <code class="language-plaintext highlighter-rouge">GlobalSecuirtyPredicatesAuthorizer</code> class allows to define Global Predicates. Requests must resolve all of the predicates to be allowed.</p>
+
+  <blockquote>
+    <p>You can think about a Global Predicate a way to black list request matching a given condition.</p>
+  </blockquote>
+
+  <p>The following example predicate denies <code class="language-plaintext highlighter-rouge">GET /foo/bar</code> requests:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// add a global security predicate</span>
+<span class="nc">GlobalSecuirtyPredicatesAuthorizer</span><span class="o">.</span><span class="na">getGlobalSecurityPredicates</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Predicate</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">request</span> <span class="o">=</span> <span class="nc">Request</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">exchange</span><span class="o">);</span>
+
+        <span class="c1">// return false to deny the request</span>
+        <span class="k">return</span> <span class="o">!(</span><span class="n">request</span><span class="o">.</span><span class="na">isGet</span><span class="o">()</span> 
+                        <span class="o">&amp;&amp;</span> <span class="s">"/secho/foo"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="nc">URLUtils</span><span class="o">.</span><span class="na">removeTrailingSlashes</span><span class="o">(</span>
+                                        <span class="n">exchange</span><span class="o">.</span><span class="na">getRequestPath</span><span class="o">())));</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</code></pre></div>  </div>
+
+  <hr />
+
+  <h2 id="interceptors">Interceptors</h2>
+
+  <p>Interceptors allows to snoop and modify requests and responses.</p>
+
+  <p>A Request Interceptor applies before the request is proxied or handled by a <em>Service</em> thus allowing to modify the request. Its implementation class must implement the interface <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.RequestInterceptor</code> .</p>
+
+  <p>A Response Interceptor applies after the request has been proxied or handled by a <em>Service</em> thus allowing to modify the response. Its implementation class must implement the interface <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.ResponseInterceptor</code>.</p>
+
+  <p>Those interfaces both extend the base interface <code class="language-plaintext highlighter-rouge">org.restheart.security.plugins.Interceptor</code></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Interceptor</span> <span class="o">{</span>
+  <span class="cm">/**
+   * implements the interceptor logic
+   * 
+   * @param exchange
+   * @throws Exception 
+   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">;</span>
+  
+  <span class="cm">/**
+   * 
+   * @param exchange
+   * @return true if the interceptor must handle the request
+   */</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>The <code class="language-plaintext highlighter-rouge">handleRequest()</code> method is invoked only if the <code class="language-plaintext highlighter-rouge">resolve()</code> method returns true.</p>
+
+  <p>Example interceptor implementations can be found in the package``org.restheart.security.plugins.interceptors`.</p>
+
+  <p>If the request is errored, than it is not processed further and the response eventually set is returned.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">request</span> <span class="o">=</span> <span class="nc">ByteArrayRequest</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">hse</span><span class="o">);</span>
+
+<span class="n">response</span><span class="o">.</span><span class="na">setInError</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="c1">// or using the helper mehtod endExchangeWithMessage()</span>
+
+<span class="n">response</span><span class="o">.</span><span class="na">endExchangeWithMessage</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_FORBIDDEN</span><span class="o">,</span> <span class="s">"you can't do that"</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <h3 id="intercept-point">Intercept Point</h3>
+
+  <p>The Request Interceptor can be executed before or after the authentication and authorization phases. This is controlled defining the intercept point by optionally overriding the method <code class="language-plaintext highlighter-rouge">interceptPoint()</code> which default behavior is returning <code class="language-plaintext highlighter-rouge">BEFORE_AUTH</code>.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">interceptPoint()</code> is available from RESTHeart Platform 4.1.</p>
+
+  <p>If the Interceptor needs to deal with the <code class="language-plaintext highlighter-rouge">SecurityContext</code>, for instance it needs to check the user roles as in <code class="language-plaintext highlighter-rouge">ByteArrayRequest.wrap(echange).isAccountInRole("admin")</code>, then the Request Interceptor must be executed the authentication and authorization phases after intercept point must be <code class="language-plaintext highlighter-rouge">AFTER_AUTH</code>.</p>
+
+  <h3 id="accessing-the-content-in-request-interceptors">Accessing the Content in Request Interceptors</h3>
+
+  <p>In some cases, you need to access the request content. For example you want to modify request content with a <code class="language-plaintext highlighter-rouge">RequestInterceptor</code> or to implement an <code class="language-plaintext highlighter-rouge">Authorizer</code> that checks the content to authorize the request.</p>
+
+  <p>Accessing the content from the <em>HttpServerExchange</em> object using the exchange <em>InputStream</em> in proxied requests leads to an error because Undertow allows reading the content just once.</p>
+
+  <p>In order to simplify accessing the content, the <code class="language-plaintext highlighter-rouge">ByteArrayRequest.wrap(exchange).readContent()</code> and <code class="language-plaintext highlighter-rouge">JsonRequest.wrap(exchange).readContent()</code> helper methods are available. They are very efficient since they use the non blocking <code class="language-plaintext highlighter-rouge">RequestBufferingHandler</code> under to hood.
+ However, since accessing the request content might lead to significant performance overhead, a <em>RequestInterceptor</em> that resolves the request and overrides the <code class="language-plaintext highlighter-rouge">requiresContent()</code> to return true must be implemented to make data available.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">RequestInterceptor</code> defines the following methods with a default implementation.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">RequestInterceptor</span> <span class="kd">extends</span> <span class="nc">Interceptor</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">enum</span> <span class="no">IPOINT</span> <span class="o">{</span> <span class="no">BEFORE_AUTH</span><span class="o">,</span> <span class="no">AFTER_AUTH</span> <span class="o">}</span>
+    
+    <span class="cm">/**
+     *
+     * @return true if the Interceptor requires to access the request content
+     */</span>
+    <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">requiresContent</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="cm">/**
+     *
+     * @return the intecept point
+     */</span>
+    <span class="k">default</span> <span class="no">IPOINT</span> <span class="nf">interceptPoint</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="no">BEFORE_AUTH</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Please note that, in order to mitigate DoS attacks, the size of the Request content available with <code class="language-plaintext highlighter-rouge">readContent()</code> is limited to 16 Mbytes.</p>
+
+  <h3 id="accessing-the-content-in-response-interceptors">Accessing the Content in Response Interceptors</h3>
+
+  <p>In some cases, you need to access the response content. For example you want the modify the response from a proxied resource before sending it to the client.</p>
+
+  <p>In order to simplify accessing the content, the <code class="language-plaintext highlighter-rouge">ByteArrayRequest.wrap(exchange).readContent()</code> and <code class="language-plaintext highlighter-rouge">JsonResponse.wrap(exchange).readContent()</code> helper methods are available. Since accessing the response content might lead to significant performance overhead because the full response must be read by <strong>restheart-security</strong>, a <em>ResponseInterceptor</em> that resolves the request and overrides the <code class="language-plaintext highlighter-rouge">requiresResponseContent()</code> to return true must be implemented to make data available.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">ResponseInterceptor</code> defines the following method with a default implementation that returns false:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ResponseInterceptor</span> <span class="kd">extends</span> <span class="nc">Interceptor</span> <span class="o">{</span>
+  <span class="cm">/**
+   *
+   * @return true if the Interceptor requires to access the response content
+   */</span>
+  <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">requiresResponseContent</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Please note that, in order to mitigate DoS attacks, the size of the response content available with <code class="language-plaintext highlighter-rouge">readContent()</code> is limited to 16 Mbytes.</p>
+
+  <h3 id="configuration-5">Configuration</h3>
+
+  <p>Interceptors are configured programmatically with <em>Initializers</em>. See <a href="#initializers">Initializers</a> section for more information.</p>
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

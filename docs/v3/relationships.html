@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Relationships</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Relationships">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/relationships">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/relationships.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#the-rels-collection-metadata">The <em>rels</em> collection metadata</a></li>
+    <li><a href="#examples">Examples</a>
+      <ul>
+        <li><a href="#tree-of-documents">Tree of documents</a></li>
+        <li><a href="#one-to-many-owning">One-to-Many, owning</a></li>
+        <li><a href="#one-to-many-inverse">One-to-Many, inverse</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Relationships</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>In MongoDB, documents can have relationships with other documents (see
+MongoDB
+<a href="https://docs.mongodb.org/master/applications/data-models-relationships/">Relationships</a>
+documentation section). </p>
+
+  <p><strong>RESTHeart allows to declare the existing relationships in a
+collection, so that it automatically adds the links to related documents
+in its representation.</strong></p>
+
+  <p>As discussed in the <a href="/docs/v3/representation-format">Representation Format</a>
+section, RESTHeart uses
+the <a href="https://stateless.co/hal_specification.html">HAL+json</a> hypermedia
+format. HAL builds up on 2 simple concepts: <strong>Resources</strong> and <strong>Links</strong></p>
+
+  <ul>
+    <li><strong>Resources</strong> have state (plain JSON), embedded resources and links</li>
+    <li><strong>Links</strong> have target (href URI) and relations (aka <code class="language-plaintext highlighter-rouge">rel</code>)</li>
+  </ul>
+
+  <p>Let’s see the following simple example, a GET on a document resource:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a GET 127.0.0.1:8080/test/coll/doc
+HTTP/1.1 200 OK
+...
+<span class="o">{</span>
+    <span class="s2">"_etag"</span>: <span class="o">{</span>
+        <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"55e84f5ac2e66d1e0a8e46b8"</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"doc"</span>, 
+    <span class="s2">"descr"</span>: <span class="s2">"a document for testing but modified"</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p><strong>Declaring a relationship will add to the <code class="language-plaintext highlighter-rouge">_links</code> property the related
+documents links.</strong></p>
+
+  <h2 id="the-rels-collection-metadata">The <em>rels</em> collection metadata</h2>
+
+  <p>In RESTHeart, not only documents but also dbs and collections have
+properties. Some properties are metadata, i.e. they have a special
+meaning for RESTheart that influences its behavior.</p>
+
+  <p>The collection metadata property <code class="language-plaintext highlighter-rouge">rels</code> allows to declare the existing
+relationship so that the representation of the collection’s documents
+auto-magically include the links to the referenced documents between the
+HAL <code class="language-plaintext highlighter-rouge">_link</code> property</p>
+
+  <p><code class="language-plaintext highlighter-rouge">rels</code> is an array of <code class="language-plaintext highlighter-rouge">rel</code> objects having the following format:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"rel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;relid&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;type&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;role&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"target-db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;dname&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"target-coll"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;collname&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ref-field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;reffieldname&gt;"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+  <div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th><div>
+Property
+</div></th>
+<th><div>
+Description
+</div></th>
+<th><div>
+Mandatory
+</div></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rel</code></td>
+<td><p>Name of the relationship.</p></td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><code>type</code></td>
+<td>Type of relationship: ONE_TO_ONE, MANY_TO_ONE, ONE_TO_MANY or MANY_TO_MANY</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td><code>role</code></td>
+<td>Role of the relationship: OWNING or INVERSE. This says where the reference field is. OWNING means it is in this document, INVERSE means that it is on the target document.</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><code>target-db </code></td>
+<td>Database name of the referenced document(s)</td>
+<td><p>No. If omitted the target db is supposed to be the current one</p></td>
+</tr>
+<tr class="odd">
+<td><code>target-coll </code></td>
+<td>Collection's name of the referenced document(s)</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><code>ref-field</code></td>
+<td><p>Name of the first level field storing the id(s) of the referenced document(s) or the json path expression that resolves to the ids of the referenced documents (to reference nested fields).</p>
+<p>The value of the first level field must be either the id string (in case the multiplicity of other side of the relationship is ONE) or an array of id strings (in case the multiplicity of other side of the relationship is MANY)</p>
+<p>Note: json path expression must start with <code>$</code>, example:</p>
+<p><code>$.a.nested.property</code> will bind to <code>{'a':{'nested':{'property':'docid'}}}</code> and resolve to the value '<code>docid</code>'</p></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <h2 id="examples">Examples</h2>
+
+  <h3 id="tree-of-documents">Tree of documents</h3>
+
+  <p>In this example, we create a collection to store documents organized in
+a tree (each document has a single parent document).</p>
+
+  <p>Let’s create a collection, declaring a <strong>many-to-one</strong> relationship
+called <strong><code class="language-plaintext highlighter-rouge">parent</code></strong>, so that documents can refer a <em>parent document</em> in
+the collection itself.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/parentcoll rels:<span class="o">=</span><span class="s1">'[{"rel":"parent","type":"MANY_TO_ONE","role":"OWNING","target-coll":"parentcoll","ref-field":"parent"}]'</span>
+HTTP/1.1 201 CREATED
+...
+</code></pre></div>  </div>
+
+  <p>Let’s now create few documents, specifying the <code class="language-plaintext highlighter-rouge">parent</code> property:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/parentcoll/root <span class="nv">parent</span><span class="o">=</span>root
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/parentcoll/1 <span class="nv">parent</span><span class="o">=</span>root
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/parentcoll/1.1 <span class="nv">parent</span><span class="o">=</span>1
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/parentcoll/1.2 <span class="nv">parent</span><span class="o">=</span>1
+HTTP/1.1 201 CREATED
+...
+</code></pre></div>  </div>
+
+  <p>If we now get the document <code class="language-plaintext highlighter-rouge">/test/parentcoll/1.2</code>, the <code class="language-plaintext highlighter-rouge">_links</code> property
+includes <code class="language-plaintext highlighter-rouge">parent</code> with the correct URI of the
+document <code class="language-plaintext highlighter-rouge">/test/parentcoll/1</code></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a GET 127.0.0.1:8080/test/parentcoll/1.2
+HTTP/1.1 200 OK
+...
+<span class="o">{</span>
+    <span class="s2">"_etag"</span>: <span class="o">{</span>
+        <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"55f15b43c2e65448b566d18b"</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"1.2"</span>, 
+    <span class="s2">"_lastupdated_on"</span>: <span class="s2">"2015-09-10T10:28:19Z"</span>, 
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"curies"</span>: <span class="o">[]</span>, 
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/parentcoll/1.2"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>, 
+    <span class="s2">"parent"</span>: <span class="s2">"1"</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="one-to-many-owning">One-to-Many, owning</h3>
+
+  <p>In this example, we create two collections: <code class="language-plaintext highlighter-rouge">bands</code> and <code class="language-plaintext highlighter-rouge">albums</code>; of
+course, each band has a <strong>1:N</strong> relationship to albums.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/bands rels:<span class="o">=</span><span class="s1">'[{"rel":"albums","type":"ONE_TO_MANY","role":"OWNING","target-coll":"albums","ref-field":"albums"}]'</span> <span class="nv">descr</span><span class="o">=</span><span class="s2">"music bands"</span>
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/albums <span class="nv">descr</span><span class="o">=</span><span class="s2">"albums published by music bands"</span>
+HTTP/1.1 201 CREATED
+...
+</code></pre></div>  </div>
+
+  <p>Let’s now create few albums:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/albums/Disintegration year:<span class="o">=</span>1989
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/albums/Wish year:<span class="o">=</span>1992
+HTTP/1.1 201 CREATED
+...
+ 
+<span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/albums/Bloodflowers year:<span class="o">=</span>2000
+HTTP/1.1 201 CREATED
+...
+</code></pre></div>  </div>
+
+  <p>Now we create the band referring these albums:</p>
+
+  <pre><code class="language-plain">$ http -a a:a PUT "127.0.0.1:8080/test/bands/The Cure" albums:='["Disintegration","Wish","Bloodflowers"]'
+HTTP/1.1 201 CREATED
+...
+</code></pre>
+
+  <p>If we now get The Cure document, we can notice the <code class="language-plaintext highlighter-rouge">albums</code> link:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
+</code></pre></div>  </div>
+
+  <p>Since the other side of the relationship has cardinality N, the <code class="language-plaintext highlighter-rouge">albums</code>
+link is a collection resource URI with a <strong>filter query parameter</strong>.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a GET <span class="s2">"127.0.0.1:8080/test/bands/The Cure"</span>
+HTTP/1.1 200 OK
+...
+    <span class="s2">"_embedded"</span>: <span class="o">{}</span>, 
+    <span class="s2">"_etag"</span>: <span class="o">{</span>
+        <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"55f16029c2e65448b566d191"</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"The Cure"</span>, 
+    <span class="s2">"_lastupdated_on"</span>: <span class="s2">"2015-09-10T10:49:13Z"</span>, 
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"albums"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/albums?filter={'_id':{'</span><span class="nv">$in</span><span class="s2">':['Disintegration','Wish','Bloodflowers']}}"</span>
+        <span class="o">}</span>, 
+        <span class="s2">"curies"</span>: <span class="o">[]</span>, 
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/bands/The Cure"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>, 
+    <span class="s2">"albums"</span>: <span class="o">[</span>
+        <span class="s2">"Disintegration"</span>, 
+        <span class="s2">"Three Imaginary Boys"</span>, 
+        <span class="s2">"Seventeen Seconds"</span>
+    <span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If we want to get the referenced document with httpie (or curl) we need
+to issue the following command:</p>
+
+  <p><code class="language-plaintext highlighter-rouge">http -a a:a GET 127.0.0.1:8080/test/albums?filter="{'_id':{'\$in':['Disintegration','Wish','Bloodflowers']}}"</code></p>
+
+  <p>Note the “\” char prefixing the operator <code class="language-plaintext highlighter-rouge">$in</code>. This prevents the
+command line interpreter replacing <code class="language-plaintext highlighter-rouge">$in</code> with an (not existing)
+environment variable.</p>
+
+  <h3 id="one-to-many-inverse">One-to-Many, inverse</h3>
+
+  <p>We’ll resemble the previous example, but using an inverse relationship,
+i.e. the filed storing the relationship will be stored in the album
+documents.</p>
+
+  <pre><code class="language-plain">$ http -a a:a PUT 127.0.0.1:8080/test/bandsi rels:='[{"rel":"albums","type":"ONE_TO_MANY","role":"INVERSE","target-coll":"albums","ref-field":"band"}]' descr="music bands"
+HTTP/1.1 201 CREATED
+...
+ 
+$ http -a a:a PUT 127.0.0.1:8080/test/albumsi descr="albums published by music bands"
+HTTP/1.1 201 CREATED
+...
+</code></pre>
+
+  <p>Let’s now create few albums:</p>
+
+  <pre><code class="language-plain">$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Disintegration year:=1989 band="The Cure"
+HTTP/1.1 201 CREATED
+...
+ 
+$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Wish year:=1992 band="The Cure"
+HTTP/1.1 201 CREATED
+...
+ 
+$ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Bloodflowers year:=2000 band="The Cure"
+HTTP/1.1 201 CREATED
+...
+</code></pre>
+
+  <p>Now we create the band referred by these albums:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT <span class="s2">"127.0.0.1:8080/test/bandsi/The Cure"</span> <span class="nv">descr</span><span class="o">=</span><span class="s2">"The Cure are an English rock band formed in Crawley, West Sussex, in 1976"</span>
+HTTP/1.1 201 CREATED
+...
+</code></pre></div>  </div>
+
+  <p>If we now get “The Cure” document, we can notice the <code class="language-plaintext highlighter-rouge">albums</code> link:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/test/albumsi?filter={'band':'The Cure'}
+</code></pre></div>  </div>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a GET <span class="s2">"127.0.0.1:8080/test/bandsi/The Cure"</span>
+HTTP/1.1 200 OK
+...
+    <span class="o">{</span>
+    <span class="s2">"_etag"</span>: <span class="o">{</span>
+        <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"55f19409b8e449c1e1304ec5"</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"The Cure"</span>, 
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"albums"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/albums?filter={'band':'The Cure'}"</span>
+        <span class="o">}</span>, 
+        <span class="s2">"curies"</span>: <span class="o">[]</span>, 
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/bandsi/The Cure"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>, 
+    <span class="s2">"descr"</span>: <span class="s2">"The Cure are an English rock band formed in Crawley, West Sussex, in 1976"</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+</div>
+
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

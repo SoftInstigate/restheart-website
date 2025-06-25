@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Write Documents</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Write Documents">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v7/mongodb-rest/write-docs">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v7
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            <strong>v7</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v7/mongodb-rest/write-docs.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/v7">Overview</a></li>
+    <li><a href="/docs/v7/faq">FAQ</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/v7/performances">Performances</a></li>
+    <li><a href="/docs/v7/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v7/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v7/upgrade-to-v7"><strong>Upgrade to v7</strong></a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/v7/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v7/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v7/configuration">Configuration</a></li>
+    <li><a href="/docs/v7/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/v7/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/v7/security/user-management">User Management</a></li>
+    <li><a href="/docs/v7/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v7/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/v7/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v7/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v7/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v7/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v7/logging">Logging</a></li>
+    <li><a href="/docs/v7/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v7/auditing">Auditing</a></li>
+    <li><a href="/docs/v7/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v7/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/v7/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/v7/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/v7/plugins/services">Services</a></li>
+    <li><a href="/docs/v7/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/v7/plugins/providers">Providers</a></li>
+    <li><a href="/docs/v7/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/v7/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/v7/security/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/v7/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/v7/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/v7/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v7/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v7/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/read-docs">Read Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/write-docs">Write Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v7/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v7/mongodb-rest/caching">Caching</a></li>
+    <li><a href="/docs/v7/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v7/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v7/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v7/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v7/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v7/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v7/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v7/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v7/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v7/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v7/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v7/mongodb-rest/monitoring">Monitoring</a></li>
+
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/v7/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/graphql-apps">GraphQL App Definition</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/complex-app-example">A complex GraphQL App</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/v7/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'mongodb';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#before-running-the-example-requests">Before running the example requests</a></li>
+<li><a href="#content-type">Content-Type</a></li>
+<li><a href="#write-mode">Write Mode</a></li>
+<li><a href="#create-a-document">Create a document</a>
+<ul class="sectlevel2">
+<li><a href="#replace-a-document">Replace a document</a></li>
+</ul>
+</li>
+<li><a href="#update-a-documents-property">Update a document&#8217;s property</a></li>
+<li><a href="#delete-a-document">DELETE a document</a>
+<ul class="sectlevel2">
+<li><a href="#dot-notation">Dot Notation</a></li>
+<li><a href="#update-with-operators">Update with Operators</a></li>
+<li><a href="#update-with-aggregation-pipeline">Update with Aggregation Pipeline</a></li>
+<li><a href="#bulk-write-requests">Bulk Write Requests</a></li>
+<li><a href="#mongodb-write-operations">MongoDB write operations</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Write Documents</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="introduction">Introduction</h3>
+<div class="paragraph">
+<p>You will learn how to insert, update and delete documents in a collection.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="before-running-the-example-requests">Before running the example requests</h3>
+<div class="paragraph">
+<p>The following step by step tutorial <em>assumes that RESTHeart is running on localhost</em> with the default configuration: the database <em>restheart</em> is bound to <code>/</code> and the user <em>admin</em> exists with default password <em>secret</em>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+To run RESTHeart refer to <a href="/docs/setup">Setup</a> section.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To create the <em>restheart</em> db, run the following:</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PUT</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The examples on this page use the <em>inventory</em> collection. To create the <em>inventory</em> collection, run the following:</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PUT</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To populate the <em>inventory</em> collection, run the following:</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/41" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="content-type">Content-Type</h3>
+<div class="paragraph">
+<p>For write requests use <code>Content-Type: application/json</code></p>
+</div>
+<div class="paragraph">
+<p>In this case the request body is just the JSON representation of the MongoDB BSON format, see <a href="/docs/mongodb-rest/representation-format">Representation format</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>See the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/coll</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="nl">"b"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"obj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"foo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Starting from RESTHeart 7.4.0, the MongoService also supports the content types <code>application/x-www-form-urlencoded</code> and <code>multipart/form-data</code>.</p>
+</div>
+<div class="paragraph">
+<p>In those cases the request body is transformed to a BSON document by parsing the fields/parts. The example below will help make it clearer to understand how this works:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/coll</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded; charset=utf-8</span>
+
+n=1&amp;ns=%221%22&amp;b=true&amp;obj=%7B%22foo%22%3A+%22bar%22%7D</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the request content (whose url-decoded value is <code>n=1&amp;ns="1"&amp;b=true&amp;obj={"foo":"bar"}</code>) is transformed in the following document:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"b"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"n"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"obj"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"foo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The karate test <a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/mongoservice-multipart-form-content-type.feature">mongoservice-multipart-form-content-type.feature</a> includes more examples on how <code>form-urlencoded</code> and <code>multipart</code> requests are handled.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="write-mode">Write Mode</h3>
+<div class="paragraph">
+<p>The default write modes for each HTTP verb are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>POST</code> verb has <strong>insert</strong> write mode</p>
+</li>
+<li>
+<p><code>PUT</code> and <code>PATCH</code> verbs have <strong>update</strong> write mode</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Use <code>POST</code> to <em>create</em> a document, <code>PUT</code> to <em>replace</em> an existing document and <code>PATCH</code> to <em>update</em> selected properties of an existing document.</strong></p>
+</div>
+<div class="paragraph">
+<p>The query parameter <code>?wm=insert|update|upsert</code> allows specifying the <strong>w</strong>rite <strong>m</strong>ode.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>the qparam <code>?wm</code> is forbidden by default</strong>; to allow it, the following permission must be granted to the client (the default user <code>admin</code> can use it because it has the <code>root</code> role that provides all permissions).
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user-can-wse-wm-qparam"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"user"</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"predicate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"path-prefix(/collection)"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"allowWriteMode"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-a-document">Create a document</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a document use the <code>POST</code> method.</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/fcf2a3da225dc2018581416fee19f96fb105cca3/6" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{ "_id": "newItem",  "item": "rubber", "qty": 15, "size": { "h": 2, "w": 1, "uom": "cm" }, "status": "A" }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If <code>_id</code> field is not specified in the request body, it will generated by MongoDB as an <code>ObjectId</code> and returned to the client via the <code>Location</code> response header.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="replace-a-document">Replace a document</h3>
+<div class="paragraph">
+<p>To replace a document use the <code>PUT</code> method.</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/21de47ede7d9e910b80ac0d998184bf992b98895/6" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PUT</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+
+{ "item": "pencil", "qty": 55, "size": { "h": 10, "w": 0.5, "uom": "cm" }, "status": "B", "suppliers": ["brand_1", "brand_2", "brand_3"] }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update-a-documents-property">Update a document&#8217;s property</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To update one or more properties of a document use the <code>PATCH</code> method.</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/cad8a808b52787063c7544d396d7b4ba30be489f/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{ "status": "A" }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the <code>PATCH</code> verb allows passing update operator expressions; the body can contain update operators.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="delete-a-document">DELETE a document</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To delete a document use the <code>DELETE</code> method.</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="https://restninja.io/share/c83643990fe2ba9857d267d9203445fd4a5ecef5/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">DELETE</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dot-notation">Dot Notation</h3>
+<div class="paragraph">
+<p>RESTHeart always allows using the dot notation to access the elements of an array and to access the fields of an embedded document.</p>
+</div>
+<div class="paragraph">
+<p>The dot notation can be used in <code>PUT</code>, <code>PATCH</code> and <code>POST</code> verbs.</p>
+</div>
+<div class="sect3">
+<h4 id="update-an-array-element">Update an array element</h4>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/d891c0dfaf794019f7cebf79dafa895cd9697da7/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{ "suppliers.1": "new_brand" }</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="update-the-property-of-an-embedded-document">Update the property of an embedded document</h5>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/fef0424bf8e69d11a7aae35f41a82e67164a1dfc/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{ "size.h": 20 }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="update-with-operators">Update with Operators</h3>
+<div class="paragraph">
+<p>Update with operators allows applying MongoDb&#8217;s update operators to a document. For example, you can use <code>$unset</code> to remove a property from a document.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+See <a href="https://www.mongodb.com/docs/manual/reference/operator/update/">Update
+Operators</a> in MongoDb documentation for more information.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Use the <code>PATCH</code> verb to update a document with update operators, passing an update operator expression document.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+To use update operators you need to use the verb <code>PATCH</code>. Anyway <code>PUT</code> and <code>POST</code> can still use the <code>$currentDate</code> update operator.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example: update <code>newItem</code> document with update operators:</p>
+</div>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/1f3c2941dc649dfb8a3ba6628451093f83d02fea/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{
+  "$inc": { "qty": 1 },
+  "$push": { "suppliers": "pushed_brand" },
+  "$unset": { "status": null },
+  "$currentDate": { "timestamp": true }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="update-with-aggregation-pipeline">Update with Aggregation Pipeline</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Update with Aggregation Pipeline are available from RESTHeart 7.3
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Update with aggregation pipeline allows for a more expressive update statement.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+See <a href="https://www.mongodb.com/docs/manual/tutorial/update-documents-with-aggregation-pipeline/">Updates with Aggregation Pipeline</a> in MongoDb documentation for more information.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Use the <code>PATCH</code> verb to update a document with an Aggregation Pipeline, passing an array or aggregation stages.</p>
+</div>
+<div class="paragraph">
+<p>Example: update <code>newItem</code> adding two items to the current <code>suppliers</code> array:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/newItem</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+[ { "$set": { "suppliers": { "$concatArrays": [ "$suppliers", [ "brand_4", "brand_5",  ]  ] } } } ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bulk-write-requests">Bulk Write Requests</h3>
+<div class="paragraph">
+<p>Bulk write requests create, update or delete multiple documents with a
+single request.</p>
+</div>
+<div class="paragraph">
+<p>A bulk request response contains the URIs of the created documents.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<strong>bulk requests are forbidden by default</strong>; to allow them, the following permission must be granted to the client (the default user <code>admin</code> can execute them because it has the <code>root</code> role that provides all permissions):
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user-can-execute-bulk-requests"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"user"</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"predicate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"path-prefix(/collection)"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"allowBulkPatch"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"allowBulkDelete"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"allowWriteMode"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create-an-array-of-documents">Create an array of documents</h4>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+]</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Its a <code>POST</code> request, then the default write mode is <code>insert</code>. As usual, you can use the <code>?wm=insert|update|upsert</code> query parameter to change write mode.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="update-properties-in-multiple-documents">Update properties in multiple documents</h4>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/0e5b13f1e048ea373f86c19e8fb48be7c70c7531/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/inventory/*?filter={"qty":{"$gte":50}}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{
+  "qty":1000
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="delete-multiple-documents">DELETE multiple documents</h4>
+<div class="d-flex mt-2 mb-2">
+
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+
+
+    <a href="http://restninja.io/share/acba248263a0be8e55ed03d7ff52e79a27449bbd/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">DELETE</span> <span class="nn">/inventory/*?filter={"qty":{"$lte":50}}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mongodb-write-operations">MongoDB write operations</h3>
+<div class="paragraph">
+<p>The MongoDB write operation depends on the request method and on the write mode as follows:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 22.2223%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">write mode</th>
+<th class="tableblock halign-left valign-top">method</th>
+<th class="tableblock halign-left valign-top">URI</th>
+<th class="tableblock halign-left valign-top">MongoDB write operation</th>
+<th class="tableblock halign-left valign-top">write operation argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>insert</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>POST</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>insertOne</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>document</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>insertOne</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndUpdate(upsert:true)</code> (1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update operator expression or update aggregation pipeline</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndReplace(upsert:false)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>update</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PUT</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndReplace(upsert:false)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>document</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>update</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PATCH</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndUpdate(upsert:false)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>update operator expression or update aggregation pipeline</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndReplace(upsert:true)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndReplace(upsert:true)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>/coll/docid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findOneAndUpdate(upsert:true)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update operator expression or update aggregation pipeline</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>(1) uses a find condition that won&#8217;t match any existing document, making sure the operation is an insert</p>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

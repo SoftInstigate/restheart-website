@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Develop Core Plugins in JavaScript</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Develop Core Plugins in JavaScript">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/plugins/core-plugins-js">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v8
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            <strong>v8</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/plugins/core-plugins-js.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
+    <li><a href="/docs">Overview</a></li>
+    <li><a href="/docs/faq">FAQ</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/performances">Performances</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/configuration">Configuration</a></li>
+    <li><a href="/docs/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/security/user-management">User Management</a></li>
+    <li><a href="/docs/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/proxy">Proxying requests</a></li>
+    <li><a href="/docs/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/logging">Logging</a></li>
+    <li><a href="/docs/monitoring">Monitoring</a></li>
+    <li><a href="/docs/auditing">Auditing</a></li>
+    <li><a href="/docs/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/plugins/overview">Overview</a></li>
+    <li><a href="/docs/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/plugins/services">Services</a></li>
+    <li><a href="/docs/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/plugins/providers">Providers</a></li>
+    <li><a href="/docs/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/security/overview">Overview</a></li>
+    <li><a href="/docs/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/security/authentication">Authentication</a></li>
+    <li><a href="/docs/security/authorization">Authorization</a></li>
+    <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/mongodb-rest/tutorial">Getting Started</a></li>
+    <li><a href="/docs/mongodb-rest/read-docs">Reading Documents</a></li>
+    <li><a href="/docs/mongodb-rest/write-docs">Writing Documents</a></li>
+    <li><a href="/docs/mongodb-rest/files">Managing Binary Files</a></li>
+    <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/mongodb-rest/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+    <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/mongodb-rest/caching">Performance and Caching</a></li>
+    <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/mongodb-rest/sample-data">Load Sample Data</a></li>
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/mongodb-graphql/getting-started">Getting Started</a></li>
+    <li><a href="/docs/mongodb-graphql/graphql-apps">App Definition</a>
+        <ul>
+            <li><a href="/docs/mongodb-graphql/schema">Schema Design</a></li>
+            <li><a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></li>
+            <li><a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></li>
+        </ul>
+    </li>
+    <li><a href="/docs/mongodb-graphql/tutorial">Basic Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/complex-app-example">Advanced Example</a></li>
+    <li><a href="/docs/mongodb-graphql/optimization">Performance Optimization</a></li>
+    <li><a href="/docs/mongodb-graphql/best-practices">Best Practices</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'framework';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#restheart-concurrency-model">RESTHeart Concurrency Model</a></li>
+<li><a href="#service">Service</a></li>
+<li><a href="#interceptor">Interceptor</a></li>
+<li><a href="#packaging">Packaging</a></li>
+<li><a href="#modules">Modules</a></li>
+<li><a href="#deploy">Deploy</a></li>
+<li><a href="#configuration-parameters">Configuration parameters</a></li>
+<li><a href="#interop">Java/JavaScript interoperability</a></li>
+<li><a href="#mongodb-driver">MongoDB driver</a></li>
+<li><a href="#logging">Logging</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Develop Core Plugins in JavaScript</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="introduction">Introduction</h3>
+<div class="paragraph">
+<p><em>Services</em> and <em>Interceptors</em> can be developed in <em>JavaScript</em> and <em>TypeScript</em> when running RESTHeart with the GraalVM or using RESTHeart native.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+See <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin">example JS plugins</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the <code>native-image</code> tool. See <a href="https://restheart.org/docs/graalvm#build-restheart-with-custom-plugins-as-native-image">Build RESTHeart with custom plugins as native-image</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="restheart-concurrency-model">RESTHeart Concurrency Model</h3>
+<div class="paragraph">
+<p>RESTHeart is a multi-threaded application and it handles each request in a dedicated thread. This makes all code running in a request thread safe, and this also applies to JavaScript services and interceptors.</p>
+</div>
+<div class="paragraph">
+<p>This is different than usual JavaScript concurrency model, where all code is usually executed in a single thread and requires asynchronous programming, with callbacks, promises, observable, etc.</p>
+</div>
+<div class="paragraph">
+<p>In RESTHeart, you can write simple JavaScript code that also includes blocking calls, without incurring in performance problems.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="service">Service</h3>
+<div class="paragraph">
+<p>The JavaScript code that defines a <code>Service</code> must export the object <code>options</code> and the function <code>handle(req, res)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The resulting service will be a special instance of <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/plugins/StringService.html">StringService</a>, that delegates the handling logic to the JavaScript code. For this reason, the request and response bodies are treated as strings.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="k">export</span> <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">helloWorldService</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">description</span><span class="p">:</span> <span class="dl">"</span><span class="s2">just another Hello World</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">uri</span><span class="p">:</span> <span class="dl">"</span><span class="s2">/hello</span><span class="dl">"</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="s2">`{ "msg": `</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span><span class="nx">rc</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">World</span><span class="dl">'</span><span class="p">}</span><span class="s2">` } `</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">setContentTypeAsJson</span><span class="p">();</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the-object-options">The object <code>options</code></h4>
+<div class="paragraph">
+<p>The <code>options</code> object must contain the following properties:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch table">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">param</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mandatory</th>
+<th class="tableblock halign-left valign-top">default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the name of the service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>none</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">description of the service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>none</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the uri of the service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>none</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secured</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code> to require successful authentication and authorization to be invoked;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>matchPolicy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PREFIX</code> to match request paths starting with <code>/&lt;uri&gt;</code>,<code>EXACT</code> to only match the request path  <code>/&lt;uri&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PREFIX</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modulesReplacements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">experimental support for module replacements. See <strong>Node.js core modules mockups</strong> on <a href="https://www.graalvm.org/22.0/reference-manual/js/Modules/">Using JavaScript Modules and Packages in GraalVM JavaScript</a> for modules. Example <code>buffer:my-buffer-implementation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code> (empty)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="the-function-handlereq-res">The function <code>handle(req, res)</code></h4>
+<div class="paragraph">
+<p>The <code>handle</code> functions accepts two parameters: the request and the response. These are Java objects of <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html">StringRequest</a> and <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html">StringResponse</a> respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="interceptor">Interceptor</h3>
+<div class="paragraph">
+<p>The JavaScript code that defines an <code>Interceptor</code> export the object <code>options</code> and the functions <code>handle(req, res)</code> and <code>resolve(req)</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="k">export</span> <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">helloWorldInterceptor</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">description</span><span class="p">:</span> <span class="dl">"</span><span class="s2">modifies the response of helloWorldService</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">interceptPoint</span><span class="p">:</span> <span class="dl">"</span><span class="s2">RESPONSE</span><span class="dl">"</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">rc</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">getContent</span><span class="p">()</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">{}</span><span class="dl">'</span><span class="p">);</span>
+
+    <span class="kd">let</span> <span class="nx">modifiedBody</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">msg</span><span class="p">:</span> <span class="nx">rc</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="dl">'</span><span class="s1"> from Italy with Love</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">response</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">modifiedBody</span><span class="p">));</span>
+    <span class="nx">response</span><span class="p">.</span><span class="nx">setContentTypeAsJson</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">request</span><span class="p">.</span><span class="nx">isHandledBy</span><span class="p">(</span><span class="dl">"</span><span class="s2">helloWorldService</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the-object-options-2">The object <code>options</code></h4>
+<div class="paragraph">
+<p>The <code>options</code> object must contain the following properties:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch table">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">param</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mandatory</th>
+<th class="tableblock halign-left valign-top">default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the name of the interceptor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>none</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">description of the interceptor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>none</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interceptPoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the intercept point: <code>REQUEST_BEFORE_AUTH</code>, <code>REQUEST_AFTER_AUTH</code>, <code>RESPONSE</code>, <code>RESPONSE_ASYNC</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REQUEST_AFTER_AUTH</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pluginClass</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the class of the interceptor that must match the service to intercept (e.g. <code>MongoInterceptor</code> can intercept a request handled by the <code>MongoService</code>), <code>StringInterceptor</code>, <code>BsonInterceptor</code>, <code>ByteArrayProxyInterceptor</code>, <code>CsvInterceptor</code>, <code>JsonInterceptor</code>, <code>MongoInterceptor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>StringInterceptor</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>modulesReplacements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">experimental support for module replacements. See <strong>Node.js core modules mockups</strong> on <a href="https://www.graalvm.org/22.0/reference-manual/js/Modules/">Using JavaScript Modules and Packages in GraalVM JavaScript</a> for modules. Example <code>buffer:my-buffer-implementation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code> (empty)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="the-function-resolvereq">The function <code>resolve(req)</code></h4>
+<div class="paragraph">
+<p>The function <code>resolve()</code> accepts one parameter <code>req</code>, a Java object of the concrete subclass of <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html">Request</a> defined by the parameter <code>pluginClass</code>, e.g. with  <code>pluginClass: "StringInterceptor"</code>, the request class is <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html">StringRequest</a>.</p>
+</div>
+<div class="paragraph">
+<p>An interceptor of a given class, can intercept requests handled by all services with matching types, e.g. <code>MongoInterceptor</code> can intercept requests handled by the <code>MongoService</code>.</p>
+</div>
+<div class="paragraph">
+<p>When <code>resolve()</code> returns <code>true</code> the interceptor will be actually invoked, i.e. this function allows to select the requests to intercept.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="the-function-handlereq-res-2">The function <code>handle(req, res)</code></h4>
+<div class="paragraph">
+<p>The <code>handle()</code> functions accepts two parameters: the request and the response.
+These a Java objects of the concrete subclasses of <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html">Request</a> and <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Response.html">Response</a> respectively.  For the default <code>pluginClass: "StringInterceptor"</code>, these are <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html">StringRequest</a> and <a href="https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html">StringResponse</a> respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="packaging">Packaging</h3>
+<div class="paragraph">
+<p>The plugins js files must be placed in a folder with a <code>package.json</code> file.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+a single plugin folder can contain multiple Services and Interceptors.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>package.json</code> muse declare the services in the <code>rh:services</code> array and interceptors in the <code>rh:interceptors</code> array.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart-js-foo"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test js plugins for RESTHeart"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"rh:services"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"foo.js"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"rh:interceptors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"foo-interceptor.js"</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="modules">Modules</h3>
+<div class="paragraph">
+<p>The plugins can use npm <code>modules</code> via <code>require</code> statements. See <a href="https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/require-module-service.mjs">require-module-service.mjs</a> for an example.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For instance, you cannot use the module <code>http</code>, and there is no pure JS implementation available. In this case, you can rely on <a href="#interop">Java/Javascript interoperability</a>  and use the  standard Java libraries and all the libraries that are available in RESTHeart.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://www.graalvm.org/22.0/reference-manual/js/Modules/">GraalVM Modules</a> for more details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deploy">Deploy</h3>
+<div class="paragraph">
+<p>To the JavaScript plugin, just copy the folder containing the scripts and the file <code>package.json</code> into the <code>plugins</code> directory of RESTHeart.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+JS plugins can be added or updated without requiring to restart the server, ie RESTHeart supports JS plugins hot deployment.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you modify the code, you can force RESTHeart to update it by touching the plugin folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span><span class="nb">touch </span>plugins/my-plugin</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-parameters">Configuration parameters</h3>
+<div class="paragraph">
+<p>It is possible to pass configuration parameters to a plugin by defining them in the RESTHeart&#8217;s configuration file using the plugin&#8217;s name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">foo</span><span class="pi">:</span> <span class="c1"># &lt;-- name of the plugin</span>
+    <span class="na">arg</span><span class="pi">:</span> <span class="s">value</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The arguments are available in the <code>pluginArgs</code> object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="kd">const</span> <span class="nx">arg</span> <span class="o">=</span> <span class="nx">pluginArgs</span><span class="p">.</span><span class="nx">arg</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="interop">Java/JavaScript interoperability</h3>
+<div class="paragraph">
+<p>GraalVM allows to execute JavaScript code from RESTHeart and allows interoperability with Java code.</p>
+</div>
+<div class="paragraph">
+<p>This means that all the Java classes shipped with RESTHeart can be used in JavaScript code.</p>
+</div>
+<div class="paragraph">
+<p>For example, see the <a href="https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/http-client.mjs">http-client.mjs</a> plugins, which uses <code>java.net.http.HttpClient</code> to execute an HTTP request.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mongodb-driver">MongoDB driver</h3>
+<div class="paragraph">
+<p>The MongoDb Java driver, configured by RESTHeart configuration file and already connected to MongoDB, is available in the JavaScript code as <code>mclient</code>.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/mclient-service.mjs">mclient-service.mjs</a> for an example of how to use it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging">Logging</h3>
+<div class="paragraph">
+<p>The RESTHeart Java logger can be used from JavaScript code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="nx">LOGGER</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="dl">"</span><span class="s2">pluginArgs {}</span><span class="dl">"</span><span class="p">,</span> <span class="nx">pluginArgs</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pay attention to logging null values. With:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">LOGGER</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="dl">"</span><span class="s2">this is null {}</span><span class="dl">"</span><span class="p">,</span> <span class="nx">foo</span><span class="p">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An error will be raised.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">org.graalvm.polyglot.PolyglotException: TypeError: invokeMember <span class="o">(</span>debug<span class="o">)</span> on ch.qos.logback.classic.Logger@697713cb failed due to: Multiple applicable overloads found <span class="k">for </span>method name debug...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To avoid it, use the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="javascript"><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">LOGGER</span><span class="p">.</span><span class="nx">debug</span><span class="p">(</span><span class="dl">"</span><span class="s2">this is null {}</span><span class="dl">"</span><span class="p">,</span> <span class="nx">foo</span> <span class="p">?</span> <span class="nx">foo</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">null</span><span class="dl">"</span><span class="p">);</span></code></pre>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

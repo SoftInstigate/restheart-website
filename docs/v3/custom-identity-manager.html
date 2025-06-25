@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Custom Identity Manager</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Custom Identity Manager">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/custom-identity-manager">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/custom-identity-manager.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#develop">Develop</a>
+      <ul>
+        <li><a href="#the-idm-class">The IDM class</a></li>
+        <li><a href="#methods-to-implement">Methods to implement</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration">Configuration</a></li>
+    <li><a href="#add-custom-classes-to-the-classpath">Add custom classes to the classpath</a>
+      <ul>
+        <li><a href="#using-the-java-classpath-option">Using the java classpath option</a></li>
+        <li><a href="#using-the-maven-shade-plugin">Using the Maven shade plugin</a></li>
+      </ul>
+    </li>
+    <li><a href="#example">Example</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Custom Identity Manager</span>
+    </h2>
+</div>
+
+  <p>This section will provide detailed information on how to implement a
+custom IDM.</p>
+
+  <p>For further help, please refer to the RESTHeart support channels
+<a href="https://restheart.org/support.html">https://restheart.org/support.html</a></p>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>The Identity Manager is responsible of authenticating the users
+verifying the credentials provided via the <a href="/docs/v3/clients-authentication">basic authentication
+mechanism</a>.</p>
+
+  <p>Following the dependency injection approach, the actual IDM
+implementation to use is specified in the configuration file.</p>
+
+  <p>There are some ready-to-use IDM implementations and custom ones can be
+developed.</p>
+
+  <p>This section explains how to develop a custom IDM.</p>
+
+  <p>If you develop a general purpose IDM please consider contributing to
+<a href="https://github.com/softinstigate/restheart">RESTHeart project</a> using
+the github pull request feature.</p>
+
+  <p>The steps required to develop and configure an IDM are:</p>
+
+  <ol>
+    <li>develop the IDM in Java</li>
+    <li>configure RESTHeart to use the new IDM via its configuration file</li>
+    <li>add the implementation class(es) to the java classpath</li>
+  </ol>
+
+  <h2 id="develop">Develop</h2>
+
+  <h3 id="the-idm-class">The IDM class</h3>
+
+  <p>The IDM implementation class must implement the interface
+<em>io.undertow.security.idm.IdentityManager </em>available from the
+<em>undertow-core</em> package. </p>
+
+  <p><strong>maven coordinates of undertow-core package</strong></p>
+
+  <pre><code class="language-plain">&lt;dependency&gt;
+  &lt;groupId&gt;io.undertow&lt;/groupId&gt;
+  &lt;artifactId&gt;undertow-core&lt;/artifactId&gt;
+  &lt;version&gt;1.2.12.Final&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+  <p>The IDM is a singleton instance of this class.</p>
+
+  <p>Constructor</p>
+
+  <p>The constructor must have the following signature:</p>
+
+  <pre><code class="language-plain">public MyIdentityManager(Map&lt;String, Object&gt; args)
+</code></pre>
+
+  <p>The argument <em>args</em> maps the idm properties as specified in the
+configuration file.</p>
+
+  <h3 id="methods-to-implement">Methods to implement</h3>
+
+  <p>The interface <em>io.undertow.security.idm.IdentityManager</em> mandates to
+implement 3 <em>verify</em> methods:</p>
+  <div class="table-responsive">
+<table class="ts">
+<colgroup>
+<col class="w-50" />
+<col class="w-50" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Modifier and Type</th>
+<th>Method and Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Account</code></td>
+<td><code>verify(Account account)</code>
+<div class="block">
+Verify a previously authenticated account.
+</div></td>
+</tr>
+<tr class="even">
+<td><code>Account</code></td>
+<td><code>verify(Credential credential)</code>
+<div class="block">
+Perform verification when all we have is the Credential, in this case the IdentityManager is also responsible for mapping the Credential to an account.
+</div></td>
+</tr>
+<tr class="odd">
+<td><code>Account</code></td>
+<td><code>verify(String id, Credential credential)</code>
+<div class="block">
+Verify a supplied <code>Credential</code> against a requested ID.
+</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+  <p>The actual check occurs in the third <em>verify</em> method. They can be
+implemented as follows.</p>
+
+  <pre><code class="language-plain">@Override
+public Account verify(Account account) {
+     // need to re-verify previously authenticated account? If not, leave as follows.
+     return account;
+}
+ 
+@Override
+public Account verify(Credential credential) {
+     // always return null because we use basic authentication and the id is always provided
+     return null;
+}
+ 
+public Account verify(String id, Credential credential) {
+    
+    if (credential instanceof PasswordCredential) {
+        char[] password = ((PasswordCredential) credential).getPassword();
+        
+        // here check the id and password
+        ....
+    } else {
+        return null;
+    }
+}
+</code></pre>
+
+  <p>The <em>Credential</em> argument is actually an instance
+of <em>io.undertow.security.idm.PasswordCredential</em></p>
+
+  <p>The <em>verify</em> methods should return <em>null</em> for invalid credentials or an
+instance of <em>org.restheart.security.impl.SimpleAccount </em>whose
+constructor allows to instantiate an immutable <em>Account</em> object that
+includes roles as an <em>Array&lt;Strings&gt; </em>object.</p>
+
+  <h2 id="configuration">Configuration</h2>
+
+  <p>The IDM is configured in the <em>idm</em> section of the yaml configuration
+file.</p>
+
+  <p>Here you specify the actual IDM implementation to use and any parameters
+it needs (for instance, the path of the file where the passwords are
+defined or some parameters that control caching).</p>
+
+  <p>For example, if the <em>idm</em> configuration section is:</p>
+
+  <pre><code class="language-plain">idm:    
+    implementation-class: org.restheart.examples.security.MyIdentityManager
+    arg1: 5
+    arg2: hey man!
+    arg3:
+        arg31: 1
+        arg32: 2
+</code></pre>
+
+  <p>Then:</p>
+
+  <ul>
+    <li>the IDM singleton will be of class <em>MyIdentityManager</em></li>
+    <li>its constructor will be invoked passing a Map argument with 4 keys
+      <ol>
+        <li><em>implementation-class</em> of class String</li>
+        <li><em>arg1</em> of class <em>Integer</em></li>
+        <li><em>arg2</em> of class <em>String</em></li>
+        <li><em>arg3</em> of class <em>Map&lt;String, Object&gt;</em>, having in turn 2
+keys (<em>arg31</em> and <em>arg32</em>)</li>
+      </ol>
+    </li>
+  </ul>
+
+  <h2 id="add-custom-classes-to-the-classpath">Add custom classes to the classpath</h2>
+
+  <h3 id="using-the-java-classpath-option">Using the java classpath option</h3>
+
+  <p>The custom classes must be added to the java classpath.</p>
+
+  <p>In order to achieve this, start RESTHeart with the following command:</p>
+
+  <pre><code class="language-plain">$ java -server -classpath restheart.jar:custom-classes.jar org.restheart.Bootstrapper restheart.yml
+</code></pre>
+
+  <h3 id="using-the-maven-shade-plugin">Using the Maven shade plugin</h3>
+
+  <p>The <a href="https://maven.apache.org/plugins/maven-shade-plugin/">maven share
+plugin</a> provides
+the capability to package the artifact in an uber-jar, including its
+dependencies and to <em>shade</em> - i.e. rename - the packages of some of the
+dependencies.</p>
+
+  <p> It allows to create a single jar including any RESTHeart class and your
+custom ones. In this case you can start RESTHeart with</p>
+
+  <pre><code class="language-plain">$ java -server -jar restheart_plus_custom.jar restheart.yml
+</code></pre>
+
+  <h2 id="example">Example</h2>
+
+  <p>A project with RESTHeart customization examples is available on github;
+find it
+at <a href="https://github.com/SoftInstigate/restheart-customization-examples">restheart-customization-examples</a>.</p>
+
+  <p>It includes the <strong>ExampleIdentityManager;</strong> this is a simple IDM that
+verifies the <em>password</em> to be the flipped <em>userid</em> string. In case the
+user id is ‘admin’, it also associate the user with the ADMIN role and,
+in all other cases, with the ‘USER’ role.</p>
+
+  <p>The implementation class follows:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">org.restheart.examples.security</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.google.common.collect.Sets</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.undertow.security.idm.Account</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.undertow.security.idm.Credential</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.undertow.security.idm.IdentityManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.undertow.security.idm.PasswordCredential</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.restheart.security.impl.SimpleAccount</span><span class="o">;</span>
+
+<span class="cm">/**
+ * ExampleIdentityManager verifies the password to be the flipped id string,
+ * i.e. id="username" =&gt; pwd="emanresu"
+ *
+ * @author Andrea Di Cesare &lt;andrea@softinstigate.com&gt;
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleIdentityManager</span> <span class="kd">implements</span> <span class="nc">IdentityManager</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">enum</span> <span class="no">ROLE</span> <span class="o">{</span>
+        <span class="no">ADMIN</span><span class="o">,</span> <span class="no">USER</span>
+    <span class="o">};</span>
+
+    <span class="kd">public</span> <span class="nf">ExampleIdentityManager</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// args are ignored</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">ADMIN_ID</span> <span class="o">=</span> <span class="s">"admin"</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="no">NORMAL_USER_ROLES</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="no">ADMIN_ROLES</span><span class="o">;</span>
+
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="no">NORMAL_USER_ROLES</span> <span class="o">=</span> <span class="nc">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">(</span><span class="no">ROLE</span><span class="o">.</span><span class="na">USER</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="no">ADMIN_ROLES</span> <span class="o">=</span> <span class="nc">Sets</span><span class="o">.</span><span class="na">newHashSet</span><span class="o">(</span><span class="no">ROLE</span><span class="o">.</span><span class="na">ADMIN</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">,</span> <span class="nc">Credential</span> <span class="n">credential</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">credential</span> <span class="k">instanceof</span> <span class="nc">PasswordCredential</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kt">char</span><span class="o">[]</span> <span class="n">password</span> <span class="o">=</span> <span class="o">((</span><span class="nc">PasswordCredential</span><span class="o">)</span> <span class="n">credential</span><span class="o">).</span><span class="na">getPassword</span><span class="o">();</span>
+
+            <span class="nc">String</span> <span class="n">flippedPassword</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">(</span><span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="n">password</span><span class="o">))</span>
+                    <span class="o">.</span><span class="na">reverse</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">id</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">flippedPassword</span><span class="o">))</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">id</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="no">ADMIN_ID</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="k">new</span> <span class="nf">SimpleAccount</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">password</span><span class="o">,</span> <span class="no">ADMIN_ROLES</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="k">new</span> <span class="nf">SimpleAccount</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">password</span><span class="o">,</span> <span class="no">NORMAL_USER_ROLES</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">Account</span> <span class="n">account</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">account</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Account</span> <span class="nf">verify</span><span class="o">(</span><span class="nc">Credential</span> <span class="n">credential</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Auto-generated method stub</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

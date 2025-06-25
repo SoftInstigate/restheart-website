@@ -1,0 +1,85 @@
+<div>
+    <div class="bs-callout bs-callout-info">
+        <h4>General notes</h4>
+        <ul>
+            <li>use the <a href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/" target="_blank">strict mode representation of BSON</a>, e.g. <code>{"_id": {"$oid":"568106e67d3126b74dc5f9af"}}</code> for ObjectId</li>
+            <li>use <code>shardkey</code> query parameter to eventually specify the shard keys, e.g. <code>shardkey={"sk":"value"}</code></li>
+        </ul>
+    </div>
+
+    <div class="bs-callout bs-callout-info">
+        <h4>Notes on READ operations</h4>
+        <ul>
+            <li>use <code>page</code> and <code>pagesize</code> query parameters for pagination</li>
+            <li>specify <code>np</code> (<strong>n</strong>o <strong>p</strong>roperties) query paramenter to exclude the collection properties from <code>GET /db/coll</code> response.</li>
+            <li><code>keys</code> query parameter defines the properties to return (projection), e.g. <code>keys={"a":1, "obj.prop":1}</code></li>
+            <li><code>filter</code> query parameter specifies a mongodb query, e.g. <code>filter={"n":{"$gt":5}}</code></li>
+            <li>use <code>id_type</code> optional query parameter to properly identify docs <code>/db/coll/1</code> (string) vs <code>/db/coll/1?id_type=number</code></li>
+        </ul>
+    </div>
+
+    <div class="bs-callout bs-callout-info">
+        <h4>Notes on WRITE operations</h4>
+        <ul>
+
+            <li><code>PATCH</code> modifies the passed properties while <code>PUT</code> replaces the whole properties set</li>
+            <li>if the <code>_id</code> is not specified, it will be generated as a new ObjectId</li>
+            <li>all write operation can use the <a href="https://docs.mongodb.org/manual/core/document/#dot-notation" target="_blank">dot notation</a> and all mongodb <a href="https://docs.mongodb.org/manual/reference/operator/update/" target="_blank">update operators</a></li>
+            <li>server or client can optionally requires to check the ETag to avoid ghost writes</li>
+        </ul>
+    </div>
+</div>
+
+<table class="table middle">
+    <tbody>
+        <tr>
+            <td class="w-60"><strong>Request</strong></td>
+            <td class="w-40"><strong>Description</strong></td>
+        </tr>
+
+        <tr>
+            <td><code>GET /db/coll</code></td>
+            <td>returns the properties and the paginated documents of <code>db.coll</code></td>
+        </tr>
+
+        <tr>
+            <td><code>GET /db/coll/doc</code></td>
+            <td>returns the document <code>doc</code></td>
+        </tr>
+
+        <tr>
+            <td><code>POST /db/coll {"_id": "doc", "n": 1}</code></td>
+            <td>upsert a document in collection <code>db.coll</code></td>
+        </tr>
+
+        <tr>
+            <td><code>POST /db/coll [ {"n": 1}, ... , {"n": 10} ]</code></td>
+            <td>bulk upsert documents in <code>db.coll</code></td>
+        </tr>
+
+        <tr>
+            <td><code>PUT /db/coll/doc {"$inc":{"obj.n":1}}</code></td>
+            <td>upsert the document <code>doc</code></td>
+        </tr>
+
+        <tr>
+            <td><code>PATCH /db/coll/doc {"n": 1}</code></td>
+            <td>modifies the document <code>doc</code></td>
+        </tr>
+
+        <tr>
+            <td><code>PATCH /db/coll/*?filter={"n":{"$lt":1}} {"n": 1}</code></td>
+            <td>bulk modifies the documents matching the <code>filter</code> in <code>db.coll</code></td>
+        </tr>
+
+        <tr>
+            <td><code>DELETE /db/coll/doc</code></td>
+            <td>deletes the document <code>doc</code></td>
+        </tr>
+
+        <tr>
+            <td><code>DELETE /db/coll/*?filter={"n":{"$gt":100}}</code></td>
+            <td>bulk deletes the documents matching the <code>filter</code> in <code>db.coll</code></td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Authentication Mechanisms</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Authentication Mechanisms">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v7/plugins/authentication-mechanisms">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v7
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            <strong>v7</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v7/plugins/authentication-mechanisms.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/v7">Overview</a></li>
+    <li><a href="/docs/v7/faq">FAQ</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/v7/performances">Performances</a></li>
+    <li><a href="/docs/v7/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v7/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v7/upgrade-to-v7"><strong>Upgrade to v7</strong></a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/v7/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v7/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v7/configuration">Configuration</a></li>
+    <li><a href="/docs/v7/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/v7/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/v7/security/user-management">User Management</a></li>
+    <li><a href="/docs/v7/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v7/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/v7/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v7/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v7/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v7/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v7/logging">Logging</a></li>
+    <li><a href="/docs/v7/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v7/auditing">Auditing</a></li>
+    <li><a href="/docs/v7/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v7/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/v7/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/v7/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/v7/plugins/services">Services</a></li>
+    <li><a href="/docs/v7/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/v7/plugins/providers">Providers</a></li>
+    <li><a href="/docs/v7/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/v7/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/v7/security/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/v7/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/v7/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/v7/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v7/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v7/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/read-docs">Read Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/write-docs">Write Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v7/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v7/mongodb-rest/caching">Caching</a></li>
+    <li><a href="/docs/v7/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v7/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v7/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v7/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v7/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v7/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v7/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v7/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v7/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v7/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v7/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v7/mongodb-rest/monitoring">Monitoring</a></li>
+
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/v7/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/graphql-apps">GraphQL App Definition</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/complex-app-example">A complex GraphQL App</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/v7/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'framework';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#authentication-mechanisms">Authentication Mechanisms</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Authentication Mechanisms</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="authentication-mechanisms">Authentication Mechanisms</h3>
+<div class="paragraph">
+<p>An <strong>Authentication Mechanism</strong> authenticates incoming requests.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart provides different implementations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/BasicAuthMechanism.java">Basic Authentication</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/DigestAuthMechanism.java">Digest Authentication</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/JwtAuthenticationMechanism.java">JSON Web Token Authentication</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/mechanisms/TokenBasicAuthMechanism.java">Token Authentication</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These are all different methods for the client to pass some sort of credentials to the server. For example, <code>BasicAuthMechanism</code> extracts the credentials from the <code>Authorization</code> request header following the Basic Authentication specs <a href="https://tools.ietf.org/html/rfc7617">RFC 7617</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once the Authentication Mechanism has retrieved the credentials from the request, it can delegate the actual verification to an <code>Authenticator</code> that checks them against a credentials db that can be as simple as a configuration file or a database or an LDAP server.</p>
+</div>
+<div class="paragraph">
+<p>Multiple Authentication Mechanisms can be enabled. The request is authenticated if any of the enabled Authentication Mechanisms successfully verifies the request.</p>
+</div>
+<div class="sect3">
+<h4 id="implementation">Implementation</h4>
+<div class="paragraph">
+<p>The Authentication Mechanism class must implement the <code>org.restheart.plugins.security.AuthMechanism</code> interface.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AuthMechanism</span> <span class="kd">extends</span> <span class="nc">AuthenticationMechanism</span><span class="o">,</span> <span class="nc">ConfigurablePlugin</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">AuthenticationMechanismOutcome</span> <span class="nf">authenticate</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">);</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">ChallengeResult</span> <span class="nf">sendChallenge</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">);</span>
+
+    <span class="k">default</span> <span class="nc">String</span> <span class="nf">getMechanismName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">PluginUtils</span><span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="registering">Registering</h5>
+<div class="paragraph">
+<p>The Authentication Mechanism implementation class must be annotated with <code>@RegisterPlugin</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"myAuthMechanism"</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"my custom auth mechanism"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyAuthMechanism</span> <span class="kd">implements</span> <span class="nc">AuthMechanism</span> <span class="o">{</span>
+
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="configuration">Configuration</h5>
+<div class="paragraph">
+<p>The Authentication Mechanism can receive parameters from the configuration file using the <code>@Inject("config")</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@Inject</span><span class="o">(</span><span class="s">"config"</span><span class="o">)</span>
+<span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">config</span><span class="o">;</span>
+
+<span class="nd">@OnInit</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+    <span class="c1">// get configuration arguments</span>
+    <span class="kt">int</span> <span class="n">number</span>  <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">config</span><span class="o">,</span> <span class="s">"number"</span><span class="o">);</span>
+    <span class="nc">String</span> <span class="n">string</span> <span class="o">=</span> <span class="n">argValue</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">config</span><span class="o">,</span> <span class="s">"string"</span><span class="o">);</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The parameters are defined in the configuration using the name of the mechanism as defined by the <code>@RegisterPlugins</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">myAuthMechanism</span><span class="pi">:</span>
+    <span class="na">number</span><span class="pi">:</span> <span class="m">10</span>
+    <span class="na">string</span><span class="pi">:</span> <span class="s">a string</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="authenticate">authenticate()</h5>
+<div class="paragraph">
+<p>The method <code>authenticate()</code> must return:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>NOT_ATTEMPTED</strong>: the request cannot be authenticated because it doesn&#8217;t fulfill the authentication mechanism requirements. An example is in <code>BasicAuthMechanism</code> when the request does not include the header <code>Authorization</code> or its value does not start with <code>Basic</code>.</p>
+</li>
+<li>
+<p><strong>NOT_AUTHENTICATED</strong>: the Authentication Mechanism handled the request but could not authenticate the client, for instance because of wrong credentials.</p>
+</li>
+<li>
+<p><strong>AUTHENTICATED</strong>: the Authentication Mechanism successfully authenticated the request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To mark the authentication as failed in <code>authenticate()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationFailed</span><span class="o">(</span><span class="s">"authentication failed"</span><span class="o">,</span> <span class="n">getMechanismName</span><span class="o">());</span>
+<span class="k">return</span> <span class="nc">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">NOT_AUTHENTICATED</span><span class="o">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To mark the authentication as successful in <code>authenticate()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="c1">// build the account</span>
+<span class="kd">final</span> <span class="nc">Account</span> <span class="n">account</span><span class="o">;</span>
+
+<span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationComplete</span><span class="o">(</span><span class="n">account</span><span class="o">,</span> <span class="n">getMechanismName</span><span class="o">(),</span> <span class="kc">false</span><span class="o">);</span>
+
+<span class="k">return</span> <span class="nc">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">AUTHENTICATED</span><span class="o">;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sendchallenge">sendChallenge()</h5>
+<div class="paragraph">
+<p><code>sendChallenge()</code> is executed when the authentication fails.</p>
+</div>
+<div class="paragraph">
+<p>The mechanism should not set the response code; instead, that should be indicated in the <code>AuthenticationMechanism.ChallengeResult</code>, and the most appropriate overall response code will be selected.</p>
+</div>
+<div class="paragraph">
+<p>This is due to the fact that several mechanisms can be enabled, and as an in-bound request is received, the authenticate method is called on each mechanism in turn until one of the following occurs: a mechanism successfully authenticates the incoming request, or the list of mechanisms is exhausted.</p>
+</div>
+<div class="paragraph">
+<p><code>sendChallenge()</code> can also be used to set a response header.</p>
+</div>
+<div class="paragraph">
+<p>An example is <code>BasicAuthMechanism</code> that, in case of failure, indicates the response code <code>401 Not Authenticated</code> and sets the following challenge header:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>WWW-Authenticate: Basic realm="RESTHeart Realm"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="nc">ChallengeResult</span> <span class="nf">sendChallenge</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">exchange</span><span class="o">.</span><span class="na">getResponseHeaders</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="no">WWW_AUTHENTICATE</span><span class="o">,</span> <span class="n">challenge</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">ChallengeResult</span><span class="o">(</span><span class="kc">true</span><span class="o">,</span> <span class="no">UNAUTHORIZED</span><span class="o">);</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="build-the-account">Build the Account</h5>
+<div class="paragraph">
+<p>To build the account, the Authentication Mechanism can use a configurable <code>Authenticator</code>. This allows extending the Authentication Mechanism with different <code>Authenticator</code> implementations. For instance, the <em>BasicAuthMechanism</em> can use Authenticator implementations that hold accounts information on a DB or on an LDAP server.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Use the <code>@Inject("config")</code> and <code>@Inject("registry")</code> to retrieve the instance of the <code>Authenticator</code> from its name.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kd">private</span> <span class="nc">Authenticator</span> <span class="n">authenticator</span><span class="o">;</span>
+
+<span class="nd">@Inject</span><span class="o">(</span><span class="s">"config"</span><span class="o">)</span>
+<span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">config</span><span class="o">;</span>
+
+<span class="nd">@Inject</span><span class="o">(</span><span class="s">"registry"</span><span class="o">)</span>
+<span class="kd">private</span> <span class="nc">PluginsRegistry</span> <span class="n">registry</span><span class="o">;</span>
+
+<span class="nd">@OnInit</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">ConfigurationException</span> <span class="o">{</span>
+    <span class="c1">// the authenticator specified in auth mechanism configuration</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">authenticator</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">registry</span><span class="o">.</span><span class="na">getAuthenticator</span><span class="o">(</span><span class="n">argValue</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">config</span><span class="o">,</span> <span class="s">"authenticator"</span><span class="o">)).</span><span class="na">getInstance</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="nc">AuthenticationMechanismOutcome</span> <span class="nf">authenticate</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">SecurityContext</span> <span class="n">securityContext</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">account</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">authenticator</span><span class="o">.</span><span class="na">verify</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">credential</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">account</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationComplete</span><span class="o">(</span><span class="n">account</span><span class="o">,</span> <span class="s">"IdentityAuthenticationManager"</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+          <span class="k">return</span> <span class="nc">AuthenticationMechanism</span><span class="o">.</span><span class="na">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">AUTHENTICATED</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+          <span class="n">securityContext</span><span class="o">.</span><span class="na">authenticationFailed</span><span class="o">(</span><span class="s">"authentication failed"</span><span class="o">,</span> <span class="n">getMechanismName</span><span class="o">());</span>
+          <span class="k">return</span> <span class="nc">AuthenticationMechanismOutcome</span><span class="o">.</span><span class="na">NOT_AUTHENTICATED</span><span class="o">;</span>
+        <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

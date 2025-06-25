@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Upgrade to RESTHeart v7</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Upgrade to RESTHeart v7">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v7/upgrade-to-v7">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v7
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            <strong>v7</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v7/upgrade-to-v7.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/v7">Overview</a></li>
+    <li><a href="/docs/v7/faq">FAQ</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/v7/performances">Performances</a></li>
+    <li><a href="/docs/v7/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v7/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v7/upgrade-to-v7"><strong>Upgrade to v7</strong></a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/v7/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v7/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v7/configuration">Configuration</a></li>
+    <li><a href="/docs/v7/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/v7/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/v7/security/user-management">User Management</a></li>
+    <li><a href="/docs/v7/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v7/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/v7/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v7/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v7/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v7/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v7/logging">Logging</a></li>
+    <li><a href="/docs/v7/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v7/auditing">Auditing</a></li>
+    <li><a href="/docs/v7/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v7/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/v7/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/v7/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/v7/plugins/services">Services</a></li>
+    <li><a href="/docs/v7/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/v7/plugins/providers">Providers</a></li>
+    <li><a href="/docs/v7/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/v7/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/v7/security/overview">Overview</a></li>
+    <li><a href="/docs/v7/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/v7/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/v7/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/v7/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/v7/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/v7/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v7/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v7/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/v7/mongodb-rest/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-rest/read-docs">Read Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/write-docs">Write Documents</a></li>
+    <li><a href="/docs/v7/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v7/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v7/mongodb-rest/caching">Caching</a></li>
+    <li><a href="/docs/v7/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v7/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v7/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v7/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v7/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v7/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v7/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v7/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v7/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v7/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v7/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v7/mongodb-rest/monitoring">Monitoring</a></li>
+
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/v7/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/graphql-apps">GraphQL App Definition</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v7/mongodb-graphql/complex-app-example">A complex GraphQL App</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/v7/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v7/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'overview';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#summary">Summary</a></li>
+<li><a href="#details">Details</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Upgrade to RESTHeart v7</span>
+    </h2>
+</div>
+            <div class="paragraph">
+<p>RESTHeart v7 introduces many news features, improvements and changes.</p>
+</div>
+<div class="paragraph">
+<p>This page summarizes the new features and provide guidance on upgrading from previous versions.</p>
+</div>
+<div class="sect2">
+<h3 id="summary">Summary</h3>
+<div class="sect3">
+<h4 id="core">Core</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New Dependency Injection mechanism and new plugin type Provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Streamline dependencies management</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blocking and Non Blocking Services</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support async and reactive coding style</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Start restheart with just <code>java -jar restheart.jar</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New way to override configuration with env vars</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make it easy changing a few options via env var. This, together with the <strong>Default configuration</strong>, make writing configuration file useless</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-c</code> and <code>-t</code> cmd options to print the effective and template configuration respectively</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make easy creating a configuration file and snooping the effective configuration after overrides and parameters substitutions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17 is super cool and LTS, let&#8217;s use it</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New configuration file format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">simplify configuration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wildcard Interceptor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to intercept any request</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New <code>InterceptPoint.REQUEST_BEFORE_EXCHANGE_INIT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support use cases where the request content must be transformed, e.g. from XML to JSON</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simplify CORS headers management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maker easier customizing CORS headers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support HTTP2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP2 is supported by Undertow and so should be by RESTHeart</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatic reflection configuration of plugins for native images</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simplify building native images</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatic configuration for <code>io-threads</code> and <code>worker-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simplify performance tuning</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="mongoservice">MongoService</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH document to accept update operators expression also with <code>?writeMode=insert</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow creating documents with an update operator expression</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to specify <code>ReadConcern</code>, <code>WriteConcern</code> and <code>ReadPreference</code> at request level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extend MongoDB API coverage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MongoService to use mongo-driver-sync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MongoService currently uses the mongo-driver-legacy while the suggested driver is mongo-driver-sync</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New caching mechanism</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Improve Performance for <code>GET /coll</code> requests</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="graphqlservice">GraphQLService</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Motivation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GraphQL Field to Aggregation Mapping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow using the powerful MongoDB aggregation framework in GraphQL apps</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move GraphQLRequest to restheart-commons</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to intercept requests to GraphQL endpoints</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="new-plugins">New Plugins</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Motivation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">New provider to init and inject the <code>MongoClient</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove dependency to the MongoService for plugins that use <code>@Inject("mclient")</code> and <code>@Inject("mclient-reactive")</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="security">Security</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Motivation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Avoid weak password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Weak password are dangerous, must avoid user to use a weak one</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Brute force password cracking attacks detection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to detect brute force attacks trying to crack user password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add JWT Token Manager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">issues and verifies auth tokens in a cluster compatible way</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="details">Details</h3>
+<div class="sect3">
+<h4 id="new-dependency-injection-mechanism-and-new-plugin-type-provider">New Dependency Injection mechanism and new plugin type Provider</h4>
+<div class="paragraph">
+<p>The annotations <code>@InjectMongoClient</code>, <code>@InjectConfiguration</code> and <code>@InjectPluginRegistry</code> are removed in favor of the generic DI annotations <code>@Inject</code> and <code>@OnInit</code></p>
+</div>
+<div class="paragraph">
+<p><code>@Inject</code> works together with the new plugin type <code>Provider</code>, as in the following example:</p>
+</div>
+<div class="paragraph">
+<p>Given the following <code>Provider</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"hello-world-message"</span><span class="o">,</span> <span class="n">description</span><span class="o">=</span><span class="s">"a dummy provider"</span><span class="o">)</span>
+<span class="kd">class</span> <span class="nc">MyProvider</span> <span class="kd">implements</span> <span class="nc">Provider</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">get</span><span class="o">(</span><span class="nc">PluginRecord</span><span class="o">&lt;?&gt;</span> <span class="n">caller</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Hello World!"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can inject it into a Plugin with <code>@Inject</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"greetings"</span><span class="o">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s">"just another Hello World"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreeterService</span> <span class="kd">implements</span> <span class="nc">JsonService</span> <span class="o">{</span>
+    <span class="nd">@Inject</span><span class="o">(</span><span class="s">"hello-world-message"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">message</span><span class="o">;</span>
+
+    <span class="nd">@OnInit</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// called after all @Inject fields are resolved</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="nc">JsonRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">JsonResponse</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getMethod</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="no">GET</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">object</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="n">message</span><span class="o">));</span>
+            <span class="k">case</span> <span class="no">OPTIONS</span> <span class="o">-&gt;</span> <span class="n">handleOptions</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+            <span class="k">default</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_METHOD_NOT_ALLOWED</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="blocking-and-non-blocking-services">Blocking and Non Blocking Services</h4>
+<div class="paragraph">
+<p>In RESTHeart v6 all services are executed on a Multi-threading concurrency model: when a request comes, it is dispatched and executed by a working thread obtained from a pool whose size is defined by the configuration parameter <code>worker-threads</code>.</p>
+</div>
+<div class="paragraph">
+<p>The concurrency model performs well for CPU bound and blocking operations.</p>
+</div>
+<div class="paragraph">
+<p>An example of blocking operation is a MongoDB operation executed with the <code>mongodb-driver-sync</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is today accepted that, in case non blocking operations, the <strong>Event Loop</strong> concurrency model can perform better than the <strong>Multi-threading</strong> model.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 allows to specify the concurrency model as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">,</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">"just an example service"</span><span class="o">,</span>
+    <span class="n">blocking</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>  <span class="c1">// &lt;= default true for backward compatibility</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyPlugin</span> <span class="kd">implements</span> <span class="nc">JsonService</span> <span class="o">{</span>
+<span class="o">...</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With <code>blocking = false</code> the execution of the service is not dispatched to a working thread and executed by the io-thread, thus avoiding the overhead of the thread handling and switching.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="default-configuration">Default configuration</h4>
+<div class="paragraph">
+<p>RESTheart v6 requires a configuration file. The configuration file can be parametrized, and parameters can be specified with an additional properties file, eg.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="err">$</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">restheart</span> <span class="n">etc</span><span class="o">/</span><span class="n">restheart</span><span class="o">.</span><span class="na">yml</span> <span class="o">-</span><span class="n">e</span> <span class="n">etc</span><span class="o">/</span><span class="k">default</span><span class="o">.</span><span class="na">properties</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In RESTHeart v7 the configuration file is optional, if omitted <a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/restheart-default-config.yml">default values</a> are applied.</p>
+</div>
+<div class="paragraph">
+<p>So RESTHeart v7 can be started with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="err">$</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">restheart</span><span class="o">.</span><span class="na">jar</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="new-way-to-override-configuration-options-with-environment-variables">New way to override configuration options with environment variables</h4>
+<div class="paragraph">
+<p>RESTHeart v6 allows to override a configuration options with an environment variable only if the parameters is a primitive type.</p>
+</div>
+<div class="paragraph">
+<p>Taking into account the following configuration snipped:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongo-uri</span><span class="pi">:</span> <span class="s">mongodb://127.0.0.1</span>
+<span class="na">mongo-mounts</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">what</span><span class="pi">:</span> <span class="s">restheart</span>
+    <span class="na">where</span><span class="pi">:</span> <span class="s">/</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The env var <code>RH_MONGO_URI</code> overrides the parameter <code>mongo-uri</code>.
+The parameters <code>mongo-mounts</code>, not being of a primitive type, cannot be overridden.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 introduces a new way to override variables via the environment variable <code>RHO</code>.</p>
+</div>
+<div class="paragraph">
+<p>An example is</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ RHO</span><span class="o">=</span><span class="s1">'/mongo-uri-&gt;"mongodb://127.0.0.1";/mongo-mounts[1]/where-&gt;"/api"'</span> java <span class="nt">-jar</span> restheart.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or even</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ RHO</span><span class="o">=</span><span class="s1">'/mongo-uri-&gt;"mongodb://127.0.0.1";/mongo-mounts[1]-&gt;{"where: "/api", "what": "mydb"}'</span> java <span class="nt">-jar</span> restheart.jar</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="java-17">Java 17</h4>
+<div class="paragraph">
+<p>RESTHeart v7 requires Java 17.</p>
+</div>
+<div class="paragraph">
+<p>Note that Java 17 is a LTS released.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="new-configuration-file-format">New configuration file format</h4>
+<div class="paragraph">
+<p>Since v5, in RESTHeart <strong>everything is a plugin</strong> but still the configuration file resembles the old times where RESTHeart was just an API for MongoDB.</p>
+</div>
+<div class="paragraph">
+<p>In RESTHeart v7, configuration parameters of any plugin is simply passed via plugins' names.</p>
+</div>
+<div class="paragraph">
+<p>For instance until v6 we have</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongo-uri</span><span class="pi">:</span> <span class="s">mongodb://127.0.0.1</span>
+
+<span class="na">mongo-mounts</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">what</span><span class="pi">:</span> <span class="s">restheart</span>
+    <span class="na">where</span><span class="pi">:</span> <span class="s">/</span>
+
+<span class="na">auth-mechanisms</span><span class="pi">:</span>
+  <span class="na">tokenBasicAuthMechanism</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+
+<span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">uri</span><span class="pi">:</span> <span class="s">/</span>
+  <span class="na">ping</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">msg</span><span class="pi">:</span> <span class="s">Greetings from RESTHeart!</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 configuration follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mclient</span><span class="pi">:</span>
+    <span class="na">connection-string</span><span class="pi">:</span> <span class="s">mongodb://127.0.0.1</span>
+
+<span class="na">mongo</span><span class="pi">:</span>
+  <span class="na">uri</span><span class="pi">:</span> <span class="s">/</span>
+  <span class="na">mongo-mounts</span><span class="pi">:</span>
+     <span class="pi">-</span> <span class="na">what</span><span class="pi">:</span> <span class="s">restheart</span>
+       <span class="na">where</span><span class="pi">:</span> <span class="s">/</span>
+
+<span class="na">ping</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">msg</span><span class="pi">:</span> <span class="s">Greetings from RESTHeart!</span>
+
+<span class="na">basicAuthMechanism</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">authenticator</span><span class="pi">:</span> <span class="s">fileRealmAuthenticator</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check the draft configuration format at <a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/main/resources/restheart-default-config.yml">restheart-default-config.yml</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wildcard-interceptor">Wildcard Interceptor</h4>
+<div class="paragraph">
+<p>In RESTHeart v6 an Interceptor can intercept a request only if the handling service uses the very same <code>Request</code> and <code>Response</code> class implementations so, as an example, an Interceptor that implements <code>JsonInterceptor</code> can intercept requests to services that implements the interfaces <code>JsonService</code>, both using the classes <code>JsonRequest</code> and <code>JsonResponse</code>.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 features the <code>WildcardInterceptor</code> interface that allows to intercept any request/response.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="new-interceptpoint-before_exchange_init">New <code>InterceptPoint.BEFORE_EXCHANGE_INIT</code></h4>
+<div class="paragraph">
+<p>RESTHeart v7 also adds the new <code>InterceptPoint.BEFORE_EXCHANGE_INIT</code></p>
+</div>
+<div class="paragraph">
+<p>A use case for this is a client sending a POST with an XML payload to the <code>MongoService</code> (that obviously handles only BSON payloads in the form of <code>MongoRequest</code> and <code>MongoResponse</code> classes). A <code>WildcardInterceptor</code>, intercepting the request at <code>InterceptPoint.BEFORE_REQUEST_INITIALIZATION</code> is able to transform the XML to BSON transparently to the <code>MongoService</code></p>
+</div>
+<div class="paragraph">
+<p>See the example plugin <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts">protobuffer-contacts</a> that shows how to transform the request and response content to and from a different format than expected by a Service.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="simplify-cors-headers-management">Simplify CORS headers management</h4>
+<div class="paragraph">
+<p>In RESTHeart v7 the <code>Service</code> interface extends the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CORSHeaders</span> <span class="o">{</span>
+        <span class="cm">/**
+        * @return the values of the Access-Control-Expose-Headers
+        */</span><span class="o">/</span>
+        <span class="k">default</span> <span class="nc">String</span> <span class="nf">accessControlExposeHeaders</span><span class="o">()</span> <span class="o">{</span>
+           <span class="c1">// return the defaults headers</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+        * @return the values of the Access-Control-Allow-Credentials
+        */</span><span class="o">/</span>
+        <span class="k">default</span> <span class="nc">String</span> <span class="nf">accessControlAllowCredentials</span><span class="o">()</span> <span class="o">{</span>
+           <span class="c1">// return the defaults headers</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+        * @return the values of the Access-Control-Allow-Origin
+        */</span><span class="o">/</span>
+        <span class="k">default</span> <span class="nc">String</span> <span class="nf">accessControlAllowOrigin</span><span class="o">()</span> <span class="o">{</span>
+           <span class="c1">// return the defaults headers</span>
+        <span class="o">}</span>
+
+        <span class="cm">/**
+        * @return the values of the Access-Control-Allow-Methods
+        */</span><span class="o">/</span>
+        <span class="k">default</span> <span class="nc">String</span> <span class="nf">accessControlAllowMethods</span><span class="o">()</span> <span class="o">{</span>
+           <span class="c1">// return the defaults headers</span>
+        <span class="o">}</span>
+    <span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RESTHeart uses those methods to return the CORS headers. Overriding the methods allow to set or add custom CORS headers.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="support-http2">Support HTTP2</h4>
+<div class="paragraph">
+<p>In RESTHeart v7 supports HTTP2 and it is enabled by default.</p>
+</div>
+<div class="paragraph">
+<p>Note that HTTP2 only works with the <code>https-listener</code> (TLS). See [Configure TLS](/docs/security/tls) for more information.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="automatic-reflection-configuration-of-plugins-for-native-images">Automatic reflection configuration of plugins for native images</h4>
+<div class="paragraph">
+<p>At startup, RESTHEart snoops and initialize plugins (classes annotated with <code>@RegisterPlugin</code> using reflection.
+In order to build the native image with GraalVM, the <code>reflect-config.json</code> configuration file must be defined.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 implements a GraalVM <a href="https://www.graalvm.org/22.2/reference-manual/native-image/dynamic-features/Reflection/#configuration-with-features">features</a>, that automates this task and streamlines the development of plugins to be bundled in restheart native builds.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="automatic-configuration-for-io-threads-and-worker-threads">Automatic configuration for <code>io-threads</code> and <code>worker-threads</code></h4>
+<div class="paragraph">
+<p><code>io-threads</code> and <code>worker-threads</code> are key configuration parameters for performance.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 allows to auto detect suggested values that depend on number of available cores, as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml">  <span class="c1"># Number of I/O threads created for non-blocking tasks. Suggested value: core*8.</span>
+  <span class="c1"># if &lt;= 0, use the number of cores.</span>
+  <span class="na">io-threads</span><span class="pi">:</span> <span class="m">0</span>
+
+  <span class="c1"># Number of threads created for blocking tasks (such as ones involving db access). Suggested value: core*8</span>
+  <span class="c1"># if &lt; 0, use the number of cores * 8. With 0 working threads, blocking services won't work.</span>
+  <span class="na">worker-threads</span><span class="pi">:</span> <span class="s">-1</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="patch-document-to-accept-update-operators-expr-also-with-writemodeinsert">PATCH document to accept update operators expr also with <code>?writeMode=insert</code></h4>
+<div class="paragraph">
+<p>In RESTHeart v7 allows creating documents using update operators with <code>PATCH /coll/doc?wm=insert</code> (with writeMode=insert)</p>
+</div>
+<div class="paragraph">
+<p>The following table summarizes the write operations on request method and write mode</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">wm</th>
+<th class="tableblock halign-left valign-top">method</th>
+<th class="tableblock halign-left valign-top">URI</th>
+<th class="tableblock halign-left valign-top">write operation</th>
+<th class="tableblock halign-left valign-top">wrop argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insertOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insertOne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndUpdate(upsert:true)*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update operator expr</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndReplace(upsert:false)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndReplace(upsert:false)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndUpdate(upsert:false)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update operator expr</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndReplace(upsert:true)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndReplace(upsert:true)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">upsert</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/coll/docid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">findOneAndUpdate(upsert:true)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update operator expr</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>*) uses a find condition that won&#8217;t match any existing document, making sure the operation is an insert</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="allow-to-specify-readconcern-writeconcern-and-readpreference-at-request-level">Allow to specify <code>ReadConcern</code>, <code>WriteConcern</code> and <code>ReadPreference</code> at request level</h4>
+<div class="paragraph">
+<p>RESTHeart v7 extends MongoDB write API coverage with support for the following query parameters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">POST /coll?writeConcern<span class="o">=</span>majority</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">GET /coll?readConcern<span class="o">=</span>majority&amp;readPreference<span class="o">=</span>primary</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mongoservice-to-use-mongo-driver-sync">MongoService to use mongo-driver-sync</h4>
+<div class="paragraph">
+<p>In RESTHeart v7 the <code>MongoService</code> was refactored to use <code>mongodb-driver-sync</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="new-caching-mechanism">New caching mechanism</h4>
+<div class="paragraph">
+<p>Reuse the MongoDB cursor batch data to speedup <code>GET /coll</code> requests. See <a href="https://github.com/SoftInstigate/restheart/issues/442">github issue #442</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="graphql-field-to-aggregation-mapping">GraphQL Field to Aggregation Mapping</h4>
+<div class="paragraph">
+<p>In RESTHeart v6, the GraphQL application definition allows two types of <a href="https://restheart.org/docs/graphql/#mappings">field mapping</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Field to Field mapping</p>
+</li>
+<li>
+<p>Field to Query mapping</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 adds a new mapping: <strong>Field to Aggregation</strong> mapping.</p>
+</div>
+<div class="paragraph">
+<p>As the name suggests, a GraphQL type can have a field that maps to an aggregation. An example would be a numeric field that is a count of some data executed via an aggregation.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="move-graphqlrequest-to-restheart-commons">Move <code>GraphQLRequest</code> to restheart-commons</h4>
+<div class="paragraph">
+<p>Currently the <code>Request</code> implementation used by the <code>GraphQLService</code> in incapsulated in the <code>graphql</code> module.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 moves it to <code>restheart-commons</code>. This allows implementing an Interceptors that can intercept requests handled by GraphQL services.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="new-provider-to-init-and-inject-the-mongoclient">New Provider to init and inject the <code>MongoClient</code></h4>
+<div class="paragraph">
+<p>In RESTHeart v6, the singleton object <code>MongoClient</code> is initialized by the <code>MongoService</code>.</p>
+</div>
+<div class="paragraph">
+<p>Many other plugins uses the <code>MongoClient</code> via the <code>@Inject("mclient")</code> annotation. This forces a dependency to the <code>MongoService</code>.</p>
+</div>
+<div class="paragraph">
+<p>An example is the authenticator <code>MongoRealmAuthenticator</code> that handles the user base in a MongoDB collection. Currently it cannot be used when the <code>MongoService</code> is disabled.</p>
+</div>
+<div class="paragraph">
+<p>RESTHeart v7 moves the <code>MongoClient</code> handling logic to its own plugin (implemented in the module <a href="https://github.com/SoftInstigate/restheart/tree/master/mongoclient">mongoclient</a>), allowing to seamlessly use MongoDB even in use cases where the MongoDB REST API is not required.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="security-2">Security</h4>
+
+</div>
+<div class="sect3">
+<h4 id="avoid-weak-password">Avoid weak password</h4>
+<div class="paragraph">
+<p>Using weak password is dangerous. RESTHeart v7 uses the password strength estimator <a href="https://github.com/nulab/zxcvbn4j">zxcvbn4j</a> to check user password handled by MongoRealmAuthenticator and reject user document upserts containing a weak password.</p>
+</div>
+<div class="paragraph">
+<p>To enable it, two options are added in the configuration of the <code>mongoRealmAuthenticator</code>: <code>enforce-minimum-password-strenght</code> and <code>minimum-password-strength</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoRealmAuthenticator</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">users-db</span><span class="pi">:</span> <span class="s">restheart</span>
+    <span class="na">users-collection</span><span class="pi">:</span> <span class="s">users</span>
+    <span class="na">prop-id</span><span class="pi">:</span> <span class="s">_id</span>
+    <span class="na">prop-password</span><span class="pi">:</span> <span class="s">password</span>
+    <span class="na">json-path-roles</span><span class="pi">:</span> <span class="s">$.roles</span>
+    <span class="na">bcrypt-hashed-password</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">bcrypt-complexity</span><span class="pi">:</span> <span class="m">12</span>
+    <span class="na">enforce-minimum-password-strenght</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="c1"># Integer from 0 to 4</span>
+    <span class="c1"># 0 Weak        （guesses &lt; 3^10）</span>
+    <span class="c1"># 1 Fair        （guesses &lt; 6^10）</span>
+    <span class="c1"># 2 Good        （guesses &lt; 8^10）</span>
+    <span class="c1"># 3 Strong      （guesses &lt; 10^10）</span>
+    <span class="c1"># 4 Very strong （guesses &gt;= 10^10）</span>
+    <span class="na">minimum-password-strength</span><span class="pi">:</span> <span class="m">3</span>
+    <span class="na">create-user</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">create-user-document</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{"_id":</span><span class="nv"> </span><span class="s">"admin",</span><span class="nv"> </span><span class="s">"password":</span><span class="nv"> </span><span class="s">"$2a$12$lZiMMNJ6pkyg4uq/I1cF5uxzUbU25aXHtg7W7sD2ED7DG1wzUoo6u",</span><span class="nv"> </span><span class="s">"roles":</span><span class="nv"> </span><span class="s">["admin"]}'</span>
+    <span class="c1"># create-user-document.password must be hashed when bcrypt-hashed-password=true</span>
+    <span class="c1"># default password is 'secret'</span>
+    <span class="c1"># see https://bcrypt-generator.com but replace initial '$2y' with '$2a'</span>
+    <span class="na">cache-enabled</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">cache-size</span><span class="pi">:</span> <span class="m">1000</span>
+    <span class="na">cache-ttl</span><span class="pi">:</span> <span class="m">60000</span>
+    <span class="na">cache-expire-policy</span><span class="pi">:</span> <span class="s">AFTER_WRITE</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="brute-force-password-cracking-attacks-detection">Brute force password cracking attacks detection</h4>
+<div class="paragraph">
+<p>RESTHeart v7 allows to detect when the number of requests with failed authentication overcome a given threshold in a given period.
+When this happens, any authentication attempts will be rejected anyway with status code 429 TOO MANY REQUESTS for n seconds, lowering the effectiveness of brute force attacks.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="jwt-token-manager">JWT Token Manager</h4>
+<div class="paragraph">
+<p>An implementation of <a href="/docs/plugins/security-plugins/#token-managers">Token Manger</a> that issues and verifies auth tokens in a cluster compatible way.</p>
+</div>
+<div class="paragraph">
+<p>Each token can be verified by any node of the cluster regardless which one actually issued it (as long as they share the same <code>secret</code>)</p>
+</div>
+<div class="sect4">
+<h5 id="configuration">Configuration</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">jwtTokenManager</span><span class="pi">:</span>
+    <span class="na">key</span><span class="pi">:</span> <span class="s">secret</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">ttl</span><span class="pi">:</span> <span class="m">15</span>
+    <span class="na">srv-uri</span><span class="pi">:</span> <span class="s">/tokens</span>
+    <span class="na">issuer</span><span class="pi">:</span> <span class="s">restheart.com</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: All nodes must share the same configuration</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="renew-the-token">Renew the token</h5>
+<div class="paragraph">
+<p>The query parameter <code>renew-auth-token</code> forces the token to be renewed.</p>
+</div>
+<div class="paragraph">
+<p>Generating a new token is a cryptographic operation,
+and it can have a significant performance overhead.
+It is responsibility of the client to renew the token using this query parameter
+when it is going to expiry somehow soon.</p>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

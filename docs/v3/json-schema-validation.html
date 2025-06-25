@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Document validation with JSON schema</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Document validation with JSON schema">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/json-schema-validation">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/json-schema-validation.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#the-schema-store-and-schema-resources">The Schema Store and Schema resources</a></li>
+    <li><a href="#document-validation">Document validation</a></li>
+    <li><a href="#example">Example</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Document validation with JSON schema</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>MongoDB is <em>schemaless</em>, JSON documents of any format can be stored in
+collections. Starting from MongoDB version 3.2 rules-based validation is
+available to enforce a format to documents (more in the  <a href="https://docs.mongodb.com/manual/core/document-validation/">MongoDB
+documentation</a>)
+and this is supported by RESTHeart.</p>
+
+  <p>On top of this, RESTHeart provides a more general approach for
+validation based on <a href="/docs/v3/request-checkers">Request Checkers</a>: a Request
+Checker can verify write requests based on any condition.</p>
+
+  <p>RESTHeart provides “out of the box” the <em>jsonSchema</em> Request Checker
+that validates the body of write requests against a <strong>JSON schema</strong>.</p>
+
+  <blockquote>
+    <p>JSON Schema specifies a JSON-based format to define the structure of
+JSON data for validation, documentation, and interaction control. A
+JSON Schema provides a contract for the JSON data required by a given
+application, and how that data can be modified.</p>
+  </blockquote>
+
+  <p>For more information about JSON Schema refer
+to <a href="https://json-schema.org/">json-schema.org</a>; a very good resource
+is <a href="https://spacetelescope.github.io/understanding-json-schema">understanding json
+schema</a> web
+site too.</p>
+
+  <h2 id="the-schema-store-and-schema-resources">The Schema Store and Schema resources</h2>
+
+  <p><em>Schema Store</em> resources allow store JSON schemas used for document
+validation; they are specialized collection resources whose documents
+must conform to the JSON schema format (specifically to the latest
+version draft-04)</p>
+
+  <p>Schema Store are first class citizens in RESTHeart and the format of
+their URIs is <code class="language-plaintext highlighter-rouge">/&lt;db&gt;/_schemas</code></p>
+
+  <p><strong>Create the db schema store</strong></p>
+
+  <pre><code class="language-plain">PUT /db/_schemas
+</code></pre>
+
+  <p>Schema resources are documents of the Schema Store. The following
+request creates a valid JSON Schema.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /db/_schemas/address <span class="o">{</span>
+    <span class="s2">"</span><span class="nv">$schema</span><span class="s2">"</span>: <span class="s2">"https://json-schema.org/draft-04/schema#"</span>,
+    <span class="s2">"type"</span>: <span class="s2">"object"</span>,
+    <span class="s2">"properties"</span>: <span class="o">{</span>
+        <span class="s2">"address"</span>: <span class="o">{</span> <span class="s2">"type"</span>: <span class="s2">"string"</span> <span class="o">}</span>,
+        <span class="s2">"city"</span>: <span class="o">{</span> <span class="s2">"type"</span>: <span class="s2">"string"</span> <span class="o">}</span>,
+        <span class="s2">"postal-code"</span>: <span class="o">{</span> <span class="s2">"type"</span>: <span class="s2">"string"</span> <span class="o">}</span>,
+        <span class="s2">"country"</span>: <span class="o">{</span> <span class="s2">"type"</span>: <span class="s2">"string"</span><span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"required"</span>: <span class="o">[</span><span class="s2">"address"</span>, <span class="s2">"city"</span>, <span class="s2">"country"</span><span class="o">]</span>
+<span class="o">}</span>
+ 
+HTTP/1.1 201 Created
+...
+</code></pre></div>  </div>
+
+  <p>In JSON Schema, the <code class="language-plaintext highlighter-rouge">id</code> property (not to be confused with the <code class="language-plaintext highlighter-rouge">_id</code>
+key) has a special role. This property is auto-generated by RESTHeart as
+can be noted in the response of the following GET request.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /db/_schemas/address
+HTTP/1.1 200 OK
+...
+<span class="o">{</span>
+    <span class="s2">"</span><span class="nv">$schema</span><span class="s2">"</span>: <span class="s2">"https://json-schema.org/draft-04/schema#"</span>, 
+    <span class="s2">"id"</span>: <span class="s2">"https://schema-store/test/address#"</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"address"</span>,  
+    ....
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="document-validation">Document validation</h2>
+
+  <p>To apply the jsonSchema checker simply define the collection <code class="language-plaintext highlighter-rouge">checkers</code>
+metadata property as follows:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"checkers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsonSchema"</span><span class="p">,</span><span class="w"> </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"schemaId"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;schema_id&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"schemaStoreDb"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;schema_store_db&gt;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+  <div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th><div>
+Property
+</div></th>
+<th><div>
+Description
+</div></th>
+<th><div>
+Mandatory
+</div></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>schemaId</code></td>
+<td><p>the _id of the JSON schema to enforce</p></td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><code>schemaStoreDb</code></td>
+<td>the db</td>
+<td>No, if omitted the current db is used.</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <h2 id="example">Example</h2>
+
+  <p><strong>Create a collection enforcing the address JSON Schema</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /db/addresses <span class="o">{</span> <span class="s2">"checkers"</span>: <span class="o">[</span>  <span class="o">{</span> <span class="s2">"name"</span>: <span class="s2">"jsonSchema"</span>, <span class="s2">"args"</span>: <span class="o">{</span> <span class="s2">"schemaId"</span>: <span class="s2">"address"</span> <span class="o">}</span> <span class="o">}</span> <span class="o">]</span> <span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Now let’s try to create an invalid document.</p>
+
+  <p><strong>Try to create an invalid address</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /db/addresses <span class="o">{</span> <span class="s2">"address"</span>: <span class="s2">"Via D'Annunzio 28"</span> <span class="o">}</span>
+ 
+HTTP/1.1 400 Bad Request
+...
+
+<span class="o">{</span>
+    <span class="s2">"_links"</span>: <span class="o">{</span>
+        <span class="s2">"self"</span>: <span class="o">{</span>
+            <span class="s2">"href"</span>: <span class="s2">"/test/addresses"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>, 
+    <span class="s2">"http status code"</span>: 400, 
+    <span class="s2">"http status description"</span>: <span class="s2">"Bad Request"</span>, 
+    <span class="s2">"message"</span>: <span class="s2">"schema check failed, #: 2 schema violations found, #: required key [city] not found, #: required key [country] not found"</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Passing valid data results in the document creation:</p>
+
+  <p><strong>Create a valid documents</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /test/addresses <span class="o">{</span><span class="s2">"address"</span>: <span class="s2">"Via D'Annunzio, 28"</span>, <span class="s2">"city"</span>: <span class="s2">"L'Aquila"</span>, <span class="s2">"country"</span>: <span class="s2">"Italy"</span> <span class="o">}</span>
+
+HTTP/1.1 201 Created...
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

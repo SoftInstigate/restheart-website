@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Configure TLS</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Configure TLS">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/security/tls">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v8
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            <strong>v8</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/security/tls.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
+    <li><a href="/docs">Overview</a></li>
+    <li><a href="/docs/faq">FAQ</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/performances">Performances</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/configuration">Configuration</a></li>
+    <li><a href="/docs/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/security/user-management">User Management</a></li>
+    <li><a href="/docs/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/proxy">Proxying requests</a></li>
+    <li><a href="/docs/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/logging">Logging</a></li>
+    <li><a href="/docs/monitoring">Monitoring</a></li>
+    <li><a href="/docs/auditing">Auditing</a></li>
+    <li><a href="/docs/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/plugins/overview">Overview</a></li>
+    <li><a href="/docs/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/plugins/services">Services</a></li>
+    <li><a href="/docs/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/plugins/providers">Providers</a></li>
+    <li><a href="/docs/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/security/overview">Overview</a></li>
+    <li><a href="/docs/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/security/authentication">Authentication</a></li>
+    <li><a href="/docs/security/authorization">Authorization</a></li>
+    <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/mongodb-rest/tutorial">Getting Started</a></li>
+    <li><a href="/docs/mongodb-rest/read-docs">Reading Documents</a></li>
+    <li><a href="/docs/mongodb-rest/write-docs">Writing Documents</a></li>
+    <li><a href="/docs/mongodb-rest/files">Managing Binary Files</a></li>
+    <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/mongodb-rest/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+    <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/mongodb-rest/caching">Performance and Caching</a></li>
+    <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/mongodb-rest/sample-data">Load Sample Data</a></li>
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/mongodb-graphql/getting-started">Getting Started</a></li>
+    <li><a href="/docs/mongodb-graphql/graphql-apps">App Definition</a>
+        <ul>
+            <li><a href="/docs/mongodb-graphql/schema">Schema Design</a></li>
+            <li><a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></li>
+            <li><a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></li>
+        </ul>
+    </li>
+    <li><a href="/docs/mongodb-graphql/tutorial">Basic Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/complex-app-example">Advanced Example</a></li>
+    <li><a href="/docs/mongodb-graphql/optimization">Performance Optimization</a></li>
+    <li><a href="/docs/mongodb-graphql/best-practices">Best Practices</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'security';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#the-https-listener">The HTTPS listener</a></li>
+<li><a href="#configure-the-ssl-certificate">Configure the SSL certificate</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Configure TLS</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="introduction">Introduction</h3>
+<div class="paragraph">
+<p>This section provides instructions on how to enable Transport Layer Security so that requests can be served over the HTTPS protocol.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+HTTP is not secure: credentials can be sniffed by a man-in-the-middle attack. <strong>It is paramount to use HTTPS</strong>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This section is about securing HTTP requests between Clients and RESTHeart. Read <a href="/docs/mongodb-rest/secure-connection-to-mongodb/">Secure connection to MongoDB</a> for more information on how to secure the connection between RESTHeart and MongoDB.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-https-listener">The HTTPS listener</h3>
+<div class="paragraph">
+<p>There are many ways of enabling HTTS; for instance you can setup a web server such as nginx as a reverse proxy in front of RESTHeart or you may rely on cloud services that provides load balancers that manages SSL for you (such are Amazon WS or Google Cloud).</p>
+</div>
+<div class="paragraph">
+<p>In any case, restheart is able to expose directly the HTTS protocol and this is done configuring the https listener. This is the suggested configuration for small systems.</p>
+</div>
+<div class="paragraph">
+<p>The following configuration file except shows the involved options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">https-listener:
+    enabled: <span class="nb">true
+    </span>host: 0.0.0.0
+    port: 4443
+    keystore-path: /path/to/keystore/file
+    keystore-password: secret
+    certificate-password: secret</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>http <span class="nt">-d</span> https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh <span class="c"># download the script generate-certauthority-and-keystore.sh</span>
+<span class="nv">$ </span>./generate-certauthority-and-keystore.sh <span class="nt">-d</span> localhost <span class="nt">-a</span> /tmp <span class="nt">-p</span> secret <span class="c"># generate a test keystore and certificate authority</span>
+<span class="nv">$ RHO</span><span class="o">=</span><span class="s1">'/https-listener-&gt;{ "enabled": true, "host": "localhost", "port": 4443, "keystore-path": "/tmp/localhost.jks", "keystore-password": "secret", "certificate-password": "secret" }'</span> java <span class="nt">-jar</span> restheart.jar <span class="c"># run RESTHeart with TLS enabled</span>
+<span class="nv">$ </span>http <span class="nt">-b</span> <span class="nt">--verify</span> /tmp/devCA.pem https://restheart.local:4443/ping <span class="c"># execute a test TLS request</span>
+Greetings from RESTHeart!</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable https configure the https listener using the following options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>/https-listener/enabled</code> <em>true</em> to enable it</p>
+</li>
+<li>
+<p><code>/https-listener/host</code> the ip where to bind the listener</p>
+</li>
+<li>
+<p><code>/https-listener/port</code> the port where to bind the listener</p>
+</li>
+<li>
+<p><code>/https-listener/keystore-path</code> the path of the keystore</p>
+</li>
+<li>
+<p><code>/https-listener/keystore-password</code> the password of the keystore</p>
+</li>
+<li>
+<p><code>/https-listener/certificate-password</code> the password of the certificate</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A SSL certificate must configured in order to enable the https listener.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configure-the-ssl-certificate">Configure the SSL certificate</h3>
+<div class="paragraph">
+<p>The SSL certificate must be added to the java keystore set by the <code>keystore-file</code> configuration property.</p>
+</div>
+<div class="paragraph">
+<p>Two scripts are available to help configuring the keystore.</p>
+</div>
+<div class="sect3">
+<h4 id="generate-certauthority-and-keystore-sh">generate-certauthority-and-keystore.sh</h4>
+<div class="paragraph">
+<p>This is useful for testing purposes. It generates a CA and uses it to issue a SSL certificate, finally generating the keystore file.</p>
+</div>
+<div class="paragraph">
+<p>Download the script from <a href="https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/generate-certauthority-and-keystore.sh">generate-certauthority-and-keystore.sh</a></p>
+</div>
+<div class="paragraph">
+<p>After having generated the keystore file and configured RESTHeart to use it, you need to install the CA root certificate into your OS.</p>
+</div>
+<div class="paragraph">
+<p>For example, in OSX:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open up <code>Keychain Access</code> application by searching it on <code>Spotlight</code></p>
+</li>
+<li>
+<p>Select <code>File &gt; Import Items</code>. Navigate to CA root certificate file generated by the script. Select <code>System</code> as "Destination Keychain".</p>
+</li>
+<li>
+<p>Right click on the certificate in Keychain Access and select <code>Get Info</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Expand the Trust section</p>
+</li>
+<li>
+<p>Under When using this certificate select <code>Always Trust</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="convert-letsencrypt-java-keystore-sh">convert-letsencrypt-java-keystore.sh</h4>
+<div class="paragraph">
+<p><a href="https://letsencrypt.org">Let&#8217;s Encrypt</a> is a popular and nonprofit Certificate Authority providing free TLS certificates.</p>
+</div>
+<div class="paragraph">
+<p>This script generates the java keystore from Let&#8217;s Encrypt certificate archive.</p>
+</div>
+<div class="paragraph">
+<p>Download the script from <a href="https://raw.githubusercontent.com/SoftInstigate/restheart/master/core/bin/convert-letsencrypt-java-keystore.sh">convert-letsencrypt-java-keystore.sh</a></p>
+</div>
+<div class="paragraph">
+<p>I&#8217;ll improve the documentation section with better structure, clearer instructions, and more helpful guidance:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="example-generating-ssl-certificates-with-lego">Example: Generating SSL Certificates with Lego</h4>
+<div class="paragraph">
+<p><a href="https://go-acme.github.io/lego/">Lego</a> is a robust Let&#8217;s Encrypt client and ACME library written in Go that simplifies the process of generating SSL certificates through various verification methods.</p>
+</div>
+<div class="paragraph">
+<p>This example demonstrates using Lego with the DNS route53 provider, assuming AWS credentials are already configured in your environment. The process can be adapted to use any of the <a href="https://go-acme.github.io/lego/dns/index.html">supported DNS providers</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="step-1-generate-the-certificate">Step 1: Generate the Certificate</h5>
+<div class="paragraph">
+<p>Replace <code>restheart.org</code> with your domain name throughout these examples.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>lego <span class="nt">--email</span> andrea@restheart.org <span class="nt">--dns</span> route53 <span class="nt">-d</span> restheart.org run
+2025/03/26 09:49:44 <span class="o">[</span>INFO] <span class="o">[</span>restheart.org] acme: Obtaining bundled SAN certificate
+2025/03/26 09:49:45 <span class="o">[</span>INFO] <span class="o">[</span>restheart.org] AuthURL: https://acme-v02.api.letsencrypt.org/acme/authz/2302497476/495306646876
+2025/03/26 09:49:45 <span class="o">[</span>INFO] <span class="o">[</span>restheart.org] acme: authorization already valid<span class="p">;</span> skipping challenge
+2025/03/26 09:49:45 <span class="o">[</span>INFO] <span class="o">[</span>restheart.org] acme: Validations succeeded<span class="p">;</span> requesting certificates
+2025/03/26 09:49:46 <span class="o">[</span>INFO] <span class="o">[</span>restheart.org] Server responded with a certificate
+
+<span class="nv">$ </span><span class="nb">ls</span> .lego/certificates
+restheart.org.crt        restheart.org.issuer.crt restheart.org.json       restheart.org.key</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After execution, Lego creates the certificate files in the <code>.lego/certificates</code> directory.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="step-2-convert-certificates-to-java-keystore">Step 2: Convert Certificates to Java Keystore</h5>
+<div class="paragraph">
+<p>Use the provided script to convert the Let&#8217;s Encrypt certificates into a Java keystore format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">./convert-letsencrypt-java-keystore.sh <span class="se">\</span>
+  <span class="nt">-d</span> restheart.org <span class="se">\</span>
+  <span class="nt">-c</span> .lego/certificates/restheart.org.crt <span class="se">\</span>
+  <span class="nt">-k</span> .lego/certificates/restheart.org.key <span class="se">\</span>
+  <span class="nt">-i</span> .lego/certificates/restheart.org.issuer.crt <span class="se">\</span>
+  <span class="nt">-p</span> secret</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>Convert Let's Encrypt certificates to PKCS 12 archive
+Import certificates into a keystore file.
+Keystore import .lego/certificates/restheart.org.p12 in .lego/certificates/restheart.org.jks in corso...
+Add the necessary Let's Encrypt intermediate certs.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  1826  100  1826    0     0  13977      0 --:--:-- --:--:-- --:--:-- 14046
+The certificate has been added to the keystore</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This creates a Java keystore file at <code>.lego/certificates/restheart.org.jks</code> with the password <code>secret</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="step-3-configure-restheart-with-https">Step 3: Configure RESTHeart with HTTPS</h5>
+<div class="paragraph">
+<p>Run RESTHeart with the HTTPS listener enabled using the generated keystore:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ RHO</span><span class="o">=</span><span class="s1">'/https-listener-&gt;{
+  "enabled": true,
+  "host": "restheart.org",
+  "port": 4443,
+  "keystore-path": ".lego/certificates/restheart.org.jks",
+  "keystore-password": "secret",
+  "certificate-password": "secret"
+}'</span> java <span class="nt">-jar</span> restheart.jar</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For production use, choose a strong password instead of "secret" and secure your keystore file with appropriate permissions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

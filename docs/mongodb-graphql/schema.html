@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - GraphQL Schema Design for MongoDB</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - GraphQL Schema Design for MongoDB">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/mongodb-graphql/schema">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v8
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            <strong>v8</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/mongodb-graphql/schema.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
+    <li><a href="/docs">Overview</a></li>
+    <li><a href="/docs/faq">FAQ</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/performances">Performances</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/configuration">Configuration</a></li>
+    <li><a href="/docs/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/security/user-management">User Management</a></li>
+    <li><a href="/docs/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/proxy">Proxying requests</a></li>
+    <li><a href="/docs/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/logging">Logging</a></li>
+    <li><a href="/docs/monitoring">Monitoring</a></li>
+    <li><a href="/docs/auditing">Auditing</a></li>
+    <li><a href="/docs/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/plugins/overview">Overview</a></li>
+    <li><a href="/docs/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/plugins/services">Services</a></li>
+    <li><a href="/docs/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/plugins/providers">Providers</a></li>
+    <li><a href="/docs/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/security/overview">Overview</a></li>
+    <li><a href="/docs/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/security/authentication">Authentication</a></li>
+    <li><a href="/docs/security/authorization">Authorization</a></li>
+    <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/mongodb-rest/tutorial">Getting Started</a></li>
+    <li><a href="/docs/mongodb-rest/read-docs">Reading Documents</a></li>
+    <li><a href="/docs/mongodb-rest/write-docs">Writing Documents</a></li>
+    <li><a href="/docs/mongodb-rest/files">Managing Binary Files</a></li>
+    <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/mongodb-rest/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+    <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/mongodb-rest/caching">Performance and Caching</a></li>
+    <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/mongodb-rest/sample-data">Load Sample Data</a></li>
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/mongodb-graphql/getting-started">Getting Started</a></li>
+    <li><a href="/docs/mongodb-graphql/graphql-apps">App Definition</a>
+        <ul>
+            <li><a href="/docs/mongodb-graphql/schema">Schema Design</a></li>
+            <li><a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></li>
+            <li><a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></li>
+        </ul>
+    </li>
+    <li><a href="/docs/mongodb-graphql/tutorial">Basic Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/complex-app-example">Advanced Example</a></li>
+    <li><a href="/docs/mongodb-graphql/optimization">Performance Optimization</a></li>
+    <li><a href="/docs/mongodb-graphql/best-practices">Best Practices</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'mongodb';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel1">
+<li><a href="#schema-basics">Schema Basics</a>
+<ul class="sectlevel2">
+<li><a href="#supported-graphql-types">Supported GraphQL Types</a></li>
+</ul>
+</li>
+<li><a href="#mongodb-data-types">MongoDB Data Types</a>
+<ul class="sectlevel2">
+<li><a href="#example-usage">Example Usage</a></li>
+</ul>
+</li>
+<li><a href="#schema-design-patterns">Schema Design Patterns</a>
+<ul class="sectlevel2">
+<li><a href="#1-document-references">1. Document References</a></li>
+<li><a href="#2-embedded-documents">2. Embedded Documents</a></li>
+<li><a href="#3-interfaces-for-common-fields">3. Interfaces for Common Fields</a></li>
+<li><a href="#4-unions-for-polymorphic-queries">4. Unions for Polymorphic Queries</a></li>
+</ul>
+</li>
+<li><a href="#query-design">Query Design</a>
+<ul class="sectlevel2">
+<li><a href="#1-pagination-support">1. Pagination Support</a></li>
+<li><a href="#2-filtering-and-sorting">2. Filtering and Sorting</a></li>
+</ul>
+</li>
+<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#schema-validation">Schema Validation</a></li>
+<li><a href="#common-patterns">Common Patterns</a>
+<ul class="sectlevel2">
+<li><a href="#1-soft-deletion">1. Soft Deletion</a></li>
+<li><a href="#2-versioning">2. Versioning</a></li>
+<li><a href="#3-metadata-support">3. Metadata Support</a></li>
+</ul>
+</li>
+<li><a href="#next-steps">Next Steps</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>GraphQL Schema Design for MongoDB</span>
+    </h2>
+</div>
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This guide covers best practices and techniques for designing GraphQL schemas that work efficiently with MongoDB through RESTHeart.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="schema-basics">Schema Basics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Your GraphQL schema defines the structure of your API, including:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Types and their fields</p>
+</li>
+<li>
+<p>Relationships between types</p>
+</li>
+<li>
+<p>Available queries and mutations</p>
+</li>
+<li>
+<p>Custom scalars and enums</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="supported-graphql-types">Supported GraphQL Types</h3>
+<div class="paragraph">
+<p>RESTHeart supports all standard GraphQL types:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object type definition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type Book { title: String! }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interface</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shared fields between types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>interface Node { id: ID! }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>union</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Combination of multiple types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>union SearchResult = Book | Author</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed set of values</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enum Category { FICTION, NONFICTION }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>input</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Complex input arguments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>input BookFilter { genre: String }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scalar</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom scalar types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scalar DateTime</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mongodb-data-types">MongoDB Data Types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RESTHeart provides special scalar types for MongoDB:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="c"># MongoDB specific scalars</span><span class="w">
+</span><span class="k">scalar</span><span class="w"> </span><span class="n">ObjectId</span><span class="w">      </span><span class="c"># MongoDB ObjectId</span><span class="w">
+</span><span class="k">scalar</span><span class="w"> </span><span class="n">BsonDocument</span><span class="w"> </span><span class="c"># Raw BSON document</span><span class="w">
+</span><span class="k">scalar</span><span class="w"> </span><span class="n">DateTime</span><span class="w">     </span><span class="c"># ISODate and Date objects</span><span class="w">
+</span><span class="k">scalar</span><span class="w"> </span><span class="n">Decimal128</span><span class="w">   </span><span class="c"># High-precision decimals</span></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example-usage">Example Usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">publishedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="w">
+  </span><span class="n">price</span><span class="p">:</span><span class="w"> </span><span class="n">Decimal128</span><span class="w">
+  </span><span class="n">metadata</span><span class="p">:</span><span class="w"> </span><span class="n">BsonDocument</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="schema-design-patterns">Schema Design Patterns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="1-document-references">1. Document References</h3>
+<div class="paragraph">
+<p>For MongoDB document references:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">authorId</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">author</span><span class="p">:</span><span class="w"> </span><span class="n">Author</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Author</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">books</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Book</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-embedded-documents">2. Embedded Documents</h3>
+<div class="paragraph">
+<p>For MongoDB embedded documents:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">street</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">city</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">country</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Customer</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="c"># Embedded document</span><span class="w">
+  </span><span class="n">address</span><span class="p">:</span><span class="w"> </span><span class="n">Address</span><span class="w">
+  </span><span class="c"># Array of embedded documents</span><span class="w">
+  </span><span class="n">shippingAddresses</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Address</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="3-interfaces-for-common-fields">3. Interfaces for Common Fields</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">interface</span><span class="w"> </span><span class="n">Timestamped</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">createdAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+  </span><span class="n">updatedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="k">implements</span><span class="w"> </span><span class="n">Timestamped</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">createdAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+  </span><span class="n">updatedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Author</span><span class="w"> </span><span class="k">implements</span><span class="w"> </span><span class="n">Timestamped</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">createdAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+  </span><span class="n">updatedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="4-unions-for-polymorphic-queries">4. Unions for Polymorphic Queries</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">type</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Movie</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">duration</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">type</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">union</span><span class="w"> </span><span class="n">MediaItem</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="n">Movie</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">searchMedia</span><span class="p">(</span><span class="n">term</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!):</span><span class="w"> </span><span class="p">[</span><span class="n">MediaItem</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="query-design">Query Design</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="1-pagination-support">1. Pagination Support</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">BookConnection</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">edges</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">BookEdge</span><span class="p">]</span><span class="w">
+  </span><span class="n">pageInfo</span><span class="p">:</span><span class="w"> </span><span class="n">PageInfo</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">BookEdge</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Book</span><span class="p">!</span><span class="w">
+  </span><span class="n">cursor</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">PageInfo</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hasNextPage</span><span class="p">:</span><span class="w"> </span><span class="nb">Boolean</span><span class="p">!</span><span class="w">
+  </span><span class="n">endCursor</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">books</span><span class="p">(</span><span class="n">first</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">,</span><span class="w"> </span><span class="n">after</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">):</span><span class="w"> </span><span class="n">BookConnection</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-filtering-and-sorting">2. Filtering and Sorting</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">input</span><span class="w"> </span><span class="n">BookFilter</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">genre</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">yearPublished</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">enum</span><span class="w"> </span><span class="n">SortOrder</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">ASC</span><span class="w">
+  </span><span class="n">DESC</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">input</span><span class="w"> </span><span class="n">BookSort</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">field</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">order</span><span class="p">:</span><span class="w"> </span><span class="n">SortOrder</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">books</span><span class="p">(</span><span class="w">
+    </span><span class="n">filter</span><span class="p">:</span><span class="w"> </span><span class="n">BookFilter</span><span class="w">
+    </span><span class="n">sort</span><span class="p">:</span><span class="w"> </span><span class="n">BookSort</span><span class="w">
+    </span><span class="n">limit</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w">
+    </span><span class="n">skip</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w">
+  </span><span class="p">):</span><span class="w"> </span><span class="p">[</span><span class="n">Book</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="best-practices">Best Practices</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Use Non-Null Fields Wisely</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Mark required fields with <code>!</code></p>
+</li>
+<li>
+<p>Consider optional fields for flexibility</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Consistent Naming</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Use CamelCase for types</p>
+</li>
+<li>
+<p>Use camelCase for fields</p>
+</li>
+<li>
+<p>Be descriptive but concise</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Documentation</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add descriptions to types and fields</p>
+</li>
+<li>
+<p>Document expected behavior</p>
+</li>
+<li>
+<p>Include examples in comments</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="s2">"""</span><span class="w">
+</span>Represents a book in the catalog<span class="w">
+</span><span class="s2">"""</span><span class="w">
+</span><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="err">"""</span><span class="w">
+  </span><span class="n">MongoDB</span><span class="w"> </span><span class="n">ObjectId</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">book</span><span class="w">
+  </span><span class="err">"""</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+
+  </span><span class="err">"""</span><span class="w">
+  </span><span class="n">Title</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">book</span><span class="w">
+  </span><span class="n">Must</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">empty</span><span class="w">
+  </span><span class="err">"""</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Schema Evolution</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add fields as optional</p>
+</li>
+<li>
+<p>Use interfaces for extensibility</p>
+</li>
+<li>
+<p>Plan for versioning</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="schema-validation">Schema Validation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RESTHeart automatically validates your schema for:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Syntax Errors</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Invalid type definitions</p>
+</li>
+<li>
+<p>Incorrect field types</p>
+</li>
+<li>
+<p>Missing required fields</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Semantic Errors</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Invalid references</p>
+</li>
+<li>
+<p>Type conflicts</p>
+</li>
+<li>
+<p>Circular dependencies</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>MongoDB Compatibility</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Data type mismatches</p>
+</li>
+<li>
+<p>Invalid field names</p>
+</li>
+<li>
+<p>Unsupported operations</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="common-patterns">Common Patterns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="1-soft-deletion">1. Soft Deletion</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">interface</span><span class="w"> </span><span class="n">SoftDelete</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">isDeleted</span><span class="p">:</span><span class="w"> </span><span class="nb">Boolean</span><span class="p">!</span><span class="w">
+  </span><span class="n">deletedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="k">implements</span><span class="w"> </span><span class="n">SoftDelete</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">isDeleted</span><span class="p">:</span><span class="w"> </span><span class="nb">Boolean</span><span class="p">!</span><span class="w">
+  </span><span class="n">deletedAt</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-versioning">2. Versioning</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">interface</span><span class="w"> </span><span class="n">Versioned</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="k">implements</span><span class="w"> </span><span class="n">Versioned</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">changes</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">ChangeLog</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">ChangeLog</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">version</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">timestamp</span><span class="p">:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">!</span><span class="w">
+  </span><span class="n">changes</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="nb">String</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="3-metadata-support">3. Metadata Support</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">interface</span><span class="w"> </span><span class="n">Metadata</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">metadata</span><span class="p">:</span><span class="w"> </span><span class="n">BsonDocument</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Book</span><span class="w"> </span><span class="k">implements</span><span class="w"> </span><span class="n">Metadata</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="p">!</span><span class="w">
+  </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!</span><span class="w">
+  </span><span class="n">metadata</span><span class="p">:</span><span class="w"> </span><span class="n">BsonDocument</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="next-steps">Next Steps</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Learn about <a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></p>
+</li>
+<li>
+<p>Explore <a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></p>
+</li>
+<li>
+<p>Check out <a href="/docs/mongodb-graphql/best-practices">Best Practices</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Representation Format</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Representation Format">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/representation-format">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/representation-format.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Representation Format</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>Each resource has its <strong>properties</strong> and <strong>embedded</strong> resources.
+Dbs embed collections that embed documents.</p>
+
+  <p>RESTHeart has two different options for representing the resources: <code class="language-plaintext highlighter-rouge">plain JSON</code> and <code class="language-plaintext highlighter-rouge">HAL</code>. The default representation is controlled with <code class="language-plaintext highlighter-rouge">default-representation-format</code> configuration option.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#### default representation format (PLAIN_JSON or HAL)</span>
+<span class="na">default-representation-format</span><span class="pi">:</span> <span class="s">PLAIN_JSON</span>
+</code></pre></div>  </div>
+
+  <p>The <code class="language-plaintext highlighter-rouge">rep</code> query parameter can also be used.</p>
+
+  <pre><code class="language-plain">GET /db/coll?rep=hal
+GET /db/coll?rep=pj
+</code></pre>
+
+  <h2 id="plain-json-representation">Plain JSON Representation</h2>
+
+  <p>In the following response the collection /db/coll has the properties <em>_id</em>, <em>_etag</em> <em>prop</em> and two embedded documents and the special property <em>_returned</em></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /db/coll
+HTTP/1.1 200 OK
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ac9f96063445900062144ac"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ac9f960913b07543c0085ec"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ac9f95f63445900062144ab"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ac9f95f913b07543c0085e7"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"a"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"prop"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5aca45626344590007ecbda5"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>When the request specifies the <code class="language-plaintext highlighter-rouge">np</code> query parameter (that stands for <strong>N</strong>o <strong>P</strong>roperties), the response body is the array of embedded resources and does not include the resource properties.</p>
+
+  <pre><code class="language-plain">GET /db/coll?np
+
+[
+    {
+        "_etag": {
+            "$oid": "5ac9f96063445900062144ac"
+        },
+        "_id": {
+            "$oid": "5ac9f960913b07543c0085ec"
+        },
+        "a": 2
+    },
+    {
+        "_etag": {
+            "$oid": "5ac9f95f63445900062144ab"
+        },
+        "_id": {
+            "$oid": "5ac9f95f913b07543c0085e7"
+        },
+        "a": 1
+    }
+]
+
+</code></pre>
+
+  <h2 id="hal-representation">HAL Representation</h2>
+
+  <ul>
+    <li><a href="#hypermedia-application-language">Hypermedia Application Language</a></li>
+    <li><a href="#strict-mode-representations-of-bson">Strict mode representations of BSON</a></li>
+    <li><a href="#hal-mode">Hal mode</a></li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#properties">Properties</a></li>
+    <li><a href="#embedded-resources">Embedded resources</a></li>
+    <li><a href="#links">Links</a></li>
+  </ul>
+
+  <p>Following the REST mantra, you <em>transfer</em> resource <em>states</em> back and
+forth by the means of <em>representations</em>.</p>
+
+  <p>This section introduces you with the resource <strong>representation</strong> format
+used by RESTHeart.</p>
+
+  <h3 id="hypermedia-application-language">Hypermedia Application Language</h3>
+
+  <p>RESTHeart uses
+the <a href="http://stateless.co/hal_specification.html">HAL+json</a> hypermedia
+format. HAL stands for <em>Hypermedia Application Language</em> and it is
+simple, elegant and powerful.</p>
+
+  <p>HAL builds up on 2 simple concepts: <strong>Resources</strong> and <strong>Links</strong></p>
+
+  <ul>
+    <li><strong>Resources</strong> have state (plain JSON), embedded resources and links</li>
+    <li><strong>Links</strong> have target (href URI) and relations (aka rel)</li>
+  </ul>
+
+  <p><img src="/images/info-model.png" alt="" width="800" height="600" class="img-responsive" /></p>
+
+  <h2 id="strict-mode-representations-of-bson">Strict mode representations of BSON</h2>
+
+  <p><strong>RESTHeart</strong> represents the state of MongoDB resources using
+the <a href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/">strict mode representations of
+BSON</a> that
+conforms to the <a href="https://www.json.org/">JSON RFC</a>. </p>
+
+  <p>MongoDB uses the <a href="https://en.wikipedia.org/wiki/BSON">BSON</a> data format
+which type system is a superset of JSON’s. To preserve type information,
+MongoDB adds this extension to the JSON.</p>
+
+  <p>For instance, the following JSON document includes an ObjectId and a
+Date. These types are supported by BSON and represented with JSON
+according to the ‘strict mode’.</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"546b2dcdef863f5121fc91f3"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$date"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"pi"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.1415</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p><strong>Note</strong>: the strict mode is used on both request and response resource
+representation and also on filter query parameters.</p>
+
+  <p>This filter request, won’t find the document
+<em>/db/coll/546b2dcdef863f5121fc91f3</em> since the _id field is an ObjectId
+and not a String.</p>
+
+  <pre><code class="language-plain">GET /db/coll?filter={'_id':'546b2dcdef863f5121fc91f3'}
+</code></pre>
+
+  <p>The correct request is: </p>
+
+  <pre><code class="language-plain">GET /db/coll?filter={'_id':{'$oid':'546b2dcdef863f5121fc91f3'}}
+</code></pre>
+
+  <h3 id="hal-mode">Hal mode</h3>
+
+  <p>HAL mode is available starting version 1.1</p>
+
+  <p>The query parameter <em>hal</em> controls the verbosity of the representation.
+Valid values are <em>c</em> (for compact) and <em>f</em> (for full); the default value
+(if the param is omitted) is compact mode.</p>
+
+  <p>When hal=f is specified, the representation is more verbose and includes
+special properties (such as <em>_type</em> and <em>_lastupdated_on</em>), link
+templates and curies (links to API documentation).</p>
+
+  <h3 id="examples">Examples</h3>
+
+  <p>We’ll get a collection resource and analyze it. As any other in
+RESTHeart, a collection resource is represented with HAL; thus has its
+own <em>properties</em>, <em>embedded resources</em> (in this case, documents) and
+<em>link templates</em> (for pagination, sorting, etc).</p>
+
+  <pre><code class="language-plain">GET 127.0.0.1:8080/db/coll?count
+</code></pre>
+
+  <p><strong>Response</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 252
+Content-Type: application/hal+json
+Date: Tue, 08 Mar 2016 13:39:20 GMT
+ETag: 56ded2b22d174c2a08cdee83
+X-Powered-By: restheart.org
+
+<span class="o">{</span>
+    <span class="s2">"_embedded"</span>: <span class="o">{</span>
+        <span class="s2">"rh:doc"</span>: <span class="o">[</span>
+            <span class="o">{</span>
+                <span class="s2">"_etag"</span>: <span class="o">{</span>
+                    <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"56ded2ee2d174c2a08cdee85"</span>
+                <span class="o">}</span>, 
+                <span class="s2">"_id"</span>: <span class="o">{</span>
+                    <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"56ded2eead66b2a1e741c054"</span>
+                <span class="o">}</span>, 
+                <span class="s2">"name"</span>: <span class="s2">"mongodb"</span>, 
+                <span class="s2">"rating"</span>: <span class="s2">"hyper cool"</span>
+            <span class="o">}</span>, 
+            <span class="o">{</span>
+                <span class="s2">"_etag"</span>: <span class="o">{</span>
+                    <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"56ded2d42d174c2a08cdee84"</span>
+                <span class="o">}</span>, 
+                <span class="s2">"_id"</span>: <span class="o">{</span>
+                    <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"56ded2d4ad66b2a1e741c053"</span>
+                <span class="o">}</span>, 
+                <span class="s2">"name"</span>: <span class="s2">"restheart"</span>, 
+                <span class="s2">"rating"</span>: <span class="s2">"super cool"</span>
+            <span class="o">}</span>
+        <span class="o">]</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_etag"</span>: <span class="o">{</span>
+        <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"56ded2b22d174c2a08cdee83"</span>
+    <span class="o">}</span>, 
+    <span class="s2">"_id"</span>: <span class="s2">"coll"</span>, 
+    <span class="s2">"_returned"</span>: 2, 
+    <span class="s2">"_size"</span>: 2, 
+    <span class="s2">"_total_pages"</span>: 1, 
+    <span class="s2">"desc"</span>: <span class="s2">"this is my first collection created with restheart"</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="properties">Properties</h3>
+
+  <p>In this case, the collection properties comprise the field <em>desc</em>; this
+is user defined.</p>
+
+  <p>The other fields are reserved properties (i.e. are managed automatically
+by RESTHeart for you); these always starts with _:</p>
+
+  <table class="ts">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_type</code></td>
+        <td>the type of this resource. in this case ‘COLLECTION’ (only returned on hal full mode)</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_id</code></td>
+        <td>the name of the collection</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_etag</code></td>
+        <td>entity tag, used for caching and to avoid ghost writes.</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_size</code></td>
+        <td>the number of the documents in the collection (only returned if the count query parameter is specified)</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_total_pages</code></td>
+        <td>the number of the pages (only returned if the count query parameter is specified)</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_returned</code></td>
+        <td>the number of the documents embedded in this representation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"56ded2b22d174c2a08cdee83"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"desc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"this is my first collection created with restheart"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="embedded-resources">Embedded resources</h2>
+
+  <p>Collection’s embedded resources are the collection documents,
+recursively represented as HAL documents.</p>
+
+  <p>The <code class="language-plaintext highlighter-rouge">_embedded property looks like:</code></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"rh:doc"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"56ded2ee2d174c2a08cdee85"</span><span class="w">
+                </span><span class="p">},</span><span class="w"> 
+                </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"56ded2eead66b2a1e741c054"</span><span class="w">
+                </span><span class="p">},</span><span class="w"> 
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mongodb"</span><span class="p">,</span><span class="w"> 
+                </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hyper cool"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"56ded2d42d174c2a08cdee84"</span><span class="w">
+                </span><span class="p">},</span><span class="w"> 
+                </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"56ded2d4ad66b2a1e741c053"</span><span class="w">
+                </span><span class="p">},</span><span class="w"> 
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w"> 
+                </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"super cool"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h3 id="links">Links</h3>
+
+  <p>_links are only returned on HAL full mode. The only exception are with
+<a href="/docs/v3/relationships">relationships</a>. If a collection defines a relationship,
+the representation of the documents always include the links to related
+data.</p>
+  <div class="table-responsive">
+<table class="ts">
+<colgroup>
+<col class="w-50" />
+<col class="w-50" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Link</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>self</code></td>
+<td>link to itself</td>
+</tr>
+<tr class="even">
+<td><code>first</code></td>
+<td>link to the first page</td>
+</tr>
+<tr class="odd">
+<td><code>last</code></td>
+<td>link to the last page</td>
+</tr>
+<tr class="even">
+<td><code>rh:db</code></td>
+<td>templated link for db</td>
+</tr>
+<tr class="odd">
+<td><code>rh:coll</code></td>
+<td>templated link for collection</td>
+</tr>
+<tr class="even">
+<td><code>rh:document</code></td>
+<td>templated link for document</td>
+</tr>
+<tr class="odd">
+<td><code>rh:filter</code></td>
+<td>templated link for filtering</td>
+</tr>
+<tr class="even">
+<td><code>rh:sort</code></td>
+<td>templated link for sorting</td>
+</tr>
+<tr class="odd">
+<td><code>rh:indexes</code></td>
+<td>link to the collection indexes resource</td>
+</tr>
+<tr class="even">
+<td><code>rh:paging</code></td>
+<td>templated link for paging</td>
+</tr>
+<tr class="odd">
+<td><code>curies</code></td>
+<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="#" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+  <p>The <code class="language-plaintext highlighter-rouge">_links</code> property looks like:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"curies"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://restheart.org/curies/2.0/{rel}.html"</span><span class="p">,</span><span class="w"> 
+                </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rh"</span><span class="p">,</span><span class="w"> 
+                </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w"> 
+        </span><span class="nl">"first"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll?pagesize=100&amp;count&amp;hal=f"</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"last"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll?pagesize=100&amp;count&amp;hal=f"</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:coll"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/{collname}"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:db"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db"</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:document"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll/{docid}{?id_type}"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:filter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll{?filter}"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:indexes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll/_indexes"</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:paging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll{?page}{&amp;pagesize}"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"rh:sort"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll{?sort_by}"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="nl">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/db/coll?count&amp;hal=f"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

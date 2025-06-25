@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - GraphQL API</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - GraphQL API">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/mongodb-graphql/">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/mongodb-graphql/index.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#overview">Overview</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#graphql-app-definition">GraphQL App Definition</a>
+<ul class="sectlevel3">
+<li><a href="#descriptor">Descriptor</a></li>
+<li><a href="#schema">Schema</a></li>
+<li><a href="#mappings">Mappings</a></li>
+<li><a href="#bson-types">Bson types</a></li>
+<li><a href="#queries">Queries</a></li>
+</ul>
+</li>
+<li><a href="#limitations">Limitations</a></li>
+<li><a href="#response-codes">Response codes</a>
+<ul class="sectlevel2">
+<li><a href="#example-responses">Example responses</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>GraphQL API</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="overview">Overview</h3>
+<div class="paragraph">
+<p>The GraphQL plugin works side by side with the already existing REST endpoints to get a managed unified GraphQL API to build modern applications.</p>
+</div>
+<div class="paragraph">
+<p>The <code>restheart-graphql</code> service added to RESTHeart exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration">Configuration</h3>
+<div class="paragraph">
+<p>For each GraphQL application you need to define a so called <strong>GraphQL app definition</strong>. This is a JSON document to create in a MongoDB collection. You can specify the collection that holds the app definitions in the RESTHeart&#8217;s configuration as follow:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">graphql</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">secured</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">uri</span><span class="pi">:</span> <span class="s">/graphql</span>
+    <span class="na">db</span><span class="pi">:</span> <span class="s">&lt;db_name&gt;</span>
+    <span class="na">collection</span><span class="pi">:</span> <span class="s">&lt;reserved_collection_name&gt;</span>
+    <span class="na">verbose</span><span class="pi">:</span> <span class="no">false</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>by default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;db_name&gt;</code>= <strong>restheart</strong></p>
+</li>
+<li>
+<p><code>&lt;reserved_collection_name&gt;</code>= <strong>gql-apps</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This kind of configuration  allows you to change dynamically the behavior of your GraphQL application by updating the related document on MongoDB.</p>
+</div>
+</div>
+<div class="sect1">
+<h2 id="graphql-app-definition">GraphQL App Definition</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A GraphQL application definition is composed by three sections:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="descriptor">Descriptor</h4>
+<div class="paragraph">
+<p>Here you can specify:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>name</code>: GraphQL application name.</p>
+</li>
+<li>
+<p><code>description</code>: GraphQL application description.</p>
+</li>
+<li>
+<p><code>enabled</code>: can be <code>true</code> or <code>false</code>. If it&#8217;s <code>false</code>, the GraphQL application can&#8217;t be queried and vice-versa. By default it is <code>true`</code>.</p>
+</li>
+<li>
+<p><code>uri</code>: it specifies at which endpoint your GraphQL application is reachable (e.g. <code>/graphql/uri</code>). If you don&#8217;t specify the URI, application&#8217;s name is used instead (so, at least one of <code>name</code> or <code>URI</code> must be present).</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyApp"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my first test GraphQL application"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"myapp"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="schema">Schema</h4>
+<div class="paragraph">
+<p>This section must contain GraphQL application&#8217;s schema written with <strong>Schema Definition Language</strong> (SDL). For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"type User{name: String surname: String email: String posts: [Post]} type Post{text: String author: User} type Query{users(limit: Int = 0, skip: Int = 0)}"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In order the schema to be a valid, it must contain the type <strong>Query</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mappings">Mappings</h4>
+<div class="paragraph">
+<p>In this section you can specify how GraphQL types fields are mapped on MongoDB data. Mappings have to be organized following the same hierarchical structure of GraphQL SDL schema, so for each GraphQL type you can insert a JSON object with a property for each field that you want to map.</p>
+</div>
+<div class="paragraph">
+<p>Two kinds of mapping can be made:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Field to Field mapping</p>
+</li>
+<li>
+<p>Field to Query mapping</p>
+</li>
+<li>
+<p>Field to Aggregation mapping (*)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+(*) the new <em>Field to Aggregation mapping</em> is only available on snapshot release and foreseen for future releases.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="field-to-field-mapping">Field to Field mapping</h5>
+<div class="paragraph">
+<p>You can map a GraphQL field with a specific MongoDB document field or with an element of a MongoDB array by <strong>dot-notation</strong>. For instance:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:{</span><span class="w">
+    </span><span class="nl">"User"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"firstName"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"contacts.phone"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"contacts.emails.0"</span><span class="p">,</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Post"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Whit this configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>name</code> is mapped with MongoDB document <code>firstName</code> field</p>
+</li>
+<li>
+<p><code>phone</code> is mapped with field <code>phone</code> in <code>contacts</code> nested document</p>
+</li>
+<li>
+<p><code>email</code> is mapped with 1st element of <code>emails</code> array within <code>contacts</code> nested document</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Notice that, if you don&#8217;t specify a mapping for a field, RESTHeart will map it with a MongoDB document field with the same name.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="field-to-query-mapping">Field to Query mapping</h5>
+<div class="paragraph">
+<p>You can map a GraphQL field with a MongoDB query using the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>db</code> (String): database name;</p>
+</li>
+<li>
+<p><code>collection</code> (String): collection name;</p>
+</li>
+<li>
+<p><code>find</code> (Document): selection filter using query operators (e.g. <code>$in</code>, <code>$and</code>, <code>$or</code>, &#8230;&#8203;);</p>
+</li>
+<li>
+<p><code>sort</code> (Document): order in which the query returns matching documents;</p>
+</li>
+<li>
+<p><code>skip</code> (Document or Integer): how many documents should be skipped of those resulting;</p>
+</li>
+<li>
+<p><code>limit</code> (Document or Integer): how many documents should be returned at most of those resulting.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Starting from v6.5.1, unlimited queries are not allowed: if the query does not specifies a <code>limit</code>, the service configuration <code>default-limit</code> is applied. Also the limit cannot exceed the <code>max-limit</code>. The default GraphQL service configuration in <code>restheart.yml</code> follows:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">graphql</span><span class="pi">:</span>
+    <span class="na">uri</span><span class="pi">:</span> <span class="s">/graphql</span>
+    <span class="na">db</span><span class="pi">:</span> <span class="s">restheart</span>
+    <span class="na">collection</span><span class="pi">:</span> <span class="s">gql-apps</span>
+    <span class="c1"># default-limit is used for queries that don't not specify a limit</span>
+    <span class="na">default-limit</span><span class="pi">:</span> <span class="m">100</span>
+    <span class="c1"># max-limit is the maximum value for a Query limit</span>
+    <span class="na">max-limit</span><span class="pi">:</span> <span class="m">1000</span>
+    <span class="na">verbose</span><span class="pi">:</span> <span class="no">false</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Moreover, a query is <strong>parametric</strong> when the mapped MongoDb query includes one or more <code>$arg</code> and <code>$fk</code> operators:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>$arg</code>: allows to use the arguments of the GraphQL query in the MongoDb query;</p>
+</li>
+<li>
+<p><code>$fk</code>: allows to map a GraphQL field with a MongoDB relation, specifying which is the document field that holds the relation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, having the following GraphQL schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">posts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Post</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Post</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="p">!</span><span class="w">
+  </span><span class="n">text</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">category</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">author</span><span class="p">:</span><span class="w"> </span><span class="n">User</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">usersByName</span><span class="p">(</span><span class="n">_name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">!,</span><span class="w"> </span><span class="n">_limit</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">0</span><span class="p">,</span><span class="w"> </span><span class="n">_skip</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="err">0):</span><span class="w"> </span><span class="p">[</span><span class="n">Users</span><span class="p">]</span><span class="w">
+</span><span class="err">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with MongoDB data organized in the two collections <code>users</code> and <code>posts`</code>:</p>
+</div>
+<div class="paragraph">
+<p><strong>USERS</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6037732f5fa7d52581015ed9"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Foo"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bar"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"contacts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+39113"</span><span class="p">,</span><span class="w"> </span><span class="nl">"emails"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"foo@domain.com"</span><span class="p">,</span><span class="w"> </span><span class="s2">"f.bar@domain.com"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"posts_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"606d963f74744a3fa6f4489a"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"606d963f74744a3fa6f4489e"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>POSTS</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"606d963f74744a3fa6f4489a"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lorem ipsum dolor sit amet"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"front-end"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6037732f5fa7d52581015ed9"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"606d963f74744a3fa6f4489e"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lorem ipsum dolor sit amet"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"back-end"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"author_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6037732f5fa7d52581015ed9"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then, possible mappings are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"schema"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"User"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"posts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"posts"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$in"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$fk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"posts_ids"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Post"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$fk"</span><span class="p">:</span><span class="w"> </span><span class="s2">"author_id"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"Query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"usersByName"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"users"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"find"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$arg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_name"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"limit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$arg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_limit"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"skip"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$arg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"_skip"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"sort"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As result, we are saying that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>given a <code>User</code>, his posts are the MongoDB documents, within the <code>posts</code> collection, with value of field <code>_id</code> that falls in the <code>posts_ids</code> array of `User&#8217;s document;</p>
+</li>
+<li>
+<p>given a <code>Post</code>, its author is the MongoDB document, within the <code>users</code> collection, with value of field <code>_id</code> equal to <code>author_id</code> of `Post&#8217;s document;</p>
+</li>
+<li>
+<p>asking for <code>userByName</code> GraphQL field, the MongoDB documents searched are the ones within the <code>users</code> collection with field <code>name</code> equal to value of <code>_name</code> GraphQL argument. Moreover, we are asking to return at most <code>_limit</code> documents, to skip the firsts <code>_skip</code> ones and to sort them by name in reverse order.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+you can use also the <strong>dot notation</strong> with the <code>$fk</code> operator.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="field-to-aggregation-mapping">Field to Aggregation mapping</h5>
+<div class="paragraph">
+<p>You can map a GraphQL field with a MongoDB query using the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>db (String): database name;</p>
+</li>
+<li>
+<p>collection (String): collection name;</p>
+</li>
+<li>
+<p>stages (Array): array of aggregation stages.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As with field to query mapping, <code>$arg</code> and <code>$fk</code> operators are allowed in aggregation stages.<br>
+Referring to the previous example of mapping, the following aggregation stages are possible:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="err">...,</span><span class="w">
+</span><span class="nl">"Query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">....</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"countPostsByCategory"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"db"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restheart"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"collection"</span><span class="p">:</span><span class="w"> </span><span class="s2">"users"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"$group"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$category"</span><span class="p">,</span><span class="w"> </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$count"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the Query in the GraphQL schema will now have the following field:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">Stats</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+  </span><span class="n">count</span><span class="p">:</span><span class="w"> </span><span class="nb">Int</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="k">type</span><span class="w"> </span><span class="n">Query</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">countPostsByCategory</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Stats</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bson-types">Bson types</h3>
+<div class="paragraph">
+<p>All primitive GraphQL types have been mapped to corresponding BSON types plus a set of custom GraphQL scalars types have been added:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 60%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GraphQL type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Bson Type</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Example</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonBoolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>b: true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonString</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>s: "foo"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonInt32</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>n: 1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonInt64</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>n: { "$numberLong": "10000000000000000000" }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Float</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonDouble</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>n: { "$numberDouble": "1.0" }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Decimal128</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonDecimal128</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>n: { "$numberDecimal": "123.456" }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ObjectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonObjectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "$oid": "618d18d6d058286395bb5567" }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Timestamp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonTimestamp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ts: { "$timestamp": {"t": 1, "i": 1} }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>d: { "$date": 1639666957000 }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Regex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonRegex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>r: { "$regex": "&lt;sRegex&gt;", "$options": "&lt;sOptions&gt;" }</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonDocument</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>BsonDocument</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>doc: { "any": 1, "possible": 1, "document": 1 }</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="example">Example</h4>
+<div class="paragraph">
+<p>The following GraphQL type <code>User</code> defines the property <code>_id</code> to be of type <code>ObjectId</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="graphql"><span class="k">type</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">_id</span><span class="p">:</span><span class="w"> </span><span class="n">ObjectId</span><span class="w">
+    </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+    </span><span class="n">surname</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+    </span><span class="n">email</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w">
+    </span><span class="n">posts</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">Post</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="queries">Queries</h3>
+<div class="paragraph">
+<p>Up to now, only GraphQL Query can be made, so no subscription or mutation. In order to make a query you can use HTTP request with POST method and both content-type <code>application/json</code> and <code>application/graphql</code>. For instance:</p>
+</div>
+<div class="sect3">
+<h4 id="applicationjson"><code>application/json</code></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/graphql/&lt;app-uri&gt;</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">&lt;host-name&gt;</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span></code></pre>
+</div>
+</div>
+<div class="paragraph text-muted">
+<p><strong>Request body</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"query test_operation($name: String){ userByName(_name: $name){name posts{text}} }"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"variables"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"operationName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="applicationgraphql"><code>application/graphql</code></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/graphql/&lt;app-uri&gt;</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">&lt;host-name&gt;</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/graphql</span></code></pre>
+</div>
+</div>
+<div class="paragraph text-muted">
+<p><strong>Request body</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="grahpql">{
+  userByName(_name: "...") {
+      name
+      posts {
+        text
+      }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limitations">Limitations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The GraphQL service has the following limitations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Read-only API</strong>: mutations are not supported; the GraphQL API is only intended for simplifying data fetching. To write data, the REST API must be used.</p>
+</li>
+<li>
+<p><strong>Not-supported schema keywords</strong>: the schema resolvers do not support the following keywords: <code>enum</code>, <code>union</code>, <code>interface</code> and <code>input</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="response-codes">Response codes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the following table are reported possible RESTHeart GraphQL Service responses:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>HTTP Status code</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It&#8217;s all OK!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Invalid GraphQL query (e.g. required fields are not in the schema, argument type mismatch), schema - MongoDB data type mismatch, invalid app definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">There is no GraphQL app bound to the requested endpoint</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">405</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP method used not supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal Server Error</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="example-responses">Example responses</h3>
+<div class="paragraph">
+<p><strong>200 - OK</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:{</span><span class="w">
+    </span><span class="nl">"userByName"</span><span class="p">:[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nameUser1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"surnameUser1"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nameUser2"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"surnameUser2"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>400 - Bad Request - Invalid GraphQL Query / schema - MongoDB data type mismatch</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"errors"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>400 - Bad Request - Invalid GraphQL App Definition</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"http status code"</span><span class="p">:</span><span class="w">  </span><span class="mi">400</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"http status description"</span><span class="p">:</span><span class="w">  </span><span class="s2">"Bad Request"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"message"</span><span class="p">:</span><span class="w">  </span><span class="s2">"..."</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>405 - Method Not Allowed</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"http status code"</span><span class="p">:</span><span class="w">  </span><span class="mi">405</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"http status description"</span><span class="p">:</span><span class="w">  </span><span class="s2">"Method Not Allowed"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>500 - Internal Server Error</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"http status code"</span><span class="p">:</span><span class="w">  </span><span class="mi">500</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"http status description"</span><span class="p">:</span><span class="w">  </span><span class="s2">"Internal Server Error"</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

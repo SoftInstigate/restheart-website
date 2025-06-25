@@ -1,0 +1,51 @@
+<script>
+    // in the past the documentation structure was flat
+    // then we moved pages in several subdirectories
+    // this scripts tries to redirect requests for old pages
+    // /docs/etag -> /docs/mongodb-rest/etag
+
+    // remove first slash char
+    var path = window.location.pathname.substr(1);
+
+    if (path[path.length-1] == "/") {
+        path = path.substr(0, path.length - 1);
+    }
+
+    path = path.substr(path.indexOf("/"));
+
+    // prepend to path
+    const pathMongoREST = '/docs/mongodb-rest/' + path;
+    const pathMongoWebsocket = '/docs/mongodb-websocket/' + path;
+    const pathMongoGraphQL = '/docs/mongodb-graphql/' + path;
+    path = '/docs' + path;
+
+    var URL = window.location.origin + path
+
+    const URLMongoREST = window.location.origin + pathMongoREST;
+    const URLMongoWebsocket = window.location.origin + pathMongoWebsocket;
+    const URLMongoGraphQL = window.location.origin + pathMongoGraphQL;
+
+    //console.log(URL);
+    //console.log(URLV3);
+    var requestedPageExists = function(resourceUrl){
+        var http = new XMLHttpRequest();
+
+        http.open('GET', resourceUrl, false);
+        http.send();
+
+        return http.status != 404;
+    }
+
+    if(requestedPageExists(URL)) {
+        window.location.replace(URL);
+    } else if (requestedPageExists(URLMongoREST)) {
+        window.location.replace(URLMongoREST);
+    } else if (requestedPageExists(URLMongoWebsocket)) {
+        window.location.replace(URLMongoWebsocket);
+    } else if (requestedPageExists(URLMongoGraphQL)) {
+        window.location.replace(URLMongoGraphQL);
+    } else {
+        window.location.replace(window.location.origin + '/not-found');
+    };
+</script>
+

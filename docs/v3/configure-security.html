@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Enable and Configure Security</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Enable and Configure Security">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/configure-security">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/configure-security.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#how-to-use-the-default-self-signed-certificate">How to use the default self signed certificate </a></li>
+        <li><a href="#how-to-use-a-valid-certificate">How to use a valid certificate</a></li>
+      </ul>
+    </li>
+    <li><a href="#identity-manager">Identity Manager</a>
+      <ul>
+        <li><a href="#simplefileidentitymanager">SimpleFileIdentityManager</a></li>
+        <li><a href="#global-security-predicates">Global Security Predicates</a></li>
+        <li><a href="#dbidentitymanager">DbIdentityManager</a></li>
+      </ul>
+    </li>
+    <li><a href="#access-manager">Access Manager</a>
+      <ul>
+        <li><a href="#simpleaccessmanager">SimpleAccessManager</a></li>
+        <li><a href="#specify-permission-on-uri-remapped-resources">Specify Permission on URI Remapped Resources</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Enable and Configure Security</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>In order to enable security, RESTHeart must be executed specifying
+a <strong>configuration file</strong> with the appropriate security settings.</p>
+
+  <p>The default convention over configuration is to have authentication and
+authorization disabled altogether (users are not authenticated and
+anyone can do anything).</p>
+
+  <p>Once security is enabled, requests undergo the following process:</p>
+
+  <ol>
+    <li>the client submits a request over SSL providing username and
+password credentials via the basic authentication method</li>
+    <li>the RESTHeart’s Identity Manager (IDM) starts the <em>authentication</em>
+of the request it, i.e. it verifies the user identity against the
+provided id and password:
+      <ol>
+        <li>if the authentication fails, the requests ends with response
+code <em>401 Unauthorized</em>;</li>
+        <li>if the authentication succeeds, the request continue</li>
+      </ol>
+    </li>
+    <li>the RESTHeart’s Access Manager (AM) starts the <em>authorization</em> of
+the request, i.e. it determines if the client is given the
+permission to execute it against the configured security policy:
+      <ol>
+        <li>if the authorization fails, the requests ends with response
+code <em>403 Forbidden</em></li>
+        <li>if the authorization succeeds, the request continue</li>
+      </ol>
+    </li>
+    <li>RESTHeart executes the request interacting with MongoDB and
+eventually returns the response code <em>200 OK</em> (this depends on the
+request type and execution result)</li>
+  </ol>
+
+  <p><img src="/images/attachments/13369378/13729831.png?height=400" alt="" height="400" class="image-center img-responsive" /></p>
+
+  <p>The configuration sections to setup are:</p>
+
+  <ol>
+    <li><strong>https listener </strong>to enable SSL (if SSL is not enabled otherwise,
+for instance via a reverse proxy)</li>
+    <li><strong>idm</strong> to specify the <strong>Identity Manager </strong>(the component
+responsible of authenticating a client, i.e. verifying its identity)</li>
+    <li><strong>access-manger</strong> to specify the Access Manager (the component
+responsible of authorizing a request, i.e. determining if the client
+is given the permission to execute it)</li>
+  </ol>
+
+  <p>The client must send the user id and password credentials via the basic
+authentication mechanism.</p>
+
+  <p>RESTHeart is stateless: there isn’t any authentication session and
+credentials must be sent on every request.</p>
+
+  <p>Refer to [How Clients authenticate]/docs/v3/clients-authentication() for more
+information.</p>
+
+  <p>The HTTPS listener</p>
+
+  <p><strong>Important!</strong>  HTTP is not secure: credentials can be sniffed by a man-in-the-middle
+attack. <strong>It is paramount to use HTTPS</strong></p>
+
+  <p>There are many ways of enabling HTTS; for instance you can setup a web
+server such as nginx as a reverse proxy in front of RESTHeart or you may
+rely on cloud services that provides load balancers that manages SSL for
+you (such are Amazon WS or Google Cloud).</p>
+
+  <p>In any case, RESTHeart is able to expose directly the HTTS protocol and
+this is done configuring the https listener. This is the suggested
+configuration for small systems.</p>
+
+  <p>The following configuration file except shows the involved options:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#### listeners</span>
+https-listener: <span class="nb">true
+</span>https-host: 0.0.0.0
+https-port: 4443
+
+<span class="c">#### SSL configuration</span>
+ 
+use-embedded-keystore: <span class="nb">true</span>
+
+<span class="c">#keystore-file: /path/to/keystore/file</span>
+<span class="c">#keystore-password: password</span>
+<span class="c">#certpassword: password</span>
+</code></pre></div>  </div>
+
+  <p>To enable https configure the https listener using the following
+options:</p>
+
+  <ol>
+    <li><strong>https-listener</strong> <em>true</em> to enable it</li>
+    <li><strong>https-host</strong> the ip where to bind the listener</li>
+    <li><strong>https-port</strong> the port where to bind the listener:</li>
+  </ol>
+
+  <p>A valid SSL certificate must configured in order to enable the https
+listener and there are two options:</p>
+
+  <ol>
+    <li>use the default RESTHeart self signed certificate</li>
+    <li>use your own certificate</li>
+  </ol>
+
+  <h3 id="how-to-use-the-default-self-signed-certificate">How to use the default self signed certificate </h3>
+
+  <p>The only option to specify to use the default, embedded self signed
+certificate is the following:</p>
+
+  <ol>
+    <li>use-embedded-keystore: true</li>
+  </ol>
+
+  <p>Using the self-signed certificate guarantees that data is encrypted and
+protects from man-in-the-middle attacks. However it leads to issues with
+some clients and all browser because it does not guarantees the client
+about the server identity. For instance:</p>
+
+  <ol>
+    <li>with <strong>curl</strong> you need to specify the “–insecure” option or you’ll
+get an error message;</li>
+    <li>with any browser, the user will get warnings about the server
+identity</li>
+  </ol>
+
+  <h3 id="how-to-use-a-valid-certificate">How to use a valid certificate</h3>
+
+  <p>Of course you need to get a valid certificate from a Certificate
+Authority; to use it you need to configure you java keystore (refer to
+this <a href="https://www.digitalocean.com/community/tutorials/java-keytool-essentials-working-with-java-keystores">post</a> for
+more information) and specify the following RESTHeart options:</p>
+
+  <ol>
+    <li><strong>use-embedded-keystore</strong>: false to disable the default self signed
+certificate</li>
+    <li><strong>keystore-file</strong> the path of the keystore file</li>
+    <li><strong>keystore-password</strong> the keystore password</li>
+    <li><strong>certpassword</strong> the certificate password</li>
+  </ol>
+
+  <h2 id="identity-manager">Identity Manager</h2>
+
+  <h3 id="configuration">Configuration</h3>
+
+  <p>The Identity Manager is responsible of authenticating a client,
+verifying its credentials and eventually associating the request with
+its username and roles.</p>
+
+  <p>If the client credentials are not valid the response will be <strong>HTTP/1.1
+401 Unauthorized</strong></p>
+
+  <p>The IDM is pluggable: the actual IDM implementation to use can be
+configured. Please refer to <a href="/docs/v3/custom-identity-manager">Custom Identity
+Manager</a> section for more information on how to
+develop and configure a custom IDM.</p>
+
+  <p>The <strong>idm</strong> section of the yaml configuration file is:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">idm</span><span class="pi">:</span>    
+    <span class="na">implementation-class</span><span class="pi">:</span> <span class="s">org.restheart.security.impl.SimpleFileIdentityManager</span>
+    <span class="na">conf-file</span><span class="pi">:</span> <span class="s">./etc/security.yml</span>
+</code></pre></div>  </div>
+
+  <ol>
+    <li><strong>implementation-class</strong> specifies the java class that implements
+the IDM. You can use one of the implementations shipped
+out-of-the-box or implement your own. </li>
+    <li><strong>cont-file</strong> is the path of a yam configuration file that is passed
+to the IDM. <strong>Note</strong>: the path is either absolute or relative to the
+directory of restheart.jar</li>
+  </ol>
+
+  <h3 id="simplefileidentitymanager">SimpleFileIdentityManager</h3>
+
+  <p>The SimpleFileIdentityManager shipped with RESTHeart (class is
+<em>org.restheart.security.impl.SimpleFileIdentityManager</em>) authenticates
+users defined in a yaml file.</p>
+
+  <p>This is how its straightforward conf-file looks like:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">users</span><span class="pi">:</span>
+ <span class="pi">-</span> <span class="na">userid</span><span class="pi">:</span> <span class="s">admim</span>
+   <span class="na">password</span><span class="pi">:</span> <span class="s">changeit</span>
+   <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">admins</span><span class="pi">]</span>
+ <span class="pi">-</span> <span class="na">userid</span><span class="pi">:</span> <span class="s">user</span>
+   <span class="na">password</span><span class="pi">:</span> <span class="s">changeit</span>
+   <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">users</span><span class="pi">]</span>
+</code></pre></div>  </div>
+
+  <h3 id="global-security-predicates">Global Security Predicates</h3>
+
+  <blockquote>
+    <p>Global Security Predicates are applied to all requests.</p>
+  </blockquote>
+
+  <p>Global Security Predicates can be defined programmatically as follows:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// allow users with role "ADMIN" to GET /</span>
+<span class="nc">RequestContextPredicate</span> <span class="n">securityPredicate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RequestContextPredicate</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">hse</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">context</span><span class="o">.</span><span class="na">isRoot</span><span class="o">()</span>
+                        <span class="o">&amp;&amp;</span> <span class="n">context</span><span class="o">.</span><span class="na">isGet</span><span class="o">()</span>
+                        <span class="o">&amp;&amp;</span> <span class="n">context</span><span class="o">.</span><span class="na">getAuthenticatedAccount</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span>
+                        <span class="o">&amp;&amp;</span> <span class="n">context</span><span class="o">.</span><span class="na">getAuthenticatedAccount</span><span class="o">().</span><span class="na">getRoles</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">"ADMIN"</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+<span class="c1">// add the global predicate</span>
+<span class="nc">AccessManagerHandler</span><span class="o">.</span><span class="na">getGlobalSecurityPredicates</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">securityPredicate</span><span class="o">);</span>
+</code></pre></div>  </div>
+  <p>You can use an <a href="/docs/v3/initializer">Initializer</a> to add Global Security Predicates.</p>
+
+  <h3 id="dbidentitymanager">DbIdentityManager</h3>
+
+  <p>The DbIdentityManager shipped with RESTHeart (class is
+<em>org.restheart.security.impl.DbIdentityManager</em>) authenticates users
+defined in a MongoDB collection.</p>
+
+  <p>To use the DbIdentityManager, set the <strong>idm</strong> section of the yaml 
+configuration file as follows:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">idm</span><span class="pi">:</span>    
+    <span class="na">implementation-class</span><span class="pi">:</span> <span class="s">org.restheart.security.impl.DbIdentityManager</span>
+    <span class="na">conf-file</span><span class="pi">:</span> <span class="s">./etc/security.yml</span>
+</code></pre></div>  </div>
+
+  <p>This is how the security.yml looks like:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">dbim</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">db</span><span class="pi">:</span> <span class="s">userbase</span>
+      <span class="na">coll</span><span class="pi">:</span> <span class="s">accounts</span>
+      <span class="na">prop-name-id</span><span class="pi">:</span> <span class="s">_id</span>
+      <span class="na">prop-name-password</span><span class="pi">:</span> <span class="s">password</span>
+      <span class="na">prop-name-roles</span><span class="pi">:</span> <span class="s">roles</span>
+      <span class="na">bcrypt-hashed-password</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">create-user</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">create-user-document</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{"_id":</span><span class="nv"> </span><span class="s">"admin",</span><span class="nv"> </span><span class="s">"password":</span><span class="nv"> </span><span class="s">"secret",</span><span class="nv"> </span><span class="s">"roles":</span><span class="nv"> </span><span class="s">["admins"]}'</span>
+      <span class="na">cache-enabled</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">cache-size</span><span class="pi">:</span> <span class="m">1000</span>
+      <span class="na">cache-ttl</span><span class="pi">:</span> <span class="m">60000</span>
+      <span class="na">cache-expire-policy</span><span class="pi">:</span> <span class="s">AFTER_WRITE</span>
+</code></pre></div>  </div>
+
+  <p>The <em>db</em> and <em>coll</em> properties point to the collection with the user documents
+(userbase.accounts in this case).</p>
+
+  <p>The <em>prop-</em> prefixed properties define which properties of the user document 
+are used for authentication:</p>
+
+  <ol>
+    <li><strong>id</strong>: (string) the property holding the userid</li>
+    <li><strong>password</strong>: (string) the property holding the password</li>
+    <li><strong>roles</strong>: (array of strings) the property holding the user roles</li>
+  </ol>
+
+  <p>The <em>cache-</em> prefixed properties control the cache to avoids the IDM actually
+executing a MongoDB query for each request.</p>
+
+  <p>The property <em>bcrypt-hashed-password</em> defines if the password is hashed using the bcrypt
+algorithm. Stating RESTHeart 3.3, write requests to the dbim collection automatically
+bcrypt the password property in the request body.</p>
+
+  <p>If <em>create-user</em> is set to <em>true</em>, RESTHeart check if the <em>create-user-document</em>
+exits at startup time, creating it eventually. This is useful to initialize a default user. Note
+the if <em>bcrypt-hashed-password</em> is set to <em>true</em>, the <em>create-user-document</em> password must
+be bcryped.</p>
+
+  <p><strong>Note</strong> Starting from RESTHeart v3.3, the <em>password</em> field is always 
+filtered out from the response and read requests with a filter query parameter involving
+the <em>password</em> property are forbidden to avoid snooping passwords.</p>
+
+  <p><strong>Hint</strong> To completely hide the users collection, just specify a underscore prefixed
+collection name (e.g. <em>_accounts</em>). 
+RESTHeart threats collections whose names start with _ as reserved: they are not
+exposed by the API.</p>
+
+  <p>If you actually expose it, make sure to:</p>
+
+  <ol>
+    <li>define an appropriate access policy enforced by the Access Manager
+so that users can only access their own data, (e.g. a user cannot modify other users’ passwords)</li>
+    <li>For RESTHeart versions older than 3.3, filter out the <em>password</em> property from responses with
+a <a href="/docs/v3/request-transformers">representation transformer</a>.</li>
+  </ol>
+
+  <h2 id="access-manager">Access Manager</h2>
+
+  <p>The Access Manager is responsible of authorizing requests against the
+security policy.</p>
+
+  <p>If the request is not authorized, i.e. the security policy does not
+allow it, the response will be <strong>HTTP/1.1 403 Forbidden</strong></p>
+
+  <p>The Access Manager is pluggable: the actual AM implementation to use can
+be configured. Please refer to Custom Access Manager section for more
+information on how to develop and configure a custom AM.</p>
+
+  <p>The <strong>access-manager</strong> section of the yaml configuration file is:</p>
+
+  <h3 id="configuration-1">Configuration</h3>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>access-manager:    
+    implementation-class: org.restheart.security.impl.SimpleAccessManager
+    conf-file: ./etc/security.yml
+</code></pre></div>  </div>
+
+  <ol>
+    <li><strong>implementation-class</strong> specifies the java class that implements
+the Access Manager. You can specify the default SimpleAccessManager
+or implement your own.</li>
+    <li><strong>conf-file</strong> is the path of a yam configuration file that is passed
+to the Access Manager. <strong>Note</strong>: the path is either absolute or
+relative to the directory of restheart.jar</li>
+  </ol>
+
+  <h3 id="simpleaccessmanager">SimpleAccessManager</h3>
+
+  <p>The default implementation of the Access Manager shipped with RESTHeart
+is called SimpleAccessManager (class is
+org.restheart.security.impl.SimpleAccessManager).</p>
+
+  <p>This AM enforces the access policy specified in a yaml configuration
+file as a set of permissions.</p>
+
+  <p>This is how the configuration file looks like:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>permissions:
+ - role: admins
+   predicate: path-prefix[path<span class="o">=</span><span class="s2">"/"</span><span class="o">]</span>
+ - role: <span class="nv">$unauthenticated</span>
+   predicate: path-prefix[path<span class="o">=</span><span class="s2">"/publicdb/"</span><span class="o">]</span> and method[value<span class="o">=</span><span class="s2">"GET"</span><span class="o">]</span>
+ - role: <span class="nb">users
+   </span>predicate: path-prefix[path<span class="o">=</span><span class="s2">"/publicdb/"</span><span class="o">]</span>
+</code></pre></div>  </div>
+
+  <p>Permissions are given to roles and are expressed as request predicates
+on http requests. Please refer to <a href="https://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#predicates-attributes-and-handlers">undertow
+documentation</a> for
+more information about predicates.</p>
+
+  <p>Assign permission to the special role <strong>$unauthenticated</strong> to enable
+requests on resources without requiring authentication.</p>
+
+  <h4 id="specify-permission-on-uri-remapped-resources">Specify Permission on URI Remapped Resources</h4>
+
+  <p>The <em>mongo-mounts</em> configuration option allows to map the URI of the
+MongoDB resources.</p>
+
+  <p>Starting from RESTHeart version 3.3, the <em>path</em> attribute of permission 
+are absolute.</p>
+
+  <p>Example: With the following configuration, all the collections of the
+db <em>mydb</em> are given the path prefix <em>/api</em></p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mongo-mounts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">what</span><span class="pi">:</span> <span class="s">/mydb</span>
+      <span class="na">where</span><span class="pi">:</span> <span class="s">/api</span>
+</code></pre></div>  </div>
+
+  <p>The collection /mydb/coll is therefore remapped to the URI <em>/api/coll</em>
+and the predicate to allow GET requests on this collection is:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">permissions</span><span class="pi">:</span>
+ <span class="pi">-</span> <span class="na">role</span><span class="pi">:</span> <span class="s">$unauthenticated</span>
+   <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix[path="/api/coll"] and method[value="GET"]</span>
+</code></pre></div>  </div>
+
+  <p>For versions older than 3.3, the rule is:</p>
+
+  <p>When the URI of a resource is remapped via mongo-mounts configuration
+option, the <em>path</em> attribute of permissions must be relative to the
+<em>what </em>argument of the <em>mongo-mounts</em> option.</p>
+
+  <p>Example: With the following configuration, all the collections of the
+db <em>mydb</em> are given the path prefix <em>/api</em></p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mongo-mounts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">what</span><span class="pi">:</span> <span class="s">/mydb</span>
+      <span class="na">where</span><span class="pi">:</span> <span class="s">/api</span>
+</code></pre></div>  </div>
+
+  <p>The collection /mydb/coll is therefore remapped to the URI <em>/api/coll</em>
+and the predicate to allow GET requests on this collection is:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">permissions</span><span class="pi">:</span>
+ <span class="pi">-</span> <span class="na">role</span><span class="pi">:</span> <span class="s">$unauthenticated</span>
+   <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix[path="/coll"] and method[value="GET"]</span>
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

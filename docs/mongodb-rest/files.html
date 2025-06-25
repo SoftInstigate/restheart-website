@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Managing Binary Files</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Managing Binary Files">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/mongodb-rest/files">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v8
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            <strong>v8</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/mongodb-rest/files.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
+    <li><a href="/docs">Overview</a></li>
+    <li><a href="/docs/faq">FAQ</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/performances">Performances</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/configuration">Configuration</a></li>
+    <li><a href="/docs/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/security/user-management">User Management</a></li>
+    <li><a href="/docs/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/proxy">Proxying requests</a></li>
+    <li><a href="/docs/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/logging">Logging</a></li>
+    <li><a href="/docs/monitoring">Monitoring</a></li>
+    <li><a href="/docs/auditing">Auditing</a></li>
+    <li><a href="/docs/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/plugins/overview">Overview</a></li>
+    <li><a href="/docs/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/plugins/services">Services</a></li>
+    <li><a href="/docs/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/plugins/providers">Providers</a></li>
+    <li><a href="/docs/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/security/overview">Overview</a></li>
+    <li><a href="/docs/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/security/authentication">Authentication</a></li>
+    <li><a href="/docs/security/authorization">Authorization</a></li>
+    <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/mongodb-rest/tutorial">Getting Started</a></li>
+    <li><a href="/docs/mongodb-rest/read-docs">Reading Documents</a></li>
+    <li><a href="/docs/mongodb-rest/write-docs">Writing Documents</a></li>
+    <li><a href="/docs/mongodb-rest/files">Managing Binary Files</a></li>
+    <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/mongodb-rest/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+    <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/mongodb-rest/caching">Performance and Caching</a></li>
+    <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/mongodb-rest/sample-data">Load Sample Data</a></li>
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/mongodb-graphql/getting-started">Getting Started</a></li>
+    <li><a href="/docs/mongodb-graphql/graphql-apps">App Definition</a>
+        <ul>
+            <li><a href="/docs/mongodb-graphql/schema">Schema Design</a></li>
+            <li><a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></li>
+            <li><a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></li>
+        </ul>
+    </li>
+    <li><a href="/docs/mongodb-graphql/tutorial">Basic Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/complex-app-example">Advanced Example</a></li>
+    <li><a href="/docs/mongodb-graphql/optimization">Performance Optimization</a></li>
+    <li><a href="/docs/mongodb-graphql/best-practices">Best Practices</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'mongodb';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel1">
+<li><a href="#managing-binary-files-with-restheart">Managing Binary Files with RESTHeart</a>
+<ul class="sectlevel2">
+<li><a href="#file-buckets">File Buckets</a></li>
+<li><a href="#uploading-files">Uploading Files</a></li>
+<li><a href="#retrieving-files">Retrieving Files</a></li>
+<li><a href="#updating-file-metadata">Updating File Metadata</a></li>
+<li><a href="#deleting-files">Deleting Files</a></li>
+<li><a href="#important-notes">Important Notes</a></li>
+<li><a href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Managing Binary Files</span>
+    </h2>
+</div>
+            <div class="sect1">
+<h2 id="managing-binary-files-with-restheart">Managing Binary Files with RESTHeart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RESTHeart provides full support for storing and retrieving binary files of any size in MongoDB. This functionality uses MongoDB&#8217;s <strong>GridFS</strong>, which allows storing files that exceed the BSON document size limit of 16MB.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+GridFS automatically splits large files into smaller chunks and stores them in separate documents.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="file-buckets">File Buckets</h3>
+<div class="sect3">
+<h4 id="what-is-a-file-bucket">What is a File Bucket?</h4>
+<div class="paragraph">
+<p>A file bucket is a special collection designed for storing binary files along with their metadata. In MongoDB terms, it&#8217;s a GridFS bucket.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+File bucket names must end with <code>.files</code> (e.g., <code>images.files</code> is a valid file bucket name)
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="creating-a-file-bucket">Creating a File Bucket</h4>
+<div class="paragraph">
+<p>To store binary files, first create a file bucket:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PUT</span> <span class="nn">/mybucket.files</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 201 Created</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="uploading-files">Uploading Files</h3>
+<div class="sect3">
+<h4 id="post-upload-a-new-file">POST - Upload a New File</h4>
+<div class="paragraph">
+<p>To upload a file, use a <code>POST</code> request with <code>multipart/form-data</code> encoding:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">POST</span> <span class="nn">/mybucket.files</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW</span>
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="example.jpg"
+Content-Type: image/jpeg
+
+(binary data)
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="metadata"
+
+{"author":"SoftInstigate", "category":"documentation"}
+------WebKitFormBoundary7MA4YWxkTrZu0gW--</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The request has two parts:
+* <code>file</code>: The binary content of the file
+* <code>metadata</code>: A JSON object with custom metadata (optional)</p>
+</div>
+<div class="paragraph">
+<p>Using command-line tools:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">With cURL</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">-u</span> admin:secret <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s2">"file=@/path/to/example.jpg"</span> <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s1">'metadata={"author":"SoftInstigate","category":"documentation"}'</span> <span class="se">\</span>
+  http://localhost:8080/mybucket.files</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">With HTTPie</dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>http <span class="nt">-a</span> admin:secret <span class="nt">--form</span> POST <span class="se">\</span>
+  localhost:8080/mybucket.files <span class="se">\</span>
+  file@/path/to/example.jpg <span class="se">\</span>
+  <span class="nv">metadata</span><span class="o">=</span><span class="s1">'{"author":"SoftInstigate","category":"documentation"}'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A successful upload returns:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Location</span><span class="p">:</span> <span class="s">http://localhost:8080/mybucket.files/60f8a7b9e4b053f542c13ece</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Location</code> header contains the URI of the newly created file, with the automatically generated ID.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="put-upload-with-a-custom-id">PUT - Upload with a Custom ID</h4>
+<div class="paragraph">
+<p>To upload a file with a specific ID, use a <code>PUT</code> request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>curl <span class="nt">-X</span> PUT <span class="se">\</span>
+  <span class="nt">-u</span> admin:secret <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s2">"file=@/path/to/example.jpg"</span> <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s1">'metadata={"author":"SoftInstigate","category":"documentation"}'</span> <span class="se">\</span>
+  http://localhost:8080/mybucket.files/my-custom-id</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="retrieving-files">Retrieving Files</h3>
+<div class="sect3">
+<h4 id="get-file-metadata">GET - File Metadata</h4>
+<div class="paragraph">
+<p>To retrieve a file&#8217;s metadata:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">GET</span> <span class="nn">/mybucket.files/my-custom-id</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "_id": "my-custom-id",
+    "chunkSize": 261120,
+    "filename": "example.jpg",
+    "length": 66273,
+    "metadata": {
+        "_etag": {
+            "$oid": "60f8a7b9e4b053f542c13ecd"
+        },
+        "author": "SoftInstigate",
+        "category": "documentation",
+        "contentType": "image/jpeg"
+    },
+    "uploadDate": {
+        "$date": 1626955705283
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>_id</code>: The file identifier</p>
+</li>
+<li>
+<p><code>chunkSize</code>: The size of each chunk in bytes</p>
+</li>
+<li>
+<p><code>filename</code>: The original filename</p>
+</li>
+<li>
+<p><code>length</code>: Total file size in bytes</p>
+</li>
+<li>
+<p><code>metadata</code>: Custom metadata plus system-generated fields</p>
+</li>
+<li>
+<p><code>uploadDate</code>: When the file was uploaded</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="get-file-binary-content">GET - File Binary Content</h4>
+<div class="paragraph">
+<p>To retrieve the actual binary file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">GET</span> <span class="nn">/mybucket.files/my-custom-id/binary</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 66273
+
+(binary data)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>RESTHeart automatically sets the appropriate <code>Content-Type</code> header based on the detected file type.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="filtering-files-by-metadata">Filtering Files by Metadata</h4>
+<div class="paragraph">
+<p>You can query files by their metadata just like regular documents:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">GET</span> <span class="nn">/mybucket.files?filter={"metadata.author":"SoftInstigate"}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This returns metadata for all files with the specified author.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="updating-file-metadata">Updating File Metadata</h3>
+<div class="sect3">
+<h4 id="patch-update-specific-metadata-fields">PATCH - Update Specific Metadata Fields</h4>
+<div class="paragraph">
+<p>To update specific metadata fields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PATCH</span> <span class="nn">/mybucket.files/my-custom-id</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="nl">"metadata.category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"images"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"metadata.tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"example"</span><span class="p">,</span><span class="w"> </span><span class="s2">"documentation"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+When updating metadata, use <code>Content-Type: application/json</code>, not multipart/form-data.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="put-replace-all-metadata">PUT - Replace All Metadata</h4>
+<div class="paragraph">
+<p>To completely replace the metadata:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">PUT</span> <span class="nn">/mybucket.files/my-custom-id</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="nl">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"New Author"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"updated"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Update operators and aggregation pipelines cannot be used with file metadata updates.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-files">Deleting Files</h3>
+<div class="paragraph">
+<p>To delete a file and all its chunks:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="http"><span class="nf">DELETE</span> <span class="nn">/mybucket.files/my-custom-id</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="important-notes">Important Notes</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>RESTHeart automatically detects and sets the file&#8217;s content type</p>
+</li>
+<li>
+<p>File operations don&#8217;t support write modes - POST is always insert, PUT is always upsert</p>
+</li>
+<li>
+<p>File metadata can be queried with the same operators as regular documents</p>
+</li>
+<li>
+<p>File buckets have two underlying collections in MongoDB: <code>&lt;bucket-name&gt;.files</code> for metadata and <code>&lt;bucket-name&gt;.chunks</code> for content</p>
+</li>
+<li>
+<p>Binary content is accessed with the <code>/binary</code> suffix</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples">Examples</h3>
+<div class="sect3">
+<h4 id="example-1-upload-and-serve-an-image">Example 1: Upload and serve an image</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="c"># Upload an image</span>
+curl <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">-u</span> admin:secret <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s2">"file=@/path/to/logo.png"</span> <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s1">'metadata={"purpose":"website"}'</span> <span class="se">\</span>
+  http://localhost:8080/images.files
+
+<span class="c"># Access the image in a web page</span>
+&lt;img <span class="nv">src</span><span class="o">=</span><span class="s2">"http://localhost:8080/images.files/60f8a7b9e4b053f542c13ece/binary"</span> <span class="nv">alt</span><span class="o">=</span><span class="s2">"Logo"</span><span class="o">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="example-2-upload-a-document-and-track-versions">Example 2: Upload a document and track versions</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="c"># Upload initial version</span>
+curl <span class="nt">-X</span> PUT <span class="se">\</span>
+  <span class="nt">-u</span> admin:secret <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s2">"file=@/path/to/document.pdf"</span> <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s1">'metadata={"version":"1.0","author":"John"}'</span> <span class="se">\</span>
+  http://localhost:8080/documents.files/contract-2023
+
+<span class="c"># Update the file and increment version</span>
+curl <span class="nt">-X</span> PUT <span class="se">\</span>
+  <span class="nt">-u</span> admin:secret <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s2">"file=@/path/to/document_updated.pdf"</span> <span class="se">\</span>
+  <span class="nt">-F</span> <span class="s1">'metadata={"version":"1.1","author":"John","updated":"2023-07-15"}'</span> <span class="se">\</span>
+  http://localhost:8080/documents.files/contract-2023</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Development Best Practices</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Development Best Practices">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v4/develop/best-practices">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v4
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            <strong>v4</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v4/develop/best-practices.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="getting-started"><a href="/docs">Intoduction</a></h2>
+
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+    <li><a href="/docs/v4/setup">Setup</a></li>
+    <li><a href="/docs/v4/configuration">Configuration</a></li>
+    <li><a href="/docs/v4/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v4/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v4/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v4/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v4/blog-posts">Tutorials</a></li>
+    <li><a href="/docs/v4/performances">Performances</a></li>
+    <li><a href="/docs/v4/clustering">Clustering & Load Balancing</a></li>
+</ul>
+
+<h2 id="upgrading-from-3"><a href="/docs/v4/upgrade-to-v4">Upgrade to v4</a></h2>
+<h2 id="upgrading-from-3"><a href="/docs/v4/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v4/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v4/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v4/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v4/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v4/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v4/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v4/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v4/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v4/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v4/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v4/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v4/security/overview">Overview</a></li>
+    <li><a href="/docs/v4/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v4/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v4/security/user-management">User Management</a></li>
+    <li><a href="/docs/v4/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v4/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v4/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v4/plugins/apply">Apply plugins</a></li>
+    <li><a href="/docs/v4/plugins/list">Available plugins</a></li>
+</ul>
+
+<h2 id="develop-core-plugins">Develop Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/develop/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v4/develop/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v4/develop/packaging">Packaging Plugins</a></li>
+    <li><a href="/docs/v4/develop/best-practices">Best practices</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul class="mb-5">
+    <li><a href="/docs/v4/etag">ETag</a></li>
+    <li><a href="/docs/v4/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v4/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v4/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v4/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v4/auditing">Auditing</a></li>
+</ul>
+
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#restheart-platform-core">RESTHeart Platform Core</a>
+      <ul>
+        <li><a href="#get-the-mongoclient">Get the MongoClient</a></li>
+        <li><a href="#interact-with-request-and-response">Interact with Request and Response</a></li>
+        <li><a href="#get-user-id-and-roles-from-restheart-platform-security">Get user id and roles from restheart-platform-security</a></li>
+        <li><a href="#filter-out-properties-from-request-or-response">Filter out properties from Request or Response</a></li>
+      </ul>
+    </li>
+    <li><a href="#restheart-platform-security">RESTHeart Platform Security</a>
+      <ul>
+        <li><a href="#interact-with-the-httpserverexchange-object">Interact with the HttpServerExchange object</a></li>
+        <li><a href="#how-to-send-the-response">How to send the response</a></li>
+        <li><a href="#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin">Forbid write requests containing specific properties to all roles but admin</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Development Best Practices</span>
+    </h2>
+</div>
+
+  <h2 id="restheart-platform-core">RESTHeart Platform Core</h2>
+
+  <h3 id="get-the-mongoclient">Get the MongoClient</h3>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// get the MongoClient</span>
+<span class="nc">MongoClient</span> <span class="n">client</span> <span class="o">=</span> <span class="nc">MongoDBClientSingleton</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getClient</span><span class="o">();</span>
+</code></pre></div>  </div>
+
+  <h3 id="interact-with-request-and-response">Interact with Request and Response</h3>
+
+  <p>The plugins’s methods of <code class="language-plaintext highlighter-rouge">restheart-platform-core</code> accept two arguments that allow to interact (read or modify) the request and the response:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Both <code class="language-plaintext highlighter-rouge">HttpServerExchange exchange</code> and <code class="language-plaintext highlighter-rouge">RequestContext context</code> can be used to read and modify the request and the response.</p>
+
+  <ul>
+    <li><a href="https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java">HttpServerExchange</a> is the generic, low-level Undertow class to interact with the exchange;</li>
+    <li><a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java">RequestContext</a> is the specialized RESTHeart helper class that simplifies the most common operations.</li>
+  </ul>
+
+  <p class="bs-callout bs-callout-info">As a general rule, always prefer using <code class="language-plaintext highlighter-rouge">RequestContext</code>. Only use <code class="language-plaintext highlighter-rouge">HttpServerExchange</code> for low-level operations not directly supported by <code class="language-plaintext highlighter-rouge">RequestContext</code>.</p>
+
+  <p>As an example, the filter query parameter can be retrieved as follows:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// RequestContext helper method to access the filter query parameter</span>
+<span class="nc">Deque</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span>  <span class="n">filterQParam1</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getFilter</span><span class="o">();</span>
+
+<span class="c1">// RequestContext helper method that returns the filter as a BsonDocument</span>
+<span class="c1">// note that multiple values of the parameters are composed with the $and operator</span>
+<span class="c1">// ?filter={'a':1}&amp;filter={'b':1} -&gt;  { "$and": [ {'a':1}, {'b':1} ] } </span>
+<span class="nc">BsonDocument</span> <span class="n">filters</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getFiltersDocument</span><span class="o">();</span>
+ <span class="n">filters</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getFiltersDocument</span><span class="o">();</span>
+
+<span class="c1">// Undertow low-level method to access query paramers</span>
+<span class="nc">Deque</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">filterQParam2</span> <span class="o">=</span> <span class="n">exchange</span><span class="o">.</span><span class="na">getQueryParameters</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="nc">RequestContext</span><span class="o">.</span><span class="na">FILTER_QPARAM_KEY</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <h3 id="get-user-id-and-roles-from-restheart-platform-security">Get user id and roles from restheart-platform-security</h3>
+
+  <p>When the request is authenticated by <code class="language-plaintext highlighter-rouge">restheart-platform-security</code> the user id and roles are passed to <code class="language-plaintext highlighter-rouge">restheart-platform-core</code> via the following request headers:</p>
+
+  <ul>
+    <li><code class="language-plaintext highlighter-rouge">X-Forwarded-Account-Id</code></li>
+    <li><code class="language-plaintext highlighter-rouge">X-Forwarded-Account-Roles</code></li>
+  </ul>
+
+  <p>Note that for unauthenticated request these headers are not set.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">var</span> <span class="n">headers</span> <span class="o">=</span>  <span class="n">exchange</span><span class="o">.</span><span class="na">getRequestHeaders</span><span class="o">();</span>
+
+<span class="kt">var</span> <span class="n">id</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="na">getFirst</span><span class="o">(</span><span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"X-Forwarded-Account-Id"</span><span class="o">));</span>
+<span class="kt">var</span> <span class="n">_roles</span> <span class="o">=</span> <span class="n">hse</span><span class="o">.</span><span class="na">getRequestHeaders</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"X-Forwarded-Account-Roles"</span><span class="o">));</span>
+
+<span class="kt">var</span> <span class="n">roles</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;();</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">_roles</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">_roles</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">role</span> <span class="o">-&gt;</span> <span class="n">roles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">role</span><span class="o">));</span>
+<span class="o">}</span>
+
+<span class="c1">// check if authenticated user has role 'admin'</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">roles</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"admin"</span><span class="o">))</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="filter-out-properties-from-request-or-response">Filter out properties from Request or Response</h3>
+
+  <p>RESTHeart includes the Transformer <code class="language-plaintext highlighter-rouge">filterProperties</code> that allows to filter out properties from both the Request and the Response.</p>
+
+  <p>You might want to:</p>
+  <ul>
+    <li>filter out properties from the request body in write requests (<code class="language-plaintext highlighter-rouge">POST</code>, <code class="language-plaintext highlighter-rouge">PUT</code> and <code class="language-plaintext highlighter-rouge">PATCH</code> verbs)</li>
+    <li>filter out properties from the response body in read requests (<code class="language-plaintext highlighter-rouge">GET</code> verb)</li>
+  </ul>
+
+  <p class="bs-callout bs-callout-warning"><code class="language-plaintext highlighter-rouge">filterProperties</code> can only filter out root properties. Avoid using it to filter nested properties.</p>
+
+  <p class="bs-callout bs-callout-warning">It is difficult to filter out properties from a write request because it can use the dot notation and update operators, so that properties to filter out could be in a complex structure as <code class="language-plaintext highlighter-rouge">{"$set": "sub.secret": true }}</code>. The suggested way is checking the request using an Interceptor of <code class="language-plaintext highlighter-rouge">restheart-platform-security</code> to forbid request containing them. See <a href="#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin">Forbid write requests containing specific properties to all roles but admin</a> for an example.</p>
+
+  <p>In the following example, we add the Transformer <code class="language-plaintext highlighter-rouge">filterProperties</code> to Response to filter out the nested property <code class="language-plaintext highlighter-rouge">secret</code>, and apply it on read requests on collection <code class="language-plaintext highlighter-rouge">/coll</code>. We will filter out the property to all users but for <code class="language-plaintext highlighter-rouge">admin</code>.</p>
+
+  <p>In order to enable the Transformer we are going to programmatically apply it defining a <a href="/docs/v4/plugins/apply/#apply-a-transformer-programmatically">Global Transformer</a> and enable it using an <a href="/docs/v4/develop/core-plugins/#initializers">Initializer</a></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">"secretHider"</span><span class="o">,</span>
+        <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"adds a GlobalTranformer to filter out the property 'secret' "</span>
+        <span class="o">+</span> <span class="s">"from the response on 'GET /coll' "</span>
+        <span class="o">+</span> <span class="s">"when the user does not have the role 'admin'"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecretHider</span> <span class="kd">implements</span> <span class="nc">Initializer</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// a predicate that resolves GET /coll and !roles.contains("admin")</span>
+        <span class="kt">var</span> <span class="n">predicate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RequestContextPredicate</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">hse</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kt">var</span> <span class="n">_roles</span> <span class="o">=</span> <span class="n">hse</span><span class="o">.</span><span class="na">getRequestHeaders</span><span class="o">()</span>
+                        <span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"X-Forwarded-Account-Roles"</span><span class="o">));</span>
+
+                <span class="kt">var</span> <span class="n">roles</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;();</span>
+                
+                <span class="k">if</span> <span class="o">(</span><span class="n">_roles</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">_roles</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">role</span> <span class="o">-&gt;</span> <span class="n">roles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">role</span><span class="o">));</span>
+                <span class="o">}</span>
+
+                <span class="k">return</span> <span class="n">context</span><span class="o">.</span><span class="na">isGet</span><span class="o">()</span>
+                        <span class="o">&amp;&amp;</span> <span class="s">"coll"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getCollectionName</span><span class="o">())</span>
+                        <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">roles</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">roles</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"admin"</span><span class="o">));</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+
+        <span class="c1">// Let's use filterTransformer to filter out properties from GET response</span>
+        <span class="kt">var</span> <span class="n">filterTransformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FilterTransformer</span><span class="o">();</span>
+
+        <span class="kt">var</span> <span class="n">filterTransformerArgs</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BsonArray</span><span class="o">();</span>
+        <span class="n">filterTransformerArgs</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">BsonString</span><span class="o">(</span><span class="s">"secret"</span><span class="o">));</span>
+
+        <span class="kt">var</span> <span class="n">globalTransformer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GlobalTransformer</span><span class="o">(</span>
+                <span class="n">filterTransformer</span><span class="o">,</span>
+                <span class="n">predicate</span><span class="o">,</span>
+                <span class="nc">TransformerMetadata</span><span class="o">.</span><span class="na">PHASE</span><span class="o">.</span><span class="na">RESPONSE</span><span class="o">,</span>
+                <span class="nc">TransformerMetadata</span><span class="o">.</span><span class="na">SCOPE</span><span class="o">.</span><span class="na">CHILDREN</span><span class="o">,</span>
+                <span class="n">filterTransformerArgs</span><span class="o">,</span>
+                <span class="kc">null</span><span class="o">);</span> <span class="c1">// finally add it to global checker list</span>
+
+        <span class="nc">TransformerHandler</span><span class="o">.</span><span class="na">getGlobalTransformers</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">globalTransformer</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="restheart-platform-security">RESTHeart Platform Security</h2>
+
+  <h3 id="interact-with-the-httpserverexchange-object">Interact with the HttpServerExchange object</h3>
+
+  <p>The helper classes <code class="language-plaintext highlighter-rouge">ByteArrayRequest</code>, <code class="language-plaintext highlighter-rouge">JsonRequest</code>, <code class="language-plaintext highlighter-rouge">ByteArrayResponse</code> and <code class="language-plaintext highlighter-rouge">JsonResponse</code> are available to make easy interacting the <code class="language-plaintext highlighter-rouge">HttpServerExchange</code> object. As a general rule, always prefer using the helper classes if the functionality you need is available.</p>
+
+  <p>For instance the following code snipped retrieves the request JSON content from the <code class="language-plaintext highlighter-rouge">HttpServerExchange</code></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">HttpServerExchange</span> <span class="n">exchange</span> <span class="o">=</span> <span class="o">...;</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="nc">Request</span><span class="o">.</span><span class="na">isContentTypeJson</span><span class="o">(</span><span class="n">exchange</span><span class="o">))</span> <span class="o">{</span>
+  <span class="nc">JsonElement</span> <span class="n">content</span> <span class="o">=</span> <span class="nc">JsonRequest</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">exchange</span><span class="o">).</span><span class="na">readContent</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>If you want to manipulate query parameters with a Request Interceptor, always use the Map <code class="language-plaintext highlighter-rouge">exchange.getQueryParameters()</code> or the method <code class="language-plaintext highlighter-rouge">exchange.addQueryParamter()</code> and <code class="language-plaintext highlighter-rouge">exchange.addQueryParamter()</code>. Do not update the query string directly: after Request Interceptors execution, the query string is rebuilt from the query parameters map, see <a href="https://github.com/SoftInstigate/restheart/blob/master/security/src/main/java/org/restheart/security/handlers/QueryStringRebuiler.java">QueryStringRebuiler</a></p>
+
+  <h3 id="how-to-send-the-response">How to send the response</h3>
+
+  <p>You just set the status code and the response content using helper classes <code class="language-plaintext highlighter-rouge">ByteArrayResponse</code> or <code class="language-plaintext highlighter-rouge">JsonResponse</code>. You don’t need to send the response explicitly using low level <code class="language-plaintext highlighter-rouge">HttpServerExchange</code> methods, since the <code class="language-plaintext highlighter-rouge">ResponseSenderHandler</code> is in the processing chain and will do it for you.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+  <span class="nc">JsonResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="nc">JsonResponse</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">exchange</span><span class="o">);</span>
+
+  <span class="nc">JsonObject</span> <span class="n">resp</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JsonObject</span><span class="o">();</span>
+  <span class="n">resp</span><span class="o">.</span><span class="na">appProperty</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="s">"OK"</span><span class="o">)</span>
+
+  <span class="n">response</span><span class="o">.</span><span class="na">writeContent</span><span class="o">(</span><span class="n">resp</span><span class="o">);</span>
+  <span class="n">response</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_OK</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="forbid-write-requests-containing-specific-properties-to-all-roles-but-admin">Forbid write requests containing specific properties to all roles but <em>admin</em></h3>
+
+  <p>In the following example, we add a Request Interceptor that forbids write requests to <code class="language-plaintext highlighter-rouge">/coll</code> when executed by a user that does not have to role <em>admin</em>.</p>
+
+  <p>In order to enable the Interceptor we are going to programmatically apply it using an <a href="/docs/v4/develop/security-plugins/#initializers">Initializer</a></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">"onlyAdminCanWriteSecrets"</span><span class="o">,</span>
+        <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"adds an Interceptor that forbis write requests "</span>
+        <span class="o">+</span> <span class="s">"on 'GET /coll' "</span>
+        <span class="o">+</span> <span class="s">"containing the property 'secret' "</span>
+        <span class="o">+</span> <span class="s">"to users without the role 'admin'"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OnlyAdminCanWriteSecrets</span> <span class="kd">implements</span> <span class="nc">Initializer</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+
+      <span class="nc">PluginsRegistry</span><span class="o">.</span><span class="na">getInstance</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">getRequestInterceptors</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">RequestInterceptor</span><span class="o">()</span> <span class="o">{</span>
+                  <span class="nd">@Override</span>
+                  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">requiresContent</span><span class="o">()</span> <span class="o">{</span>
+                      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+                  <span class="o">}</span>
+
+                  <span class="nd">@Override</span>
+                  <span class="kd">public</span> <span class="nc">RequestInterceptor</span><span class="o">.</span><span class="na">IPOINT</span> <span class="nf">interceptPoint</span><span class="o">()</span> <span class="o">{</span>
+                      <span class="k">return</span> <span class="nc">RequestInterceptor</span><span class="o">.</span><span class="na">IPOINT</span><span class="o">.</span><span class="na">AFTER_AUTH</span><span class="o">;</span>
+                  <span class="o">}</span>
+
+                  <span class="nd">@Override</span>
+                  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">hse</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+                      <span class="kt">var</span> <span class="n">content</span> <span class="o">=</span> <span class="nc">JsonRequest</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">hse</span><span class="o">).</span><span class="na">readContent</span><span class="o">();</span>
+
+                      <span class="k">if</span> <span class="o">(</span><span class="n">keys</span><span class="o">(</span><span class="n">content</span><span class="o">).</span><span class="na">stream</span><span class="o">()</span>
+                              <span class="o">.</span><span class="na">anyMatch</span><span class="o">(</span><span class="n">k</span> <span class="o">-&gt;</span> <span class="s">"secret"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">k</span><span class="o">)</span>
+                              <span class="o">||</span> <span class="n">k</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">".secret"</span><span class="o">)))</span> <span class="o">{</span>
+                          <span class="kt">var</span> <span class="n">response</span> <span class="o">=</span> <span class="nc">ByteArrayResponse</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">hse</span><span class="o">);</span>
+
+                          <span class="n">response</span><span class="o">.</span><span class="na">endExchangeWithMessage</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_FORBIDDEN</span><span class="o">,</span> <span class="s">"cannot write secret"</span><span class="o">);</span>
+                      <span class="o">};</span>
+                  <span class="o">}</span>
+
+                  <span class="nd">@Override</span>
+                  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">hse</span><span class="o">)</span> <span class="o">{</span>
+                      <span class="kt">var</span> <span class="n">req</span> <span class="o">=</span> <span class="nc">ByteArrayRequest</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">hse</span><span class="o">);</span>
+
+                      <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="na">isContentTypeJson</span><span class="o">(</span><span class="n">hse</span><span class="o">)</span>
+                              <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">req</span><span class="o">.</span><span class="na">isAccountInRole</span><span class="o">(</span><span class="s">"admin"</span><span class="o">)</span>
+                              <span class="o">&amp;&amp;</span> <span class="n">hse</span><span class="o">.</span><span class="na">getRequestPath</span><span class="o">().</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"/coll"</span><span class="o">)</span>
+                              <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">isPost</span><span class="o">()</span> <span class="o">||</span> <span class="n">req</span><span class="o">.</span><span class="na">isPatch</span><span class="o">()</span> <span class="o">||</span> <span class="n">req</span><span class="o">.</span><span class="na">isPut</span><span class="o">());</span>
+                  <span class="o">}</span>
+
+                  <span class="cm">/**
+                   * @return the keys of the JSON
+                   */</span>
+                  <span class="kd">private</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">keys</span><span class="o">(</span><span class="nc">JsonElement</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+                      <span class="kt">var</span> <span class="n">keys</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;();</span>
+
+                      <span class="k">if</span> <span class="o">(</span><span class="n">val</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                          <span class="k">return</span> <span class="n">keys</span><span class="o">;</span>
+                      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">isJsonObject</span><span class="o">())</span> <span class="o">{</span>
+                          <span class="n">val</span><span class="o">.</span><span class="na">getAsJsonObject</span><span class="o">().</span><span class="na">keySet</span><span class="o">().</span><span class="na">forEach</span><span class="o">(</span><span class="n">k</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                              <span class="n">keys</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">k</span><span class="o">);</span>
+                              <span class="n">keys</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">keys</span><span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">getAsJsonObject</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">k</span><span class="o">)));</span>
+                          <span class="o">});</span>
+                      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">isJsonArray</span><span class="o">())</span> <span class="o">{</span>
+                          <span class="n">val</span><span class="o">.</span><span class="na">getAsJsonArray</span><span class="o">().</span><span class="na">forEach</span><span class="o">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">keys</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">keys</span><span class="o">(</span><span class="n">v</span><span class="o">)));</span>
+                      <span class="o">}</span>
+
+                      <span class="k">return</span> <span class="n">keys</span><span class="o">;</span>
+                  <span class="o">}</span>
+              <span class="o">});</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>This interceptor is executed (see method <code class="language-plaintext highlighter-rouge">resolve()</code>):</p>
+
+  <ul>
+    <li>to write requests: <code class="language-plaintext highlighter-rouge">(req.isPost() || req.isPatch() || req.isPut()</code></li>
+    <li>that are executed by authenticated users without the role <em>admin</em>: <code class="language-plaintext highlighter-rouge">!req.isAccountInRole("admin")</code></li>
+    <li>on URI starting with <code class="language-plaintext highlighter-rouge">/coll</code>: <code class="language-plaintext highlighter-rouge">hse.getRequestPath().startsWith("/coll")</code></li>
+  </ul>
+
+  <p>The interceptor needs the request body (<code class="language-plaintext highlighter-rouge">requiresContent()</code> returns <code class="language-plaintext highlighter-rouge">true</code>) and must be executed after authorization and authentication phases (<code class="language-plaintext highlighter-rouge">interceptPoint()</code> returns <code class="language-plaintext highlighter-rouge">AFTER_AUTH</code>)</p>
+
+  <p>In order to check that the request body does not contain the property <code class="language-plaintext highlighter-rouge">secret</code>, the helper method <code class="language-plaintext highlighter-rouge">keys()</code> collects all the JSON keys (name of the properties) in the request, and finally <code class="language-plaintext highlighter-rouge">handleRequest()</code> checks that those keys don’t contain the value <code class="language-plaintext highlighter-rouge">secret</code> or a key that ends with <code class="language-plaintext highlighter-rouge">.secret</code> (with restheart keys can use the dot notation).</p>
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

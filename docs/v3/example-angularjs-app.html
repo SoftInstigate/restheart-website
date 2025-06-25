@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - An example Web application with AngularJS</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - An example Web application with AngularJS">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/example-angularjs-app">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/example-angularjs-app.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#web-api-in-action-with-angularjs-restheart-and-mongodb">Web API in action with AngularJS, RESTHeart and MongoDB</a></li>
+    <li><a href="#ingredients">Ingredients</a></li>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#goals">Goals</a></li>
+    <li><a href="#getting-the-servers-up-and-running">Getting the servers up and running</a></li>
+    <li><a href="#creating-the-data-structure">Creating the data structure</a></li>
+    <li><a href="#the-web-client">The Web client</a></li>
+    <li><a href="#understanding-the-web-client">Understanding the Web client</a>
+      <ul>
+        <li><a href="#application-initialization-and-configuration">Application initialization and configuration</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#getting-posting-and-deleting-notes">Getting, Posting, and Deleting Notes</a>
+          <ul>
+            <li><a href="#notes-list">Notes list</a></li>
+            <li><a href="#creating-a-new-note">Creating a new note</a></li>
+            <li><a href="#updating-and-deleting-a-note">Updating and Deleting a note</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#stopping-and-restarting">Stopping and restarting</a></li>
+    <li><a href="#conclusions">Conclusions</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>An example Web application with AngularJS</span>
+    </h2>
+</div>
+
+  <p>Please provide us with your feedback, so that we can improve this
+tutorial.</p>
+
+  <h2 id="web-api-in-action-with-angularjs-restheart-and-mongodb">Web API in action with AngularJS, RESTHeart and MongoDB</h2>
+
+  <p>Imagine the following scenario: you want to develop a Web application on
+top of a data model, following simple CRUD operations. Data can be
+modeled as a hierarchy of documents, and MongoDB is a perfect fit for
+the job, or you already have some data in a MongoDB instance and you
+want to quickly build a user interface for it.</p>
+
+  <p>You know that most probably UI requirements will change, and your boss
+will ask for a mobile client in the future, so you want to achieve
+flexibility by developing a REST API; off course there’s no much time
+and you must deliver it in few days focusing on the user experience.</p>
+
+  <p>You know that a modern MVC javascript framework such as AngularJS can
+help you, it can be used to implement the Web interface and populate it
+with data using a bunch of AJAX calls to your REST API.</p>
+
+  <p>MongoDB will take care of the data, but you still have a missing piece:
+the server-side API layer. To implement it there are plenty of choices;
+if you are a front-end developer, you probably know JavaScript and
+Node.js, with some PHP and Ruby: writing a simple server to expose
+MongoDB data following REST principles shouldn’t be much hard with such
+technologies, right?</p>
+
+  <p>You start writing a lot of repetitive logic which is only meant to
+create a “bridge” between the database and the UI. Each collection will
+need some dedicated server-side logic. After a while you realize you
+also need to add authentication, authorization and provide a way to
+navigate all data via hyperlinks.</p>
+
+  <p>Things are growing in complexity and you are running out of time: “there
+must be a better way, I just want to model the data and create a
+nice-looking UI, without wasting time with boilerplate code” you think.</p>
+
+  <p>Here RESTHeart comes to the rescue!</p>
+
+  <p>This tutorial demonstrates a simple but fairly complete RESTful Web
+application built using AngularJS and MongoDB, without any server-side
+code. This is possible by exposing MongoDB as set of REST services via
+RESTHeart, the RESTful API Data Server for MongoDB.</p>
+
+  <p>RESTHeart is an open-source project written in Java, distributed under
+the same license as MongoDB (GNU AGPL v3.0). It uses internally the
+blazing fast Undertow HTTP server, which is at the core of the latest
+JBoss Application Server.</p>
+
+  <p>The most interesting characteristics of RESTHeart are:</p>
+
+  <ul>
+    <li>Zero development time: just start it and MongoDB documents can be
+exposed via a navigable REST API, ready to use;</li>
+    <li>CRUD Data model operations API for MongoDB: create, read update and
+delete databases, collections, indexes and the data structure
+directly via HTTP;</li>
+    <li>Pluggable security model, with User Management and ACL, so that you
+can expose only the MongoDB resources you really need;</li>
+    <li>HATEOAS HAL hypermedia type, so that it’s extremely easy to navigate
+MongoDB resources via URLs only.</li>
+    <li>Extremely lightweight: pipeline architecture, ~7Mb footprint, ~200Mb
+RAM peek usage, starts in milliseconds;</li>
+    <li>Horizontally scalable: stateless architecture supporting MongoDB
+replica sets and shards;</li>
+    <li>Support Cross-origin resource sharing CORS so that your one page Web
+application can deal with RESTHeart running on a different domain.</li>
+    <li>A perfect fit for micro-services deployed in Docker containers.</li>
+  </ul>
+
+  <p>So, wouldn’t be lovely if you could even leverage Docker for development
+and deployment? Docker is a cool technology, it allows you to create a
+development environment in few minutes and deploy exactly the same stuff
+in production. “This would be another huge time-saver!” You think with a
+smile.</p>
+
+  <p>The Web application we are going to build is a web notepad, where you’ll
+be able to insert and edit your notes. It will be deployed as a couple
+of Docker containers, one running MongoDB and the other running
+RESTHeart. Zero server-side code will be written, you need to know only
+a little AngularJS for the UI and, of course, some of MongoDB.</p>
+
+  <h2 id="ingredients">Ingredients</h2>
+
+  <p>The main ingredients for our recipe are:</p>
+
+  <ul>
+    <li><strong>MongoDB 3.0</strong> - a cross-platform document-oriented database.
+Classified as a NoSQL database, MongoDB eschews the traditional
+table-based relational database structure in favor of JSON-like
+documents with dynamic schemas.</li>
+    <li><strong>RESTHeart API Server</strong> - RESTHeart is the RESTful Web API Server
+for MongoDB, ready to use with CRUD operations API and Data Model
+operations API. Create databases, collections, indexes and document
+by only using HTTP verbs.**<br />
+**</li>
+    <li><strong>AngularJS</strong> - it lets you extend HTML vocabulary for your
+application. The resulting environment is extraordinarily
+expressive, readable, and quick to develop.</li>
+    <li><strong>Restangular</strong> - an AngularJS service that simplifies common GET,
+POST, DELETE, and UPDATE requests with a minimum of client code.
+It’s a perfect fit for any WebApp that consumes data from a RESTful
+API.</li>
+    <li><strong>Docker</strong> - Docker containers wrap up a piece of software in a
+complete filesystem that contains everything it needs to run: code,
+runtime, system tools, system libraries – anything you can install
+on a server. This guarantees that it will always run the same,
+regardless of the environment it is running in.</li>
+  </ul>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>RESTHeart is the perfect companion for MongoDB when you want to
+effectively expose data CRUD operations via a RESTful Web API, i.e. an
+application program interface that relies on Web technologies, notably
+the HTTP protocol, to Create, Read, Update and Delete data. With such
+API you can easily build a modern Web application, for example
+leveraging one of the many MVC JavaScript frameworks such as AngularJS
+or Backbone.js.</p>
+
+  <p>RESTHeart fully implements HATEOAS principles. HATEOAS, an abbreviation
+for Hypermedia as the Engine of Application State, is a constraint of
+the REST application architecture. The principle is that a client
+interacts with a network application entirely through hypermedia,
+provided dynamically by application servers. A REST client needs no
+prior knowledge about how to interact with any particular application
+beyond a generic understanding of hypermedia.</p>
+
+  <p>These are the ingredients for an HATEOAS recipe, where the application
+state is held by the client and the server is completely stateless:
+a good recipe indeed, that will lead you to serve many concurrent users
+with a single node and that can be easily scaled up horizontally. In
+this architecture, the data model is effectively represented by a set of
+HTTP resources, while the representation logic is managed
+entirely client-side by AngularJS.</p>
+
+  <p>The following image depicts the client browser with AngularJS connecting
+to the Web API, exposed by RESTHeart, that in turns connects to MongoDB.
+On the right, a more complex deployment, with MongoDB scaled up in a
+shared cluster, and two RESTHeart instances mediated by a load balancer.
+The latter configuration is likely to support thousands of concurrent
+users.</p>
+
+  <p><img src="/images/attachments/7241730/7241733.png?height=400" alt="" />{height=”400”}</p>
+
+  <h2 id="goals">Goals</h2>
+
+  <p>We will create a simple notes Web application.</p>
+
+  <ul>
+    <li>After login, the user will see its notes in a list on the left; a
+search box allows to filter the notes list;</li>
+    <li>Clicking a note in the list, displays it in the content area also
+allowing to edit it;</li>
+    <li>Buttons allow to create a new note or delete an existing one.</li>
+  </ul>
+
+  <p><img src="/images/attachments/7241730/7700536.png?height=400" alt="" />{height=”400”}</p>
+
+  <h2 id="getting-the-servers-up-and-running">Getting the servers up and running</h2>
+
+  <p>You can refer to <a href="https://restheart.org/docs/v3/setup/">Installation and
+Setup</a> documentation
+section for detailed instructions on how to install RESTHeart and
+MongoDB. However, the suggested way to get ready is using the official
+<a href="https://registry.hub.docker.com/u/softinstigate/restheart/">RESTHeart Docker
+image</a>.</p>
+
+  <p>How to install and use Docker depends on the operating system you are
+running:</p>
+
+  <blockquote>
+    <p>In a Docker installation on Linux, your machine is both the localhost
+and the Docker host. In networking, localhost means your computer. The
+Docker host is the machine on which the containers run. On a typical
+Linux installation, the Docker client, the Docker daemon, and any
+containers run directly on your localhost. This means you can address
+ports on a Docker container using standard localhost addressing such
+as localhost:8000 or 0.0.0.0:8376. In a Windows or OSX installation,
+the Docker daemon instead is running inside a Linux virtual machine
+provided by <a href="https://github.com/boot2docker/boot2docker">Boot2Docker</a>.</p>
+  </blockquote>
+
+  <p>Full Docker setup instructions are available
+at <a href="https://docs.docker.com/installation/">https://docs.docker.com/installation/</a>. Please go there and follow
+your operating system’s instructions if you want to use Docker.</p>
+
+  <p>Now, if you Docker setup is terminated, we can proceed.</p>
+
+  <p>On Windows and Mac OSX you’ll first have to start the Docker virtual
+machine host by running <code class="language-plaintext highlighter-rouge">boot2docker</code>. To run a Docker container, you
+first start the boot2docker VM and then issue docker commands to create,
+load, and manage containers. You can launch Boot2Docker from your
+Applications folder or from the command line. In summary, with
+Boot2Docker you have the following additional steps, while if you are on
+Linux you don’t need them (the <code class="language-plaintext highlighter-rouge">boot2docker init</code> commando needs to be
+issued only the very first time):</p>
+
+  <p><strong>Start boot2docker (only needed in Windows and MacOS X)</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>boot2docker init
+<span class="nv">$ </span>boot2docker start
+<span class="nv">$ </span><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>boot2docker shellinit<span class="si">)</span><span class="s2">"</span>
+</code></pre></div>  </div>
+
+  <p>Boot2Docker will ask you to copy and set some environment variable and
+it indicates the <code class="language-plaintext highlighter-rouge">DOCKER_HOST</code> variable, which is the IP address of the
+Docker VM running in your system. Usually it should be something like
+<code class="language-plaintext highlighter-rouge">192.168.59.103</code>, so later you’ll point your browser
+to <code class="language-plaintext highlighter-rouge">https://192.168.59.103:8080</code> to access RESTHeart. But let’s go on
+with our setup for now.</p>
+
+  <p>Run the hello-world container to verify your setup:</p>
+
+  <p><strong>Hello, world!</strong></p>
+
+  <pre><code class="language-plain">$ docker run hello-world
+</code></pre>
+
+  <p>If everything looks fine, then you can download the two Docker images
+necessary for this tutorial, one for MongoDB and one for RESTHeart.</p>
+
+  <p><strong>Pull the docker images</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker pull mongo
+<span class="nv">$ </span>docker pull softinstigate/restheart 
+</code></pre></div>  </div>
+
+  <p>The pull commands can take some time to execute, as they are downloading
+the Linux images containing all the requisite software.</p>
+
+  <p>You can list the available Docker images via the
+<code class="language-plaintext highlighter-rouge">docker images</code> command, which should display something like:</p>
+
+  <p><strong>List local docker images</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker images
+ 
+REPOSITORY                TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+softinstigate/restheart   latest              2e1aaa05d0c5        26 hours ago        496.5 MB
+mongo                     latest              a7b01f71af86        2 days ago          260.8 MB
+</code></pre></div>  </div>
+
+  <p>Then, you can start MongoDB and RESTHeart containers, in this exact
+sequence.</p>
+
+  <p><strong>Start the two images as daemons</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker run -d --name mongodb mongo:3.0
+$ docker run -d -p 8080:8080 --name restheart --link mongodb:mongodb softinstigate/restheart
+</code></pre></div>  </div>
+
+  <p>Without going into the finest detail, the RESTHeart container here is
+configured to link to the MongoDB container (for some additional
+information on Docker links please have a look to the References section
+at the end of this article).</p>
+
+  <p>Note that the first command is asking to specifically run the latest
+MongoDB 3.0.x release, which at the time of this article is 3.0.4. This
+is done by appending the specific Docker tag to the image name
+(mongo:3.0 in this case). This is not mandatory but recommended, as
+RESTHeart 0.10 now is mainly tested together with MongoDB 3.0, even it
+works fine also with versions 2.6 and 2.4.</p>
+
+  <p>Docker offers a simple way to access log files and check that everything
+is fine, for example issuing the <code class="language-plaintext highlighter-rouge">docker logs mongodb</code> command:</p>
+
+  <p><strong>MongoDB logs</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker logs mongodb
+
+2015-07-09T14:41:56.938+0000 I JOURNAL  [initandlisten] journal dir=/data/db/journal
+2015-07-09T14:41:56.939+0000 I JOURNAL  [initandlisten] recover : no journal files present, no recovery needed
+2015-07-09T14:41:57.053+0000 I JOURNAL  [durability] Durability thread started
+2015-07-09T14:41:57.053+0000 I JOURNAL  [journal writer] Journal writer thread started
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] MongoDB starting : pid=1 port=27017 dbpath=/data/db 64-bit host=916f68fe3455
+...
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] db version v3.0.4
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] git version: 0481c958daeb2969800511e7475dc66986fa9ed5
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.1e 11 Feb 2013
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] build info: Linux ip-10-146-31-239 3.2.0-4-amd64 #1 SMP Debian 3.2.46-1 x86_64 BOOST_LIB_VERSION=1_49
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2015-07-09T14:41:57.057+0000 I CONTROL  [initandlisten] options: {}
+2015-07-09T14:41:57.058+0000 I INDEX    [initandlisten] allocating new ns file /data/db/local.ns, filling with zeroes...
+2015-07-09T14:41:57.135+0000 I STORAGE  [FileAllocator] allocating new datafile /data/db/local.0, filling with zeroes...
+2015-07-09T14:41:57.135+0000 I STORAGE  [FileAllocator] creating directory /data/db/_tmp
+2015-07-09T14:41:57.141+0000 I STORAGE  [FileAllocator] done allocating datafile /data/db/local.0, size: 64MB,  took 0.002 secs
+2015-07-09T14:41:57.145+0000 I NETWORK  [initandlisten] waiting for connections on port 27017
+2015-07-09T14:42:13.606+0000 I NETWORK  [initandlisten] connection accepted from 172.17.0.4:42644 #1 (1 connection now open)
+2015-07-09T14:42:13.641+0000 I NETWORK  [initandlisten] connection accepted from 172.17.0.4:42645 #2 (2 connections now open)
+</code></pre></div>  </div>
+
+  <p>Do the same for RESTHeart, issuing the <code class="language-plaintext highlighter-rouge">docker logs restheart</code> command:</p>
+
+  <p><strong>RESTHeart logs</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker logs restheart
+
+14:42:13.076 [main] INFO  org.restheart.Bootstrapper - Starting RESTHeart ********************************************
+14:42:13.100 [main] INFO  org.restheart.Bootstrapper - Creating pid file /var/run/restheart.pid
+14:42:13.236 [main] INFO  org.restheart.Bootstrapper - RESTHeart version 0.10.3
+14:42:13.341 [main] INFO  org.restheart.Bootstrapper - Initializing MongoDB connection pool to mongodb:27017
+14:42:13.343 [main] INFO  org.restheart.Bootstrapper - MongoDB connection pool initialized
+14:42:13.735 [main] INFO  org.restheart.Bootstrapper - Token based authentication enabled with token TTL 15 minutes
+14:42:13.970 [main] INFO  org.restheart.Bootstrapper - HTTPS listener bound at 0.0.0.0:4443
+14:42:13.970 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+14:42:13.972 [main] INFO  org.restheart.Bootstrapper - Local cache for db and collection properties enabled
+14:42:13.991 [main] INFO  o.r.handlers.RequestDispacherHandler - Initialize default HTTP handlers:
+14:42:13.993 [main] INFO  o.r.handlers.RequestDispacherHandler - putPipedHttpHandler( ROOT, GET, org.restheart.handlers.root.GetRootHandler )
+...
+14:42:14.029 [main] INFO  org.restheart.Bootstrapper - URL / bound to MongoDB resource *
+14:42:14.143 [main] INFO  org.restheart.Bootstrapper - Embedded static resources browser extracted in /tmp/restheart-3350487661431988250
+14:42:14.154 [main] INFO  org.restheart.Bootstrapper - URL /browser bound to static resources browser. access manager: false
+14:42:14.157 [main] INFO  org.restheart.Bootstrapper - URL /_logic/ping bound to application logic handler org.restheart.handlers.applicationlogic.PingHandler. access manager: false
+14:42:14.159 [main] INFO  org.restheart.Bootstrapper - URL /_logic/roles bound to application logic handler org.restheart.handlers.applicationlogic.GetRoleHandler. access manager: false
+14:42:14.399 [main] INFO  org.restheart.Bootstrapper - RESTHeart started **********************************************
+</code></pre></div>  </div>
+
+  <p>The last line shows that RESTHeart has started correctly and is ready to
+accept HTTP connections.</p>
+
+  <p>Now MongoDB and RESTHeart should be running in background, with
+RESTHeart linked to the MongoDB network interface, and you can check
+that everything works opening the embedded HAL browser, this way:</p>
+
+  <p>If you are running boot2docker, point your browser
+at <code class="language-plaintext highlighter-rouge">https://192.168.59.103:8080/browser</code> (note that the IP address might
+be different, to know it issue the <code class="language-plaintext highlighter-rouge">boot2docker ip</code> command); if you are
+on Linux, simply it is at <code class="language-plaintext highlighter-rouge">http://localhost:8080/browser</code>.</p>
+
+  <p>The browser will prompt you for authentication: use the pre-defined
+user <code class="language-plaintext highlighter-rouge">admin</code> with password <code class="language-plaintext highlighter-rouge">changeit</code>.</p>
+
+  <p>Your browser will show you something like this:</p>
+
+  <p><img src="/images/attachments/7241730/7241791.png" alt="" /></p>
+
+  <p>For more information about the restheart docker image, check it
+at <a href="https://hub.docker.com/r/softinstigate/restheart/t">https://hub.docker.com/r/softinstigate/restheart/</a></p>
+
+  <p>For more information about the RESTHeart security model refer to the
+<a href="https://softinstigate.atlassian.net/wiki/display/RH/Security">Security</a>
+documentation section.</p>
+
+  <h2 id="creating-the-data-structure">Creating the data structure</h2>
+
+  <p>We will be using the RESTHeart API and the <a href="https://httpie.org">HTTPie</a>
+(a modern curl replacement) client to create the data structure. The
+main reason is that HTTPie offers a beautifully colorized and indented
+output for HTTP responses, which is especially useful when dealing with
+large JSON payloads.</p>
+
+  <p>The following two commands create respectively the <code class="language-plaintext highlighter-rouge">rhedb</code> database and
+the notes collection in it.</p>
+
+  <p><strong>Get up and running</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> admin:changeit PUT https://192.168.59.103:8080/rhnedb <span class="nv">descr</span><span class="o">=</span><span class="s2">"restheart notes example db"</span>
+HTTP/1.1 201 Created
+...
+<span class="nv">$ </span>http <span class="nt">-a</span> admin:changeit PUT https://192.168.59.103:8080/rhnedb/notes <span class="nv">descr</span><span class="o">=</span><span class="s2">"notes collection"</span>
+HTTP/1.1 201 Created
+...
+</code></pre></div>  </div>
+
+  <p>That’s it for the server-side logic; RESTHeart now already automatically
+exposes the necessary Web Services for CRUD operations on the notes
+collection. Note that we haven’t written a single line of server-side
+code!</p>
+
+  <h2 id="the-web-client">The Web client</h2>
+
+  <p>Clone the Web client code from the GitHub’s repository at
+<a href="https://github.com/softinstigate/restheart-notes-example">https://github.com/SoftInstigate/restheart-notes-example</a>:</p>
+
+  <p><strong>Clone the Web client</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/SoftInstigate/restheart-notes-example.git
+<span class="nv">$ </span><span class="nb">cd </span>restheart-notes-example
+</code></pre></div>  </div>
+
+  <p>Depending on how you installed RESTHeart, you might need to adjust the
+RESTHEART_URL variable in the code.</p>
+
+  <p>Edit the following line in the file app/scripts/app.js</p>
+
+  <p><strong>Set the RESTHEART_URL variable</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var RESTHEART_URL <span class="o">=</span> <span class="s2">"https://192.168.59.103:8080"</span><span class="p">;</span>
+</code></pre></div>  </div>
+
+  <p>We assume you are using Docker, so you need to set it with the IP
+address of the RESTHeart container; it might be the <code class="language-plaintext highlighter-rouge">localhost</code>; if you
+are using boot2docker, you can retrieve the IP with the following
+command:</p>
+
+  <p><strong>Get the IP address</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>boot2docker ip
+</code></pre></div>  </div>
+
+  <p>To run the application, first of all you have to install Node.js.
+Download the installer for your system
+from <a href="https://nodejs.org/">https://nodejs.org</a>.</p>
+
+  <p>The following commands will update npm, install
+the <a href="https://gruntjs.com/getting-started">Grunt</a> and <a href="https://bower.io/">Bower</a> tools,
+download the required js libraries using bower and start a web server
+for previewing the application .</p>
+
+  <p><strong>View the web app</strong></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>npm update <span class="nt">-g</span> npm
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">-g</span> bower grunt-cli
+<span class="nv">$ </span>bower <span class="nb">install</span>
+ <span class="o">(</span>If Bower asks you <span class="k">for </span>the AngularJS version, choose 1.3.0<span class="o">)</span>
+<span class="nv">$ </span>grunt serve
+ <span class="o">(</span>after a <span class="k">while </span>it should starts the default browser at http://localhost:9000/#/signin<span class="o">)</span>
+</code></pre></div>  </div>
+
+  <h2 id="understanding-the-web-client">Understanding the Web client</h2>
+
+  <p>The Web client is an AngularJS application, a javascript client that
+connects with RESTHeart API to manage data.</p>
+
+  <p>The application skeleton has been generated with
+<a href="https://yeoman.io/">Yeoman</a> using the AngularJS generator with few
+libraries added via bower, notably:</p>
+
+  <ul>
+    <li><a href="https://github.com/mgonto/restangular">Restangular</a>, an AngularJS
+service “to handle Rest API Restful Resources properly and easily”;</li>
+    <li><a href="https://github.com/grevory/angular-local-storage">angular-local-storage</a> ”an
+AngularJS module that gives you access to the browsers local storage
+with cookie fallback”;</li>
+    <li><a href="https://github.com/angular-ui/ui-router">ui-router</a>, “the de-facto
+solution to flexible routing with nested views in AngularJS”.</li>
+  </ul>
+
+  <p>In order to understand how it works, we need to look at the following
+files:</p>
+
+  <ul>
+    <li>app/scripts/app.js</li>
+    <li>app/scripts/config.router.js</li>
+    <li>app/scripts/controllers/main.js</li>
+    <li>app/scripts/controllers/signin.js</li>
+    <li>app/scripts/controllers/notes.js</li>
+  </ul>
+
+  <h3 id="application-initialization-and-configuration">Application initialization and configuration</h3>
+
+  <p>These tasks are accomplished by:</p>
+
+  <ul>
+    <li><strong>app.js</strong> that defines the AngularJS application and configure
+Restangular to properly interoperate with RESTHeart;</li>
+    <li><strong>config.router.js</strong> that defines the ui-router states with their
+html templates and controllers.</li>
+  </ul>
+
+  <p>The following code snippet from config.router.js shows the three states
+of the application: <em>signin</em>, the abstract state <em>app</em> and <em>app.notes</em>.</p>
+
+  <p><strong>application states</strong></p>
+
+  <pre><code class="language-plain">                     .state('signin', {
+                            url: '/signin',
+                            templateUrl: 'views/signin.html',
+                            controller: 'SigninCtrl',
+                            resolve: {
+                                deps: ['$ocLazyLoad',
+                                    function ($ocLazyLoad) {
+                                        return $ocLazyLoad.load('scripts/controllers/signin.js');
+                                    }
+                                ]
+                            }
+                        })
+
+                        .state('app', {
+                            template: '&lt;div ui-view&gt;&lt;/div&gt;',
+                            abstract: true,
+                            controller: 'MainCtrl',
+                            resolve: {
+                                deps: ['$ocLazyLoad',
+                                    function ($ocLazyLoad) {
+                                        return $ocLazyLoad.load('scripts/controllers/main.js');
+                                    }
+                                ]
+                            }
+                        })
+
+                        .state('app.notes', {
+                            url: "/notes",
+                            templateUrl: 'views/notes.html',
+                            controller: 'NotesCtrl',
+                            resolve: {
+                                deps: ['$ocLazyLoad',
+                                    function ($ocLazyLoad) {
+                                        return $ocLazyLoad.load('scripts/controllers/notes.js');
+                                    }
+                                ]
+                            }
+                        });
+</code></pre>
+
+  <h3 id="authentication">Authentication</h3>
+
+  <p>The <em>signin</em> state is where user authentication occurs. A form collects
+the user id and the password and perform a GET request to RESTHeart at
+the URI <code class="language-plaintext highlighter-rouge">/_logic/roles/&lt;userid&gt;</code>; this is a special endpoint intended to
+simplify the credentials check process.</p>
+
+  <p>The possible responses to GET <code class="language-plaintext highlighter-rouge">/_logic/roles/&lt;userid&gt;</code> requests are:</p>
+
+  <ul>
+    <li><em>401 Unauthorized</em>, if no or wrong credentials were passed in the
+Authorization header</li>
+    <li><em>403 Forbidden</em>, if the user id in the Authorization header is
+different than the &lt;userid&gt; in the URI</li>
+    <li><em>200 OK</em> if credentials match; in this case the following document
+is sent; not that it includes the <em>roles</em> array:</li>
+  </ul>
+
+  <p><strong>Roles</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+    </span><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/_logic/roles/admin"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"authenticated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ADMIN"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>If any request gets successfully authenticated RESTHeart includes in the
+response the following headers:</p>
+
+  <ul>
+    <li><code class="language-plaintext highlighter-rouge">Auth-Token: 6a81d622-5e24-4d9e-adc0-e3f7f2d93ac7</code></li>
+    <li><code class="language-plaintext highlighter-rouge">Auth-Token-Location: /_authtokens/admin</code></li>
+    <li><code class="language-plaintext highlighter-rouge">Auth-Token-Valid-Until: 2015-07-08T13:28:10.749Z</code></li>
+  </ul>
+
+  <p>The <strong>Authentication Token</strong> is a very important feature when you are
+developing a Web application. RESTHeart uses stateless basic
+authentication, so every request needs to include the user credentials;
+you need to store them either in a cookie or (better) in the session
+storage. In order to avoid to store the actual password, the client can
+check the credentials and, if they are verified, it can rather store the
+auth token and use it on further requests.</p>
+
+  <p>In summary, The authentication token together with the
+<code class="language-plaintext highlighter-rouge">/_logic/roles/&lt;userid&gt;</code> resource, allows you to implement a form based
+authentication experience on top of the simple and effective basic
+authentication mechanism; this is actually what the signin.js controller
+does:</p>
+
+  <p>It GETs /_logic/roles/ and in case it gets back 200, it stores the
+authentication token in the session storage.</p>
+
+  <p>Restangular is then configured to:</p>
+
+  <ul>
+    <li>always add the basic authentication header to every further requests</li>
+    <li>to delete the auth token from the session storage if it is expired
+leading to a <em>401 Unauthorized</em> response</li>
+    <li>to add the <em>No-Auth-Challenge</em> request header to avoid the browser
+to prompt you for credentials with the awful popup login window</li>
+  </ul>
+
+  <p>Finally, the controller of the app abstract state (that is executed by
+all children states, including app.notes) checks if the authentication
+token has been stored in the session storage, eventually redirecting to
+the sign-in page.</p>
+
+  <h3 id="getting-posting-and-deleting-notes">Getting, Posting, and Deleting Notes</h3>
+
+  <p>Most of the application logic is handled by the controller notes.js of
+the app.notes state.</p>
+
+  <p>reference sheet</p>
+
+  <p>Have a look at the RESTHeart documentation <a href="https://restheart.org/docs/v3/quick-reference">reference
+sheet</a>to quickly
+understand the semantic of the HTTP verbs on the different resources
+(for instance, a POST to a collection URI creates a document in it).</p>
+
+  <h4 id="notes-list">Notes list</h4>
+
+  <p>The interface shows the list of existing notes on the left column, also
+allowing to filter it based on a search query. This is done by the
+loadNotes function:</p>
+
+  <p><strong>Load notes</strong></p>
+
+  <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$scope</span><span class="p">.</span><span class="nx">loadNotes</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">selectFirst</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">isLoading</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">apiOptions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">pagesize</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="na">page</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="na">count</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">sort_by</span><span class="p">:</span> <span class="dl">"</span><span class="s2">-date</span><span class="dl">"</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">filter</span> <span class="o">=</span> <span class="nx">getFilter</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">query</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">angular</span><span class="p">.</span><span class="nx">isDefined</span><span class="p">(</span><span class="nx">filter</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">apiOptions</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="nx">filter</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">ApiRestangular</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">notes</span><span class="dl">'</span><span class="p">).</span><span class="nx">getList</span><span class="p">(</span><span class="nx">apiOptions</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">notes</span> <span class="o">=</span> <span class="nx">result</span><span class="p">;</span>
+        <span class="nx">$scope</span><span class="p">.</span><span class="nx">isLoading</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">angular</span><span class="p">.</span><span class="nx">isDefined</span><span class="p">(</span><span class="nx">selectFirst</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">selectFirst</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">notes</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">};</span>
+<span class="nx">$scope</span><span class="p">.</span><span class="nx">$watch</span><span class="p">(</span><span class="dl">'</span><span class="s1">query</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">newValue</span><span class="p">,</span> <span class="nx">oldValue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">loadNotes</span><span class="p">();</span>
+<span class="p">},</span> <span class="kc">true</span><span class="p">);</span>
+<span class="err"> </span>
+<span class="p">....</span>
+<span class="err"> </span>
+<span class="kd">function</span> <span class="nx">getFilter</span><span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">userid</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">angular</span><span class="p">.</span><span class="nx">isDefined</span><span class="p">(</span><span class="nx">query</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span><span class="dl">'</span><span class="s1">$and</span><span class="dl">'</span><span class="p">:</span> <span class="p">[{</span><span class="dl">'</span><span class="s1">user</span><span class="dl">'</span><span class="p">:</span> <span class="nx">userid</span><span class="p">},</span> <span class="p">{</span><span class="dl">'</span><span class="s1">content</span><span class="dl">'</span><span class="p">:</span> <span class="p">{</span><span class="na">$regex</span><span class="p">:</span> <span class="dl">'</span><span class="s1">.*</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">query</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">.*</span><span class="dl">'</span> <span class="p">}}]};</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span><span class="dl">'</span><span class="s1">user</span><span class="dl">'</span><span class="p">:</span> <span class="nx">userid</span><span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>  </div>
+
+  <p>The Restangular getList() call performs the following request:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /rhnedb/notes?sort_by=-date&amp;filter={'user':'&lt;userid&gt;'}&amp;pagesize=50&amp;page=1
+</code></pre></div>  </div>
+
+  <p>And, in case a search query has been specified:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /rhnedb/notes?sort_by=-date&amp;filter={'$and':[{'user':'&lt;userid&gt;'},{'content':{'$regex':'(?i).*THE_QUERY_STRING.*'}}]}&amp;pagesize=50&amp;page=1
+</code></pre></div>  </div>
+
+  <p>These GET requests to the URI <code class="language-plaintext highlighter-rouge">/rhnedb/notes</code> return the properties of
+the collection itself together with its documents in the _embedded
+sub-document according to the HAL representation format used by
+RESTHeart.</p>
+
+  <p>The query parameters influence the result set:</p>
+
+  <ul>
+    <li><strong>sort_by</strong> requires the documents to be sorted: in this case, by
+the <em>date</em> property descending (- stands for descending);</li>
+    <li><strong>pagesize</strong> and <strong>page</strong> control the paging: in this case we are
+returning the first 50 documents;</li>
+    <li><strong>filter</strong> can be any MongoDB query: in this case, it filters the
+notes limiting to those created by the authenticated user; also, if
+a search query has been specified, the <em>$regex</em> operator performs a
+case-insensitive match for documents with <em>content</em> value containing
+it.</li>
+  </ul>
+
+  <h4 id="creating-a-new-note">Creating a new note</h4>
+
+  <p>The new button allows to create a new note. This is done by the
+<code class="language-plaintext highlighter-rouge">createNote()</code> function:</p>
+
+  <p><strong>Create a new note</strong></p>
+
+  <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$scope</span><span class="p">.</span><span class="nx">createNote</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">note</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">content</span><span class="p">:</span> <span class="dl">'</span><span class="s1">New note</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">color</span><span class="p">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">colors</span><span class="p">[</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)],</span>
+        <span class="na">date</span><span class="p">:</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+        <span class="na">user</span><span class="p">:</span> <span class="nx">AuthService</span><span class="p">.</span><span class="nx">getSavedUserid</span><span class="p">(),</span>
+    <span class="p">};</span>
+    <span class="nx">ApiRestangular</span><span class="p">.</span><span class="nx">all</span><span class="p">(</span><span class="dl">'</span><span class="s1">notes</span><span class="dl">'</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="nx">note</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">loadNotes</span><span class="p">();</span>
+        <span class="p">});</span>
+<span class="p">};</span>
+</code></pre></div>  </div>
+
+  <p>The Restangular post() performs the following request:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /rhnedb/notes &lt;data.json&gt;
+</code></pre></div>  </div>
+
+  <p>POSTing the collection creates a new document; as soon as the response
+is received, the notes list gets reloaded (now it includes the new note
+as first item due to the sorting on the date property).</p>
+
+  <h4 id="updating-and-deleting-a-note">Updating and Deleting a note</h4>
+
+  <p>When a note is selected, it gets displayed in the textarea on the right.
+As soon as the user modifies it, the note gets marked as “dirty” and the
+Save button is displayed. Clicking it invokes the updateNote() function:</p>
+
+  <p><strong>Update a note</strong></p>
+
+  <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$scope</span><span class="p">.</span><span class="nx">updateNote</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">angular</span><span class="p">.</span><span class="nx">isUndefined</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">.</span><span class="nx">date</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+    <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span>
+        <span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span> <span class="dl">'</span><span class="s1">If-Match</span><span class="dl">'</span><span class="p">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">.</span><span class="nx">_etag</span><span class="p">.</span><span class="nx">$oid</span> <span class="p">})</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">dirties</span><span class="p">[</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">.</span><span class="nx">_id</span><span class="p">.</span><span class="nx">$oid</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">loadNotes</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+        <span class="p">});</span>
+<span class="p">};</span>
+<span class="nx">$scope</span><span class="p">.</span><span class="nx">deleteNote</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">ApiRestangular</span><span class="p">.</span><span class="nx">one</span><span class="p">(</span><span class="dl">'</span><span class="s1">notes</span><span class="dl">'</span><span class="p">,</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">.</span><span class="nx">_id</span><span class="p">.</span><span class="nx">$oid</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span> <span class="dl">'</span><span class="s1">If-Match</span><span class="dl">'</span><span class="p">:</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span><span class="p">.</span><span class="nx">_etag</span><span class="p">.</span><span class="nx">$oid</span> <span class="p">})</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">loadNotes</span><span class="p">();</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">selected</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">});</span>
+<span class="p">};</span>
+</code></pre></div>  </div>
+
+  <p>The Restangular <code class="language-plaintext highlighter-rouge">put()</code> performs the following request:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /rhnedb/notes/&lt;noteid&gt; &lt;data.json&gt;
+</code></pre></div>  </div>
+
+  <p>Note the argument {“If-Match”: $scope.selected._etag.$oid}</p>
+
+  <p>This adds the If-Match request header with the values of the note
+property _etag.$oid. RESTHeart implements the Entity Tag optimistic
+concurrency control protocol: existing resources can be modified only
+specifying the correct ETag in this header, otherwise 409 Conflict or
+412 Precondition Failed return error codes are returned. This makes sure
+that clients do not modify a resource that has been already modified by
+another client, leading to the so called ghost writes. More information
+on <a href="https://softinstigate.atlassian.net/wiki/x/hICM">ETag</a> documentation
+section.</p>
+
+  <p>The “Delete” button allows to delete the selected note.</p>
+
+  <p>The Restangular remove() performs the following request:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DELETE /rhnedb/notes/&lt;noteid&gt;
+</code></pre></div>  </div>
+
+  <p>Of course, the <code class="language-plaintext highlighter-rouge">If-Match</code> header needs to be added to DELETE requests as
+well.</p>
+
+  <p>As soon as the Restangular promise gets fulfilled, the notes list is
+reloaded (see the argument of the function then()).</p>
+
+  <h2 id="stopping-and-restarting">Stopping and restarting</h2>
+
+  <p>You should always stop RESTHeart <strong>before</strong> MongoDB. If you are running
+Docker:</p>
+
+  <p><strong>Stop Docker containers</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker stop restheart
+$ docker stop mongodb
+</code></pre></div>  </div>
+
+  <p>You should start MongoDB <strong>before</strong> RESTHeart. You can decide to delete
+and recreate the Docker containers. If you delete and re-create the
+MongoDB container then all data will be lost. If you want to prevent
+this, then you can start it again:</p>
+
+  <p><strong>Start an existing Docker container</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker start mongodb
+</code></pre></div>  </div>
+
+  <p>On the other hand, RESTHeart is fully stateless, so it’s recommended to
+<strong>always remove and re-create the RESTHeart container</strong> from scratch.</p>
+
+  <p><strong>Remove and re-run a Docker container</strong></p>
+
+  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker rm restheart
+$ docker run -d -p 8080:8080 --name restheart --link mongodb:mongodb softinstigate/restheart
+</code></pre></div>  </div>
+
+  <h2 id="conclusions">Conclusions</h2>
+
+  <p>We built a nice Web application, using some interesting technologies:
+Docker, Yeoman, AngularJS and Restangular to name few and MongoDB and
+RESTHeart of course.</p>
+
+  <p>We shown how to install a development environment and we described how
+the AngularJS Web application is organized looking at how the
+controllers interoperate with the server using the Restangular service.</p>
+
+  <p>We spent little time on MongoDB and RESTHeart and this poses us a
+question: why this application requires zero effort for server side
+development still providing a robust and scalable implementation?</p>
+
+  <p>The answer relies on the architecture that builds on top of the MongoDB
+schemaless, NoSQL database and its companion RESTHeart: in fact, from a
+development prospective, RESTHeart is not yet another way
+of implementing Web APIs, rather it connects to MongoDB and
+automatically exposes data model APIs (to create databases, collections,
+indexes, etc) and data API (to create, get, update and delete
+documents); thus there is no need for any server side development.</p>
+
+  <p>Of course, a real case enterprise application needs more than what we
+have shown in this post: fine grained access control, user base
+management, relationship management, the ability to inject server side
+business logic, resource representation transformations, and schema
+check and enforcement, to name few. Notably, RESTHeart provides all
+these features, leading to cut down development costs but still
+achieving enterprise grade quality in terms of robustness, scalability
+and maintainability.</p>
+
+  <p>At SoftInstigate, the company behind RESTHeart, we have developed
+complex Web applications based on RESTHeart, and after years of
+struggling with ever complicating application servers, we having proved
+on the ground that developing with the HATEOAS tools can make
+development funny again.</p>
+
+  <h2 id="references">References</h2>
+
+  <ul>
+    <li>RESTHeart: https://restheart.org</li>
+    <li>RESTHeart
+documentation: <a href="https://restheart.org/docs/v3/">https://restheart.org/docs/v3/</a></li>
+    <li>MongoDB CRUD
+Introduction: <a href="https://docs.mongodb.org/manual/core/crud-introduction/">https://docs.mongodb.org/manual/core/crud-introduction/</a></li>
+    <li>Docker containers for RESTHeart and
+MongoDB: <a href="https://registry.hub.docker.com/u/softinstigate/restheart/">https://registry.hub.docker.com/u/softinstigate/restheart/</a></li>
+    <li>REST - Representational state
+transfer: <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">https://en.wikipedia.org/wiki/Representational_state_transfer</a></li>
+    <li>HATEOAS - Hypermedia as the Engine of Application
+State: <a href="https://en.wikipedia.org/wiki/HATEOAS">https://en.wikipedia.org/wiki/HATEOAS</a></li>
+    <li>HAL Browser - API browser for the hal+json media
+type: <a href="https://github.com/mikekelly/hal-browser">https://github.com/mikekelly/hal-browser</a></li>
+    <li>RESTful API Memo: PUT and POST
+Differences: <a href="https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/">https://maurizioturatti.com/blog/2012/11/13/restful-api-memo-put-and-post/</a></li>
+    <li>Boot2Docker - lightweight Linux distribution made specifically to
+run Docker containers. https://github.com/boot2docker/boot2docker</li>
+    <li>Linking Docker containers
+together. https://docs.docker.com/userguide/dockerlinks/</li>
+  </ul>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

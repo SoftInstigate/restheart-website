@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Secure connection to MongoDB</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Secure connection to MongoDB">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v4/security/secure-connection-to-mongodb">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v4
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            <strong>v4</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v4/security/secure-connection-to-mongodb.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="getting-started"><a href="/docs">Intoduction</a></h2>
+
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+    <li><a href="/docs/v4/setup">Setup</a></li>
+    <li><a href="/docs/v4/configuration">Configuration</a></li>
+    <li><a href="/docs/v4/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v4/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v4/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v4/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v4/blog-posts">Tutorials</a></li>
+    <li><a href="/docs/v4/performances">Performances</a></li>
+    <li><a href="/docs/v4/clustering">Clustering & Load Balancing</a></li>
+</ul>
+
+<h2 id="upgrading-from-3"><a href="/docs/v4/upgrade-to-v4">Upgrade to v4</a></h2>
+<h2 id="upgrading-from-3"><a href="/docs/v4/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v4/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v4/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v4/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v4/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v4/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v4/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v4/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v4/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v4/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v4/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v4/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v4/security/overview">Overview</a></li>
+    <li><a href="/docs/v4/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v4/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v4/security/user-management">User Management</a></li>
+    <li><a href="/docs/v4/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v4/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v4/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v4/plugins/apply">Apply plugins</a></li>
+    <li><a href="/docs/v4/plugins/list">Available plugins</a></li>
+</ul>
+
+<h2 id="develop-core-plugins">Develop Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/develop/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v4/develop/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v4/develop/packaging">Packaging Plugins</a></li>
+    <li><a href="/docs/v4/develop/best-practices">Best practices</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul class="mb-5">
+    <li><a href="/docs/v4/etag">ETag</a></li>
+    <li><a href="/docs/v4/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v4/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v4/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v4/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v4/auditing">Auditing</a></li>
+</ul>
+
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#enable-mongodb-authentication">Enable MongoDB authentication</a></li>
+    <li><a href="#connect-to-mongodb-over-tls">Connect to MongoDB over TLS</a></li>
+    <li><a href="#restrict-permissions-of-mongodb-user">Restrict permissions of MongoDB user</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Secure connection to MongoDB</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>This section provides instructions on how to secure the connection between RESTHeart and MongoDB by enabling the MongoDB authentication, connect the two processes over TLS and restrict the permissions of the MongoDB user used by RESTHeart.</p>
+
+  <h2 id="enable-mongodb-authentication">Enable MongoDB authentication</h2>
+
+  <p>This section assumes using MongoDB 3.2 or later. For other versions, the security
+configuration is similar but different. Refer to the <a href="https://docs.mongodb.org/manual/tutorial/enable-authentication/">MongoDB
+documentation</a>
+for more information.</p>
+
+  <p>Start MongoDB with authentication and connect to the MongoDB instance
+from a client running on the same system. This access is made possible
+by the localhost exception. Again, you might prefer to run the MongoDB
+process in background, using the <code class="language-plaintext highlighter-rouge">--fork</code> parameter.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mongod <span class="nt">--fork</span> <span class="nt">--syslog</span> <span class="nt">--auth</span>
+<span class="nv">$ </span>mongo
+</code></pre></div>  </div>
+
+  <p>In this section we will use the MongoDB superuser
+role <a href="https://docs.mongodb.org/manual/reference/built-in-roles/#superuser-roles">root</a>
+that provides access to the all operations and all the resources.</p>
+
+  <p>However the best practice is to use a MongoDB user with
+restricted access. For instance, it could be restricted to use only a
+single DB in read only mode. For more information refer to <a href="#auth-with-jep">MongoDB authentication with just enough permissions</a>section.</p>
+
+  <p>Create the <em>admin</em> user. The procedure is different depending on MongoDB
+version.</p>
+
+  <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nx">use</span> <span class="nx">admin</span>
+<span class="o">&gt;</span> <span class="nx">db</span><span class="p">.</span><span class="nx">createUser</span><span class="p">({</span>
+    <span class="na">user</span><span class="p">:</span> <span class="dl">"</span><span class="s2">admin</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">pwd</span><span class="p">:</span> <span class="dl">"</span><span class="s2">changeit</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">roles</span><span class="p">:[</span> <span class="dl">"</span><span class="s2">root</span><span class="dl">"</span> <span class="p">]</span>
+<span class="p">})</span>
+</code></pre></div>  </div>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>We need to provide the MongoDB user authentication credentials in the RESTHeart configuration file.
+</code></pre></div>  </div>
+
+  <p>We’ll define a restheart.yml configuration file.</p>
+
+  <p>Fist create a configuration file with default values with:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java restheart.jar <span class="nt">-t</span> 2&gt; ./etc/restheart.yml
+</code></pre></div>  </div>
+
+  <p>Open the file <code class="language-plaintext highlighter-rouge">./etc/restheart.yml</code> with an editor,  Find and modify the following section
+providing the user-name, password and authentication db (the db where the MongoDB user is defined, in our
+case ‘admin’).</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mongo-uri</span><span class="pi">:</span> <span class="s">mongodb://admin:changeit@127.0.0.1/?authSource=admin</span>
+</code></pre></div>  </div>
+
+  <p>Now start RESTHeart specifying the configuration file:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-jar</span> restheart.jar etc/restheart.yml
+</code></pre></div>  </div>
+
+  <p>Test the connection open <code class="language-plaintext highlighter-rouge">http://localhost:8080/roles/admin</code></p>
+
+  <h2 id="connect-to-mongodb-over-tls">Connect to MongoDB over TLS</h2>
+
+  <p>MongoDB clients can use TLS/SSL to encrypt connections to mongod and mongos instances.</p>
+
+  <p>To configure RESTHeart for TLS/SSL do as follows:</p>
+
+  <ul>
+    <li>create the keystore importing the public certificate used by mongod using <code class="language-plaintext highlighter-rouge">keytool</code> (<code class="language-plaintext highlighter-rouge">keytool</code> is the java tool to manage <code class="language-plaintext highlighter-rouge">keystores</code> of cryptographic keys)</li>
+  </ul>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>keytool <span class="nt">-importcert</span> <span class="nt">-file</span> mongo.cer <span class="nt">-alias</span> mongoCert <span class="nt">-keystore</span> rhTrustStore
+
+<span class="c"># asks for password, use "changeit"</span>
+</code></pre></div>  </div>
+
+  <ul>
+    <li>specify the ssl option in the mongo-uri in the restheart yml configuration file:</li>
+  </ul>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mongo-uri</span><span class="pi">:</span> <span class="s">mongodb://your.mongo-domain.com?ssl=true</span>
+</code></pre></div>  </div>
+
+  <ul>
+    <li>start restheart with following options:</li>
+  </ul>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-Dfile</span>.encoding<span class="o">=</span>UTF-8 <span class="nt">-server</span> <span class="nt">-Djavax</span>.net.ssl.trustStore<span class="o">=</span>rhTrustStore <span class="nt">-Djavax</span>.net.ssl.trustStorePassword<span class="o">=</span>changeit <span class="nt">-Djavax</span>.security.auth.useSubjectCredsOnly<span class="o">=</span><span class="nb">false</span> <span class="nt">-jar</span> restheart.jar etc/restheart.yml
+</code></pre></div>  </div>
+
+  <h2 id="restrict-permissions-of-mongodb-user">Restrict permissions of MongoDB user</h2>
+
+  <p>In the previous examples we used a MongoDB user with <em>root</em> role for the sake of simplicity. This allows RESTHeart to execute any command on any MongoDB resource.</p>
+
+  <p>On production environments a strong security isolation is mandatory.</p>
+
+  <p>In order to achieve it, the best practice is:</p>
+
+  <ol>
+    <li>use the mongo-mounts configuration option to restrict the resources exposed by RESTHeart;</li>
+    <li>use a MongoDB user with just enough permission: <em>read</em> or <em>readWrite</em> on mounted databases</li>
+  </ol>
+
+  <p>The following example, creates a MongoDB user with appropriate roles to expose the databases *restheart.</p>
+
+  <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nx">use</span> <span class="nx">admin</span>
+<span class="o">&gt;</span> <span class="nx">db</span><span class="p">.</span><span class="nx">createUser</span><span class="p">({</span><span class="na">user</span><span class="p">:</span> <span class="dl">"</span><span class="s2">restheart</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">pwd</span><span class="p">:</span> <span class="o">&lt;</span><span class="nx">password</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="na">roles</span><span class="p">:</span> <span class="p">[{</span><span class="na">role</span><span class="p">:</span> <span class="dl">"</span><span class="s2">readWrite</span><span class="dl">"</span><span class="p">,</span> <span class="na">db</span><span class="p">:</span> <span class="dl">"</span><span class="s2">restheart</span><span class="dl">"</span><span class="p">},</span>
+            <span class="p">{</span><span class="na">role</span><span class="p">:</span> <span class="dl">"</span><span class="s2">clusterMonitor</span><span class="dl">"</span><span class="p">,</span> <span class="na">db</span><span class="p">:</span> <span class="dl">"</span><span class="s2">admin</span><span class="dl">"</span><span class="p">}</span>
+<span class="p">]})</span>
+</code></pre></div>  </div>
+
+  <p>The built-in role <code class="language-plaintext highlighter-rouge">clusterMonitor</code> is needed to check the replica set status of MongoDB.</p>
+
+  <p>To list the databases (i.e. GET /, the root resource) the listDatabases permission is needed. This permission is granted by the
+readWriteAnyDatabase role or you can create a custom role.</p>
+
+  <p>To allow deleting a database the <em>dropDatabase</em> permission is needed.
+This permission is granted by the <em>dbAdmin</em> role or you can create a
+custom role.</p>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

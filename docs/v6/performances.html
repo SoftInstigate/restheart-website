@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Performances</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Performances">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/performances">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/performances.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li>
+      <p><a href="#change-streams">Change Streams</a></p>
+    </li>
+    <li><a href="#read-and-write-json-documents">Read and Write JSON documents</a>
+      <ul>
+        <li><a href="#test-case-1">Test case 1</a></li>
+        <li><a href="#test-case-2">Test case 2</a></li>
+        <li><a href="#test-case-3">Test case 3</a></li>
+      </ul>
+    </li>
+    <li><a href="#how-we-tested">How we tested</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Performances</span>
+    </h2>
+</div>
+
+  <p>RESTHeart has been designed and developed with lightness and
+performances as fundamental parameters.</p>
+
+  <p>This section includes the performance test results gathered by the
+SoftInstigate’s development team and includes all the information needed
+to autonomously reproduce the tests.</p>
+
+  <h2 id="change-streams">Change Streams</h2>
+
+  <p>Measure RESTHeart’s notification throughput while <em>n</em> Websockets are listening for targeted notifications.
+RESTHeart will process 180 POSTs in 60 seconds while testing (3 RPS) and every client will wait until all notification have been received.</p>
+
+  <p><img src="/images/perftest/change-stream-test.png" alt="change stream test" class="img-responsive" /></p>
+
+  <p>Observing the graph, RESTHeart delivers almost real-time notification for a very huge amount of clients:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="text-align: left">Clients</th>
+        <th style="text-align: right">TPS</th>
+        <th style="text-align: right">Mean Notification Time (333ms = Real Time)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left"><strong>10</strong></td>
+        <td style="text-align: right">27</td>
+        <td style="text-align: right">357ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>100</strong></td>
+        <td style="text-align: right">278</td>
+        <td style="text-align: right">359ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>1000</strong></td>
+        <td style="text-align: right">2790</td>
+        <td style="text-align: right">358ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>10000</strong></td>
+        <td style="text-align: right">27909</td>
+        <td style="text-align: right">358ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>15000</strong></td>
+        <td style="text-align: right">41812</td>
+        <td style="text-align: right">358ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>20000</strong></td>
+        <td style="text-align: right">54125</td>
+        <td style="text-align: right">369ms</td>
+      </tr>
+      <tr>
+        <td style="text-align: left"><strong>25000</strong></td>
+        <td style="text-align: right">61995</td>
+        <td style="text-align: right">403ms</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="read-and-write-json-documents">Read and Write JSON documents</h2>
+
+  <h3 id="test-case-1">Test case 1</h3>
+
+  <p>Measure the execution time to create <strong>1 million documents</strong> with random
+data, using <strong>200 test threads.</strong></p>
+
+  <p><img src="https://restheart.org/images/perftest/test-1-et.png" alt="test 1 execution
+time" class="img-responsive" /></p>
+
+  <p>In this scenario, RESTHeart introduces just a <strong>2,41% overhead</strong> over
+the total execution time:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th> </th>
+        <th style="text-align: center">Execution Time</th>
+        <th style="text-align: center">TPS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RESTHeart</strong></td>
+        <td style="text-align: center">250s</td>
+        <td style="text-align: center">3990 tps</td>
+      </tr>
+      <tr>
+        <td><strong>Direct</strong></td>
+        <td style="text-align: center">244s</td>
+        <td style="text-align: center">4086 tps</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="test-case-2">Test case 2</h3>
+
+  <p>Measure the execution time to <strong>query a collection 100.000 times</strong>,
+getting 5 documents each time (limit 5) and skipping just 25 documents,
+under different concurrency levels.</p>
+
+  <p><img src="https://restheart.org/images/perftest/test-2-et.png" alt="test 2 execution
+time" class="img-responsive" /></p>
+
+  <p><img src="https://restheart.org/images/perftest/test-2-tps.png" alt="test 2 tps" class="img-responsive" /></p>
+
+  <p>RESTHeart delivers better performances under any concurrency level over
+direct access via MongoDB driver:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Threads</th>
+        <th style="text-align: right">50</th>
+        <th style="text-align: right">100</th>
+        <th style="text-align: right">200</th>
+        <th style="text-align: right">250</th>
+        <th style="text-align: right">400</th>
+        <th style="text-align: right">500</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RESTHeart</strong></td>
+        <td style="text-align: right">78s</td>
+        <td style="text-align: right">82s</td>
+        <td style="text-align: right">78s</td>
+        <td style="text-align: right">76s</td>
+        <td style="text-align: right">76s</td>
+        <td style="text-align: right">76s</td>
+      </tr>
+      <tr>
+        <td><strong>Direct</strong></td>
+        <td style="text-align: right">97s</td>
+        <td style="text-align: right">95s</td>
+        <td style="text-align: right">96s</td>
+        <td style="text-align: right">96s</td>
+        <td style="text-align: right">109s</td>
+        <td style="text-align: right">112s</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="test-case-3">Test case 3</h3>
+
+  <p>Measure the execution time to <strong>query a collection 2.000 times</strong>,
+getting 5 documents each time (limit 5) and skipping just 250.000
+documents, under different concurrency levels.</p>
+
+  <p><img src="https://restheart.org/images/perftest/test-3-et.png" alt="test 3 execution
+time" class="img-responsive" /></p>
+
+  <p><img src="https://restheart.org/images/perftest/test-3-tps.png" alt="test 3 tps" class="img-responsive" /></p>
+
+  <p>Thanks to the eager pre-allocation DBCursor engine, queries with
+significant skip parameter executes much faster (50 times in this case)
+with RESTHeart:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Threads</th>
+        <th style="text-align: center">1</th>
+        <th style="text-align: center">2</th>
+        <th style="text-align: center">4</th>
+        <th style="text-align: center">5</th>
+        <th style="text-align: center">8</th>
+        <th style="text-align: center">10</th>
+        <th style="text-align: center">20</th>
+        <th style="text-align: center">40</th>
+        <th style="text-align: center">50</th>
+        <th style="text-align: center">80</th>
+        <th style="text-align: center">100</th>
+        <th style="text-align: center">200</th>
+        <th style="text-align: center">400</th>
+        <th style="text-align: center">500</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RESTHeart</strong></td>
+        <td style="text-align: center">16,28s</td>
+        <td style="text-align: center">6,22s</td>
+        <td style="text-align: center">5,05s</td>
+        <td style="text-align: center">2,53s</td>
+        <td style="text-align: center">3,76s</td>
+        <td style="text-align: center">3,6s</td>
+        <td style="text-align: center">2,98s</td>
+        <td style="text-align: center">5,65s</td>
+        <td style="text-align: center">9,04s</td>
+        <td style="text-align: center">10,74s</td>
+        <td style="text-align: center">6,76s</td>
+        <td style="text-align: center">9,24s</td>
+        <td style="text-align: center">6,76s</td>
+        <td style="text-align: center">12,71s</td>
+      </tr>
+      <tr>
+        <td><strong>Direct</strong></td>
+        <td style="text-align: center">1091s</td>
+        <td style="text-align: center">627s</td>
+        <td style="text-align: center">324s</td>
+        <td style="text-align: center">328s</td>
+        <td style="text-align: center">329s</td>
+        <td style="text-align: center">325s</td>
+        <td style="text-align: center">324s</td>
+        <td style="text-align: center">321s</td>
+        <td style="text-align: center">321s</td>
+        <td style="text-align: center">304s</td>
+        <td style="text-align: center">302s</td>
+        <td style="text-align: center">305s</td>
+        <td style="text-align: center">327s</td>
+        <td style="text-align: center">327s</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="how-we-tested">How we tested</h2>
+
+  <h3 id="reading-and-writing-json-documents">Reading and Writing JSON Documents</h3>
+
+  <h4 id="hardware">Hardware</h4>
+
+  <p>MongoDB and RESTHeart running on Sunfire X2200 M2 with 2 CPU with 16
+Gbyte of RAM. See full
+specification <a href="https://docs.oracle.com/cd/E19121-01/sf.x2200m2/819-6597-12/Chap1.html">here</a>.
+This is an <em>old </em>server with 2 dual core 2,2GHz AMD Opteron CPUs.</p>
+
+  <p>Test cases run by MacBook Pro client with 2,66 GHz Intel Core i7 and 8
+GB 1067 MHz DDR3</p>
+
+  <p>The client and the server on the same local network linked by a 10/100
+Ethernet switch.</p>
+
+  <h4 id="software">Software</h4>
+
+  <ul>
+    <li><strong>Server OS</strong>: Ubuntu server 64bit 14.04.1 LTS</li>
+    <li><strong>Client OS</strong>: Mac OS X Yosemite 10.10.1</li>
+    <li><strong>MongoDB</strong>: 2.6.7</li>
+    <li><strong>RESTHeart</strong>: commit 01d403a5db8b765ad5b0a8eec1fda420c392ab58</li>
+  </ul>
+
+  <h4 id="configurations">Configurations</h4>
+
+  <p><strong>MongoDB</strong>: run (without authentication enabled) with the following
+command</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$numactl --interleave=all /opt/mongodb/bin/mongod --fork --syslog
+</code></pre></div>  </div>
+
+  <p><strong>RESTHeart</strong>: run with default parameters with the following exception:</p>
+
+  <ul>
+    <li>logging to file off</li>
+    <li>eager-cursor-allocation-linear-slice-heights set to [50]</li>
+    <li>io-threads: 8 </li>
+    <li>worker-threads: 64 </li>
+  </ul>
+
+  <h4 id="test-code">Test code</h4>
+
+  <p>We used the brilliant <a href="https://github.com/bazhenov/load-test-tool">load test
+tool</a>.</p>
+
+  <p>The test case code is available on Github as part of the RESTHeart source code baseline. You can find
+it <a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/test/java/org/restheart/test/performance">here</a>.</p>
+
+  <h3 id="change-streams-1">Change Streams</h3>
+
+  <p>Tests have been made simulating a production environment composed by <strong><em>3 EC2 t3a.medium instances</em></strong> running with <strong><em>Ubuntu 18.04</em></strong></p>
+
+  <p><em>Check <a href="https://github.com/SoftInstigate/restheart-perftest">this repository</a> to learn how to setup by your own a local testing environment.</em></p>
+
+  <p>RESTHeart has been designed and developed with lightness and
+performances as fundamental parameters. On this regards, also thanks to
+its caching capabilities, RESTHeart often overcomes the results that can
+be achieved accessing MongoDB directly via its Java driver.</p>
+
+  <p>This section includes the performance test results gathered by the
+SoftInstigate’s development team and includes all the information needed
+to autonomously reproduce the tests.</p>
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

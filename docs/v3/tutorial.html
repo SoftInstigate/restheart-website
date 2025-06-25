@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Tutorial</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Tutorial">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/tutorial">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/tutorial.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#start-mongodb-and-restheart">Start MongoDB and RESTHeart</a></li>
+    <li><a href="#create-a-database">Create a Database</a></li>
+    <li><a href="#get-the-database">Get the database</a></li>
+    <li><a href="#create-a-collection">Create a Collection</a></li>
+    <li><a href="#get-the-collection">Get the collection</a></li>
+    <li><a href="#create-two-documents">Create two Documents</a>
+      <ul>
+        <li><a href="#first-document">First document</a></li>
+        <li><a href="#second-document">Second document</a></li>
+      </ul>
+    </li>
+    <li><a href="#get-all-documents-from-the-collection">Get all Documents from the Collection</a></li>
+    <li><a href="#get-document-by-url-by-id">GET Document by URL (by id)</a></li>
+    <li><a href="#query-documents-by-properties">Query documents by properties</a></li>
+    <li><a href="#clean-up">Clean-up</a></li>
+    <li><a href="#additional-resources">Additional resources</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Tutorial</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>In this tutorial we use RESTHeart to create a <strong>database</strong>, a <strong>collection</strong> and a couple of <strong>documents</strong> in MongoDB. Then we show how to perform simple queries. Here we use <strong>Docker</strong> because it’s the easiest way to run RESTHeart and MongoDB together.</p>
+
+  <blockquote>
+    <p>We use <a href="https://httpie.org/">httpie</a>, a command line HTTP client (<a href="https://curl.haxx.se">curl</a> is fine, but httpie is easier to use and produces a colorized and formatted output that’s easier to read). For a primer read <a href="http://radek.io/2015/10/20/httpie/">httpie: A CLI http client that will make you smile</a>.</p>
+  </blockquote>
+
+  <h2 id="start-mongodb-and-restheart">Start MongoDB and RESTHeart</h2>
+
+  <p>If you have Docker properly installed in your machine, you can start RESTHeart in seconds:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir </span>restheart <span class="o">&amp;&amp;</span> <span class="nb">cd </span>restheart
+<span class="nv">$ </span>curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml
+<span class="nv">$ </span>docker-compose up <span class="nt">-d</span>
+</code></pre></div>  </div>
+
+  <p>That runs RESTHeart and an empty MongoDB container, which we are going to use for the rest of this tutorial.</p>
+
+  <p>Optionally, you might want to review to the <a href="/docs/v3/setup/#run-restheart-with-docker">setup</a> section to get more details on how to run RESTHeart and MongoDB with Docker and Docker Compose, but you can leave it for later. Let’s instead jump into some action.</p>
+
+  <h2 id="create-a-database">Create a Database</h2>
+
+  <p>Now that RESTHeart is up and running and connected to its empty MongoDB instance (just created for you by Docker Compose), the first step is to create a new MongoDB database:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> PUT localhost:8080/db <span class="nv">desc</span><span class="o">=</span><span class="s1">'this is my first db created with restheart'</span>
+
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:09:29.385Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 13:54:29 GMT
+ETag: 5ae1da15a7b11b0005a3c41d
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+
+  <h2 id="get-the-database">Get the database</h2>
+
+  <p>To get the created database:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET localhost:8080/db
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:19:07.744Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 149
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:04:07 GMT
+ETag: 5ae1da15a7b11b0005a3c41d
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> 
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1da15a7b11b0005a3c41d"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"db"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_total_pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"desc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"this is my first db created with restheart"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="create-a-collection">Create a Collection</h2>
+
+  <p>Now it’s possible to create a collection “coll” in the database “db”:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> PUT localhost:8080/db/coll <span class="nv">desc</span><span class="o">=</span><span class="s1">'my first collection created with restheart'</span>
+
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:25:39.914Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:10:39 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+
+  <h2 id="get-the-collection">Get the collection</h2>
+
+  <p>To get the created collection:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET 127.0.0.1:8080/db/coll
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:26:43.480Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 135
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:11:43 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> 
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dddfa7b11b0005a3c41f"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"desc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my first collection created with restheart"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div>  </div>
+
+  <h2 id="create-two-documents">Create two Documents</h2>
+
+  <p>Let’s create some documents in MongoDB.</p>
+
+  <h3 id="first-document">First document</h3>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> POST localhost:8080/db/coll <span class="nv">name</span><span class="o">=</span><span class="s1">'RESTHeart'</span> <span class="nv">rating</span><span class="o">=</span><span class="s1">'cool'</span>
+
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:28:06.435Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:13:06 GMT
+ETag: 5ae1de72a7b11b0005a3c420
+Location: http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+
+  <p>Note the <code class="language-plaintext highlighter-rouge">Location</code> header, as it contains a link to the newly created document! To get the document you can directly copy that link and use it in a subsequent query, like this:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET http://localhost:8080/db/coll/5ae1de72586f80fc867131f4
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:38:48.212Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 119
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:23:48 GMT
+ETag: 5ae1de72a7b11b0005a3c420
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72a7b11b0005a3c420"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72586f80fc867131f4"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RESTHeart"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cool"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h3 id="second-document">Second document</h3>
+
+  <p>Cool, now let’s create a second document:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> POST localhost:8080/db/coll <span class="nv">name</span><span class="o">=</span><span class="s1">'MongoDB'</span> <span class="nv">rating</span><span class="o">=</span><span class="s1">'super cool'</span>
+
+HTTP/1.1 201 Created
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:29:24.215Z
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:14:24 GMT
+ETag: 5ae1dec0a7b11b0005a3c421
+Location: http://localhost:8080/db/coll/5ae1dec0586f80fc86713200
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+
+  <p>As before, note the <code class="language-plaintext highlighter-rouge">Location</code> header. As before, you can GET the newly created document by requesting that link.</p>
+
+  <h2 id="get-all-documents-from-the-collection">Get all Documents from the Collection</h2>
+
+  <p>Now let’s get all documents in a row. For this, we send a GET request to the whole collection (named “coll” in this example).</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET localhost:8080/db/coll
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:30:18.109Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 223
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:15:18 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dec0a7b11b0005a3c421"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dec0586f80fc86713200"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MongoDB"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"super cool"</span><span class="w">
+        </span><span class="p">},</span><span class="w"> 
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72a7b11b0005a3c420"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72586f80fc867131f4"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RESTHeart"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cool"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w"> 
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dddfa7b11b0005a3c41f"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"desc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my first collection created with restheart"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>Note that the two documents are within the <code class="language-plaintext highlighter-rouge">_embedded</code> array, while the rest is metadata (the meaning of metadata, such as <code class="language-plaintext highlighter-rouge">_etag</code> and <code class="language-plaintext highlighter-rouge">_returned</code>, should appear self-explanatory).</p>
+
+  <p>Also beware that RESTHeart applies a <a href="/docs/v3/query-documents/#paging">pagination algorithm</a> to all requests, but by default it works only if the collection contains more than 100 documents, which is not this case.</p>
+
+  <h2 id="get-document-by-url-by-id">GET Document by URL (by id)</h2>
+
+  <p>If you look into the <code class="language-plaintext highlighter-rouge">_embedded</code> array and copy the <code class="language-plaintext highlighter-rouge">_id</code> element, then it’s possible to get that single document directly, exactly as we did before by looking at the <code class="language-plaintext highlighter-rouge">Location</code> header</p>
+
+  <p>For example, let’s say the <code class="language-plaintext highlighter-rouge">_id</code> of a document in the <code class="language-plaintext highlighter-rouge">_embedded</code> array is “5ae1de72586f80fc867131f4” then we can GET it immediately:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET localhost:8080/db/coll/5ae1de72586f80fc867131f4
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:35:42.549Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 119
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:20:42 GMT
+ETag: 5ae1de72a7b11b0005a3c420
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72a7b11b0005a3c420"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1de72586f80fc867131f4"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RESTHeart"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cool"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div>  </div>
+
+  <h2 id="query-documents-by-properties">Query documents by properties</h2>
+
+  <p>Using directly the document <code class="language-plaintext highlighter-rouge">_id</code> is of course not the only available option. We can actually leverage MongoDB queries with the <code class="language-plaintext highlighter-rouge">filter</code> query parameter in HTTP calls:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> <span class="s1">'admin:changeit'</span> GET localhost:8080/db/coll?filter<span class="o">=</span><span class="s2">"{'name':'MongoDB'}"</span>
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Allow-Origin: <span class="k">*</span>
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Auth-Token: 65iz1g89ao5r2e47whohfx6ffw6vfl6nf6d44nyxez0ri7yzzh
+Auth-Token-Location: /_authtokens/admin
+Auth-Token-Valid-Until: 2018-04-26T14:44:29.115Z
+Connection: keep-alive
+Content-Encoding: <span class="nb">gzip
+</span>Content-Length: 192
+Content-Type: application/json
+Date: Thu, 26 Apr 2018 14:29:29 GMT
+ETag: 5ae1dddfa7b11b0005a3c41f
+X-Powered-By: restheart.org
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dec0a7b11b0005a3c421"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dec0586f80fc86713200"</span><span class="w">
+            </span><span class="p">},</span><span class="w"> 
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MongoDB"</span><span class="p">,</span><span class="w"> 
+            </span><span class="nl">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"super cool"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w"> 
+    </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5ae1dddfa7b11b0005a3c41f"</span><span class="w">
+    </span><span class="p">},</span><span class="w"> 
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"_returned"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> 
+    </span><span class="nl">"desc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my first collection created with restheart"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>Now you could jump to <a href="/docs/v3/query-documents/">Queries</a> for more complex examples on how to search documents. Remember that you will have all MongoDB’s queries power at your disposal.</p>
+
+  <h2 id="clean-up">Clean-up</h2>
+
+  <p>To stop all containers and clean-up everything, just run the <code class="language-plaintext highlighter-rouge">docker-compose down -v</code> command:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose down <span class="nt">-v</span>
+
+Stopping restheart       ... <span class="k">done
+</span>Stopping restheart-mongo ... <span class="k">done
+</span>Removing restheart       ... <span class="k">done
+</span>Removing restheart-mongo ... <span class="k">done
+</span>Removing network restheart_backend
+Removing volume restheart_restheart-datadb
+</code></pre></div>  </div>
+
+  <h2 id="additional-resources">Additional resources</h2>
+
+  <ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URI</a></li>
+    <li><a href="/docs/v3/representation-format">Resource Representation Format</a></li>
+    <li><a href="/docs/v3/query-documents/">Queries</a></li>
+  </ul>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Security Hardening</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Security Hardening">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/security/security-hardening">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v8
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            <strong>v8</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/security/security-hardening.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    
+<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2>Overview</h2>
+</a>
+<ul id="overview" class="collapse">
+    <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
+    <li><a href="/docs">Overview</a></li>
+    <li><a href="/docs/faq">FAQ</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/performances">Performances</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
+    <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/example-webapps">Example Web Apps built with RESTHeart</a></li>
+    <li><a href="/docs/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Setup</h2>
+</a>
+<ul id="setup" class="collapse">
+    <li><a href="/docs/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/configuration">Configuration</a></li>
+    <li><a href="/docs/default-configuration">Default Configuration</a></li>
+    <li><a href="/docs/security/how-clients-authenticate">Client Authentication Howto</a></li>
+    <li><a href="/docs/security/user-management">User Management</a></li>
+    <li><a href="/docs/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/security/security-hardening"><strong>Security Hardening</strong></a></li>
+    <li><a href="/docs/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/proxy">Proxying requests</a></li>
+    <li><a href="/docs/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/logging">Logging</a></li>
+    <li><a href="/docs/monitoring">Monitoring</a></li>
+    <li><a href="/docs/auditing">Auditing</a></li>
+    <li><a href="/docs/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Framework</h2>
+</a>
+<ul id="framework" class="collapse">
+    <!-- <li><a href="/docs/plugins/dev-env">Development Environment</a></li> -->
+    <li><a href="/docs/plugins/overview">Overview</a></li>
+    <li><a href="/docs/plugins/tutorial">Tutorial</a></li>
+    <li><a href="/docs/plugins/deploy">How to deploy Plugins</a></li>
+    <h3 id="rest-api" class="mt-2">Base Plugins</h2>
+    <li><a href="/docs/plugins/services">Services</a></li>
+    <li><a href="/docs/plugins/interceptors">Interceptors</a></li>
+    <li><a href="/docs/plugins/providers">Providers</a></li>
+    <li><a href="/docs/plugins/initializers">Initializers</a></li>
+    <li><a href="/docs/plugins/core-plugins-js">Services and Inteceptors in JavaScript</a></li>
+    <h3 id="rest-api" class="mt-2">Security Plugins</h2>
+    <li><a href="/docs/security/overview">Overview</a></li>
+    <li><a href="/docs/plugins/authentication-mechanisms">Authentication Mechanisms</a></li>
+    <li><a href="/docs/plugins/authenticators">Authenticators</a></li>
+    <li><a href="/docs/plugins/authorizers">Authorizers</a></li>
+    <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
+</ul>
+
+<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">Security Plugins</h2>
+</a>
+<ul id="security" class="collapse">
+    <li><a href="/docs/security/tutorial">Auth^2 Tutorial</a></li>
+    <li><a href="/docs/security/authentication">Authentication</a></li>
+    <li><a href="/docs/security/authorization">Authorization</a></li>
+    <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
+</ul>
+
+<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+    <h2 class="mt-2">MongoDB Plugins</h2>
+</a>
+<ul id="mongodb" class="collapse">
+    <h3 id="rest-api" class="mt-2">REST API</h2>
+    <li><a href="/docs/mongodb-rest/tutorial">Getting Started</a></li>
+    <li><a href="/docs/mongodb-rest/read-docs">Reading Documents</a></li>
+    <li><a href="/docs/mongodb-rest/write-docs">Writing Documents</a></li>
+    <li><a href="/docs/mongodb-rest/files">Managing Binary Files</a></li>
+    <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/mongodb-rest/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+    <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/mongodb-rest/caching">Performance and Caching</a></li>
+    <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/mongodb-rest/sample-data">Load Sample Data</a></li>
+
+    <h3 id="rest-api" class="mt-2">GraphQL API</h3>
+    <li><a href="/docs/mongodb-graphql/">Overview</a></li>
+    <li><a href="/docs/mongodb-graphql/getting-started">Getting Started</a></li>
+    <li><a href="/docs/mongodb-graphql/graphql-apps">App Definition</a>
+        <ul>
+            <li><a href="/docs/mongodb-graphql/schema">Schema Design</a></li>
+            <li><a href="/docs/mongodb-graphql/mappings">MongoDB Mappings</a></li>
+            <li><a href="/docs/mongodb-graphql/resolvers">Custom Resolvers</a></li>
+        </ul>
+    </li>
+    <li><a href="/docs/mongodb-graphql/tutorial">Basic Tutorial</a></li>
+    <li><a href="/docs/mongodb-graphql/complex-app-example">Advanced Example</a></li>
+    <li><a href="/docs/mongodb-graphql/optimization">Performance Optimization</a></li>
+    <li><a href="/docs/mongodb-graphql/best-practices">Best Practices</a></li>
+
+    <h3 id="rest-api" class="mt-2">Websocket API</h3>
+    <li><a href="/docs/mongodb-websocket/">Overview</a></li>
+    <li><a href="/docs/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/mongodb-websocket/examples">Examples</a></li>
+</ul>
+
+<style>
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+    // on page load, show the menu element of the current pages
+    const menu = 'setup';
+    if (menu) {
+        $(`#${menu}`).collapse('show');
+    }
+</script>
+
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#update-the-admin-user-password">Update the <code>admin</code> user password</a>
+<ul class="sectlevel2">
+<li><a href="#disable-the-auto-creation-of-the-admin-user">Disable the auto-creation of the admin user</a></li>
+</ul>
+</li>
+<li><a href="#disable-the-root-role">Disable the root role</a></li>
+<li><a href="#use-https">Use HTTPS</a>
+<ul class="sectlevel2">
+<li><a href="#secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+</ul>
+</li>
+<li><a href="#make-sure-password-are-stored-in-an-encrypted-form">Make sure password are stored in an encrypted form</a></li>
+<li><a href="#enforce-strong-passwords">Enforce strong passwords</a></li>
+<li><a href="#bruteforceattackguard">bruteForceAttackGuard</a></li>
+<li><a href="#originvetoer">originVetoer</a>
+<ul class="sectlevel2">
+<li><a href="#configuration-example">Configuration Example</a></li>
+<li><a href="#configuration-properties">Configuration Properties</a></li>
+<li><a href="#how-it-works">How It Works</a></li>
+<li><a href="#example">Example</a></li>
+</ul>
+</li>
+<li><a href="#define-and-test-the-acl">Define and test the ACL</a>
+<ul class="sectlevel2">
+<li><a href="#use-only-aggregations-and-forbid-the-filter-query-parameter">Use only aggregations and forbid the <code>filter</code> query parameter</a></li>
+</ul>
+</li>
+<li><a href="#blacklist-the-where-mongodb-operator">Blacklist the <code>$where</code> MongoDB operator</a></li>
+<li><a href="#define-role-specific-graphql-applications">Define role-specific GraphQL applications</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Security Hardening</span>
+    </h2>
+</div>
+            <div class="sect1">
+<h2 id="introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes the security hardening features available with RESTHeart
+and some best practices to protect against common attacks.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+No system can guarantee 100% security. Security must be achieved through
+a set of security hardening measures implemented on the whole system stack
+and enforced by strong and efficient security policies.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Checklist</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch table">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Best practice</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Priority</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Impact</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update the <code>admin</code> user password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable the root role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable the auto-creation of the <code>admin</code> user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use HTTPS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Secure connection to MongoDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make sure password are stored in an encrypted form</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No action required if the default authenticator is used</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enforce strong passwords</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable bruteForceAttackGuard</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable originVetoer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define and test the ACL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use only aggregations and forbid the filter query parameter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suggested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blacklist the $where MongoDB operator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No action required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define role-specific GraphQL applications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action required</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="update-the-admin-user-password">Update the <code>admin</code> user password</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At first startup, RESTHeart initializes the user <code>admin</code>, with the default password <code>secret</code>. <strong>This user can execute any request</strong>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<strong>YOU MUST UPDATE THE DEFAULT PASSWORD!</strong> The role <code>admin</code> can execute any request as it is set as the <code>root</code> role in the <code>mongoAclAuthorizer</code> configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To update it, run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>curl <span class="nt">-u</span> admin:secret <span class="nt">-X</span> PATCH localhost:8080/users/admin <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="nt">-d</span> <span class="s1">'{ "password": "my-strong-password" }'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="/docs/security/user-management/">User Management</a> for more information on how to create new users, roles and permissions.</p>
+</div>
+<div class="sect2">
+<h3 id="disable-the-auto-creation-of-the-admin-user">Disable the auto-creation of the admin user</h3>
+<div class="paragraph">
+<p>At startup time, the <code>mongoRealmAuthenticator</code> checks if the user <code>admin</code> exists. If it does not exist, it automatically creates it. This means that whenever the user <code>admin</code> is deleted, it will be eventually recreated with the default password <code>secret</code>.</p>
+</div>
+<div class="paragraph">
+<p>To avoid this dangerous behavior, you should disable the auto-creation of the <code>admin</code> user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoRealmAuthenticator</span><span class="pi">:</span>
+<span class="c1"># other options omitted</span>
+<span class="c1"># clients with root-role can execute any request</span>
+<span class="na">create-user</span><span class="pi">:</span> <span class="no">false</span> <span class="c1"># &lt;---- disable auto-creation of the admin user</span>
+<span class="na">create-user-document</span><span class="pi">:</span> <span class="s1">'</span><span class="s">{"_id":</span><span class="nv"> </span><span class="s">"admin",</span><span class="nv"> </span><span class="s">"password":</span><span class="nv"> </span><span class="s">"secret",</span><span class="nv"> </span><span class="s">"roles":</span><span class="nv"> </span><span class="s">["admin"]}'</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="disable-the-root-role">Disable the root role</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>mongoAclAuthorizer</code> by default defines the <em>root</em> role.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoAclAuthorizer</span><span class="pi">:</span>
+    <span class="c1"># other options omitted</span>
+    <span class="c1"># clients with root-role can execute any request</span>
+    <span class="na">root-role</span><span class="pi">:</span> <span class="s">admin</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+this role is granted all permission, including reading and deleting any MongoDb resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When you have setup your ACL, the <code>root</code> role can be disabled as follow:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoAclAuthorizer</span><span class="pi">:</span>
+    <span class="c1"># other options omitted</span>
+    <span class="c1"># root role disabled!</span>
+    <span class="na">root-role</span><span class="pi">:</span> <span class="no">null</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="use-https">Use HTTPS</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<strong>IT IS PARAMOUNT TO SECURE RESTHEART WITH TLS.</strong>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This can be achieved either by a reverse proxy (such as Nginx, AWS API gateway, etc)
+or by configuring RESTHeart to only use the https-listener.</p>
+</div>
+<div class="paragraph">
+<p>To configure RESTHeart to use TLS, follow the instructions at <a href="/docs/security/tls/">Configure TLS</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="secure-connection-to-mongodb">Secure connection to MongoDB</h3>
+<div class="paragraph">
+<p>To configure RESTHeart to connect to MongoDB over TLS, follow the instructions at <a href="/docs/mongodb-rest/secure-connection-to-mongodb/">Secure connection to MongoDB</a>.</p>
+</div>
+<div class="paragraph">
+<p>It is also very important to restrict the access to the MongoDB database to only the resources that are required by RESTHeart; for this refer to <a href="/docs/mongodb-rest/secure-connection-to-mongodb/#restrict-permissions-of-mongodb-user">Restrict permissions of MongoDb User</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="make-sure-password-are-stored-in-an-encrypted-form">Make sure password are stored in an encrypted form</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Passwords must be stored in an encrypted form.</p>
+</div>
+<div class="paragraph">
+<p>The default <code>mongoRealmAuthenticator</code> is recommended for production use and it does store the password in an encrypted form with the default configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoRealmAuthenticator</span><span class="pi">:</span>
+    <span class="c1"># omitting other options</span>
+    <span class="na">bcrypt-hashed-password</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">bcrypt-complexity</span><span class="pi">:</span> <span class="s">12</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>fileRealmAuthenticator</code> is for testing and development purposes only and not suggested for production use, since it does not support password hashing.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+If you use a custom <em>Authenticator</em> you must make sure that the passwords are stored in an encrypted form.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enforce-strong-passwords">Enforce strong passwords</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If users can update their password, it is important enforcing that user-defined passwords are strong enough and avoid a user to chose a weak password like <code>123456</code>.</p>
+</div>
+<div class="paragraph">
+<p>The default <code>mongoRealmAuthenticator</code> is recommended for production use and it allows to refuse to update user documents with weak passwords.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="na">mongoRealmAuthenticator</span><span class="pi">:</span>
+    <span class="c1"># omitting other options</span>
+    <span class="na">enforce-minimum-password-strenght</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="c1"># Integer from 0 to 4</span>
+    <span class="c1"># 0 Weak        （guesses &lt; 3^10）</span>
+    <span class="c1"># 1 Fair        （guesses &lt; 6^10）</span>
+    <span class="c1"># 2 Good        （guesses &lt; 8^10）</span>
+    <span class="c1"># 3 Strong      （guesses &lt; 10^10）</span>
+    <span class="c1"># 4 Very strong （guesses &gt;= 10^10）</span>
+    <span class="na">minimum-password-strength</span><span class="pi">:</span> <span class="s">3</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bruteforceattackguard">bruteForceAttackGuard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>bruteForceAttackGuard</code> defends from brute force password cracking attacks
+by returning <code>429 Too Many Requests</code> when more than <code>max-failed-attempts</code> wrong requests are received in last 10 seconds from the same ip.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+if RESTHeart is behind a revers proxy, this must set the header <code>X-Forwarded-For</code> with the client IP. In this case set the option <code>trust-x-forwarded-for: true</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yml"><span class="c1"># defends from brute force password cracking attacks</span>
+<span class="c1"># by returning `429 Too Many Requests` when more than</span>
+<span class="c1"># `max-failed-attempts` wrong requests</span>
+<span class="c1"># are received in last 10 seconds from the same ip</span>
+<span class="na">bruteForceAttackGuard</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="c1"># if true, the source ip is obtained from X-Forwarded-For header</span>
+    <span class="c1"># this requires that header being set by the proxy, dangerous otherwise</span>
+    <span class="na">trust-x-forwarded-for</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="c1"># max number of failed attempts in 10 seconds sliding window</span>
+    <span class="c1"># before returning 429 Too Many Requests</span>
+    <span class="na">max-failed-attempts</span><span class="pi">:</span> <span class="s">5</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="originvetoer">originVetoer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>originVetoer</code> authorizer protects from CSRF attacks by <strong>forbidding requests whose <code>Origin</code> header is not whitelisted</strong>.
+It supports both exact origins and flexible patterns for allowed origins.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This feature is <strong>disabled by default</strong>.
+To activate it, add the configuration below to your <code>restheart.yml</code> file and specify the allowed origins.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="configuration-example">Configuration Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">originVetoer</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">whitelist</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">https://restheart.org</span>
+    <span class="pi">-</span> <span class="s">https://restheart.com</span>
+  <span class="na">whitelist-patterns</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">https://*.mydomain.com</span>
+    <span class="pi">-</span> <span class="s">http://localhost:*</span>
+  <span class="na">ignore-paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/public/*</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-properties">Configuration Properties</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>whitelist</code><br>
+A list of exact origins or prefixes. Requests with an <code>Origin</code> header that matches (or starts with) any entry in this list are allowed.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">whitelist</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">https://restheart.org</span>
+  <span class="pi">-</span> <span class="s">https://restheart.com</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>whitelist-patterns</code><br>
+A list of glob-like patterns for allowed origins. Use <code>*</code> as a wildcard for any sequence of characters.</p>
+<div class="paragraph">
+<p>Examples:
+- <code>https://<strong>.mydomain.com</code> allows any subdomain of <code>mydomain.com</code>
+- <code><a href="http://localhost" class="bare">http://localhost</a>:</strong></code> allows any port on <code>localhost</code></p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">whitelist-patterns</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">https://*.mydomain.com</span>
+  <span class="pi">-</span> <span class="s">http://localhost:*</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>ignore-paths</code><br>
+(Optional) A list of path patterns to ignore. Requests to these paths are accepted without checking the <code>Origin</code> header.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ignore-paths</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">/public/*</span>
+  <span class="pi">-</span> <span class="s">/health</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-it-works">How It Works</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If the request path matches any <code>ignore-paths</code> entry, the request is accepted without checking the <code>Origin</code> header.</p>
+</li>
+<li>
+<p>If neither <code>whitelist</code> nor <code>whitelist-patterns</code> is defined, all origins are accepted.</p>
+</li>
+<li>
+<p>If the <code>Origin</code> header is missing, the request is rejected.</p>
+</li>
+<li>
+<p>The <code>Origin</code> header is checked against the <code>whitelist</code> (exact/prefix match).</p>
+</li>
+<li>
+<p>If not matched, the <code>Origin</code> header is checked against the <code>whitelist-patterns</code> (wildcard match).</p>
+</li>
+<li>
+<p>If the origin does not match any entry, the request is rejected.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example">Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">originVetoer</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">whitelist</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">https://restheart.org</span>
+    <span class="pi">-</span> <span class="s">https://restheart.com</span>
+  <span class="na">whitelist-patterns</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">https://*.mydomain.com</span>
+    <span class="pi">-</span> <span class="s">http://localhost:*</span>
+  <span class="na">ignore-paths</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">/public/*</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Requests from <code><a href="https://restheart.org" class="bare">https://restheart.org</a></code> or <code><a href="https://restheart.com" class="bare">https://restheart.com</a></code> are allowed.</p>
+</li>
+<li>
+<p>Requests from <code><a href="https://api.mydomain.com" class="bare">https://api.mydomain.com</a></code> or <code><a href="http://localhost:8080" class="bare">http://localhost:8080</a></code> are allowed.</p>
+</li>
+<li>
+<p>Requests to <code>/public/*</code> are always allowed, regardless of the <code>Origin</code> header.</p>
+</li>
+<li>
+<p>All other origins are rejected.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="define-and-test-the-acl">Define and test the ACL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>mongoAclAuthorizer</code> allows to define a very fine grained, role based ACL.</p>
+</div>
+<div class="paragraph">
+<p>The permissions set must allow to execute just the required requests, blacklisting unused query parameters, projecting the response to hide sensitive data, merging the request body with sensitive properties at the server-side, filtering writes and reads.</p>
+</div>
+<div class="paragraph">
+<p>The following permission document is an example of a very fine grained ACL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"userCanCreateDocumentsInOwnCollection"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"**** DESCRIPTION PROPERTY IS NOT REQUIRED, HERE ONLY FOR DOCUMENTATION PURPOSES"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"allow role 'user' to create documents under /{userid}"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"the request content must contain 'title' and 'content' &lt;- bson-request-contains(title, content)"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"the request content cannot contain any property other than 'title' and 'content' &lt;- bson-request-whitelist(title, content)"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"no qparams can be specified &lt;- qparams-whitelist()"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"the property 'author' and 'status' are added to the request at server-side &lt;- mergeRequest"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"the property 'log' with some request values is added to the request at server-side &lt;- mergeRequest"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"user"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"priority"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"predicate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"method(POST) and path-template('/{userid}') and equals(@user._id, ${userid}) and bson-request-whitelist(title, content) and bson-request-contains(title, content) and qparams-whitelist()"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"mergeRequest"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@user._id"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"draft"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"log"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@request"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="/docs/security/authorization/#format-of-permissions">Format of permission</a> for more information.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+When the permission language cannot be used and you need more control, you can define a custom <code>Vetoer</code> or an <code>Request Interceptor</code> that can enforce additional checking logic.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="use-only-aggregations-and-forbid-the-filter-query-parameter">Use only aggregations and forbid the <code>filter</code> query parameter</h3>
+<div class="paragraph">
+<p>The <code>filter</code> query parameter for the Mongo REST API allows clients to execute any MongoDB query.</p>
+</div>
+<div class="paragraph">
+<p>This is very convenient at development time, however when you are ready to deploy your application, you should blacklist the <code>filter</code> query parameter in your ACL and rely on <a href="/docs/mongodb-rest/aggregations/">Aggregations</a> to expose, well defined and secured queries.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="blacklist-the-where-mongodb-operator">Blacklist the <code>$where</code> MongoDB operator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you cannot disable the <code>filter</code> query parameter, you can blacklist unused operators, using the <code>filterOperatorsBlacklist</code> plugin.</p>
+</div>
+<div class="paragraph">
+<p>The <code>$where</code> MongoDB query operator is dangerous and should not be used in any case.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>filterOperatorsBlacklist</code> is enabled by default and blacklists <code>$where</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="define-role-specific-graphql-applications">Define role-specific GraphQL applications</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The GraphQL API is read-only, so you should only pay attention to avoid exposing sensitive information to users. This very important due to the nature of GraphQL that allows the client to request data in any format allowed by the GraphQL schema.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order secure the GraphQL API, several GraphQL applications should be defined with different read logic and bound to different URIs. In this way, different roles can be granted access to different subsets of the GraphQL apps thus protecting the information.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Protecting the GraphQL API requires the application definitions to be defined with the correct filtering options. Always test your APIs!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

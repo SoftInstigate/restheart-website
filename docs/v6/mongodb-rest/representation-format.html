@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Representation Format</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Representation Format">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/mongodb-rest/representation-format">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/mongodb-rest/representation-format.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#representation-format">Representation Format</a>
+      <ul>
+        <li><a href="#bson-types">BSON types</a></li>
+        <li><a href="#json-mode">Json Mode</a></li>
+      </ul>
+    </li>
+    <li><a href="#other-representation-formats">Other representation formats</a>
+      <ul>
+        <li><a href="#hal">HAL</a></li>
+        <li><a href="#simplified-hal">Simplified HAL</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Representation Format</span>
+    </h2>
+</div>
+
+  <h2 id="representation-format">Representation Format</h2>
+
+  <p>The following table summarizes how resources are represented</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>resource</th>
+        <th>represented as</th>
+        <th>example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>root <code class="language-plaintext highlighter-rouge">/</code></td>
+        <td>paginated array of existing db names</td>
+        <td><code class="language-plaintext highlighter-rouge">["db1", "db2"]</code></td>
+      </tr>
+      <tr>
+        <td>db <code class="language-plaintext highlighter-rouge">/&lt;db-name&gt;</code></td>
+        <td>paginated array of collection/buckets names that exist in the db</td>
+        <td><code class="language-plaintext highlighter-rouge">["collection1", "file.bucket"]</code></td>
+      </tr>
+      <tr>
+        <td>collection <code class="language-plaintext highlighter-rouge">&lt;db-name&gt;/&lt;collection-name&gt;</code></td>
+        <td>paginated array of documents of the collection</td>
+        <td><code class="language-plaintext highlighter-rouge">[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]</code></td>
+      </tr>
+      <tr>
+        <td>document</td>
+        <td>JSON object</td>
+        <td><code class="language-plaintext highlighter-rouge">{"_id": "doc1, "foo": "bar" }</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="bson-types">BSON types</h3>
+
+  <p>MongoDB uses the <a href="https://en.wikipedia.org/wiki/BSON">BSON</a> data format
+which type system is a superset of JSON’s. To preserve type information,
+MongoDB adds this extension to the JSON.</p>
+
+  <p>For instance, the <code class="language-plaintext highlighter-rouge">_id</code> of the following JSON document is an ObjectId.</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5d0b4e325beb2029a8d1bd5e"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"item"</span><span class="p">:</span><span class="w"> </span><span class="s2">"paper"</span><span class="w">
+
+    </span><span class="err">...</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">The strict mode is used on both request and response resource representation and also on the query parameter <code class="language-plaintext highlighter-rouge">filter</code></p>
+
+  <p>The following <code class="language-plaintext highlighter-rouge">filter</code> won’t find the document since the <code class="language-plaintext highlighter-rouge">_id</code> is an ObjectId (and not a String).</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>The correct request is:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h3 id="json-mode">JSON Mode</h3>
+
+  <p class="alert alert-info">JSON Mode is available from RESTHeart v4.1</p>
+
+  <p>JSON can only directly represent a subset of the types supported by BSON. To preserve type information, RESTHeart adds the following extensions to the JSON format.</p>
+
+  <p>The query parameter <code class="language-plaintext highlighter-rouge">jsonMode</code> allows to specify the JSON Mode</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>jsonMode</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>none</td>
+        <td>Standard RESTHeart representation</td>
+      </tr>
+      <tr>
+        <td>STRICT</td>
+        <td>JSON representation with type information for specific cases</td>
+      </tr>
+      <tr>
+        <td>EXTENDED</td>
+        <td>Extended JSON representation with full type information</td>
+      </tr>
+      <tr>
+        <td>RELAXED</td>
+        <td>Standard relaxed extended JSON representation</td>
+      </tr>
+      <tr>
+        <td>SHELL</td>
+        <td>This output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 id="standard-restheart-representation">Standard RESTHeart representation</h4>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">locahost:8080/coll/5d7a4b59cf6eeb5fb1686613</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+</code></pre></div>  </div>
+
+  <h4 id="strict-representation">Strict representation</h4>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+</code></pre></div>  </div>
+
+  <h4 id="extended-representation">Extended representation</h4>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": {
+        "$numberInt": "1"
+    },
+    "b": {
+        "$numberDouble": "1.0"
+    },
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": {
+            "$numberLong": "1568295769260"
+        }
+    }
+}
+</code></pre></div>  </div>
+
+  <h4 id="relaxed-representation">Relaxed representation</h4>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a6c61bd8a0d69516bbf55"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": "2019-09-12T13:42:49.26Z"
+    }
+}
+</code></pre></div>  </div>
+
+  <h4 id="shell-representation">Shell representation</h4>
+
+  <p class="bs-callout bs-callout-success">SHELL JSON Mode is very useful since it <strong>allows to use the response body directly in the mongoshell!</strong></p>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+HTTP/1.1 200 OK
+
+Content-Type: application/javascript
+
+{"_id":ObjectId("5d7a4b59cf6eeb5fb1686613"),"_etag":ObjectId("5d7a6d13bd8a0d69516bbf56"),"timestamp":ISODate("2019-09-12T13:42:49.260Z"),"a":1,"b":1.0,"big":NumberLong("1568295769260"),"verybig":NumberLong("5887391606")}
+</code></pre></div>  </div>
+
+  <h2 id="other-representation-formats">Other representation formats</h2>
+
+  <p>RESTHeart has different options for representing the resources: <code class="language-plaintext highlighter-rouge">STANDARD</code>, <code class="language-plaintext highlighter-rouge">HAL</code> and <code class="language-plaintext highlighter-rouge">SHAL</code> (Simplified HAL).</p>
+
+  <p class="bs-callout bs-callout-warning"><code class="language-plaintext highlighter-rouge">HAL</code> and <code class="language-plaintext highlighter-rouge">SHAL</code> are deprecated in version 6.0 and will likely be removed in a future release.</p>
+
+  <p>The default representation can be controlled by the configuration option <code class="language-plaintext highlighter-rouge">default-representation-format</code> .</p>
+
+  <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">default-representation-format</span><span class="p">:</span> <span class="s">STANDARD</span>
+</code></pre></div>  </div>
+
+  <p>The <code class="language-plaintext highlighter-rouge">rep</code> query parameter can also be used for switching between representations.</p>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?rep=s</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?rep=hal</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?rep=shal</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h3 id="hal">HAL</h3>
+
+  <p><a href="http://stateless.co/hal_specification.html">HAL</a> up on 2 simple concepts: <strong>Resources</strong> and <strong>Links</strong></p>
+
+  <ul>
+    <li><strong>Resources</strong> have state (plain JSON), embedded resources and links</li>
+    <li><strong>Links</strong> have target (href URI) and relations (aka rel)</li>
+  </ul>
+
+  <p><img src="/images/info-model.png" alt="" width="800" height="600" class="img-responsive" /></p>
+
+  <h4 id="example">Example</h4>
+
+  <p>We’ll get the <code class="language-plaintext highlighter-rouge">inventory</code> collection resource and analyze it.
+A collection represented with <code class="language-plaintext highlighter-rouge">HAL</code> has its own <em>properties</em>, <em>embedded resources</em> (in this case, documents) and <em>link templates</em> (for pagination, sorting, etc).</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?rep=hal</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, X-Powered-By
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 384
+Content-Type: application/hal+json
+Date: Mon, 08 Jul 2019 12:56:14 GMT
+ETag: 5d233840dd860b259a3bad45
+X-Powered-By: restheart.org
+
+{
+   "_id":"inventory",
+   "_etag":{
+      "$oid":"5d233840dd860b259a3bad45"
+   },
+   "metadata_field": "metadata_value",
+   "_returned": 6,
+   "_embedded":{
+      "rh:doc":[
+         {
+            "_id":{
+               "$oid":"5d233aeb93dc53162739e172"
+            },
+            "_etag":{
+               "$oid":"5d233aeb93dc53162739e16d"
+            },
+            "item":"postcard",
+            "qty":45,
+            "size":{
+               "h":10,
+               "w":15.25,
+               "uom":"cm"
+            },
+            "status":"A"
+         },
+        ...
+      ]
+   }
+}
+</code></pre></div>  </div>
+
+  <h4 id="properties">Properties</h4>
+
+  <p>In this case, the collection properties comprise the field <em>metadata_field</em>; this
+is user defined.</p>
+
+  <p>The other fields are reserved properties (i.e. are managed automatically
+by RESTHeart for you); these always starts with _:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_type</code></td>
+        <td>the type of this resource. in this case ‘COLLECTION’ (only returned on HAL full mode)</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_id</code></td>
+        <td>the name of the collection</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_etag</code></td>
+        <td>entity tag, used for caching and to avoid ghost writes.</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">_returned</code></td>
+        <td>the number of the documents embedded in this representation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 id="documents-as-embedded-resources">Documents as embedded resources</h4>
+
+  <p>Collection’s embedded resources are the collection documents,
+recursively represented as HAL documents.</p>
+
+  <p>The <code class="language-plaintext highlighter-rouge">_embedded</code> property looks like:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"rh:doc"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5d233aeb93dc53162739e172"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5d233aeb93dc53162739e16d"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"item"</span><span class="p">:</span><span class="w"> </span><span class="s2">"postcard"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"qty"</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"h"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"w"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.25</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"uom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cm"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5d233aeb93dc53162739e171"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5d233aeb93dc53162739e16d"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"item"</span><span class="p">:</span><span class="w"> </span><span class="s2">"planner"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"qty"</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"h"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.85</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"w"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"uom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cm"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"D"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h4 id="links">Links</h4>
+
+  <div class="anchor-offset" id="dot-notation">
+</div>
+
+  <div class="bs-callout bs-callout-info mt-3" role="alert">
+    <p>
+    <code>_links</code> are only returned on <strong>hal full mode</strong>. The only exception are with
+    <a href="../mgmt/relationships">relationships</a>. If a collection defines a relationship,
+    the representation of the documents always include the links to related
+    data.
+    </p>
+</div>
+
+  <div class="table-responsive">
+<table class="ts">
+<colgroup>
+<col class="w-50" />
+<col class="w-50" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Link</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>self</code></td>
+<td>link to itself</td>
+</tr>
+<tr class="even">
+<td><code>first</code></td>
+<td>link to the first page</td>
+</tr>
+<tr class="odd">
+<td><code>last</code></td>
+<td>link to the last page</td>
+</tr>
+<tr class="even">
+<td><code>rh:db</code></td>
+<td>templated link for db</td>
+</tr>
+<tr class="odd">
+<td><code>rh:coll</code></td>
+<td>templated link for collection</td>
+</tr>
+<tr class="even">
+<td><code>rh:document</code></td>
+<td>templated link for document</td>
+</tr>
+<tr class="odd">
+<td><code>rh:filter</code></td>
+<td>templated link for filtering</td>
+</tr>
+<tr class="even">
+<td><code>rh:sort</code></td>
+<td>templated link for sorting</td>
+</tr>
+<tr class="odd">
+<td><code>rh:indexes</code></td>
+<td>link to the collection indexes resource</td>
+</tr>
+<tr class="even">
+<td><code>rh:paging</code></td>
+<td>templated link for paging</td>
+</tr>
+<tr class="odd">
+<td><code>curies</code></td>
+<td><p>(compacts URIes) bind links to documentation. For instance the rh:db rel is documented at <a href="#" class="uri">https://restheart.org/curies/2.0/db.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+  <p>The <code class="language-plaintext highlighter-rouge">_links</code> property looks like:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory?hal=f"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"first"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory?pagesize=100&amp;hal=f"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"next"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory?page=2&amp;pagesize=100&amp;hal=f"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:coll"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"//{collname}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:document"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory/{docid}{?id_type}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:indexes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory/_indexes"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:filter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory{?filter}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:sort"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory{?sort_by}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"rh:paging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/inventory{?page}{&amp;pagesize}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"templated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <div class="anchor-offset" id="hal-mode">
+</div>
+
+  <h4 id="hal-mode">HAL Mode</h4>
+
+  <p>The query parameter <code class="language-plaintext highlighter-rouge">hal</code> controls the verbosity of HAL representation.
+Valid values are <code class="language-plaintext highlighter-rouge">hal=c</code> (for compact) and <code class="language-plaintext highlighter-rouge">hal=f</code> (for full); the default value
+(if the param is omitted) is compact mode.</p>
+
+  <p>When <code class="language-plaintext highlighter-rouge">hal=f</code> is specified, the representation is more verbose and includes special properties (such as links).</p>
+
+  <h3 id="simplified-hal">Simplified HAL</h3>
+
+  <p class="bs-callout bs-callout-info">Up to RESTHeart 3.x SHAL was also called <code class="language-plaintext highlighter-rouge">PLAIN_JSON</code></p>
+
+  <p>In the following response the collection /inventory has the properties <code class="language-plaintext highlighter-rouge">_id</code>, <code class="language-plaintext highlighter-rouge">_etag</code>, <code class="language-plaintext highlighter-rouge">metadata_field</code> and two embedded documents and the special property <code class="language-plaintext highlighter-rouge">_returned</code></p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?rep=shal</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+
+...
+
+{
+  "_embedded": [
+    {
+      "_id": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b7"
+      },
+      "_etag": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b2"
+      },
+      "item": "postcard",
+      "qty": 45,
+      "size": {
+        "h": 10,
+        "w": 15.25,
+        "uom": "cm"
+      },
+      "status": "A"
+    }
+  ],
+  "_id": "inventory",
+  "_etag": {
+    "$oid": "5d1e13dbdde87c62e98a4595"
+  },
+  "metadata_field": "metadata_value",
+  "_returned": 6
+}
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Setup with Docker</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Setup with Docker">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/setup-with-docker">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/setup-with-docker.adoc"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </nav>
+        </div>
+
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+            <ul class="sectlevel2">
+<li><a href="#run-restheart-with-docker-mongodb-running-on-localhost">Run RESTHeart with Docker, MongoDB running on localhost</a></li>
+<li><a href="#run-with-docker-compose">Run with docker-compose</a></li>
+<li><a href="#run-both-restheart-and-mongodb-with-docker">Run both RESTHeart and MongoDB with Docker</a></li>
+<li><a href="#dockerfile">Dockerfile</a></li>
+<li><a href="#whats-next">What&#8217;s next</a></li>
+</ul>
+        </div>
+        <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+            <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Setup with Docker</span>
+    </h2>
+</div>
+            <div class="sect2">
+<h3 id="run-restheart-with-docker-mongodb-running-on-localhost">Run RESTHeart with Docker, MongoDB running on localhost</h3>
+<div class="paragraph">
+<p>If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is <code>/tmp/db</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> /tmp/db <span class="o">&amp;&amp;</span> mongod <span class="nt">--fork</span> <span class="nt">--syslog</span> <span class="nt">--replSet</span><span class="o">=</span>foo <span class="nt">-dbpath</span><span class="o">=</span>/tmp/db <span class="o">&amp;&amp;</span> mongo <span class="nt">--eval</span> <span class="s1">'if (!rs.status().ok) rs.initiate();'</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run RESTHeart with:</p>
+</div>
+<div class="paragraph text-muted">
+<p>On OSX and Windows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--rm</span> <span class="nt">-p</span> <span class="s2">"8080:8080"</span> softinstigate/restheart</code></pre>
+</div>
+</div>
+<div class="paragraph text-muted">
+<p>On Linux</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--rm</span> <span class="nt">-p</span> <span class="s2">"8080:8080"</span> <span class="nt">--add-host</span> host.docker.internal:host-gateway softinstigate/restheart</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This command relies on the docker support of <code>host.docker.internal</code>. If you are using an old docker version or a docker runtime that does not support it, than you need to configure the docker network accordingly (you can refer to the brilliant <a href="https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach">"From inside of a Docker container, how do I connect to the localhost of the machine?" on StackOverflow</a>) or use one of the an alternative methods described in the further sections.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+For versions <code>6.0.x<code> and `6.1.x</code>, you also need to specify the docker option `-e RH_MONGO_URI='mongodb://host.docker.internal'</code> to override the default mongo uri. Starting from version <code>6.2.0</code>, this is the default uri in the docker image and the override is no more needed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="run-with-docker-compose">Run with docker-compose</h3>
+<div class="paragraph">
+<p>To run both RESTHeart and MongoDB services you can use <code>docker compose</code>. Just copy and paste the following shell command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>curl https://raw.githubusercontent.com/SoftInstigate/restheart/6.2.x/docker-compose.yml <span class="nt">--output</span> docker-compose.yml
+<span class="nv">$ </span>docker compose up</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Watch <a href="https://www.youtube.com/watch?v=dzggm7Wp2fU&amp;t=206s">Docker / Docker Compose</a> video.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="run-both-restheart-and-mongodb-with-docker">Run both RESTHeart and MongoDB with Docker</h3>
+<div class="paragraph">
+<p>1) Create a Docker network:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>docker network create restheart-network</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2) Run a MongoDB container</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="nt">--name</span> mongodb <span class="nt">--network</span> restheart-network mongo:5.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3) Run a RESTHeart container</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="nt">--rm</span> <span class="nt">--network</span> restheart-network <span class="nt">-p</span> <span class="s2">"8080:8080"</span> <span class="nt">-e</span> <span class="nv">RH_MONGO_URI</span><span class="o">=</span><span class="s2">"mongodb://mongodb"</span> softinstigate/restheart</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nv">$ </span>http <span class="nt">-b</span> http://localhost:8080/ping
+
+Greetings from RESTHeart!</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dockerfile">Dockerfile</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile">Dockerfile</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.distroless">Dockerfile.distroless</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.graalvm">Dockerfile.graalvm</a></p>
+</li>
+<li>
+<p><a href="https://github.com/SoftInstigate/restheart/blob/6.2.x/core/Dockerfile.native">Dockerfile.native</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The "distroless" images are for special deployment requirements, where having the smallest possible image size and the very minimal security attack surface is required and their tag contains a <code>distroless</code> label. You usually don&#8217;t need these images unless you exactly know what you are doing.</p>
+</div>
+<div class="paragraph">
+<p>Images tags ending with <code>-native</code> are created with the <a href="https://www.graalvm.org/reference-manual/native-image/">GraalVM Native Image technology</a> starting from stable builds of the product, especially suited for high demanding environments, like Kubernetes. These are experimental and not fully documented yet, please contact us for questions.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="whats-next">What&#8217;s next</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Check that RESTHeart is up and running, opening the URL <a href="http://localhost:8080/ping">http://localhost:8080/ping</a>, you should see the message: <code>Greetings from RESTHeart!</code></p>
+</li>
+<li>
+<p>Check the <a href="/docs/configuration">Configuration</a> page</p>
+</li>
+<li>
+<p>Play with the <a href="/docs/tutorial/">Tutorial</a></p>
+</li>
+<li>
+<p>Deploy some plugins from the the <a href="https://github.com/SoftInstigate/restheart/tree/master/examples">plugin examples repo</a></p>
+</li>
+<li>
+<p>Load the <a href="/docs/mongodb-rest/sample-data">sample data</a> into MongoDB and play with the Data API.</p>
+</li>
+</ul>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Binary Files</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Binary Files">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/mongodb-rest/files">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/mongodb-rest/files.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#create-a-file-bucket">Create a file bucket</a></li>
+    <li><a href="#uploading-into-file-buckets-with-post">Uploading into file buckets with POST</a>
+      <ul>
+        <li><a href="#uploading-with-put">Uploading with PUT</a></li>
+      </ul>
+    </li>
+    <li><a href="#get-the-files-metadata">GET the file’s metadata</a></li>
+    <li><a href="#get-the-files-binary-data">GET the file’s binary data</a></li>
+    <li><a href="#the-properties-part">The “properties” part</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Binary Files</span>
+    </h2>
+</div>
+
+  <div class="alert alert-warning" role="alert">
+    <h2 class="alert-heading">
+            <svg class="float-left mr-3 my-auto d-block" width="30px" height="30px">
+                    <use xlink:href="/images/sprite.svg#feather" />
+                </svg>
+        This page is being updated.
+    </h2>
+    <hr class="mt-2 mb-2" />
+    <p><strong>REST</strong>Heart v6 introduces many news features, improvements and changes.</p>
+    <p>As a consequence, this page will be updated soon.</p>
+    <p>Read <a href="/docs/upgrade-to-v6" class="alert-link">Upgrade to v6</a> for a one-page description of the changes.
+    </p>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>RESTHeart is a very good fit for <strong>headless CMS</strong> use cases, as it allows to effectively manage and aggregate content and its metadata, such as images, audios and videos, delivering them via a REST API.</p>
+
+  <p class="alert alert-info">RESTHeart offers complete binary files management. It’s possible to <strong>create</strong>, <strong>read</strong> and <strong>delete</strong> even huge files. RESTHeart makes use of MongoDB’s <strong>GridFS</strong>, a specification for storing and retrieving files that exceed the BSON-document size limit of 16 MB.</p>
+
+  <p>You can read more about GridFS <a href="https://docs.mongodb.org/manual/core/gridfs/">here</a>.</p>
+
+  <p class="bs-callout bs-callout-warning"><strong>Note</strong>: RESTHeart’s HTTP clients must adhere to the <strong>multipart/form-data</strong> specification. However the specification allows a form to upload multiple files at the same time, but RESTHeart prohibits that: while it’s possible to POST / PUT several different non-binary parts for each file, it’s mandatory to upload one single binary file per each POST / PUT request. This limitation is necessary to univocally relate all the optional parts to the unique file.</p>
+
+  <p class="bs-callout bs-callout-success">In the examples in this section we assume RESTHeart is running on <code class="language-plaintext highlighter-rouge">localhost</code>, port <code class="language-plaintext highlighter-rouge">8080</code>.</p>
+
+  <h2 id="create-a-file-bucket">Create a File Bucket</h2>
+
+  <p>File buckets are special collections whose aim is to store binary data and the associated metadata. Start by creating a new one for uploading binaries.</p>
+
+  <p class="bs-callout bs-callout-warning">To be recognized as a file bucket the collection’s name must end with <strong>*.files postfix</strong> (i.e. mybucket.files is a valid file bucket name)</p>
+
+  <p>Create the default <code class="language-plaintext highlighter-rouge">restheart</code> database, if none exists yet:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Access-Control-Allow-Credentials</span><span class="p">:</span> <span class="s">true</span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
+<span class="na">Access-Control-Expose-Headers</span><span class="p">:</span> <span class="s">Location, ETag, X-Powered-By</span>
+<span class="na">Auth-Token</span><span class="p">:</span> <span class="s">1o6j8dt1f5y6jlu05t0blw2q4g280cgdv8253ilqhyoskoi5de</span>
+<span class="na">Auth-Token-Location</span><span class="p">:</span> <span class="s">/tokens/admin</span>
+<span class="na">Auth-Token-Valid-Until</span><span class="p">:</span> <span class="s">2019-07-04T09:24:37.171231Z</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">0</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Thu, 04 Jul 2019 09:09:37 GMT</span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">5d1dc2510951267987cf8ab1</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">restheart.org</span>
+</code></pre></div>  </div>
+
+  <p>Create the collection for hosting files.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/mybucket.files</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Access-Control-Allow-Credentials</span><span class="p">:</span> <span class="s">true</span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
+<span class="na">Access-Control-Expose-Headers</span><span class="p">:</span> <span class="s">Location, ETag, X-Powered-By</span>
+<span class="na">Auth-Token</span><span class="p">:</span> <span class="s">1o6j8dt1f5y6jlu05t0blw2q4g280cgdv8253ilqhyoskoi5de</span>
+<span class="na">Auth-Token-Location</span><span class="p">:</span> <span class="s">/tokens/admin</span>
+<span class="na">Auth-Token-Valid-Until</span><span class="p">:</span> <span class="s">2019-07-04T09:26:41.654633Z</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">0</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Thu, 04 Jul 2019 09:11:41 GMT</span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">5d1dc2cd0951267987cf8ab2</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">restheart.org</span>
+</code></pre></div>  </div>
+
+  <h2 id="uploading-into-file-buckets-with-post">Uploading into file buckets with POST</h2>
+
+  <p class="bs-callout bs-callout-warning">To upload a binary file <strong>the request body must be encoded as <code class="language-plaintext highlighter-rouge">multipart/form-data</code>.</strong></p>
+
+  <p>A multipart/form-data encoded request is splitted and submitted into different sections. These are trivially called <em>request parts</em>.
+Each part is delimited by a random digits string boundary.</p>
+
+  <p>By setting <code class="language-plaintext highlighter-rouge">Content-Type:multipart/form-data</code>, the following example request done using HTTPie will POST a binary image <code class="language-plaintext highlighter-rouge">example.jpg</code> with <code class="language-plaintext highlighter-rouge">{"author":"SoftInstigate"}</code> metadata associated into the previously created <code class="language-plaintext highlighter-rouge">/mybucket.files</code></p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">-v</span> <span class="nt">--form</span> POST localhost:8080/mybucket.files  @/path/to/my/binary/example.jpg <span class="nv">properties</span><span class="o">=</span><span class="s1">'{"author":"SoftInstigate"}'</span>
+</code></pre></div>  </div>
+
+  <p>will produce the following results:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/mybucket.files</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">*/*</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">66574</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">multipart/form-data; boundary=a54420e707704ef69099ae603c9acf4c</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:8080</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">HTTPie/0.9.8</span>
+</code></pre></div>  </div>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Multipart flow example --- this will be done usually hidden and handled under-the-hood by your http client
+
+--------------------------a54420e707704ef69099ae603c9acf4c
+Content-Disposition: form-data; name="properties"
+{"author":"SoftInstigate"}
+--------------------------a54420e707704ef69099ae603c9acf4c
+Content-Disposition: form-data; name="binary"; filename="example.jpg"
+Content-Type: image/jpg
+
+&gt;&gt;&gt; contents of the file
+--------------------------a54420e707704ef69099ae603c9acf4c--
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Access-Control-Allow-Credentials</span><span class="p">:</span> <span class="s">true</span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
+<span class="na">Access-Control-Expose-Headers</span><span class="p">:</span> <span class="s">Location, ETag, X-Powered-By</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">0</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 04 Mar 2020 15:48:40 GMT</span>
+<span class="na">Location</span><span class="p">:</span> <span class="s">http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">restheart.org</span>
+</code></pre></div>  </div>
+
+  <p>The <code class="language-plaintext highlighter-rouge">Location</code> HTTP header returns the file’s location:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Location: http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331
+</code></pre></div>  </div>
+
+  <h4 id="uploading-with-put">Uploading with PUT</h4>
+
+  <p>In order to explicit a human-readable name or to update an already exisiting asset you can use a PUT <code class="language-plaintext highlighter-rouge">multipart/form-data</code> encoded request.</p>
+
+  <p class="bs-callout bs-callout-info">Note that the location contains the object ID automatically generated by
+MongoDB (see the string <code class="language-plaintext highlighter-rouge">5e5fcdd8ddfa017301e00331</code> at the end of the
+above Location URL). This is a unique identifier and it’s convenient in many
+situation, but it’s not always desirable. In many case it would be
+better to explicitly name the resource with something more readable and
+meaningful.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/mybucket.files/example</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">*/*</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">66574</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">multipart/form-data; boundary=12c5bba0f1014fca997aa0aeb9cd5094</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:8080</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">HTTPie/0.9.8</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Access-Control-Allow-Credentials</span><span class="p">:</span> <span class="s">true</span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
+<span class="na">Access-Control-Expose-Headers</span><span class="p">:</span> <span class="s">Location, ETag, X-Powered-By</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">0</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 04 Mar 2020 16:25:57 GMT</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">restheart.org</span>
+</code></pre></div>  </div>
+
+  <p>In this case the resource has a much nicer URL:</p>
+
+  <pre><code class="language-plain">http://localhost:8080/mybucket.files/example
+</code></pre>
+
+  <p>Which is easier to read and link than the automatically generated name.</p>
+
+  <h2 id="get-the-files-metadata">GET the file’s metadata</h2>
+
+  <p>If you GET the <code class="language-plaintext highlighter-rouge">Location</code>, RESTHeart actually returns the file’s metadata:</p>
+
+  <p>We have from the previous example:</p>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">http://localhost:8080/mybucket.files/5d1ef3d50951267987cf8ab4</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/mybucket.files/5e5fcdd8ddfa017301e00331</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">*/*</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:8080</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">HTTPie/0.9.8</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Access-Control-Allow-Credentials</span><span class="p">:</span> <span class="s">true</span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
+<span class="na">Access-Control-Expose-Headers</span><span class="p">:</span> <span class="s">Location, ETag, X-Powered-By</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
+<span class="na">Content-Encoding</span><span class="p">:</span> <span class="s">gzip</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">244</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 04 Mar 2020 16:10:12 GMT</span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">5e5fcdd8ddfa017301e00330</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">restheart.org</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e5fcdd8ddfa017301e00331"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"rh:data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/mybucket.files/5e5fcdd8ddfa017301e00331/binary"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"chunkSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">261120</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"length"</span><span class="p">:</span><span class="w"> </span><span class="mi">66273</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"md5"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6399742c9e8a662fd2e999d8d31653c0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5e5fcdd8ddfa017301e00330"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SoftInstigate"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"contentType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"image/jpeg"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"uploadDate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$date"</span><span class="p">:</span><span class="w"> </span><span class="mi">1583336920114</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">Uploaded files metadata can be filtered and treated as regular collection documents. <br /><br /> For example, <code class="language-plaintext highlighter-rouge">http://localhost:8080/mybucket.files?filter={"metadata.author": "SoftInstigate"}</code> returns all the file metadata that satisfy the query.</p>
+
+  <h2 id="get-the-files-binary-data">GET the file’s binary data</h2>
+
+  <p>The actual binary content is available by appending the <code class="language-plaintext highlighter-rouge">binary</code> postfix, like this:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/mybucket.files/5e5fcdd8ddfa017301e00331/binary
+</code></pre></div>  </div>
+
+  <h2 id="the-properties-part">The “properties” part</h2>
+
+  <p>As we did in previus example, is possible to associate metadata to a file upload.</p>
+
+  <p>To add optional form data parts to the request it is necessary to embed the data into the <code class="language-plaintext highlighter-rouge">properties</code> field name. The content of this field is automatically parsed as JSON data, so it must be valid JSON.</p>
+
+  <p>In the following example, we set the “author” and the “filename”:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">-v</span> <span class="nt">--form</span> PUT localhost:8080/mybucket.files/example  @/path/to/my/binary/example.jpg <span class="nv">properties</span><span class="o">=</span><span class="s1">'{"author":"SoftInstigate", "filename":"example"}'</span>
+</code></pre></div>  </div>
+
+  <p>We then retrieve the metadata associated. The JSON will be merged into in the metadata section:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/mybucket.files/example</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+
+{
+    "_id": "example",
+    "_links": {
+        "rh:data": {
+            "href": "/mybucket.files/example/binary"
+        }
+    },
+    "chunkSize": 261120,
+    "filename": "example",
+    "length": 66273,
+    "md5": "6399742c9e8a662fd2e999d8d31653c0",
+    "metadata": {
+        "_etag": {
+            "$oid": "5e5fd9fcddfa017301e00335"
+        },
+        "author": "SoftInstigate",
+        "contentType": "image/jpeg",
+        "filename": "example"
+    },
+    "uploadDate": {
+        "$date": 1583340028302
+    }
+}
+</code></pre></div>  </div>
+
+  <!-- ### GET a binary file
+
+As shown above, when we GET the representation for the newly created file the response contains only its metadata.
+
+Appending \``/binary`\` at the end of the above URL makes returns the actual binary content stored into GridFS. Open
+
+[http://localhost:8080/mybucket.files/dataflow.png/binary](http://localhost:8080/mybucket.files/dataflow.png/binary)
+
+If we paste this URL to a browser's address bar then the image is displayed. This allows RESTHeart to serve as a very basic but powerful digital asset management system.
+
+![](/images/dataflow.png){:
+width="640" height="auto" class="image-center img-responsive"} -->
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

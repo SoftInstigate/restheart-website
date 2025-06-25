@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Clustering and Load Balancing</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Clustering and Load Balancing">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v5/clustering">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v5
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            <strong>v5</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v5/clustering.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started"><a href="/docs/v5">Get Started</a></h2>
+<ul>
+    <li><a href="/docs/v5/setup">Setup</a></li>
+    <li><a href="/docs/v5/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v5/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v5/video-tutorials"><strong>Video Tutorials</strong></a></li>
+    <li><a href="/docs/v5/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v5/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v5/graalvm">GraalVM</a></li>
+    <li><a href="/docs/v5/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v5/logging">Logging</a></li>
+    <li><a href="/docs/v5/blog-posts">Other tutorials</a></li>
+    <li><a href="/docs/v5/performances">Performances</a></li>
+    <li><a href="/docs/v5/clustering">Clustering & Load Balancing</a></li>
+    <li><a href="/docs/v5/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="upgrade-to-v5"><a href="/docs/v5/upgrade-to-v5">Upgrade to v5</a></h2>
+<h2 id="roadmap"><a href="/docs/v5/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v5/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v5/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v5/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v5/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v5/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v5/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v5/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v5/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v5/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v5/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v5/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v5/security/overview">Overview</a></li>
+    <li><a href="/docs/v5/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v5/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v5/security/user-management">User Management</a></li>
+    <li><a href="/docs/v5/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v5/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v5/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v5/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v5/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v5/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v5/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v5/plugins/deploy">How to deploy a Plugin</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul>
+    <li><a href="/docs/v5/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v5/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v5/etag">ETag</a></li>
+    <li><a href="/docs/v5/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v5/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v5/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v5/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v5/auditing">Auditing</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li>
+      <p><a href="#what-are-clustering-and-load-balancing">What are Clustering and Load Balancing</a></p>
+    </li>
+    <li>
+      <p><a href="#how-it-works">How it works</a></p>
+    </li>
+    <li>
+      <p><a href="#restheart-ee-capabilities">RESTHeart EE capabilities</a></p>
+    </li>
+    <li>
+      <p><a href="#references">References</a></p>
+    </li>
+  </ul>
+
+</div>
+
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Clustering and Load Balancing</span>
+    </h2>
+</div>
+
+  <h2 id="what-are-clustering-and-load-balancing">What are Clustering and Load Balancing</h2>
+
+  <p><strong>Server Clustering</strong> is a method of turning multiple computer servers into a cluster, which is a group of servers that acts like a single system.</p>
+
+  <p><strong>Load Balancing</strong> is about the distribution of workloads across multiple computing resources, such as computers, server clusters, network links, etc. Load balancing aims to optimize resource usage, maximize throughput, minimize response time, and avoid overload of any single resource.</p>
+
+  <p>A <strong>MongoDB Replica Set</strong> is a group of <code class="language-plaintext highlighter-rouge">mongod</code> processes that maintain the same data set. Replica sets provide redundancy and high availability, and are the basis for all production deployments.</p>
+
+  <p><strong>High availability (HA)</strong> is a general characteristic of a system, which aims to ensure an agreed level of operational performance, usually uptime, for a higher than normal period.</p>
+
+  <p><img src="/images/mongodb_replicaset.png" alt="MongDB Replica Set" width="50%" height="auto" class="mx-auto d-block img-responsive" style="padding: 20px" /></p>
+
+  <p>RESTHeart has always been a very good fit for Microservices and other styles of distributed architecture. It has been deployed successfully with clustering technologies such as <strong>AWS ECS</strong> and <strong>Fargate</strong>, <strong>Kubernetes</strong> and many others.</p>
+
+  <h2 id="how-it-works">How it works</h2>
+
+  <p>RESTHeart basically receives HTTP requests and transforms them into MongoDB queries, through the Java driver. Creating a cluster has been a matter of putting a plain HTTP load balancer on top of the chosen clustering technology, exactly as one would do with any other HTTP server.</p>
+
+  <p>RESTHeart is stateless for all features but for the default Token Manager used for <a href="/docs/security/authentication/#token-authentication">token authentication</a>. This implementation that comes with RESTHeart OSS holds the tokens in memory. As a result, it does not support clustering.</p>
+
+  <p>Thus a cluster of RESTHeart nodes requires <strong>sticky sessions</strong> when using token authentication otherwise the RESTHeart node could receive an authentication token created by another instance, which results in a HTTP 401 “Unauthorized” error.</p>
+
+  <p>As RESTHeart instances don’t communicate directly (to avoid expensive synchronization steps), then they can’t validate authentication tokens created by other instances in the same cluster. To overcome this situation, the HTTP Load Balancer inserts a sticky session token into a cookie and then handle the communication flow from clients to RESTHeart instances accordingly. Sticky sessions, from an architectural point of view, introduce a level of statefulness in the system and their expiration timeout must be carefully tuned.</p>
+
+  <h2 id="restheart-ee-capabilities">RESTHeart EE capabilities</h2>
+
+  <p>RESTHeart EE adds a feature to make clustering easier, without the need for any sticky session. This enables a fully <strong>stateless deployment</strong>.</p>
+
+  <p>RESTHeart EE comes with a specialized Token Manager which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.</p>
+
+  <p>For more information refer to the <a href="/docs/plugins/security-plugins/#token-managers">Token Manager</a> documentation page.</p>
+
+  <p><img src="/images/alb.png" alt="ALB" class="mx-auto d-block img-responsive" /></p>
+
+  <p>In summary, the top level steps for a highly available RESTHeart + MongoDB configuration are:</p>
+
+  <ol>
+    <li>
+      <p>Create a MongoDB Replica Set;</p>
+    </li>
+    <li>
+      <p>Create a RESTHeart cluster connected to the MongoDB Replica Set;</p>
+    </li>
+    <li>
+      <p>Put an HTTP Load Balancer on top of it.</p>
+    </li>
+  </ol>
+
+  <p class="bs-callout bs-callout-info">If you want to know more about clustering, load balancing and high availability, please <a href="/services">contact us</a>.</p>
+
+  <h2 id="references">References</h2>
+
+  <p>To understand more in general about Load Balancing, Affinity, Persistence, Sticky Sessions you can read this <a href="https://www.haproxy.com/fr/blog/load-balancing-affinity-persistence-sticky-sessions-what-you-need-to-know/">overview</a>.</p>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

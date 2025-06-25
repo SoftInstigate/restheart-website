@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Develop Core Plugins</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Develop Core Plugins">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v4/develop/core-plugins">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v4
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            <strong>v4</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v4/develop/core-plugins.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="getting-started"><a href="/docs">Intoduction</a></h2>
+
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+    <li><a href="/docs/v4/setup">Setup</a></li>
+    <li><a href="/docs/v4/configuration">Configuration</a></li>
+    <li><a href="/docs/v4/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v4/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v4/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v4/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v4/blog-posts">Tutorials</a></li>
+    <li><a href="/docs/v4/performances">Performances</a></li>
+    <li><a href="/docs/v4/clustering">Clustering & Load Balancing</a></li>
+</ul>
+
+<h2 id="upgrading-from-3"><a href="/docs/v4/upgrade-to-v4">Upgrade to v4</a></h2>
+<h2 id="upgrading-from-3"><a href="/docs/v4/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v4/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v4/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v4/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v4/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v4/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v4/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v4/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v4/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v4/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v4/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v4/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v4/security/overview">Overview</a></li>
+    <li><a href="/docs/v4/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v4/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v4/security/user-management">User Management</a></li>
+    <li><a href="/docs/v4/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v4/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v4/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v4/plugins/apply">Apply plugins</a></li>
+    <li><a href="/docs/v4/plugins/list">Available plugins</a></li>
+</ul>
+
+<h2 id="develop-core-plugins">Develop Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/develop/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v4/develop/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v4/develop/packaging">Packaging Plugins</a></li>
+    <li><a href="/docs/v4/develop/best-practices">Best practices</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul class="mb-5">
+    <li><a href="/docs/v4/etag">ETag</a></li>
+    <li><a href="/docs/v4/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v4/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v4/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v4/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v4/auditing">Auditing</a></li>
+</ul>
+
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#registering">Registering</a></li>
+        <li><a href="#configuration">Configuration</a></li>
+        <li><a href="#packaging">Packaging</a></li>
+      </ul>
+    </li>
+    <li><a href="#initializers">Initializers</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#transformers">Transformers</a></li>
+    <li><a href="#checkers">Checkers</a></li>
+    <li><a href="#hooks">Hooks</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Develop Core Plugins</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction </h2>
+
+  <p>This page provides detailed information on how to develop core plugins for the <a href="https://restheart.org/get">RESTHeart Platform</a>.</p>
+
+  <p class="bs-callout bs-callout-info">Core plugins are executed by <code class="language-plaintext highlighter-rouge">restheart-platform-core</code> service.</p>
+
+  <h3 id="registering-plugins">Registering Plugins</h3>
+
+  <p>Plugins must be registered to be available using the <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> annotation:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s">"a fantastic plugin"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooPlugin</span> <span class="kd">implements</span> <span class="nc">Service</span> <span class="o">{</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Additional attributes of <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> annotation:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>attribute</th>
+        <th>description</th>
+        <th>default value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>priority</strong></td>
+        <td>defines execution order for Intializer (less is higher priority)</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td><strong>uri</strong></td>
+        <td>sets the URI of a Service overwriting its default value specified with the <code class="language-plaintext highlighter-rouge">Service.defaultUri()</code> method.</td>
+        <td><em>none</em></td>
+      </tr>
+      <tr>
+        <td><strong>enabledByDefault</strong></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> to enable the plugin. If <code class="language-plaintext highlighter-rouge">false</code> it can be enabled setting the plugin  configuration argument ‘enabled’</td>
+        <td>true</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="bs-callout bs-callout-info">Until RESTHeart version 3.x, registering a plugin involved declaring it in the configuration file. Thanks to the <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> annotation, this is not needed anymore.</p>
+
+  <h3 id="configuration">Configuration</h3>
+
+  <p>All Plugins accept the argument <code class="language-plaintext highlighter-rouge">confArgs</code>. Set <code class="language-plaintext highlighter-rouge">confArgs</code> defining an object in the yml configuration file with the same name of the plugin (as defined in its @RegisterPlugin annotation) under the <code class="language-plaintext highlighter-rouge">plugins-args</code> configuration section:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#### Plugins configuration</span>
+
+<span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">logMessageInitializer</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">message</span><span class="pi">:</span> <span class="s">Hello World!</span>
+    <span class="na">log-level</span><span class="pi">:</span> <span class="s">INFO</span>
+  <span class="na">addBodyToWriteResponsesInitializer</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">pingService</span><span class="pi">:</span>
+    <span class="na">uri</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/hello"</span>
+    <span class="na">msg</span><span class="pi">:</span> <span class="s">Hello World!</span>
+</code></pre></div>  </div>
+
+  <h3 id="packaging">Packaging</h3>
+
+  <p>Plugins implementation classes must be added to the java classpath.</p>
+
+  <p>A convenient method is packaging the classes in the <code class="language-plaintext highlighter-rouge">restheart-platform-core.jar</code> file as suggested in <a href="/docs/v4/develop/packaging">Packaging Plugins</a> section.</p>
+
+  <h2 id="initializers">Initializers</h2>
+
+  <p class="bs-callout bs-callout-success">An initializer is a class with the method <code class="language-plaintext highlighter-rouge">init()</code> that is invoked at RESTHeart startup time.</p>
+
+  <p>It can be used to perform initialization logic. For instance, it can programmatically add <em>Transformers</em> and <em>Checkers</em> or initialize the db.</p>
+
+  <p>The Initializer class must implement the <code class="language-plaintext highlighter-rouge">org.restheart.plugins.Initializer</code> interface and use the <code class="language-plaintext highlighter-rouge">ResiterPlugin</code> annotation.</p>
+
+  <p>The <code class="language-plaintext highlighter-rouge">Initializer</code> interface:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Initializer</span> <span class="kd">extends</span> <span class="nc">Plugin</span> <span class="o">{</span>
+    <span class="cm">/**
+     * 
+     * @param confArgs arguments optionally specified in the configuration file
+     */</span>
+    <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">confArgs</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="services">Services</h2>
+
+  <p class="bs-callout bs-callout-success">Services are a simple yet powerful way of implementing custom Web Services.</p>
+
+  <p>The Service implementation class must extend handler must extend the
+abstract class <code class="language-plaintext highlighter-rouge">org.restheart.plugins.Service</code></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Service</span> <span class="kd">extends</span> <span class="nc">PipedHttpHandler</span> <span class="kd">implements</span> <span class="nc">Plugin</span> <span class="o">{</span>
+    <span class="cm">/**
+     * The configuration properties passed to this handler.
+     */</span>
+    <span class="kd">protected</span> <span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">confArgs</span><span class="o">;</span>
+
+    <span class="cm">/**
+     * Creates a new instance of the Service
+     *
+     * @param confArgs arguments optionally specified in the configuration file
+     */</span>
+    <span class="kd">public</span> <span class="nf">Service</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="k">new</span> <span class="nc">ResponseSenderHandler</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">confArgs</span> <span class="o">=</span> <span class="n">confArgs</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *
+     * @return the default uri of the service, used if not specified in plugin
+     * configuration
+     */</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">defaultUri</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * helper method to handle OPTIONS requests
+     *
+     * @param exchange
+     * @param context
+     * @throws Exception
+     */</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">handleOptions</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="n">exchange</span><span class="o">.</span><span class="na">getResponseHeaders</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"Access-Control-Allow-Methods"</span><span class="o">),</span> <span class="s">"GET, PUT, POST, PATCH, DELETE, OPTIONS"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="nc">HttpString</span><span class="o">.</span><span class="na">tryFromString</span><span class="o">(</span><span class="s">"Access-Control-Allow-Headers"</span><span class="o">),</span> <span class="s">"Accept, Accept-Encoding, Authorization, Content-Length, Content-Type, Host, If-Match, Origin, X-Requested-With, User-Agent, No-Auth-Challenge"</span><span class="o">);</span>
+        <span class="n">exchange</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_OK</span><span class="o">);</span>
+        <span class="n">exchange</span><span class="o">.</span><span class="na">endExchange</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>It requires to override the method <code class="language-plaintext highlighter-rouge">handleRequest()</code> inherited from <code class="language-plaintext highlighter-rouge">PipedHttpHandler</code>.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">;</span>
+</code></pre></div>  </div>
+
+  <p>The two arguments of <code class="language-plaintext highlighter-rouge">handleRequest()</code> are:</p>
+
+  <ol>
+    <li><a href="https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java">HttpServerExchange</a> the
+ exchange</li>
+    <li><a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/handlers/RequestContext.java">RequestContext</a> context
+ (that is the suggested way to retrieve the information of the
+ request such as the payload) </li>
+  </ol>
+
+  <p>The method <code class="language-plaintext highlighter-rouge">defaultUri()</code> can return a String such as <code class="language-plaintext highlighter-rouge">/foo</code> that is the URI when the service will be bound. The URI can also be specified in the plugin configuration, see <a href="#configuration">Plugin Configuration</a></p>
+
+  <h3 id="constructor">Constructor</h3>
+
+  <p>The Service implementation class must have a constructor with <code class="language-plaintext highlighter-rouge">confArgs</code> argument; this is optionally set from the configuration file.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">MyService</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="a-complete-example-pingservice">A complete example: pingService</h3>
+
+  <p>The following is the code of the <a href="https://github.com/SoftInstigate/restheart/blob/master/core/src/main/java/org/restheart/plugins/services/PingService.java">PingService</a> that implements a
+simple ping service.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"pingService"</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Ping service"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PingService</span> <span class="kd">extends</span> <span class="nc">Service</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">msg</span><span class="o">;</span>
+
+    <span class="cm">/**
+     *
+     * @param confArgs arguments optionally specified in the configuration file
+     */</span>
+    <span class="kd">public</span> <span class="nf">PingService</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">confArgs</span><span class="o">);</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">msg</span> <span class="o">=</span>  <span class="n">confArgs</span> <span class="o">!=</span> <span class="kc">null</span>  <span class="o">&amp;&amp;</span> <span class="n">confArgs</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="s">"msg"</span><span class="o">)</span> 
+                <span class="o">?</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">confArgs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"msg"</span><span class="o">)</span> 
+                <span class="o">:</span> <span class="s">"ping"</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">defaultUri</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"/ping"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *
+     * @param exchange
+     * @param context
+     * @throws Exception
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">isOptions</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">handleOptions</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">isGet</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">context</span><span class="o">.</span><span class="na">setResponseContent</span><span class="o">(</span><span class="k">new</span> <span class="nc">BsonDocument</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span>
+                    <span class="k">new</span> <span class="nf">BsonString</span><span class="o">(</span><span class="n">msg</span><span class="o">)));</span>
+            <span class="n">context</span><span class="o">.</span><span class="na">setResponseStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_OK</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">context</span><span class="o">.</span><span class="na">setResponseStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_NOT_IMPLEMENTED</span><span class="o">);</span>
+        <span class="o">}</span>
+        
+        <span class="n">next</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p><strong>pingService Configuration</strong> (to set the <code class="language-plaintext highlighter-rouge">msg</code> argument)</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">pingService</span><span class="pi">:</span>
+    <span class="na">msg</span><span class="pi">:</span> <span class="s">Hello World!</span>
+</code></pre></div>  </div>
+
+  <h2 id="transformers">Transformers</h2>
+
+  <p class="bs-callout bs-callout-info">Transformers allow to transform the request or the response.</p>
+
+  <p>Examples of Transformers are:</p>
+  <ul>
+    <li>filtering out from the response sensitive properties;</li>
+    <li>adding the <code class="language-plaintext highlighter-rouge">filter={"visibility":"public"}</code> query parameter to requests limiting the client visibility on documents.</li>
+  </ul>
+
+  <p class="bs-callout bs-callout-info">For implementation examples refer to the package <a href="https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/transformers">org.restheart.plugins.transformers</a></p>
+
+  <p>A transformer is a java class that implements the
+interface <a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Transformer.java">org.restheart.plugins.Transformer</a>. </p>
+
+  <div class="language-java bs-callout bs-callout-info highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/**
+     * contentToTransform can be directly manipulated or
+     * RequestContext.setResponseContent(BsonValue value) for response phase and
+     * RequestContext.setContent(BsonValue value) for request phase can be used
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToTransform the content data to transform
+     * @param args the args sepcified in the collection metadata via args
+     * property property
+     */</span>
+    <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span>
+            <span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">contentToTransform</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">);</span>
+
+    <span class="cm">/**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToTransform the content data to transform
+     * @param args the args sepcified in the collection metadata via args
+     * property
+     * @param confArgs the args specified in the configuration file via args
+     * property
+     */</span>
+    <span class="k">default</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">contentToTransform</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">transform</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="n">contentToTransform</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+  <p>The default, 5 arguments, method <code class="language-plaintext highlighter-rouge">transform()</code> can be used to store the argument <code class="language-plaintext highlighter-rouge">confArgs</code> in a instance variable when the Transformer needs the arguments specified via the configuration file</p>
+
+  <p>The following code, is an example transformer that adds the property <em>_timestamp</em> to the response body.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">io.undertow.server.HttpServerExchange</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.bson.BsonInt64</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.bson.BsonValue</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.restheart.handlers.RequestContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.restheart.plugins.Transformer</span><span class="o">;</span>
+
+<span class="kn">package</span> <span class="nn">com.whatever</span><span class="o">;</span>
+
+<span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"myTransformer"</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Add _timestamp to the body"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyTransformer</span> <span class="kd">implements</span> <span class="nc">Transformer</span> <span class="o">{</span>
+    <span class="n">tranform</span><span class="o">(</span><span class="kd">final</span> <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span> 
+        <span class="nc">BsonValue</span> <span class="n">contentToTransform</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">contentToTransform</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">contentToTransform</span><span class="o">.</span><span class="na">isDocument</span><span class="o">()){</span>
+            <span class="n">contentToTransform</span><span class="o">.</span><span class="na">asDocument</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"_timestamp"</span><span class="o">,</span> 
+                  <span class="k">new</span> <span class="nf">BsonInt64</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()));</span>
+          <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="checkers">Checkers</h2>
+
+  <p class="bs-callout bs-callout-info">Checkers allows to check the request so that, if
+it does not fulfill some conditions, it returns <em>400 BAD REQUEST</em>
+response code thus enforcing a well defined structure to documents.</p>
+
+  <p class="bs-callout bs-callout-info">For implementation examples refer to the package <a href="https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/checkers">org.restheart.plugins.checkers</a></p>
+
+  <p>A checker is a java class that implements the
+interface <a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java">org.restheart.plugins.Checker</a>.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Checker</span> <span class="kd">extends</span> <span class="nc">Plugin</span> <span class="o">{</span>
+    <span class="kd">enum</span> <span class="no">PHASE</span> <span class="o">{</span>
+        <span class="no">BEFORE_WRITE</span><span class="o">,</span>
+        <span class="no">AFTER_WRITE</span> <span class="c1">// for optimistic checks, i.e. document is inserted and in case rolled back</span>
+    <span class="o">};</span>
+
+    <span class="cm">/**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param contentToCheck the contet to check
+     * @param args the args sepcified in the collection metadata via args
+     * @return true if check completes successfully
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonDocument</span> <span class="n">contentToCheck</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">);</span>
+
+    <span class="cm">/**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs the args specified in the configuration file via args property
+     * @return true if check completes successfully
+     */</span>
+    <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonDocument</span> <span class="n">contentToCheck</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">check</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="n">contentToCheck</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Specify when the checker should be performed: with BEFORE_WRITE the
+     * checkers gets the request data (that may use the dot notation and update
+     * operators); with AFTER_WRITE the data is optimistically written to the db
+     * and rolled back eventually. Note that AFTER_WRITE helps checking data
+     * with dot notation and update operators since the data to check is
+     * retrieved normalized from the db.
+     *
+     * @param context
+     * @return BEFORE_WRITE or AFTER_WRITE
+     */</span>
+    <span class="no">PHASE</span> <span class="nf">getPhase</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">);</span>
+
+    <span class="cm">/**
+     *
+     * @param context
+     * @return true if the checker supports the requests
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">doesSupportRequests</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">The default, 5 arguments, method <code class="language-plaintext highlighter-rouge">check()</code> can be used to store the argument <code class="language-plaintext highlighter-rouge">confArgs</code> in a instance variable when the Checker needs the arguments specified via the configuration file</p>
+
+  <p>If the checker cannot process the request, the method <code class="language-plaintext highlighter-rouge">doesSupportRequests()</code> should return false. This allows to skip executing the checker. The class <code class="language-plaintext highlighter-rouge">CheckersUtils</code> provides some helper method to check the type of the request, e.g <code class="language-plaintext highlighter-rouge">CheckersUtils.isBulkRequest()</code>.</p>
+
+  <p>When a checker does not support a request, the outcome depends on the attribute <code class="language-plaintext highlighter-rouge">skipNotSupported</code> of the checker definition (see <a href="/docs/v4/plugins/apply/#apply-a-checker-via-metadata">Apply a Checker via metadata</a> and <a href="/docs/v4/plugins/apply/#apply-a-checker-programmatically">Apply a Checker programmatically</a>); when <code class="language-plaintext highlighter-rouge">skipNotSupported=true</code>, it just skips the checker; otherwise the request is not processed further and BAD REQUEST is returned.</p>
+
+  <p>The following code, is an example checker that checks if the
+<em>number</em> property in PATCH request body is between 0 and 10.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.whatever</span><span class="o">;</span>
+
+<span class="nd">@RegisterPlugin</span><span class="o">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">"checkNumber"</span><span class="o">,</span> 
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Checks if number property is between 0 and 10 on PATCH requests"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyChecker</span> <span class="kd">implements</span> <span class="nc">Checker</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span> <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// return true if request is not a PATCH or request body does not contain the property number</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getMethod</span><span class="o">()</span> <span class="o">!=</span> <span class="nc">RequestContext</span><span class="o">.</span><span class="na">METHOD</span><span class="o">.</span><span class="na">PATCH</span>
+                <span class="o">||</span> <span class="n">context</span><span class="o">.</span><span class="na">getContent</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span>
+                <span class="o">||</span> <span class="o">!</span><span class="n">context</span><span class="o">.</span><span class="na">getContent</span><span class="o">().</span><span class="na">isDocument</span><span class="o">()</span>
+                <span class="o">||</span> <span class="o">!</span><span class="n">context</span><span class="o">.</span><span class="na">getContent</span><span class="o">().</span><span class="na">asDocument</span><span class="o">().</span><span class="na">containsKey</span><span class="o">(</span><span class="s">"number"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nc">BsonValue</span> <span class="n">_value</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getContent</span><span class="o">().</span><span class="na">asDocument</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"number"</span><span class="o">);</span>
+        
+        <span class="k">if</span> <span class="o">(</span><span class="n">_value</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">_value</span><span class="o">.</span><span class="na">isNumber</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">Integer</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_value</span><span class="o">.</span><span class="na">asInt32</span><span class="o">().</span><span class="na">getValue</span><span class="o">();</span>
+            
+            <span class="k">return</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// BAD REQUEST</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="no">PHASE</span> <span class="nf">getPhase</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="no">PHASE</span><span class="o">.</span><span class="na">BEFORE_WRITE</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">doesSupportRequests</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <h2 id="hooks">Hooks</h2>
+
+  <p class="bs-callout bs-callout-info">Request Hooks allow to execute custom code after a request completes.</p>
+
+  <p>For example, request hooks can be used:</p>
+
+  <ul>
+    <li>to send a confirmation email when a user registers </li>
+    <li>to send push notifications when a resource is updated so that its
+properties satisfy a given condition.</li>
+  </ul>
+
+  <p class="bs-callout bs-callout-info">For implementation examples refer to the package <a href="https://github.com/SoftInstigate/restheart/tree/4.1.x/src/main/java/org/restheart/plugins/hooks">org.restheart.plugins.hooks</a></p>
+
+  <p>Hooks are developed implementing the java
+interface <a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Hook.java">org.restheart.plugins.Hook</a>.</p>
+
+  <p>The Hook interface requires to implement the following interface:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Hook</span> <span class="kd">extends</span> <span class="nc">Plugin</span> <span class="o">{</span>
+    <span class="cm">/**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @return true if completed successfully
+     */</span>
+    <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">hook</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">hook</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="n">args</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+        
+
+    <span class="cm">/**
+     *
+     * @param exchange the server exchange
+     * @param context the request context
+     * @param args the args sepcified in the collection metadata via args property
+     * @param confArgs args specified in the configuration file via args property
+     * @return true if completed successfully
+     */</span>
+    <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">hook</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">,</span>
+            <span class="nc">BsonDocument</span> <span class="n">confArgs</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">hook</span><span class="o">(</span><span class="n">exchange</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     *
+     * @param context
+     * @return true if the hook supports the requests
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">doesSupportRequests</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">The default, 4 arguments, method <code class="language-plaintext highlighter-rouge">hook()</code> can be used to store the argument <code class="language-plaintext highlighter-rouge">confArgs</code> in a instance variable when the Checker needs the arguments specified via the configuration file</p>
+
+  <p>The method <code class="language-plaintext highlighter-rouge">doesSupportRequests()</code> determines if the <code class="language-plaintext highlighter-rouge">hook()</code> method
+should be executed against the <code class="language-plaintext highlighter-rouge">RequestContext</code> object that
+encapsulates all information about the request.</p>
+
+  <p>For instance, the following implementation returns <code class="language-plaintext highlighter-rouge">true</code> if the request
+actually <em>created</em> a document (either POSTing the collection or PUTing
+the document):</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">doesSupportRequests</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">rc</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">rc</span><span class="o">.</span><span class="na">getDbOperationResult</span><span class="o">()</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+
+    <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="na">getDbOperationResult</span><span class="o">().</span><span class="na">getHttpCode</span><span class="o">();</span>
+
+    <span class="k">return</span> <span class="o">(</span><span class="n">status</span> <span class="o">==</span> <span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_CREATED</span>
+            <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rc</span><span class="o">.</span><span class="na">isCollection</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">rc</span><span class="o">.</span><span class="na">isPost</span><span class="o">())</span>
+            <span class="o">||</span> <span class="n">rc</span><span class="o">.</span><span class="na">isDocument</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">rc</span><span class="o">.</span><span class="na">isPut</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>Note the following useful <code class="language-plaintext highlighter-rouge">RequestContext</code> getters:</p>
+
+  <table class="table table-responsive">
+  <thead>
+    <tr class="header">
+      <th><br />
+      </th>
+      <th><br />
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="odd">
+      <td>getDbOperationResult()</td>
+      <td>returns the <code>OperationResult</code> object that encapsulates the information about the MongoDB operation, including the resource status (properties) <em>before</em> and <em>after</em> the request execution.</td>
+    </tr>
+    <tr class="even">
+      <td>getType()</td>
+      <td>returns the request resource type, e.g. DOCUMENT, COLLECTION, etc.</td>
+      </tr>
+      <tr class="odd">
+      <td>getMethod()</td>
+      <td>returns the request method, e.g. GET, PUT, POST, PATCH, DELETE, etc.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

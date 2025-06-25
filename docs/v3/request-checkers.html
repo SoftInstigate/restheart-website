@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Request Checkers</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Request Checkers">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/request-checkers">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/request-checkers.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#the-checkerscollection-metadata">The <em>checkers</em> collection metadata</a></li>
+    <li><a href="#global-checkers">Global Checkers</a></li>
+    <li><a href="#checkers">Checkers</a></li>
+    <li><a href="#schema-validation-with-checkcontent-checker">Schema validation with checkContent checker</a>
+      <ul>
+        <li><a href="#json-path-expressions">Json path expressions</a></li>
+        <li><a href="#example">Example</a></li>
+      </ul>
+    </li>
+    <li><a href="#limiting-file-size-with-checkcontentsize">Limiting file size with checkContentSize</a></li>
+    <li><a href="#custom-checkers">Custom Checkers</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Request Checkers</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>Request Checkers feature allows to check the request so that, if
+it does not fulfill some conditions, it returns <em>400 BAD REQUEST</em>
+response code thus enforcing a well defined structure to documents.</p>
+
+  <h2 id="the-checkerscollection-metadata">The <em>checkers</em> collection metadata</h2>
+
+  <p>In RESTHeart, not only documents but also dbs and collections 
+(and files buckets, schema stores, etc.) have properties. 
+Some properties are metadata, i.e. have a special meaning
+for RESTheart that controls its behavior.</p>
+
+  <p>The collection metadata property <code class="language-plaintext highlighter-rouge">checkers</code> allows to declare checkers
+to be applied to write requests.</p>
+
+  <p><em>checkers</em> is an array of <em><code class="language-plaintext highlighter-rouge">checker</code></em> objects. A <em>checker</em> object has
+the following format:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;checker_name&gt;</span><span class="p">,</span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;arguments&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"skipNotSupported"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;boolean&gt;</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+  <div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th><div>
+Property
+</div></th>
+<th><div>
+Description
+</div></th>
+<th><div>
+Mandatory
+</div></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>name</code></td>
+<td><p>name of the checker.</p></td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td><code>args</code></td>
+<td>arguments to be passed to the checker</td>
+<td>no</td>
+</tr>
+<tr class="odd">
+<td><code>skipNotSupported</code></td>
+<td><p>if true, skip the checking if this checker does not support the request (Checker.doesSupportRequests())</p></td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <h2 id="global-checkers">Global Checkers</h2>
+
+  <blockquote>
+    <p>Global Checkers are applied to all requests.</p>
+  </blockquote>
+
+  <p>Global Checkers can be defined programmatically instantiating <code class="language-plaintext highlighter-rouge">GlobalChecker</code> objects:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/**
+     * 
+     * @param checker
+     * @param predicate checker is applied only to requests that resolve
+     * the predicate
+     * @param skipNotSupported
+     * @param args
+     * @param confArgs 
+     */</span>
+<span class="kd">public</span> <span class="nf">GlobalChecker</span><span class="o">(</span><span class="nc">Checker</span> <span class="n">checker</span><span class="o">,</span>
+            <span class="nc">RequestContextPredicate</span> <span class="n">predicate</span><span class="o">,</span>
+            <span class="kt">boolean</span> <span class="n">skipNotSupported</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">confArgs</span><span class="o">)</span>
+</code></pre></div>  </div>
+
+  <p>and adding them to the list <code class="language-plaintext highlighter-rouge">CheckerHandler.getGlobalCheckers()</code></p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// a predicate that resolves POST /db/coll and PUT /db/coll/docid requests</span>
+<span class="nc">RequestContextPredicate</span> <span class="n">predicate</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RequestContextPredicate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">hse</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">isPost</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">context</span><span class="o">.</span><span class="na">isCollection</span><span class="o">())</span>
+            <span class="o">||</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">isPut</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">context</span><span class="o">.</span><span class="na">isDocument</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+<span class="c1">// Let's use the predefined ContentSizeChecker to limit write requests size</span>
+<span class="nc">Checker</span> <span class="n">checker</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ContentSizeChecker</span><span class="o">();</span> 
+
+<span class="c1">// ContentSizeChecker requires argument max, use 1024 Kbyte</span>
+<span class="nc">BsonDocument</span> <span class="n">args</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BsonDocument</span><span class="o">(</span><span class="s">"max"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">BsonInt32</span><span class="o">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">));</span>
+
+<span class="c1">// if the checker requires configuration arguments, define them here</span>
+<span class="nc">BsonDocument</span> <span class="n">confArgs</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+<span class="nc">GlobalChecker</span> <span class="n">globalChecker</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GlobalChecker</span><span class="o">(</span><span class="n">checker</span><span class="o">,</span> <span class="n">predicate</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">args</span><span class="o">,</span> <span class="n">confArgs</span><span class="o">);</span>
+
+<span class="c1">// finally add it to global checker list</span>
+<span class="nc">CheckerHandler</span><span class="o">.</span><span class="na">getGlobalCheckers</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="n">globalChecker</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <p>You can use an <a href="/docs/v3/initializer">Initializer</a> to add Global Checkers.</p>
+
+  <h2 id="checkers">Checkers</h2>
+
+  <p>RESTHeart comes with 3 ready-to-be-used checkers:</p>
+
+  <ul>
+    <li><a href="#schema-validation-with-checkcontent-checker">checkContent</a> to enforce a structure
+to documents using json path expressions</li>
+    <li><a href="#limiting-file-size-with-checkcontentsize">checkContentSize</a> to check the
+request size</li>
+    <li><strong>jsonSchemaChecker</strong> to enforce a structure to documents using json
+schema; more information at <a href="/docs/v3/json-schema-validation">Document validation with JSON
+schema</a></li>
+  </ul>
+
+  <p><a href="#custom-checkers">Custom checkers</a> can also be
+implemented.</p>
+
+  <h2 id="schema-validation-with-checkcontent-checker">Schema validation with checkContent checker</h2>
+
+  <p><em>checkContent</em> is a checker shipped with RESTHeart that allows to
+enforce a schema to the documents of a collection.</p>
+
+  <p>The schema definition is passed via the checker metadata args property
+as an array of conditions. A condition has the following format</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;json_path&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;property_type&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"regex"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;regex&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"nullable"</span><span class="p">:</span><span class="w"> </span><span class="err">boolean</span><span class="p">,</span><span class="w"> </span><span class="nl">"optional"</span><span class="p">:</span><span class="w"> </span><span class="err">boolean</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>If the type is ‘object’ the properties <em>mandatoryFields</em> and
+<em>optionalFields</em> apply as well:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;json_path&gt;</span><span class="p">,</span><span class="w"> </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w"> </span><span class="nl">"mandatoryFields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="err">&lt;field_names&gt;</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="nl">"optionalFields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="err">&lt;field_names&gt;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+  <div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th><div>
+Property
+</div></th>
+<th><div>
+Description
+</div></th>
+<th><div>
+Mandatory
+</div></th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>path</code></td>
+<td><p>The json path expression that selects the property to verify the condition on.</p></td>
+<td>Yes</td>
+<td><br />
+</td>
+</tr>
+<tr class="even">
+<td><code>type</code></td>
+<td><p>The type that the selected property must have. It can be the following BSON types:</p>
+<ul>
+<li>null</li>
+<li>object</li>
+<li>array</li>
+<li>string</li>
+<li>number</li>
+<li>boolean</li>
+<li>objectid</li>
+<li>date</li>
+<li>timestamp</li>
+<li>maxkey</li>
+<li>minkey</li>
+<li>symbol</li>
+<li>code</li>
+</ul></td>
+<td>Yes</td>
+<td><br />
+</td>
+</tr>
+<tr class="odd">
+<td><code>regex</code></td>
+<td>If specified, this regular expression must match the property (or its string representation).</td>
+<td>No</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td><code>nullable</code></td>
+<td>If true, no check will be performed if the value of the selected property is null.</td>
+<td>No</td>
+<td>false</td>
+</tr>
+<tr class="odd">
+<td><code>optional</code></td>
+<td>If true, no check will be performed if the property is missing.</td>
+<td>No</td>
+<td>false</td>
+</tr>
+<tr class="even">
+<td><p><code>mandatoryFields</code></p></td>
+<td><p>If the property type is 'object', this is the array of the properties that the object <strong>must</strong> have.</p>
+<p>If specified, the object cannot have any other field, as long as they are not listed in the <em>optionalFields</em> array.</p></td>
+<td>No</td>
+<td>null</td>
+</tr>
+<tr class="odd">
+<td><code>optionalFields</code></td>
+<td><p>If the property type is 'object', this is the array of the properties that the object <strong>is allowed</strong> optionally to have.</p>
+<p>If specified, the object cannot have any other field, as long as they are not listed in the <em>mandatoryFields</em> array.</p></td>
+<td>No</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <h3 id="json-path-expressions">Json path expressions</h3>
+
+  <p>A Json path expressions identifies a part of a Json document.</p>
+
+  <ul>
+    <li>It uses the dot notation where the special symbol $ identifies the
+document itself. </li>
+    <li>The special char * selects all the properties of an object.</li>
+    <li>The special string [*] selects all the elements of an array.</li>
+  </ul>
+
+  <p>the [n] notation is not supported, i.e. you cannot use the following
+json path expression $.array.[3] to select the n-th element of an
+array.</p>
+
+  <p>For example, given the following document:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"55f6ccf4c2e6be404fdef3dd"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"string"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"object"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"pi"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.14</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://en.wikipedia.org/wiki/Pi"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>The following table shows what document parts, different json path
+expressions select:</p>
+
+  <table class="ts">
+<thead>
+<tr class="header">
+<th>json path expr</th>
+<th>selected part</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>$</td>
+<td>the whole document, that is an object</td>
+</tr>
+<tr class="even">
+<td>$.string</td>
+<td>the property <em>string</em> with value &quot;hello&quot;</td>
+</tr>
+<tr class="odd">
+<td>$.object</td>
+<td><p>the object with value:</p>
+<p><code>{ "pi": 3.14, "href": "https://en.wikipedia.org/wiki/Pi"}</code></p></td>
+</tr>
+<tr class="even">
+<td>$.object.*</td>
+<td>the 2 properties pi and href with values 3.14 (number) and &quot;https://en.wikipedia.org/wiki/Pi&quot; (string) respectively</td>
+</tr>
+<tr class="odd">
+<td>$.object.pi</td>
+<td>the property pi with numeric value 3.14</td>
+</tr>
+<tr class="even">
+<td>$.array</td>
+<td>the array with value [ 1, 2, 3]</td>
+</tr>
+<tr class="odd">
+<td>$.array.[*]</td>
+<td>the 3 elements of the array with numeric values 1, 2 and 3.</td>
+</tr>
+</tbody>
+</table>
+
+  <h3 id="example">Example</h3>
+
+  <p>The following example creates the collection <em>user</em> enforcing its
+document to have following fields:</p>
+  <div class="table-responsive">
+<table class="ts">
+<thead>
+<tr class="header">
+<th>name</th>
+<th>type</th>
+<th>mandatory</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>_id</td>
+<td>string</td>
+<td>yes</td>
+<td>the string must satisfy the given regex, that makes sure that the string is a valid email address.</td>
+</tr>
+<tr class="even">
+<td>name</td>
+<td>string</td>
+<td>yes</td>
+<td><br />
+</td>
+</tr>
+<tr class="odd">
+<td>password</td>
+<td>string</td>
+<td>yes</td>
+<td><br />
+</td>
+</tr>
+<tr class="even">
+<td>roles</td>
+<td>array of strings</td>
+<td>yes</td>
+<td><br />
+</td>
+</tr>
+<tr class="odd">
+<td>bio</td>
+<td>string</td>
+<td>no</td>
+<td><br />
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/users <span class="se">\</span>
+checkers:<span class="o">=</span><span class="s1">'[{\
+    "name":"checkContent","args":[\
+        {"path":"$", "type":"object", "mandatoryFields": ["_id", "name", "password", "roles"], "optionalFields": ["bio"]},\
+        {"path":"$._id", "type":"string", "regex": "^\\u0022[A-Z0-9._%+-]+@[A-Z0-9.-]+\\u005C.[A-Z]{2,6}\\u0022$"},\
+        {"path":"$.password", "type":"string"},\
+        {"path":"$.roles", "type":"array"},\
+        {"path":"$.roles.[*]", "type":"string"},\
+        {"path":"$.name", "type":"string"},\
+        {"path":"$.bio", "type":"string", "nullable": true}
+ ]\
+}]'</span>
+</code></pre></div>  </div>
+
+  <h2 id="limiting-file-size-with-checkcontentsize">Limiting file size with checkContentSize</h2>
+
+  <p><em>checkContentSize</em> is a checker shipped with RESTHeart that allows to
+check the size of a request. It is very useful with file resources to
+limit the maximum size of the uploaded file.</p>
+
+  <p>The following example, creates a file bucket resource, limiting the file
+size from 64 to 32768 bytes:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>http <span class="nt">-a</span> a:a PUT 127.0.0.1:8080/test/icons.files <span class="nv">descr</span><span class="o">=</span><span class="s2">"icons"</span> <span class="se">\</span>
+checkers:<span class="o">=</span><span class="s1">'[{"name":"checkContentSize","args":{"min": 64, "max": 32768}}]
+</span></code></pre></div>  </div>
+
+  <h2 id="custom-checkers">Custom Checkers</h2>
+
+  <p>A checker is a java class that implements the
+interface <a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/metadata/checkers/Checker.java">org.restheart.metadata.checkers.Checker</a>.</p>
+
+  <p>It only requires to implement the method check() with 3 arguments:</p>
+
+  <ol>
+    <li><a href="https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/server/HttpServerExchange.java">HttpServerExchange</a> exchange</li>
+    <li><a href="https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/handlers/RequestContext.java">RequestContext</a> context
+(that is the suggested way to retrieve the information of the
+request such as the payload) </li>
+    <li>BsonValue args (the arguments passed via the <em>args</em> property
+of the transformer metadata object)</li>
+    <li>BsonValue confArgs (the arguments passed via the <em>args</em> property
+specified in the configuration file)</li>
+  </ol>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span>
+            <span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span>
+            <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">contentToCheck</span><span class="o">,</span>
+            <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">);</span>
+
+    <span class="cm">/**
+     * Specify when the checker should be performed: with BEFORE_WRITE the
+     * checkers gets the request data (that may use the dot notation and update
+     * operators); with AFTER_WRITE the data is optimistically written to the db
+     * and rolled back eventually. Note that AFTER_WRITE helps checking data
+     * with dot notation and update operators since the data to check is
+     * retrieved normalized from the db.
+     *
+     * @param context
+     * @return BEFORE_WRITE or AFTER_WRITE
+     */</span>
+    <span class="no">PHASE</span> <span class="nf">getPhase</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">);</span>
+
+    <span class="cm">/**
+     *
+     * @param context
+     * @return true if the checker supports the requests
+     */</span>
+    <span class="kt">boolean</span> <span class="nf">doesSupportRequests</span><span class="o">(</span><span class="nc">RequestContext</span> <span class="n">context</span><span class="o">);</span>
+</code></pre></div>  </div>
+
+  <p>Once a checker has been implemented, it can be given a name (to be used
+as the <em>name </em>property of the checker metadata object) in the
+configuration file.</p>
+
+  <p>The following is the default configuration file section declaring the
+two off-the-shelf checkers provided with RESTHeart (checkContent and
+checkContentSize) and a third, custom one.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">metadata-named-singletons</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">group</span><span class="pi">:</span> <span class="s">checkers</span>
+      <span class="na">interface</span><span class="pi">:</span> <span class="s">org.restheart.hal.metadata.singletons.Checker</span>
+      <span class="na">singletons</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">checkContent</span>
+          <span class="na">class</span><span class="pi">:</span> <span class="s">org.restheart.hal.metadata.singletons.SimpleContentChecker</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">checkContentSize</span>
+          <span class="na">class</span><span class="pi">:</span> <span class="s">org.restheart.hal.metadata.singletons.ContentSizeChecker</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">myChecker</span>
+          <span class="na">class</span><span class="pi">:</span> <span class="s">com.whatever.MyChecker</span>
+</code></pre></div>  </div>
+
+  <p>The class of the custom checker must be added to the java
+classpath. See (How to package custom code)[/docs/v3/custom-code-packaging-howto] for more information.</p>
+
+  <p>For example, RESTHeart could be started with the following command:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-server</span> <span class="nt">-classpath</span> restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml
+</code></pre></div>  </div>
+
+  <p>The following code, is an example checker that checks if the
+<em>number</em> property is an integer between 0 and 10.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.whatever</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyChecker</span> <span class="kd">implements</span> <span class="nc">Checker</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span><span class="nc">HttpServerExchange</span> <span class="n">exchange</span><span class="o">,</span> <span class="nc">RequestContext</span> <span class="n">context</span><span class="o">,</span> <span class="nc">BsonValue</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">BsonValue</span> <span class="n">content</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getContent</span><span class="o">();</span>
+        <span class="nc">BsonValue</span> <span class="n">_value</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"number"</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getMethod</span><span class="o">()</span> <span class="o">==</span> <span class="nc">RequestContext</span><span class="o">.</span><span class="na">METHOD</span><span class="o">.</span><span class="na">PATCH</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">_value</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// if this is a PATCH and property value is not in the request, it won't be modified</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">_value</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">_value</span><span class="o">.</span><span class="na">isNumber</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">Integer</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_value</span><span class="o">..</span><span class="na">asInt32</span><span class="o">().</span><span class="na">getValue</span><span class="o">();</span>
+            
+            <span class="k">return</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// BAD REQUEST</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

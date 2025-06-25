@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Metrics on Requests</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Metrics on Requests">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/requests-metrics">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/requests-metrics.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#formats">Formats</a>
+      <ul>
+        <li><a href="#using-restheart-rep-query-parameter">using restheart <code class="language-plaintext highlighter-rouge">rep</code> query parameter</a></li>
+        <li><a href="#using-http-content-negotiation">using HTTP content negotiation</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-options">Configuration options</a></li>
+    <li><a href="#reading-data">Reading data</a></li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#whats-new-in-39">What’s new in 3.9</a>
+      <ul>
+        <li><a href="#prometheus-database-and-collection-labels-for-request-to-root-metrics">Prometheus database and collection labels for request to root metrics</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Metrics on Requests</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>Gathering metrics about your production (and staging) environments can
+give you valuable knowledge about your infrastructure. Not only do
+metrics allow to define service level objectives, knowing their values
+open up possibilities to both monitor these values, and tackle problems
+as well - maybe even automatically.</p>
+
+  <p>The metrics endpoints included in restheart use <a href="https://metrics.dropwizard.io">Dropwizard
+metrics</a> under the hood. The measured
+values include counts, call rates, as well as timings of the calls and
+their distributions.</p>
+
+  <h2 id="formats">Formats</h2>
+
+  <p>The current implementation supports both the <a href="https://prometheus.io/docs/instrumenting/exposition_formats/">Prometheus
+format</a>
+(which is popular in kubernetes environments), as well as the <a href="https://github.com/iZettle/dropwizard-metrics/blob/master/metrics-json/src/main/java/io/dropwizard/metrics/json/MetricsModule.java">classical
+JSON
+format</a> generated
+by dopwizard metrics. The prometheus format is the default one, but you
+can explicitly request one of the formats:</p>
+
+  <h3 id="using-restheart-rep-query-parameter">using restheart <code class="language-plaintext highlighter-rouge">rep</code> query parameter</h3>
+
+  <p>Simply add a query parameter <code class="language-plaintext highlighter-rouge">rep</code> to your request to the metrics
+endpoint. Use <code class="language-plaintext highlighter-rouge">PJ</code> or <code class="language-plaintext highlighter-rouge">PLAIN_JSON</code> to request the dropwizard JSON
+format, or omit the parameter to get prometheus.</p>
+
+  <h3 id="using-http-content-negotiation">using HTTP content negotiation</h3>
+
+  <p>You can also use the <code class="language-plaintext highlighter-rouge">Accept</code> header. <code class="language-plaintext highlighter-rouge">application/json</code> will select the
+dropwizard format. <code class="language-plaintext highlighter-rouge">text/plain</code> (or, if you want to be more specific:
+<code class="language-plaintext highlighter-rouge">text/plain; version=0.0.4</code>) will select the prometheus format.</p>
+
+  <p>If you supply both query parameter and the <code class="language-plaintext highlighter-rouge">Accept</code> header, the query
+parameter wins.</p>
+
+  <h2 id="configuration-options">Configuration options</h2>
+
+  <p>By default, restheart will only gather high-level metrics that apply to
+all databases and collections. To gather more detailed and fine-grained
+metrics (with the cost of more memory usage), you can enable additional
+collection on a per-database or per-collection level.</p>
+
+  <p>Use config value <code class="language-plaintext highlighter-rouge">metrics-gathering-level</code>, possible values are</p>
+
+  <ul>
+    <li><code class="language-plaintext highlighter-rouge">OFF</code></li>
+    <li><code class="language-plaintext highlighter-rouge">ROOT (default)</code></li>
+    <li><code class="language-plaintext highlighter-rouge">DATABASE</code></li>
+    <li><code class="language-plaintext highlighter-rouge">COLLECTION</code></li>
+  </ul>
+
+  <p>These configuration options are consecutive, e.g. COLLECTION contains
+DATABASE.</p>
+
+  <h2 id="reading-data">Reading data</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">/_metrics</code></td>
+        <td>for generic over-all values.</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">/$DBNAME/_metrics</code></td>
+        <td>for values tied to this specific database.</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">/$DBNAME/$COLLECTIONNAME/_metrics</code></td>
+        <td>for values tied to this specific collection of this database.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>If metrics are not configured to be collected at the given level, the
+endpoint will return <code class="language-plaintext highlighter-rouge">404 NOT FOUND</code>. Each upper level contains all the
+information from the deeper levels, aggregated.</p>
+
+  <h2 id="examples">Examples</h2>
+
+  <p>Note the structure of the response fields: the field names are related
+to the type of the query (e.g. <code class="language-plaintext highlighter-rouge">METRICS</code>, <code class="language-plaintext highlighter-rouge">DATABASE</code>, <code class="language-plaintext highlighter-rouge">COLLECTION</code>,
+<code class="language-plaintext highlighter-rouge">DOCUMENT</code>) and can also include the response code (none, grouped by
+first digit, full). The examples are calls to the root <code class="language-plaintext highlighter-rouge">/_metrics</code> after
+a few calls to an empty database (thus the 404s).</p>
+
+  <p><strong>Prometheus example response</strong></p>
+
+  <pre><code class="language-plain">http_response_timers_METRICS_count{method="GET",code="2xx"} 13 1510039263986
+http_response_timers_METRICS_max{method="GET",code="2xx"} 101.0 1510039263986
+http_response_timers_METRICS_mean{method="GET",code="2xx"} 13.66447895963094 1510039263986
+http_response_timers_METRICS_min{method="GET",code="2xx"} 4.0 1510039263986
+http_response_timers_METRICS_p50{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_p75{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_p95{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_p98{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_p99{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_p999{method="GET",code="2xx"} 18.0 1510039263986
+http_response_timers_METRICS_stddev{method="GET",code="2xx"} 5.779944201589175 1510039263986
+http_response_timers_METRICS_m15_rate{method="GET",code="2xx"} 0.11197540667244438 1510039263986
+http_response_timers_METRICS_m1_rate{method="GET",code="2xx"} 0.02346856889987903 1510039263986
+http_response_timers_METRICS_m5_rate{method="GET",code="2xx"} 0.040980329912974914 1510039263986
+http_response_timers_METRICS_mean_rate{method="GET",code="2xx"} 0.021582478380531817 1510039263986
+
+http_response_timers_METRICS_count{method="GET",code="200"} 13 1510039263986
+http_response_timers_METRICS_max{method="GET",code="200"} 101.0 1510039263986
+http_response_timers_METRICS_mean{method="GET",code="200"} 13.66447895963094 1510039263986
+http_response_timers_METRICS_min{method="GET",code="200"} 4.0 1510039263986
+http_response_timers_METRICS_p50{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_p75{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_p95{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_p98{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_p99{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_p999{method="GET",code="200"} 18.0 1510039263986
+http_response_timers_METRICS_stddev{method="GET",code="200"} 5.779944201589175 1510039263986
+http_response_timers_METRICS_m15_rate{method="GET",code="200"} 0.11197540667244438 1510039263986
+http_response_timers_METRICS_m1_rate{method="GET",code="200"} 0.02346856889987903 1510039263986
+http_response_timers_METRICS_m5_rate{method="GET",code="200"} 0.040980329912974914 1510039263986
+http_response_timers_METRICS_mean_rate{method="GET",code="200"} 0.021582482412705724 1510039263986
+
+http_response_timers_DOCUMENT_count{method="GET",code="404"} 1 1510039263986
+http_response_timers_DOCUMENT_max{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_mean{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_min{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p50{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p75{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p95{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p98{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p99{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p999{method="GET",code="404"} 12.0 1510039263986
+http_response_timers_DOCUMENT_stddev{method="GET",code="404"} 0.0 1510039263986
+http_response_timers_DOCUMENT_m15_rate{method="GET",code="404"} 0.1902458849001428 1510039263986
+http_response_timers_DOCUMENT_m1_rate{method="GET",code="404"} 0.09447331054820299 1510039263986
+http_response_timers_DOCUMENT_m5_rate{method="GET",code="404"} 0.17214159528501158 1510039263986
+http_response_timers_DOCUMENT_mean_rate{method="GET",code="404"} 0.019699054561810325 1510039263986
+
+http_response_timers_DOCUMENT_count{method="GET",code="4xx"} 1 1510039263986
+http_response_timers_DOCUMENT_max{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_mean{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_min{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p50{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p75{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p95{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p98{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p99{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p999{method="GET",code="4xx"} 12.0 1510039263986
+http_response_timers_DOCUMENT_stddev{method="GET",code="4xx"} 0.0 1510039263986
+http_response_timers_DOCUMENT_m15_rate{method="GET",code="4xx"} 0.1902458849001428 1510039263986
+http_response_timers_DOCUMENT_m1_rate{method="GET",code="4xx"} 0.09447331054820299 1510039263986
+http_response_timers_DOCUMENT_m5_rate{method="GET",code="4xx"} 0.17214159528501158 1510039263986
+http_response_timers_DOCUMENT_mean_rate{method="GET",code="4xx"} 0.019699076069657512 1510039263986
+
+http_response_timers_METRICS_count{method="GET"} 13 1510039263986
+http_response_timers_METRICS_max{method="GET"} 101.0 1510039263986
+http_response_timers_METRICS_mean{method="GET"} 13.66447895963094 1510039263986
+http_response_timers_METRICS_min{method="GET"} 4.0 1510039263986
+http_response_timers_METRICS_p50{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_p75{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_p95{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_p98{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_p99{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_p999{method="GET"} 18.0 1510039263986
+http_response_timers_METRICS_stddev{method="GET"} 5.779944201589175 1510039263986
+http_response_timers_METRICS_m15_rate{method="GET"} 0.11197540667244438 1510039263986
+http_response_timers_METRICS_m1_rate{method="GET"} 0.02346856889987903 1510039263986
+http_response_timers_METRICS_m5_rate{method="GET"} 0.040980329912974914 1510039263986
+http_response_timers_METRICS_mean_rate{method="GET"} 0.021582442655335453 1510039263986
+
+http_response_timers_DB_count{method="GET",code="4xx"} 2 1510039263986
+http_response_timers_DB_max{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_mean{method="GET",code="4xx"} 8.97000899676118 1510039263986
+http_response_timers_DB_min{method="GET",code="4xx"} 8.0 1510039263986
+http_response_timers_DB_p50{method="GET",code="4xx"} 8.0 1510039263986
+http_response_timers_DB_p75{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_p95{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_p98{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_p99{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_p999{method="GET",code="4xx"} 10.0 1510039263986
+http_response_timers_DB_stddev{method="GET",code="4xx"} 0.99955016868826 1510039263986
+http_response_timers_DB_m15_rate{method="GET",code="4xx"} 0.23206560286490113 1510039263986
+http_response_timers_DB_m1_rate{method="GET",code="4xx"} 1.1358519356130308E-4 1510039263986
+http_response_timers_DB_m5_rate{method="GET",code="4xx"} 0.07811102513427433 1510039263986
+http_response_timers_DB_mean_rate{method="GET",code="4xx"} 0.004003171495603914 1510039263986
+
+http_response_timers_COLLECTION_count{method="GET",code="404"} 2 1510039263986
+http_response_timers_COLLECTION_max{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_mean{method="GET",code="404"} 15.965442805585523 1510039263986
+http_response_timers_COLLECTION_min{method="GET",code="404"} 11.0 1510039263986
+http_response_timers_COLLECTION_p50{method="GET",code="404"} 11.0 1510039263986
+http_response_timers_COLLECTION_p75{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_p95{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_p98{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_p99{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_p999{method="GET",code="404"} 22.0 1510039263986
+http_response_timers_COLLECTION_stddev{method="GET",code="404"} 5.473960961305782 1510039263986
+http_response_timers_COLLECTION_m15_rate{method="GET",code="404"} 0.11603638270096507 1510039263986
+http_response_timers_COLLECTION_m1_rate{method="GET",code="404"} 5.718721810339868E-5 1510039263986
+http_response_timers_COLLECTION_m5_rate{method="GET",code="404"} 0.03906636157175893 1510039263986
+http_response_timers_COLLECTION_mean_rate{method="GET",code="404"} 0.0039626643164382205 1510039263986
+
+http_response_timers_DB_count{method="GET"} 2 1510039263986
+http_response_timers_DB_max{method="GET"} 10.0 1510039263986
+http_response_timers_DB_mean{method="GET"} 8.97000899676118 1510039263986
+http_response_timers_DB_min{method="GET"} 8.0 1510039263986
+http_response_timers_DB_p50{method="GET"} 8.0 1510039263986
+http_response_timers_DB_p75{method="GET"} 10.0 1510039263986
+http_response_timers_DB_p95{method="GET"} 10.0 1510039263986
+http_response_timers_DB_p98{method="GET"} 10.0 1510039263986
+http_response_timers_DB_p99{method="GET"} 10.0 1510039263986
+http_response_timers_DB_p999{method="GET"} 10.0 1510039263986
+http_response_timers_DB_stddev{method="GET"} 0.99955016868826 1510039263986
+http_response_timers_DB_m15_rate{method="GET"} 0.23206560286490113 1510039263986
+http_response_timers_DB_m1_rate{method="GET"} 1.1358519356130308E-4 1510039263986
+http_response_timers_DB_m5_rate{method="GET"} 0.07811102513427433 1510039263986
+http_response_timers_DB_mean_rate{method="GET"} 0.004003171129199612 1510039263986
+
+http_response_timers_DB_count{method="GET",code="404"} 2 1510039263986
+http_response_timers_DB_max{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_mean{method="GET",code="404"} 8.97000899676118 1510039263986
+http_response_timers_DB_min{method="GET",code="404"} 8.0 1510039263986
+http_response_timers_DB_p50{method="GET",code="404"} 8.0 1510039263986
+http_response_timers_DB_p75{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_p95{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_p98{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_p99{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_p999{method="GET",code="404"} 10.0 1510039263986
+http_response_timers_DB_stddev{method="GET",code="404"} 0.99955016868826 1510039263986
+http_response_timers_DB_m15_rate{method="GET",code="404"} 0.23206560286490113 1510039263986
+http_response_timers_DB_m1_rate{method="GET",code="404"} 1.1358519356130308E-4 1510039263986
+http_response_timers_DB_m5_rate{method="GET",code="404"} 0.07811102513427433 1510039263986
+http_response_timers_DB_mean_rate{method="GET",code="404"} 0.0040031714981198984 1510039263986
+
+http_response_timers_COLLECTION_count{method="GET",code="4xx"} 2 1510039263986
+http_response_timers_COLLECTION_max{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_mean{method="GET",code="4xx"} 15.965442805585523 1510039263986
+http_response_timers_COLLECTION_min{method="GET",code="4xx"} 11.0 1510039263986
+http_response_timers_COLLECTION_p50{method="GET",code="4xx"} 11.0 1510039263986
+http_response_timers_COLLECTION_p75{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_p95{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_p98{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_p99{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_p999{method="GET",code="4xx"} 22.0 1510039263986
+http_response_timers_COLLECTION_stddev{method="GET",code="4xx"} 5.473960961305782 1510039263986
+http_response_timers_COLLECTION_m15_rate{method="GET",code="4xx"} 0.11603638270096507 1510039263986
+http_response_timers_COLLECTION_m1_rate{method="GET",code="4xx"} 5.718721810339868E-5 1510039263986
+http_response_timers_COLLECTION_m5_rate{method="GET",code="4xx"} 0.03906636157175893 1510039263986
+http_response_timers_COLLECTION_mean_rate{method="GET",code="4xx"} 0.003962664528990094 1510039263986
+
+http_response_timers_COLLECTION_count{method="GET"} 2 1510039263986
+http_response_timers_COLLECTION_max{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_mean{method="GET"} 15.965442805585523 1510039263986
+http_response_timers_COLLECTION_min{method="GET"} 11.0 1510039263986
+http_response_timers_COLLECTION_p50{method="GET"} 11.0 1510039263986
+http_response_timers_COLLECTION_p75{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_p95{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_p98{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_p99{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_p999{method="GET"} 22.0 1510039263986
+http_response_timers_COLLECTION_stddev{method="GET"} 5.473960961305782 1510039263986
+http_response_timers_COLLECTION_m15_rate{method="GET"} 0.11603638270096507 1510039263986
+http_response_timers_COLLECTION_m1_rate{method="GET"} 5.718721810339868E-5 1510039263986
+http_response_timers_COLLECTION_m5_rate{method="GET"} 0.03906636157175893 1510039263986
+http_response_timers_COLLECTION_mean_rate{method="GET"} 0.003962663999950156 1510039263986
+
+http_response_timers_DOCUMENT_count{method="GET"} 1 1510039263986
+http_response_timers_DOCUMENT_max{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_mean{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_min{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p50{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p75{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p95{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p98{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p99{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_p999{method="GET"} 12.0 1510039263986
+http_response_timers_DOCUMENT_stddev{method="GET"} 0.0 1510039263986
+http_response_timers_DOCUMENT_m15_rate{method="GET"} 0.1902458849001428 1510039263986
+http_response_timers_DOCUMENT_m1_rate{method="GET"} 0.09447331054820299 1510039263986
+http_response_timers_DOCUMENT_m5_rate{method="GET"} 0.17214159528501158 1510039263986
+http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 1510039263986
+</code></pre>
+
+  <p><strong>JSON example response</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"gauges"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="nl">"counters"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="nl">"histograms"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="nl">"meters"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="nl">"timers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"METRICS.GET.2xx"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.944381818716298</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.052944160882624</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1154439183453834</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0011557077668897736</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04047387926642257</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.019742700780046633</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"METRICS.GET.200"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.944381818716298</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.052944160882624</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1154439183453834</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0011557077668897736</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04047387926642257</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.019742702972526945</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DOCUMENT.GET.404"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.17884100839774422</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DOCUMENT.GET.4xx"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.17884385317337576</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"METRICS.GET"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.944381818716298</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.052944160882624</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1154439183453834</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0011557077668897736</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04047387926642257</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.019742660741986995</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DB.GET.4xx"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.97000899676118</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99955016868826</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.24396386075494766</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0002404598566562324</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0907520637356095</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004401101980577996</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"COLLECTION.GET.404"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.965442805585523</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.473960961305782</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12198569526155147</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00012106534167492762</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04538863661287383</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004352188986310938</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DB.GET"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.97000899676118</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99955016868826</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.24396386075494766</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0002404598566562324</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0907520637356095</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004401100970351595</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DB.GET.404"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.97000899676118</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99955016868826</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.24396386075494766</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0002404598566562324</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0907520637356095</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004401101777845054</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"COLLECTION.GET.4xx"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.965442805585523</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.473960961305782</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12198569526155147</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00012106534167492762</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04538863661287383</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004352189636138756</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"COLLECTION.GET"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mf">15.965442805585523</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.473960961305782</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12198569526155147</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00012106534167492762</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.04538863661287383</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004352188004333907</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"DOCUMENT.GET"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p50"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p75"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p95"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p98"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p99"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"p999"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stddev"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m15_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m1_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"m5_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"mean_rate"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1788374724008199</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"duration_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milliseconds"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"rate_units"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calls/second"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="whats-new-in-39">What’s new in 3.9</h2>
+
+  <h3 id="prometheus-database-and-collection-labels-for-request-to-root-metrics">Prometheus database and collection labels for request to root metrics</h3>
+
+  <p>The Prometheus metrics requested on endpoint <code class="language-plaintext highlighter-rouge">/ _metrics</code> no longer include only
+the aggregated parent metrics, but all metrics collected. To distinguish metrics
+per database and collection there are two new prometheus labels <code class="language-plaintext highlighter-rouge">database</code> and
+<code class="language-plaintext highlighter-rouge">collection</code> containing the corresponding database and collection names.</p>
+
+  <p>The following example demonstrates the new label values requesting <code class="language-plaintext highlighter-rouge">/_metrics</code> using
+the prometheus format. The data contains an existing database named mydatabase
+including a single collection named mycollection. All aggregated metrics contain the
+value _all_, i.e. metrics for database mydatabase and all contained collections,
+which is equivalent to requesting <code class="language-plaintext highlighter-rouge">/mydatabase/_metrics</code>.</p>
+
+  <p>The prometheus metrics look as follows:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http_response_timers_count{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3 1510039263986
+http_response_timers_max{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 5.666666666666666 1510039263986
+http_response_timers_min{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 2.0 1510039263986
+http_response_timers_p50{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 5.0 1510039263986
+http_response_timers_p75{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 3.299831645537221 1510039263986
+http_response_timers_m15_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="_all_",collection="_all_",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+
+http_response_timers_count{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 2 1510039263986
+http_response_timers_max{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 7.5 1510039263986
+http_response_timers_min{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 5.0 1510039263986
+http_response_timers_p50{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p75{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 2.5 1510039263986
+http_response_timers_m15_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="mydatabase",collection="_all_",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+
+http_response_timers_count{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 1 1510039263986
+http_response_timers_max{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_mean{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_min{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p50{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p75{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p95{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p98{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p99{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_p999{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 10.0 1510039263986
+http_response_timers_stddev{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m15_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m1_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_m5_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.0 1510039263986
+http_response_timers_mean_rate{database="mydatabase",collection="mycollection",type="requests",method="GET",code="2xx"} 0.019699022734163196 1510039263986
+</code></pre></div>  </div>
+
+  <p>Prometheus metrics requested for <code class="language-plaintext highlighter-rouge">/mydatabase/_metrics</code> or
+<code class="language-plaintext highlighter-rouge">/mydatabase/mycollection/_metrics</code> do not contain this labels.</p>
+
+  <p>In case of using prometheus it’s recommended to only use the
+single endpoint <code class="language-plaintext highlighter-rouge">/_metrics</code>, allowing to scrape all metrics at
+once and do filtering based on label values.</p>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

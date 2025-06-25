@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Upgrade to RESTHeart v6</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Upgrade to RESTHeart v6">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v6/upgrade-to-v6">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v6
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            <strong>v6</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v6/upgrade-to-v6.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started">Get Started</h2>
+<ul>
+    <li><a href="/docs/v6">Overview</a></li>
+    <li><a href="/docs/v6/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v6/ng-demo">A simple Angular demo</a></li>
+    <li><a href="/docs/v6/tutorial">Data API Tutorial</a></li>
+    <li><a href="/docs/v6/performances">Performances</a></li>
+    <li><a href="/docs/v6/blog-posts">Blog posts</a></li>
+    <li><a href="/docs/v6/video-tutorials">Video Tutorials</a></li>
+    <li><a href="/docs/v6/upgrade-to-v6">Upgrade to v6</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/discussions/425">Roadmap for v7</a></li>
+</ul>
+
+
+<h2 id="get-started" class="mt-2">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v6/setup"><strong>Setup</strong></a></li>
+    <li><a href="/docs/v6/setup-with-docker">Setup with Docker</a></li>
+    <li><a href="/docs/v6/configuration">Configuration</a></li>
+    <li><a href="/docs/v6/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v6/security/security-hardening">Security Hardening</a></li>
+    <li><a href="/docs/v6/clustering">Clustering &amp; Load Balancing</a></li>
+    <li><a href="/docs/v6/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="core" class="mt-2">Core Framework</h2>
+<ul>
+    <li><a href="/docs/v6/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v6/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v6/plugins/deploy">How to deploy Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v6/plugins/core-plugins-js">Core Plugins in JavaScript</a></li>
+    <li><a href="/docs/v6/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v6/graalvm"><strong>GraalVM</strong></a></li>
+    <li><a href="/docs/v6/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v6/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v6/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v6/logging">Logging</a></li>
+    <li><a href="/docs/v6/auditing">Auditing</a></li>
+</ul>
+
+<h2 id="security" class="mt-2">Authentication and Authorization</h2>
+<ul>
+    <li><a href="/docs/v6/security/overview">Overview</a></li>
+    <li><a href="/docs/v6/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v6/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v6/security/user-management">User Management</a></li>
+    <li><a href="/docs/v6/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="data-api" class="mt-2">Data API on MongoDB</h2>
+<h3>REST API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-rest/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v6/mongodb-rest/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v6/mongodb-rest/sample-data">Load Sample Data into MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v6/mongodb-rest/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v6/mongodb-rest/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v6/mongodb-rest/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v6/mongodb-rest/dbs-collections">Manage Dbs and Collections</a></li>
+    <li><a href="/docs/v6/mongodb-rest/indexes">Indexes</a></li>
+    <li><a href="/docs/v6/mongodb-rest/relationships">Relationships</a></li>
+    <li><a href="/docs/v6/mongodb-rest/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v6/mongodb-rest/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v6/mongodb-rest/transactions">Transactions</a></li>
+    <li><a href="/docs/v6/mongodb-rest/etag">ETag</a></li>
+    <li><a href="/docs/v6/mongodb-rest/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v6/mongodb-rest/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v6/mongodb-rest/monitoring">Monitoring</a></li>
+</ul>
+
+<h3 id="graphql">GraphQL API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-graphql/">GraphQL Applications</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/optimization">Optimization</a></li>
+    <li><a href="/docs/v6/mongodb-graphql/example">Example</a></li>
+</ul>
+
+<h3 id="websocket">Websocket API</h3>
+<ul>
+    <li><a href="/docs/v6/mongodb-websocket/">Websocket API</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/change-streams">Streams definition</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/variables">Variables</a></li>
+    <li><a href="/docs/v6/mongodb-websocket/examples">Examples</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#graphql-api">GraphQL API</a></li>
+    <li><a href="#graalvm">GraalVM</a></li>
+    <li><a href="#write-mode-in-mongodb-rest-api">Write Mode in MongoDB REST API</a></li>
+    <li><a href="#extended-and-simplified-security">Extended and Simplified Security</a></li>
+    <li><a href="#variables-in-aggregation-and-permission">Variables in aggregation and permission</a></li>
+    <li><a href="#dynamic-change-streams">Dynamic Change Streams</a></li>
+    <li><a href="#java-version">Java Version</a></li>
+  </ul>
+
+</div>
+
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Upgrade to RESTHeart v6</span>
+    </h2>
+</div>
+
+  <div class="alert alert-info" role="alert">
+    <p class="mt-2"><strong>REST</strong>Heart v6 introduces many news features, improvements and changes.</p>
+    <p>This page summarizes the new features and provide guidance on upgrading from previous versions</p>
+</div>
+
+  <h2 id="graphql-api">GraphQL API</h2>
+
+  <p>RESTHeart 6 provides a GraphQL API for MongoDB that works side by side with the good old REST API to get a comprehensive Data API to build modern applications.</p>
+
+  <p>For more information see <a href="/docs/graphql/">GraphQL</a> documentation page that contains the following <a href="/docs/graphql/example/">example</a> (this will make happy those who love GraphQL like us):</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/graphql/mflix</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{
+    MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
+        title
+        comments{
+            text
+            user{
+                name
+            }
+        }
+        tomatoesRate
+    }
+}
+</code></pre></div>  </div>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Response</strong></span>
+    
+    
+</div>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"MoviesByTomatoesRateRange"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Wages of Fear"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"comments"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Commodi accusamus totam eaque sunt. Nihil reiciendis commodi molestiae esse ipsam corporis reprehenderit. Non nam similique vel dolor magni quia quis."</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Doreah"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"tomatoesRate"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.4</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Chicago Deadline"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"comments"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Nihil itaque a architecto. Illo veritatis totam at quibusdam. Doloremque hic totam consequuntur omnis molestiae commodi iste. Quis alias commodi nemo eveniet."</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patricia Good"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"tomatoesRate"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.4</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Passion of Joan of Arc"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"comments"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+        </span><span class="nl">"tomatoesRate"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.4</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="graalvm">GraalVM</h2>
+
+  <h3 id="polyglot-javascript-services-and-interceptors-on-graalvm">Polyglot JavaScript Services and Interceptors on GraalVM</h3>
+
+  <p>Services and Interceptors can be developed in JavaScript and TypeScript when running RESTHeart with GraalVM or using <code class="language-plaintext highlighter-rouge">restheart-native</code></p>
+
+  <p>Here is an example</p>
+
+  <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">helloWorldService</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">description</span><span class="p">:</span> <span class="dl">"</span><span class="s2">just another Hello World</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">uri</span><span class="p">:</span> <span class="dl">"</span><span class="s2">/hello</span><span class="dl">"</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">response</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="s2">`{ "msg": `</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span><span class="nx">rc</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">World</span><span class="dl">'</span><span class="p">}</span><span class="s2">` } `</span><span class="p">);</span>
+    <span class="nx">response</span><span class="p">.</span><span class="nx">setContentTypeAsJson</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">See <a href="https://github.com/SoftInstigate/restheart/tree/master/polyglot/src/test/resources">example JS plugins</a></p>
+
+  <p>Just copy the <code class="language-plaintext highlighter-rouge">test-js-plugins</code> directory into the <code class="language-plaintext highlighter-rouge">plugins</code> directory to have the JS plugins automatically deployed.</p>
+
+  <p>JS plugins can be added or updated without requiring to restart the server, ie v6 supports JS plugins hot deployment.</p>
+
+  <h3 id="native-image">Native Image</h3>
+
+  <p>RESTHeart can be built as native image. See <a href="/docs/graalvm/">GraalVM</a> documentation page.</p>
+
+  <p>The Docker image of restheart-native is available:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker pull softinstigate:restheart:latest-native
+</code></pre></div>  </div>
+
+  <h2 id="write-mode-in-mongodb-rest-api">Write Mode in MongoDB REST API</h2>
+
+  <p class="bs-callout bs-callout-warning">Breaking change</p>
+
+  <p>Until v5, all write requests have always <em>upsert</em> write mode.</p>
+
+  <p>V6 changes this and now by default:</p>
+
+  <ul>
+    <li><code class="language-plaintext highlighter-rouge">POST</code> verb has insert write mode</li>
+    <li><code class="language-plaintext highlighter-rouge">PUT</code> and <code class="language-plaintext highlighter-rouge">PATCH</code> verbs have update write mode</li>
+  </ul>
+
+  <p>The new query parameter <code class="language-plaintext highlighter-rouge">?wm=insert|update|upsert</code> has been introduced to allow specifying the <strong>w</strong>rite <strong>m</strong>ode.</p>
+
+  <p>However the use of the qparam <code class="language-plaintext highlighter-rouge">?wm</code> is forbidden by default; to allow it, the following permission must be defined:</p>
+
+  <p>For the <code class="language-plaintext highlighter-rouge">FileAclAuthorizer</code>:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">permissions</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">role</span><span class="pi">:</span> <span class="s">canUseWMQParam</span>
+      <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('/collection')</span>
+      <span class="na">priority</span><span class="pi">:</span> <span class="m">0</span>
+      <span class="na">mongo</span><span class="pi">:</span>
+        <span class="na">allowWriteMode</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># default false</span>
+</code></pre></div>  </div>
+
+  <p>And in a similar way for the <code class="language-plaintext highlighter-rouge">MongoAclAuthorizer</code>:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"canUseWMQParam"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"predicate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"path-prefix('/collection')"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"priority"</span><span class="p">:</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"allowWriteMode"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="extended-and-simplified-security">Extended and Simplified Security</h2>
+
+  <p class="bs-callout bs-callout-warning">Breaking change</p>
+
+  <p>RESTHeart 6 ships with Extended and Simplified Security.</p>
+
+  <p>First of all, the new <em>write mode</em> simplifies the definition of permissions, since a <code class="language-plaintext highlighter-rouge">POST</code> is an insert while <code class="language-plaintext highlighter-rouge">PUT</code> and <code class="language-plaintext highlighter-rouge">PATCH</code> are updates by default. This makes easier defining permission to allow creating documents or just updating them.</p>
+
+  <h3 id="vetoer-authorizers">VETOER Authorizers</h3>
+
+  <p>In RESTHeart, multiple authorizers can be enabled.</p>
+
+  <p>In RESTHeart v6 the new attribute <code class="language-plaintext highlighter-rouge">authorizerType</code> of <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> is defined: an authorizer can be of type <code class="language-plaintext highlighter-rouge">ALLOWER</code> (default) or <code class="language-plaintext highlighter-rouge">VETOER</code>.</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">"globalPredicatesVetoer"</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"vetoes requests according to global predicates"</span><span class="o">,</span>
+        <span class="n">enabledByDefault</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span>
+        <span class="n">authorizerType</span> <span class="o">=</span> <span class="no">TYPE</span><span class="o">.</span><span class="na">VETOER</span><span class="o">)</span> <span class="c1">// &lt;----- optional, default ALLOWER</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GlobalPredicatesVetoer</span> <span class="kd">implements</span> <span class="nc">Authorizer</span> <span class="o">{</span>
+    <span class="c1">// omitted</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>As an in-bound request is received and authenticated the <code class="language-plaintext highlighter-rouge">isAllowed()</code> method is
+called on each authorizer. A secured request is allowed when no <code class="language-plaintext highlighter-rouge">VETOER</code> denies
+it and at least one <code class="language-plaintext highlighter-rouge">ALLOWER</code> allows it.</p>
+
+  <h3 id="secure-attribute-of-registerplugin">secure attribute of @RegisterPlugin</h3>
+
+  <p>The <code class="language-plaintext highlighter-rouge">Service</code> plugin can be configured to require authentication and authorization.</p>
+
+  <p>Prior to v6, the configuration option <code class="language-plaintext highlighter-rouge">secured: true</code> must be specified in <code class="language-plaintext highlighter-rouge">restheart.yml</code> in order to secure a <code class="language-plaintext highlighter-rouge">Service</code>:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">my-plugin</span><span class="pi">:</span>
+    <span class="na">secured</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div>  </div>
+
+  <p>This forced the <code class="language-plaintext highlighter-rouge">Service</code> to have a configuration section.</p>
+
+  <p>In RESTHeart v6, a <code class="language-plaintext highlighter-rouge">Service</code> can be programmatically secured (i.e. to require authentication and authorization) via the following attribute of the <code class="language-plaintext highlighter-rouge">@RegisterPlugin</code> annotation:</p>
+
+  <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"myService"</span><span class="o">,</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">"....."</span><span class="o">,</span>
+    <span class="n">secure</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span> <span class="c1">// &lt;----- optional, default false</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="kd">implements</span> <span class="nc">JsonService</span> <span class="o">{</span>
+        <span class="c1">// code omitted</span>
+<span class="o">}</span>
+</code></pre></div>  </div>
+
+  <p>In JavaScript:</p>
+
+  <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">myService</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">description</span><span class="p">:</span> <span class="dl">"</span><span class="s2">......</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">uri</span><span class="p">:</span> <span class="dl">'</span><span class="s1">/myService</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">secured</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// &lt;----- optional, default false</span>
+<span class="p">}</span>
+</code></pre></div>  </div>
+
+  <h3 id="fileaclauthorizer-supports-same-options-than-mongoaclauthorizer"><em>fileAclAuthorizer</em> supports same options than <em>mongoAclAuthorizer</em></h3>
+
+  <p>Until v5, <code class="language-plaintext highlighter-rouge">mongoAclAuthorizer</code> offers more options for permissions than the <code class="language-plaintext highlighter-rouge">fileAclAuthorizer</code>. In v6 the two authorizers are functionally equivalent with the only difference that <code class="language-plaintext highlighter-rouge">mongoAclAuthorizer</code> handles the ACL permissions in JSON in a MongoDB collection while <code class="language-plaintext highlighter-rouge">fileAclAuthorizer</code> handles them is a YML file. Here is a example of the same permission defined for the two authorizers:</p>
+
+  <p><strong>fileAclAuthorizer</strong></p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># allow role 'user' GET document from /{userid}</span>
+    <span class="c1"># a read filter apply, so only document with status=public or author=userid are returned &lt;- readFilter</span>
+    <span class="c1"># must use 'page' qparam &lt;- qparams-contain(page)</span>
+    <span class="c1"># cannot use 'filter' and 'sort' qparams &lt;- qparams-blacklist(filter, sort)</span>
+    <span class="c1"># the property 'log' is removed from the response &lt;- projectResponse</span>
+    <span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+      <span class="na">predicate</span><span class="pi">:</span> <span class="pi">&gt;</span>
+        <span class="s">method(GET)</span>
+        <span class="s">and path-template('/{userid}')</span>
+        <span class="s">and equals(@user._id, ${userid})</span>
+        <span class="s">and qparams-contain(page)</span>
+        <span class="s">and qparams-blacklist(filter, sort)</span>
+
+      <span class="na">priority</span><span class="pi">:</span> <span class="m">100</span>
+      <span class="na">mongo</span><span class="pi">:</span>
+        <span class="na">readFilter</span><span class="pi">:</span> <span class="pi">&gt;</span>
+          <span class="s">{ "$or": [</span>
+            <span class="s">{"status": "public"},</span>
+            <span class="s">{"author": "@user._id" }</span>
+            <span class="s">]}</span>
+        <span class="na">projectResponse</span><span class="pi">:</span> <span class="pi">&gt;</span>
+          <span class="s">{ "log": 0 }</span>
+</code></pre></div>  </div>
+
+  <p><strong>mongoAclAuthorizer</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"userCanGetOwnCollection"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"**** DESCRIPTION PROPERTY IS NOT REQUIRED, HERE ONLY FOR DOCUMENTATION PURPOSES"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"allow role 'user' GET document from /{userid}"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"a read filter apply, so only document with status=public or author=userid are returned &lt;- readFilter"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"must use 'page' qparam &lt;- qparams-contain(page)"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"cannot use 'filter' and 'sort' qparams &lt;- qparams-blacklist(filter, sort)"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"the property 'log' is removed from the response &lt;- projectResponse"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"user"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"predicate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"priority"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mongo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"readFilter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"_$or"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"public"</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@user._id"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"projectResponse"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"log"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h3 id="new-acl-permission-predicates">New ACL Permission predicates</h3>
+
+  <p>The ACL permissions use the undertow predicate language to define the condition a request must met to be authorized.</p>
+
+  <p>RESTHeart 6 extends this language introducing the following 7 new predicates that extend and simplify the ACL permission definition:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>predicate                       </th>
+        <th>description</th>
+        <th>example                                             </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">qparams-contain</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request query string contains the specified parameter</td>
+        <td><code class="language-plaintext highlighter-rouge">qparams-contain(page,pagesize)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">qparams-blacklist</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request query string does not contain the blacklisted parameters</td>
+        <td><code class="language-plaintext highlighter-rouge">qparams-contain(filter,sort)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">qparams-whitelist</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request query string contains only whitelisted parameters</td>
+        <td><code class="language-plaintext highlighter-rouge">qparams-whitelist(page,pagesize)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">qparams-size</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request query string the specified number of parameters</td>
+        <td><code class="language-plaintext highlighter-rouge">qparams-size(3)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-contains</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request content is Bson and contains the specified properties</td>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-contains(foo,bar.sub)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-whitelist</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request content is Bson and only contains whitelisted properties</td>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-whitelist(foo,bar.sub)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-blacklist</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if the request bson content does not contain blacklisted properties</td>
+        <td><code class="language-plaintext highlighter-rouge">bson-request-contains(foo,bar.sub)</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">in</code></td>
+        <td><code class="language-plaintext highlighter-rouge">true</code> if <em>value</em> is <strong>in</strong> <em>array</em> (available from v6.1.5)</td>
+        <td><code class="language-plaintext highlighter-rouge">path-template('/{coll}') and in(value=${coll}, array=@user.tenants)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Consider the following example:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1"># allow role 'user' GET document from /{userid}</span>
+    <span class="c1"># a read filter apply, so only document with status=public or author=userid are returned &lt;- readFilter</span>
+    <span class="c1"># must use 'page' qparam &lt;- qparams-contain(page)</span>
+    <span class="c1"># cannot use 'filter' and 'sort' qparams &lt;- qparams-blacklist(filter, sort)</span>
+    <span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+      <span class="na">predicate</span><span class="pi">:</span> <span class="pi">&gt;</span>
+        <span class="s">method(GET)</span>
+        <span class="s">and path-template('/{userid}')</span>
+        <span class="s">and equals(@user._id, ${userid})</span>
+        <span class="s">and qparams-contain(page)</span>
+        <span class="s">and qparams-blacklist(filter, sort)</span>
+</code></pre></div>  </div>
+
+  <p>More examples can be found <a href="https://github.com/SoftInstigate/restheart/blob/6.6.1/core/etc/acl.yml">here</a></p>
+
+  <h3 id="mongopermissions">MongoPermissions</h3>
+
+  <p>For requests handled by the <code class="language-plaintext highlighter-rouge">MongoService</code> (i.e. the service that implements the REST API for MongoDB) the permission can specify the <code class="language-plaintext highlighter-rouge">MongoPermissions</code> object.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">allowManagementRequests</span><span class="pi">:</span> <span class="no">false</span> <span class="c1"># default false</span>
+    <span class="na">allowBulkPatch</span><span class="pi">:</span> <span class="no">false</span>          <span class="c1"># default false</span>
+    <span class="na">allowBulkDelete</span><span class="pi">:</span> <span class="no">false</span>         <span class="c1"># default false</span>
+    <span class="na">allowWriteMode</span><span class="pi">:</span> <span class="no">false</span>          <span class="c1"># default false</span>
+    <span class="na">readFilter</span><span class="pi">:</span> <span class="pi">&gt;</span>
+          <span class="s">{"$or": [ {"status": "public"}, {"author": "@user._id"} ] }</span>
+    <span class="na">writeFilter</span><span class="pi">:</span> <span class="pi">&gt;</span>
+          <span class="s">{"author": "@user._id"}</span>
+    <span class="na">mergeRequest</span><span class="pi">:</span> <span class="pi">&gt;</span>
+          <span class="s">{"author": "@user._id"}</span>
+</code></pre></div>  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>permission                     </th>
+        <th>description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">allowManagementRequests</code></td>
+        <td>DB Management Requests are forbidden by default (create/delete/update dbs, collection, file buckets schema stores and schemas, list/create/delete indexes, read db and collection metadata). To allow these requests, <code class="language-plaintext highlighter-rouge">allowManagementRequests</code> must be set to <code class="language-plaintext highlighter-rouge">true</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">allowBulkPatch</code></td>
+        <td>bulk PATCH requests are forbidden by default, to allow these requests, <code class="language-plaintext highlighter-rouge">allowBulkPatch</code> must be set to <code class="language-plaintext highlighter-rouge">true</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">allowBulkDelete</code></td>
+        <td>bulk DELETE requests are forbidden by default, to allow these requests, <code class="language-plaintext highlighter-rouge">allowBulkDelete</code> must be set to <code class="language-plaintext highlighter-rouge">true</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">allowWriteMode</code></td>
+        <td>requests cannot use the query parameter <code class="language-plaintext highlighter-rouge">?wm=insert|update|upsert</code> by default. To allow it, <code class="language-plaintext highlighter-rouge">allowWriteMode</code> must be set to <code class="language-plaintext highlighter-rouge">true</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Note that, in order to allow those requests, not only the corresponding flag must be set to <code class="language-plaintext highlighter-rouge">true</code> but the permission <code class="language-plaintext highlighter-rouge">predicate</code> must resolve to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+
+  <p>Consider the following examples.</p>
+
+  <p>The next one won’t allow the role <code class="language-plaintext highlighter-rouge">user</code> to execute a bulk PATCH even if the <code class="language-plaintext highlighter-rouge">allowBulkPatch</code> is <code class="language-plaintext highlighter-rouge">true</code> since the <code class="language-plaintext highlighter-rouge">predicate</code> requires the request verb to be <code class="language-plaintext highlighter-rouge">GET</code></p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+  <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('coll') and method(GET)</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">allowBulkPatch</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div>  </div>
+
+  <p>The next request allows to PATCH the collection <code class="language-plaintext highlighter-rouge">coll</code> and all documents in it, but won’t allow to execute a bulk PATCH (i.e. the request <code class="language-plaintext highlighter-rouge">PATCH /coll/*?filter={ "status": "draft" }</code> since   the <code class="language-plaintext highlighter-rouge">allowBulkPatch</code> is <code class="language-plaintext highlighter-rouge">false</code></p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+  <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('coll') and method(PATCH)</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">allowBulkPatch</span><span class="pi">:</span> <span class="no">false</span>
+</code></pre></div>  </div>
+
+  <h3 id="mongoreadfilter-and-mongowritefilter"><em>mongo.readFilter</em> and <em>mongo.writeFilter</em></h3>
+
+  <p class="bs-callout bs-callout-warning">Breaking change</p>
+
+  <p><code class="language-plaintext highlighter-rouge">readFilter</code> and <code class="language-plaintext highlighter-rouge">writeFilter</code> are available in RESTHeart v5 as well.
+These are optional filters that are added to read and write requests respectively when authorized by an ACL permission that defines them.</p>
+
+  <p>Starting from v6, these must be under the <code class="language-plaintext highlighter-rouge">mongo</code> object because they are applicable only to requests handled by the <code class="language-plaintext highlighter-rouge">MongoService</code></p>
+
+  <h3 id="mongomergerequest"><em>mongo.mergeRequest</em></h3>
+
+  <p><code class="language-plaintext highlighter-rouge">mergeRequest</code> allows to merge the specified properties to the request content. In this way, server-side evaluated properties can be enforced.</p>
+
+  <p>In the following example:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+  <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('coll') and method(PATCH)</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">mergeRequest</span><span class="pi">:</span> <span class="pi">&gt;</span>
+        <span class="s">{"author": "@user._id"}</span>
+</code></pre></div>  </div>
+
+  <p>the property <code class="language-plaintext highlighter-rouge">author</code> is evaluated to be the <code class="language-plaintext highlighter-rouge">_id</code> of the authenticated client.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">@user</code> is a special variable that allows accessing the properties of the user object. The following variables are available:</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>variable                 </th>
+        <th>description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">@user</code></td>
+        <td>the user object (excluding the password), e.g. <code class="language-plaintext highlighter-rouge">@user.userid</code> (for users defined in acl.yml by <code class="language-plaintext highlighter-rouge">FileRealmAuthenticator</code>) or <code class="language-plaintext highlighter-rouge">@user._id</code> (for users defined in MongoDB by <code class="language-plaintext highlighter-rouge">MongoRealmAuthenticator</code>)</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">@request</code></td>
+        <td>the properties of the request, e.g. <code class="language-plaintext highlighter-rouge">@request.remoteIp</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">@mongoPermissions</code></td>
+        <td>the <code class="language-plaintext highlighter-rouge">MongoPermissions</code> object, e.g. <code class="language-plaintext highlighter-rouge">@mongoPermissions.writeFilter</code></td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">@now</code></td>
+        <td>the current date time</td>
+      </tr>
+      <tr>
+        <td><code class="language-plaintext highlighter-rouge">@filter</code></td>
+        <td>the value of the <code class="language-plaintext highlighter-rouge">filter</code> query parameter</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="mongoprojectresponse"><em>mongo.projectResponse</em></h3>
+
+  <p><code class="language-plaintext highlighter-rouge">projectResponse</code> allows to project the response content, i.e. to remove properties.</p>
+
+  <p>It can be used with positive or negative logic.</p>
+
+  <p>The following hides the properties <code class="language-plaintext highlighter-rouge">secret</code> and <code class="language-plaintext highlighter-rouge">a.nested.secret</code> (you can use the dot notation!). All other properties are returned.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+  <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('coll') and method(PATCH)</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">projectResponse</span><span class="pi">:</span> <span class="pi">&gt;</span>
+        <span class="s">{"secret": 0, "a.nested.secret": 0 }</span>
+</code></pre></div>  </div>
+
+  <p>The following only returns the property <code class="language-plaintext highlighter-rouge">public</code> (you can use the dot notation!). All other properties are hidden.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">roles</span><span class="pi">:</span> <span class="pi">[</span> <span class="nv">user</span> <span class="pi">]</span>
+  <span class="na">predicate</span><span class="pi">:</span> <span class="s">path-prefix('coll') and method(PATCH)</span>
+  <span class="na">mongo</span><span class="pi">:</span>
+    <span class="na">projectResponse</span><span class="pi">:</span> <span class="pi">&gt;</span>
+        <span class="s">{"public": 1 }</span>
+</code></pre></div>  </div>
+
+  <h3 id="originvetoer">OriginVetoer</h3>
+
+  <p><code class="language-plaintext highlighter-rouge">OriginVetoer</code> authorizer protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted.</p>
+
+  <p>It can configured as follows in the <em>Authorizers</em> section of <code class="language-plaintext highlighter-rouge">restheart.yml</code>:</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">authorizers</span><span class="pi">:</span>
+  <span class="na">originVetoer</span><span class="pi">:</span>
+      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># &lt;---- default is false</span>
+      <span class="na">whitelist</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">https://restheart.org</span>
+        <span class="pi">-</span> <span class="s">http://localhost</span>
+</code></pre></div>  </div>
+
+  <h3 id="filteroperatorsblacklist">filterOperatorsBlacklist</h3>
+
+  <p>A global blacklist for MongoDb query operators in the <code class="language-plaintext highlighter-rouge">filter</code> query parameter.</p>
+
+  <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">plugins-args</span><span class="pi">:</span>
+  <span class="na">filterOperatorsBlacklist</span><span class="pi">:</span>
+    <span class="na">blacklist</span><span class="pi">:</span> <span class="pi">[</span> <span class="s2">"</span><span class="s">$where"</span> <span class="pi">]</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div>  </div>
+
+  <p>With this configuration, the request <code class="language-plaintext highlighter-rouge">GET /coll?filter={"$where": "...."}</code> is forbidden.</p>
+
+  <h2 id="variables-in-aggregation-and-permission">Variables in aggregation and permission</h2>
+
+  <p>The same variables that can be used in permissions, can be used in aggregation definition plus the variables <code class="language-plaintext highlighter-rouge">@page</code>, <code class="language-plaintext highlighter-rouge">@pagesize</code>, <code class="language-plaintext highlighter-rouge">@skip</code> and <code class="language-plaintext highlighter-rouge">@limit</code> that are computed from the paging query parameters <code class="language-plaintext highlighter-rouge">?page=1&amp;pagesize=4</code>.</p>
+
+  <p>This is a valid aggregation definition where a filter is applied from the <code class="language-plaintext highlighter-rouge">readFilter</code> property of the ACL permission that eventually allowed the request.</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"meetingsDate"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pipeline"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$match"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"$var"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@mongoPermissions.readFilter"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"$sort"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="dynamic-change-streams">Dynamic Change Streams</h2>
+
+  <p>Change streams definition can be updated without requiring to restart RESTHeart.</p>
+
+  <p>When a change stream definition is updated, all clients connected via WebSocket are automatically disconnected from the old change stream.</p>
+
+  <h2 id="java-version">Java version</h2>
+
+  <p class="bs-callout bs-callout-warning">Breaking change</p>
+
+  <p>RESTHeart 6.0.x and 6.1.x requires Java 16+ or GraalVM 21.1 (JDK 16).
+RESTHeart 6.2.x requires Java 17+ or GraalVM 22.0.0.2 (JDK 17).</p>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

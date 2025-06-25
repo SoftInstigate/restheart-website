@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Setup</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Setup">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v4/setup">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v4
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            <strong>v4</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v4/setup.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="getting-started"><a href="/docs">Intoduction</a></h2>
+
+<h2 id="getting-started">Getting Started</h2>
+<ul>
+    <li><a href="/docs/v4/setup">Setup</a></li>
+    <li><a href="/docs/v4/configuration">Configuration</a></li>
+    <li><a href="/docs/v4/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v4/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v4/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v4/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v4/blog-posts">Tutorials</a></li>
+    <li><a href="/docs/v4/performances">Performances</a></li>
+    <li><a href="/docs/v4/clustering">Clustering & Load Balancing</a></li>
+</ul>
+
+<h2 id="upgrading-from-3"><a href="/docs/v4/upgrade-to-v4">Upgrade to v4</a></h2>
+<h2 id="upgrading-from-3"><a href="/docs/v4/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v4/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v4/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v4/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v4/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v4/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v4/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v4/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v4/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v4/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v4/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v4/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v4/security/overview">Overview</a></li>
+    <li><a href="/docs/v4/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v4/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v4/security/user-management">User Management</a></li>
+    <li><a href="/docs/v4/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v4/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v4/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v4/plugins/apply">Apply plugins</a></li>
+    <li><a href="/docs/v4/plugins/list">Available plugins</a></li>
+</ul>
+
+<h2 id="develop-core-plugins">Develop Plugins</h2>
+<ul>
+    <li><a href="/docs/v4/develop/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v4/develop/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v4/develop/packaging">Packaging Plugins</a></li>
+    <li><a href="/docs/v4/develop/best-practices">Best practices</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul class="mb-5">
+    <li><a href="/docs/v4/etag">ETag</a></li>
+    <li><a href="/docs/v4/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v4/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v4/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v4/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v4/auditing">Auditing</a></li>
+</ul>
+
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#get-restheart-platform-trial-edition">Get RESTHeart Platform Trial Edition</a></li>
+    <li><a href="#run">Run</a></li>
+    <li><a href="#accept-license">Accept License</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#stop-and-restart-the-containers">Stop and restart the containers</a></li>
+    <li><a href="#clean-up-everything">Clean up everything</a></li>
+    <li><a href="#run-without-docker">Run without Docker</a></li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Setup</span>
+    </h2>
+</div>
+
+  <div class="alert alert-primary">
+
+    <h2 class="alert-heading" id="this-page-applies-to-the-restheart-platform-professional-editions-only">This page applies to the RESTHeart Platform Professional Editions only</h2>
+
+    <p>To setup the <strong>Open Source</strong> version look at its repository on <a href="https://github.com/softInstigate/restheart">GitHub</a>.</p>
+
+  </div>
+
+  <h2 id="get-restheart-platform-trial-edition">1 - Get RESTHeart Platform Trial Edition</h2>
+
+  <ol>
+    <li>go to <a href="/get" target="_blank">https://restheart.org/get</a></li>
+    <li>fill the form choosing the <strong>free</strong> <strong>RESTHeart Platform 30 days Trial</strong></li>
+    <li>in few minutes you will receive an email with the <strong>download link</strong> and a <strong>Trial License Key</strong></li>
+    <li>click on the link in the email and download <code class="language-plaintext highlighter-rouge">restheart-platform-&lt;version&gt;.zip</code></li>
+    <li>unzip the package and cd into it:</li>
+  </ol>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>unzip restheart-platform-&lt;version&gt;.zip
+<span class="nv">$ </span><span class="nb">cd </span>restheart-platform-&lt;version&gt;
+</code></pre></div>  </div>
+
+  <h2 id="run">2 - Run</h2>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose up <span class="nt">-d</span>
+</code></pre></div>  </div>
+
+  <p>You need Docker v1.13 or later.</p>
+
+  <p>Can’t use Docker? Check <a href="#run-without-docker">Run without Docker</a>.</p>
+
+  <h2 id="accept-license">3 - Accept License</h2>
+
+  <p class="bs-callout bs-callout-info">This step is only required once on the first execution.</p>
+
+  <ol>
+    <li>open <a href="http://localhost:8080/license" target="_blank">http://localhost:8080/license</a> (If you don’t get any response wait few seconds for startup and retry)</li>
+    <li>add the license key copying it from the email and and pasting it in the <em>License Key</em> field.</li>
+  </ol>
+
+  <p><img src="/images/license-form-add-key.png" width="50%" height="auto" class="img-responsive" /></p>
+
+  <p>The following image shows the email with the License Key.</p>
+
+  <p><img src="/images/paddle-email.png" width="50%" height="auto" class="img-responsive" /></p>
+
+  <p>In this case, the license key to copy and paste is:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJsaWNlbnNlZSI6IlhYWCIsImxpY2Vuc29yIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiYWRkaXRpb25hbENvbmRpdGlvbnMiOiJUaGlzIGxpY2Vuc2Uga2V5IGNhbiBvbmx5IGJlIHVzZWQgZm9yIGRldmVsb3BtZW50IHB1cnBvc2VzIiwiaXNzIjoiU29mdEluc3RpZ2F0ZSBTcmwsIEl0YWx5IiwiY29uY3VycmVudCI6ZmFsc2UsIm1heE1hY2hpbmVzIjoxLCJsaWNlbnNlSGFzaCI6ImM1ZWQ4MDczZTYxMzFiZDU0ZTI0MTEyNjE1OGI5NGQ3MTI3OGU5YmIyZjU4NGFkNzMzZDllYjBiNWM4MzNhYzYiLCJ0eXBlIjoiVHJpYWwgbGljZW5zZSIsInN1YnNjcmlwdGlvblBlcmlvZCI6ImZyb20gMDYvMTAvMjAxOSB0byAwNy8xMC8yMDE5IiwiZmxvYXRpbmciOmZhbHNlLCJleHAiOjE1NjI3MTY4MDAsImlhdCI6MTU2MDEyNDgwMCwianRpIjoiZDZlOTE2ZTItZDJkMy00ZjRkLWIxN2MtZjA0MDA2NDJlZTQ2In0.jiK-gCTho5O66v8FpKKebiSltas39jKgm9OmBnG1fBM-6kYBQQ7dX79cvhY6R3Ea3hVyrDc0URoHLSfjlUB3gcFqBcDrltYtPhHa27HmEfVdhqK6Itu2hbth-J-A1xpWNRjmIeUzPoGYR58QA10F4Zh0rrSLE1Zh4sXWXrX7vvlKxSirg7x48MEV0SeGNehxuQMjKwgsKQinwvq5PlkNQHx72mOgeUrhpNrQwFYmcAC8XnzliQ8cAJGX9ql3IhxHtTIfkPi3nE49wewiQWHe_kDRJJDSJsrk99FN2YjUQ-mqjpLdZCI4iyNhw0Z-iOkT1BGhTNL6SVaMrU0XiQ
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-warning">The shown license key is not valid being expired. You need to get a fresh license as described above.</p>
+
+  <p>Once the license key has been added, you can accept it by checking the two checkboxes and clicking on “Activate the License Key” button.</p>
+
+  <p><img src="/images/license-form-accept.png" width="70%" height="auto" class="img-responsive" /></p>
+
+  <h2 id="troubleshooting">Troubleshooting</h2>
+
+  <h3 id="check-if-the-service-is-up">Check if the service is up</h3>
+
+  <p>Open <a href="http://localhost:8080/roles/admin" target="_blank">http://localhost:8080/roles/admin</a></p>
+
+  <p>Insert the default admin credentials, which are:</p>
+
+  <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">username</span><span class="p">:</span> <span class="s">admin</span>
+<span class="py">password</span><span class="p">:</span> <span class="s">secret</span>
+</code></pre></div>  </div>
+
+  <p>You should then see the following json in your browser:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"authenticated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"admin"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h3 id="log-files">Log files</h3>
+
+  <p>You find the log files in the <code class="language-plaintext highlighter-rouge">restheart-platform-&lt;version&gt;</code> directory:</p>
+
+  <ul>
+    <li>core.log</li>
+    <li>security.log</li>
+  </ul>
+
+  <h2 id="stop-and-restart-the-containers">Stop and restart the containers</h2>
+
+  <ol>
+    <li>Stop running Docker containers</li>
+  </ol>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose stop
+</code></pre></div>  </div>
+
+  <ol>
+    <li>Run again the existing Docker containers</li>
+  </ol>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose start
+</code></pre></div>  </div>
+
+  <p>Complete logs, also of the MongoDB instance, are available using the following command</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose logs <span class="nt">-f</span>
+</code></pre></div>  </div>
+
+  <h2 id="clean-up-everything">Clean up everything</h2>
+
+  <p>To stop and <strong>permanently delete</strong> all services, networks and disk volumes previously created:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-compose down <span class="nt">-v</span>
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-warning">This command deletes all data in the MongoDB database!</p>
+
+  <p>Please refer to the <a href="https://docs.docker.com/compose/reference/overview/">docker-compose official documentation</a> for more.</p>
+
+  <h2 id="run-without-docker">Run without Docker</h2>
+
+  <h3 id="requirements">Requirements</h3>
+
+  <ul>
+    <li>Java 11 and later</li>
+    <li>MongoDB</li>
+  </ul>
+
+  <p class="bs-callout bs-callout-info"><strong>Change Streams</strong> require MongoDB v3.6 and later configured as replica set, <strong>Transactions</strong> require MongoDB v4.0 and later configured as replica set.</p>
+
+  <h3 id="run-mongodb-as-a-replica-set">Run MongoDB as a Replica Set</h3>
+
+  <p>This section describes how to run MongoDB standalone configured as a Replica Set. Refer to the <a href="https://docs.mongodb.com/manual/tutorial/convert-standalone-to-replica-set/">MongoDB documentation</a> for more information.</p>
+
+  <p><strong>Start MongoDB</strong> passing the <code class="language-plaintext highlighter-rouge">replSet</code> option.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mongodb <span class="nt">--fork</span> <span class="nt">--syslog</span> <span class="nt">--replSet</span> foo
+</code></pre></div>  </div>
+
+  <p>At the first run, the replica set must be initiated. Connect to MongoDB using the mongo shell:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mongo
+</code></pre></div>  </div>
+
+  <p>Initiate the replica set as follows:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> rs.initiate<span class="o">()</span>
+</code></pre></div>  </div>
+
+  <h3 id="start-restheart-platform-core">Start restheart-platform-core</h3>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-Dfile</span>.encoding<span class="o">=</span>UTF-8 <span class="nt">-jar</span> restheart-platform-core.jar etc/restheart-platform-core.yml <span class="nt">-e</span> etc/core.properties
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">Until version 4.1.9 the default properties file was called <code class="language-plaintext highlighter-rouge">dafault.properties</code></p>
+
+  <h3 id="start-restheart-platform-security">Start restheart-platform-security</h3>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-Dfile</span>.encoding<span class="o">=</span>UTF-8 <span class="nt">-jar</span> restheart-platform-security.jar etc/restheart-platform-security.yml <span class="nt">-e</span> etc/security.properties
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">Until version 4.1.9 restheart-platform-security.yml was not parametric and the <code class="language-plaintext highlighter-rouge">-e etc/security.properties</code> argument was not required.</p>
+
+  <h3 id="accept-license-1">Accept License</h3>
+
+  <p>During the first execution you must accept the license as described <a href="#accept-license">above</a>.</p>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

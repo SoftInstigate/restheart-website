@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Read JSON Documents</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Read JSON Documents">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v5/read-docs">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v5
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            <strong>v5</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v5/read-docs.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started"><a href="/docs/v5">Get Started</a></h2>
+<ul>
+    <li><a href="/docs/v5/setup">Setup</a></li>
+    <li><a href="/docs/v5/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v5/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v5/video-tutorials"><strong>Video Tutorials</strong></a></li>
+    <li><a href="/docs/v5/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v5/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v5/graalvm">GraalVM</a></li>
+    <li><a href="/docs/v5/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v5/logging">Logging</a></li>
+    <li><a href="/docs/v5/blog-posts">Other tutorials</a></li>
+    <li><a href="/docs/v5/performances">Performances</a></li>
+    <li><a href="/docs/v5/clustering">Clustering & Load Balancing</a></li>
+    <li><a href="/docs/v5/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="upgrade-to-v5"><a href="/docs/v5/upgrade-to-v5">Upgrade to v5</a></h2>
+<h2 id="roadmap"><a href="/docs/v5/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v5/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v5/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v5/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v5/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v5/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v5/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v5/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v5/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v5/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v5/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v5/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v5/security/overview">Overview</a></li>
+    <li><a href="/docs/v5/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v5/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v5/security/user-management">User Management</a></li>
+    <li><a href="/docs/v5/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v5/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v5/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v5/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v5/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v5/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v5/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v5/plugins/deploy">How to deploy a Plugin</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul>
+    <li><a href="/docs/v5/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v5/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v5/etag">ETag</a></li>
+    <li><a href="/docs/v5/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v5/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v5/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v5/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v5/auditing">Auditing</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#paging">Paging</a>
+      <ul>
+        <li><a href="#paging-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#filtering">Filtering</a>
+      <ul>
+        <li><a href="#multifilter-qparams">Multifilter qparams</a></li>
+        <li><a href="#filtering-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#counting">Counting</a>
+      <ul>
+        <li><a href="#counting-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#sorting">Sorting</a>
+      <ul>
+        <li><a href="#sort-simple-format">Sort simple format</a></li>
+        <li><a href="#sort-json-expression-format">Sort JSON expression format</a></li>
+        <li><a href="#default-sorting">Default sorting</a></li>
+        <li><a href="#sorting-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#projection">Projection</a>
+      <ul>
+        <li><a href="#dot-notation">Dot Notation</a></li>
+        <li><a href="#projection-examples">Examples</a></li>
+      </ul>
+    </li>
+    <li><a href="#hint">Hint</a>
+      <ul>
+        <li><a href="#hint-examples">Examples</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Read JSON Documents</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>This page provides examples of query operations using the <code class="language-plaintext highlighter-rouge">GET</code> method.</p>
+
+  <p>You will learn how to get documents from a collection, optionally specifying a query, sort criteria, fields projections options and deal with pagination.</p>
+
+  <p>You will also learn hot to get a single document knowing its _id.</p>
+
+  <h3 id="before-running-the-example-requests">Before running the example requests</h3>
+
+  <p>The following step by step tutorial <strong>assumes that RESTHeart is running on localhost</strong> with the default configuration: the database <em>restheart</em> is bound to <code class="language-plaintext highlighter-rouge">/</code> and the user <em>admin</em> exists with default password <em>secret</em>.</p>
+
+  <blockquote>
+    <p>To run RESTHeart please first read the <a href="/docs/setup">setup</a> section.</p>
+  </blockquote>
+
+  <p>To create the <em>restheart</em> db, run the following:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>The examples on this page use the <em>inventory</em> collection. To create the <em>inventory</em> collection, run the following:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>To populate the <em>inventory</em> collection, run the following:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/inventory</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+]
+</code></pre></div>  </div>
+
+  <h2 id="getting-documents-from-a-collection">GETting Documents from a Collection</h2>
+
+  <p>To GET documents in the collection, run the following:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /inventory HTTP/1.1
+</code></pre></div>  </div>
+
+  <h2 id="paging">Paging</h2>
+
+  <p>The response is paginated,  i..e. only a subset of the collection’s document is returned in the response array.</p>
+
+  <p>The number of documents to return is controlled via the <code class="language-plaintext highlighter-rouge">pagesize</code> query
+parameter. Its default value is 100, maximum allowable size is 1000.</p>
+
+  <p>The pages to return is specified with the <code class="language-plaintext highlighter-rouge">page</code> query parameter. The
+pagination links (first, last, next, previous) are <strong>only returned on
+HAL full mode</strong> (<code class="language-plaintext highlighter-rouge">hal=f</code> query parameter); see <a href="/docs/mongodb-rest/representation-format/">HAL
+mode</a>
+for more information.</p>
+
+  <h3 id="paging-examples">Paging Examples</h3>
+
+  <h4 id="return-documents-on-second-page-when-pagesize-is-3">Return documents on second page when pagesize is 3</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/3" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /inventory?page=2&amp;pagesize=3 HTTP/1.1
+</code></pre></div>  </div>
+
+  <h2 id="filtering">Filtering</h2>
+
+  <p>The <strong><code class="language-plaintext highlighter-rouge">filter</code></strong> query parameter allows to specify conditions on the
+documents to be returned.</p>
+
+  <p>The <code class="language-plaintext highlighter-rouge">filter</code> qparam value is any <a href="https://docs.mongodb.org/manual/tutorial/query-documents/">mongodb
+query</a>.</p>
+
+  <p>Note that system properties (properties starting with _ that are
+managed automatically by RESTHeart) are not affected by this option.</p>
+
+  <div class="anchor-offset" id="multifilter-qparams">
+</div>
+
+  <div class="bs-callout bs-callout-info">
+    <h4>Multifilter qparams</h4>
+    <hr class="my-2" />
+    <p>
+    Note the second form of the last example. If multiple filter query
+    parameters are specified, they are logically composed with the AND
+    operator.
+    </p>
+    <p>
+    This can be very useful in conjunction with path based security
+    permission.
+    </p>
+    <p>
+    For instance the following permission can be used with the simple file
+    based Access Manager to restrict users to GET a collection only
+    specifying a filter on the author property to be equal to their
+    username:
+    </p>
+    <code>regex[pattern="/test/coll/\?.*filter={'author':'(.*?)'}.*", value="%R", full-match=true] and equals[%u, "${1}"]</code>
+</div>
+
+  <h3 id="filtering-examples">Filtering Examples</h3>
+
+  <h4 id="return-documents-whose-quantity-is-more-than-50">Return documents whose <code class="language-plaintext highlighter-rouge">quantity</code> is more than 50</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
+</code></pre></div>  </div>
+
+  <h4 id="return-documents-whose-quantity-is-more-than-25-and-with-status-set-to-d-value">Return documents whose <code class="language-plaintext highlighter-rouge">quantity</code> is more than 25 and with <code class="language-plaintext highlighter-rouge">status</code> set to “D” value</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>or equivalently:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http mt-2 black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?filter={"qty":{"$gt":75}}&amp;filter={"status":"D"}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h2 id="counting">Counting</h2>
+
+  <p>Use <code class="language-plaintext highlighter-rouge">_size</code> keyword after the collection path to retrieve the number of documents that meets the filter condition (if present).</p>
+
+  <div class="bs-callout bs-callout-info">
+    <h4 id="impact-on-performances">Impact on performances</h4>
+    <hr class="my-2" />
+    <p>
+    <code><strong>count</strong></code> involves querying the collection twice: once for counting
+    and once of actually retrieving the data; this has performance
+    implications!
+    </p>
+</div>
+
+  <h3 id="counting-examples">Counting Examples</h3>
+
+  <h4 id="return-the-number-of-documents-into-inventory-collection">Return the number of documents into “inventory” collection</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/1" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory/_size?filter={"status":"A"}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h2 id="sorting">Sorting</h2>
+
+  <p>Sorting is controlled by the <code class="language-plaintext highlighter-rouge">sort</code> query parameter.</p>
+
+  <p>Note that documents cannot be sorted by system properties (properties
+starting with _ that are managed automatically by RESTHeart).</p>
+
+  <div class="bs-callout bs-callout-info">
+    <h4 id="multifilter-qparams">Multiple sort properties</h4>
+    <hr class="my-2" />
+    <p>
+    Specify multiple sort options using multiple `sort` query parameters
+    </p>
+    <p class="black-code">
+    <pre><code class="language-bash">&gt; GET /inventory?sort=qty&amp;sort=-status</code></pre>
+    </p>
+</div>
+
+  <h3 id="sort-simple-format">Sort simple format</h3>
+
+  <p>The <code class="language-plaintext highlighter-rouge">sort</code> simplified format is :</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sort=[ |-]&lt;fieldname&gt;
+</code></pre></div>  </div>
+
+  <h3 id="sort-json-expression-format">Sort JSON expression format</h3>
+
+  <p><code class="language-plaintext highlighter-rouge">sort</code> can also be a MongoDB <a href="https://docs.mongodb.com/manual/reference/method/cursor.sort/#cursor.sort">sort
+expression</a>.</p>
+
+  <p>JSON expression format is available starting from version 2.0.1. See
+improvement <a href="https://softinstigate.atlassian.net/browse/RH-190">RH-190</a></p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sort={"field": 1}
+</code></pre></div>  </div>
+
+  <div class="anchor-offset" id="default-sorting">
+</div>
+
+  <div class="bs-callout bs-callout-info mt-5" role="alert">
+    <h4>Default sorting</h4>
+    <hr class="my-2" />
+    <p>
+    The default sorting of the documents is by the <strong>_id descending</strong>.
+    </p>
+    <p>
+    In the usual case, where the type of the ids of the documents is
+    ObjectId, this makes the documents sorted by creation time by default
+    (ObjectId have a timestamp in the most significant bits).
+    </p>
+    <p>
+    RESTHeart returns data in pages (default being 100) and it is stateless.
+    This means that two requests use different db cursors. A default sorting
+    makes sure that requests on different pages returns documents in a well
+    defined order.
+    </p>
+    <div class="alert alert-warning" role="alert">
+        <h2 class="alert-heading">Disable default sorting</h2>
+        <hr class="my-2" />
+        <p>
+        Default sorting could impact performances for some use cases.
+        </p>
+        <p>
+        To disable default sorting just add the <strong>"sort={}"</strong> query parameter
+        </p>
+        <p>
+        See the <a href="#sorting">sorting</a> section to know how to
+        specify different sorting criteria.
+        </p>
+    </div>
+</div>
+
+  <h3 id="sorting-examples">Sorting Examples</h3>
+
+  <h3 id="sort-by-status-ascending">Sort by <em>status</em> ascending</h3>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?sort=status</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>or equivalently:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/dd99c056f88e5ac9f990ffcd3f2a18032007d639/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http mt-2 black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?sort={"status":1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 class="mt-4" id="sort-by-status-descending">Sort by <em>status</em> descending</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?sort=-status</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>or equivalently:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/e6fe674153926f9834c1aa10e156b0792dc35bc5/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-plaintext mt-2 black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /inventory?sort={"status":-1} HTTP/1.1
+</code></pre></div>  </div>
+
+  <h4 class="mt-4" id="sort-by-status-ascending-and-qty-descending">Sort by <em>status</em> ascending and <em>qty</em> descending</h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?sort=status&amp;sort=-qty</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <p>or equivalently:</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http mt-2 black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?sort={"status":1,"qty":-1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 class="mt-4" id="sort-by-search-score">Sort by search score</h4>
+
+  <p class="bs-callout bs-callout-info">This is only possible with json expression format</p>
+
+  <p><strong>create a text index</strong></p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">PUT</span> <span class="nn">/inventory/_indexes/text</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{"keys": {"item": "text" }}
+</code></pre></div>  </div>
+
+  <p class="mt-3"><strong>sort by score</strong></p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?filter={"$text":{"$search":"paper"}}&amp;keys={"item":1,"score":{"$meta":"textScore"}}&amp;sort={"score":{"$meta":"textScore"}}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h2 id="projection">Projection</h2>
+
+  <p>Projection limits the fields to return for all matching documents,
+specifying the inclusion or the exclusion of fields.</p>
+
+  <p>This is done via the <code class="language-plaintext highlighter-rouge">keys</code> query parameter.</p>
+
+  <p>Note that system properties (properties starting with _ that are
+managed automatically by RESTHeart) are not affected by this option.</p>
+
+  <div class="anchor-offset" id="dot-notation">
+</div>
+
+  <div class="bs-callout bs-callout-info mt-3" role="alert">
+    <h4>Dot Notation</h4>
+    <hr class="my-2" />
+    <p>
+    It's possible to use the "dot notation" to specify fields within an
+    object, for example, let's say that both <strong>item</strong> and <strong>status</strong> are
+    part of an <strong>header</strong> object:
+    </p>
+    <p class="black-code">
+    <div class="black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; GET /inventory?keys={'header.item':1}&amp;keys={'header.status':1}</code></pre></div></div>
+    </p>
+</div>
+
+  <h3 id="projection-examples">Projection Examples</h3>
+
+  <h4 id="only-return-the-property-item">Only return the property <em>item</em></h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?keys={'item':1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 id="return-all-but-the-property-item">Return all but the property <em>item</em></h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?keys={'item':0}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 id="only-return-the-properties-item-and-qty">Only return the properties <em>item</em> and <em>qty</em></h4>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?keys={'item':1}&amp;keys={'qty':1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h2 id="hint">Hint</h2>
+
+  <p>Hint allows overriding MongoDB’s default index selection and query optimization process. See <a href="https://docs.mongodb.com/manual/reference/method/cursor.hint/#cursor.hint">cursor hint</a> on MongoDB documentation.</p>
+
+  <p>This is done via the <code class="language-plaintext highlighter-rouge">hint</code> query parameter.</p>
+
+  <p>Specify the index by the index specification document, either using a json document or the compact string representation; specifying the index by name is not supported.</p>
+
+  <p>Use <code class="language-plaintext highlighter-rouge">$natural</code> to force the query to perform a forwards collection scan.</p>
+
+  <h3 id="hint-examples">Hint Examples</h3>
+  <div class="bs-callout bs-callout-info mt-3 pb-5" role="alert">
+    <p>
+        Before running the following examples create the following indexes:
+    </p>
+    <p class="black-code">
+        <div class="black-code highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; PUT /inventory/_indexes/item {"keys": {"item": 1}}</code></pre></div></div>
+        <a href="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+    </p>
+    <p class="black-code">
+        <div class="black-code highlighter-rouge mt-5"><div class="highlight"><pre class="highlight"><code>&gt; PUT /inventory/_indexes/status {"keys": {"status": 1 }}</code></pre></div></div>
+        <a href="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0" class="btn btn-sm float-right" target="restninjatab">Execute on rest ninja</a>
+    </p>
+</div>
+
+  <h4 id="use-the-index-on-item-field">Use the index on item field</h4>
+
+  <p>The following example returns all documents in the collection named <strong>coll</strong> using the index on the <strong>item</strong> field.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?hint={'item':1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 id="use-the-compound-index-on-age-and-timestamp-fields-using-the-compact-string-format">Use the compound index on age and timestamp fields using the compact string format</h4>
+
+  <p>The following example returns the documents using the compound index on the <strong>item</strong> and reverse <strong>status</strong> fields.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?hint=item&amp;hint=-status</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 id="perform-a-forwards-collection-scan">Perform a forwards collection scan</h4>
+
+  <p>The following example returns the documents using a forwards collection scan.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?hint={'$natural':1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+  <h4 id="perform-a-reverse-collection-scan">Perform a reverse collection scan</h4>
+
+  <p>The following example returns the documents using a reverse collection scan.</p>
+
+  <div class="d-flex mt-2 mb-2">
+    
+    <span class="mr-3 text-muted"><strong>Request</strong></span>
+    
+    
+    <a href="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0" class="btn btn-sm float-right" target="restninjatab">Execute with restninja</a>
+    
+</div>
+
+  <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/inventory?hint={'$natural':-1}</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

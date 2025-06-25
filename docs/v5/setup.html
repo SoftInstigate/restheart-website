@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Setup</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Setup">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v5/setup">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v5
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            <strong>v5</strong>
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            v3
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v5/setup.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="get-started"><a href="/docs/v5">Get Started</a></h2>
+<ul>
+    <li><a href="/docs/v5/setup">Setup</a></li>
+    <li><a href="/docs/v5/try">Try RESTHeart online</a></li>
+    <li><a href="/docs/v5/tutorial">Absolute Beginner Tutorial</a></li>
+    <li><a href="/docs/v5/video-tutorials"><strong>Video Tutorials</strong></a></li>
+    <li><a href="/docs/v5/quick-reference">Quick Reference</a></li>
+    <li><a href="/docs/v5/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v5/graalvm">GraalVM</a></li>
+    <li><a href="/docs/v5/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v5/logging">Logging</a></li>
+    <li><a href="/docs/v5/blog-posts">Other tutorials</a></li>
+    <li><a href="/docs/v5/performances">Performances</a></li>
+    <li><a href="/docs/v5/clustering">Clustering & Load Balancing</a></li>
+    <li><a href="/docs/v5/enterprise-license">Enterprise License</a></li>
+</ul>
+
+<h2 id="upgrade-to-v5"><a href="/docs/v5/upgrade-to-v5">Upgrade to v5</a></h2>
+<h2 id="roadmap"><a href="/docs/v5/roadmap">Roadmap</a></h2>
+
+<h2 id="content-api">Content API</h2>
+<ul>
+    <li><a href="/docs/v5/read-docs">Read JSON Documents</a></li>
+    <li><a href="/docs/v5/write-docs">Write JSON Documents</a></li>
+    <li><a href="/docs/v5/files">Binary Files with GridFS</a></li>
+    <li><a href="/docs/v5/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v5/csv">Upload CSV files</a></li>
+    <li><a href="/docs/v5/json-schema-validation">JSON Schema Validation</a></li>
+    <li><a href="/docs/v5/change-streams">Change Streams</a></li>
+    <li><a href="/docs/v5/transactions">Transactions</a></li>
+</ul>
+
+<h2 id="mgmt-api">Management API</h2>
+<ul>
+    <li><a href="/docs/v5/mgmt/dbs-collections">Databases and Collections</a></li>
+    <li><a href="/docs/v5/mgmt/indexes">Indexes</a></li>
+    <li><a href="/docs/v5/mgmt/relationships">Relationships</a></li>
+</ul>
+
+<h2 id="security">Securing Requests</h2>
+<ul>
+    <li><a href="/docs/v5/security/overview">Overview</a></li>
+    <li><a href="/docs/v5/security/authentication">Authentication</a></li>
+    <li><a href="/docs/v5/security/authorization">Authorization</a></li>
+    <li><a href="/docs/v5/security/user-management">User Management</a></li>
+    <li><a href="/docs/v5/security/tls">Configure TLS</a></li>
+    <li><a href="/docs/v5/security/secure-connection-to-mongodb">Secure connection to MongoDB</a></li>
+    <li><a href="/docs/v5/security/how-clients-authenticate">How Clients Authenticate</a></li>
+</ul>
+
+<h2 id="plugins">Plugins</h2>
+<ul>
+    <li><a href="/docs/v5/plugins/overview">Overview</a></li>
+    <li><a href="/docs/v5/plugins/dev-env">Development Environment Setup</a></li>
+    <li><a href="/docs/v5/plugins/core-plugins">Core Plugins</a></li>
+    <li><a href="/docs/v5/plugins/security-plugins">Security Plugins</a></li>
+    <li><a href="/docs/v5/plugins/deploy">How to deploy a Plugin</a></li>
+</ul>
+
+<h2 id="other-fatures">Other Features</h2>
+<ul>
+    <li><a href="/docs/v5/proxy">Proxying requests</a></li>
+    <li><a href="/docs/v5/static-resources">Serving static resources</a></li>
+    <li><a href="/docs/v5/etag">ETag</a></li>
+    <li><a href="/docs/v5/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v5/shard-keys">Shard Keys</a></li>
+    <li><a href="/docs/v5/speedup-requests-with-cursor-pools">Cursor Pools</a></li>
+    <li><a href="/docs/v5/monitoring">Monitoring</a></li>
+    <li><a href="/docs/v5/auditing">Auditing</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#download-and-run">Download and Run</a>
+      <ul>
+        <li><a href="#get-the-latest-release">Get the latest release</a></li>
+        <li><a href="#run-with-java">Run with Java</a></li>
+      </ul>
+    </li>
+    <li><a href="#configuration-files">Configuration files</a>
+      <ul>
+        <li><a href="#environment-variables">Environment variables</a></li>
+        <li><a href="#run-the-process-in-background">Run the process in background</a></li>
+      </ul>
+    </li>
+    <li><a href="#run-with-docker">Run with Docker</a></li>
+    <li><a href="#build-it-yourself">Build it yourself</a>
+      <ul>
+        <li><a href="#integration-tests">Integration Tests</a></li>
+        <li><a href="#maven-dependencies">Maven Dependencies</a></li>
+        <li><a href="#project-structure">Project structure</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Setup</span>
+    </h2>
+</div>
+
+  <h2 id="download-and-run">Download and Run</h2>
+
+  <p class="bs-callout bs-callout-info">You can run RESTHeart and MongoDB with <strong>Docker</strong>: go to <a href="#run-with-docker">Run with Docker</a> for instructions.</p>
+
+  <h3 id="get-the-latest-release">Get the latest release</h3>
+
+  <p>Download the ZIP or TAR archive.</p>
+
+  <p><a class="btn btn-md" id="zipdl" href="https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.zip">zip</a>
+<a class="btn btn-md" id="tgzdl" href="https://gitreleases.dev/gh/SoftInstigate/restheart/latest/restheart.tar.gz">tgz</a></p>
+
+  <p>Un-zip</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>unzip restheart.zip
+</code></pre></div>  </div>
+
+  <p>Or un-tar</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xzf</span> restheart.tar.gz
+</code></pre></div>  </div>
+
+  <p>Configuration files are under the <code class="language-plaintext highlighter-rouge">etc/</code> folder.</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── etc/
+│   ├── acl.yml
+│   ├── default.properties
+│   ├── restheart.yml
+│   └── users.yml
+├── plugins/
+│   ├── restheart-mongodb.jar
+│   └── restheart-security.jar
+└── restheart.jar
+</code></pre></div>  </div>
+
+  <h3 id="run-with-java">Run with Java</h3>
+
+  <p>To run RESTHeart connected to a local instance of MongoDB you need:</p>
+
+  <ul>
+    <li>At least Java v11;</li>
+    <li>MongoDB v3 or v4 running on <code class="language-plaintext highlighter-rouge">localhost</code> on port <code class="language-plaintext highlighter-rouge">27017</code>.</li>
+  </ul>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>restheart
+<span class="nv">$ </span>java <span class="nt">-jar</span> restheart.jar etc/restheart.yml <span class="nt">-e</span> etc/default.properties
+</code></pre></div>  </div>
+
+  <p>To check that RESTHeart is up and running, open the URL <a href="http://localhost:8080/ping">http://localhost:8080/ping</a>, you should see the message: “Greetings from RESTHeart!”.</p>
+
+  <p>Alternatively, use a command line HTTP client like <a href="https://curl.haxx.se">curl</a> and <a href="https://httpie.org">httpie</a> or a API client like <a href="https://www.postman.com">Postman</a>.</p>
+
+  <hr />
+
+  <p>By default RESTHeart only mounts the database <code class="language-plaintext highlighter-rouge">restheart</code>. This is controlled by the <code class="language-plaintext highlighter-rouge">root-mongo-resource</code> in the <code class="language-plaintext highlighter-rouge">restheart/etc/default.properties</code> file.</p>
+
+  <hr />
+
+  <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># The MongoDB resource to bind to the root URI /
+# The format is /db[/coll[/docid]] or '*' to expose all dbs
+</span><span class="py">root-mongo-resource</span> <span class="p">=</span> <span class="s">/restheart</span>
+</code></pre></div>  </div>
+
+  <p>It means that the root resource <code class="language-plaintext highlighter-rouge">/</code> is bound to the <code class="language-plaintext highlighter-rouge">/restheart</code> database. This database <strong>doesn’t actually exist</strong> until you explicitly create it by issuing a <code class="language-plaintext highlighter-rouge">PUT /</code> HTTP command.</p>
+
+  <p>Example for localhost:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret <span class="nt">-I</span> <span class="nt">-X</span> PUT :8080/
+HTTP/1.1 201 OK
+</code></pre></div>  </div>
+
+  <p>RESTHeart will start bound on HTTP port <code class="language-plaintext highlighter-rouge">8080</code>.</p>
+
+  <p class="bs-callout bs-callout-info">Watch <a href="https://www.youtube.com/watch?v=dzggm7Wp2fU&amp;t=57s">Java binaries</a></p>
+
+  <h4 id="default-users-and-acl">Default users and ACL</h4>
+
+  <p>The default <code class="language-plaintext highlighter-rouge">users.yml</code> defines the following users:</p>
+
+  <ul>
+    <li>id: <code class="language-plaintext highlighter-rouge">admin</code>, password: <code class="language-plaintext highlighter-rouge">secret</code>, role: <code class="language-plaintext highlighter-rouge">admin</code></li>
+    <li>id: <code class="language-plaintext highlighter-rouge">user</code>, password: <code class="language-plaintext highlighter-rouge">secret</code>, role: <code class="language-plaintext highlighter-rouge">user</code></li>
+  </ul>
+
+  <p>The default <code class="language-plaintext highlighter-rouge">acl.yml</code> defines the following permission:</p>
+
+  <ul>
+    <li><em>admin</em> role can execute any request</li>
+    <li><em>user</em> role can execute any request on collection <code class="language-plaintext highlighter-rouge">/{username}</code></li>
+  </ul>
+
+  <h4 id="check-that-everything-works">Check that everything works</h4>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># create database 'restheart'</span>
+<span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret <span class="nt">-I</span> <span class="nt">-X</span> PUT :8080/
+HTTP/1.1 201 OK
+
+<span class="c"># create collection 'restheart.collection'</span>
+<span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret <span class="nt">-I</span> <span class="nt">-X</span> PUT :8080/collection
+HTTP/1.1 201 OK
+
+<span class="c"># create a couple of documents</span>
+<span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret <span class="nt">-X</span> POST :8080/collection <span class="nt">-d</span> <span class="s1">'{"a":1}'</span> <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+<span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret <span class="nt">-X</span> POST :8080/collection <span class="nt">-d</span> <span class="s1">'{"a":2}'</span> <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+
+<span class="c"># get documents</span>
+<span class="nv">$ </span>curl <span class="nt">--user</span> admin:secret :8080/collection
+<span class="o">[{</span><span class="s2">"_id"</span>:<span class="o">{</span><span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>:<span class="s2">"5dd3cfb2fe3c18a7834121d3"</span><span class="o">}</span>,<span class="s2">"a"</span>:1,<span class="s2">"_etag"</span>:<span class="o">{</span><span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>:<span class="s2">"5dd3cfb2439f805aea9d5130"</span><span class="o">}}</span>,<span class="o">{</span><span class="s2">"_id"</span>:<span class="o">{</span><span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>:<span class="s2">"5dd3cfb0fe3c18a7834121d1"</span><span class="o">}</span>,<span class="s2">"a"</span>:2,<span class="s2">"_etag"</span>:<span class="o">{</span><span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>:<span class="s2">"5dd3cfb0439f805aea9d512f"</span><span class="o">}}]</span>%
+</code></pre></div>  </div>
+
+  <h2 id="configuration-files">Configuration files</h2>
+
+  <p>The main configuration file is <a href="https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml">restheart.yml</a> which is parametrized using <a href="https://github.com/spullara/mustache.java">Mustache.java</a>. The <a href="https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties">default.properties</a> contains actual values for parameters defined into the YAML file. You pass these properties at startup, using the <code class="language-plaintext highlighter-rouge">-e</code> or <code class="language-plaintext highlighter-rouge">--envFile</code> parameter, like this:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-jar</span> restheart.jar etc/restheart.yml <span class="nt">-e</span> etc/default.properties
+</code></pre></div>  </div>
+
+  <hr />
+
+  <p>To connect RESTHeart to a remote MongoDB instance you have to edit the <code class="language-plaintext highlighter-rouge">mongo-uri</code> property, setting you own <a href="https://docs.mongodb.com/manual/reference/connection-string/">Connection String</a>. For example, a MongoDB Atlas cluster connection string could be something like <code class="language-plaintext highlighter-rouge">mongodb+srv://&lt;username&gt;:&lt;password&gt;@cluster0.mongodb.net/test?w=majority</code>. Remember that RESTHeart internally uses the MongoDB Java driver, so you must follow that connection string format.</p>
+
+  <hr />
+
+  <p>You have to restart the core <code class="language-plaintext highlighter-rouge">restheart.jar</code> process to reload a new configuration. How to stop and start the process depends on how it was started: either within a docker container or as a native Java process. In case of native Java, usually you have to kill the background <code class="language-plaintext highlighter-rouge">java</code> process but it depends on your operating system.</p>
+
+  <p>You can edit the YAML configuration file or create distinct properties file. Usually one set of properties for each deployment environment is a common practice.</p>
+
+  <h3 id="environment-variables">Environment variables</h3>
+
+  <p>It is possible to override any primitive type parameter in <code class="language-plaintext highlighter-rouge">restheart.yml</code> with environment variables.</p>
+
+  <p>Primitive types are:</p>
+
+  <ul>
+    <li>String</li>
+    <li>Integer</li>
+    <li>Long</li>
+    <li>Boolean</li>
+  </ul>
+
+  <p>The  name of the shell environment variable is equal to a YAML parameter in <code class="language-plaintext highlighter-rouge">restheart.yml</code>, in uppercase and replacing <code class="language-plaintext highlighter-rouge">-</code> (dash) with <code class="language-plaintext highlighter-rouge">_</code> (underscore).</p>
+
+  <p>To avoid conflicts with other variables, the environment variable name can be prefixed with <code class="language-plaintext highlighter-rouge">RH_</code>, <code class="language-plaintext highlighter-rouge">RESTHEART_</code> or the legacy <code class="language-plaintext highlighter-rouge">RESTHEART_SECURITY_</code> .</p>
+
+  <p>For example, the parameter <code class="language-plaintext highlighter-rouge">mongo-uri</code> in the YAML file can be overridden by the <code class="language-plaintext highlighter-rouge">MONGO_URI</code> environment variable:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ MONGO_URI</span><span class="o">=</span><span class="s2">"mongodb://127.0.0.1"</span> java <span class="nt">-jar</span> restheart.jar etc/restheart.yml <span class="nt">-e</span> etc/default.properties
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-warning">Due to a bug affecting RESTHeart until v5.1.6, environment variables must be prefixed with <code class="language-plaintext highlighter-rouge">RESTHEART_SECURITY_</code> but for MongoService configuration options, like <code class="language-plaintext highlighter-rouge">mongo-uri</code> where no prefix is allowed. This has been fixed in RESTHeart v5.1.7.</p>
+
+  <p class="bs-callout bs-callout-info">Have a look at the <a href="https://github.com/SoftInstigate/restheart/blob/5.4.x/docker-compose.yml">docker-compose.yml</a> file for an example of how to export an environment variable if using Docker.</p>
+
+  <p>The following log entry appears at the very beginning of logs during the startup process:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[main] WARN  org.restheart.Configuration - &gt;&gt;&gt; Overriding parameter 'mongo-uri' with environment value 'MONGO_URI=mongodb://127.0.0.1'
+</code></pre></div>  </div>
+
+  <hr />
+
+  <p>Environment variables replacement works only with primitive types: it doesn’t work with YAML structured data in configuration files, like arrays or maps. It’s mandatory to use properties files and mustache syntax for that.</p>
+
+  <hr />
+
+  <p>To know the available CLI parameters, run RESTHeart with <code class="language-plaintext highlighter-rouge">--help</code>:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-jar</span> restheart.jar <span class="nt">--help</span>
+
+Usage: java <span class="nt">-Dfile</span>.encoding<span class="o">=</span>UTF-8 <span class="nt">-jar</span> <span class="nt">-server</span> restheart.jar <span class="o">[</span>options]
+      &lt;Configuration file&gt;
+  Options:
+    <span class="nt">--envFile</span>, <span class="nt">--envfile</span>, <span class="nt">-e</span>
+      Environment file name
+    <span class="nt">--fork</span>
+      Fork the process
+      Default: <span class="nb">false</span>
+    <span class="nt">--help</span>, -?
+      This <span class="nb">help </span>message
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">Watch <a href="https://www.youtube.com/watch?v=dzggm7Wp2fU&amp;t=820s">Configuration</a></p>
+
+  <h3 id="run-the-process-in-background">Run the process in background</h3>
+
+  <p>To run RESTHeart in background add the <code class="language-plaintext highlighter-rouge">--fork</code> parameter, like this:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-jar</span> restheart.jar <span class="nt">--fork</span> etc/restheart.yml <span class="nt">-e</span> etc/default.properties
+</code></pre></div>  </div>
+
+  <p>In this case to see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that <code class="language-plaintext highlighter-rouge">/usr/local/var/log/restheart.log</code> is writeable and then edit <code class="language-plaintext highlighter-rouge">etc/default.properties</code> like this:</p>
+
+  <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">enable-log-file</span> <span class="p">=</span> <span class="s">true</span>
+<span class="py">log-file-path</span> <span class="p">=</span> <span class="s">/usr/local/var/log/restheart.log</span>
+</code></pre></div>  </div>
+
+  <h2 id="run-with-docker">Run with Docker</h2>
+
+  <p>The official RESTHeart’s public docker image is freely available on <a href="https://hub.docker.com/r/softinstigate/restheart">Docker hub</a>. Have a look at the <a href="https://github.com/SoftInstigate/restheart/blob/5.4.x/core/Dockerfile">Dockerfile</a>.</p>
+
+  <p>To run both RESTHeart and MongoDB services you can use <code class="language-plaintext highlighter-rouge">docker-compose</code>. Just copy and paste the following shell command:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://raw.githubusercontent.com/SoftInstigate/restheart/5.4.x/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker-compose up
+</code></pre></div>  </div>
+
+  <p>You should see something similar to the following logs:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+restheart    |  09:50:46.619 [main] INFO  o.r.mongodb.db.MongoClientSingleton - Connecting to MongoDB...
+restheart-mongo | 2020-04-26T09:50:46.633+0000 I  NETWORK  [listener] connection accepted from 172.19.0.3:42898 #2 (2 connections now open)
+restheart-mongo | 2020-04-26T09:50:46.635+0000 I  NETWORK  [conn2] received client metadata from 172.19.0.3:42898 conn2: { driver: { name: "mongo-java-driver|legacy", version: "3.11.2" }, os: { type: "Linux", name: "Linux", architecture: "amd64", version: "4.19.76-linuxkit" }, platform: "Java/Debian/11.0.6+10-post-Debian-1bpo91" }
+restheart-mongo | 2020-04-26T09:50:46.636+0000 I  SHARDING [conn2] Marking collection admin.system.users as collection version: &lt;unsharded&gt;
+restheart-mongo | 2020-04-26T09:50:46.870+0000 I  ACCESS   [conn2] Successfully authenticated as principal restheart on admin from client 172.19.0.3:42898
+restheart    |  09:50:46.892 [main] INFO  o.r.mongodb.db.MongoClientSingleton - MongoDB version 4.2.1
+restheart    |  09:50:46.893 [main] WARN  o.r.mongodb.db.MongoClientSingleton - MongoDB is a standalone instance.
+restheart    |  09:50:47.156 [main] INFO  org.restheart.mongodb.MongoService - URI / bound to MongoDB resource /restheart
+restheart    |  09:50:47.482 [main] INFO  org.restheart.Bootstrapper - HTTP listener bound at 0.0.0.0:8080
+restheart    |  09:50:47.483 [main] DEBUG org.restheart.Bootstrapper - Content buffers maximun size is 16777216 bytes
+restheart    |  09:50:47.498 [main] INFO  org.restheart.Bootstrapper - URI / bound to service mongo, secured: true
+restheart    |  09:50:47.501 [main] INFO  org.restheart.Bootstrapper - URI /ic bound to service cacheInvalidator, secured: false
+restheart    |  09:50:47.502 [main] INFO  org.restheart.Bootstrapper - URI /csv bound to service csvLoader, secured: false
+restheart    |  09:50:47.503 [main] INFO  org.restheart.Bootstrapper - URI /roles bound to service roles, secured: true
+restheart    |  09:50:47.504 [main] INFO  org.restheart.Bootstrapper - URI /ping bound to service ping, secured: false
+restheart    |  09:50:47.506 [main] INFO  org.restheart.Bootstrapper - URI /tokens bound to service rndTokenService, secured: false
+restheart    |  09:50:47.506 [main] DEBUG org.restheart.Bootstrapper - No proxies specified
+restheart    |  09:50:47.515 [main] DEBUG org.restheart.Bootstrapper - Allow unescaped characters in URL: true
+restheart    |  09:50:47.771 [main] INFO  org.restheart.Bootstrapper - Pid file /var/run/restheart-security--1411126229.pid
+restheart    |  09:50:47.773 [main] INFO  org.restheart.Bootstrapper - RESTHeart started
+</code></pre></div>  </div>
+
+  <p>Now point your browser to RESTHeart’s <a href="http://localhost:8080/ping">ping resource</a>, you’ll see the single line of text “<strong>Greetings from RESTHeart!</strong>”.</p>
+
+  <p>Alternatively, use curl:</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl <span class="nt">-i</span> http://localhost:8080/ping
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+Access-Control-Allow-Origin: <span class="k">*</span>
+X-Powered-By: restheart.org
+Access-Control-Allow-Credentials: <span class="nb">true
+</span>Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location, X-Powered-By
+Content-Length: 25
+Date: Sun, 26 Apr 2020 10:05:43 GMT
+
+Greetings from RESTHeart!
+</code></pre></div>  </div>
+
+  <p>Press <code class="language-plaintext highlighter-rouge">Ctrl+C</code> to stop the containers:</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>^CGracefully stopping... (press Ctrl+C again to force)
+Stopping restheart       ... done
+Stopping restheart-mongo ... done
+</code></pre></div>  </div>
+
+  <p>If you want to run the services in background just add the <code class="language-plaintext highlighter-rouge">-d</code> parameter, like <code class="language-plaintext highlighter-rouge">docker-compose up -d</code>. In this case you can tail the logs with <code class="language-plaintext highlighter-rouge">docker-compose logs -f</code>.</p>
+
+  <p>To stop the containers use <code class="language-plaintext highlighter-rouge">docker-compose stop</code> then <code class="language-plaintext highlighter-rouge">docker-compose start</code> to start them again.</p>
+
+  <p>To completely shutdown the containers and clean-up everything use <code class="language-plaintext highlighter-rouge">docker-compose down -v</code>.</p>
+
+  <p>Beware the <code class="language-plaintext highlighter-rouge">down</code> command with <code class="language-plaintext highlighter-rouge">-v</code> parameter erases the MongoDB attached docker volume (named <code class="language-plaintext highlighter-rouge">restheart-mongo-volume</code>) with all its data.</p>
+
+  <p>Read the <a href="https://docs.docker.com/compose/">docker compose documentation</a> for more.</p>
+
+  <p class="bs-callout bs-callout-info">Watch <a href="https://www.youtube.com/watch?v=dzggm7Wp2fU&amp;t=206s">Docker / Docker Compose</a></p>
+
+  <h2 id="build-it-yourself">Build it yourself</h2>
+
+  <p>Building RESTHeart by yourself is not necessary, but if you want to try then it requires <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Maven</a> and <strong>Java 11</strong> or later.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mvn clean package
+</code></pre></div>  </div>
+
+  <p>After building <code class="language-plaintext highlighter-rouge">cd core/target</code> where, among other files, you’ll have the structure below</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── restheart.jar
+└──  plugins/
+    ├── restheart-mongodb.jar
+    └── restheart-security.jar
+</code></pre></div>  </div>
+
+  <p>You can copy these files somewhere else and the <a href="#run-restheart">run the executable restheart.jar</a> passing to it the path of the YAML configuration file.</p>
+
+  <p>Have a look at <a href="https://github.com/SoftInstigate/restheart/blob/master/core/etc/restheart.yml">core/etc/restheart.yml</a> and <a href="https://github.com/SoftInstigate/restheart/blob/master/core/etc/default.properties">core/etc/default.properties</a> for more.</p>
+
+  <h3 id="integration-tests">Integration Tests</h3>
+
+  <p>To run the integration test suite, first make sure that Docker is running. Maven starts a MongoDB volatile instance with Docker.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mvn verify
+</code></pre></div>  </div>
+
+  <h3 id="maven-dependencies">Maven Dependencies</h3>
+
+  <p>RESTHeart’s releases are available on <a href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.restheart%22">Maven Central</a>.</p>
+
+  <p>Stable releases are available at: https://oss.sonatype.org/content/repositories/releases/org/restheart/restheart/</p>
+
+  <hr />
+
+  <p>The main difference with the past is that in RESTHeart v5 for a developer is just enough to compile against the <code class="language-plaintext highlighter-rouge">restheart-commons</code> library to create a plugin, which is a JAR file to be copied into the <code class="language-plaintext highlighter-rouge">plugins/</code> folder and class-loaded during startup.</p>
+
+  <hr />
+
+  <p>To compile new plugins, add the <code class="language-plaintext highlighter-rouge">restheart-commons</code> dependency to your POM file:</p>
+
+  <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.restheart<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>restheart-commons<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>5.1.5<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div>  </div>
+
+  <p><strong>IMPORTANT</strong>: The <code class="language-plaintext highlighter-rouge">restheart-commons</code> artifact in the <code class="language-plaintext highlighter-rouge">commons</code> module has been released using the Apache v2 license instead of the AGPL v3. This is much like MongoDB is doing with the Java driver. It implies <strong>your projects does not incur in the AGPL restrictions when extending RESTHeart with plugins</strong>.</p>
+
+  <h3 id="project-structure">Project structure</h3>
+
+  <p>Starting from RESTHeart v5 we have merged all sub-projects into a single <a href="https://maven.apache.org/guides/mini/guide-multiple-modules.html">Maven multi module project</a> and a single Git repository (this one).</p>
+
+  <blockquote>
+    <p>The v4 architecture, in fact, was split into two separate Java processes: one for managing security, identity and access management (restheart-security) and one to access the database layer (restheart). The new v5 architecture is monolithic, like it was RESTHeart v3. This decision was due to the excessive complexity of building and deploying two distinct processes and the little gains we have observed in real applications.</p>
+  </blockquote>
+
+  <p>Then <code class="language-plaintext highlighter-rouge">core</code> module now is just <a href="http://undertow.io">Undertow</a> plus a <em>bootstrapper</em> which reads the configuration and starts the HTTP server. The <code class="language-plaintext highlighter-rouge">security</code> module provides <strong>Authentication</strong> and <strong>Authorization</strong> services, while the <code class="language-plaintext highlighter-rouge">mongodb</code> module interacts with MongoDB and exposes all of its services via a REST API, as usual. Besides, we added a new <code class="language-plaintext highlighter-rouge">commons</code> module which is a shared library, including all interfaces and implementations in common among the other modules.</p>
+
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── commons
+├── core
+├── mongodb
+└── security
+</code></pre></div>  </div>
+
+  <p class="bs-callout bs-callout-info">Watch <a href="https://www.youtube.com/watch?v=dzggm7Wp2fU&amp;t=605s">Compile source code from scratch</a></p>
+
+</div>
+
+<script async="" type="text/javascript">
+// avoid caching download link redirects
+var z = document.getElementById("zipdl");
+var t = document.getElementById("tgzdl");
+
+z.href = `${z.href}?nocache=${Math.random()}`;
+t.href = `${t.href}?nocache=${Math.random()}`;
+</script>
+
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

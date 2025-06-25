@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - API Framework</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - API Framework">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 bounce ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid m-0 p-0" style="border-bottom: 5px solid var(--primarycolor)">
+  <div class="container">
+    <div class="row my-0">
+      <div class="col-12 px-5 mb-0 py-1 mx-auto text-center">
+        <h3 class="mb-0">
+          <span class="text-muted d-none d-md-inline">Looking for Cloud Services or Support? </span><span class="text-white">Check </span><a class="d-inline" href="https://restheart.com">restheart.com</a>
+        </h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="top" class="text-center pt-2 pb-2">
+    <div class="mt-0 mb-4">
+        <img width="160" class="bg-whites p-3 rounded" src="/images/restheart logo.svg" />
+        <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart Framework</h1>
+        <p class="top-6 text-break white mt-2 mx-4">
+            ✅&nbsp;Instant REST, GraphQL and Websockets APIs for <strong>MongoDB</strong>.
+            ✅&nbsp;Declarative Security, no code required.
+            ✅&nbsp;Implement your Backend in minutes.
+        </p>
+        <div>
+            <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
+            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
+        </div>
+        <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
+        <div class="container">
+            <div class="listingblock my-0">
+                <div class="content">
+<pre class="rouge highlight text-center">
+<code data-lang="bash"><span class="nv">$ </span>docker pull softinstigate/restheart &amp;&amp; curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker compose up --attach restheart</code>
+</pre>
+                </div>
+            </div>
+        </div>
+        <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
+        <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
+        <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
+        <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
+        <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
+    </div>
+</section>
+
+<!-- scroll to bottom of sophia iframe chat when it resizes -->
+<script>
+  var preventScroll = 0; // trick to avoid scrolling on first load
+  document.addEventListener("DOMContentLoaded", () => preventScroll = 0);
+  iframeResize({
+    license: 'GPLv3',
+    waitForLoad: true,
+    onResized: ({ iframe, height, width, type }) => {
+      if (document.readyState === 'complete') {
+        if (preventScroll > 3) {
+          const offset = iframe.offsetTop;
+          const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+          window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
+        } else {
+          preventScroll++;
+        }
+      }
+    }
+  }, '#sophiaFrame' );
+</script>
+
+<!-- <section id="article-at-aws-blog" class="call-to-action black-background">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 call-to-action__item call-to-action__first text-center">
+                <h2 class="text-lightcyan mb-2">
+                    <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank">Featured on <strong>AWS Blog</strong></a>
+                </h2>
+                <p class="highlightcolor"><i>The RESTHeart API for MongoDB simplifies development and frees you to focus on delivering a great users experience</i></p>
+                <a href="https://aws.amazon.com/it/blogs/apn/application-modernization-with-mongodb-atlas-on-aws/" target="_blank" class="btn btn-o-white">READ THE POST</a>
+            </div>
+        </div>
+        <div class="row mb-1 text-center mb-3">
+            <div class="col-md-12 text-center">
+                <a href="/assets/Brochure - RESTHeart.pdf" target="_blank" class="btn">Download the PDF fact sheet</a>
+                <a href="/assets/RESTHeart 6 - Overview.pdf" target="_blank" class="btn mt-3 mt-md-0 ml-md-3 mx-auto">Download the Product presentation</a>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+<!-- just to make anchor link go to the right height -->
+<div id="features" class="pb-4"></div>
+
+<section id="features-content" class="text-center pb-2 mt-5">
+    <div class="container">
+        <h2 class="text-center color-primary font-weight-bold">RESTHeart Features</h2>
+        <div class="row mt-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">MongoDB's best friend</span></div>
+                <p>RESTHeart unlocks all the features of MongoDB via <strong>REST</strong>, <strong>GraphQL</strong> and <strong>WebSocket</strong> APIs. </p>
+                <p class="mt-1">
+                    Also supports Mongo Atlas, FerretDB, AWS DocumentDB, and Azure Cosmos DB
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/mongodb-rest/tutorial">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">Container friendly</span></div>
+                <p>
+                    RESTHeart is available as a <strong>Docker image</strong> and tailored for the <strong>GraalVM</strong> to build lightweight native images with instant startup time, low memory footprint.
+                </p>
+                <a class="mt-2" href="https://hub.docker.com/r/softinstigate/restheart">
+                        <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls" src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge" />
+                    </a>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/setup-with-docker">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">Declarative Access Control</span></div>
+                <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/security/overview/#understanding-restheart-security">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row mt-4  mx-auto">
+    <article class="mt-4 mt-lg-0 col-lg-8 offset-lg-2 zoom">
+        <div class="card newsText text-justified h-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">Enhanced Development Framework</span></div>
+                <div>
+                    <p>
+                     Unlock the Power of Microservices with Ease: discover our innovative development framework that simplifies the creation of microservices in Java, Kotlin, JavaScript, or TypeScript. Our framework provides a set of simple yet robust building blocks: Service, Provider, Interceptor, and Initializer.
+                    </p>
+                    <p>
+                    <strong>Focus on Your Microservice Logic, Not the Complexity.</strong> Experience the freedom to code your microservice logic without worrying about complex and time-consuming tasks. Our framework takes care of crucial aspects such as runtime process management, security, concurrency, HTTP transport protocol, request routing, logging, configuration, and data protection.
+                    </p>
+                    <p>
+                    The RESTHeart runtime leverages a scalable and pooled thread-per-request concurrency model. This means that developers, including those working with JavaScript, can enjoy a streamlined development process <strong>without the complexities of asynchronous programming</strong>.
+                    </p>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/plugins/overview/">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row my-4">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">REST Data API</span></div>
+                <p>
+                Read, write and search JSON documents with HTTP requests <strong>without coding</strong>; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/tutorial/">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">GraphQL Data API</span></div>
+                <p>
+                    The GraphQL plugin works side by side with the REST plugin to get an unified API to build modern applications. GraphQL applications are configured through an API <strong>without coding</strong>.
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/mongodb-graphql/example/">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="highlightcolor">WebSocket Data API</span></div>
+                <p>
+                The WebSocket API notifies clients of data changes in real time and supports thousands of connected clients. Data streams are configured through an API <strong>without coding</strong>.
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="/docs/mongodb-websocket/">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+    </div>
+</section>
+
+<div class="container mt-5">
+    <h2 class="text-center color-primary font-weight-bold">Data API</h2>
+</div>
+
+<section id="examples" class="slice my-0 pb-0">
+    <script type="text/javascript">
+    window['openES6Example'] = () => {
+
+        const html = `<pre id="app"></pre>`;
+        const code = `const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=1');
+
+fetch(url)
+  .then(response => response.json())
+  .then(json => JSON.stringify(json, null, 2))
+  .then(data => document.getElementById('app').innerHTML = data);`;
+
+
+        const project = {
+            files: {
+                "index.html": html,
+                "index.js": code,
+            },
+            title: "ES6 RESTHeart starter",
+            description: "Blank starter project for building ES6 apps.",
+            template: "javascript",
+            tags: ["restheart", "ES6"],
+            dependencies: null
+        };
+
+        StackBlitzSDK.openProject(project);
+    }
+</script>
+
+<section class="examples mt-1 mb-5 black-background">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#httpie" role="tab">httpie</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#curl" role="tab">cURL</a></li>
+        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#js" role="tab">JavaScript</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#java" role="tab">Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#swift" role="tab">Swift</a></li>
+    </ul>
+    <div class="tab-content pt-4 pb-5">
+        <div class="tab-pane fade" id="httpie" role="tabpanel">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-4">
+                            <h2 class="examples__title">Query documents from the command line with httpie.</h2>
+                            <p class="examples__desc">
+                                The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
+                                <br />
+                                Here we use the brilliant <a class="text-danger" href="https://httpie.org" target="_blank">httpie</a>, a modern command line HTTP client.
+                            </p>
+                            <a href="/try" class="btn btn-o-white">More examples</a>
+                        </div>
+                        <div class="col-md-8 sm">
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>http <span class="nt">-b</span> GET https://demo.restheart.org/messages<span class="s1">'?filter={"from":"Bob"}&amp;pagesize=1'</span>
+
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">"_id"</span>: <span class="o">{</span>
+            <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"5c50963e477870eb8258fa68"</span>
+        <span class="o">}</span>,
+        <span class="s2">"from"</span>: <span class="s2">"Bob"</span>,
+        <span class="s2">"message"</span>: <span class="s2">"was here"</span>
+    <span class="o">}</span>
+<span class="o">]</span></code></pre></figure>
+
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane fade" id="curl" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents from the command line with cURL.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: <code class="black">filter</code> to apply a query (that needs to be encoded with --data-urlencode option since it contains the curly brackets) and <code class="black">pagesize</code> to limit the response to one document.
+                            <br />
+                            Here we use the immortal <a target="_blank" class="text-danger" href="https://curl.haxx.se/">cURL</a>!
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl <span class="nt">-G</span> <span class="nt">--data-urlencode</span> <span class="s1">'filter={"from":"Bob"}'</span> https://demo.restheart.org/messages?pagesize<span class="o">=</span>1
+
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">"_id"</span>: <span class="o">{</span>
+            <span class="s2">"</span><span class="nv">$oid</span><span class="s2">"</span>: <span class="s2">"5c50963e477870eb8258fa68"</span>
+        <span class="o">}</span>,
+        <span class="s2">"from"</span>: <span class="s2">"Bob"</span>,
+        <span class="s2">"message"</span>: <span class="s2">"was here"</span>,
+    <span class="o">}</span>
+<span class="o">]</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade show active" id="js" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with JavaScript.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
+                            <br />
+                            Here we use the <a target="_blank" class="text-danger" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a>.
+                        </p>
+                        <a onclick="openES6Example()" class="btn btn-o-white">Run it</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="nb">encodeURI</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://demo.restheart.org/messages?filter={"from":"Bob"}&amp;pagesize=1</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span> <span class="o">=&gt;</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">json</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">docs</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">docs</span><span class="p">));</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="java" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with Java.</h2>
+                        <p class="examples__desc">
+                                The GET request has two query parameters: <code class="black">filter</code> to apply a query and <code class="black">pagesize</code> to limit the response to one document.
+                                <br />
+                                Here we use the <a class="text-danger" href="http://kong.github.io/unirest-java" target="_blank">unirest</a> java http library.
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">printOutMessages</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">UnirestException</span> <span class="o">{</span>
+    <span class="kt">var</span> <span class="n">resp</span> <span class="o">=</span> <span class="nc">Unirest</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"https://demo.restheart.org/messages"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">queryString</span><span class="o">(</span><span class="s">"filter"</span><span class="o">,</span> <span class="s">"{'from':'Bob'}"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">queryString</span><span class="o">(</span><span class="s">"pagesize"</span><span class="o">,</span> <span class="s">"1"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">asJson</span><span class="o">();</span>
+
+    <span class="c1">// print out each message</span>
+    <span class="n">resp</span><span class="o">.</span><span class="na">getBody</span><span class="o">().</span><span class="na">getArray</span><span class="o">().</span><span class="na">forEach</span><span class="o">(</span><span class="n">msg</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+<span class="o">}</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="swift" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Query documents with Swift.</h2>
+                        <p class="examples__desc">
+                            The GET request has two query parameters: <code class="black">filter</code> to appy a query and <code class="black">pagesize</code> to limit the response to one document.
+                            <br />
+                            Here we use the JSONSerialization to parse the response body.
+                        </p>
+                        <a href="/try" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">UIKit</span>
+<span class="kd">import</span> <span class="kt">PlaygroundSupport</span>
+
+<span class="k">var</span> <span class="nv">urlComponents</span> <span class="o">=</span> <span class="kt">URLComponents</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://demo.restheart.org/messages"</span><span class="p">)</span>
+
+<span class="c1">// set the query parameters</span>
+<span class="k">var</span> <span class="nv">queryItems</span> <span class="o">=</span> <span class="p">[</span><span class="kt">URLQueryItem</span><span class="p">]()</span>
+<span class="n">queryItems</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="kt">URLQueryItem</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"pagesize"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="s">"1"</span><span class="p">))</span>
+<span class="n">queryItems</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="kt">URLQueryItem</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"filter"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="s">"{</span><span class="se">\"</span><span class="s">from</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">Bob</span><span class="se">\"</span><span class="s">}"</span><span class="p">))</span>
+<span class="n">urlComponents</span><span class="p">?</span><span class="o">.</span><span class="n">queryItems</span> <span class="o">=</span> <span class="n">queryItems</span>
+
+<span class="k">var</span> <span class="nv">urlRequest</span> <span class="o">=</span> <span class="kt">URLRequest</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="p">(</span><span class="n">urlComponents</span><span class="p">?</span><span class="o">.</span><span class="n">url</span><span class="p">)</span><span class="o">!</span><span class="p">)</span>
+
+<span class="c1">// set request method</span>
+<span class="n">urlRequest</span><span class="o">.</span><span class="n">httpMethod</span> <span class="o">=</span> <span class="s">"GET"</span>
+
+<span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">urlRequest</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="k">in</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">dataResponse</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span> <span class="n">error</span> <span class="o">==</span> <span class="kc">nil</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">?</span><span class="o">.</span><span class="n">localizedDescription</span> <span class="p">??</span> <span class="s">"Response Error"</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">jsonResponse</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">JSONSerialization</span><span class="o">.</span><span class="nf">jsonObject</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">dataResponse</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="p">[])</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">jsonResponse</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">jsonError</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">jsonError</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="o">.</span><span class="nf">resume</span><span class="p">()</span>
+
+<span class="c1">// only needed in playground</span>
+<span class="kt">PlaygroundPage</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">needsIndefiniteExecution</span> <span class="o">=</span> <span class="kc">true</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</section>
+
+<div class="container mt-5">
+    <h2 class="text-center color-primary m-0 mb-2 font-weight-bold">Polyglot Framework</h2>
+</div>
+
+<section id="examples-plugins" class="slice">
+    <section class="examples mt-1 mb-0 black-background">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#service-java" role="tab">Service in Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor-java" role="tab">Interceptor in Java</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-kotlin" role="tab">Service in Kotlin</a></li>
+        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-javascript" role="tab">Service in JavaScript</a></li>
+    </ul>
+    <div class="tab-content pt-4 pb-5">
+        <div class="tab-pane fade show active" id="service-java" role="tabpanel">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-4">
+                            <h2 class="examples__title">Implement web services in minutes.</h2>
+                            <p class="examples__desc">
+                                Implement a simple interface and deploy the web service
+                                by copying its jar file into the plugins directory.
+                            </p>
+                            <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service" target="_blank" class="btn btn-o-white">See it on GitHub</a>
+                            <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white mt-2">More examples</a>
+                        </div>
+                        <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"greetings"</span><span class="o">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s">"just another Hello World"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreeterService</span> <span class="kd">implements</span> <span class="nc">JsonService</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="nc">JsonRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">JsonResponse</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">switch</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getMethod</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="no">GET</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">object</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="s">"Hello World!"</span><span class="o">));</span>
+            <span class="k">case</span> <span class="no">OPTIONS</span> <span class="o">-&gt;</span> <span class="n">handleOptions</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+            <span class="k">default</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_METHOD_NOT_ALLOWED</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane fade show" id="service-kotlin" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Implement plugins in Kotlin.</h2>
+                        <p class="examples__desc">
+                            You can use Java and <strong>Kotlin</strong> to implement plugins.
+                        </p>
+                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/kotlin-greeter-service" target="_blank" class="btn btn-o-white">Kotlin Service example</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"kotlinGreeterService"</span><span class="o">,</span> <span class="n">description</span> <span class="o">=</span> <span class="s">"just another Hello World in Kotlin"</span><span class="o">)</span>
+<span class="kd">class</span> <span class="nc">GreeterService</span> <span class="o">:</span> <span class="nc">JsonService</span> <span class="o">{</span>
+    <span class="n">override</span> <span class="n">fun</span> <span class="nf">handle</span><span class="o">(</span><span class="nl">req:</span> <span class="nc">JsonRequest</span><span class="o">,</span> <span class="nl">res:</span> <span class="nc">JsonResponse</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">when</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">method</span><span class="o">)</span> <span class="o">{</span>
+            <span class="no">METHOD</span><span class="o">.</span><span class="na">GET</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">content</span> <span class="o">=</span> <span class="n">obj</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span> <span class="s">"Hello World"</span><span class="o">).</span><span class="na">get</span><span class="o">()</span>
+            <span class="no">METHOD</span><span class="o">.</span><span class="na">OPTIONS</span> <span class="o">-&gt;</span> <span class="n">handleOptions</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+            <span class="k">else</span> <span class="o">-&gt;</span> <span class="n">res</span><span class="o">.</span><span class="na">setStatusCode</span><span class="o">(</span><span class="nc">HttpStatus</span><span class="o">.</span><span class="na">SC_METHOD_NOT_ALLOWED</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="interceptor-java" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Snoop and modify requests at different
+                            stages of their lifecycle.</h2>
+                            <p class="examples__desc">
+                                This interceptor applies to requests of the hello web service adding a timestamp to the response content.
+                            <br />
+                                Interceptor can be executed at different points of the request as defined
+                                by the <i>interceptPoint</i> parameter of the annotation <i>RegisterPlugin</i>
+                            </p>
+                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@RegisterPlugin</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"helloInterceptor"</span><span class="o">,</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">"add a timestamp to the response of /greetings"</span><span class="o">,</span>
+    <span class="n">interceptPoint</span> <span class="o">=</span> <span class="nc">InterceptPoint</span><span class="o">.</span><span class="na">RESPONSE</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloInterceptor</span> <span class="kd">implements</span> <span class="nc">JsonInterceptor</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handle</span><span class="o">(</span><span class="nc">JsonRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">JsonResponse</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">res</span><span class="o">.</span><span class="na">getContent</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">getAsJsonObject</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">addProperty</span><span class="o">(</span><span class="s">"timestamp"</span><span class="o">,</span> <span class="nc">Instant</span><span class="o">.</span><span class="na">now</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">resolve</span><span class="o">(</span><span class="nc">JsonRequest</span> <span class="n">req</span><span class="o">,</span> <span class="nc">JsonResponse</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="na">isHandledBy</span><span class="o">(</span><span class="s">"greetings"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="service-javascript" role="tabpanel">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-4">
+                        <h2 class="examples__title">Implement plugins in JavaScript.</h2>
+                            <p class="examples__desc">
+                                This is yet another Hello World web service.
+                            <br />
+                                Running RESTHeart on the GraalVM allows you to deploy JavaScript Services and Interceptors.
+                            </p>
+                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white">More examples</a>
+                    </div>
+                    <div class="col-md-8">
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">export</span> <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">helloWorldService</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">description</span><span class="p">:</span> <span class="dl">"</span><span class="s2">just another Hello World</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">uri</span><span class="p">:</span> <span class="dl">"</span><span class="s2">/hello</span><span class="dl">"</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nx">handle</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">setContent</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">msg</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello World</span><span class="dl">'</span> <span class="p">}));</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">setContentTypeAsJson</span><span class="p">();</span>
+<span class="p">}</span></code></pre></figure>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</section>
+
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>

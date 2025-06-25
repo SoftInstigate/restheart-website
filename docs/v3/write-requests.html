@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+
+<html lang="en">
+<!--<![endif]-->
+<head>
+   <meta charset="utf-8">
+   <title>RESTHeart - Write Requests</title>
+   <meta name="description" content="Low code API Framework for MongoDB">
+   <meta name="author" content="SoftInstigate srl">
+   <meta name="keywords" content="restheart,mongodb,rest,,graphql,api,http,microservice,java,framework">
+   <!-- Open Graph -->
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://restheart.org">
+   <meta property="og:logo" content="/images/restheart logo.svg">
+   <meta property="og:title" content="RESTHeart - Write Requests">
+   <meta property="og:description" content="Low code API Framework for MongoDB">
+   <meta property="og:locale" content="en">
+   
+   <!-- avoid search engine indexing of old documentation pages  -->
+   <meta name="robots" content="noindex,nofollow">
+   
+   <!-- Mobile Specific Metas -->
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- icon fonts -->
+   <script src="/js/fontawesome.com_c39cf060d4.js"></script>
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons.css">
+   <link type="text/css" rel="stylesheet" href="/font-icons/custom-icons/css/custom-icons-ie7.css">
+   <!-- Custom css -->
+   <link rel="stylesheet" type="text/css" href="/css/main.css">
+   <!-- js ================================================== -->
+   <script src="https://code.jquery.com/jquery.min.js"></script>
+   <script src="/assets/js/bootstrap.bundle.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="https://unpkg.com/@stackblitz/sdk/bundles/sdk.umd.js"></script>
+   <script src="/js/carousel.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.js"></script>
+   <!-- Github buttons. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!--iframeResizer-->
+  <script src="/assets/js/iframe-resizer.parent.js"></script>
+   <!-- Favicons ================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/images/restheart logo.svg" />
+  <link rel="shortcut icon" href="/images/favicon/favicon.png" />
+  <link rel="canonical" href="https://restheart.org/docs/v3/write-requests">
+  <link rel="alternate" type="application/atom+xml" title="RESTHeart - API Framework" href="https://restheart.org/feed.xml" />
+  <script defer data-domain="restheart.org" src="https://plausible.io/js/script.js"></script>
+</head>
+
+
+<body>
+    <header id="mainHeader" class="fixed-top background-primary" role="banner">
+    <div class="container-fluid">
+        <nav class="navbar navbar-default scrollMenu navbar-expand-lg" role="navigation">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white"><strong>REST</strong>Heart</h2>
+            </a>
+            <!-- Place this tag where you want the button to render. -->
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span
+                    class="sr-only">Toggle navigation</span> &#x2630;</button>
+            <div class="collapse navbar-collapse navbar-ex1-collapse background-primary" id="scrollTarget">
+                <ul class="nav navbar-nav ml-md-auto">
+                    <!-- only bounce slack button on home page-->
+                    
+                    
+
+                    <li class="nav-item ml-1 ml-lg-2 ml-xl-4 mb-0 pb-0 ">
+                        <a class="github-button" href="https://github.com/SoftInstigate/restheart" data-size="large" data-show-count="true" aria-label="Star SoftInstigate/restheart on GitHub"></a>
+                    </li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/sophia">Ask Sophia</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs">Docs</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/faq">FAQ</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/docs/setup-with-docker/">GET</a></li>
+                    <li class="nav-item"><a class="ml-1 ml-lg-2 ml-xl-4" href="/contact">Contacts</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="alert alert-warning m-0 text-center" role="alert">
+    <strong>RESTHeart 8 is the current stable release. Switch documentation to <a href="/docs">v8</a></strong>
+</div>
+
+
+
+<a  target="_blank" class="gitter-open-chat-button fixed-bottom-right" href="https://join.slack.com/t/restheart/shared_invite/zt-1olrhtoq8-5DdYLBWYDonFGEALhmgSXQ"></a>
+
+
+    <div class="page-content">
+        <div class="container-fluid imgHover doc">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+            <div class="bd-sidebar__head">
+                <div class="dropdown d-flex justify-content-center w-100">
+                    <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        v3
+                    </button>
+                    <div class="dropdown-menu mt-2 mr-1 pb-2" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="/docs">
+                            
+                            v8
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v7">
+                            
+                            v7
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v6">
+                            
+                            v6
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v5">
+                            
+                            v5
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v4">
+                            
+                            v4
+                            
+                        </a>
+                        <a class="dropdown-item" href="/docs/v3">
+                            
+                            <strong>v3</strong>
+                            
+                        </a>
+                    </div>
+                </div>
+                <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
+                    name="searchform" target="_blank">
+                    <input name="sitesearch" type="hidden" value="restheart.org/docs">
+                    <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                        placeholder="Search" required="required" type="text">
+                    <button class="bd-sidebar__submit" type="submit">
+                        <svg width="16" height="16">
+                            <use xlink:href="/images/sprite.svg#search" /></svg>
+                    </button>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <a href="https://github.com/SoftInstigate/restheart-website/edit/master/docs/v3/write-requests.md"
+                        class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
+                    <button class="btn btn-link bd-sidebar__toggle navbar-expand-md p-0 mb-1 d-md-none" type="button"
+                        data-toggle="collapse" data-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
+                        aria-expanded="false" aria-label="Toggle docs navigation">
+                        Table of Contents
+                        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="30" height="30"
+                            focusable="false">
+                            <title>Menu</title>
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10"
+                                d="M4 7h22M4 15h22M4 23h22" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+                
+                    <h2 id="installation-and-configuration">Installation and Configuration</h2>
+<ul>
+    <li><a href="/docs/v3/setup">Setup</a></li>
+    <li><a href="/docs/v3/configuration-file">Configuration File</a></li>
+    <li><a href="/docs/v3/security">Security</a></li>
+    <li><a href="/docs/v3/roadmap">Roadmap</a></li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+    <li><a href="/docs/v3/tutorial">Tutorial</a></li>
+    <li><a href="/docs/v3/resource-uri">Resource URIs</a></li>
+    <li><a href="/docs/v3/representation-format">Representation Format</a></li>
+    <li><a href="/docs/v3/quick-reference">Quick Rererence</a></li>
+    <li><a href="/docs/v3/query-documents">Query Documents</a></li>
+    <li><a href="/docs/v3/write-requests">Write Requests</a></li>
+    <li><a href="/docs/v3/files-buckets">Files Bucket (GridFS)</a></li>
+    <li><a href="/docs/v3/indexes">Collection Indexes</a></li>
+    <li><a href="/docs/v3/etag">ETag</a></li>
+    <li><a href="/docs/v3/shard-keys">Shard Keys</a></li>
+</ul>
+
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+    <li><a href="/docs/v3/aggregations">Aggregations</a></li>
+    <li><a href="/docs/v3/request-transformers">Request Transformers</a></li>
+    <li><a href="/docs/v3/request-checkers">Request Checkers</a></li>
+    <li><a href="/docs/v3/json-schema-validation">Document validation with JSON schema</a></li>
+    <li><a href="/docs/v3/application-logic">Application Logic</a></li>
+    <li><a href="/docs/v3/initializer">Initializer</a></li>
+    <li><a href="/docs/v3/request-hooks">Request Hooks</a></li>
+    <li><a href="/docs/v3/relationships">Relationships</a></li>
+    <li><a href="/docs/v3/custom-code-packaging-howto">How to package custom code</a></li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+<ul>
+    <li><a href="/docs/v3/cors-support">CORS Support</a></li>
+    <li><a href="/docs/v3/requests-metrics">Metrics on Requests</a></li>
+    <li><a href="/docs/v3/speedup-requests-with-cursor-pools">Speedup Requests with Cursor Pools</a></li>
+    <li><a href="/docs/v3/performances">Performances</a></li>
+    <li><a href="/docs/v3/example-angularjs-app">An example AngularJs application</a></li>
+    <li><a href="/docs/v3/opentracing">Opentracing / zipkin headers support</a></li>
+</ul>
+                
+            </div>
+        </div>
+        <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#write-verbs">Write verbs</a></li>
+    <li><a href="#dot-notation">Dot notation</a>
+      <ul>
+        <li><a href="#array">Array</a></li>
+        <li><a href="#embedded-documents">Embedded Documents</a></li>
+      </ul>
+    </li>
+    <li><a href="#update-operators">Update operators</a></li>
+    <li><a href="#bulk-write-requests">Bulk Write Requests</a>
+      <ul>
+        <li><a href="#post-an-array-of-documents">POST an array of documents</a></li>
+        <li><a href="#patch-multiple-documents-using-the-wildcard-document-id">PATCH multiple documents using the wildcard document id</a></li>
+        <li><a href="#delete-multiple-documents-using-the-wildcard-document-id">DELETE multiple documents using the wildcard document id</a></li>
+      </ul>
+    </li>
+  </ul>
+
+</div>
+<div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+
+  <div class="docs-head d-flex align-items-center justify-content-between">
+    <h2 class="d-flex align-items-center m-0 pr-3">
+        <span>Write Requests</span>
+    </h2>
+</div>
+
+  <h2 id="introduction">Introduction</h2>
+
+  <p>This document shows how RESTHeart can use the PUT, POST, PATCH and
+DELETE verbs to create, modify and delete resources within a MongoDB
+database, using only the HTTP protocol.</p>
+
+  <p>With the exception of the root resource (<code class="language-plaintext highlighter-rouge">/</code>) which is read-only, all
+resources have a state represented in JSON format (see <a href="/docs/v3/representation-format">Representation
+Format</a> for more information). Example</p>
+
+  <p>The following request:</p>
+
+  <pre><code class="language-plain">PUT /db/coll {"description": "my first collection", "$currentDate": { "created_on": true }}
+</code></pre>
+
+  <p>creates the collection <em>coll</em> in the database <em>db</em> setting its state as
+follows (the property <em>_etag </em>is automatically added by RESTHeart,
+see <a href="/docs/v3/etag">ETag</a> for more information):</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"coll"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my first collection"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"created_on"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$date"</span><span class="p">:</span><span class="w"> </span><span class="mi">1460708338344</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"_etag"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$oid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5710a3f12d174c97589e6127"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>This section focuses on the document resource. However the same concepts
+apply to any resource type, such as databases and collections.</p>
+
+  <h2 id="write-verbs">Write verbs</h2>
+
+  <p>The following table summarizes the semantic of the write verbs:</p>
+  <div class="table-responsive">
+<table class="ts">
+<colgroup>
+<col class="w-50" />
+<col class="w-50" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>verb</th>
+<th>semantic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PUT</td>
+<td><p>Upserts the resource identified by the request URL:</p>
+<ul>
+<li>if the resource does not already exist, the PUT request creates it setting its state as specified in the request JSON body;</li>
+<li>if the resource alreadyn exists, the PUT request sets the resource state as specified in the request JSON body.</li>
+<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+</ul></td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><p>Upserts a resource under the resource identified by the request URL:</p>
+<ul>
+<li>if the resource does not already exist, the POST request creates it setting its state as specified in the request JSON body;</li>
+<li>if the resource exists, the POST sets the resource properties as specified in the request JSON body.</li>
+</ul>
+<p>The resource to upsert is identified by the <em>_id</em> property of the request JSON body. If the request body does not include it, the <em>_id</em> it is auto generated as a new ObjectId and the URL of the new document is returned in the response via the <em>Location</em> header.</p>
+<ul>
+<li>$currentDate update operator is supported. Using any other update operator (such as `$min`) is not allowed and would result in BAD REQUEST response.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+</ul>
+
+</td>
+</tr>
+<tr class="odd">
+<td>PATCH</td>
+<td><p>While PUT and POST verbs replace the whole state of the resource identified by the request URL, PATCH verb only modifies the properties passed with the request JSON body. All write requests, including PATCH, have upsert semantic.</p>
+<ul>
+<li>All update operators are allowed.</li>
+<li>Properties keys can use the dot notation (such as `foo.bar`).</li>
+</ul>
+</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td>Deletes the resource identified by the request URL.</td>
+</tr>
+</tbody>
+</table>
+</div>
+  <p>upsert</p>
+
+  <p>The term <em>upsert</em> means either to create a resource, if it does not
+already exist or to update it, if it does. It comes from joining the
+terms <strong>up</strong>date and in<strong>sert.</strong></p>
+
+  <h2 id="dot-notation">Dot notation</h2>
+
+  <p>RESTHeart uses the dot notation to access the elements of an array and
+to access the fields of an embedded document.</p>
+
+  <p>The dot notation can be used in PUT, PATCH and POST verbs.</p>
+
+  <h3 id="array">Array</h3>
+
+  <p>To specify or access an element of an array by the zero-based index
+position, concatenate the array name with the dot (.) and zero-based
+index position, and enclose in quotes:</p>
+
+  <pre><code class="language-plain">"&lt;array&gt;.&lt;index&gt;"
+</code></pre>
+
+  <p><strong>Example</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docid"</span><span class="p">,</span><span class="w"> </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span><span class="err"> </span><span class="w">
+</span></code></pre></div>  </div>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PATCH /db/coll/docid {"array.1": 100 }
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docid"</span><span class="p">,</span><span class="w"> </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">],</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span><span class="w"> 
+</span></code></pre></div>  </div>
+
+  <h3 id="embedded-documents">Embedded Documents</h3>
+
+  <p>To specify or access a field of an embedded document with dot notation,
+concatenate the embedded document name with the dot (.) and the field
+name, and enclose in quotes:</p>
+
+  <pre><code class="language-plain">"&lt;embedded document&gt;.&lt;field&gt;"
+</code></pre>
+
+  <p><strong>Example</strong></p>
+
+  <pre><code class="language-plain">{ "_id": "docid", "name": { "first": "Alan", "last": "Turing" }, ... } 
+ 
+PATCH /db/coll/docid { "name.last": "Ford" }
+ 
+{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... } 
+</code></pre>
+
+  <h2 id="update-operators">Update operators</h2>
+
+  <p>RESTHeart allows to use all MongoDB update operators on PATCH requests. 
+PUT and POST can only use <code class="language-plaintext highlighter-rouge">$currentDate</code> update operator.</p>
+
+  <p>Refer to MongoDB <a href="https://docs.mongodb.org/manual/reference/operator/update/">Update
+Operators</a> documentation
+for more information.</p>
+
+  <p><strong>Examples</strong></p>
+
+  <p>Consider the following document</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docid"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$date"</span><span class="p">:</span><span class="w"> </span><span class="mi">1460708338344</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>The following request will:</p>
+
+  <ul>
+    <li>add the <em>pi</em> property (if no operator is specified the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/set/">$set</a>
+field operator is applied)</li>
+    <li>increment the properties <em>count</em> using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/inc/#up._S_inc">$inc</a> field
+operator</li>
+    <li>add a new item to the <em>array </em>using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/push/">$push</a>
+array operator</li>
+    <li>remove the property <em>message </em>using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/unset/">$unset</a>
+field operator</li>
+    <li>update the <em>timestamp</em> with the current date using the
+<a href="https://docs.mongodb.org/manual/reference/operator/update/currentDate/">$currentDate</a>
+operator</li>
+  </ul>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PATCH /db/coll/docid 
+</code></pre></div>  </div>
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"pi"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.14</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"$inc"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"$push"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"$unset"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">},</span><span class="w">
+    </span><span class="nl">"$currentDate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>After the request completes, the resource state is updated to:</p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"docid"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pi"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.14</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$date"</span><span class="p">:</span><span class="w"> </span><span class="mi">1460714673219</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"array"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h2 id="bulk-write-requests">Bulk Write Requests</h2>
+
+  <p>Bulk write requests create, update or delete multiple documents with a
+single request.</p>
+
+  <h3 id="post-an-array-of-documents">POST an array of documents</h3>
+
+  <p>In order to upsert multiple documents pass an array of documents as
+request body.</p>
+
+  <p>POST documents containing existing <em>_id</em>s to update them.</p>
+
+  <p>The bulk POST has the same behavior of PATCH: only the properties in the
+request data will be updated.</p>
+
+  <p>The response contains the URIs of the created documents.</p>
+
+  <p>All the upserted documents have the same <em>_etag</em> property value as
+reported in the <em>ETag</em> response header: to retrieve the upserted
+documents with a single request GET the collection filtering on
+the <em>_etag</em> property.</p>
+
+  <p><strong>Example</strong></p>
+
+  <p><strong>request</strong></p>
+
+  <pre><code class="language-plain">POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
+</code></pre>
+
+  <p><strong>response</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/xxx/yyy/5716560a2d174cac010daf17"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/xxx/yyy/5716560a2d174cac010daf18"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/xxx/yyy/5716560a2d174cac010daf19"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/xxx/yyy/5716560a2d174cac010daf1a"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"inserted"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deleted"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"modified"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"matched"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span><span class="p">}</span><span class="w"> 
+</span></code></pre></div>  </div>
+
+  <h3 id="patch-multiple-documents-using-the-wildcard-document-id">PATCH multiple documents using the wildcard document id</h3>
+
+  <p>In order to modify the properties of multiple documents use the PATCH
+verb as follows:</p>
+
+  <p><strong>PATCH bulk request</strong></p>
+
+  <pre><code class="language-plain">PATCH /db/coll/*?filter={&lt;filter_query&gt;}
+</code></pre>
+
+  <p>The <em>filter</em> query parameter is mandatory and specifies a <a href="https://docs.mongodb.org/manual/tutorial/query-documents/">mongodb
+query</a>.</p>
+
+  <p>The response contains the number of updated documents.</p>
+
+  <p>All the updated documents have the same <em>_etag</em> property value as
+reported in the <em>ETag</em> response header: to retrieve the updated documents
+with a single request GET the collection filtering on
+the <em>_etag</em> property.</p>
+
+  <p>Note the wildcard <code class="language-plaintext highlighter-rouge">*</code> document id in the URI: <code class="language-plaintext highlighter-rouge">PATCH /db/coll/*</code> is a bulk
+document update, where <code class="language-plaintext highlighter-rouge">PATCH /db/coll</code> modifies the properties of the
+collection.</p>
+
+  <p><strong>Example - Add the property <em>num</em> to all documents missing it.</strong></p>
+
+  <p><strong>request</strong></p>
+
+  <pre><code class="language-plain">PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 } 
+</code></pre>
+
+  <p><strong>response</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"inserted"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deleted"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"modified"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"matched"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <h3 id="delete-multiple-documents-using-the-wildcard-document-id">DELETE multiple documents using the wildcard document id</h3>
+
+  <p>In order to delete multiple documents use the PATCH verb as follows:</p>
+
+  <p><strong>PATCH bulk request</strong></p>
+
+  <pre><code class="language-plain">DELETE /db/coll/*?filter={&lt;filter_query&gt;}
+</code></pre>
+
+  <p>The <em>filter</em> query parameter is mandatory and specifies a <a href="https://docs.mongodb.org/manual/tutorial/query-documents/">mongodb
+query</a>.</p>
+
+  <p>The response contains the number of deleted documents.</p>
+
+  <p>Note the wildcard <code class="language-plaintext highlighter-rouge">*</code> document id in the URI:: <code class="language-plaintext highlighter-rouge">DELETE /db/coll/*</code> is a bulk
+document delete, where <code class="language-plaintext highlighter-rouge">DELETE /db/coll</code> deletes the collection (for
+safety, it requires the ETag request header to be specified).</p>
+
+  <p><strong>Example - Delete all documents with whose <em>creation_date </em>is before
+1/1/2016.</strong></p>
+
+  <p><strong>request</strong></p>
+
+  <pre><code class="language-plain">DELETE /db/coll/*?filter={"creation_date": {"$lt": {"$date": 1451606400000 } } }
+</code></pre>
+
+  <p><strong>response</strong></p>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"inserted"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deleted"</span><span class="p">:</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"modified"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"matched"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+</div>
+
+    </div>
+</div>
+    </div>
+
+    <footer class="bs-docs-footer mt-0">
+  <!-- <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script> -->
+  <div id="fb-root"></div>
+  <section id="mainFooter">
+    <div class="container-fluid">
+      <div>
+        <div class="bs-docs-social">
+          <ul class="socialNetwork">
+            <li class="ml-auto">
+              <a href="https://twitter.com/softinstigate" class="tips" title="Follow us on Twitter" data-original-title="follow us on Twitter"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#twitter" /></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/softinstigate/restheart" class="tips" title="Get the source code" data-original-title="get the source code"
+                target="_blank">
+                <svg class="socialNetwork__icon"><use xlink:href="/images/sprite.svg#github" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        Made with
+        <!--<span class="glyphicon glyphicon-heart"></span>-->
+        <svg class="footer__like"><use xlink:href="/images/sprite.svg#like" /></svg>
+        by
+        <a href="https://www.softinstigate.com" target="_blank">SoftInstigate</a>
+      </div>
+      <div>
+        <a href="https://softinstigate.com/en/privacy" class="mr-2 small">Privacy Policy</a>
+        <a href="https://www.iubenda.com/privacy-policy/15571002/cookie-policy" class="small iubenda-nostyle no-brand iubenda-embed " title="Cookie Policy">Cookie Policy</a>
+      </div>
+    </section>
+</footer>
+
+    <!-- End Document ================================================== -->
+</body>
+
+</html>
+<!-- add copy button on code snippet -->
+<script src="/assets/js/clipboard.min.js"></script>
+<style>
+    .listingblock:hover .clipboard {
+        display: block;
+    }
+
+    .clipboard {
+        display: none;
+        border: 0;
+        font-size: .75em;
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 2px;
+        color: #999;
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        background: transparent;
+    }
+
+    code + .clipboard {
+        padding: 0;
+    }
+
+    .clipboard:hover, .clipboard:focus, .clipboard:active {
+        outline: 0;
+        color: white;
+        /* background-color: #eee9e6; */
+    }
+</style>
+<!-- add copy button on code snippet -->
+<script>
+    window.onload = function() {
+        function target(b) {
+            var p = b.parentNode;
+            if (p.className.includes("highlight")) {
+                var elems = p.getElementsByTagName("code");
+                if (elems.length > 0) {
+                    return elems[0];
+                }
+            }
+            return p.childNodes[0];
+        }
+
+        var pre = document.getElementsByTagName('pre');
+        for (var i = 0; i < pre.length; i++) {
+            var b = document.createElement('button');
+            b.className = 'clipboard';
+            b.textContent = 'Copy';
+            // b.innerHTML = '<i style="font-size:18px" class="icon-clipboard"></i>';
+            if (pre[i].childNodes.length === 1 && pre[i].childNodes[0].nodeType === 3) {
+                var div = document.createElement('div');
+                div.textContent = pre[i].textContent;
+                pre[i].textContent = '';
+                pre[i].appendChild(div);
+            }
+            pre[i].appendChild(b);
+        }
+
+        var clipboard = new ClipboardJS('.clipboard', {
+            // this custom text function, remove any line that doesn't start with $
+            text: function (trigger) {
+                var t = target(trigger);
+                const text = target(trigger).outerText;
+
+                if (text) {
+                    const dataLang = t.getAttribute('data-lang');
+                    if (dataLang === 'bash') {
+                        return text
+                            .replace(/^(?!\$.*$).*/gm, '') // remove lines that don't start with $
+                            .replace(/^\$ */gm, '') // remove leading $
+                            .replace(/^\s*[\r\n]/gm, '') // remove blank lines
+                            .replace(/^\s+|\s+$/gm, ''); // trim string
+                    }
+                }
+            },
+            target: target
+        });
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'Copied';
+            setTimeout(function() {
+                e.trigger.textContent = 'Copy';
+            }, 2000);
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action, e);
+            console.error('Trigger:', e.trigger);
+        });
+    };
+</script>
