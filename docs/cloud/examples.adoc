@@ -508,6 +508,259 @@ curl -X POST https://[instance].restheart.com/votes \
   }'
 ----
 
+=== Public Data Access
+
+==== Open Data APIs
+
+Create public APIs that don't require authentication, perfect for open datasets, public content, or read-only resources.
+
+===== Setting Up Public Collections
+
+Configure collections to allow access via the `$unauthenticated` role for users who haven't logged in.
+
+[source,bash]
+----
+# Create public collections for open data
+curl -X PUT https://[instance].restheart.com/public-datasets -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/announcements -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/documentation -H "Authorization: Bearer [token]"
+
+# Configure public read access permissions
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/public-datasets)"
+      }
+    }'
+----
+
+===== Public Content Examples
+
+[source,bash]
+----
+# Add public announcements (admin-only write, public read)
+curl -X POST https://[instance].restheart.com/announcements \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "Platform Maintenance Scheduled",
+    "message": "We will be performing routine maintenance on January 20th from 2-4 AM UTC.",
+    "type": "maintenance",
+    "severity": "info",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "expiresAt": "2024-01-21T00:00:00Z",
+    "tags": ["maintenance", "scheduled"]
+  }'
+
+# Add public dataset entry
+curl -X POST https://[instance].restheart.com/public-datasets \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "City Weather Stations",
+    "description": "Real-time weather data from municipal weather monitoring stations",
+    "category": "environmental",
+    "format": "JSON",
+    "updateFrequency": "hourly",
+    "license": "Creative Commons Attribution 4.0",
+    "lastUpdated": "2024-01-15T16:00:00Z",
+    "recordCount": 1250,
+    "coverage": {
+      "geographic": "New York City",
+      "temporal": "2020-present"
+    },
+    "contact": "data@city.gov"
+  }'
+----
+
+===== Public API Access (No Authentication Required)
+
+[source,bash]
+----
+# Anyone can access these endpoints without authentication
+
+# Get all public announcements
+curl "https://[instance].restheart.com/announcements"
+
+# Get active announcements
+curl "https://[instance].restheart.com/announcements?filter={'expiresAt':{\$gte:'2024-01-15T00:00:00Z'}}"
+
+# Browse public datasets
+curl "https://[instance].restheart.com/public-datasets"
+
+# Search datasets by category
+curl "https://[instance].restheart.com/public-datasets?filter={'category':'environmental'}"
+
+# Get specific dataset information
+curl "https://[instance].restheart.com/public-datasets/city-weather-stations"
+----
+
+==== Public Documentation Portal
+
+Create a knowledge base or documentation system with public read access and controlled write access.
+
+===== Documentation Setup
+
+[source,bash]
+----
+# Create documentation collections
+curl -X PUT https://[instance].restheart.com/docs -H "Authorization: Bearer [token]"
+curl -X PUT https://[instance].restheart.com/faqs -H "Authorization: Bearer [token]"
+
+# Configure public read access for documentation
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/docs)",
+        "mongo": {
+          "readFilter": {"status": "published"}
+        }
+      }'
+
+# Configure editor write access for documentation
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "editor",
+        "predicate": "(method(GET) or method(POST) or method(PATCH)) and path-prefix(/docs)",
+        "mongo": {
+          "mergeRequest": { "author": "@user._id" },
+          "writeFilter": { "author": "@user._id" }
+        }
+      }'
+
+# Add documentation articles
+curl -X POST https://[instance].restheart.com/docs \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "Getting Started Guide",
+    "slug": "getting-started",
+    "content": "This comprehensive guide will help you get started with our platform...",
+    "category": "tutorials",
+    "status": "published",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "lastModified": "2024-01-15T10:00:00Z",
+    "author": "docs-team",
+    "tags": ["beginner", "tutorial", "setup"],
+    "version": "1.0"
+  }'
+----
+
+===== Public FAQ System
+
+[source,bash]
+----
+# Configure FAQ collection for public access
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/faqs)"
+      }'
+
+# Add FAQ entries
+curl -X POST https://[instance].restheart.com/faqs \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "question": "How do I reset my password?",
+    "answer": "Click on the Forgot Password link on the login page and follow the instructions sent to your email.",
+    "category": "account",
+    "tags": ["password", "login", "account"],
+    "helpful": 0,
+    "notHelpful": 0,
+    "lastUpdated": "2024-01-15T10:00:00Z"
+  }'
+----
+
+==== Public Event Calendar
+
+Create a public events system where anyone can view upcoming events.
+
+===== Event Calendar Setup
+
+[source,bash]
+----
+# Create events collection
+curl -X PUT https://[instance].restheart.com/events -H "Authorization: Bearer [token]"
+
+# Configure public read access for future events only
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/events)",
+        "mongo": {
+          "readFilter": {
+            "status": "published",
+            "endDate": {"$gte": {"$date": "2024-01-15T00:00:00Z"}}
+          }
+        }
+      }'
+
+# Add public events
+curl -X POST https://[instance].restheart.com/events \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "API Workshop: Building with RESTHeart",
+    "description": "Learn how to build powerful APIs using RESTHeart Cloud",
+    "startDate": "2024-01-25T14:00:00Z",
+    "endDate": "2024-01-25T16:00:00Z",
+    "location": {
+      "type": "online",
+      "url": "https://meet.example.com/workshop"
+    },
+    "status": "published",
+    "category": "workshop",
+    "maxAttendees": 50,
+    "currentAttendees": 12,
+    "tags": ["api", "workshop", "development"],
+    "organizer": "Developer Relations Team"
+  }'
+----
+
+===== Public Access Examples
+
+[source,bash]
+----
+# Public users can access these without authentication
+
+# Get upcoming events
+curl "https://[instance].restheart.com/events?sort={startDate:1}"
+
+# Filter events by category
+curl "https://[instance].restheart.com/events?filter={'category':'workshop'}"
+
+# Get events for a specific date range
+curl "https://[instance].restheart.com/events?filter={'startDate':{\$gte:'2024-01-20T00:00:00Z',\$lt:'2024-01-27T00:00:00Z'}}"
+----
+
+===== Security Considerations for Public Access
+
+[source,bash]
+----
+# Best practices for public collections:
+
+# 1. Use specific read filters to limit exposed data
+# 2. Never allow write access for $unauthenticated role
+
+# Example: Limit fields exposed to public users
+curl -X PUT https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path('/events')",
+        "mongo": {
+          "readFilter": {"public": true},
+          "projectResponse": {
+            "username": 1,
+            "displayName": 1,
+            "avatar": 1,
+            "joinedAt": 1
+          }
+        }
+      }'
+----
+
 === Advanced Integration Examples
 
 ==== Multi-tenant SaaS Application
@@ -621,5 +874,6 @@ These examples demonstrate the power and flexibility of RESTHeart Cloud across d
 * link:user-management[User Management] - Advanced authentication and authorization
 * link:security[Security Best Practices] - Production-ready security
 * link:../mongodb-rest/aggregations[Data Aggregations] - Advanced analytics and reporting
+* link:../security/authentication[Authentication Mechanisms] - Configure public access with `$unauthenticated` role
 
 Ready to build your next application? Sign up at https://cloud.restheart.com and get your backend running in minutes! 🚀
