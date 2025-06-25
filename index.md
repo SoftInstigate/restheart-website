@@ -15,7 +15,17 @@ stars-bounce: true
         </p>
         <div>
             <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
-            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%"></iframe>
+            <div id="sophiaLoading" class="text-muted">Loading...</div>
+            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%; display: none;"></iframe>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const sophiaFrame = document.getElementById('sophiaFrame');
+                    sophiaFrame.onload = function() {
+                        sophiaFrame.style.display = 'block';
+                        sophiaLoading.style.display = 'none';
+                    };
+                });
+            </script>
         </div>
         <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
         <div class="container">
