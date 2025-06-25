@@ -5,9 +5,9 @@
     <li><a href="/docs/upgrade-to-v8"><strong>Upgrade to v8</strong></a></li>
     <li><a href="/docs">Overview</a></li>
     <li><a href="/docs/faq">FAQ</a></li>
-    <li><a href="/docs/mongodb-rest/demo-webapp">Demo WebApp with RESTHeart</a></li>
+    <li><a href="/docs/mongodb-rest/demo-webapp" target="_blank">Demo WebApp with RESTHeart</a></li>
     <li><a href="/docs/performances">Performances</a></li>
-    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22">Roadmap</a></li>
+    <li><a href="https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22" target="_blank">Roadmap</a></li>
     <li><a href="/docs/plugins/tutorial">Framework Tutorial</a></li>
     <li><a href="/docs/mongodb-rest/tutorial">REST API Tutorial</a></li>
     <li><a href="/docs/mongodb-graphql/tutorial">GraphQL API Tutorial</a></li>
@@ -127,9 +127,28 @@
 </style>
 
 <script type="text/javascript">
-    // on page load, show the menu element of the current pages
+    // on page load, show the menu element of the current pages and highlight the current page link
     const menu = '{{ page.menu }}';
+    const currentPath = window.location.pathname;
+
     if (menu) {
         $(`#${menu}`).collapse('show');
     }
+
+    $('a').each(function() {
+        if ($(this).attr('href') === currentPath || `${$(this).attr('href')}/` === currentPath) {
+          console.log('href', $(this).attr('href'));
+            $(this).addClass('active');
+        }
+    });
 </script>
+<style>
+  a:hover {
+    text-decoration: none;
+  }
+
+  .collapse a.active {
+        font-weight: bold;
+        border-bottom: 1px #f8a839 solid;
+    }
+</style>
