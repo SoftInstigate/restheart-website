@@ -4,7 +4,7 @@ layout: docs-adoc
 menu: setup
 ---
 
-=== Introduction
+== Introduction
 
 This section describes the security hardening features available with RESTHeart
 and some best practices to protect against common attacks.
@@ -34,7 +34,7 @@ and enforced by strong and efficient security policies.
 |Define role-specific GraphQL applications|Mandatory|Action required
 |===
 
-=== Update the `admin` user password
+== Update the `admin` user password
 
 At first startup, RESTHeart initializes the user `admin`, with the default password `secret`. *This user can execute any request*.
 
@@ -62,7 +62,7 @@ create-user: false # <---- disable auto-creation of the admin user
 create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]}'
 ----
 
-=== Disable the root role
+== Disable the root role
 
 The `mongoAclAuthorizer` by default defines the _root_ role.
 
@@ -86,7 +86,7 @@ mongoAclAuthorizer:
     root-role: null
 ----
 
-=== Use HTTPS
+== Use HTTPS
 
 WARNING: *IT IS PARAMOUNT TO SECURE RESTHEART WITH TLS.*
 
@@ -101,7 +101,7 @@ To configure RESTHeart to connect to MongoDB over TLS, follow the instructions a
 
 It is also very important to restrict the access to the MongoDB database to only the resources that are required by RESTHeart; for this refer to link:/docs/mongodb-rest/secure-connection-to-mongodb/#restrict-permissions-of-mongodb-user[Restrict permissions of MongoDb User].
 
-=== Make sure password are stored in an encrypted form
+== Make sure password are stored in an encrypted form
 
 Passwords must be stored in an encrypted form.
 
@@ -119,7 +119,7 @@ The `fileRealmAuthenticator` is for testing and development purposes only and no
 
 IMPORTANT: If you use a custom _Authenticator_ you must make sure that the passwords are stored in an encrypted form.
 
-=== Enforce strong passwords
+== Enforce strong passwords
 
 If users can update their password, it is important enforcing that user-defined passwords are strong enough and avoid a user to chose a weak password like `123456`.
 
@@ -139,7 +139,7 @@ mongoRealmAuthenticator:
     minimum-password-strength: 3
 ----
 
-=== bruteForceAttackGuard
+== bruteForceAttackGuard
 
 `bruteForceAttackGuard` defends from brute force password cracking attacks
 by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests are received in last 10 seconds from the same ip.
@@ -257,7 +257,7 @@ With this configuration:
 * Requests to `/public/*` are always allowed, regardless of the `Origin` header.
 * All other origins are rejected.
 
-=== Define and test the ACL
+== Define and test the ACL
 
 The `mongoAclAuthorizer` allows to define a very fine grained, role based ACL.
 
@@ -301,7 +301,7 @@ The `filter` query parameter for the Mongo REST API allows clients to execute an
 
 This is very convenient at development time, however when you are ready to deploy your application, you should blacklist the `filter` query parameter in your ACL and rely on link:/docs/mongodb-rest/aggregations/[Aggregations] to expose, well defined and secured queries.
 
-=== Blacklist the `$where` MongoDB operator
+== Blacklist the `$where` MongoDB operator
 
 If you cannot disable the `filter` query parameter, you can blacklist unused operators, using the `filterOperatorsBlacklist` plugin.
 
@@ -309,7 +309,7 @@ The `$where` MongoDB query operator is dangerous and should not be used in any c
 
 NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`.
 
-=== Define role-specific GraphQL applications
+== Define role-specific GraphQL applications
 
 NOTE: The GraphQL API is read-only, so you should only pay attention to avoid exposing sensitive information to users. This very important due to the nature of GraphQL that allows the client to request data in any format allowed by the GraphQL schema.
 
