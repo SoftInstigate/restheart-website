@@ -28,8 +28,14 @@ layout: default
                 <strong><a href="https://softinstigate.com">SoftInstigate</a></strong></h2>
             </div>
         </div>
+    
+    <!-- Pescara nighttime image -->
+    <div class="text-center my-4">
+        <img src="/images/pescara-notturna.jpg" alt="Pescara at night - SoftInstigate headquarters location" class="img-fluid rounded shadow" style="max-height: 300px; width: auto;">
+    </div>
+    
     <div class="mt-2 text-center">
-        <p>SoftInstigate srl - Via Marconi 29, 65126 Pescara (Italy)</p>
+        <p><a href="https://maps.google.com/?q=Viale+Marconi+29,+65126+Pescara,+Italy" target="_blank" class="text-decoration-none">SoftInstigate srl - Viale Marconi 29, 65126 Pescara (Italy)</a></p>
         <a class="btn btn-lg mt-3" title="Demo" href="https://restheart.com/#contact" target="blank">Contact us</a>
     </div>
 </div>
