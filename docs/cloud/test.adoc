@@ -1,0 +1,785 @@
+---
+title: RESTHeart Cloud - Interactive Documentation
+layout: docs-adoc
+menu: cloud
+---
+
+++++
+<script src="/js/interactive-docs.js"></script>
+<div class="interactive-docs">
+++++
+
+Get started quickly with copy-ready commands for cURL, HTTPie, and JavaScript. This guide shows you how to use Basic Authentication instead of JWT tokens for everyday operations.
+
+== Quick Setup
+
+Before using the examples below, you need to create a user account and use those credentials instead of the admin JWT token.
+
+[IMPORTANT]
+====
+*Prerequisites:*
+
+. Your RESTHeart Cloud instance URL (e.g., `\https://your-instance.restheart.com`)
+. A temporary JWT token from your dashboard
+. Choose a username and secure password for your new user account
+====
+
+== Step 1: Create Your User Account
+
+First, use your temporary JWT token to create a user account. Replace the placeholders with your actual values:
+
+* `[JWT-TOKEN]` - Your temporary JWT token from the dashboard
+* `[INSTANCE-URL]` - Your instance URL
+* `[YOUR-USERNAME]` - Choose your username
+* `[YOUR-PASSWORD]` - Choose a secure password
+
+=== cURL
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/users \
+     -H "Authorization: Bearer [JWT-TOKEN]" \
+     -H "Content-Type: application/json" \
+     -d '{
+         "_id": "[YOUR-USERNAME]",
+         "password": "[YOUR-PASSWORD]",
+         "roles": ["admin"],
+         "email": "your@email.com"
+     }'
+----
+
+=== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/users \
+     Authorization:"Bearer [JWT-TOKEN]" \
+     _id="[YOUR-USERNAME]" \
+     password="[YOUR-PASSWORD]" \
+     roles:='["admin"]' \
+     email="your@email.com"
+----
+
+=== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/users', {
+    method: 'POST',
+    headers: {
+        'Authorization': 'Bearer [JWT-TOKEN]',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        _id: '[YOUR-USERNAME]',
+        password: '[YOUR-PASSWORD]',
+        roles: ['admin'],
+        email: 'your@email.com'
+    })
+})
+----
+
+== Step 2: Test Authentication
+
+Once your user is created, test the Basic Authentication. Replace placeholders with your actual credentials:
+
+* `[INSTANCE-URL]` - Your instance URL
+* `[YOUR-USERNAME]` - Your username
+* `[YOUR-PASSWORD]` - Your password
+
+=== cURL
+[source,bash]
+----
+curl -X GET [INSTANCE-URL]/users/[YOUR-USERNAME] \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+=== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/users/[YOUR-USERNAME] \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+=== JavaScript
+[source,javascript]
+----
+// First encode credentials
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/users/[YOUR-USERNAME]', {
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+----
+
+== Collections and Documents
+
+=== Create a Collection
+
+Collections are created automatically when first accessed, but you can explicitly create them:
+
+==== cURL
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/tasks \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/tasks', {
+    method: 'PUT',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+----
+
+=== Create a Document
+
+Add documents to your collection:
+
+==== cURL
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/tasks \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "title": "Learn RESTHeart Cloud",
+         "description": "Complete the interactive tutorial",
+         "status": "in-progress",
+         "priority": "high",
+         "createdAt": "'$(date -Iseconds)'"
+     }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     title="Learn RESTHeart Cloud" \
+     description="Complete the interactive tutorial" \
+     status="in-progress" \
+     priority="high" \
+     createdAt:=$(date -Iseconds)
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/tasks', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        title: "Learn RESTHeart Cloud",
+        description: "Complete the interactive tutorial",
+        status: "in-progress",
+        priority: "high",
+        createdAt: new Date().toISOString()
+    })
+})
+----
+
+=== Read Documents
+
+Get all documents from a collection:
+
+==== cURL
+[source,bash]
+----
+curl -X GET [INSTANCE-URL]/tasks \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/tasks', {
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+----
+
+=== Update a Document
+
+Update an existing document by ID:
+
+==== cURL
+[source,bash]
+----
+curl -X PATCH [INSTANCE-URL]/tasks/[DOCUMENT-ID] \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "status": "completed",
+         "completedAt": "'$(date -Iseconds)'"
+     }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/tasks/[DOCUMENT-ID] \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     status="completed" \
+     completedAt:=$(date -Iseconds)
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/tasks/[DOCUMENT-ID]', {
+    method: 'PATCH',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        status: "completed",
+        completedAt: new Date().toISOString()
+    })
+})
+----
+
+=== Delete a Document
+
+Remove a document by ID:
+
+==== cURL
+[source,bash]
+----
+curl -X DELETE [INSTANCE-URL]/tasks/[DOCUMENT-ID] \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/tasks/[DOCUMENT-ID] \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+fetch('[INSTANCE-URL]/tasks/[DOCUMENT-ID]', {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+----
+
+== Queries and Filters
+
+=== Filter Documents
+
+Find documents matching specific criteria:
+
+==== cURL
+[source,bash]
+----
+# Get high priority tasks
+curl -X GET "[INSTANCE-URL]/tasks?filter={'priority':'high'}" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+
+# Get in-progress tasks
+curl -X GET "[INSTANCE-URL]/tasks?filter={'status':'in-progress'}" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+
+# Get tasks created today
+curl -X GET "[INSTANCE-URL]/tasks?filter={'createdAt':{\$gte:'$(date -I)T00:00:00Z'}}" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+# Get high priority tasks
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     filter=="{'priority':'high'}"
+
+# Get in-progress tasks
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     filter=="{'status':'in-progress'}"
+
+# Get tasks created today
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     filter=="{'createdAt':{\$gte:'$(date -I)T00:00:00Z'}}"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Get high priority tasks
+fetch(`[INSTANCE-URL]/tasks?filter={'priority':'high'}`, {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+
+// Get in-progress tasks
+fetch(`[INSTANCE-URL]/tasks?filter={'status':'in-progress'}`, {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+
+// Get tasks created today
+const today = new Date().toISOString().split('T')[0];
+fetch(`[INSTANCE-URL]/tasks?filter={'createdAt':{\$gte:'${today}T00:00:00Z'}}`, {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+----
+
+=== Sort Documents
+
+Order results by specific fields:
+
+==== cURL
+[source,bash]
+----
+# Sort by creation date (newest first)
+curl -X GET "[INSTANCE-URL]/tasks?sort={'createdAt':-1}" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+
+# Sort by priority and title
+curl -X GET "[INSTANCE-URL]/tasks?sort={'priority':-1,'title':1}" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+# Sort by creation date (newest first)
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     sort=="{'createdAt':-1}"
+
+# Sort by priority and title
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     sort=="{'priority':-1,'title':1}"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Sort by creation date (newest first)
+fetch(`[INSTANCE-URL]/tasks?sort={'createdAt':-1}`, {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+
+// Sort by priority and title
+fetch(`[INSTANCE-URL]/tasks?sort={'priority':-1,'title':1}`, {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+----
+
+=== Pagination
+
+Limit and paginate results:
+
+==== cURL
+[source,bash]
+----
+# Get first 10 tasks
+curl -X GET "[INSTANCE-URL]/tasks?pagesize=10&page=1" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+
+# Get next 10 tasks
+curl -X GET "[INSTANCE-URL]/tasks?pagesize=10&page=2" \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== HTTPie
+[source,bash]
+----
+# Get first 10 tasks
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     pagesize==10 page==1
+
+# Get next 10 tasks
+http GET [INSTANCE-URL]/tasks \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     pagesize==10 page==2
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Get first 10 tasks
+fetch('[INSTANCE-URL]/tasks?pagesize=10&page=1', {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+
+// Get next 10 tasks
+fetch('[INSTANCE-URL]/tasks?pagesize=10&page=2', {
+    headers: { 'Authorization': `Basic ${credentials}` }
+})
+----
+
+== User Management
+
+=== Create Additional Users
+
+Create users with different roles:
+
+==== cURL
+[source,bash]
+----
+# Create a regular user
+curl -X POST [INSTANCE-URL]/users \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "_id": "regular_user",
+         "password": "SecurePassword123!",
+         "roles": ["user"],
+         "email": "user@example.com"
+     }'
+
+# Create an editor
+curl -X POST [INSTANCE-URL]/users \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "_id": "editor",
+         "password": "EditorPassword456!",
+         "roles": ["editor"],
+         "email": "editor@example.com"
+     }'
+----
+
+==== HTTPie
+[source,bash]
+----
+# Create a regular user
+http POST [INSTANCE-URL]/users \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     _id="regular_user" \
+     password="SecurePassword123!" \
+     roles:='["user"]' \
+     email="user@example.com"
+
+# Create an editor
+http POST [INSTANCE-URL]/users \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     _id="editor" \
+     password="EditorPassword456!" \
+     roles:='["editor"]' \
+     email="editor@example.com"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Create a regular user
+fetch('[INSTANCE-URL]/users', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        _id: 'regular_user',
+        password: 'SecurePassword123!',
+        roles: ['user'],
+        email: 'user@example.com'
+    })
+})
+
+// Create an editor
+fetch('[INSTANCE-URL]/users', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        _id: 'editor',
+        password: 'EditorPassword456!',
+        roles: ['editor'],
+        email: 'editor@example.com'
+    })
+})
+----
+
+== Access Control (ACL)
+
+=== Create Permissions
+
+Define role-based permissions using the `/acl` collection:
+
+==== cURL
+[source,bash]
+----
+# Allow users to read tasks
+curl -X POST [INSTANCE-URL]/acl \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "_id": "users-read-tasks",
+         "roles": ["user"],
+         "predicate": "path-prefix[\"/tasks\"] and method[GET]",
+         "priority": 100
+     }'
+
+# Allow editors to manage tasks
+curl -X POST [INSTANCE-URL]/acl \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "_id": "editors-manage-tasks",
+         "roles": ["editor"],
+         "predicate": "path-prefix[\"/tasks\"]",
+         "priority": 100
+     }'
+----
+
+==== HTTPie
+[source,bash]
+----
+# Allow users to read tasks
+http POST [INSTANCE-URL]/acl \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     _id="users-read-tasks" \
+     roles:='["user"]' \
+     predicate="path-prefix[\"/tasks\"] and method[GET]" \
+     priority:=100
+
+# Allow editors to manage tasks
+http POST [INSTANCE-URL]/acl \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     _id="editors-manage-tasks" \
+     roles:='["editor"]' \
+     predicate="path-prefix[\"/tasks\"]" \
+     priority:=100
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Allow users to read tasks
+fetch('[INSTANCE-URL]/acl', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        _id: 'users-read-tasks',
+        roles: ['user'],
+        predicate: 'path-prefix["/tasks"] and method[GET]',
+        priority: 100
+    })
+})
+
+// Allow editors to manage tasks
+fetch('[INSTANCE-URL]/acl', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        _id: 'editors-manage-tasks',
+        roles: ['editor'],
+        predicate: 'path-prefix["/tasks"]',
+        priority: 100
+    })
+})
+----
+
+== Real-time Features
+
+=== WebSocket Change Streams
+
+Monitor real-time changes to your collections:
+
+==== Create Change Stream
+[source,bash]
+----
+# cURL - Create change stream
+curl -X POST [INSTANCE-URL]/_streams/task-updates \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '{
+         "uri": "task-updates",
+         "stages": [
+             {"$match": {"ns.coll": "tasks"}},
+             {"$project": {"_id": 1, "operationType": 1, "fullDocument": 1}}
+         ]
+     }'
+----
+
+==== Connect to WebSocket
+[source,javascript]
+----
+// JavaScript WebSocket connection
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+const wsUrl = '[INSTANCE-URL]/_streams/task-updates'.replace('https:', 'wss:');
+
+const ws = new WebSocket(wsUrl, [], {
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+});
+
+ws.onmessage = (event) => {
+    const change = JSON.parse(event.data);
+    console.log('Task updated:', change);
+};
+
+ws.onopen = () => {
+    console.log('Connected to task updates stream');
+};
+----
+
+== Data Aggregation
+
+=== Create Aggregation Pipelines
+
+Perform complex data analysis:
+
+==== cURL
+[source,bash]
+----
+# Count tasks by status
+curl -X POST [INSTANCE-URL]/tasks/_aggrs/count-by-status \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '[
+         {"$group": {
+             "_id": "$status",
+             "count": {"$sum": 1}
+         }},
+         {"$sort": {"count": -1}}
+     ]'
+
+# Average completion time by priority
+curl -X POST [INSTANCE-URL]/tasks/_aggrs/avg-completion-time \
+     -u [YOUR-USERNAME]:[YOUR-PASSWORD] \
+     -H "Content-Type: application/json" \
+     -d '[
+         {"$match": {"status": "completed"}},
+         {"$group": {
+             "_id": "$priority",
+             "avgTime": {"$avg": {"$subtract": ["$completedAt", "$createdAt"]}},
+             "count": {"$sum": 1}
+         }}
+     ]'
+----
+
+==== HTTPie
+[source,bash]
+----
+# Count tasks by status
+echo '[
+    {"$group": {
+        "_id": "$status",
+        "count": {"$sum": 1}
+    }},
+    {"$sort": {"count": -1}}
+]' | http POST [INSTANCE-URL]/tasks/_aggrs/count-by-status \
+     --auth [YOUR-USERNAME]:[YOUR-PASSWORD]
+----
+
+==== JavaScript
+[source,javascript]
+----
+const credentials = btoa('[YOUR-USERNAME]:[YOUR-PASSWORD]');
+
+// Count tasks by status
+fetch('[INSTANCE-URL]/tasks/_aggrs/count-by-status', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify([
+        {$group: {
+            _id: "$status",
+            count: {$sum: 1}
+        }},
+        {$sort: {count: -1}}
+    ])
+})
+----
+
+== Quick Reference
+
+=== Common Placeholders
+* `[INSTANCE-URL]` - Your RESTHeart Cloud instance URL
+* `[YOUR-USERNAME]` - Your username
+* `[YOUR-PASSWORD]` - Your password
+* `[DOCUMENT-ID]` - The ID of a specific document
+* `[JWT-TOKEN]` - Your temporary JWT token (for initial setup only)
+
+=== Authentication Methods
+* **Basic Auth (Recommended)**: `-u username:password` or `--auth username:password`
+* **JWT Token (Setup only)**: `-H "Authorization: Bearer [JWT-TOKEN]"`
+
+=== Essential Endpoints
+* `/users` - User management
+* `/acl` - Access control permissions
+* `/[collection-name]` - Your data collections
+* `/_streams/[stream-name]` - Real-time change streams
+* `/[collection]/_aggrs/[pipeline-name]` - Aggregation pipelines
+
+[TIP]
+====
+**Pro Tips:**
+
+* Always use HTTPS in production
+* Store credentials securely (never in code)
+* Use environment variables for sensitive data
+* Test permissions with different user roles
+* Monitor your API usage in the dashboard
+====
+
+++++
+</div>
+++++
