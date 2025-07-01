@@ -4,19 +4,16 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("interactiveDocs", () => ({
     // State
     instanceUrl: "",
-    username: "",
     password: "",
     clientType: "all",
     jwt: "",
     isInitialized: false,
+    originalCodeBlocks: new Map(), // Store original content for each code block
 
     // Computed properties
     get basicAuth() {
-      return this.username &&
-        this.password &&
-        this.username !== "[YOUR-USERNAME]" &&
-        this.password !== "[YOUR-PASSWORD]"
-        ? btoa(`${this.username}:${this.password}`)
+      return this.password && this.password !== "[YOUR-PASSWORD]"
+        ? btoa(`root:${this.password}`)
         : "[BASIC-AUTH]";
     },
 
@@ -25,7 +22,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     get displayUsername() {
-      return this.username || "[YOUR-USERNAME]";
+      return "root";
     },
 
     get displayPassword() {
@@ -51,26 +48,50 @@ document.addEventListener("alpine:init", () => {
 
       // Initial setup
       this.$nextTick(() => {
-        this.updateExamples();
-        this.filterCodeBlocks();
+        // Store original content of code blocks once the DOM is ready
+        setTimeout(() => {
+          this.storeOriginalCodeBlocks();
+          this.updateExamples();
+          this.filterCodeBlocks();
+        }, 500);
+      });
+    },
+
+    // Store original content with placeholders to allow re-replacement
+    storeOriginalCodeBlocks() {
+      const codeBlocks = document.querySelectorAll("pre code");
+
+      codeBlocks.forEach((block, index) => {
+        const content = block.textContent || block.innerText;
+        if (content) {
+          // Use a unique ID for each block
+          const blockId = `code-block-${index}`;
+          block.setAttribute("data-block-id", blockId);
+          this.originalCodeBlocks.set(blockId, content);
+        }
       });
     },
 
     // Methods
     updateExamples() {
-      // Find all code blocks and update placeholders
-      document.querySelectorAll("pre code").forEach((codeBlock) => {
-        let content = codeBlock.textContent;
+      // Update code blocks using the stored original content
+      this.originalCodeBlocks.forEach((originalContent, blockId) => {
+        const block = document.querySelector(`[data-block-id="${blockId}"]`);
+        if (block) {
+          let content = originalContent;
 
-        // Replace placeholders
-        content = content.replace(/\[INSTANCE-URL\]/g, this.displayInstanceUrl);
-        content = content.replace(/\[YOUR-USERNAME\]/g, this.displayUsername);
-        content = content.replace(/\[YOUR-PASSWORD\]/g, this.displayPassword);
-        content = content.replace(/\[BASIC-AUTH\]/g, this.basicAuth);
-        content = content.replace(/\[JWT\]/g, this.displayJwt);
+          // Replace placeholders with current values
+          content = content.replace(
+            /\[INSTANCE-URL\]/g,
+            this.displayInstanceUrl,
+          );
+          content = content.replace(/\[YOUR-PASSWORD\]/g, this.displayPassword);
+          content = content.replace(/\[BASIC-AUTH\]/g, this.basicAuth);
+          content = content.replace(/\[JWT\]/g, this.displayJwt);
 
-        // Update the content
-        codeBlock.textContent = content;
+          // Update block content
+          block.textContent = content;
+        }
       });
 
       // Update any dynamic spans (if using HTML)
@@ -79,7 +100,7 @@ document.addEventListener("alpine:init", () => {
         .forEach((el) => (el.textContent = this.displayInstanceUrl));
       document
         .querySelectorAll(".dynamic-username")
-        .forEach((el) => (el.textContent = this.displayUsername));
+        .forEach((el) => (el.textContent = "root"));
       document
         .querySelectorAll(".dynamic-password")
         .forEach((el) => (el.textContent = this.displayPassword));
@@ -183,7 +204,7 @@ document.addEventListener("alpine:init", () => {
     onInputChange: Alpine.debounce(function () {
       this.updateExamples();
       this.saveValues();
-    }, 300),
+    }, 100),
 
     onClientTypeChange() {
       this.updateExamples();
@@ -201,27 +222,29 @@ document.addEventListener("alpine:init", () => {
 
     loadSavedValues() {
       this.instanceUrl = localStorage.getItem("restheart-instance-url") || "";
-      this.username = localStorage.getItem("restheart-username") || "";
       this.password = localStorage.getItem("restheart-password") || "";
       this.clientType = localStorage.getItem("restheart-client-type") || "all";
-      this.clientType = localStorage.getItem("restheart-jwt") || "";
+      this.jwt = localStorage.getItem("restheart-jwt") || "";
+
+      // No need to call updateExamples here since Alpine reactivity will trigger it
+      // when we set the values above
     },
 
     clearValues() {
       this.instanceUrl = "";
-      this.username = "";
       this.password = "";
       this.clientType = "all";
       this.jwt = "";
 
       localStorage.removeItem("restheart-instance-url");
-      localStorage.removeItem("restheart-username");
       localStorage.removeItem("restheart-password");
       localStorage.removeItem("restheart-client-type");
       localStorage.removeItem("restheart-jwt");
 
-      this.updateExamples();
-      this.filterCodeBlocks();
+      // Alpine reactivity will automatically trigger updateExamples
+      this.$nextTick(() => {
+        this.filterCodeBlocks();
+      });
     },
   }));
 });
