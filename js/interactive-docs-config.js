@@ -4,6 +4,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("interactiveDocs", () => ({
     // State
     instanceUrl: "",
+    username: "",
     password: "",
     clientType: "all",
     jwt: "",
@@ -12,8 +13,11 @@ document.addEventListener("alpine:init", () => {
 
     // Computed properties
     get basicAuth() {
-      return this.password && this.password !== "[YOUR-PASSWORD]"
-        ? btoa(`root:${this.password}`)
+      return this.username &&
+        this.password &&
+        this.username !== "[YOUR-USERNAME]" &&
+        this.password !== "[YOUR-PASSWORD]"
+        ? btoa(`${this.username}:${this.password}`)
         : "[BASIC-AUTH]";
     },
 
@@ -22,7 +26,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     get displayUsername() {
-      return "root";
+      return this.username || "[YOUR-USERNAME]";
     },
 
     get displayPassword() {
@@ -46,11 +50,11 @@ document.addEventListener("alpine:init", () => {
       this.loadSavedValues();
       this.isInitialized = true;
 
-      // Initial setup
+      // Initial setup with delay to ensure AsciiDoc content is fully rendered
       this.$nextTick(() => {
-        // Store original content of code blocks once the DOM is ready
         setTimeout(() => {
           this.storeOriginalCodeBlocks();
+          this.markClientTypeElements();
           this.updateExamples();
           this.filterCodeBlocks();
         }, 500);
@@ -70,6 +74,19 @@ document.addEventListener("alpine:init", () => {
           this.originalCodeBlocks.set(blockId, content);
         }
       });
+
+      // Also look for AsciiDoc-rendered code blocks
+      const asciiDocBlocks = document.querySelectorAll("pre code");
+      asciiDocBlocks.forEach((block, index) => {
+        if (block.hasAttribute("data-block-id")) return; // Already processed
+
+        const content = block.textContent || block.innerText;
+        if (content) {
+          const blockId = `asciidoc-block-${index}`;
+          block.setAttribute("data-block-id", blockId);
+          this.originalCodeBlocks.set(blockId, content);
+        }
+      });
     },
 
     // Methods
@@ -85,6 +102,7 @@ document.addEventListener("alpine:init", () => {
             /\[INSTANCE-URL\]/g,
             this.displayInstanceUrl,
           );
+          content = content.replace(/\[YOUR-USERNAME\]/g, this.displayUsername);
           content = content.replace(/\[YOUR-PASSWORD\]/g, this.displayPassword);
           content = content.replace(/\[BASIC-AUTH\]/g, this.basicAuth);
           content = content.replace(/\[JWT\]/g, this.displayJwt);
@@ -100,7 +118,7 @@ document.addEventListener("alpine:init", () => {
         .forEach((el) => (el.textContent = this.displayInstanceUrl));
       document
         .querySelectorAll(".dynamic-username")
-        .forEach((el) => (el.textContent = "root"));
+        .forEach((el) => (el.textContent = this.displayUsername));
       document
         .querySelectorAll(".dynamic-password")
         .forEach((el) => (el.textContent = this.displayPassword));
@@ -113,18 +131,43 @@ document.addEventListener("alpine:init", () => {
     },
 
     filterCodeBlocks() {
+      // Mark all elements for their client type if not already done
+      this.markClientTypeElements();
+
       if (this.clientType === "all") {
         // Show all code blocks and headings
-        document.querySelectorAll("h3, h4, h5, h6, pre").forEach((section) => {
-          section.style.display = "";
-        });
+        document
+          .querySelectorAll(".code-section, [data-client-type]")
+          .forEach((section) => {
+            section.style.display = "";
+          });
         return;
       }
 
+      // Now that elements are marked, just toggle visibility based on client type
+      document.querySelectorAll("[data-client-type]").forEach((element) => {
+        const elementType = element.getAttribute("data-client-type");
+        element.style.display =
+          this.clientType === "all" || elementType === this.clientType
+            ? ""
+            : "none";
+      });
+    },
+
+    onInputChange: Alpine.debounce(function () {
+      this.updateExamples();
+      this.saveValues();
+    }, 100),
+
+    // New method to mark client types once
+    markClientTypeElements() {
       // Find all headings and identify their type
       const allHeadings = document.querySelectorAll("h3, h4, h5, h6");
 
       allHeadings.forEach((heading) => {
+        // Skip if already processed
+        if (heading.hasAttribute("data-client-type")) return;
+
         const headingText = heading.textContent.toLowerCase().trim();
         let sectionType = null;
 
@@ -175,62 +218,18 @@ document.addEventListener("alpine:init", () => {
             }
             nextElement = nextElement.nextElementSibling;
           }
-
-          // Show/hide based on selection
-          const shouldShow = this.clientType === sectionType;
-          if (this.clientType !== "all") {
-            heading.style.display = shouldShow ? "" : "none";
-          }
-
-          // Hide/show the code block
-          nextElement = heading.nextElementSibling;
-          while (
-            nextElement &&
-            !nextElement.matches("h1, h2, h3, h4, h5, h6")
-          ) {
-            if (
-              nextElement.matches("pre") ||
-              nextElement.querySelector("pre")
-            ) {
-              // Make sure the code block has the appropriate classes and attributes
-              if (!nextElement.classList.contains("code-section")) {
-                nextElement.classList.add("code-section");
-              }
-              nextElement.setAttribute("data-client-type", sectionType);
-
-              // Show/hide based on selection
-              nextElement.style.display = shouldShow ? "" : "none";
-              break;
-            }
-            nextElement = nextElement.nextElementSibling;
-          }
         }
       });
     },
-
-    onInputChange: Alpine.debounce(function () {
-      this.updateExamples();
-      this.saveValues();
-    }, 100),
 
     onClientTypeChange() {
       // Always update examples and save values
       this.updateExamples();
 
-      // Handle "Show All" selection specially
-      if (this.clientType === "all") {
-        // First reset everything to visible
-        document
-          .querySelectorAll(
-            ".code-section, [data-client-type], h3, h4, h5, h6, pre",
-          )
-          .forEach((element) => {
-            element.style.display = "";
-          });
-      }
-
-      // Always filter blocks to ensure proper display
+      // Use the filterCodeBlocks method to handle visibility
       this.filterCodeBlocks();
+
+      // Save the current selection
       this.saveValues();
     },
 
@@ -244,6 +243,7 @@ document.addEventListener("alpine:init", () => {
 
     loadSavedValues() {
       this.instanceUrl = localStorage.getItem("restheart-instance-url") || "";
+      this.username = localStorage.getItem("restheart-username") || "";
       this.password = localStorage.getItem("restheart-password") || "";
       this.clientType = localStorage.getItem("restheart-client-type") || "all";
       this.jwt = localStorage.getItem("restheart-jwt") || "";
@@ -254,17 +254,20 @@ document.addEventListener("alpine:init", () => {
 
     clearValues() {
       this.instanceUrl = "";
+      this.username = "";
       this.password = "";
       this.clientType = "all";
       this.jwt = "";
 
       localStorage.removeItem("restheart-instance-url");
+      localStorage.removeItem("restheart-username");
       localStorage.removeItem("restheart-password");
       localStorage.removeItem("restheart-client-type");
       localStorage.removeItem("restheart-jwt");
 
-      // Alpine reactivity will automatically trigger updateExamples
+      // Update examples and reapply filtering with a slight delay to ensure DOM updates
       this.$nextTick(() => {
+        this.updateExamples();
         this.filterCodeBlocks();
       });
     },
