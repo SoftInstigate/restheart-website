@@ -1,9 +1,23 @@
 <div
-  class="config-panel border rounded p-4 my-4"
+  class="config-panel border rounded p-4 my-4 bg-dark text-light"
   x-data="interactiveDocs"
   x-show="isInitialized"
   data-bs-theme="dark"
 >
+  <style>
+    .form-select-lg {
+      height: 48px !important;
+      padding: 0.5rem 1rem !important;
+      font-size: 16px !important;
+      border-radius: 0.375rem !important;
+      border-width: 1px !important;
+      box-shadow: none !important;
+    }
+    .form-control-lg {
+      font-size: 16px !important;
+      height: 48px !important;
+    }
+  </style>
   <h3 class="mb-3">🔧 Configuration</h3>
   <div class="row g-3 mb-3">
     <div class="col-md-3">
@@ -11,7 +25,8 @@
       <select
         x-model="clientType"
         @change="onClientTypeChange()"
-        class="form-select"
+        class="form-select form-select-lg bg-dark text-light rounded"
+        style="height: 48px; min-height: 48px; border-width: 1px"
       >
         <option value="all" class="p-5">Show All</option>
         <option value="curl">cURL</option>
@@ -25,7 +40,7 @@
         type="text"
         x-model="instanceUrl"
         @input="onInputChange()"
-        class="form-control"
+        class="form-control form-control-lg bg-dark text-light"
         placeholder="https://your-instance.restheart.com"
       />
     </div>
@@ -35,7 +50,7 @@
         type="text"
         x-model="username"
         @input="onInputChange()"
-        class="form-control"
+        class="form-control form-control-lg bg-dark text-light"
         placeholder="your_username"
       />
     </div>
@@ -45,13 +60,13 @@
         type="password"
         x-model="password"
         @input="onInputChange()"
-        class="form-control"
+        class="form-control form-control-lg bg-dark text-light"
         placeholder="your_password"
       />
     </div>
   </div>
 
-  <div class="setup-warning border rounded p-3 mt-3">
+  <div class="setup-warning border rounded p-3 mt-3 bg-dark text-light">
     <h4 class="mb-2">⚠️ Setup Required</h4>
     <p class="mb-0">
       Before using these examples, create a user account using your JWT token,
@@ -59,12 +74,19 @@
     </p>
   </div>
 
-  <div x-show="isShowingFiltered" class="client-status border rounded p-2 mt-3">
+  <div
+    x-show="isShowingFiltered"
+    class="client-status border rounded p-2 mt-3 bg-dark text-light"
+  >
     📱 Showing only <strong x-text="filteredClientName"></strong> examples
   </div>
 
   <div class="mt-3">
-    <button @click="clearValues()" class="btn btn-danger">Clear Values</button>
-    <small class="text-muted ms-2">Values are saved in your browser</small>
+    <button @click="clearValues()" class="btn btn-lg btn-danger">
+      Clear Values
+    </button>
+    <small class="text-light-emphasis ms-2"
+      >Values are saved in your browser</small
+    >
   </div>
 </div>
