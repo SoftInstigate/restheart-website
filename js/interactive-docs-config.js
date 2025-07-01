@@ -115,11 +115,9 @@ document.addEventListener("alpine:init", () => {
     filterCodeBlocks() {
       if (this.clientType === "all") {
         // Show all code blocks and headings
-        document
-          .querySelectorAll(".code-section, [data-client-type]")
-          .forEach((section) => {
-            section.style.display = "";
-          });
+        document.querySelectorAll("h3, h4, h5, h6, pre").forEach((section) => {
+          section.style.display = "";
+        });
         return;
       }
 
@@ -180,7 +178,9 @@ document.addEventListener("alpine:init", () => {
 
           // Show/hide based on selection
           const shouldShow = this.clientType === sectionType;
-          heading.style.display = shouldShow ? "" : "none";
+          if (this.clientType !== "all") {
+            heading.style.display = shouldShow ? "" : "none";
+          }
 
           // Hide/show the code block
           nextElement = heading.nextElementSibling;
@@ -192,6 +192,13 @@ document.addEventListener("alpine:init", () => {
               nextElement.matches("pre") ||
               nextElement.querySelector("pre")
             ) {
+              // Make sure the code block has the appropriate classes and attributes
+              if (!nextElement.classList.contains("code-section")) {
+                nextElement.classList.add("code-section");
+              }
+              nextElement.setAttribute("data-client-type", sectionType);
+
+              // Show/hide based on selection
               nextElement.style.display = shouldShow ? "" : "none";
               break;
             }
@@ -207,7 +214,22 @@ document.addEventListener("alpine:init", () => {
     }, 100),
 
     onClientTypeChange() {
+      // Always update examples and save values
       this.updateExamples();
+
+      // Handle "Show All" selection specially
+      if (this.clientType === "all") {
+        // First reset everything to visible
+        document
+          .querySelectorAll(
+            ".code-section, [data-client-type], h3, h4, h5, h6, pre",
+          )
+          .forEach((element) => {
+            element.style.display = "";
+          });
+      }
+
+      // Always filter blocks to ensure proper display
       this.filterCodeBlocks();
       this.saveValues();
     },
