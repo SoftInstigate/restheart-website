@@ -57,7 +57,7 @@ const response = await fetch('[INSTANCE-URL]/users/root', {
 });
 ----
 
-=== Step 2: Set Up Admin Permissions
+=== Step 2: Set Up Root Permissions
 
 The admin permission (`/_acl/rootCanDoEverything`) grants full access to all endpoints and operations. This permission uses:
 
@@ -65,6 +65,35 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 - *Roles*: `["root"]` - Applied to users with the root role
 - *Priority*: `0` - High priority permission
 - *MongoDB Options*: Enables all management operations
+
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/acl/rootCanDoEverything \
+  -H "Authorization: Bearer [JWT]"
+  -d '{"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/acl/rootCanDoEverything \
+  Authorization:"Bearer [JWT]" predicate="path-prefix('/')" roles:='["root"]' priority:=0 mongo:='{"allowManagementRequests": true}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/acl/rootCanDoEverything', {
+  method: 'PUT',
+  body: JSON.stringify({"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true}}),
+  headers: {
+    'Authorization': 'Bearer [JWT]'
+  }
+});
+----
 
 == Next Steps
 

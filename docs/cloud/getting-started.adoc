@@ -19,47 +19,11 @@ Now that you've configured your connection details, you can follow along with th
 
 == Basic Operations
 
-=== Creating a Database
-
-==== cURL
-
-Create a new database using cURL:
-
-[source,bash]
-----
-curl -X PUT [INSTANCE-URL]/mydb \
-  -H "Authorization: Basic [BASIC-AUTH]"
-----
-
-==== HTTPie
-
-Create a new database using HTTPie:
-
-[source,bash]
-----
-http PUT [INSTANCE-URL]/mydb \
-  Authorization:"Basic [BASIC-AUTH]"
-----
-
-==== JavaScript
-
-Create a new database using JavaScript:
-
-[source,javascript]
-----
-const response = await fetch('[INSTANCE-URL]/mydb', {
-  method: 'PUT',
-  headers: {
-    'Authorization': 'Basic [BASIC-AUTH]'
-  }
-});
-----
-
 === Creating a Collection
 
-==== cURL
+Create a new collection using `PUT /<coll-name>`
 
-Create a new collection using cURL:
+==== cURL
 
 [source,bash]
 ----
@@ -69,8 +33,6 @@ curl -X PUT [INSTANCE-URL]/mydb/mycollection \
 
 ==== HTTPie
 
-Create a new collection using HTTPie:
-
 [source,bash]
 ----
 http PUT [INSTANCE-URL]/mydb/mycollection \
@@ -78,8 +40,6 @@ http PUT [INSTANCE-URL]/mydb/mycollection \
 ----
 
 ==== JavaScript
-
-Create a new collection using JavaScript:
 
 [source,javascript]
 ----
@@ -93,9 +53,9 @@ const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
 
 === Inserting Documents
 
-==== cURL
+Insert a document using POST:
 
-Insert a document using cURL:
+==== cURL
 
 [source,bash]
 ----
@@ -107,8 +67,6 @@ curl -X POST [INSTANCE-URL]/mydb/mycollection \
 
 ==== HTTPie
 
-Insert a document using HTTPie:
-
 [source,bash]
 ----
 http POST [INSTANCE-URL]/mydb/mycollection \
@@ -117,8 +75,6 @@ http POST [INSTANCE-URL]/mydb/mycollection \
 ----
 
 ==== JavaScript
-
-Insert a document using JavaScript:
 
 [source,javascript]
 ----
@@ -137,9 +93,9 @@ const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
 
 === Querying Documents
 
-==== cURL
+Query documents using the `filter={<query>}` query parameter.  :
 
-Query documents using cURL:
+==== cURL
 
 [source,bash]
 ----
@@ -149,8 +105,6 @@ curl -X GET "[INSTANCE-URL]/mydb/mycollection?filter={'age':{\$gt:25}}" \
 
 ==== HTTPie
 
-Query documents using HTTPie:
-
 [source,bash]
 ----
 http GET "[INSTANCE-URL]/mydb/mycollection" \
@@ -159,8 +113,6 @@ http GET "[INSTANCE-URL]/mydb/mycollection" \
 ----
 
 ==== JavaScript
-
-Query documents using JavaScript:
 
 [source,javascript]
 ----
@@ -176,9 +128,9 @@ const response = await fetch(`[INSTANCE-URL]/mydb/mycollection?filter=${filter}`
 
 === Bulk Operations
 
-==== cURL
+Perform bulk insert POSTing an array of documents.
 
-Perform bulk insert using cURL:
+==== cURL
 
 [source,bash]
 ----
@@ -194,8 +146,6 @@ curl -X POST [INSTANCE-URL]/mydb/mycollection \
 
 ==== HTTPie
 
-Perform bulk insert using HTTPie:
-
 [source,bash]
 ----
 echo '[
@@ -208,8 +158,6 @@ echo '[
 ----
 
 ==== JavaScript
-
-Perform bulk insert using JavaScript:
 
 [source,javascript]
 ----
@@ -233,8 +181,6 @@ const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
 
 ==== cURL
 
-Run an aggregation pipeline using cURL:
-
 [source,bash]
 ----
 curl -X POST [INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline \
@@ -248,8 +194,6 @@ curl -X POST [INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline \
 
 ==== HTTPie
 
-Run an aggregation pipeline using HTTPie:
-
 [source,bash]
 ----
 echo '[
@@ -261,8 +205,6 @@ echo '[
 ----
 
 ==== JavaScript
-
-Run an aggregation pipeline using JavaScript:
 
 [source,javascript]
 ----
