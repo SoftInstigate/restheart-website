@@ -10,9 +10,9 @@ layout: docs
 
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -88,7 +88,7 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
 </project>
 ```
 
-Now you can run `mvn package` or `mvn install`. 
+Now you can run `mvn package` or `mvn install`.
 
 > Remember that if you have written any integration test, you'll probably need a running MongoDB instance on `localhost:27017` to exceute them succesfully. To create and run end to end tests, from the REST API down to the database, we recommend having a look at [Karate DSL](https://intuit.github.io/karate/).
 

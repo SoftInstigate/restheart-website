@@ -16,7 +16,7 @@ menu: mongodb
 - [Prometheus root metrics](#prometheus-root-metrics)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -104,7 +104,7 @@ to the type of the query (e.g. `METRICS`, `DATABASE`, `COLLECTION`,
 first digit, full). The examples are calls to the root `/_metrics` after
 a few calls to an empty database (thus the 404s).
 
-**Prometheus example response** 
+**Prometheus example response**
 
 
 ```
@@ -546,7 +546,7 @@ http_response_timers_DOCUMENT_mean_rate{method="GET"} 0.019699022734163196 15100
 
 ## Prometheus root metrics
 
-The Prometheus metrics requested on endpoint `/ _metrics` collected all metrics. 
+The Prometheus metrics requested on endpoint `/ _metrics` collected all metrics.
 To distinguish metrics per database and collection there are the prometheus labels `database` and
 `collection` containing the corresponding database and collection names.
 

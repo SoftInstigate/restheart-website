@@ -20,9 +20,9 @@ layout: docs
     * [11. Check the new user](#check-the-new-user)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction 
@@ -222,8 +222,8 @@ X-Powered-By: restheart.org
         "self": {
             "href": "/_logic/roles/admin"
         }
-    }, 
-    "authenticated": true, 
+    },
+    "authenticated": true,
     "roles": [
         "ADMIN"
     ]
@@ -258,9 +258,9 @@ X-Powered-By: restheart.org
         "self": {
             "href": "/auth/users/admin"
         }
-    }, 
-    "http status code": 409, 
-    "http status description": "Conflict", 
+    },
+    "http status code": 409,
+    "http status description": "Conflict",
     "message": "The document's ETag must be provided using the 'If-Match' header"
 }
 ```
@@ -290,15 +290,15 @@ X-Powered-By: restheart.org
 {
     "_etag": {
         "$oid": "568e9465c9e77c000646e830"
-    }, 
-    "_id": "admin", 
+    },
+    "_id": "admin",
     "_links": {
-        "curies": [], 
+        "curies": [],
         "self": {
             "href": "/auth/users/admin"
         }
-    }, 
-    "password": "12345", 
+    },
+    "password": "12345",
     "roles": [
         "ADMIN"
     ]
@@ -345,15 +345,15 @@ X-Powered-By: restheart.org
 {
     "_etag": {
         "$oid": "568eab70c9e77c000646e831"
-    }, 
-    "_id": "johnsmith", 
+    },
+    "_id": "johnsmith",
     "_links": {
-        "curies": [], 
+        "curies": [],
         "self": {
             "href": "/auth/users/johnsmith"
         }
-    }, 
-    "password": "Qer432", 
+    },
+    "password": "Qer432",
     "roles": [
         "USER"
     ]

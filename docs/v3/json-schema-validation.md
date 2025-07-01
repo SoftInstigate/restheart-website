@@ -11,9 +11,9 @@ layout: docs
 * [Example](#example)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -88,8 +88,8 @@ HTTP/1.1 200 OK
 ...
 {
     "$schema": "https://json-schema.org/draft-04/schema#", 
-    "id": "https://schema-store/test/address#", 
-    "_id": "address",  
+    "id": "https://schema-store/test/address#",
+    "_id": "address",
     ....
 }
 ```
@@ -154,9 +154,9 @@ HTTP/1.1 400 Bad Request
         "self": {
             "href": "/test/addresses"
         }
-    }, 
-    "http status code": 400, 
-    "http status description": "Bad Request", 
+    },
+    "http status code": 400,
+    "http status description": "Bad Request",
     "message": "schema check failed, #: 2 schema violations found, #: required key [city] not found, #: required key [country] not found"
 }
 ```

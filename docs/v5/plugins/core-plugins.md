@@ -6,8 +6,8 @@ layout: docs
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
 * [Introduction](#introduction)
-    * [Dependency](#Dependency) 
-    * [@RegisterPlugin annotation](#@register-plugin-annotation) 
+    * [Dependency](#Dependency)
+    * [@RegisterPlugin annotation](#@register-plugin-annotation)
     * [Plugin Configuration](#plugin-configuration)
     * [Dependency injection](#dependency-injection)
     * [Request and Response Generic Classes](#request-and-response-generic-classes)
@@ -16,7 +16,7 @@ layout: docs
 * [Initializers](#initializers)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -58,10 +58,10 @@ All plugins must be a annotated with `@RegisterPlugin` to:
 An example follows:
 
 ```java
-@RegisterPlugin(name = "foo service", 
-    description = "just an example service", 
+@RegisterPlugin(name = "foo service",
+    description = "just an example service",
     defaultUri="/foo",
-    enabledByDefault=false) 
+    enabledByDefault=false)
 public class MyPlugin implements JsonService {
 ...
 }
@@ -199,7 +199,7 @@ public class MongoServerStatusService implements BsonService {
     public void handle(BsonRequest request, BsonResponse response) throws Exception {
         if (request.isGet()) {
             var serverStatus = mongoClient.getDatabase("admin").runCommand(COMMAND, BsonDocument.class);
-            
+
             response.setContent(serverStatus);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setContentTypeAsJson();
@@ -215,9 +215,9 @@ The key method is `handle()` that is executed when a request to the service URI 
 
 ### Create Service with custom generic type
 
-To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface. 
+To implement a Service that handles different types of Request and Response, it must implement the base `Service` interface.
 
-The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects. 
+The base `Service` interface requires to implement methods to initialize and retrieve the Request and Response objects.
 
 The following example shows how to handle XML content:
 
@@ -257,27 +257,27 @@ public class XmlRequest extends ServiceRequest<Document> {
     private XmlRequest(HttpServerExchange exchange) {
         super(exchange);
     }
-    
+
     public static XmlRequest init(HttpServerExchange exchange) {
         var ret = new XmlRequest(exchange);
-        
+
         try {
             ret.injectContent();
         } catch (Throwable ieo) {
             ret.setInError(true);
         }
-        
+
         return ret;
     }
-    
+
     public static XmlRequest of(HttpServerExchange exchange) {
         return of(exchange, XmlRequest.class);
     }
-    
+
     public void injectContent() throws SAXException, IOException {
         var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         var rawContent = ChannelReader.read(wrapped.getRequestChannel());
-	    
+
         setContent(xdBuilder.parse(rawContent)ml);
     }
 }
@@ -293,13 +293,13 @@ Watch [Services](https://www.youtube.com/watch?v=GReteuiMUio&t=680s)
  Interceptors allow to snoop and modify requests and responses at different
  stages of the request lifecycle as defined by the interceptPoint parameter of
  the annotation `@RegisterPlugin`.
- 
+
  An interceptor can intercept either proxied requests or requests handled by
  Services.
- 
+
  An interceptor can intercept requests handled by a Service when its request
  and response types are equal to the ones declared by the Service.
- 
+
  An interceptor can intercept a proxied request, when its request and response
  types extends BufferedRequest and BufferedResponse.
 
@@ -313,7 +313,7 @@ The following implementation are provided by `restheart-commons`:
 The last one is particularly useful as it allows intercepting requests to the MongoDb API.
 
 ```java
-@RegisterPlugin(name = "secretFilter", 
+@RegisterPlugin(name = "secretFilter",
     interceptPoint = InterceptPoint.RESPONSE,
     description = "removes the property 'secret' from GET /coll")
 public class ReadOnlyPropFilter implements MongoInterceptor {
@@ -347,7 +347,7 @@ Watch [Interceptors](https://www.youtube.com/watch?v=GReteuiMUio&t=986s)
 
 An _Initializer_ allows executing custom logic at startup time.
 
-The Initializer implementation class must extend the `org.restheart.plugins.Initializer` interface: 
+The Initializer implementation class must extend the `org.restheart.plugins.Initializer` interface:
 
 ```java
 public interface Initializer extends ConfigurablePlugin {

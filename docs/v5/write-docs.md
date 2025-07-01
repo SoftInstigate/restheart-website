@@ -16,7 +16,7 @@ layout: docs
   - [Bulk Write Requests Examples](#bulk-write-requests-examples)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -100,8 +100,8 @@ The following table summarizes the semantic of the write verbs:
 #### Create a document with a given "newItem" Id
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/21de47ede7d9e910b80ac0d998184bf992b98895/2"
 %}
 
@@ -115,8 +115,8 @@ PUT /inventory/newItem HTTP/1.1
 #### Create a document without a given Id
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/fcf2a3da225dc2018581416fee19f96fb105cca3/0"
 %}
 
@@ -130,8 +130,8 @@ POST /inventory HTTP/1.1
 #### Edit "newItem" document's property "status"
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/cad8a808b52787063c7544d396d7b4ba30be489f/0"
 %}
 
@@ -152,8 +152,8 @@ The dot notation can be used in `PUT`, `PATCH` and `POST` verbs.
 
 #### Edit "newItem" document's array element "supplier[1]"
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/d891c0dfaf794019f7cebf79dafa895cd9697da7/0"
 %}
 
@@ -164,10 +164,10 @@ PATCH /inventory/newItem HTTP/1.1
 {"suppliers.1": "new_brand" }
 ```
 
-#### Edit "newItem.size" embedded document's "h" property 
+#### Edit "newItem.size" embedded document's "h" property
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/fef0424bf8e69d11a7aae35f41a82e67164a1dfc/0"
 %}
 
@@ -184,15 +184,15 @@ Operators](https://docs.mongodb.org/manual/reference/operator/update/) document
 for more information.
 
 {: .bs-callout.bs-callout-info}
-RESTHeart allows to use all MongoDB update operators on `PATCH` requests. 
+RESTHeart allows to use all MongoDB update operators on `PATCH` requests.
 `PUT` and `POST` can only use `$currentDate` update operator.
 
 ### Update Operators Examples
 
 #### Apply given update operators to "newItem" document
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/1f3c2941dc649dfb8a3ba6628451093f83d02fea/0"
 %}
 
@@ -246,8 +246,8 @@ the *\_etag* property.
 
 #### POST an array of documents
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
 %}
 
@@ -266,12 +266,12 @@ POST /inventory HTTP/1.1
 
 {: .bs-callout.bs-callout-info}
 **The bulk POST has the same behavior of PATCH:** *only the properties in the
-request data will be updated*. POSTing documents containing existing *\_id*s will update the them (and not replace the existing onces at all). 
+request data will be updated*. POSTing documents containing existing *\_id*s will update the them (and not replace the existing onces at all).
 
 #### PATCH multiple documents with "qty" property greater than (or that equals) 50 using the wildcard document id
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/0e5b13f1e048ea373f86c19e8fb48be7c70c7531/0"
 %}
 
@@ -280,14 +280,14 @@ request data will be updated*. POSTing documents containing existing *\_id*s wil
 PATCH /inventory/*?filter={"qty":{"$gte":50}} HTTP/1.1
 
 {
-  "qty":1000 
+  "qty":1000
 }
 ```
 
 #### DELETE multiple documents with "qty" property less than (or that equals) 50 using the wildcard document id
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/acba248263a0be8e55ed03d7ff52e79a27449bbd/0"
 %}
 

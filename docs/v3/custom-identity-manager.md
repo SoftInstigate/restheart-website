@@ -16,9 +16,9 @@ layout: docs
 * [Example](#example)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 This section will provide detailed information on how to implement a
 custom IDM.
@@ -139,10 +139,10 @@ public Account verify(Credential credential) {
 }
  
 public Account verify(String id, Credential credential) {
-    
+
     if (credential instanceof PasswordCredential) {
         char[] password = ((PasswordCredential) credential).getPassword();
-        
+
         // here check the id and password
         ....
     } else {
@@ -171,7 +171,7 @@ defined or some parameters that control caching).
 For example, if the *idm* configuration section is:
 
 ``` plain
-idm:    
+idm:
     implementation-class: org.restheart.examples.security.MyIdentityManager
     arg1: 5
     arg2: hey man!

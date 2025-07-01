@@ -12,7 +12,7 @@ menu: overview
 -   [Plugin development](#plugin-development)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -21,7 +21,7 @@ menu: overview
 The talk provides an introduction on RESTHeart and shows the
 different options to run it with Docker, including running it and
 connecting to MongoDB running on the host, running a complete containerized
-stack with docker compose, and using the RESTHeart native image 
+stack with docker compose, and using the RESTHeart native image
 for instant startup with minimal memory footprint.
 
 <div class="embed-responsive embed-responsive-16by9 mb-3">

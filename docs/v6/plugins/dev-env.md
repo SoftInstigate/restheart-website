@@ -10,7 +10,7 @@ layout: docs
 * [HTTP Shell](#http-shell)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -72,4 +72,3 @@ The idea is that tools like curl are very powerful but a bit cumbersome, it is o
 | `h set header <name> <value>` | sets the header *&lt;name&gt;* to *&lt;value&gt;* | `> set header If-Match 5f7f35efcb800f2502f95cb5` |
 | `h get headers` | prints the current set headers | `> get headers` |
 | `h clear headers` | clears the headers | `> clear headers` |
-

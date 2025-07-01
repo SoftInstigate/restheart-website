@@ -15,9 +15,9 @@ layout: docs
 * [Interceptors](#interceptors)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -27,7 +27,7 @@ See [Understanding RESTHeart Security](/docs/v4/security/overview/#understanding
 
 ## Authentication Mechanisms
 
-The Authentication Mechanism class must implement the `org.restheart.security.plugins.AuthMechanism` interface. 
+The Authentication Mechanism class must implement the `org.restheart.security.plugins.AuthMechanism` interface.
 
 
 ```java
@@ -46,7 +46,7 @@ public interface AuthMechanism implements AuthenticationMechanism {
 
 ### Configuration
 
-The Authentication Mechanism must be declared in the yml configuration file. 
+The Authentication Mechanism must be declared in the yml configuration file.
 Of course the implementation class must be in the java classpath.
 
 
@@ -124,7 +124,7 @@ WWW-Authenticate: Basic realm="RESTHeart Realm"
 
 ### Build the Account
 
-To build the account, the Authentication Mechanism can use a configurable Authenticator. This allows to extends the Authentication Mechanism with different Authenticator implementations. For instance the *BasicAuthMechanism* can use different Authenticator implementations that hold accounts information in a DB or in a LDAP server. 
+To build the account, the Authentication Mechanism can use a configurable Authenticator. This allows to extends the Authentication Mechanism with different Authenticator implementations. For instance the *BasicAuthMechanism* can use different Authenticator implementations that hold accounts information in a DB or in a LDAP server.
 
 Tip: Use the `PluginsRegistry` to get the instance of the Authenticator from its name.
 
@@ -147,14 +147,14 @@ Account account = authenticator.verify(id, credential);
 
 ## Authenticators
 
-The Authenticator class must implement the `org.restheart.security.plugins.Authenticator` interface. 
+The Authenticator class must implement the `org.restheart.security.plugins.Authenticator` interface.
 
 
 ```java
 public interface Authenticator extends IdentityManager {
   @Override
   public Account verify(Account account);
-  
+
   @Override
   public Account verify(String id, Credential credential);
 
@@ -165,7 +165,7 @@ public interface Authenticator extends IdentityManager {
 
 ### Configuration
 
-The Authenticator must be declared in the yml configuration file. 
+The Authenticator must be declared in the yml configuration file.
 Of course the implementation class must be in the java classpath.
 
 
@@ -204,7 +204,7 @@ public MyAuthenticator(final String name) throws ConfigurationException {
 
 ## Authorizers
 
-The Authorizer implementation class must implement the `org.restheart.security.Authorizer` interface. 
+The Authorizer implementation class must implement the `org.restheart.security.Authorizer` interface.
 
 
 ```java
@@ -228,7 +228,7 @@ public interface Authorizer {
 
 ### Configuration
 
-The Authorizer must be declared in the yml configuration file. 
+The Authorizer must be declared in the yml configuration file.
 Of course the implementation class must be in the java classpath.
 
 
@@ -267,7 +267,7 @@ public MyAuthorizer(final String name) throws ConfigurationException {
 
 ## Token Managers
 
-The Token Manager implementation class must implement the `org.restheart.security.plugins.TokenManager` interface. 
+The Token Manager implementation class must implement the `org.restheart.security.plugins.TokenManager` interface.
 
 Note that TokenManager extends Authenticator for token verification methods.
 
@@ -294,15 +294,15 @@ public interface PluggablTokenManager extends Authenticator {
   /**
    * invalidates the token bound to the account
    * @param account
-   * @param token 
+   * @param token
    */
   public void invalidate(Account account);
 
   /**
    * injects the token headers in the response
-   * 
+   *
    * @param exchange
-   * @param token 
+   * @param token
    */
   public void injectTokenHeaders(HttpServerExchange exchange, PasswordCredential token);
 }
@@ -310,7 +310,7 @@ public interface PluggablTokenManager extends Authenticator {
 
 ### Configuration
 
-The Token Manager must be declared in the yml configuration file. 
+The Token Manager must be declared in the yml configuration file.
 Of course the implementation class must be in the java classpath.
 
 
@@ -370,9 +370,9 @@ An example service implementation follows. It sends the usual `Hello World` mess
 ```java
 public void handleRequest(HttpServerExchange exchange) throws Exception {
   var msg = new StringBuffer("Hello ");
-  
+
   var _name = exchange.getQueryParameters().get("name");
-  
+
   if (_name == null || _name.isEmpty()) {
       msg.append("World");
   } else {
@@ -389,7 +389,7 @@ public void handleRequest(HttpServerExchange exchange) throws Exception {
 
 ### Configuration
 
-The *Service* must be declared in the yml configuration file. 
+The *Service* must be declared in the yml configuration file.
 Of course the implementation class must be in the java classpath.
 
 
@@ -407,7 +407,7 @@ services:
 The *uri* property allows to bind the service under the specified path. E.g., with `uri: /mysrv` the service responds at URL `https://domain.io/mysrv`
 
 
-With `secured: true` the service request goes thought the  authentication and authorization phases. With `secured: false` the service is fully open. 
+With `secured: true` the service request goes thought the  authentication and authorization phases. With `secured: false` the service is fully open.
 
 ### Constructor
 
@@ -424,7 +424,7 @@ public MyService(PipedHttpHandler next,
 
 ## Initializers
 
-An *Initializer* allows executing custom logic at startup time. 
+An *Initializer* allows executing custom logic at startup time.
 
 Notably it allows to define *Interceptors* and *Global Permission Predicates*.
 
@@ -493,7 +493,7 @@ GlobalSecuirtyPredicatesAuthorizer.getGlobalSecurityPredicates().add(new Predica
         var request = Request.wrap(exchange);
 
         // return false to deny the request
-        return !(request.isGet() 
+        return !(request.isGet()
                         && "/secho/foo".equals(URLUtils.removeTrailingSlashes(
                                         exchange.getRequestPath())));
     }
@@ -517,14 +517,14 @@ Those interfaces both extend the base interface `org.restheart.security.plugins.
 public interface Interceptor {
   /**
    * implements the interceptor logic
-   * 
+   *
    * @param exchange
-   * @throws Exception 
+   * @throws Exception
    */
   public void handleRequest(final HttpServerExchange exchange) throws Exception;
-  
+
   /**
-   * 
+   *
    * @param exchange
    * @return true if the interceptor must handle the request
    */
@@ -562,7 +562,7 @@ If the Interceptor needs to deal with the `SecurityContext`, for instance it nee
 
 In some cases, you need to access the request content. For example you want to modify request content with a `RequestInterceptor` or to implement an `Authorizer` that checks the content to authorize the request.
 
- Accessing the content from the *HttpServerExchange* object using the exchange *InputStream* in proxied requests leads to an error because Undertow allows reading the content just once. 
+ Accessing the content from the *HttpServerExchange* object using the exchange *InputStream* in proxied requests leads to an error because Undertow allows reading the content just once.
 
  In order to simplify accessing the content, the `ByteArrayRequest.wrap(exchange).readContent()` and `JsonRequest.wrap(exchange).readContent()` helper methods are available. They are very efficient since they use the non blocking `RequestBufferingHandler` under to hood.
  However, since accessing the request content might lead to significant performance overhead, a *RequestInterceptor* that resolves the request and overrides the `requiresContent()` to return true must be implemented to make data available.
@@ -573,7 +573,7 @@ In some cases, you need to access the request content. For example you want to m
 ```java
 public interface RequestInterceptor extends Interceptor {
   public enum IPOINT { BEFORE_AUTH, AFTER_AUTH }
-    
+
     /**
      *
      * @return true if the Interceptor requires to access the request content
@@ -581,7 +581,7 @@ public interface RequestInterceptor extends Interceptor {
     default boolean requiresContent() {
         return false;
     }
-    
+
     /**
      *
      * @return the intecept point

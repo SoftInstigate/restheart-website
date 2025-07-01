@@ -15,9 +15,9 @@ layout: docs
 * [Using httpie](#using-httpie)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -119,7 +119,7 @@ You'll see an HTTP response header like below, returning a 201 Created:
 > Content-Length: 221176
 > Expect: 100-continue
 > Content-Type: multipart/form-data; boundary=------------------------d2d164f1076f1b8b
-> 
+>
 < HTTP/1.1 100 Continue
 < Content-Length: 0
 < HTTP/1.1 201 Created
@@ -134,11 +134,11 @@ You'll see an HTTP response header like below, returning a 201 Created:
 < Access-Control-Allow-Credentials: true
 < Content-Length: 0
 < Content-Type: application/json
-< 
+<
 * Connection #0 to host 127.0.0.1 left intact
 ```
 
-  
+
 The following line in the response header gives the file's location:
 
 ``` text
@@ -253,7 +253,7 @@ X-Powered-By: restheart.org
 
 {
     "_id": {
-        "$oid": "552e1e89e4b019b2fa790f3f" 
+        "$oid": "552e1e89e4b019b2fa790f3f"
     },
     "_links": {
         "rh:data": {

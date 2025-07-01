@@ -3,9 +3,9 @@ title: Hidden page
 layout: docs
 ---
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 
@@ -31,16 +31,16 @@ permissions:
     # OPTIONS is always allowed
     - role: $unauthenticated
       predicate: path-prefix[path="/"] and method[value="OPTIONS"]
-      
+
     - role: $unauthenticated
       predicate: path-prefix[path="/echo"] and method[value="GET"]
-    
+
     - role: admin
       predicate: path-prefix[path="/"] and method[value="OPTIONS"]
-      
+
     - role: admin
       predicate: path-prefix[path="/"]
-    
+
     - role: user
       predicate: path-prefix[path="/"] and method[value="OPTIONS"]
 
@@ -65,8 +65,8 @@ permissions:
 ## Richieste HTTP: separare body e request/response
 
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
 %}
 
@@ -103,7 +103,7 @@ X-Powered-By: restheart.org
 ```
 
 
-### invece di 
+### invece di
 
 
 ```
@@ -119,7 +119,7 @@ POST /inventory HTTP/1.1
 
 ```
 
-### oppure 
+### oppure
 
 
 ``` http
@@ -136,7 +136,7 @@ POST /inventory HTTP/1.1
 ```
 
 
-## Se solo headers non fare il parsing con http ma con properties 
+## Se solo headers non fare il parsing con http ma con properties
 ### (senza la prima riga di REQUEST/RESPONSE non viene fatto il parsing degli headers)
 
 
@@ -172,5 +172,3 @@ X-Powered-By: restheart.org
 ```
 
 </div>
-
-

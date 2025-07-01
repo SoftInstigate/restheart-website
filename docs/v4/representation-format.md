@@ -19,7 +19,7 @@ layout: docs
 -   [Simplified HAL](#simplified-hal)
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -332,7 +332,7 @@ HTTP/1.1 200 OK
 The <code>root-mongo-resource</code> property is set in <code>default.properties</code>
 </p>
 
-<pre class="black-code"><code># The MongoDB resource to bind to the root URI / 
+<pre class="black-code"><code># The MongoDB resource to bind to the root URI /
 # The format is /db[/coll[/docid]] or '*' to expose all dbs
 root-mongo-resource = /restheart</code></pre>
 

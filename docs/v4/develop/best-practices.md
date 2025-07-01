@@ -16,9 +16,9 @@ layout: docs
     * [Forbid write requests containing specific properties to all roles but admin](#forbid-write-requests-containing-specific-properties-to-all-roles-but-admin)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## RESTHeart Platform Core
 
@@ -135,7 +135,7 @@ public class SecretHider implements Initializer {
                         .get(HttpString.tryFromString("X-Forwarded-Account-Roles"));
 
                 var roles = new ArrayList<String>();
-                
+
                 if (_roles != null) {
                     _roles.forEach(role -> roles.add(role));
                 }
@@ -171,7 +171,7 @@ public class SecretHider implements Initializer {
 
 The helper classes `ByteArrayRequest`, `JsonRequest`, `ByteArrayResponse` and `JsonResponse` are available to make easy interacting the `HttpServerExchange` object. As a general rule, always prefer using the helper classes if the functionality you need is available.
 
-For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`  
+For instance the following code snipped retrieves the request JSON content from the `HttpServerExchange`
 
 
 ```java

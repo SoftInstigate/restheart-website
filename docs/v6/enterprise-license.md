@@ -12,7 +12,7 @@ layout: docs
 - [Docker](#docker)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -41,14 +41,14 @@ The license key activation requires three steps:
 ### Download, extract and copy the license key activator plugin
 
 Download the license activator plugins from `https://download.restheart.com/si-lka-<version>.zip`.
- 
+
 Where `<version>` is the version of RESTHeart you are using.
 
 For instance, if you are using RESTHeart v6.1.6 the download URL is `https://download.restheart.com/si-lka-6.1.6.zip`
 
 {: .bs-callout .bs-callout-info }
 If the activator plugin for your version of RESTHeart is missing (you get error *404 Not Found*), please email us at support@softinstigate.com and we will upload it.
- 
+
 Once downloaded, extract the zip package and copy the contained plugin jar file into the plugins directory:
 
 ```bash
@@ -72,7 +72,7 @@ Extract the package files.
 
 ```bash
 $ cd <rhroot>/plugins
-$ tar -xzf lickey.tar.gz 
+$ tar -xzf lickey.tar.gz
 ```
 
 This creates the directory `lickey` with the following files:

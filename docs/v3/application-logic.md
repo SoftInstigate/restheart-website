@@ -13,9 +13,9 @@ layout: docs
 - [Configuration](#configuration)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -308,10 +308,10 @@ public class AggregateHandler extends ApplicationLogicHandler {
                 Representation rep = new Representation("/_logic/aggregate");
                 BasicDBObject properties = new BasicDBObject();
 
-                results.forEach( res -> { 
+                results.forEach( res -> {
                     DBObject _res = (DBObject) res;
 
-                    properties.append((String) _res.get("_id"), _res.get("albums")); 
+                    properties.append((String) _res.get("_id"), _res.get("albums"));
                 });
 
                 rep.addProperties(properties);

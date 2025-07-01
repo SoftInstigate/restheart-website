@@ -9,13 +9,13 @@ layout: docs
 * [Package RESTHeart Core plugins](#package-restheart-core-plugins)
   * [Create a Uber jar for Core](#create-a-uber-jar-for-core)
 * [Package RESTHeart Security plugins](#package-restheart-security-plugins)
-  * [Create a Uber jar for Security](#create-a-uber-jar-for-security) 
+  * [Create a Uber jar for Security](#create-a-uber-jar-for-security)
 
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -115,7 +115,7 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
   </build>
 
   ...
-  
+
 </project>
 ```
 
@@ -208,7 +208,7 @@ The Maven [Shade](https://maven.apache.org/plugins/maven-shade-plugin/) plugin p
   </build>
 
   ...
-  
+
 </project>
 ```
 </div>

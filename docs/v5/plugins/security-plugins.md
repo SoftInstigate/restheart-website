@@ -12,7 +12,7 @@ layout: docs
 * [Token Managers](#token-managers)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -93,7 +93,7 @@ The method `authenticate()` must return:
 
 -   *NOT_ATTEMPTED*: the request cannot be authenticated because it doesn't fulfill the authentication mechanism requirements. An example is in `BasicAuthMechanism` when the request does not include the header `Authotization` or its value does not start with `Basic`
 -   *NOT_AUTHENTICATED*: the Authentication Mechanism handled the request but could not authenticate the client, for instance because of wrong credentials.
--   *AUTHENTICATED*: the Authentication Mechanism successfully authenticated the request. 
+-   *AUTHENTICATED*: the Authentication Mechanism successfully authenticated the request.
 
 To mark the authentication as failed in `authenticate()`:
 
@@ -117,11 +117,11 @@ return AuthenticationMechanismOutcome.AUTHENTICATED;
 
 `sendChallenge()` is executed when the authentication fails.
 
-The mechanism should not set the response code, instead that should be indicated in the `AuthenticationMechanism.ChallengeResult` and the most appropriate overall response code will be selected. 
+The mechanism should not set the response code, instead that should be indicated in the `AuthenticationMechanism.ChallengeResult` and the most appropriate overall response code will be selected.
 
 This is due the fact that several mechanisms can be enabled and, as an in-bound request is received, the authenticate method is called on each mechanism in turn until one of the following occurs: a mechanism successfully authenticates the incoming request or the list of mechanisms is exhausted.
 
-`sendChallenge()` can also be used to set a response header. 
+`sendChallenge()` can also be used to set a response header.
 
 An example is `BasicAuthMechanism` that, in case of failure, indicates  the response code `401 Not Authenticated` and sets the following challenge header:
 

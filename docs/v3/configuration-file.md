@@ -10,10 +10,10 @@ layout: docs
   - [Properties files](#properties-files)
   - [Environment variables](#environment-variables)
   - [Command line parameters](#command-line-parameters)
-    
+
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -70,7 +70,7 @@ aggregation-time-limit: {{{aggregation-time-limit}}}
 The implementation uses the [Mustache.java](https://github.com/spullara/mustache.java) library, which is a derivative of [mustache.js](http://mustache.github.io), to create parametric configurations for RESTHeart.
 
 Of course, you can decide which values in `restheart.yml` you want to become parametric or you can just use a static file
- as before version 3.7, this new configuration with properties is fully optional. 
+ as before version 3.7, this new configuration with properties is fully optional.
 
 To start RESTHeart and provide it with a properties file pass the `--envfile` command line parameter:
 
@@ -101,7 +101,7 @@ RESTHeart `3.7.0` introduces also the possibility to override any **primitive ty
  - Integer
  - Long
  - Boolean
-  
+
  For example, the parameter `mongo-uri` in the yaml file can be overridden by exporting a `MONGO_URI` environment variable:
 
 ```bash
@@ -124,7 +124,7 @@ To know the available CLI parameters, run RESTHeart with `--help`:
 
 ```bash
 $ java -jar target/restheart.jar --help
-Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options] 
+Usage: java -Dfile.encoding=UTF-8 -jar -server restheart.jar [options]
       <Configuration file>
   Options:
     --envFile, --envfile, -e

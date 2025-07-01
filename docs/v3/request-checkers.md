@@ -16,9 +16,9 @@ layout: docs
 * [Custom Checkers](#custom-checkers)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -29,8 +29,8 @@ response code thus enforcing a well defined structure to documents.
 
 ## The *checkers* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections 
-(and files buckets, schema stores, etc.) have properties. 
+In RESTHeart, not only documents but also dbs and collections
+(and files buckets, schema stores, etc.) have properties.
 Some properties are metadata, i.e. have a special meaning
 for RESTheart that controls its behavior.
 
@@ -85,13 +85,13 @@ Global Checkers can be defined programmatically instantiating `GlobalChecker` ob
 
 ``` java
     /**
-     * 
+     *
      * @param checker
      * @param predicate checker is applied only to requests that resolve
      * the predicate
      * @param skipNotSupported
      * @param args
-     * @param confArgs 
+     * @param confArgs
      */
 public GlobalChecker(Checker checker,
             RequestContextPredicate predicate,
@@ -113,7 +113,7 @@ RequestContextPredicate predicate = new RequestContextPredicate() {
     };
 
 // Let's use the predefined ContentSizeChecker to limit write requests size
-Checker checker = new ContentSizeChecker(); 
+Checker checker = new ContentSizeChecker();
 
 // ContentSizeChecker requires argument max, use 1024 Kbyte
 BsonDocument args = new BsonDocument("max", new BsonInt32(1024*1024));
@@ -412,7 +412,7 @@ It only requires to implement the method check() with 3 arguments:
 5.  BsonValue confArgs (the arguments passed via the *args* property
     specified in the configuration file)
 
-  
+
 
 ``` java
     boolean check(
@@ -467,7 +467,7 @@ The class of the custom checker must be added to the java
 classpath. See (How to package custom code)[/docs/v3/custom-code-packaging-howto] for more information.
 
 For example, RESTHeart could be started with the following command:
-  
+
 ``` bash
 $ java -server -classpath restheart.jar:custom-checker.jar org.restheart.Bootstrapper restheart.yml
 ```
@@ -490,7 +490,7 @@ public class MyChecker implements Checker {
         }
         if (_value != null && _value.isNumber()) {
             Integer value = _value..asInt32().getValue();
-            
+
             return value < 10 && value > 0;
         } else {
             return false; // BAD REQUEST

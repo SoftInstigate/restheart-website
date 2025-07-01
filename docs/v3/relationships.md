@@ -13,9 +13,9 @@ layout: docs
     * [One-to-Many, inverse](#one-to-many-inverse)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -46,8 +46,8 @@ HTTP/1.1 200 OK
 {
     "_etag": {
         "$oid": "55e84f5ac2e66d1e0a8e46b8"
-    }, 
-    "_id": "doc", 
+    },
+    "_id": "doc",
     "descr": "a document for testing but modified"
 }
 ```
@@ -147,7 +147,7 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 Let's now create few documents, specifying the `parent` property:
 
@@ -169,7 +169,7 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 If we now get the document `/test/parentcoll/1.2`, the `_links` property
 includes `parent` with the correct URI of the
@@ -182,15 +182,15 @@ HTTP/1.1 200 OK
 {
     "_etag": {
         "$oid": "55f15b43c2e65448b566d18b"
-    }, 
-    "_id": "1.2", 
-    "_lastupdated_on": "2015-09-10T10:28:19Z", 
+    },
+    "_id": "1.2",
+    "_lastupdated_on": "2015-09-10T10:28:19Z",
     "_links": {
-        "curies": [], 
+        "curies": [],
         "self": {
             "href": "/test/parentcoll/1.2"
         }
-    }, 
+    },
     "parent": "1"
 }
 ```
@@ -210,7 +210,7 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 Let's now create few albums:
 
@@ -218,17 +218,17 @@ Let's now create few albums:
 $ http -a a:a PUT 127.0.0.1:8080/test/albums/Disintegration year:=1989
 HTTP/1.1 201 CREATED
 ...
- 
+
 $ http -a a:a PUT 127.0.0.1:8080/test/albums/Wish year:=1992
 HTTP/1.1 201 CREATED
 ...
- 
+
 $ http -a a:a PUT 127.0.0.1:8080/test/albums/Bloodflowers year:=2000
 HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 Now we create the band referring these albums:
 
@@ -238,13 +238,13 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 If we now get The Cure document, we can notice the `albums` link:
 
     /test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
 
-  
+
 
 Since the other side of the relationship has cardinality N, the `albums`
 link is a collection resource URI with a **filter query parameter**.
@@ -253,24 +253,24 @@ link is a collection resource URI with a **filter query parameter**.
 $ http -a a:a GET "127.0.0.1:8080/test/bands/The Cure"
 HTTP/1.1 200 OK
 ...
-    "_embedded": {}, 
+    "_embedded": {},
     "_etag": {
         "$oid": "55f16029c2e65448b566d191"
-    }, 
-    "_id": "The Cure", 
-    "_lastupdated_on": "2015-09-10T10:49:13Z", 
+    },
+    "_id": "The Cure",
+    "_lastupdated_on": "2015-09-10T10:49:13Z",
     "_links": {
         "albums": {
             "href": "/test/albums?filter={'_id':{'$in':['Disintegration','Wish','Bloodflowers']}}"
-        }, 
-        "curies": [], 
+        },
+        "curies": [],
         "self": {
             "href": "/test/bands/The Cure"
         }
-    }, 
+    },
     "albums": [
-        "Disintegration", 
-        "Three Imaginary Boys", 
+        "Disintegration",
+        "Three Imaginary Boys",
         "Seventeen Seconds"
     ]
 }
@@ -301,7 +301,7 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 Let's now create few albums:
 
@@ -309,17 +309,17 @@ Let's now create few albums:
 $ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Disintegration year:=1989 band="The Cure"
 HTTP/1.1 201 CREATED
 ...
- 
+
 $ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Wish year:=1992 band="The Cure"
 HTTP/1.1 201 CREATED
 ...
- 
+
 $ http -a a:a PUT 127.0.0.1:8080/test/albumsi/Bloodflowers year:=2000 band="The Cure"
 HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 Now we create the band referred by these albums:
 
@@ -329,7 +329,7 @@ HTTP/1.1 201 CREATED
 ...
 ```
 
-  
+
 
 If we now get "The Cure" document, we can notice the `albums` link:
 
@@ -342,22 +342,19 @@ HTTP/1.1 200 OK
     {
     "_etag": {
         "$oid": "55f19409b8e449c1e1304ec5"
-    }, 
-    "_id": "The Cure", 
+    },
+    "_id": "The Cure",
     "_links": {
         "albums": {
             "href": "/test/albums?filter={'band':'The Cure'}"
-        }, 
-        "curies": [], 
+        },
+        "curies": [],
         "self": {
             "href": "/test/bandsi/The Cure"
         }
-    }, 
+    },
     "descr": "The Cure are an English rock band formed in Crawley, West Sussex, in 1976"
 }
 ```
 
 </div>
-  
-
-  

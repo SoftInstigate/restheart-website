@@ -21,9 +21,9 @@ layout: docs
 - [Additional resources](#additional-resources)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -92,14 +92,14 @@ X-Powered-By: restheart.org
 ```
 ```json
 {
-    "_embedded": [], 
+    "_embedded": [],
     "_etag": {
         "$oid": "5ae1da15a7b11b0005a3c41d"
-    }, 
-    "_id": "db", 
-    "_returned": 0, 
-    "_size": 0, 
-    "_total_pages": 0, 
+    },
+    "_id": "db",
+    "_returned": 0,
+    "_size": 0,
+    "_total_pages": 0,
     "desc": "this is my first db created with restheart"
 }
 ```
@@ -150,12 +150,12 @@ X-Powered-By: restheart.org
 ```
 ``` json
 {
-    "_embedded": [], 
+    "_embedded": [],
     "_etag": {
         "$oid": "5ae1dddfa7b11b0005a3c41f"
-    }, 
-    "_id": "coll", 
-    "_returned": 0, 
+    },
+    "_id": "coll",
+    "_returned": 0,
     "desc": "my first collection created with restheart"
 }
 
@@ -210,11 +210,11 @@ X-Powered-By: restheart.org
 {
     "_etag": {
         "$oid": "5ae1de72a7b11b0005a3c420"
-    }, 
+    },
     "_id": {
         "$oid": "5ae1de72586f80fc867131f4"
-    }, 
-    "name": "RESTHeart", 
+    },
+    "name": "RESTHeart",
     "rating": "cool"
 }
 ```
@@ -272,29 +272,29 @@ X-Powered-By: restheart.org
         {
             "_etag": {
                 "$oid": "5ae1dec0a7b11b0005a3c421"
-            }, 
+            },
             "_id": {
                 "$oid": "5ae1dec0586f80fc86713200"
-            }, 
-            "name": "MongoDB", 
+            },
+            "name": "MongoDB",
             "rating": "super cool"
-        }, 
+        },
         {
             "_etag": {
                 "$oid": "5ae1de72a7b11b0005a3c420"
-            }, 
+            },
             "_id": {
                 "$oid": "5ae1de72586f80fc867131f4"
-            }, 
-            "name": "RESTHeart", 
+            },
+            "name": "RESTHeart",
             "rating": "cool"
         }
-    ], 
+    ],
     "_etag": {
         "$oid": "5ae1dddfa7b11b0005a3c41f"
-    }, 
-    "_id": "coll", 
-    "_returned": 2, 
+    },
+    "_id": "coll",
+    "_returned": 2,
     "desc": "my first collection created with restheart"
 }
 ```
@@ -331,11 +331,11 @@ X-Powered-By: restheart.org
 {
     "_etag": {
         "$oid": "5ae1de72a7b11b0005a3c420"
-    }, 
+    },
     "_id": {
         "$oid": "5ae1de72586f80fc867131f4"
-    }, 
-    "name": "RESTHeart", 
+    },
+    "name": "RESTHeart",
     "rating": "cool"
 }
 
@@ -369,19 +369,19 @@ X-Powered-By: restheart.org
         {
             "_etag": {
                 "$oid": "5ae1dec0a7b11b0005a3c421"
-            }, 
+            },
             "_id": {
                 "$oid": "5ae1dec0586f80fc86713200"
-            }, 
-            "name": "MongoDB", 
+            },
+            "name": "MongoDB",
             "rating": "super cool"
         }
-    ], 
+    ],
     "_etag": {
         "$oid": "5ae1dddfa7b11b0005a3c41f"
-    }, 
-    "_id": "coll", 
-    "_returned": 1, 
+    },
+    "_id": "coll",
+    "_returned": 1,
     "desc": "my first collection created with restheart"
 }
 ```

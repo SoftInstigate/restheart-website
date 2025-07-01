@@ -14,14 +14,14 @@ layout: docs
 * [Custom Transformers](#custom-transformers)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
 
-Transformers allow to transform the request or the response. 
+Transformers allow to transform the request or the response.
 For instance, Transformers can be used to:
 - filtering out from the response the *password* property of the `/db/users` resource
 - adding the `filter={"visibility":"public"}` query parameter
@@ -29,21 +29,21 @@ to requests limiting the client visibility on documents.
 
 ## The *rts* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections 
-(and files buckets, schema stores, etc.) have properties. 
+In RESTHeart, not only documents but also dbs and collections
+(and files buckets, schema stores, etc.) have properties.
 Some properties are metadata, i.e. have a special meaning
 for RESTheart that controls its behavior.
 
 The metadata *rts* allows to declare transformers.
-*  a transformer declared in the *rts* db property, 
-gets executed to any requests that involves the db 
-and its children resources 
+*  a transformer declared in the *rts* db property,
+gets executed to any requests that involves the db
+and its children resources
 (collections, documents, file buckets, schema stores, etc.).
 * a transformer declared in the *rts* collection property,
-gets executed to any requests that involves the collection 
+gets executed to any requests that involves the collection
 and its documents.
 
-*rts* is an array of *transformer* objects. 
+*rts* is an array of *transformer* objects.
 A *transformer* object has the following format:
 
 ``` json
@@ -138,10 +138,10 @@ args.add(new BsonString("propToFilterOut"));
 BsonDocument confArgs = null;
 
 GlobalTransformer globalTransformer = new GlobalTransformer(
-                transformer, 
-                RequestTransformer.PHASE.RESPONSE, 
-                RequestTransformer.SCOPE.CHILDREN, 
-                args, 
+                transformer,
+                RequestTransformer.PHASE.RESPONSE,
+                RequestTransformer.SCOPE.CHILDREN,
+                args,
                 confArgs)
 
 // finally add it to global checker list
@@ -218,10 +218,10 @@ $ http -a a:a GET 127.0.0.1:8080/test/rts/mydoc
 HTTP/1.1 200 OK
 ...
 {
-    "_id": "mydoc", 
-    "a": 1, 
+    "_id": "mydoc",
+    "a": 1,
     "log": {
-        "remoteIp": "127.0.0.1", 
+        "remoteIp": "127.0.0.1",
         "userName": "a"
     },
     ...
@@ -270,7 +270,7 @@ It requires to implement the method transform() with 5 arguments:
 
 ``` java
     /**
-     * 
+     *
      * @param exchange the server exchange
      * @param context the request context
      * @param contentToTransform the content data to transform
@@ -317,8 +317,8 @@ off-the-shelf transformers provided with RESTHeart plus custom one.
           class: com.whatever.MyTransformer
           args:
             msg: "foo bar"
-                    
-        
+
+
 ```
 
 Or course, the class of the custom checker must be added to the java
@@ -342,9 +342,9 @@ import com.mongodb.DBObject;
 package com.whatever;
 
 public class MyTransformer implements Transformer {
-    tranform(final HttpServerExchange exchange, 
-        final RequestContext context, 
-        BsonValue contentToTransform, 
+    tranform(final HttpServerExchange exchange,
+        final RequestContext context,
+        BsonValue contentToTransform,
         final BsonValue args,
         BsonValue confArgs) {
         contentToTransform.put("msg", confArgs.get("msg"));

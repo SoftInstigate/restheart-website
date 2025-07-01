@@ -11,16 +11,16 @@ layout: docs
 * [Apply Plugins to Requests](#apply-plugins-to-requests)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction 
 
 RESTHeart Platform works *out-of-the-box* by merely installing it and requires no coding. On the other side real applications often need the API to be extended in some way.
 
 {:.alert.alert-success}
-RESTHeart Platform can be extended via *Plugins*. 
+RESTHeart Platform can be extended via *Plugins*.
 
 Both `restheart-platform-core` and `restheart-platform-security` make use of Plugins.
 
@@ -50,7 +50,7 @@ You can also develop and add your own Plugins. For more information refer to [De
 {:.bs-callout.bs-callout-info}
 Developing a Plugins is done in java programming language and it is as easy as implementing a simple interface.
 
-Note that RESTHeart logs out the registered plugins at startup time. 
+Note that RESTHeart logs out the registered plugins at startup time.
 
 
 ```

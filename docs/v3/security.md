@@ -3,9 +3,9 @@ title: Security
 layout: docs
 ---
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 -   [Enable and Configure Security](/docs/v3/configure-security)
 -   [How Clients authenticate](/docs/v3/clients-authentication)
@@ -22,4 +22,3 @@ section.
 
 
 </div>
-

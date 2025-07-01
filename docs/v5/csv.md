@@ -13,7 +13,7 @@ layout: docs
 
 </div>
 
-<div  markdown="1"  class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div  markdown="1"  class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -220,7 +220,7 @@ Restarting RESTHeart, the plugins will be automatically deployed.
 The code of the coordsToGeoJson follows:
 
 ```java
-@RegisterPlugin(name = "coordsToGeoJson", 
+@RegisterPlugin(name = "coordsToGeoJson",
         description = "transforms cordinates array to GeoJSON point object for csv loader service")
 public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResponse> {
     @Override

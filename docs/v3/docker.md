@@ -22,9 +22,9 @@ layout: docs
 - [Stop and restart](#stop-and-restart)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## How to run RESTHeart 3 with Docker
 
@@ -32,7 +32,7 @@ Note that you need to know a bit of [Docker](https://docs.docker.com) and [Docke
 
 [![Docker Stars](https://img.shields.io/docker/stars/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/) [![Docker Pulls](https://img.shields.io/docker/pulls/softinstigate/restheart.svg?maxAge=2592000)](https://hub.docker.com/r/softinstigate/restheart/)
 
-__PLease help us improving this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to ask a question. You could also open a PR to directly fix the documentation on Github, if you want.  
+__PLease help us improving this documentation__: if you encounter a problem, something you don't understand or a typo, use [this link](https://github.com/SoftInstigate/restheart-website/issues) to ask a question. You could also open a PR to directly fix the documentation on Github, if you want.
 
 ## Quick Start with Docker Compose
 
@@ -53,7 +53,7 @@ Start both services just typing:
 $ docker-compose up -d
 ```
 
-Open the the following URL: 
+Open the the following URL:
 
 __[localhost:8080/browser](http://localhost:8080/browser)__
 
@@ -255,7 +255,7 @@ $ docker start restheart
 
 **note**: RESTHeart is a stateless service; best Docker practices suggest to just delete the stopped container with `docker rm restheart` or to run it in foreground with the `--rm` parameter, so that it will be automatically removed when it exits.
 
-The MongoDB container instead is stateful, so deleting leads to lose all data unless you attached  a persistent [Docker Volume](https://docs.docker.com/userguide/dockervolumes/). 
+The MongoDB container instead is stateful, so deleting leads to lose all data unless you attached  a persistent [Docker Volume](https://docs.docker.com/userguide/dockervolumes/).
 
 To stop MongoDB:
 

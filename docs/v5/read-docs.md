@@ -25,7 +25,7 @@ layout: docs
     - [Examples](#hint-examples)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -120,8 +120,8 @@ managed automatically by RESTHeart) are not affected by this option.
 
 #### Return documents whose `quantity` is more than 50
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0"
 %}
 
@@ -264,8 +264,8 @@ sort={"field": 1}
 
 ### Sort by *status* ascending
 
-{% include code-header.html 
-    type="Request" 
+{% include code-header.html
+    type="Request"
     link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
 %}
 

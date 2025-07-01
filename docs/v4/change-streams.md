@@ -15,7 +15,7 @@ layout: docs
     -   [Security Informations](#security-informations)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -151,16 +151,16 @@ The following requests upsert a collection defining two change streams:
 ```
 PUT /messages HTTP/1.1
 
-{ 
+{
     "streams" : [ 
       { "stages" : [
           {
               "_$match": {
                 "_$or" : [
-                    { 
+                    {
                         "operationType": "insert"
                     },
-                    { 
+                    {
                         "operationType": "update"
                     }
                 ]
@@ -169,16 +169,16 @@ PUT /messages HTTP/1.1
       ],
         "uri" : "all"
       },
-      { "stages" : [ 
-          { 
-              "_$match" : { 
-                "fullDocument::name" : { "_$var" : "n" } 
-              } 
+      { "stages" : [
+          {
+              "_$match" : {
+                "fullDocument::name" : { "_$var" : "n" }
+              }
           }
         ],
         "uri" : "mine"
       }
-    ] 
+    ]
 }
 ```
 

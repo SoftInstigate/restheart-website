@@ -17,9 +17,9 @@ layout: docs
     * [Specify Permission on URI Remapped Resources](#specify-permission-on-uri-remapped-resources)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -166,7 +166,7 @@ develop and configure a custom IDM.
 The **idm** section of the yaml configuration file is:
 
 ``` yml
-idm:    
+idm:
     implementation-class: org.restheart.security.impl.SimpleFileIdentityManager
     conf-file: ./etc/security.yml
 ```
@@ -225,11 +225,11 @@ The DbIdentityManager shipped with RESTHeart (class is
 *org.restheart.security.impl.DbIdentityManager*) authenticates users
 defined in a MongoDB collection.
 
-To use the DbIdentityManager, set the **idm** section of the yaml 
+To use the DbIdentityManager, set the **idm** section of the yaml
 configuration file as follows:
 
 ``` yml
-idm:    
+idm:
     implementation-class: org.restheart.security.impl.DbIdentityManager
     conf-file: ./etc/security.yml
 ```
@@ -255,7 +255,7 @@ dbim:
 The _db_ and _coll_ properties point to the collection with the user documents
 (userbase.accounts in this case).
 
-The _prop-_ prefixed properties define which properties of the user document 
+The _prop-_ prefixed properties define which properties of the user document
 are used for authentication:
 
 1.  **id**: (string) the property holding the userid
@@ -274,12 +274,12 @@ exits at startup time, creating it eventually. This is useful to initialize a de
 the if _bcrypt-hashed-password_ is set to _true_, the _create-user-document_ password must
 be bcryped.
 
-**Note** Starting from RESTHeart v3.3, the _password_ field is always 
+**Note** Starting from RESTHeart v3.3, the _password_ field is always
 filtered out from the response and read requests with a filter query parameter involving
 the _password_ property are forbidden to avoid snooping passwords.
 
 **Hint** To completely hide the users collection, just specify a underscore prefixed
-collection name (e.g. _\_accounts_). 
+collection name (e.g. _\_accounts_).
 RESTHeart threats collections whose names start with \_ as reserved: they are not
 exposed by the API.
 
@@ -289,7 +289,7 @@ If you actually expose it, make sure to:
     so that users can only access their own data, (e.g. a user cannot modify other users' passwords)
 2.  For RESTHeart versions older than 3.3, filter out the *password* property from responses with
     a [representation transformer](/docs/v3/request-transformers).
- 
+
 
 ## Access Manager
 
@@ -308,7 +308,7 @@ The **access-manager** section of the yaml configuration file is:
 ### Configuration
 
 ``` text
-access-manager:    
+access-manager:
     implementation-class: org.restheart.security.impl.SimpleAccessManager
     conf-file: ./etc/security.yml
 ```
@@ -354,7 +354,7 @@ requests on resources without requiring authentication.
 The *mongo-mounts* configuration option allows to map the URI of the
 MongoDB resources.
 
-Starting from RESTHeart version 3.3, the _path_ attribute of permission 
+Starting from RESTHeart version 3.3, the _path_ attribute of permission
 are absolute.
 
 Example: With the following configuration, all the collections of the

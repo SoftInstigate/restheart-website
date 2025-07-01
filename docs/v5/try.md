@@ -9,7 +9,7 @@ layout: docs
 -   [Try the API online](#try-the-api-online)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -145,7 +145,7 @@ $ curl -i https://demo.restheart.org/messages/docid
     <div class="col-lg-3 pt-2">
         <p><strong>Find</strong> documents via query.</p>
         <p>The <code>filter</code> query parameter allows to specify any MongoDB query.</p>
-        <p>This instance of RESTHeart is configured to always add the <code>np</code> query parameter to the request; it gets rid of the collection properties and 
+        <p>This instance of RESTHeart is configured to always add the <code>np</code> query parameter to the request; it gets rid of the collection properties and
         returns just an array of documents.</p>
     </div>
     <div class="col-lg-9">

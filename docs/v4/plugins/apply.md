@@ -14,16 +14,16 @@ layout: docs
 * [Apply an Hook programmatically](#apply-an-hook-programmatically)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction 
 
 Transformers, Checkers and Hooks can be applied to any request.
 
-In RESTHeart, not only documents but also dbs and collections 
-(and files buckets, schema stores, etc.) have properties. 
+In RESTHeart, not only documents but also dbs and collections
+(and files buckets, schema stores, etc.) have properties.
 Some properties are metadata, i.e. have a special meaning
 for RESTheart that controls its behavior.
 
@@ -32,12 +32,12 @@ You can use special metadata to apply plugins. Transformers and Checkers can als
 ## Apply a Transformer via metadata
 
 The metadata *rts* allows to declare transformers.
-*  a transformer declared in the *rts* db property, 
-gets executed to any requests that involves the db 
-and its children resources 
+*  a transformer declared in the *rts* db property,
+gets executed to any requests that involves the db
+and its children resources
 (collections, documents, file buckets, schema stores, etc.).
 * a transformer declared in the *rts* collection property,
-gets executed to any requests that involves the collection 
+gets executed to any requests that involves the collection
 and its documents.
 
 
@@ -140,11 +140,11 @@ args.add(new BsonString("propToFilterOut"));
 BsonDocument confArgs = null;
 
 GlobalTransformer globalTransformer = new GlobalTransformer(
-                transformer, 
+                transformer,
                 predicate,
-                TransformerMetadata.PHASE.RESPONSE, 
-                TransformerMetadata.SCOPE.CHILDREN, 
-                args, 
+                TransformerMetadata.PHASE.RESPONSE,
+                TransformerMetadata.SCOPE.CHILDREN,
+                args,
                 confArgs)
 
 // finally add it to global checker list
@@ -208,13 +208,13 @@ Global Checkers can be defined programmatically instantiating `GlobalChecker` ob
 
 ``` java
     /**
-     * 
+     *
      * @param checker
      * @param predicate checker is applied only to requests that resolve
      * the predicate
      * @param skipNotSupported
      * @param args
-     * @param confArgs 
+     * @param confArgs
      */
 public GlobalChecker(Checker checker,
             RequestContextPredicate predicate,
@@ -237,7 +237,7 @@ RequestContextPredicate predicate = new RequestContextPredicate() {
     };
 
 // Let's use the predefined ContentSizeChecker to limit write requests size
-Checker checker = new ContentSizeChecker(); 
+Checker checker = new ContentSizeChecker();
 
 // ContentSizeChecker requires argument max, use 1024 Kbyte
 BsonDocument args = new BsonDocument("max", new BsonInt32(1024*1024));
@@ -300,12 +300,12 @@ Global Hooks can be defined programmatically instantiating `GlobalHook` objects:
 
 ``` java
     /**
-     * 
+     *
      * @param hook
      * @param predicate hook is applied only to requests that resolve
      * the predicate
      * @param args
-     * @param confArgs 
+     * @param confArgs
      */
     public GlobalHook(Hook hook,
             RequestContextPredicate predicate,
@@ -330,8 +330,8 @@ RequestContextPredicate predicate = new RequestContextPredicate() {
         }
     };
 
-// Let's use the predefined SnooperHook that logs old and new write requests 
-Hook snooperHook = new SnooperHook(); 
+// Let's use the predefined SnooperHook that logs old and new write requests
+Hook snooperHook = new SnooperHook();
 
 // if the hook requires configuration arguments, define them here
 BsonDocument args = null;

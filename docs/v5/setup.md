@@ -18,7 +18,7 @@ layout: docs
     -   [Project structure](#project-structure)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -290,11 +290,11 @@ Stopping restheart       ... done
 Stopping restheart-mongo ... done
 ```
 
-If you want to run the services in background just add the `-d` parameter, like `docker-compose up -d`. In this case you can tail the logs with `docker-compose logs -f`. 
+If you want to run the services in background just add the `-d` parameter, like `docker-compose up -d`. In this case you can tail the logs with `docker-compose logs -f`.
 
-To stop the containers use `docker-compose stop` then `docker-compose start` to start them again. 
+To stop the containers use `docker-compose stop` then `docker-compose start` to start them again.
 
-To completely shutdown the containers and clean-up everything use `docker-compose down -v`. 
+To completely shutdown the containers and clean-up everything use `docker-compose down -v`.
 
 Beware the `down` command with `-v` parameter erases the MongoDB attached docker volume (named `restheart-mongo-volume`) with all its data.
 

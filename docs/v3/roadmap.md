@@ -3,9 +3,9 @@ title: Roadmap
 layout: docs
 ---
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## RESTHeart 4.0
 
@@ -15,7 +15,7 @@ RESTHeart 4.0 is split in two modules, restheart-core and restheart-security.
 
 [restheart-security](https://github.com/softInstigate/restheart-security) is a spin-off project from RESTHeart. It is a Identity and Access Manager that includes and extends the security features embedded in RESTHeart 3.x.
 
-> restheart-security only focus on security while restheart-core just provides a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*. 
+> restheart-security only focus on security while restheart-core just provides a Web API for MongoDB in the spirit of having software bricks each of whom *does just one thing and does it well*.
 
 restheart-security follows the same dual licensing scheme of RESTHeart.
 
@@ -25,11 +25,11 @@ restheart-security follows the same dual licensing scheme of RESTHeart.
 
 ## Representation format
 
-We received many feedbacks asking for a simpler representation format and we have worked on it for [mrest.io](https://mrest.io), the cloud RESTHeart service (currenlty in beta). 
+We received many feedbacks asking for a simpler representation format and we have worked on it for [mrest.io](https://mrest.io), the cloud RESTHeart service (currenlty in beta).
 
 > You can try the new format creating a free account at [mrest.io](https://mrest.io).
 
-Starting with RESTHeart 4.0 a new simpler representation format is available. The 3.x representation formats (plain json and HAL) will be still be available. 
+Starting with RESTHeart 4.0 a new simpler representation format is available. The 3.x representation formats (plain json and HAL) will be still be available.
 
 The new format, called STANDARD, is as follows:
 
@@ -37,19 +37,19 @@ The new format, called STANDARD, is as follows:
 # list of dbs -> GET /
 
 [
-    "db_1", 
-    "db_2", 
+    "db_1",
+    "db_2",
     ...,
     "db_n"
 ]
 
 # list of collections of a db -> GET /db
 
-[ 
-    "collection_1", 
-    "collection_2", 
+[
+    "collection_1",
+    "collection_2",
     ...,
-    "collection_n" 
+    "collection_n"
 ]
 
 # metadata of a collection  -> GET /db/_meta
@@ -62,7 +62,7 @@ The new format, called STANDARD, is as follows:
 }
 
 # documents of a collection -> GET /db/coll
-[ 
+[
     { <doc_1> },
     { <doc_2> },
     ...,
@@ -75,7 +75,7 @@ The new format, called STANDARD, is as follows:
 
 # a document -> GET /db/coll/docid
 
-{ 
+{
     "prop_1": value,
     "prop_2": value,
     ...,
@@ -121,7 +121,7 @@ RESTHeart Platform 4.0 fully supports [multi document transactions](https://docs
 
 > note: this feature is only available with RESTHeart Platform.
 
-Following the REST paradigm, the approach to support transactions is modeling them as first class resources. 
+Following the REST paradigm, the approach to support transactions is modeling them as first class resources.
 
 The client can start a transaction:
 

@@ -16,9 +16,9 @@ layout: docs
 * [Hooks](#hooks)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction 
 
@@ -73,7 +73,7 @@ plugins-args:
 
 ### Packaging
 
-Plugins implementation classes must be added to the java classpath. 
+Plugins implementation classes must be added to the java classpath.
 
 A convenient method is packaging the classes in the `restheart-platform-core.jar` file as suggested in [Packaging Plugins](/docs/v4/develop/packaging) section.
 
@@ -92,7 +92,7 @@ The `Initializer` interface:
 ``` java
 public interface Initializer extends Plugin {
     /**
-     * 
+     *
      * @param confArgs arguments optionally specified in the configuration file
      */
     void init(Map<String, Object> confArgs);
@@ -201,11 +201,11 @@ public class PingService extends Service {
     public PingService(Map<String, Object> confArgs) {
         super(confArgs);
 
-        this.msg =  confArgs != null  && confArgs.containsKey("msg") 
-                ? (String) confArgs.get("msg") 
+        this.msg =  confArgs != null  && confArgs.containsKey("msg")
+                ? (String) confArgs.get("msg")
                 : "ping";
     }
-    
+
     @Override
     public String defaultUri() {
         return "/ping";
@@ -228,7 +228,7 @@ public class PingService extends Service {
         } else {
             context.setResponseStatusCode(HttpStatus.SC_NOT_IMPLEMENTED);
         }
-        
+
         next(exchange, context);
     }
 }
@@ -246,7 +246,7 @@ plugins-args:
 ## Transformers
 
 {: .bs-callout.bs-callout-info}
-Transformers allow to transform the request or the response. 
+Transformers allow to transform the request or the response.
 
 Examples of Transformers are:
 - filtering out from the response sensitive properties;
@@ -315,12 +315,12 @@ package com.whatever;
 @RegisterPlugin(name = "myTransformer",
         description = "Add _timestamp to the body")
 public class MyTransformer implements Transformer {
-    tranform(final HttpServerExchange exchange, 
-        final RequestContext context, 
-        BsonValue contentToTransform, 
+    tranform(final HttpServerExchange exchange,
+        final RequestContext context,
+        BsonValue contentToTransform,
         final BsonValue args) {
           if (contentToTransform != null && contentToTransform.isDocument()){
-            contentToTransform.asDocument().put("_timestamp", 
+            contentToTransform.asDocument().put("_timestamp",
                   new BsonInt64(System.currentTimeMillis()));
           }
     }
@@ -340,7 +340,7 @@ For implementation examples refer to the package [org.restheart.plugins.checkers
 A checker is a java class that implements the
 interface [org.restheart.plugins.Checker](https://github.com/SoftInstigate/restheart/tree/master/core/src/main/java/org/restheart/plugins/Checker.java).
 
-  
+
 
 ``` java
     public interface Checker extends Plugin {
@@ -417,7 +417,7 @@ The following code, is an example checker that checks if the
 package com.whatever;
 
 @RegisterPlugin(
-        name = "checkNumber", 
+        name = "checkNumber",
         description = "Checks if number property is between 0 and 10 on PATCH requests")
 public class MyChecker implements Checker {
     @Override
@@ -431,10 +431,10 @@ public class MyChecker implements Checker {
         }
 
         BsonValue _value = context.getContent().asDocument().get("number");
-        
+
         if (_value != null && _value.isNumber()) {
             Integer value = _value.asInt32().getValue();
-            
+
             return value < 10 && value > 0;
         } else {
             return false; // BAD REQUEST
@@ -489,7 +489,7 @@ public interface Hook extends Plugin {
             BsonValue args) {
         return hook(exchange, context, args, null);
     }
-        
+
 
     /**
      *

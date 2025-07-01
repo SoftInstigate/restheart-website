@@ -17,9 +17,9 @@ layout: docs
     * [DELETE multiple documents using the wildcard document id](#delete-multiple-documents-using-the-wildcard-document-id)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -136,14 +136,14 @@ index position, and enclose in quotes:
 
 **Example**
 
-``` json 
+``` json
 { "_id": "docid", "array": [ 1, 2, 3, 4, 5 ], ... } 
 ```
 ```
 PATCH /db/coll/docid {"array.1": 100 }
 ```
 ```json
-{ "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... } 
+{ "_id": "docid", "array": [ 1, 100, 3, 4, 5 ], ... }
 ```
 
 ### Embedded Documents
@@ -163,12 +163,12 @@ name, and enclose in quotes:
  
 PATCH /db/coll/docid { "name.last": "Ford" }
  
-{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... } 
+{ "_id": "docid", "name": { "first": "Alan", "last": "Ford" }, ... }
 ```
 
 ## Update operators
 
-RESTHeart allows to use all MongoDB update operators on PATCH requests. 
+RESTHeart allows to use all MongoDB update operators on PATCH requests.
 PUT and POST can only use `$currentDate` update operator.
 
 Refer to MongoDB [Update
@@ -207,10 +207,10 @@ The following request will:
     [$currentDate](https://docs.mongodb.org/manual/reference/operator/update/currentDate/)
     operator
 
-  
+
 
 ``` bash
-PATCH /db/coll/docid 
+PATCH /db/coll/docid
 ```
 ```json
 {
@@ -286,7 +286,7 @@ POST /db/coll [ { "seq": 1 }, { "seq": 2 }, { "seq": 3 }, { "seq": 4 } ]
   "deleted": 0,
   "modified": 0,
   "matched": 0
-} 
+}
 ```
 
 ### PATCH multiple documents using the wildcard document id
@@ -319,7 +319,7 @@ collection.
 **request**
 
 ``` plain
-PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 } 
+PATCH /db/coll/*?filter={"num": {"$exists": false } } { "num": 1 }
 ```
 
 **response**

@@ -3,9 +3,9 @@ title: Representation Format
 layout: docs
 ---
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -190,7 +190,7 @@ own *properties*, *embedded resources* (in this case, documents) and
 GET 127.0.0.1:8080/db/coll?count
 ```
 
-**Response** 
+**Response**
 
 ``` bash
 HTTP/1.1 200 OK
@@ -211,32 +211,32 @@ X-Powered-By: restheart.org
             {
                 "_etag": {
                     "$oid": "56ded2ee2d174c2a08cdee85"
-                }, 
+                },
                 "_id": {
                     "$oid": "56ded2eead66b2a1e741c054"
-                }, 
-                "name": "mongodb", 
+                },
+                "name": "mongodb",
                 "rating": "hyper cool"
-            }, 
+            },
             {
                 "_etag": {
                     "$oid": "56ded2d42d174c2a08cdee84"
-                }, 
+                },
                 "_id": {
                     "$oid": "56ded2d4ad66b2a1e741c053"
-                }, 
-                "name": "restheart", 
+                },
+                "name": "restheart",
                 "rating": "super cool"
             }
         ]
-    }, 
+    },
     "_etag": {
         "$oid": "56ded2b22d174c2a08cdee83"
-    }, 
-    "_id": "coll", 
-    "_returned": 2, 
-    "_size": 2, 
-    "_total_pages": 1, 
+    },
+    "_id": "coll",
+    "_returned": 2,
+    "_size": 2,
+    "_total_pages": 1,
     "desc": "this is my first collection created with restheart"
 }
 ```
@@ -263,11 +263,11 @@ by RESTHeart for you); these always starts with \_:
 {
     "_etag": {
         "$oid": "56ded2b22d174c2a08cdee83"
-    }, 
-    "_id": "coll", 
-    "_returned": 2, 
-    "_size": 2, 
-    "_total_pages": 1, 
+    },
+    "_id": "coll",
+    "_returned": 2,
+    "_size": 2,
+    "_total_pages": 1,
     "desc": "this is my first collection created with restheart"
 }
 ```
@@ -285,21 +285,21 @@ The `_embedded property looks like:`
             {
                 "_etag": {
                     "$oid": "56ded2ee2d174c2a08cdee85"
-                }, 
+                },
                 "_id": {
                     "$oid": "56ded2eead66b2a1e741c054"
-                }, 
-                "name": "mongodb", 
+                },
+                "name": "mongodb",
                 "rating": "hyper cool"
-            }, 
+            },
             {
                 "_etag": {
                     "$oid": "56ded2d42d174c2a08cdee84"
-                }, 
+                },
                 "_id": {
                     "$oid": "56ded2d4ad66b2a1e741c053"
-                }, 
-                "name": "restheart", 
+                },
+                "name": "restheart",
                 "rating": "super cool"
             }
         ]
@@ -378,43 +378,43 @@ The `_links` property looks like:
 "_links": {
         "curies": [
             {
-                "href": "https://restheart.org/curies/2.0/{rel}.html", 
-                "name": "rh", 
+                "href": "https://restheart.org/curies/2.0/{rel}.html",
+                "name": "rh",
                 "templated": true
             }
-        ], 
+        ],
         "first": {
             "href": "/db/coll?pagesize=100&count&hal=f"
-        }, 
+        },
         "last": {
             "href": "/db/coll?pagesize=100&count&hal=f"
-        }, 
+        },
         "rh:coll": {
-            "href": "/db/{collname}", 
+            "href": "/db/{collname}",
             "templated": true
-        }, 
+        },
         "rh:db": {
             "href": "/db"
-        }, 
+        },
         "rh:document": {
-            "href": "/db/coll/{docid}{?id_type}", 
+            "href": "/db/coll/{docid}{?id_type}",
             "templated": true
-        }, 
+        },
         "rh:filter": {
-            "href": "/db/coll{?filter}", 
+            "href": "/db/coll{?filter}",
             "templated": true
-        }, 
+        },
         "rh:indexes": {
             "href": "/db/coll/_indexes"
-        }, 
+        },
         "rh:paging": {
-            "href": "/db/coll{?page}{&pagesize}", 
+            "href": "/db/coll{?page}{&pagesize}",
             "templated": true
-        }, 
+        },
         "rh:sort": {
-            "href": "/db/coll{?sort_by}", 
+            "href": "/db/coll{?sort_by}",
             "templated": true
-        }, 
+        },
         "self": {
             "href": "/db/coll?count&hal=f"
         }

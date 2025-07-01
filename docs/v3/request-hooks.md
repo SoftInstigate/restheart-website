@@ -11,9 +11,9 @@ layout: docs
 * [How to declare an Hook in the configuration file](#how-to-declare-an-hook-in-the-configuration-file)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -28,8 +28,8 @@ For example, request hooks can be used:
 
 ## The *hooks* collection metadata
 
-In RESTHeart, not only documents but also dbs and collections 
-(and files buckets, schema stores, etc.) have properties. 
+In RESTHeart, not only documents but also dbs and collections
+(and files buckets, schema stores, etc.) have properties.
 Some properties are metadata, i.e. have a special meaning
 for RESTheart that controls its behavior.
 
@@ -73,7 +73,7 @@ Mandatory
 ## How to develop an Hook
 
 Request Hooks are implemented in java and declared in the RESTHeart
-configuration file; once the are configured, they can be bound to 
+configuration file; once the are configured, they can be bound to
 collections via the `hooks` collection metadata.
 
 Of course, the class(es) that implements the Hook must be added to the java
@@ -117,7 +117,7 @@ public interface Hook {
             BsonValue args) {
         return hook(exchange, context, args, null);
     }
-        
+
 
     /**
      *
@@ -202,7 +202,7 @@ It has four arguments:
     about the request
 -   the optional json `args` object specified in the hook collection
     metadata.
--   the optional json `confArgs` object specified in the definition of the hook in the configuration file 
+-   the optional json `confArgs` object specified in the definition of the hook in the configuration file
 
 ## How to declare an Hook in the configuration file
 

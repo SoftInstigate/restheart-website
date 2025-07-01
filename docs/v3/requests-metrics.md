@@ -16,9 +16,9 @@ layout: docs
   - [Prometheus database and collection labels for request to root metrics](#prometheus-database-and-collection-labels-for-request-to-root-metrics)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 
@@ -97,7 +97,7 @@ to the type of the query (e.g. `METRICS`, `DATABASE`, `COLLECTION`,
 first digit, full). The examples are calls to the root `/_metrics` after
 a few calls to an empty database (thus the 404s).
 
-**Prometheus example response** 
+**Prometheus example response**
 
 ``` plain
 http_response_timers_METRICS_count{method="GET",code="2xx"} 13 1510039263986

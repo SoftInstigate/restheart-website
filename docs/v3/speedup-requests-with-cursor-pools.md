@@ -12,9 +12,9 @@ layout: docs
 * [Consideration on concurrent insertions](#consideration-on-concurrent-insertions)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -111,7 +111,7 @@ request, following the [principle of
 locality](https://en.wikipedia.org/wiki/Locality_of_reference); in the
 RANDOM case, a configurable number of cursors is allocated uniformly.
 
-The following images depicts how it works, in the LINEAR case:**  
+The following images depicts how it works, in the LINEAR case:**
 **
 
 1.  **Request A** asks for 5 documents starting from the 1.000.000th

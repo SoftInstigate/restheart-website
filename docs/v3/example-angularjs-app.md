@@ -24,7 +24,7 @@ layout: docs
 -   [References](#references)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
 {% include docs-head.html %}
 
@@ -119,7 +119,7 @@ The main ingredients for our recipe are:
 -   **RESTHeart API Server** - RESTHeart is the RESTful Web API Server
     for MongoDB, ready to use with CRUD operations API and Data Model
     operations API. Create databases, collections, indexes and document
-    by only using HTTP verbs.\*\*  
+    by only using HTTP verbs.\*\*
     \*\*
 -   **AngularJS** - it lets you extend HTML vocabulary for your
     application. The resulting environment is extraordinarily
@@ -547,7 +547,7 @@ The possible responses to GET `/_logic/roles/<userid>` requests are:
 -   _403 Forbidden_, if the user id in the Authorization header is
     different than the &lt;userid&gt; in the URI
 -   _200 OK_ if credentials match; in this case the following document
-    is sent; not that it includes the _roles_ array:  
+    is sent; not that it includes the _roles_ array:
 
 
 **Roles**

@@ -17,9 +17,9 @@ layout: docs
     - [Indexes cannot be updated](#indexes-cannot-be-updated)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 
 ## Introduction
@@ -38,7 +38,7 @@ To list the collection indexes use the following request:
 ### Example
 
 ``` bash
-GET 127.0.0.1:8080/db/coll/_indexes 
+GET 127.0.0.1:8080/db/coll/_indexes
 
 HTTP/1.1 200 OK
 ...
@@ -46,30 +46,30 @@ HTTP/1.1 200 OK
 {
     "_embedded": [
         {
-            "_id": "_id_", 
+            "_id": "_id_",
             "key": {
                 "_id": 1
-            }, 
-            "ns": "db.coll", 
+            },
+            "ns": "db.coll",
             "v": 1
-        }, 
+        },
         {
-            "_id": "text", 
-            "default_language": "english", 
+            "_id": "text",
+            "default_language": "english",
             "key": {
-                "_fts": "text", 
+                "_fts": "text",
                 "_ftsx": 1
-            }, 
-            "language_override": "language", 
-            "ns": "db.coll", 
-            "textIndexVersion": 3, 
-            "v": 1, 
+            },
+            "language_override": "language",
+            "ns": "db.coll",
+            "textIndexVersion": 3,
+            "v": 1,
             "weights": {
                 "title": 1
             }
         }
-    ], 
-    "_returned": 2, 
+    ],
+    "_returned": 2,
     "_size": 2,
     ...
 }
@@ -128,12 +128,12 @@ HTTP/1.1 406 Not Acceptable
 {
     "_exceptions": [
         {
-            "exception": "com.mongodb.DuplicateKeyException", 
+            "exception": "com.mongodb.DuplicateKeyException",
             "exception message": "Write failed with error code 11000 and error message 'E11000 duplicate key error index: test.coll.$name2 dup key: ...."
         }
     ],
-    "http status code": 406, 
-    "http status description": "Not Acceptable", 
+    "http status code": 406,
+    "http status description": "Not Acceptable",
     "message": "error creating the index",
     ...
 }
@@ -159,12 +159,12 @@ HTTP/1.1 406 Not Acceptable
 {
     "_exceptions": [
         {
-            "exception": "com.mongodb.MongoCommandException", 
+            "exception": "com.mongodb.MongoCommandException",
             "exception message": "Command failed with error 86: 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }' on server 127.0.0.1:27017. The full response is { 'ok' : 0.0, 'errmsg' : 'Trying to create an index with same name name with different key spec { name: -1 } vs existing spec { name: 1 }', 'code' : 86 }"
         }
     ],
-    "http status code": 406, 
-    "http status description": "Not Acceptable", 
+    "http status code": 406,
+    "http status description": "Not Acceptable",
     "message": "error creating the index",
     ...
 }

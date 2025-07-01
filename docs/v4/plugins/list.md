@@ -13,9 +13,9 @@ layout: docs
 * [Limiting file size with checkContentSize](#limiting-file-size-with-checkContentSize)
 
 </div>
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
 
-{% include docs-head.html %} 
+{% include docs-head.html %}
 
 ## Introduction
 
@@ -99,8 +99,8 @@ GET /rtsexample/mydoc HTTP/1.1
 
 HTTP/1.1 200 OK
 {
-    "_id": "mydoc", 
-    "a": 1, 
+    "_id": "mydoc",
+    "a": 1,
     "log": {
         "remoteIp": "127.0.0.1"
     }
