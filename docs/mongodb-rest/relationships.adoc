@@ -2,7 +2,14 @@
 title: Document Relationships
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 MongoDB is a document database without built-in join operations, but that doesn't mean your data can't have relationships. RESTHeart provides a convenient way to define and navigate relationships between documents, making it easier to model connected data.
 
@@ -70,69 +77,181 @@ This pattern allows you to create hierarchical data where each document referenc
 
 . Create a collection with a parent relationship:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /categories HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}'
+----
 
-{
-    "rels": [
-        {
-            "rel": "parent",
-            "type": "MANY_TO_ONE",
-            "role": "OWNING",
-            "target-coll": "categories",
-            "ref-field": "parentId"
-        }
-    ],
-    "description": "Product categories organized in a tree"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}' | \
+http PUT [INSTANCE-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categories', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'parent',
+      type: 'MANY_TO_ONE',
+      role: 'OWNING',
+      'target-coll': 'categories',
+      'ref-field': 'parentId'
+    }],
+    description: 'Product categories organized in a tree'
+  })
+});
 ----
 
 . Create the root category:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /categories/electronics HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/categories/electronics \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Electronics", "description": "Electronic devices and accessories"}'
+----
 
-{
-    "name": "Electronics",
-    "description": "Electronic devices and accessories"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Electronics", "description": "Electronic devices and accessories"}' | \
+http PUT [INSTANCE-URL]/categories/electronics \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categories/electronics', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Electronics',
+    description: 'Electronic devices and accessories'
+  })
+});
 ----
 
 . Create child categories referencing the parent:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /categories/smartphones HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/categories/smartphones \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}'
+----
 
-{
-    "name": "Smartphones",
-    "description": "Mobile phones with advanced features",
-    "parentId": "electronics"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}' | \
+http PUT [INSTANCE-URL]/categories/smartphones \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categories/smartphones', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Smartphones',
+    description: 'Mobile phones with advanced features',
+    parentId: 'electronics'
+  })
+});
 ----
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /categories/laptops HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/categories/laptops \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}'
+----
 
-{
-    "name": "Laptops",
-    "description": "Portable computers",
-    "parentId": "electronics"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}' | \
+http PUT [INSTANCE-URL]/categories/laptops \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categories/laptops', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Laptops',
+    description: 'Portable computers',
+    parentId: 'electronics'
+  })
+});
 ----
 
 . Now when you request a child document with HAL representation:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /categories/smartphones?rep=HAL&hal=f HTTP/1.1
+curl -X GET [INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/categories/smartphones \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 You'll get a response with a link to the parent:
@@ -161,80 +280,215 @@ In this pattern, a document owns references to multiple related documents. For e
 
 . Create the albums collection:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Music albums"}'
+----
 
-{
-    "description": "Music albums"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"description": "Music albums"}' | \
+http PUT [INSTANCE-URL]/albums \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    description: 'Music albums'
+  })
+});
 ----
 
 . Create the bands collection with a relationship to albums:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /bands HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/bands \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}'
+----
 
-{
-    "rels": [
-        {
-            "rel": "albums",
-            "type": "ONE_TO_MANY",
-            "role": "OWNING",
-            "target-coll": "albums",
-            "ref-field": "albumIds"
-        }
-    ],
-    "description": "Music bands and artists"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}' | \
+http PUT [INSTANCE-URL]/bands \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'albums',
+      type: 'ONE_TO_MANY',
+      role: 'OWNING',
+      'target-coll': 'albums',
+      'ref-field': 'albumIds'
+    }],
+    description: 'Music bands and artists'
+  })
+});
 ----
 
 . Create some albums:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums/album1 HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums/album1 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "The Dark Side of the Moon", "year": 1973}'
+----
 
-{
-    "title": "The Dark Side of the Moon",
-    "year": 1973
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "The Dark Side of the Moon", "year": 1973}' | \
+http PUT [INSTANCE-URL]/albums/album1 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums/album1', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'The Dark Side of the Moon',
+    year: 1973
+  })
+});
 ----
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums/album2 HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums/album2 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Wish You Were Here", "year": 1975}'
+----
 
-{
-    "title": "Wish You Were Here",
-    "year": 1975
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Wish You Were Here", "year": 1975}' | \
+http PUT [INSTANCE-URL]/albums/album2 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums/album2', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Wish You Were Here',
+    year: 1975
+  })
+});
 ----
 
 . Create a band that references these albums:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /bands/pinkfloyd HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/bands/pinkfloyd \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}'
+----
 
-{
-    "name": "Pink Floyd",
-    "formed": 1965,
-    "albumIds": ["album1", "album2"]
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}' | \
+http PUT [INSTANCE-URL]/bands/pinkfloyd \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands/pinkfloyd', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Pink Floyd',
+    formed: 1965,
+    albumIds: ['album1', 'album2']
+  })
+});
 ----
 
 . When you request the band document with HAL representation:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /bands/pinkfloyd?rep=HAL&hal=f HTTP/1.1
+curl -X GET [INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/bands/pinkfloyd \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 You'll get a response with a link to query the albums:
@@ -263,81 +517,216 @@ In this pattern, multiple documents reference a single document. For example, al
 
 . Create the bands collection:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /bands HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/bands \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}'
+----
 
-{
-    "rels": [
-        {
-            "rel": "albums",
-            "type": "ONE_TO_MANY",
-            "role": "INVERSE",
-            "target-coll": "albums",
-            "ref-field": "bandId"
-        }
-    ],
-    "description": "Music bands and artists"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}' | \
+http PUT [INSTANCE-URL]/bands \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'albums',
+      type: 'ONE_TO_MANY',
+      role: 'INVERSE',
+      'target-coll': 'albums',
+      'ref-field': 'bandId'
+    }],
+    description: 'Music bands and artists'
+  })
+});
 ----
 
 . Create the albums collection:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Music albums with band references"}'
+----
 
-{
-    "description": "Music albums with band references"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"description": "Music albums with band references"}' | \
+http PUT [INSTANCE-URL]/albums \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    description: 'Music albums with band references'
+  })
+});
 ----
 
 . Create a band:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /bands/beatles HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/bands/beatles \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "The Beatles", "formed": 1960}'
+----
 
-{
-    "name": "The Beatles",
-    "formed": 1960
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "The Beatles", "formed": 1960}' | \
+http PUT [INSTANCE-URL]/bands/beatles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands/beatles', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'The Beatles',
+    formed: 1960
+  })
+});
 ----
 
 . Create albums that reference the band:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums/abbey-road HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums/abbey-road \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}'
+----
 
-{
-    "title": "Abbey Road",
-    "year": 1969,
-    "bandId": "beatles"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}' | \
+http PUT [INSTANCE-URL]/albums/abbey-road \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums/abbey-road', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Abbey Road',
+    year: 1969,
+    bandId: 'beatles'
+  })
+});
 ----
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /albums/revolver HTTP/1.1
-Content-Type: application/json
+curl -X PUT [INSTANCE-URL]/albums/revolver \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Revolver", "year": 1966, "bandId": "beatles"}'
+----
 
-{
-    "title": "Revolver",
-    "year": 1966,
-    "bandId": "beatles"
-}
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Revolver", "year": 1966, "bandId": "beatles"}' | \
+http PUT [INSTANCE-URL]/albums/revolver \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/albums/revolver', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Revolver',
+    year: 1966,
+    bandId: 'beatles'
+  })
+});
 ----
 
 . When you request the band document with HAL representation:
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /bands/beatles?rep=HAL&hal=f HTTP/1.1
+curl -X GET [INSTANCE-URL]/bands/beatles?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/bands/beatles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/bands/beatles?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 You'll get a response with a link to query all the band's albums:

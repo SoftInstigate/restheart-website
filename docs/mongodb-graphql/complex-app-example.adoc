@@ -2,7 +2,14 @@
 title: A Complex GraphQL App
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 :page-liquid:
 
@@ -13,180 +20,138 @@ This tutorial assume:
 - RESTHeart Platform running on the localhost with the default configuration: the database *restheart* is bound to `/`, the user *admin* exists with default password *secret*, *gql-apps* is the collection, within `restheart` database, reserved to GraphQL apps definitions and the GraphQL service is reachable at `/graphql`.
 - The `sample-mflix` database (see link:/docs/mongodb-rest/sample-data[Load Sample Data into MongoDB]) is stored in the MongoDB instance associated to RESTHeart.
 
-NOTE: *Execute on rest ninja* doesn't work with Safari because it requires HTTPS. Since configuring HTTPS requires a valid certificate and takes some time to link:/docs/security/tls/[configure], we suggest to just use Chrome or Firefox for this tutorial.
 
 
 === Create the GraphQL app
 
 To create the *gql-apps* collection, run the following:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/cf0d3d9a0f811cf5d6921ad66fcf49cbad852a5a/0"
-%}
-++++
+==== cURL
+[source,bash]
+----
+curl -X PUT "[INSTANCE-URL]/gql-apps" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
 
-[source, http]
-PUT /gql-apps HTTP/1.1
+==== HTTPie
+[source,bash]
+----
+http PUT "[INSTANCE-URL]/gql-apps" \
+  "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/gql-apps', {
+  method: 'PUT',
+  headers: {
+    'Authorization': '[BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 To upload the example GraphQL app definition, run the following:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/cb7df9b7270fd8eb1657b925f3f8c7e2277af350/1"
-%}
-++++
+NOTE: Due to the length of this GraphQL app definition, only the basic structure is shown. For the complete definition, see the full example at the end of this document.
 
-[source,http]
-POST /gql-apps HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,json]
+==== cURL
+[source,bash]
 ----
-{
- "_id": "mflix-gql-def",
- "descriptor": {
-   "name":"MFlix",
-   "description":"GraphQL App example using MongoDB sample_mflix dataset",
-   "enabled": true,
-   "uri":"mflix"
+curl -X POST "[INSTANCE-URL]/gql-apps" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d @mflix-graphql-app.json
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/gql-apps" \
+  "Authorization:Basic [BASIC-AUTH]" \
+  "Content-Type:application/json" \
+  < mflix-graphql-app.json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const mflixAppDefinition = {
+  "_id": "mflix-gql-def",
+  "descriptor": {
+    "name":"MFlix",
+    "description":"GraphQL App example using MongoDB sample_mflix dataset",
+    "enabled": true,
+    "uri":"mflix"
   },
-   "schema": "type Stats { year: Int moviesNum: Int } type Comment{  _id: ObjectId  user: User  movie: Movie  text: String  date: DateTime}type Movie{  _id: ObjectId  title: String  year: Int  runtime: Int  released: DateTime  poster: String  plot: String  fullPlot: String  lastUpdate: String  filmType: String  directors: [String]  imdbRate: Float  imdbVotes: Int  countries: [String]  genres: [String]  tomatoesRate: Float  tomatoesReviewsNum: Int  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]  relatedMovies: [Movie]}type Session{  _id: ObjectId  user: User  jwt: String} type Theater{  theaterId: Int  location: BsonDocument} type User{  _id: ObjectId  name: String  email: String  comments(startDate: DateTime = \"-9223372036854775808\", endDate: DateTime = \"9223372036854775807\", sort: Int = 1, skip: Int = 0, limit: Int = 0): [Comment]}type Query{  MoviesByTitle(title: String!): [Movie]  MoviesByYear(year: Int!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Movie]  UserByEmail(email: String!): [User] StatsByTomatoesRateRange(min: Float max: Float = 10): [Stats] MoviesByTomatoesRateRange(min: Float, max: Float, sort: Int = 1, skip: Int = 0, limit: Int = 0):[Movie] TheatersByCity(city: String!, sort: Int = 1, skip: Int = 0, limit: Int = 0): [Theater] AllMovies(limit: Int = 10, skip: Int = 0): [Movie]}",
- "mappings": {
-  "Comment": {
-    "user": {
-      "db":"sample_mflix",
-      "collection":"users",
-      "find": { "email": { "$fk":"email" } },
-      "dataLoader": { "batching": true, "caching": true }
-    },
-    "movie": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "_id": { "$fk":"movie_id" } },
-      "dataLoader": { "batching": true, "caching": false, "maxBatchSize": 30 }
-    }
+  // ... complete schema and mappings
+};
+
+fetch('[INSTANCE-URL]/gql-apps', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
   },
-  "Movie": {
-    "imdbRate":"imdb.rating",
-    "imdbVotes":"imdb.votes",
-    "tomatoesRate":"tomatoes.viewer.rating",
-    "tomatoesReviewsNum":"tomatoes.viewer.numReviews",
-    "lastUpdate":"lastupdated",
-    "fullPlot":"fullplot",
-    "filmType":"type",
-    "comments": {
-      "db":"sample_mflix",
-      "collection":"comments",
-      "find": { "$and": [{ "movie_id": { "$fk":"_id" } }, { "date": { "$gte": { "$arg":"startDate" }, "$lt": { "$arg":"endDate" } } }] },
-      "sort": { "date": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  },
-  "Session": {
-    "user": {
-      "db":"sample_mflix",
-      "collection":"user",
-      "find": { "email": { "$fk":"user_id" } }
-    }
-  },
-  "User": {
-    "comments": {
-      "db":"sample_mflix",
-      "collection":"comments",
-      "find": { "email": { "$fk":"email" } },
-      "sort": { "_id": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  },
-  "Query": {
-    "StatsByTomatoesRateRange": {
-      "db": "sample_mflix",
-      "collection": "movies",
-      "stages": [
-        { "$match": { "imdb.rating": { "$gte": { "$arg":"min" }, "$lte": { "$arg":"max" } }, "year": { "$type": "int" } } },
-        { "$group": { "_id": "$year", "moviesNum": { "$count": {} } } },
-        { "$project": { "_id": 0, "year": "$_id", "moviesNum": 1} },
-        { "$sort": { "year": 1 } }
-    ]
-    },
-    "MoviesByTitle": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "title": { "$arg":"title" } }
-    },
-    "MoviesByYear": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "year": { "$arg":"year" } },
-      "sort": { "_id": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "UserByEmail": {
-      "db":"sample_mflix",
-      "collection":"users",
-      "find": { "email": { "$arg":"email" } }
-    },
-    "MoviesByTomatoesRateRange": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { "tomatoes.viewer.rating": { "$gte": { "$arg":"min" }, "$lt": { "$arg":"max" } } },
-      "sort": { "tomatoes.viewer.rating": { "$arg":"sort" }, "_id": 1 },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "TheatersByCity": {
-      "db":"sample_mflix",
-      "collection":"theaters",
-      "find": { "location.address.city": { "$arg":"city" } },
-      "sort": { "location.address.city": { "$arg":"sort" } },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    },
-    "AllMovies": {
-      "db":"sample_mflix",
-      "collection":"movies",
-      "find": { },
-      "sort": { "_id_": -1 },
-      "skip": { "$arg":"skip" },
-      "limit": { "$arg":"limit" }
-    }
-  }
- }
-}
+  body: JSON.stringify(mflixAppDefinition)
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 === query with `application/json`
 
 To execute a GraphQL request to *Mflix* app with *Content-Type* `application/json`, run the following:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/e2aed3eb5867ee201b0bee790e3924a16da2219b/0"
-%}
-++++
-
-[source,http]
-POST /graphql/mflix HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,json]
+==== cURL
+[source,bash]
 ----
-{
+curl -X POST "[INSTANCE-URL]/graphql/mflix" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
    "query":"query exampleOperation($year: Int!, $limit: Int = 0){MoviesByYear(year: $year, limit: $limit){ title comments{ text user{name} date} tomatoesRate}}",
    "variables":{
       "year":2008,
       "limit":2
    }
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/graphql/mflix" \
+  "Authorization:Basic [BASIC-AUTH]" \
+  "Content-Type:application/json" \
+  query="query exampleOperation(\$year: Int!, \$limit: Int = 0){MoviesByYear(year: \$year, limit: \$limit){ title comments{ text user{name} date} tomatoesRate}}" \
+  variables:='{
+    "year":2008,
+    "limit":2
+  }'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/graphql/mflix', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "query": "query exampleOperation($year: Int!, $limit: Int = 0){MoviesByYear(year: $year, limit: $limit){ title comments{ text user{name} date} tomatoesRate}}",
+    "variables": {
+      "year": 2008,
+      "limit": 2
+    }
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 ++++
@@ -238,21 +203,13 @@ POST /graphql/mflix HTTP/1.1
 
 To execute a GraphQL request to *Mflix* app with *Content-Type* `application/graphql`, run the following:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/705cbffaa3daca184dde2958b15ffd5563faab46/0"
-%}
-++++
-
-[source,http]
-POST /graphql/mflix HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,graphql]
+==== cURL
+[source,bash]
 ----
-{
+curl -X POST "[INSTANCE-URL]/graphql/mflix" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/graphql" \
+  -d '{
     MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
         title
         comments {
@@ -261,7 +218,50 @@ POST /graphql/mflix HTTP/1.1
         }
         tomatoesRate
     }
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{
+    MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
+        title
+        comments {
+            text
+            user { name }
+        }
+        tomatoesRate
+    }
+}' | http POST "[INSTANCE-URL]/graphql/mflix" \
+  "Authorization:Basic [BASIC-AUTH]" \
+  "Content-Type:application/graphql"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const query = `{
+    MoviesByTomatoesRateRange(min: 3.8, max: 4.5, limit: 3, skip: 20, sort: -1){
+        title
+        comments {
+            text
+            user { name }
+        }
+        tomatoesRate
+    }
+}`;
+
+fetch('[INSTANCE-URL]/graphql/mflix', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/graphql'
+  },
+  body: query
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 ++++

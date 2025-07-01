@@ -2,11 +2,20 @@
 title: Writing Documents
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
 
 :page-liquid:
 
 This page explains how to create, update, and delete MongoDB documents through RESTHeart's REST API.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include running-examples.adoc %}
 
 === HTTP Methods for Writing Data
 
@@ -29,7 +38,7 @@ For write operations, the default content type is `application/json`:
 
 [source,http]
 ----
-POST /collection HTTP/1.1
+POST /inventory HTTP/1.1
 Content-Type: application/json
 
 {
@@ -45,7 +54,7 @@ Content-Type: application/json
 
 ==== Form Data Support
 
-Starting from RESTHeart 7.4.0, you can also use:
+You can also use the following formats (Content-Type):
 
 * `application/x-www-form-urlencoded`
 * `multipart/form-data`
@@ -66,27 +75,55 @@ name=Product%20XYZ&price=99.99&available=true&details=%7B%22color%22%3A%22red%22
 
 Use `POST` to create a document and let MongoDB generate an ObjectId:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/fcf2a3da225dc2018581416fee19f96fb105cca3/6"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /inventory HTTP/1.1
+curl -X POST [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "item": "rubber",
+    "qty": 15,
+    "size": {
+      "h": 2,
+      "w": 1,
+      "uom": "cm"
+    },
+    "status": "A"
+  }'
+----
 
-{
-  "item": "rubber",
-  "qty": 15,
-  "size": {
-    "h": 2,
-    "w": 1,
-    "uom": "cm"
+==== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  item="rubber" \
+  qty:=15 \
+  size:='{"h": 2, "w": 1, "uom": "cm"}' \
+  status="A"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
   },
-  "status": "A"
-}
+  body: JSON.stringify({
+    item: "rubber",
+    qty: 15,
+    size: {
+      h: 2,
+      w: 1,
+      uom: "cm"
+    },
+    status: "A"
+  })
+});
 ----
 
 The response includes a `Location` header with the new document's URI:
@@ -103,26 +140,52 @@ TIP: You can specify your own `_id` in the request body to avoid having MongoDB 
 
 Use `PUT` with the `?wm=upsert` parameter to create a document with a specific ID:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/21de47ede7d9e910b80ac0d998184bf992b98895/6"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /inventory/myCustomId?wm=upsert HTTP/1.1
+curl -X PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "item": "pencil",
+    "qty": 55,
+    "size": {
+      "h": 10,
+      "w": 0.5,
+      "uom": "cm"
+    }
+  }'
+----
 
-{
-  "item": "pencil",
-  "qty": 55,
-  "size": {
-    "h": 10,
-    "w": 0.5,
-    "uom": "cm"
-  }
-}
+==== HTTPie
+[source,bash]
+----
+http PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  item="pencil" \
+  qty:=55 \
+  size:='{"h": 10, "w": 0.5, "uom": "cm"}'
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId?wm=upsert', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    item: "pencil",
+    qty: 55,
+    size: {
+      h: 10,
+      w: 0.5,
+      uom: "cm"
+    }
+  })
+});
 ----
 
 === Updating Documents
@@ -152,21 +215,41 @@ WARNING: This replaces the entire document. Any fields not included in the reque
 
 `PATCH` modifies only the specified fields:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cad8a808b52787063c7544d396d7b4ba30be489f/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /inventory/myCustomId HTTP/1.1
+curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "qty": 75,
+    "status": "B"
+  }'
+----
 
-{
-  "qty": 75,
-  "status": "B"
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/inventory/myCustomId \
+  Authorization:"Basic [BASIC-AUTH]" \
+  qty:=75 \
+  status="B"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    qty: 75,
+    status: "B"
+  })
+});
 ----
 
 This only updates the `qty` and `status` fields, leaving all other fields unchanged.
@@ -177,40 +260,76 @@ This only updates the `qty` and `status` fields, leaving all other fields unchan
 
 Access nested document fields and array elements using dot notation:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/fef0424bf8e69d11a7aae35f41a82e67164a1dfc/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /inventory/myCustomId HTTP/1.1
+curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "size.h": 20
+  }'
+----
 
-{
-  "size.h": 20
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/inventory/myCustomId \
+  Authorization:"Basic [BASIC-AUTH]" \
+  size.h:=20
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "size.h": 20
+  })
+});
 ----
 
 This updates only the height property within the size object.
 
 For array elements:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/d891c0dfaf794019f7cebf79dafa895cd9697da7/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /inventory/myCustomId HTTP/1.1
+curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tags.1": "office"
+  }'
+----
 
-{
-  "tags.1": "office"
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/inventory/myCustomId \
+  Authorization:"Basic [BASIC-AUTH]" \
+  tags.1="office"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "tags.1": "office"
+  })
+});
 ----
 
 This updates the second element of the `tags` array.
@@ -219,23 +338,48 @@ This updates the second element of the `tags` array.
 
 Use MongoDB's update operators in `PATCH` requests for more complex updates:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/1f3c2941dc649dfb8a3ba6628451093f83d02fea/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /inventory/myCustomId HTTP/1.1
+curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "$inc": { "qty": 1 },
+    "$push": { "tags": "school" },
+    "$unset": { "discontinued": "" },
+    "$currentDate": { "lastModified": true }
+  }'
+----
 
-{
-  "$inc": { "qty": 1 },
-  "$push": { "tags": "school" },
-  "$unset": { "discontinued": "" },
-  "$currentDate": { "lastModified": true }
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/inventory/myCustomId \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  '\$inc:={"qty": 1}' \
+  '\$push:={"tags": "school"}' \
+  '\$unset:={"discontinued": ""}' \
+  '\$currentDate:={"lastModified": true}'
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$inc": { "qty": 1 },
+    "$push": { "tags": "school" },
+    "$unset": { "discontinued": "" },
+    "$currentDate": { "lastModified": true }
+  })
+});
 ----
 
 This:
@@ -271,16 +415,29 @@ This adds "office" and "school" to the existing `tags` array.
 
 Use the `DELETE` method to remove documents:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/c83643990fe2ba9857d267d9203445fd4a5ecef5/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-DELETE /inventory/myCustomId HTTP/1.1
+curl -X DELETE [INSTANCE-URL]/inventory/myCustomId \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/inventory/myCustomId \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === Bulk Operations
@@ -291,44 +448,90 @@ Perform operations on multiple documents with a single request.
 
 Create multiple documents at once:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /inventory HTTP/1.1
+curl -X POST [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '[
+    { "item": "journal", "qty": 25, "status": "A" },
+    { "item": "notebook", "qty": 50, "status": "A" },
+    { "item": "paper", "qty": 100, "status": "D" },
+    { "item": "planner", "qty": 75, "status": "D" },
+    { "item": "postcard", "qty": 45, "status": "A" }
+  ]'
+----
 
-[
-   { "item": "journal", "qty": 25, "status": "A" },
-   { "item": "notebook", "qty": 50, "status": "A" },
-   { "item": "paper", "qty": 100, "status": "D" },
-   { "item": "planner", "qty": 75, "status": "D" },
-   { "item": "postcard", "qty": 45, "status": "A" }
-]
+==== HTTPie
+[source,bash]
+----
+echo '[
+  { "item": "journal", "qty": 25, "status": "A" },
+  { "item": "notebook", "qty": 50, "status": "A" },
+  { "item": "paper", "qty": 100, "status": "D" },
+  { "item": "planner", "qty": 75, "status": "D" },
+  { "item": "postcard", "qty": 45, "status": "A" }
+]' | http POST [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify([
+    { item: "journal", qty: 25, status: "A" },
+    { item: "notebook", qty: 50, status: "A" },
+    { item: "paper", qty: 100, status: "D" },
+    { item: "planner", qty: 75, status: "D" },
+    { item: "postcard", qty: 45, status: "A" }
+  ])
+});
 ----
 
 ==== Bulk Updates
 
 Update multiple documents using a filter:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/0e5b13f1e048ea373f86c19e8fb48be7c70c7531/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /inventory/*?filter={"qty":{"$gt":50}} HTTP/1.1
+curl -X PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "highQuantity": true
+  }'
+----
 
-{
-  "highQuantity": true
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
+  Authorization:"Basic [BASIC-AUTH]" \
+  highQuantity:=true
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"qty":{"$gt":50}}'), {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    highQuantity: true
+  })
+});
 ----
 
 This adds the `highQuantity` field to all documents with a quantity greater than 50.
@@ -337,16 +540,29 @@ This adds the `highQuantity` field to all documents with a quantity greater than
 
 Delete multiple documents matching a filter:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/acba248263a0be8e55ed03d7ff52e79a27449bbd/0"
-%}
-++++
-
-[source,http]
+==== cURL
+[source,bash]
 ----
-DELETE /inventory/*?filter={"status":"D"} HTTP/1.1
+curl -X DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}'), {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This deletes all documents with a status of "D".

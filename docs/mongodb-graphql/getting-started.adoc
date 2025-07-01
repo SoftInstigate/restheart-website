@@ -2,7 +2,14 @@
 title: Getting Started with GraphQL
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 This guide will help you quickly set up and create your first GraphQL API with RESTHeart. We'll cover installation, basic configuration, and creating a simple GraphQL application.
 
@@ -32,34 +39,120 @@ This starts both RESTHeart and MongoDB with default configurations.
 
 Create the collection for storing GraphQL app definitions:
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-PUT /gql-apps HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
+curl -X PUT "[INSTANCE-URL]/gql-apps" \
+  -H "Authorization: [BASIC-AUTH]"
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+http PUT [INSTANCE-URL]/gql-apps \
+  Authorization:[BASIC-AUTH]
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/gql-apps', {
+  method: 'PUT',
+  headers: {
+    'Authorization': '[BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 ==== 3. Create Your First GraphQL App
 
 Let's create a simple book catalog API. First, create a collection for books:
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-PUT /books HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
+curl -X PUT "[INSTANCE-URL]/books" \
+  -H "Authorization: [BASIC-AUTH]"
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+http PUT [INSTANCE-URL]/books \
+  Authorization:[BASIC-AUTH]
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/books', {
+  method: 'PUT',
+  headers: {
+    'Authorization': '[BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 Add some sample data:
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-POST /books HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: application/json
-
-[
+curl -X POST "[INSTANCE-URL]/books" \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '[
     {
         "_id": 1,
         "title": "The GraphQL Guide",
@@ -74,19 +167,87 @@ Content-Type: application/json
         "year": 2022,
         "genres": ["Database", "Technical"]
     }
-]
+]'
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+http POST [INSTANCE-URL]/books \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  _id:=1 \
+  title="The GraphQL Guide" \
+  author="Sarah Smith" \
+  year:=2023 \
+  genres:='["Technical", "Programming"]' \
+  _id:=2 \
+  title="MongoDB Basics" \
+  author="John Doe" \
+  year:=2022 \
+  genres:='["Database", "Technical"]'
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+const books = [
+  {
+    "_id": 1,
+    "title": "The GraphQL Guide",
+    "author": "Sarah Smith",
+    "year": 2023,
+    "genres": ["Technical", "Programming"]
+  },
+  {
+    "_id": 2,
+    "title": "MongoDB Basics",
+    "author": "John Doe",
+    "year": 2022,
+    "genres": ["Database", "Technical"]
+  }
+];
+
+fetch('[INSTANCE-URL]/books', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(books)
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 Now, create your GraphQL app definition:
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-POST /gql-apps HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: application/json
-
-{
+curl -X POST "[INSTANCE-URL]/gql-apps" \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
     "_id": "book-catalog",
     "descriptor": {
         "name": "Book Catalog",
@@ -113,45 +274,241 @@ Content-Type: application/json
             }
         }
     }
-}
+}'
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+http POST [INSTANCE-URL]/gql-apps \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  _id="book-catalog" \
+  descriptor:='{
+    "name": "Book Catalog",
+    "description": "A simple book catalog API",
+    "enabled": true,
+    "uri": "books"
+  }' \
+  schema="type Book { _id: Int! title: String! author: String! year: Int genres: [String] } type Query { books(year: Int): [Book] booksByGenre(genre: String!): [Book] }" \
+  mappings:='{
+    "Query": {
+      "books": {
+        "db": "restheart",
+        "collection": "books",
+        "find": {
+          "year": { "$arg": "year" }
+        }
+      },
+      "booksByGenre": {
+        "db": "restheart",
+        "collection": "books",
+        "find": {
+          "genres": { "$arg": "genre" }
+        }
+      }
+    }
+  }'
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+const graphqlApp = {
+  "_id": "book-catalog",
+  "descriptor": {
+    "name": "Book Catalog",
+    "description": "A simple book catalog API",
+    "enabled": true,
+    "uri": "books"
+  },
+  "schema": "type Book { _id: Int! title: String! author: String! year: Int genres: [String] } type Query { books(year: Int): [Book] booksByGenre(genre: String!): [Book] }",
+  "mappings": {
+    "Query": {
+      "books": {
+        "db": "restheart",
+        "collection": "books",
+        "find": {
+          "year": { "$arg": "year" }
+        }
+      },
+      "booksByGenre": {
+        "db": "restheart",
+        "collection": "books",
+        "find": {
+          "genres": { "$arg": "genre" }
+        }
+      }
+    }
+  }
+};
+
+fetch('[INSTANCE-URL]/gql-apps', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(graphqlApp)
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 === Testing Your GraphQL API
 
 ==== 1. Query All Books
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-POST /graphql/books HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: application/graphql
-
-{
+curl -X POST "[INSTANCE-URL]/graphql/books" \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/graphql" \
+  -d '{
     books {
         title
         author
         year
     }
-}
+}'
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+echo '{
+    books {
+        title
+        author
+        year
+    }
+}' | http POST [INSTANCE-URL]/graphql/books \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/graphql
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+const query = `{
+  books {
+    title
+    author
+    year
+  }
+}`;
+
+fetch('[INSTANCE-URL]/graphql/books', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/graphql'
+  },
+  body: query
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 ==== 2. Query Books by Genre
 
-[source,http]
+++++
+<div x-data="{ activeTab: 'curl' }" class="code-example">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ 'active': activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ 'active': activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ 'active': activeTab === 'javascript' }">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
++++
+[source,bash]
 ----
-POST /graphql/books HTTP/1.1
-Host: localhost:8080
-Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: application/graphql
-
-{
+curl -X POST "[INSTANCE-URL]/graphql/books" \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/graphql" \
+  -d '{
     booksByGenre(genre: "Technical") {
         title
         author
     }
-}
+}'
 ----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
++++
+[source,bash]
+----
+echo '{
+    booksByGenre(genre: "Technical") {
+        title
+        author
+    }
+}' | http POST [INSTANCE-URL]/graphql/books \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/graphql
+----
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
++++
+[source,javascript]
+----
+const query = `{
+  booksByGenre(genre: "Technical") {
+    title
+    author
+  }
+}`;
+
+fetch('[INSTANCE-URL]/graphql/books', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/graphql'
+  },
+  body: query
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+++++
+  </div>
+</div>
+++++
 
 == Understanding the Components
 

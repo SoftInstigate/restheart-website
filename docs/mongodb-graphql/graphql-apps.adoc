@@ -2,7 +2,14 @@
 title: GraphQL API
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 The `restheart-graphql` plugin exposes a read-only (no mutations and subscription) GraphQL API for inquiring MongoDB resources.
 
@@ -577,38 +584,92 @@ In order to make a query you can use HTTP request with POST method and both cont
 
 ==== `application/json`
 
+{% raw %}
+<div class="api-examples">
+  <div class="api-example" data-example="curl">
+    <div class="example-header">curl</div>
+    <div class="example-content">
+[source,bash]
+----
+curl -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "query": "query test_operation($name: String){ userByName(_name: $name){name posts{text}} }",
+  "variables": { "name": "..." },
+  "operationName": "..."
+}'
+----
+    </div>
+  </div>
+  <div class="api-example" data-example="http">
+    <div class="example-header">HTTP</div>
+    <div class="example-content">
 [source,http]
 ----
 POST /graphql/<app-uri> HTTP/1.1
-Host: <host-name>
+Host: [INSTANCE-URL]
+Authorization: Basic [BASIC-AUTH]
 Content-Type: application/json
-----
 
-[.text-muted]
-*Request body*
-[source,json]
-----
 {
   "query": "query test_operation($name: String){ userByName(_name: $name){name posts{text}} }",
   "variables": { "name": "..." },
   "operationName": "..."
 }
 ----
+    </div>
+  </div>
+  <div class="api-example" data-example="httpie">
+    <div class="example-header">HTTPie</div>
+    <div class="example-content">
+[source,bash]
+----
+http POST "[INSTANCE-URL]/graphql/<app-uri>" \
+  "Authorization:Basic [BASIC-AUTH]" \
+  "Content-Type:application/json" \
+  query="query test_operation(\$name: String){ userByName(_name: \$name){name posts{text}} }" \
+  variables:='{ "name": "..." }' \
+  operationName="..."
+----
+    </div>
+  </div>
+</div>
+{% endraw %}
 
 ==== `application/graphql`
 
-
+{% raw %}
+<div class="api-examples">
+  <div class="api-example" data-example="curl">
+    <div class="example-header">curl</div>
+    <div class="example-content">
+[source,bash]
+----
+curl -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/graphql" \
+  -d '{
+  userByName(_name: "...") {
+      name
+      posts {
+        text
+      }
+  }
+}'
+----
+    </div>
+  </div>
+  <div class="api-example" data-example="http">
+    <div class="example-header">HTTP</div>
+    <div class="example-content">
 [source,http]
 ----
 POST /graphql/<app-uri> HTTP/1.1
-Host: <host-name>
+Host: [INSTANCE-URL]
+Authorization: Basic [BASIC-AUTH]
 Content-Type: application/graphql
-----
 
-[.text-muted]
-*Request body*
-[source,grahpql]
-----
 {
   userByName(_name: "...") {
       name
@@ -618,6 +679,28 @@ Content-Type: application/graphql
   }
 }
 ----
+    </div>
+  </div>
+  <div class="api-example" data-example="httpie">
+    <div class="example-header">HTTPie</div>
+    <div class="example-content">
+[source,bash]
+----
+echo '{
+  userByName(_name: "...") {
+      name
+      posts {
+        text
+      }
+  }
+}' | http POST "[INSTANCE-URL]/graphql/<app-uri>" \
+  "Authorization:Basic [BASIC-AUTH]" \
+  "Content-Type:application/graphql"
+----
+    </div>
+  </div>
+</div>
+{% endraw %}
 
 === App Definition Caching
 

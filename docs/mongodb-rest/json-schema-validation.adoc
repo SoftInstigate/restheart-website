@@ -2,7 +2,14 @@
 title: Validating Documents with JSON Schema
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 RESTHeart provides robust document validation capabilities through JSON Schema, allowing you to enforce structure and data quality in your MongoDB collections.
 
@@ -46,23 +53,58 @@ For comprehensive information about JSON Schema, visit link:https://json-schema.
 
 First, create a schema store to hold your JSON Schema definitions:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /_schemas HTTP/1.1
+curl -X PUT "[INSTANCE-URL]/_schemas" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
 
-HTTP/1.1 201 Created
+==== HTTPie
+[source,bash]
+----
+http PUT "[INSTANCE-URL]/_schemas" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_schemas', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 ==== Step 2: Define a Schema
 
 Create a schema document that defines the structure for your data:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /_schemas/address?wm=upsert HTTP/1.1
-Content-Type: application/json
+curl -X PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "address": { "type": "string" },
+      "city": { "type": "string" },
+      "postal-code": { "type": "string" },
+      "country": { "type": "string"}
+    },
+    "required": ["address", "city", "country"]
+  }'
+----
 
-{
+==== HTTPie
+[source,bash]
+----
+echo '{
   "$schema": "https://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
@@ -72,19 +114,65 @@ Content-Type: application/json
     "country": { "type": "string"}
   },
   "required": ["address", "city", "country"]
-}
+}' | http PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
 
-HTTP/1.1 201 Created
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_schemas/address?wm=upsert', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "address": { "type": "string" },
+      "city": { "type": "string" },
+      "postal-code": { "type": "string" },
+      "country": { "type": "string"}
+    },
+    "required": ["address", "city", "country"]
+  })
+});
 ----
 
 This schema defines an address format that requires the address, city, and country fields.
 
 NOTE: RESTHeart automatically generates an `id` property for the schema (not to be confused with the `_id` field).
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/_schemas/address" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/_schemas/address" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_schemas/address', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET /_schemas/address HTTP/1.1
-
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -107,18 +195,45 @@ Content-Type: application/json
 
 To enforce the schema on a collection, update the collection's metadata:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /addresses HTTP/1.1
-Content-Type: application/json
+curl -X PUT "[INSTANCE-URL]/addresses" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonSchema": {
+      "schemaId": "address"
+    }
+  }'
+----
 
-{
-  "jsonSchema": {
+==== HTTPie
+[source,bash]
+----
+http PUT "[INSTANCE-URL]/addresses" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  jsonSchema:='{
     "schemaId": "address"
-  }
-}
+  }'
+----
 
-HTTP/1.1 201 Created
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/addresses', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "jsonSchema": {
+      "schemaId": "address"
+    }
+  })
+});
 ----
 
 The collection metadata's `jsonSchema` property has the following options:
@@ -136,12 +251,38 @@ MongoDB uses BSON (Binary JSON) which supports additional data types not availab
 
 ==== Example: Defining BSON Types Schema
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /_schemas/bson HTTP/1.1
-Content-Type: application/json
+curl -X PUT "[INSTANCE-URL]/_schemas/bson" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "bson",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+      "date": {
+        "type": "object",
+        "properties": {
+          "$date": { "type": "number" }
+        },
+        "additionalProperties": false
+      },
+      "objectid": {
+        "type": "object",
+        "properties": {
+          "$oid": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }'
+----
 
-{
+==== HTTPie
+[source,bash]
+----
+echo '{
   "_id": "bson",
   "$schema": "http://json-schema.org/draft-04/schema#",
   "definitions": {
@@ -160,21 +301,73 @@ Content-Type: application/json
       "additionalProperties": false
     }
   }
-}
+}' | http PUT "[INSTANCE-URL]/_schemas/bson" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
 
-HTTP/1.1 201 Created
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_schemas/bson', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "bson",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+      "date": {
+        "type": "object",
+        "properties": {
+          "$date": { "type": "number" }
+        },
+        "additionalProperties": false
+      },
+      "objectid": {
+        "type": "object",
+        "properties": {
+          "$oid": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  })
+});
 ----
 
 ==== Using BSON Types in Schemas
 
 You can reference these BSON type definitions in other schemas using the `$ref` keyword:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /_schemas/post HTTP/1.1
-Content-Type: application/json
+curl -X PUT "[INSTANCE-URL]/_schemas/post" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "post",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "_id": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+      "_etag": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+      "title": { "type": "string" },
+      "content": { "type": "string" },
+      "published": { "type": "boolean" },
+      "publishDate": { "$ref": "http://schema-store/restheart/bson#/definitions/date" }
+    },
+    "required": ["title", "content"]
+  }'
+----
 
-{
+==== HTTPie
+[source,bash]
+----
+echo '{
   "_id": "post",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
@@ -187,9 +380,35 @@ Content-Type: application/json
     "publishDate": { "$ref": "http://schema-store/restheart/bson#/definitions/date" }
   },
   "required": ["title", "content"]
-}
+}' | http PUT "[INSTANCE-URL]/_schemas/post" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
 
-HTTP/1.1 201 Created
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_schemas/post', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "post",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "_id": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+      "_etag": { "$ref": "http://schema-store/restheart/bson#/definitions/objectid" },
+      "title": { "type": "string" },
+      "content": { "type": "string" },
+      "published": { "type": "boolean" },
+      "publishDate": { "$ref": "http://schema-store/restheart/bson#/definitions/date" }
+    },
+    "required": ["title", "content"]
+  })
+});
 ----
 
 === Testing the Validation
@@ -198,15 +417,43 @@ Let's see validation in action by attempting to create both valid and invalid do
 
 ==== Trying to Create an Invalid Document
 
+==== cURL
+[source,bash]
+----
+curl -X POST "[INSTANCE-URL]/addresses" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "address": "Via D'Annunzio 28"
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/addresses" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  address="Via D'Annunzio 28"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/addresses', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "address": "Via D'Annunzio 28"
+  })
+});
+----
+
 [source,http]
 ----
-POST /addresses HTTP/1.1
-Content-Type: application/json
-
-{
-  "address": "Via D'Annunzio 28"
-}
-
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
@@ -221,19 +468,48 @@ The request is rejected because it's missing required fields defined in the sche
 
 ==== Creating a Valid Document
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /addresses HTTP/1.1
-Content-Type: application/json
+curl -X POST "[INSTANCE-URL]/addresses" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "address": "Via D'Annunzio, 28",
+    "city": "L'Aquila",
+    "country": "Italy",
+    "postal-code": "67100"
+  }'
+----
 
-{
-  "address": "Via D'Annunzio, 28",
-  "city": "L'Aquila",
-  "country": "Italy",
-  "postal-code": "67100"
-}
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/addresses" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  address="Via D'Annunzio, 28" \
+  city="L'Aquila" \
+  country="Italy" \
+  postal-code="67100"
+----
 
-HTTP/1.1 201 Created
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/addresses', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "address": "Via D'Annunzio, 28",
+    "city": "L'Aquila",
+    "country": "Italy",
+    "postal-code": "67100"
+  })
+});
 ----
 
 This document passes validation because it includes all required fields with the correct data types.
@@ -279,13 +555,39 @@ The jsonSchema validator has some limitations to be aware of:
 
 * *Bulk Operations*: By default, the validator doesn't support bulk PATCH requests:
 
+==== cURL
+[source,bash]
+----
+curl -X PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "updated": true }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  updated:=true
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/addresses/*?filter={"country":"Italy"}', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ "updated": true })
+});
+----
+
 [source,http]
 ----
-PATCH /addresses/*?filter={"country":"Italy"} HTTP/1.1
-Content-Type: application/json
-
-{ "updated": true }
-
 HTTP/1.1 501 Not Implemented
 Content-Type: application/json
 
@@ -298,19 +600,48 @@ Content-Type: application/json
 
 To allow bulk PATCH operations without validation, add the `skipNotSupported` metadata property:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /addresses HTTP/1.1
-Content-Type: application/json
+curl -X PATCH "[INSTANCE-URL]/addresses" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonSchema": {
+      "schemaId": "address",
+      "skipNotSupported": true
+    }
+  }'
+----
 
-{
-  "jsonSchema": {
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/addresses" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  jsonSchema:='{
     "schemaId": "address",
     "skipNotSupported": true
-  }
-}
+  }'
+----
 
-HTTP/1.1 200 OK
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/addresses', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "jsonSchema": {
+      "schemaId": "address",
+      "skipNotSupported": true
+    }
+  })
+});
 ----
 
 === Best Practices

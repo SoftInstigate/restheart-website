@@ -2,9 +2,16 @@
 title: MongoDB Transactions
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
 
 Multi-document transactions allow you to execute multiple operations as a single atomic unit. This enforces the ACID properties (Atomicity, Consistency, Isolation, Durability) across multiple documents and collections.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 [.alert.alert-success]
 ****
@@ -46,14 +53,36 @@ Transactions in MongoDB are built on top of sessions. A session represents a seq
 
 To start a session:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /_sessions HTTP/1.1
-Content-Type: application/json
+curl -X POST [INSTANCE-URL]/_sessions \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"causallyConsistent": true}'
+----
 
-{
-  "causallyConsistent": true
-}
+==== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/_sessions \
+  Authorization:"Basic [BASIC-AUTH]" \
+  causallyConsistent:=true
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    causallyConsistent: true
+  })
+});
 ----
 
 Response:
@@ -77,20 +106,63 @@ sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
 
 To execute requests within a session, add the `sid` query parameter:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /collection?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
-Content-Type: application/json
-
-{
-  "name": "Session example",
-  "value": 42
-}
+curl -X POST "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Session example", "value": 42}'
 ----
 
-[source,http]
+==== HTTPie
+[source,bash]
 ----
-GET /collection?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 HTTP/1.1
+http POST "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  name="Session example" \
+  value:=42
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: "Session example",
+    value: 42
+  })
+});
+----
+
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === Transaction Lifecycle
@@ -113,9 +185,29 @@ A transaction can be in one of the following states:
 
 To start a transaction within a session:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
+curl -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Response:
@@ -132,9 +224,29 @@ The transaction ID is the last part of the Location header (in this case, `1`).
 
 To check the current status of a transaction:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
+curl -X GET "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Response:
@@ -156,44 +268,131 @@ Content-Type: application/json
 
 To include operations in a transaction, use both the `sid` and `txn` query parameters:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /accounts?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
-Content-Type: application/json
-
-{
-  "owner": "Alice",
-  "balance": 1000
-}
+curl -X POST "[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"owner": "Alice", "balance": 1000}'
 ----
 
-[source,http]
+==== HTTPie
+[source,bash]
 ----
-PATCH /accounts/bob?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
-Content-Type: application/json
-
-{
-  "$inc": { "balance": -100 }
-}
+http POST "[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  owner="Alice" \
+  balance:=1000
 ----
 
-[source,http]
+==== JavaScript
+[source,javascript]
 ----
-PATCH /accounts/alice?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1 HTTP/1.1
-Content-Type: application/json
+const response = await fetch('[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    owner: "Alice",
+    balance: 1000
+  })
+});
+----
 
-{
-  "$inc": { "balance": 100 }
-}
+==== cURL
+[source,bash]
+----
+curl -X PATCH "[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"$inc": {"balance": -100}}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  '$inc[balance]':=-100
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$inc": { "balance": -100 }
+  })
+});
+----
+
+==== cURL
+[source,bash]
+----
+curl -X PATCH "[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"$inc": {"balance": 100}}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  '$inc[balance]':=100
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$inc": { "balance": 100 }
+  })
+});
 ----
 
 ==== Committing a Transaction
 
 When all operations have been executed successfully, commit the transaction:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
+curl -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Response:
@@ -207,9 +406,29 @@ HTTP/1.1 200 OK
 
 If you need to cancel a transaction:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
+curl -X DELETE "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Response:
@@ -248,9 +467,29 @@ The following example demonstrates a transfer between two bank accounts:
 
 . Create a session
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /_sessions HTTP/1.1
+curl -X POST "[INSTANCE-URL]/_sessions" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/_sessions" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 [source,http]
@@ -261,9 +500,29 @@ Location: http://localhost:8080/_sessions/session123
 
 . Start a transaction
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /_sessions/session123/_txns HTTP/1.1
+curl -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 [source,http]
@@ -274,14 +533,36 @@ Location: http://localhost:8080/_sessions/session123/_txns/1
 
 . Debit from account A
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /accounts/accountA?sid=session123&txn=1 HTTP/1.1
-Content-Type: application/json
+curl -X PATCH "[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"$inc": {"balance": -100}}'
+----
 
-{
-  "$inc": { "balance": -100 }
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  '$inc[balance]':=-100
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$inc": { "balance": -100 }
+  })
+});
 ----
 +
 [source,http]
@@ -291,14 +572,36 @@ HTTP/1.1 200 OK
 
 . Credit to account B
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /accounts/accountB?sid=session123&txn=1 HTTP/1.1
-Content-Type: application/json
+curl -X PATCH "[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"$inc": {"balance": 100}}'
+----
 
-{
-  "$inc": { "balance": 100 }
-}
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  '$inc[balance]':=100
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "$inc": { "balance": 100 }
+  })
+});
 ----
 +
 [source,http]
@@ -308,17 +611,42 @@ HTTP/1.1 200 OK
 
 . Add transaction record
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /transactions?sid=session123&txn=1 HTTP/1.1
-Content-Type: application/json
+curl -X POST "[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"from": "accountA", "to": "accountB", "amount": 100, "timestamp": {"$date": 1623408052123}}'
+----
 
-{
-  "from": "accountA",
-  "to": "accountB",
-  "amount": 100,
-  "timestamp": { "$date": 1623408052123 }
-}
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  from="accountA" \
+  to="accountB" \
+  amount:=100 \
+  'timestamp[$date]':=1623408052123
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    from: "accountA",
+    to: "accountB",
+    amount: 100,
+    timestamp: { "$date": 1623408052123 }
+  })
+});
 ----
 +
 [source,http]
@@ -328,9 +656,29 @@ HTTP/1.1 201 Created
 
 . Commit the transaction
 +
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /_sessions/session123/_txns/1 HTTP/1.1
+curl -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 +
 [source,http]

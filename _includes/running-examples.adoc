@@ -1,51 +1,81 @@
-=== Before running the example requests
+=== Create the Inventory Collection
 
-The following step by step tutorial __assumes that RESTHeart is running on localhost__ with the default configuration: the database _restheart_ is bound to `/` and the user _admin_ exists with default password _secret_.
+The example requests on this page use the _inventory_ collection. If not already created, run the following:
 
-TIP: To run RESTHeart refer to link:/docs/setup[Setup] section.
+==== cURL
 
-To create the _restheart_ db, run the following:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/0"
-%}
-++++
-
-[source,http]
-PUT / HTTP/1.1
-
-The examples on this page use the _inventory_ collection. To create the _inventory_ collection, run the following:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/0"
-%}
-++++
-
-[source,http]
-PUT /inventory HTTP/1.1
-
-To populate the _inventory_ collection, run the following:
-
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cf5cba6e1d391b475e04c33d01715b883e1a5490/41"
-%}
-++++
-
-[source,http]
+[source,bash]
 ----
-POST /inventory HTTP/1.1
+curl -X PUT [INSTANCE-URL]/inventory -H "Authorization: Basic [BASIC-AUTH]"
 
-[
+curl -X POST [INSTANCE-URL]/inventory?wm=upsert -H "Authorization: Basic [BASIC-AUTH]" \
+  -d '[
+    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+    { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+    { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+    { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+  ]'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
+
+echo '[
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
    { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
    { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
    { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
-]
+]' | http POST [INSTANCE-URL]/inventory wm==upsert Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const data = [
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+];
+
+await fetch('[INSTANCE-URL]/inventory', {
+  method: 'PUT',
+  headers: { 'Authorization': 'Basic [BASIC-AUTH]' }
+});
+
+await fetch('[INSTANCE-URL]/inventory?wm=upsert', {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers: { 'Authorization': 'Basic [BASIC-AUTH]' }
+});
+----
+
+=== Inserting Documents
+
+Insert a document using POST:
+
+==== cURL
+
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/mydb/mycollection \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John", "age": 30}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [INSTANCE-URL]/mydb/mycollection \
+  Authorization:"Basic [BASIC-AUTH]" \
+  name="John" age:=30
 ----

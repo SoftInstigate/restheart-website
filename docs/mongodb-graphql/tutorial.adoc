@@ -2,7 +2,14 @@
 title: GraphQL API Tutorial with RESTHeart
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 :page-liquid:
 
@@ -10,7 +17,6 @@ This tutorial guides you through the process of implementing a GraphQL API using
 
 Dive into the world of GraphQL and RESTHeart, and may the force be with your data!
 
-NOTE: While this tutorial provides buttons for executing requests using "Rest Ninja," please be aware that it may not seamlessly function with Safari due to HTTPS requirements. For a smoother experience, we recommend using Chrome or Firefox browsers (refer to link:/docs/security/tls[Configure TLS]).
 
 === Create the Star Wars GraphQL API
 
@@ -31,74 +37,91 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 
 Create the *star-wars-characters* collection. This is where the data will be inserted.
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/36f1499c310f74ec7092e47e488666c69abf45f5/0"
-%}
-++++
-
-[source,http]
-PUT /star-wars-characters HTTP/1.1
+{% capture code %}PUT [INSTANCE-URL]/star-wars-characters{% endcapture %}
+{% include interactive-code-example.html lang="bash" header="Create the star-wars-characters collection" curl=code httpie=code js=code %}
 
 Create the *gql-apps* collection. This is where the GraphQL App definition will be inserted.
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/cf0d3d9a0f811cf5d6921ad66fcf49cbad852a5a/0"
-%}
-++++
-
-[source, http]
-PUT /gql-apps HTTP/1.1
+{% capture code %}PUT [INSTANCE-URL]/gql-apps{% endcapture %}
+{% include interactive-code-example.html lang="bash" header="Create the gql-apps collection" curl=code httpie=code js=code %}
 
 **3 Insert data**
 
 Create documents in the *star-wars-characters* collection:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/1dd617582b894304fe3968dc2c97feff08c0adcb/1"
-%}
-++++
-
-[source,http]
-----
-POST /star-wars-characters?wm=upsert HTTP/1.1
-----
-
-[.text-muted]
-*Request body*
-[source,json]
-----
-[
+{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+  -H "Content-Type: application/json" \
+  -d '[
     {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
     {"_id":1001,"name":"Darth Vader","friends":[1004],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":5},
     {"_id":1002,"name":"Han Solo","friends":[1000,1003,2001],"appearsIn":[4,5,6],"homePlanet":"Corellia"},
     {"_id":1003,"name":"Leia Organa","friends":[1000,1002,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Alderaan"},
-    {"_id":1004,"name":"Wilhuff Tarkin","friends":[1001],"appearsIn":[4],"homePlanet":"Eriadu"},{"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
+    {"_id":1004,"name":"Wilhuff Tarkin","friends":[1001],"appearsIn":[4],"homePlanet":"Eriadu"},
+    {"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
     {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
     {"_id":3000,"name":"TIE Advanced x1","length":9.2}
-]
-----
+  ]'{% endcapture %}
+
+{% capture httpie_code %}http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
+  "[BASIC-AUTH]" \
+  Content-Type:application/json \
+  <<< '[
+    {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
+    {"_id":1001,"name":"Darth Vader","friends":[1004],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":5},
+    {"_id":1002,"name":"Han Solo","friends":[1000,1003,2001],"appearsIn":[4,5,6],"homePlanet":"Corellia"},
+    {"_id":1003,"name":"Leia Organa","friends":[1000,1002,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Alderaan"},
+    {"_id":1004,"name":"Wilhuff Tarkin","friends":[1001],"appearsIn":[4],"homePlanet":"Eriadu"},
+    {"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
+    {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
+    {"_id":3000,"name":"TIE Advanced x1","length":9.2}
+  ]'{% endcapture %}
+
+{% capture js_code %}fetch('[INSTANCE-URL]/star-wars-characters?wm=upsert', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify([
+    {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
+    {"_id":1001,"name":"Darth Vader","friends":[1004],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":5},
+    {"_id":1002,"name":"Han Solo","friends":[1000,1003,2001],"appearsIn":[4,5,6],"homePlanet":"Corellia"},
+    {"_id":1003,"name":"Leia Organa","friends":[1000,1002,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Alderaan"},
+    {"_id":1004,"name":"Wilhuff Tarkin","friends":[1001],"appearsIn":[4],"homePlanet":"Eriadu"},
+    {"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
+    {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
+    {"_id":3000,"name":"TIE Advanced x1","length":9.2}
+  ])
+});{% endcapture %}
+
+{% include interactive-code-example.html lang="bash" header="Insert Star Wars characters data" curl=curl_code httpie=httpie_code js=js_code %}
 
 **4 Insert the GraphQL App Definition**
 
 To insert the GraphQL app definition, run the following:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/8d48b4efb6c042ea3ae6fff72823d42356494514/0"
-%}
-++++
+{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+  -H "Content-Type: application/json" \
+  -d @graphql-app-definition.json{% endcapture %}
 
-[source,http]
-----
-POST /gql-apps?wm=upsert HTTP/1.1
-----
+{% capture httpie_code %}http POST [INSTANCE-URL]/gql-apps wm==upsert \
+  "[BASIC-AUTH]" \
+  Content-Type:application/json \
+  < graphql-app-definition.json{% endcapture %}
+
+{% capture js_code %}fetch('[INSTANCE-URL]/gql-apps?wm=upsert', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    // GraphQL App Definition JSON content
+    // See the full definition below
+  })
+});{% endcapture %}
+
+{% include interactive-code-example.html lang="bash" header="Insert GraphQL App Definition" curl=curl_code httpie=httpie_code js=js_code %}
 
 NOTE: Request body omitted because is quite long. Find it in the link:#the-full-graphql-app-definition[The full GraphQL APP definition] section.
 
@@ -113,22 +136,10 @@ The GraphQL API is ready to use!
 
 ==== hero
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/705cbffaa3daca184dde2958b15ffd5563faab46/0"
-%}
-++++
-
-[source,http]
-POST /graphql/star-wars HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,graphql]
-----
-{
-	hero(episode: JEDI) {
+{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+  -H "Content-Type: application/graphql" \
+  -d '{
+    hero(episode: JEDI) {
         name
         friends {
             name
@@ -140,8 +151,48 @@ POST /graphql/star-wars HTTP/1.1
             homePlanet
         }
     }
-}
-----
+  }'{% endcapture %}
+
+{% capture httpie_code %}echo '{
+    hero(episode: JEDI) {
+        name
+        friends {
+            name
+        }
+        ... on Droid {
+            primaryFunction
+        }
+        ... on Human {
+            homePlanet
+        }
+    }
+  }' | http POST [INSTANCE-URL]/graphql/star-wars \
+  "[BASIC-AUTH]" \
+  Content-Type:application/graphql{% endcapture %}
+
+{% capture js_code %}fetch('[INSTANCE-URL]/graphql/star-wars', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Content-Type': 'application/graphql'
+  },
+  body: `{
+    hero(episode: JEDI) {
+        name
+        friends {
+            name
+        }
+        ... on Droid {
+            primaryFunction
+        }
+        ... on Human {
+            homePlanet
+        }
+    }
+  }`
+});{% endcapture %}
+
+{% include interactive-code-example.html lang="bash" header="Execute hero GraphQL query" curl=curl_code httpie=httpie_code js=js_code %}
 
 ++++
 {% include code-header.html
@@ -172,29 +223,13 @@ POST /graphql/star-wars HTTP/1.1
 }
 ----
 
-NOTE: Please note that the response content-type is `application/graphql-response+json`. It is treated as a binary format by RestNinja, which results in a less user-friendly display. To circumvent this issue and view the response more effectively, you can opt to use HTTPie, a command-line HTTP client:
-
-[source,bash]
-$ echo '{ hero(episode: JEDI) { name friends { name } ... on Droid { primaryFunction } ... on Human { homePlanet } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
 
 ==== search
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/985a919c91ef4b62f895a9c7996bef40e04a85dc/0"
-%}
-++++
-
-[source,http]
-POST /graphql/star-wars HTTP/1.1
-
-[.text-muted]
-*Request body*
-[source,graphql]
-----
-{
-	search(text: "an") {
+{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+  -H "Content-Type: application/graphql" \
+  -d '{
+    search(text: "an") {
         ... on Character {
             name
         }
@@ -203,8 +238,42 @@ POST /graphql/star-wars HTTP/1.1
             length
         }
     }
-}
-----
+  }'{% endcapture %}
+
+{% capture httpie_code %}echo '{
+    search(text: "an") {
+        ... on Character {
+            name
+        }
+        ... on Starship {
+            name
+            length
+        }
+    }
+  }' | http POST [INSTANCE-URL]/graphql/star-wars \
+  "[BASIC-AUTH]" \
+  Content-Type:application/graphql{% endcapture %}
+
+{% capture js_code %}fetch('[INSTANCE-URL]/graphql/star-wars', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Content-Type': 'application/graphql'
+  },
+  body: `{
+    search(text: "an") {
+        ... on Character {
+            name
+        }
+        ... on Starship {
+            name
+            length
+        }
+    }
+  }`
+});{% endcapture %}
+
+{% include interactive-code-example.html lang="bash" header="Execute search GraphQL query" curl=curl_code httpie=httpie_code js=js_code %}
 
 ++++
 {% include code-header.html
@@ -232,10 +301,6 @@ POST /graphql/star-wars HTTP/1.1
 }
 ----
 
-NOTE: Please note that the response content-type is `application/graphql-response+json`. It is treated as a binary format by RestNinja, which results in a less user-friendly display. To circumvent this issue and view the response more effectively, you can opt to use HTTPie, a command-line HTTP client:
-
-[source,bash]
-$ echo '{ search(text: "an") { ... on Character { name } ... on Starship { name length } } }' | http -a admin:secret :8080/graphql/star-wars Content-Type:application/graphql
 
 === Understanding the GraphQL App Definition
 

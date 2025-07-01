@@ -22,7 +22,7 @@ WARNING: *Security Notice*: The root user has complete access to your instance. 
 ++++
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="/js/interactive-docs-config.js"></script>
-{% include root-user-config.html %}
+{% include interactive-docs-config.html %}
 ++++
 
 === Step 1: Create Root User
@@ -67,10 +67,12 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 - *MongoDB Options*: Enables all management operations
 
 
+==== cURL
+
 [source,bash]
 ----
 curl -X PUT [INSTANCE-URL]/acl/rootCanDoEverything \
-  -H "Authorization: Bearer [JWT]"
+  -H "Authorization: Bearer [JWT]" \
   -d '{"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}'
 ----
 

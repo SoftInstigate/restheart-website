@@ -2,26 +2,48 @@
 title: Reading Documents
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
 
 :page-liquid:
 
 This page demonstrates how to query MongoDB collections through RESTHeart's REST API using the `GET` method.
 
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
 === Basic Document Retrieval
 
 To retrieve documents from a collection, send a `GET` request to the collection URI:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/5b1ea0cbcd6826ebaab3de45ce57963dfeb037d0/0"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory HTTP/1.1
+curl -X GET [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns all documents in the collection, subject to pagination limits.
@@ -37,32 +59,65 @@ Control pagination with these query parameters:
 
 Example - get the second page with 3 documents per page:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/623a4d4d9338e182ae8fc6a7d2b1382a0e4f029e/3"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?page=2&pagesize=3 HTTP/1.1
+curl -X GET [INSTANCE-URL]/inventory?page=2&pagesize=3 \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  page==2 pagesize==3
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?page=2&pagesize=3', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === Filtering Documents
 
 Use the `filter` parameter to specify which documents to return using MongoDB query syntax:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/e3a1a8ba94de959d9e0099d4a3aee64ce05dff52/0"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?filter={"qty":{"$gt":50}} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":50}}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"qty\":{\"\$gt\":50}}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"qty":{"$gt":50}}');
+const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns only documents where the quantity is greater than 50.
@@ -71,46 +126,97 @@ This returns only documents where the quantity is greater than 50.
 
 Combine multiple conditions using MongoDB operators like `$and`:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/9274556528ca5f4fd356a7245102bb7b483011fb/0"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"$and":[{"qty":{"$gt":75}},{"status":"D"}]}');
+const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Alternatively, you can use multiple filter parameters:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/d104f56976eac72a4237324fbdcc951e9e255fc6/0"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}&filter={\"status\":\"D\"}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"qty\":{\"\$gt\":75}}" \
+  filter=="{\"status\":\"D\"}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === Counting Documents
 
 Instead of retrieving documents, you can count them by appending `_size` to the collection URI:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/feaa50aac771e3d7c9b9058855d79f322afa20c0/1"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory/_size?filter={"status":"A"} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory/_size?filter={\"status\":\"A\"}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory/_size" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"status\":\"A\"}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"status":"A"}');
+const response = await fetch(`[INSTANCE-URL]/inventory/_size?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns the count of documents with status "A".
@@ -121,48 +227,99 @@ Use the `keys` parameter to specify which fields to include or exclude from the 
 
 ==== Include only specific fields
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/358ee35c14b7e564bb1cc9fa207c35286c2692fa/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?keys={'item':1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?keys={'item':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'item':1}");
+const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns only the `_id` and `item` fields for each document.
 
 ==== Exclude specific fields
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cf2e40e99b1e3ba36500ee331092b24812b85622/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?keys={'item':0} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?keys={'item':0}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':0}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'item':0}");
+const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns all fields except `item` for each document.
 
 ==== Include multiple specific fields
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/1e60f50d60ed667a06f504f7831d7c8e85692670/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?keys={'item':1}&keys={'qty':1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?keys={'item':1}&keys={'qty':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':1}" \
+  keys=="{'qty':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns only the `_id`, `item`, and `qty` fields.
@@ -175,48 +332,97 @@ Control the order of results with the `sort` parameter:
 
 For simple sorting, use `sort=fieldname` for ascending order or `sort=-fieldname` for descending order:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/65aa0aae4ef7cf984c960113b21b42819a8b034b/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?sort=status HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?sort=status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==status
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?sort=status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This sorts documents by status in ascending order.
 
 For descending order:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/cc4cdce5906cef6fee7859a09f5aae197d8b10f2/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?sort=-status HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?sort=-status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==-status
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?sort=-status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 ==== Multiple Fields Sorting
 
 Use multiple `sort` parameters to sort by multiple fields:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/fe1fde2e234e08de495ab533ea62529ef0f37cd6/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?sort=status&sort=-qty HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?sort=status&sort=-qty" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==status \
+  sort==-qty
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?sort=status&sort=-qty', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This sorts first by status (ascending) and then by quantity (descending).
@@ -225,25 +431,68 @@ This sorts first by status (ascending) and then by quantity (descending).
 
 You can also use MongoDB's sort expression format:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/13bd5e1b3889b3c0f42fea5c694fae4c4cff5493/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?sort={"status":1,"qty":-1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?sort={\"status\":1,\"qty\":-1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort=="{\"status\":1,\"qty\":-1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const sort = encodeURIComponent('{"status":1,"qty":-1}');
+const response = await fetch(`[INSTANCE-URL]/inventory?sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === Accessing Nested Properties
 
 Use dot notation to access nested document fields or array elements:
 
-[source,http]
+==== cURL
+
+[source,bash]
 ----
-GET /inventory?keys={'size.h':1}&sort={'size.uom':1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?keys={'size.h':1}&sort={'size.uom':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'size.h':1}" \
+  sort=="{'size.uom':1}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'size.h':1}");
+const sort = encodeURIComponent("{'size.uom':1}");
+const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}&sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns only the height field from the size subdocument and sorts by the unit of measure.
@@ -256,62 +505,136 @@ Override MongoDB's default index selection with the `hint` parameter:
 
 Before using hints, create the indexes:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/12101c3d1033820c768ab65692a7816f823973db/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-PUT /inventory/_indexes/item HTTP/1.1
-
-{"keys": {"item": 1}}
+curl -X PUT "[INSTANCE-URL]/inventory/_indexes/item" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys": {"item": 1}}'
 ----
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/0bebde37afbb97a5c5362b54bc18748394c76059/0"
-%}
-++++
+===== HTTPie
 
-[source,http]
+[source,bash]
 ----
-PUT /inventory/_indexes/status HTTP/1.1
+echo '{"keys": {"item": 1}}' | \
+http PUT "[INSTANCE-URL]/inventory/_indexes/item" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
 
-{"keys":{"status": 1 }}
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/_indexes/item', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys": {"item": 1}})
+});
+----
+
+===== cURL
+
+[source,bash]
+----
+curl -X PUT "[INSTANCE-URL]/inventory/_indexes/status" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys":{"status": 1}}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+echo '{"keys":{"status": 1}}' | \
+http PUT "[INSTANCE-URL]/inventory/_indexes/status" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/_indexes/status', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys":{"status": 1}})
+});
 ----
 
 ==== Using Hint
 
 Specify which index to use:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/fd17ca5f145ca84abeb3d7ea6a15c7e2e5932749/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?hint={'item':1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?hint={'item':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'item':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'item':1}");
+const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 Or use the compact string format:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/9cf833a9840717317888aab86eb5a92ea828dc5a/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?hint=+item&hint=-status HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="+item" \
+  hint=="-status"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 NOTE: When using the `+` sign in URLs, encode it as `%2B` to prevent it being interpreted as a space.
@@ -322,30 +645,64 @@ NOTE: When using the `+` sign in URLs, encode it as `%2B` to prevent it being in
 
 Force a collection scan instead of using indexes:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/26721abb1946b0f5464565e568dff2bf52b1623c/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?hint={'$natural':1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'%24natural':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'$natural':1}");
+const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 For a reverse collection scan:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/4f64c9e56340214607d08f293488d3d90beffa2b/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?hint={'$natural':-1} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':-1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'%24natural':-1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'$natural':-1}");
+const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 ==== Text Search
@@ -354,30 +711,71 @@ If you have a text index, you can perform text searches:
 
 First, create the text index:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/ce942a7557a061396ad65dd27560158df32cc17a/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-PUT /inventory/_indexes/text HTTP/1.1
+curl -X PUT "[INSTANCE-URL]/inventory/_indexes/text" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys": {"item": "text"}}'
+----
 
-{"keys": {"item": "text" }}
+===== HTTPie
+
+[source,bash]
+----
+echo '{"keys": {"item": "text"}}' | \
+http PUT "[INSTANCE-URL]/inventory/_indexes/text" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/_indexes/text', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys": {"item": "text"}})
+});
 ----
 
 Then search and sort by relevance score:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/da896056a261d129fddd086d5c43425b328dc7c8/0"
-%}
-++++
+===== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?filter={"$text":{"$search":"paper"}}&keys={"item":1,"score":{"$meta":"textScore"}}&sort={"score":{"$meta":"textScore"}} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={\"$text\":{\"$search\":\"paper\"}}&keys={\"item\":1,\"score\":{\"$meta\":\"textScore\"}}&sort={\"score\":{\"$meta\":\"textScore\"}}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"\$text\":{\"\$search\":\"paper\"}}" \
+  keys=="{\"item\":1,\"score\":{\"\$meta\":\"textScore\"}}" \
+  sort=="{\"score\":{\"\$meta\":\"textScore\"}}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"$text":{"$search":"paper"}}');
+const keys = encodeURIComponent('{"item":1,"score":{"$meta":"textScore"}}');
+const sort = encodeURIComponent('{"score":{"$meta":"textScore"}}');
+const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----

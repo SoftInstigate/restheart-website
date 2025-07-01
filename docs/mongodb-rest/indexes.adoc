@@ -2,15 +2,44 @@
 title: Collection Indexes
 menu: mongodb
 layout: docs-adoc
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 === List the collection indexes
 
 To list the collection indexes use the following request:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory/_indexes HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory/_indexes" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [INSTANCE-URL]/inventory/_indexes \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory/_indexes', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 [source,json]
@@ -41,11 +70,41 @@ To create an index you have to specify the keys and the index options:
 
 To create an unique, sparse index on property `qty` run the following:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /inventory/_indexes/qtyIndex HTTP/1.1
+curl -X PUT "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys": {"qty": 1},"ops": {"unique": true, "sparse": true }}'
+----
 
-{"keys": {"qty": 1},"ops": {"unique": true, "sparse": true }}
+==== HTTPie
+[source,bash]
+----
+http PUT [INSTANCE-URL]/inventory/_indexes/qtyIndex \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  keys:='{"qty": 1}' \
+  ops:='{"unique": true, "sparse": true}'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "keys": {"qty": 1},
+    "ops": {"unique": true, "sparse": true}
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 [NOTE]
@@ -59,20 +118,70 @@ https://docs.mongodb.com/manual/indexes/
 
 To create a text index on property `item` run the following:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PUT /inventory/_indexes/itemTextIndex HTTP/1.1
+curl -X PUT "[INSTANCE-URL]/inventory/_indexes/itemTextIndex" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "keys": { "item": "text" } }'
+----
 
-{ "keys": { "item": "text" } }
+==== HTTPie
+[source,bash]
+----
+http PUT [INSTANCE-URL]/inventory/_indexes/itemTextIndex \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  keys:='{"item": "text"}'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory/_indexes/itemTextIndex', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "keys": { "item": "text" }
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 === Delete an index
 
 To delete an index use the following request:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-DELETE inventory/_indexes/qtyIndex HTTP/1.1
+curl -X DELETE "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/inventory/_indexes/qtyIndex \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
 ----
 
 === Notes

@@ -2,7 +2,14 @@
 title: Importing CSV Data
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 RESTHeart provides a simple and efficient way to import data from CSV files directly into MongoDB collections. This service makes it easy to migrate data from spreadsheets or other tabular data sources.
 
@@ -26,15 +33,49 @@ This service is bound to the `/csv` API endpoint by default.
 
 To import CSV data, send a `POST` request with the CSV content to the `/csv` endpoint:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=locations HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d 'id,name,city,lat,lon,note
+1,Coliseum,Rome,41.8902614,12.4930871,Famous landmark
+2,Eiffel Tower,Paris,48.8583701,2.2944813,Iconic structure
+3,Statue of Liberty,New York,40.6892494,-74.0445004,Symbol of freedom'
+----
 
-id,name,city,lat,lon,note
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     id,name,city,lat,lon,note
 1,Coliseum,Rome,41.8902614,12.4930871,Famous landmark
 2,Eiffel Tower,Paris,48.8583701,2.2944813,Iconic structure
 3,Statue of Liberty,New York,40.6892494,-74.0445004,Symbol of freedom
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `id,name,city,lat,lon,note
+1,Coliseum,Rome,41.8902614,12.4930871,Famous landmark
+2,Eiffel Tower,Paris,48.8583701,2.2944813,Iconic structure
+3,Statue of Liberty,New York,40.6892494,-74.0445004,Symbol of freedom`;
+
+fetch('[INSTANCE-URL]/csv?db=mydb&coll=locations', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 IMPORTANT: The `Content-Type` header must be set to `text/csv`.
@@ -64,14 +105,46 @@ The CSV upload service is controlled by these query parameters:
 
 To use a specific column as the document `_id`, specify its index (starting from 0):
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=products&id=0 HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d 'product_code,name,price,category
+ABC123,Deluxe Widget,29.99,Tools
+XYZ456,Premium Gadget,49.99,Electronics'
+----
 
-product_code,name,price,category
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     product_code,name,price,category
 ABC123,Deluxe Widget,29.99,Tools
 XYZ456,Premium Gadget,49.99,Electronics
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `product_code,name,price,category
+ABC123,Deluxe Widget,29.99,Tools
+XYZ456,Premium Gadget,49.99,Electronics`;
+
+fetch('[INSTANCE-URL]/csv?db=mydb&coll=products&id=0', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 This uses the `product_code` column (index 0) as the `_id` for each document.
@@ -80,14 +153,42 @@ This uses the `product_code` column (index 0) as the `_id` for each document.
 
 For tab-separated or other delimiter formats:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=employees&sep=%09 HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d $'id\tname\tdepartment\tsalary\n1001\tJohn Smith\tEngineering\t75000\n1002\tMaria Garcia\tMarketing\t82000'
+----
 
-id	name	department	salary
-1001	John Smith	Engineering	75000
-1002	Maria Garcia	Marketing	82000
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     $'id\tname\tdepartment\tsalary\n1001\tJohn Smith\tEngineering\t75000\n1002\tMaria Garcia\tMarketing\t82000'
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `id\tname\tdepartment\tsalary
+1001\tJohn Smith\tEngineering\t75000
+1002\tMaria Garcia\tMarketing\t82000`;
+
+fetch('[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: URL-encode the separator character. For tabs, use `%09`.
@@ -96,14 +197,46 @@ NOTE: URL-encode the separator character. For tabs, use `%09`.
 
 To update documents that already exist (based on `_id`):
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=products&id=0&update=true HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d 'product_code,name,price,category,in_stock
+ABC123,Deluxe Widget,24.99,Tools,true
+XYZ456,Premium Gadget,44.99,Electronics,false'
+----
 
-product_code,name,price,category,in_stock
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     product_code,name,price,category,in_stock
 ABC123,Deluxe Widget,24.99,Tools,true
 XYZ456,Premium Gadget,44.99,Electronics,false
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `product_code,name,price,category,in_stock
+ABC123,Deluxe Widget,24.99,Tools,true
+XYZ456,Premium Gadget,44.99,Electronics,false`;
+
+fetch('[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 This updates the price of existing products and adds the `in_stock` field.
@@ -112,14 +245,54 @@ This updates the price of existing products and adds the `in_stock` field.
 
 To add common properties to all imported documents:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15 HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d 'id,product,amount,customer
+1,Widget,100,Acme Inc
+2,Gadget,50,Example Corp'
+----
 
-id,product,amount,customer
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     id,product,amount,customer
 1,Widget,100,Acme Inc
 2,Gadget,50,Example Corp
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `id,product,amount,customer
+1,Widget,100,Acme Inc
+2,Gadget,50,Example Corp`;
+
+const url = new URL('[INSTANCE-URL]/csv');
+url.searchParams.append('db', 'mydb');
+url.searchParams.append('coll', 'sales');
+url.searchParams.append('props', 'region');
+url.searchParams.append('props', 'imported_date');
+url.searchParams.append('values', 'Europe');
+url.searchParams.append('values', '2023-06-15');
+
+fetch(url, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 This adds `region: "Europe"` and `imported_date: "2023-06-15"` to each document.
@@ -180,14 +353,46 @@ public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResp
 
 3. Import CSV data with coordinates:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /csv?db=mydb&coll=poi&id=0 HTTP/1.1
-Content-Type: text/csv
+curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -H "Content-Type: text/csv" \
+     -d 'id,name,city,lat,lon
+1,Eiffel Tower,Paris,48.8583701,2.2944813
+2,Coliseum,Rome,41.8902614,12.4930871'
+----
 
-id,name,city,lat,lon
+==== HTTPie
+[source,bash]
+----
+http POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
+     Authorization:"Basic [BASIC-AUTH]" \
+     Content-Type:text/csv \
+     id,name,city,lat,lon
 1,Eiffel Tower,Paris,48.8583701,2.2944813
 2,Coliseum,Rome,41.8902614,12.4930871
+----
+
+==== JavaScript
+[source,javascript]
+----
+const csvData = `id,name,city,lat,lon
+1,Eiffel Tower,Paris,48.8583701,2.2944813
+2,Coliseum,Rome,41.8902614,12.4930871`;
+
+fetch('[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'text/csv'
+  },
+  body: csvData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 4. The resulting documents will include a GeoJSON location field:

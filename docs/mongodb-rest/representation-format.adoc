@@ -2,7 +2,14 @@
 title: Representation Format
 menu: mongodb
 layout: docs-adoc
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 The following table summarizes how resources are represented
 
 [%header,cols="1,1,1"]
@@ -40,17 +47,59 @@ The strict mode is used on both request and response resource representation and
 
 The following `filter` won't find the document since the `_id` is an ObjectId (and not a String).
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
+     -H "Authorization: Basic [BASIC-AUTH]"
 ----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+     "filter=={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----+
 
 The correct request is:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory?filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
+     -H "Authorization: Basic [BASIC-AUTH]"
 ----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+     "filter=={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory?filter={\'_id\':{\'$oid\':\'5d0b4e325beb2029a8d1bd5e\'}}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----+
 
 === JSON Mode
 
@@ -70,9 +119,34 @@ The query parameter `jsonMode` allows to specify the JSON Mode
 
 ==== Standard RESTHeart representation
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
+HTTP/1.1 200 OK
 
 {
     "_etag": {
@@ -92,10 +166,34 @@ GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613 HTTP/1.1
 
 ==== Strict representation
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==strict" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict HTTP/1.1
-
 HTTP/1.1 200 OK
 
 {
@@ -118,10 +216,34 @@ HTTP/1.1 200 OK
 
 ==== Extended representation
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==extended" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended HTTP/1.1
-
 HTTP/1.1 200 OK
 
 {
@@ -150,10 +272,34 @@ HTTP/1.1 200 OK
 
 ==== Relaxed representation
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==relaxed" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed HTTP/1.1
-
 HTTP/1.1 200 OK
 
 {
@@ -179,10 +325,34 @@ HTTP/1.1 200 OK
 SHELL JSON Mode is very useful since it *allows to use the response body directly in the mongoshell!*
 ====
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==shell" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET locahost:8080/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell HTTP/1.1
-
 HTTP/1.1 200 OK
 
 Content-Type: application/javascript
@@ -208,11 +378,67 @@ default-representation-format: STANDARD
 
 The `rep` query parameter can also be used for switching between representations.
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory?rep=s HTTP/1.1
-GET /inventory?rep=hal HTTP/1.1
-GET /inventory?rep=shal HTTP/1.1
+# Standard representation
+curl -X GET "[INSTANCE-URL]/inventory?rep=s" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+
+# HAL representation
+curl -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+
+# SHAL representation
+curl -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+# Standard representation
+http GET "[INSTANCE-URL]/inventory" \
+     "rep==s" \
+     "Authorization:Basic [BASIC-AUTH]"
+
+# HAL representation
+http GET "[INSTANCE-URL]/inventory" \
+     "rep==hal" \
+     "Authorization:Basic [BASIC-AUTH]"
+
+# SHAL representation
+http GET "[INSTANCE-URL]/inventory" \
+     "rep==shal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+// Standard representation
+fetch('[INSTANCE-URL]/inventory?rep=s', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+// HAL representation
+fetch('[INSTANCE-URL]/inventory?rep=hal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+// SHAL representation
+fetch('[INSTANCE-URL]/inventory?rep=shal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 === HAL
@@ -227,9 +453,30 @@ https://stateless.co/hal_specification.html[HAL] is based on 2 simple concepts: 
 We'll get the `inventory` collection resource and analyze it.
 A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory?rep=hal HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+     "rep==hal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory?rep=hal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 [source,http]
@@ -419,9 +666,30 @@ When `hal=f` is specified, the representation is more verbose and includes speci
 
 In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /inventory?rep=shal HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+     "rep==shal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/inventory?rep=shal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 [source,http]

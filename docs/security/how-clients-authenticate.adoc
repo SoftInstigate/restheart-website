@@ -2,7 +2,14 @@
 title: How Clients Authenticate
 layout: docs-adoc
 menu: setup
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 === Introduction
 
@@ -13,17 +20,62 @@ a standard method for an HTTP user agent to provide a *username* and
 
 ## Some examples
 
-With link:https://github.com/jkbrzt/httpie[httpie] use the `-a` option:
+Here's how to authenticate with basic credentials:
 
+++++
+<div class="code-tabs" x-data="{ activeTab: 'curl' }">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
+  </div>
+
+  <div x-show="activeTab === 'curl'" class="tab-content">
+++++
 
 [source,bash]
-$ http -a userid:password GET 127.0.0.1:8080/
+----
+curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/
+----
 
-With **curl**, use the `–user` options
+++++
+  </div>
 
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
 
 [source,bash]
-$ curl -i --user userid:password -X GET 127.0.0.1:8080/
+----
+http -a [BASIC-AUTH] GET [INSTANCE-URL]/
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
 
 === Basic Authentication for dummies
 
@@ -69,6 +121,125 @@ a GET request to obtain information about token or a DELETE request to
 invalidate it. Of course clients can only request their own tokens
 (otherwise response code will be 403 Forbidden).
 
+==== Token Management Examples
+
+To get information about your auth token:
+
+++++
+<div class="code-tabs" x-data="{ activeTab: 'curl' }">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
+  </div>
+
+  <div x-show="activeTab === 'curl'" class="tab-content">
+++++
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/tokens/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+http -a [BASIC-AUTH] GET [INSTANCE-URL]/tokens/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/tokens/userid', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
+
+To invalidate your auth token:
+
+++++
+<div class="code-tabs" x-data="{ activeTab: 'curl' }">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
+  </div>
+
+  <div x-show="activeTab === 'curl'" class="tab-content">
+++++
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X DELETE [INSTANCE-URL]/tokens/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+http -a [BASIC-AUTH] DELETE [INSTANCE-URL]/tokens/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/tokens/userid', {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => {
+    if (response.ok) {
+        console.log('Token invalidated successfully');
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
+
 TIP: The Authentication Token is a very important feature when you are
 developing a web application. Since every request needs to include the
 credentials, you need to store them either in a cookie or (better) in
@@ -93,6 +264,63 @@ rndTokenManager:
 ==== Suggested way to check credentials
 
 The default restheart configuration file sets up the useful service **roles**, bound to `/roles/<userid>`
+
+Here's how to check credentials using the roles endpoint:
+
+++++
+<div class="code-tabs" x-data="{ activeTab: 'curl' }">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
+  </div>
+
+  <div x-show="activeTab === 'curl'" class="tab-content">
+++++
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/roles/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+http -a [BASIC-AUTH] GET [INSTANCE-URL]/roles/userid
+----
+
+++++
+  </div>
+
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/roles/userid', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
 
 The possible response codes of the request GET `/roles/<userid>`
 are:

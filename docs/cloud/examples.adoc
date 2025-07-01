@@ -4,6 +4,84 @@ layout: docs-adoc
 menu: cloud
 ---
 
+++++
+<div class="code-examples-options text-center mb-4">
+  <label for="examples-format" class="code-examples-label">Choose your preferred format:</label>
+  <select id="examples-format" class="code-examples-select">
+    <option value="curl">cURL</option>
+    <option value="httpie">HTTPie</option>
+    <option value="javascript">JavaScript</option>
+  </select>
+</div>
+
+<style>
+.code-examples-options {
+  margin: 1rem 0 2rem 0;
+  padding: 1rem;
+  background-color: var(--code-bg-color, #f8f9fa);
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e1e5e9);
+}
+
+.code-examples-label {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.code-examples-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  background-color: white;
+  font-size: 1rem;
+  color: var(--text-color, #333);
+  cursor: pointer;
+}
+
+.code-examples-select:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.code-example {
+  display: none;
+}
+
+.code-example.active {
+  display: block;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const formatSelect = document.getElementById('examples-format');
+  
+  function updateCodeExamples() {
+    const selectedFormat = formatSelect.value;
+    
+    // Hide all code examples
+    document.querySelectorAll('.code-example').forEach(example => {
+      example.classList.remove('active');
+    });
+    
+    // Show examples for selected format
+    document.querySelectorAll(`.code-example-${selectedFormat}`).forEach(example => {
+      example.classList.add('active');
+    });
+  }
+  
+  // Set initial state
+  updateCodeExamples();
+  
+  // Listen for changes
+  formatSelect.addEventListener('change', updateCodeExamples);
+});
+</script>
+++++
+
 Discover how RESTHeart Cloud accelerates development across different industries and application types. Each example shows how you can get from idea to working backend in minutes.
 
 === Web Applications
@@ -13,25 +91,84 @@ Discover how RESTHeart Cloud accelerates development across different industries
 Build a complete product management system with inventory, categories, and search capabilities.
 
 ===== Setup (2 minutes)
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Create collections
-curl -X PUT https://[instance].restheart.com/products -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/categories -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/inventory -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/products -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/categories -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/inventory -H "Authorization: [BASIC-AUTH]"
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Create collections
+http PUT [INSTANCE-URL]/products Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/categories Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/inventory Authorization:[BASIC-AUTH]
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Create collections
+const createCollections = async () => {
+  const headers = {
+    'Authorization': '[BASIC-AUTH]'
+  };
+
+  await fetch('[INSTANCE-URL]/products', {
+    method: 'PUT',
+    headers
+  });
+  
+  await fetch('[INSTANCE-URL]/categories', {
+    method: 'PUT',
+    headers
+  });
+  
+  await fetch('[INSTANCE-URL]/inventory', {
+    method: 'PUT',
+    headers
+  });
+};
+
+createCollections();
+----
+
+++++
+</div>
+++++
+
 ===== Sample Data
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Add categories
-curl -X POST https://[instance].restheart.com/categories \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/categories \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
-curl -X POST https://[instance].restheart.com/products \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/products \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
     "sku": "WH-001",
@@ -45,37 +182,200 @@ curl -X POST https://[instance].restheart.com/products \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Add categories
+http POST [INSTANCE-URL]/categories \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  name="Electronics" \
+  slug="electronics" \
+  description="Electronic devices and accessories"
+
+# Add products
+http POST [INSTANCE-URL]/products \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  name="Wireless Headphones" \
+  sku="WH-001" \
+  price:=99.99 \
+  category="electronics" \
+  description="High-quality wireless headphones with noise cancellation" \
+  features:='["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"]' \
+  inStock:=true \
+  quantity:=50 \
+  tags:='["audio", "wireless", "premium"]'
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Add categories
+const addCategory = async () => {
+  const response = await fetch('[INSTANCE-URL]/categories', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Electronics",
+      slug: "electronics", 
+      description: "Electronic devices and accessories"
+    })
+  });
+  return response.json();
+};
+
+// Add products
+const addProduct = async () => {
+  const response = await fetch('[INSTANCE-URL]/products', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Wireless Headphones",
+      sku: "WH-001",
+      price: 99.99,
+      category: "electronics",
+      description: "High-quality wireless headphones with noise cancellation",
+      features: ["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"],
+      inStock: true,
+      quantity: 50,
+      tags: ["audio", "wireless", "premium"]
+    })
+  });
+  return response.json();
+};
+
+// Execute
+addCategory();
+addProduct();
+----
+
+++++
+</div>
+++++
+
 ===== Advanced Queries
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Search products by name
-curl "https://[instance].restheart.com/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
+curl "https://[INSTANCE-URL]/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
 
 # Filter by price range
-curl "https://[instance].restheart.com/products?filter={'price':{\$gte:50,\$lte:150}}"
+curl "https://[INSTANCE-URL]/products?filter={'price':{\$gte:50,\$lte:150}}"
 
 # Get products with low inventory
-curl "https://[instance].restheart.com/products?filter={'quantity':{\$lt:10}}"
+curl "https://[INSTANCE-URL]/products?filter={'quantity':{\$lt:10}}"
 
 # Category-based filtering with sorting
-curl "https://[instance].restheart.com/products?filter={'category':'electronics'}&sort={price:1}"
+curl "https://[INSTANCE-URL]/products?filter={'category':'electronics'}&sort={price:1}"
 ----
+
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Search products by name
+http GET [INSTANCE-URL]/products filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
+
+# Filter by price range
+http GET [INSTANCE-URL]/products filter=="{'price':{\$gte:50,\$lte:150}}"
+
+# Get products with low inventory
+http GET [INSTANCE-URL]/products filter=="{'quantity':{\$lt:10}}"
+
+# Category-based filtering with sorting
+http GET [INSTANCE-URL]/products filter=="{'category':'electronics'}" sort=="{price:1}"
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Search products by name
+const searchByName = async () => {
+  const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
+  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
+  return response.json();
+};
+
+// Filter by price range
+const filterByPriceRange = async () => {
+  const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
+  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
+  return response.json();
+};
+
+// Get products with low inventory
+const getLowInventory = async () => {
+  const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
+  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
+  return response.json();
+};
+
+// Category-based filtering with sorting
+const filterByCategory = async () => {
+  const filter = encodeURIComponent("{'category':'electronics'}");
+  const sort = encodeURIComponent("{price:1}");
+  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}&sort=${sort}`);
+  return response.json();
+};
+
+// Execute queries
+searchByName();
+filterByPriceRange();
+getLowInventory();
+filterByCategory();
+----
+
+++++
+</div>
+++++
 
 ==== Content Management System
 
 Create a headless CMS for blogs, news sites, or documentation.
 
 ===== Content Structure
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Create content collections
-curl -X PUT https://[instance].restheart.com/articles -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/authors -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/media -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/articles -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/authors -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/media -H "Authorization: [BASIC-AUTH]"
 
 # Create author
-curl -X POST https://[instance].restheart.com/authors \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/authors \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
     "email": "jane@example.com",
@@ -84,8 +384,8 @@ curl -X POST https://[instance].restheart.com/authors \
   }'
 
 # Create article
-curl -X POST https://[instance].restheart.com/articles \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/articles \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
     "slug": "getting-started-restheart-cloud",
@@ -102,18 +402,188 @@ curl -X POST https://[instance].restheart.com/articles \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Create content collections
+http PUT [INSTANCE-URL]/articles Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/authors Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/media Authorization:[BASIC-AUTH]
+
+# Create author
+http POST [INSTANCE-URL]/authors \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  name="Jane Smith" \
+  email="jane@example.com" \
+  bio="Tech writer and developer advocate" \
+  avatar="https://example.com/avatars/jane.jpg"
+
+# Create article
+http POST [INSTANCE-URL]/articles \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  title="Getting Started with RESTHeart Cloud" \
+  slug="getting-started-restheart-cloud" \
+  content="RESTHeart Cloud makes backend development incredibly fast..." \
+  excerpt="Learn how to build APIs in minutes" \
+  author="jane@example.com" \
+  status="published" \
+  publishedAt="2024-01-15T10:00:00Z" \
+  tags:='["tutorial", "api", "backend"]' \
+  seo:='{
+    "metaTitle": "Getting Started with RESTHeart Cloud",
+    "metaDescription": "Complete guide to building APIs with RESTHeart Cloud"
+  }'
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Create content collections
+const createContentCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/authors', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/media', { method: 'PUT', headers });
+};
+
+// Create author
+const createAuthor = async () => {
+  const response = await fetch('[INSTANCE-URL]/authors', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Jane Smith",
+      email: "jane@example.com",
+      bio: "Tech writer and developer advocate",
+      avatar: "https://example.com/avatars/jane.jpg"
+    })
+  });
+  return response.json();
+};
+
+// Create article
+const createArticle = async () => {
+  const response = await fetch('[INSTANCE-URL]/articles', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: "Getting Started with RESTHeart Cloud",
+      slug: "getting-started-restheart-cloud",
+      content: "RESTHeart Cloud makes backend development incredibly fast...",
+      excerpt: "Learn how to build APIs in minutes",
+      author: "jane@example.com",
+      status: "published",
+      publishedAt: "2024-01-15T10:00:00Z",
+      tags: ["tutorial", "api", "backend"],
+      seo: {
+        metaTitle: "Getting Started with RESTHeart Cloud",
+        metaDescription: "Complete guide to building APIs with RESTHeart Cloud"
+      }
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createContentCollections();
+createAuthor();
+createArticle();
+----
+
+++++
+</div>
+++++
+
 ===== Content Delivery
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Get published articles
-curl "https://[instance].restheart.com/articles?filter={'status':'published'}&sort={publishedAt:-1}"
+curl "https://[INSTANCE-URL]/articles?filter={'status':'published'}&sort={publishedAt:-1}"
 
 # Get article by slug
-curl "https://[instance].restheart.com/articles?filter={'slug':'getting-started-restheart-cloud'}"
+curl "https://[INSTANCE-URL]/articles?filter={'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-curl "https://[instance].restheart.com/articles?filter={\$text:{\$search:'RESTHeart API'}}"
+curl "https://[INSTANCE-URL]/articles?filter={\$text:{\$search:'RESTHeart API'}}"
 ----
+
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Get published articles
+http GET [INSTANCE-URL]/articles filter=="{'status':'published'}" sort=="{publishedAt:-1}"
+
+# Get article by slug
+http GET [INSTANCE-URL]/articles filter=="{'slug':'getting-started-restheart-cloud'}"
+
+# Search articles
+http GET [INSTANCE-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Get published articles
+const getPublishedArticles = async () => {
+  const filter = encodeURIComponent("{'status':'published'}");
+  const sort = encodeURIComponent("{publishedAt:-1}");
+  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}&sort=${sort}`);
+  return response.json();
+};
+
+// Get article by slug
+const getArticleBySlug = async (slug) => {
+  const filter = encodeURIComponent(`{'slug':'${slug}'}`);
+  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}`);
+  return response.json();
+};
+
+// Search articles
+const searchArticles = async (query) => {
+  const filter = encodeURIComponent(`{\$text:{\$search:'${query}'}}`);
+  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}`);
+  return response.json();
+};
+
+// Execute
+getPublishedArticles();
+getArticleBySlug('getting-started-restheart-cloud');
+searchArticles('RESTHeart API');
+----
+
+++++
+</div>
+++++
 
 === Mobile Applications
 
@@ -122,16 +592,21 @@ curl "https://[instance].restheart.com/articles?filter={\$text:{\$search:'RESTHe
 Build a complete social platform with users, posts, likes, and real-time features.
 
 ===== User Profiles and Posts
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Create social app collections
-curl -X PUT https://[instance].restheart.com/profiles -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/posts -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/followers -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/posts -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/followers -H "Authorization: [BASIC-AUTH]"
 
 # Create user profile
-curl -X POST https://[instance].restheart.com/profiles \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/profiles \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
     "displayName": "John Doe",
@@ -148,8 +623,8 @@ curl -X POST https://[instance].restheart.com/profiles \
   }'
 
 # Create a post
-curl -X POST https://[instance].restheart.com/posts \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/posts \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
     "content": "Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀",
@@ -163,34 +638,220 @@ curl -X POST https://[instance].restheart.com/posts \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Create social app collections
+http PUT [INSTANCE-URL]/profiles Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/posts Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/followers Authorization:[BASIC-AUTH]
+
+# Create user profile
+http POST [INSTANCE-URL]/profiles \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  username="johndoe" \
+  displayName="John Doe" \
+  email="john@example.com" \
+  avatar="https://example.com/avatars/john.jpg" \
+  bio="Software developer and coffee enthusiast" \
+  location="San Francisco, CA" \
+  joinedAt="2024-01-01T00:00:00Z" \
+  stats:='{
+    "posts": 0,
+    "followers": 0,
+    "following": 0
+  }'
+
+# Create a post
+http POST [INSTANCE-URL]/posts \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  author="johndoe" \
+  content="Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀" \
+  media:='[]' \
+  hashtags:='["#api", "#development", "#restheart"]' \
+  mentions:='[]' \
+  createdAt="2024-01-15T14:30:00Z" \
+  likes:=0 \
+  comments:=0 \
+  shares:=0
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Create social app collections
+const createSocialCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/posts', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/followers', { method: 'PUT', headers });
+};
+
+// Create user profile
+const createUserProfile = async () => {
+  const response = await fetch('[INSTANCE-URL]/profiles', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: "johndoe",
+      displayName: "John Doe",
+      email: "john@example.com",
+      avatar: "https://example.com/avatars/john.jpg",
+      bio: "Software developer and coffee enthusiast",
+      location: "San Francisco, CA",
+      joinedAt: "2024-01-01T00:00:00Z",
+      stats: {
+        posts: 0,
+        followers: 0,
+        following: 0
+      }
+    })
+  });
+  return response.json();
+};
+
+// Create a post
+const createPost = async () => {
+  const response = await fetch('[INSTANCE-URL]/posts', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      author: "johndoe",
+      content: "Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀",
+      media: [],
+      hashtags: ["#api", "#development", "#restheart"],
+      mentions: [],
+      createdAt: "2024-01-15T14:30:00Z",
+      likes: 0,
+      comments: 0,
+      shares: 0
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createSocialCollections();
+createUserProfile();
+createPost();
+----
+
+++++
+</div>
+++++
+
 ===== Social Features
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Get user timeline (posts from followed users)
-curl "https://[instance].restheart.com/posts?filter={'author':{\$in:['user1','user2','user3']}}&sort={createdAt:-1}"
+curl "https://[INSTANCE-URL]/posts?filter={'author':{\$in:['user1','user2','user3']}}&sort={createdAt:-1}"
 
 # Search posts by hashtag
-curl "https://[instance].restheart.com/posts?filter={'hashtags':{\$in:['#api']}}"
+curl "https://[INSTANCE-URL]/posts?filter={'hashtags':{\$in:['#api']}}"
 
 # Get user's posts
-curl "https://[instance].restheart.com/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
+curl "https://[INSTANCE-URL]/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
 ----
+
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Get user timeline (posts from followed users)
+http GET [INSTANCE-URL]/posts filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
+
+# Search posts by hashtag
+http GET [INSTANCE-URL]/posts filter=="{'hashtags':{\$in:['#api']}}"
+
+# Get user's posts
+http GET [INSTANCE-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Get user timeline (posts from followed users)
+const getUserTimeline = async (followedUsers) => {
+  const filter = encodeURIComponent(`{'author':{\$in:${JSON.stringify(followedUsers)}}}`);
+  const sort = encodeURIComponent("{createdAt:-1}");
+  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`);
+  return response.json();
+};
+
+// Search posts by hashtag
+const searchPostsByHashtag = async (hashtag) => {
+  const filter = encodeURIComponent(`{'hashtags':{\$in:['${hashtag}']}}`);
+  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}`);
+  return response.json();
+};
+
+// Get user's posts
+const getUserPosts = async (username) => {
+  const filter = encodeURIComponent(`{'author':'${username}'}`);
+  const sort = encodeURIComponent("{createdAt:-1}");
+  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`);
+  return response.json();
+};
+
+// Execute
+getUserTimeline(['user1', 'user2', 'user3']);
+searchPostsByHashtag('#api');
+getUserPosts('johndoe');
+----
+
+++++
+</div>
+++++
 
 ==== Fitness Tracking App
 
 Create a comprehensive fitness backend with workouts, progress tracking, and goals.
 
 ===== Workout Data
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Setup fitness collections
-curl -X PUT https://[instance].restheart.com/workouts -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/exercises -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/progress -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/progress -H "Authorization: [BASIC-AUTH]"
 
 # Add exercise definitions
-curl -X POST https://[instance].restheart.com/exercises \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/exercises \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
     "category": "strength",
@@ -201,8 +862,8 @@ curl -X POST https://[instance].restheart.com/exercises \
   }'
 
 # Log workout
-curl -X POST https://[instance].restheart.com/workouts \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/workouts \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
     "date": "2024-01-15T07:00:00Z",
@@ -223,6 +884,127 @@ curl -X POST https://[instance].restheart.com/workouts \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Setup fitness collections
+http PUT [INSTANCE-URL]/workouts Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/exercises Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/progress Authorization:[BASIC-AUTH]
+
+# Add exercise definitions
+http POST [INSTANCE-URL]/exercises \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  name="Push-ups" \
+  category="strength" \
+  muscleGroups:='["chest", "shoulders", "triceps"]' \
+  equipment="bodyweight" \
+  instructions="Start in plank position, lower body until chest nearly touches floor, push back up" \
+  difficulty="beginner"
+
+# Log workout
+http POST [INSTANCE-URL]/workouts \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  userId="user123" \
+  date="2024-01-15T07:00:00Z" \
+  duration:=45 \
+  type="strength" \
+  exercises:='[
+    {
+      "name": "Push-ups",
+      "sets": [
+        {"reps": 15, "weight": 0},
+        {"reps": 12, "weight": 0},
+        {"reps": 10, "weight": 0}
+      ]
+    }
+  ]' \
+  notes="Great morning workout, feeling strong!" \
+  caloriesBurned:=200
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Setup fitness collections
+const createFitnessCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/exercises', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/progress', { method: 'PUT', headers });
+};
+
+// Add exercise definitions
+const addExercise = async () => {
+  const response = await fetch('[INSTANCE-URL]/exercises', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Push-ups",
+      category: "strength",
+      muscleGroups: ["chest", "shoulders", "triceps"],
+      equipment: "bodyweight",
+      instructions: "Start in plank position, lower body until chest nearly touches floor, push back up",
+      difficulty: "beginner"
+    })
+  });
+  return response.json();
+};
+
+// Log workout
+const logWorkout = async () => {
+  const response = await fetch('[INSTANCE-URL]/workouts', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId: "user123",
+      date: "2024-01-15T07:00:00Z",
+      duration: 45,
+      type: "strength",
+      exercises: [
+        {
+          name: "Push-ups",
+          sets: [
+            {reps: 15, weight: 0},
+            {reps: 12, weight: 0},
+            {reps: 10, weight: 0}
+          ]
+        }
+      ],
+      notes: "Great morning workout, feeling strong!",
+      caloriesBurned: 200
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createFitnessCollections();
+addExercise();
+logWorkout();
+----
+
+++++
+</div>
+++++
+
 === IoT and Data Collection
 
 ==== Smart Home Monitoring
@@ -230,16 +1012,21 @@ curl -X POST https://[instance].restheart.com/workouts \
 Collect and analyze data from home sensors and devices.
 
 ===== Sensor Data Collection
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Create IoT collections
-curl -X PUT https://[instance].restheart.com/devices -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/readings -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/alerts -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/devices -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/readings -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: [BASIC-AUTH]"
 
 # Register device
-curl -X POST https://[instance].restheart.com/devices \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/devices \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
     "type": "temperature",
@@ -251,8 +1038,8 @@ curl -X POST https://[instance].restheart.com/devices \
   }'
 
 # Submit sensor reading
-curl -X POST https://[instance].restheart.com/readings \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/readings \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
     "timestamp": "2024-01-15T15:30:00Z",
@@ -265,15 +1052,127 @@ curl -X POST https://[instance].restheart.com/readings \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Create IoT collections
+http PUT [INSTANCE-URL]/devices Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/readings Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/alerts Authorization:[BASIC-AUTH]
+
+# Register device
+http POST [INSTANCE-URL]/devices \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  deviceId="temp-sensor-01" \
+  type="temperature" \
+  location="living-room" \
+  manufacturer="SensorTech" \
+  model="ST-TEMP-100" \
+  installDate="2024-01-01T00:00:00Z" \
+  status="active"
+
+# Submit sensor reading
+http POST [INSTANCE-URL]/readings \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  deviceId="temp-sensor-01" \
+  timestamp="2024-01-15T15:30:00Z" \
+  measurements:='{
+    "temperature": 22.5,
+    "humidity": 45.2,
+    "batteryLevel": 85
+  }' \
+  location="living-room"
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Create IoT collections
+const createIoTCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/readings', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/alerts', { method: 'PUT', headers });
+};
+
+// Register device
+const registerDevice = async () => {
+  const response = await fetch('[INSTANCE-URL]/devices', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      deviceId: "temp-sensor-01",
+      type: "temperature",
+      location: "living-room",
+      manufacturer: "SensorTech",
+      model: "ST-TEMP-100",
+      installDate: "2024-01-01T00:00:00Z",
+      status: "active"
+    })
+  });
+  return response.json();
+};
+
+// Submit sensor reading
+const submitReading = async () => {
+  const response = await fetch('[INSTANCE-URL]/readings', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      deviceId: "temp-sensor-01",
+      timestamp: "2024-01-15T15:30:00Z",
+      measurements: {
+        temperature: 22.5,
+        humidity: 45.2,
+        batteryLevel: 85
+      },
+      location: "living-room"
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createIoTCollections();
+registerDevice();
+submitReading();
+----
+
+++++
+</div>
+++++
+
 ===== Data Analysis
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Get recent readings
-curl "https://[instance].restheart.com/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
+curl "https://[INSTANCE-URL]/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
 
 # Average temperature by location
-curl -X POST https://[instance].restheart.com/readings/_aggrs/avg-temp-by-location \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
     {"$group": {
@@ -284,20 +1183,94 @@ curl -X POST https://[instance].restheart.com/readings/_aggrs/avg-temp-by-locati
   ]'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Get recent readings
+http GET [INSTANCE-URL]/readings filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
+
+# Average temperature by location
+echo '[
+  {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
+  {"$group": {
+    "_id": "$location",
+    "avgTemp": {"$avg": "$measurements.temperature"},
+    "count": {"$sum": 1}
+  }}
+]' | http POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Get recent readings
+const getRecentReadings = async () => {
+  const filter = encodeURIComponent("{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}");
+  const sort = encodeURIComponent("{timestamp:-1}");
+  const response = await fetch(`[INSTANCE-URL]/readings?filter=${filter}&sort=${sort}`);
+  return response.json();
+};
+
+// Average temperature by location
+const getAverageTemperatureByLocation = async () => {
+  const pipeline = [
+    {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
+    {"$group": {
+      "_id": "$location",
+      "avgTemp": {"$avg": "$measurements.temperature"},
+      "count": {"$sum": 1}
+    }}
+  ];
+
+  const response = await fetch('[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  });
+  return response.json();
+};
+
+// Execute
+getRecentReadings();
+getAverageTemperatureByLocation();
+----
+
+++++
+</div>
+++++
+
 ==== Environmental Monitoring
 
 Track air quality, weather conditions, and environmental data.
 
 ===== Environmental Data
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -X PUT https://[instance].restheart.com/stations -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/measurements -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/stations -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/measurements -H "Authorization: [BASIC-AUTH]"
 
 # Register monitoring station
-curl -X POST https://[instance].restheart.com/stations \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/stations \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
     "name": "Central Park Station",
@@ -311,8 +1284,8 @@ curl -X POST https://[instance].restheart.com/stations \
   }'
 
 # Submit environmental measurement
-curl -X POST https://[instance].restheart.com/measurements \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/measurements \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
     "timestamp": "2024-01-15T16:00:00Z",
@@ -332,6 +1305,129 @@ curl -X POST https://[instance].restheart.com/measurements \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Environmental monitoring setup
+http PUT [INSTANCE-URL]/stations Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/measurements Authorization:[BASIC-AUTH]
+
+# Register monitoring station
+http POST [INSTANCE-URL]/stations \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  stationId="ENV-NYC-001" \
+  name="Central Park Station" \
+  location:='{
+    "lat": 40.7829,
+    "lng": -73.9654,
+    "address": "Central Park, New York, NY"
+  }' \
+  sensors:='["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"]' \
+  status="active"
+
+# Submit environmental measurement
+http POST [INSTANCE-URL]/measurements \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  stationId="ENV-NYC-001" \
+  timestamp="2024-01-15T16:00:00Z" \
+  airQuality:='{
+    "pm25": 12.5,
+    "pm10": 18.2,
+    "no2": 25.1,
+    "o3": 45.8,
+    "aqi": 52
+  }' \
+  weather:='{
+    "temperature": 18.5,
+    "humidity": 62.3,
+    "pressure": 1013.2,
+    "windSpeed": 8.5
+  }'
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Environmental monitoring setup
+const createEnvironmentalCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/measurements', { method: 'PUT', headers });
+};
+
+// Register monitoring station
+const registerStation = async () => {
+  const response = await fetch('[INSTANCE-URL]/stations', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      stationId: "ENV-NYC-001",
+      name: "Central Park Station",
+      location: {
+        lat: 40.7829,
+        lng: -73.9654,
+        address: "Central Park, New York, NY"
+      },
+      sensors: ["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"],
+      status: "active"
+    })
+  });
+  return response.json();
+};
+
+// Submit environmental measurement
+const submitMeasurement = async () => {
+  const response = await fetch('[INSTANCE-URL]/measurements', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      stationId: "ENV-NYC-001",
+      timestamp: "2024-01-15T16:00:00Z",
+      airQuality: {
+        pm25: 12.5,
+        pm10: 18.2,
+        no2: 25.1,
+        o3: 45.8,
+        aqi: 52
+      },
+      weather: {
+        temperature: 18.5,
+        humidity: 62.3,
+        pressure: 1013.2,
+        windSpeed: 8.5
+      }
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createEnvironmentalCollections();
+registerStation();
+submitMeasurement();
+----
+
+++++
+</div>
+++++
+
 === Analytics and Reporting
 
 ==== Business Intelligence Dashboard
@@ -339,16 +1435,21 @@ curl -X POST https://[instance].restheart.com/measurements \
 Create a comprehensive analytics backend for business metrics.
 
 ===== Sales Analytics
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Business analytics setup
-curl -X PUT https://[instance].restheart.com/sales -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/customers -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/analytics-products -H "Authorization: Bearer [token]"
+curl -X PUT https://[INSTANCE-URL]/sales -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/customers -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/analytics-products -H "Authorization: [BASIC-AUTH]"
 
 # Record sale
-curl -X POST https://[instance].restheart.com/sales \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/sales \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
     "customerId": "CUST-001",
@@ -370,12 +1471,108 @@ curl -X POST https://[instance].restheart.com/sales \
   }'
 ----
 
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Business analytics setup
+http PUT [INSTANCE-URL]/sales Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/customers Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/analytics-products Authorization:[BASIC-AUTH]
+
+# Record sale
+http POST [INSTANCE-URL]/sales \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json \
+  orderId="ORD-2024-001" \
+  customerId="CUST-001" \
+  date="2024-01-15T14:30:00Z" \
+  items:='[
+    {
+      "productId": "PROD-001",
+      "name": "Wireless Headphones",
+      "quantity": 1,
+      "unitPrice": 99.99,
+      "category": "electronics"
+    }
+  ]' \
+  totalAmount:=99.99 \
+  currency="USD" \
+  paymentMethod="credit_card" \
+  salesRep="john.doe@company.com" \
+  region="north-america"
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Business analytics setup
+const createAnalyticsCollections = async () => {
+  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  
+  await fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/customers', { method: 'PUT', headers });
+  await fetch('[INSTANCE-URL]/analytics-products', { method: 'PUT', headers });
+};
+
+// Record sale
+const recordSale = async () => {
+  const response = await fetch('[INSTANCE-URL]/sales', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      orderId: "ORD-2024-001",
+      customerId: "CUST-001",
+      date: "2024-01-15T14:30:00Z",
+      items: [
+        {
+          productId: "PROD-001",
+          name: "Wireless Headphones",
+          quantity: 1,
+          unitPrice: 99.99,
+          category: "electronics"
+        }
+      ],
+      totalAmount: 99.99,
+      currency: "USD",
+      paymentMethod: "credit_card",
+      salesRep: "john.doe@company.com",
+      region: "north-america"
+    })
+  });
+  return response.json();
+};
+
+// Execute
+createAnalyticsCollections();
+recordSale();
+----
+
+++++
+</div>
+++++
+
 ===== Analytics Queries
+
+++++
+<div class="code-example code-example-curl active">
+++++
+
 [source,bash]
 ----
 # Daily sales aggregation
-curl -X POST https://[instance].restheart.com/sales/_aggrs/daily-sales \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/sales/_aggrs/daily-sales \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
     {"$group": {
@@ -388,8 +1585,8 @@ curl -X POST https://[instance].restheart.com/sales/_aggrs/daily-sales \
   ]'
 
 # Top products by revenue
-curl -X POST https://[instance].restheart.com/sales/_aggrs/top-products \
-  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+curl -X POST https://[INSTANCE-URL]/sales/_aggrs/top-products \
+  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
     {"$group": {
@@ -402,6 +1599,108 @@ curl -X POST https://[instance].restheart.com/sales/_aggrs/top-products \
     {"$limit": 10}
   ]'
 ----
+
+++++
+</div>
+<div class="code-example code-example-httpie">
+++++
+
+[source,bash]
+----
+# Daily sales aggregation
+echo '[
+  {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
+  {"$group": {
+    "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+    "totalSales": {"$sum": "$totalAmount"},
+    "orderCount": {"$sum": 1},
+    "avgOrderValue": {"$avg": "$totalAmount"}
+  }},
+  {"$sort": {"_id": 1}}
+]' | http POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json
+
+# Top products by revenue
+echo '[
+  {"$unwind": "$items"},
+  {"$group": {
+    "_id": "$items.productId",
+    "productName": {"$first": "$items.name"},
+    "totalRevenue": {"$sum": {"$multiply": ["$items.quantity", "$items.unitPrice"]}},
+    "unitsSold": {"$sum": "$items.quantity"}
+  }},
+  {"$sort": {"totalRevenue": -1}},
+  {"$limit": 10}
+]' | http POST [INSTANCE-URL]/sales/_aggrs/top-products \
+  Authorization:[BASIC-AUTH] \
+  Content-Type:application/json
+----
+
+++++
+</div>
+<div class="code-example code-example-javascript">
+++++
+
+[source,javascript]
+----
+// Daily sales aggregation
+const getDailySales = async () => {
+  const pipeline = [
+    {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
+    {"$group": {
+      "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+      "totalSales": {"$sum": "$totalAmount"},
+      "orderCount": {"$sum": 1},
+      "avgOrderValue": {"$avg": "$totalAmount"}
+    }},
+    {"$sort": {"_id": 1}}
+  ];
+
+  const response = await fetch('[INSTANCE-URL]/sales/_aggrs/daily-sales', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  });
+  return response.json();
+};
+
+// Top products by revenue
+const getTopProducts = async () => {
+  const pipeline = [
+    {"$unwind": "$items"},
+    {"$group": {
+      "_id": "$items.productId",
+      "productName": {"$first": "$items.name"},
+      "totalRevenue": {"$sum": {"$multiply": ["$items.quantity", "$items.unitPrice"]}},
+      "unitsSold": {"$sum": "$items.quantity"}
+    }},
+    {"$sort": {"totalRevenue": -1}},
+    {"$limit": 10}
+  ];
+
+  const response = await fetch('[INSTANCE-URL]/sales/_aggrs/top-products', {
+    method: 'POST',
+    headers: {
+      'Authorization': '[BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  });
+  return response.json();
+};
+
+// Execute
+getDailySales();
+getTopProducts();
+----
+
+++++
+</div>
+++++
 
 === Real-Time Applications
 

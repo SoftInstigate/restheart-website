@@ -21,7 +21,7 @@ layout: docs
 
 {% include doc-in-progress-v6.html %}
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ## List the collection indexes
 

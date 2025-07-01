@@ -24,7 +24,7 @@ layout: docs
 {: .bs-callout.bs-callout-info }
 Watch [Practical testing with Rest Ninja](https://www.youtube.com/watch?v=9KroH-RvjS0&t=291s)
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ### GET Documents
 

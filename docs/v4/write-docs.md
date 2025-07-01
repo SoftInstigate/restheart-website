@@ -26,7 +26,7 @@ This document shows how RESTHeart can use the `PUT`, `POST`, `PATCH` and
 `DELETE` verbs to create, modify and delete resources within a MongoDB
 database, using only the HTTP protocol.
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ## Write Verbs
 

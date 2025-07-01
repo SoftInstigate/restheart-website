@@ -2,6 +2,7 @@
 title: Proxing requests
 layout: docs
 menu: setup
+interactive: true
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
@@ -36,14 +37,12 @@ proxies:
 
 As a result, requests to URL `http://<restheart-ip:port>/anything` are proxied to `https://httpbin.org/anything`as specified by the parameter `proxy-pass`.
 
-{% include code-header.html type="Request" %}
-
+==== Request
 ```http
 GET /anything HTTP/1.1
 ```
 
-{% include code-header.html type="Response" %}
-
+==== Response
 ```http
 HTTP/1.1 401 Unauthorized
 ```
@@ -62,26 +61,24 @@ POST /users HTTP/1.1
 }
 ```
 
-### acl.yml
+### ACL Permission
 
 ```http
 POST /acl HTTP/1.1
 
 {
-    "role": "anything"
+    "role": "anything",
     "predicate": "path-prefix[path=/anything] and method[GET]"
 }
 ```
 
-{% include code-header.html type="Request" %}
-
+==== Request
 ```http
 GET /anything?foo=bar HTTP/1.1
 Authorization: Basic dXNlcjpzZWNyZXQ=
 ```
 
-{% include code-header.html type="Response" %}
-
+==== Response
 ```http
 HTTP/1.1 200 OK
 

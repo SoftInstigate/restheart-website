@@ -37,7 +37,7 @@ You will learn how to get documents from a collection, optionally specifying a q
 
 You will also learn hot to get a single document knowing its \_id.
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ## GETting Documents from a Collection
 

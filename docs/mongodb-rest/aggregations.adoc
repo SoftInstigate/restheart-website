@@ -2,7 +2,14 @@
 title: Aggregations
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 Aggregations are powerful operations that process data records and return computed results. They allow you to analyze data, perform calculations, and transform documents through a series of stages called a pipeline.
 
@@ -29,12 +36,13 @@ Aggregations must be defined in the collection's metadata before they can be use
 
 To define an aggregation, use a `PATCH` request to update the collection metadata:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /mycollection HTTP/1.1
-Content-Type: application/json
-
-{
+curl -X PATCH "[INSTANCE-URL]/mycollection" \
+  -u "[BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
   "aggrs": [
     {
       "uri": "sales-by-region",
@@ -49,7 +57,61 @@ Content-Type: application/json
       ]
     }
   ]
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{
+  "aggrs": [
+    {
+      "uri": "sales-by-region",
+      "stages": [
+        { "$match": { "status": "completed" } },
+        { "$group": {
+            "_id": "$region",
+            "total": { "$sum": "$amount" }
+          }
+        },
+        { "$sort": { "total": -1 } }
+      ]
+    }
+  ]
+}' | http PATCH "[INSTANCE-URL]/mycollection" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/mycollection', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "aggrs": [
+      {
+        "uri": "sales-by-region",
+        "stages": [
+          { "$match": { "status": "completed" } },
+          { "$group": {
+              "_id": "$region",
+              "total": { "$sum": "$amount" }
+            }
+          },
+          { "$sort": { "total": -1 } }
+        ]
+      }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 This defines an aggregation named `sales-by-region` that:
@@ -95,9 +157,37 @@ Use the `$var` operator in your aggregation stages to reference variables:
 
 When executing the aggregation, provide variable values using the `avars` query parameter:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /mycollection/_aggrs/sales-by-product?avars={"productName":"Widget Pro"} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?avars={\"productName\":\"Widget Pro\"}" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product" \
+  avars=='{"productName":"Widget Pro"}' \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  avars: JSON.stringify({"productName":"Widget Pro"})
+});
+
+const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 This returns sales data only for the "Widget Pro" product.
@@ -134,9 +224,37 @@ Example with default value:
 
 Since RESTHeart 7.6, you can access nested properties in variables using dot notation:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /mycollection/_aggrs/my-pipeline?avars={"config":{"limit":10,"skip":20}} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?avars={\"config\":{\"limit\":10,\"skip\":20}}" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline" \
+  avars=='{"config":{"limit":10,"skip":20}}' \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  avars: JSON.stringify({"config":{"limit":10,"skip":20}})
+});
+
+const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 In the aggregation definition:
@@ -188,9 +306,38 @@ Use the predefined variables to implement pagination:
 
 Request with pagination:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /mycollection/_aggrs/paginated-results?page=3&pagesize=25 HTTP/1.1
+curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mycollection/_aggrs/paginated-results" \
+  page==3 pagesize==25 \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  page: 3,
+  pagesize: 25
+});
+
+const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/paginated-results?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 This skips the first 50 documents and returns the next 25.
@@ -268,17 +415,66 @@ Create persistent collections based on aggregation results using the `$merge` st
 
 When this aggregation is executed, results are written to the `categorySalesSummary` collection:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /mycollection/_aggrs/sales-summary HTTP/1.1
+curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-summary" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mycollection/_aggrs/sales-summary" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/mycollection/_aggrs/sales-summary', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 The response will be empty, but a new collection is created or updated:
 
+==== cURL
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/categorySalesSummary" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/categorySalesSummary" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/categorySalesSummary', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+----
+
 [source,http]
 ----
-GET /categorySalesSummary HTTP/1.1
-
 HTTP/1.1 200 OK
 [
   { "_id": "electronics", "totalSales": 253489.99 },
@@ -304,9 +500,38 @@ mongo:
 
 Execute aggregations within a transaction by including the `sid` and `txn` parameters:
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-GET /mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id HTTP/1.1
+curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline" \
+  sid==session-id txn==transaction-id \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  sid: 'session-id',
+  txn: 'transaction-id'
+});
+
+const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+
+const data = await response.json();
+console.log(data);
 ----
 
 See the link:/docs/mongodb-rest/transactions[Transactions] documentation for details.

@@ -2,7 +2,14 @@
 title: User Management in RESTHeart Cloud
 layout: docs-adoc
 menu: cloud
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 === Overview
 
@@ -33,17 +40,47 @@ You can include additional fields like `email`, `active`, or any custom properti
 
 You can create users using the `/users` collection with the temporary JWT token.
 
+==== cURL
 [source,bash]
 ----
-curl -X POST https://[your-instance].restheart.com/users \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "john_doe",
-         "password": "SecurePassword123!",
-         "roles": ["reader", "writer"],
-         "email": "john@example.com"
-     }'
+curl -X POST [INSTANCE-URL]/users \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "john_doe",
+    "password": "SecurePassword123!",
+    "roles": ["reader", "writer"],
+    "email": "john@example.com"
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/users \
+  Authorization:"[BASIC-AUTH]" \
+  _id=john_doe \
+  password=SecurePassword123! \
+  roles:='["reader", "writer"]' \
+  email=john@example.com
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/users', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "john_doe",
+    "password": "SecurePassword123!",
+    "roles": ["reader", "writer"],
+    "email": "john@example.com"
+  })
+});
 ----
 
 NOTE: The password is automatically encrypted by RESTHeart when stored in MongoDB.
@@ -74,21 +111,59 @@ Permissions in RESTHeart Cloud follow the format defined by the `mongoAclAuthori
 
 Here's an example of creating a basic permission:
 
+==== cURL
 [source,bash]
 ----
-curl -X POST https://[your-instance].restheart.com/acl \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "project-manager-permission",
-         "roles": ["project_manager"],
-         "predicate": "path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])",
-         "priority": 100,
-         "mongo": {
-             "readFilter": {"department": "engineering"},
-             "writeFilter": {"department": "engineering"}
-         }
-     }'
+curl -X POST [INSTANCE-URL]/acl \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "project-manager-permission",
+    "roles": ["project_manager"],
+    "predicate": "path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"department": "engineering"},
+      "writeFilter": {"department": "engineering"}
+    }
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [INSTANCE-URL]/acl \
+  Authorization:"[BASIC-AUTH]" \
+  _id=project-manager-permission \
+  roles:='["project_manager"]' \
+  predicate="path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])" \
+  priority:=100 \
+  mongo:='{
+    "readFilter": {"department": "engineering"},
+    "writeFilter": {"department": "engineering"}
+  }'
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/acl', {
+  method: 'POST',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "project-manager-permission",
+    "roles": ["project_manager"],
+    "predicate": "path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"department": "engineering"},
+      "writeFilter": {"department": "engineering"}
+    }
+  })
+});
 ----
 
 ==== Advanced Permission Examples
@@ -133,25 +208,70 @@ This permission ensures that when a user creates a document, their ID is automat
 
 Update user information or roles:
 
+==== cURL
 [source,bash]
 ----
-curl -X PATCH https://[your-instance].restheart.com/users/john_doe \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "roles": ["admin"],
-         "email": "john.updated@example.com"
-     }'
+curl -X PATCH [INSTANCE-URL]/users/john_doe \
+  -H "Authorization: [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "roles": ["admin"],
+    "email": "john.updated@example.com"
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/users/john_doe \
+  Authorization:"[BASIC-AUTH]" \
+  roles:='["admin"]' \
+  email=john.updated@example.com
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/users/john_doe', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': '[BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "roles": ["admin"],
+    "email": "john.updated@example.com"
+  })
+});
 ----
 
 ==== Deleting Users
 
 Remove a user from the system:
 
+==== cURL
 [source,bash]
 ----
-curl -X DELETE https://[your-instance].restheart.com/users/john_doe \
-     -H "Authorization: Bearer [your-temporary-token]"
+curl -X DELETE [INSTANCE-URL]/users/john_doe \
+  -H "Authorization: [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/users/john_doe \
+  Authorization:"[BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/users/john_doe', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': '[BASIC-AUTH]'
+  }
+});
 ----
 
 === Common Permission Patterns

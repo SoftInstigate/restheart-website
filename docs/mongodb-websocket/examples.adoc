@@ -2,7 +2,14 @@
 title: Examples of the WebSocket API
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 :page-liquid:
 
@@ -12,18 +19,22 @@ The following requests upsert a collection defining three change streams:
 - *mine* bound at `/messages/_streams/mine`
 
 ++++
-{% include code-header.html type="Request" %}
+<div x-data="requestTabs()">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
 ++++
 
-[source,http]
-PUT /messages HTTP/1.1
-
-++++
-{% include code-header.html type="Request body" %}
-++++
-[source,json]
+[source,bash]
 ----
-{
+curl -X PUT '[INSTANCE-URL]/messages' \
+  -H 'Authorization: Basic [BASIC-AUTH]' \
+  -H 'Content-Type: application/json' \
+  -d '{
     "streams" : [
       { "stages" : [
           {
@@ -40,8 +51,83 @@ PUT /messages HTTP/1.1
         "uri" : "mine"
       }
     ]
-}
+}'
 ----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+echo '{
+    "streams" : [
+      { "stages" : [
+          {
+              "_$match": {
+                "_$or" : [ { "operationType": "insert" }, { "operationType": "update" } ]
+            }
+          }
+      ],
+        "uri" : "all"
+      },
+      { "stages" : [
+          { "_$match" : { "fullDocument::name" : { "_$var" : "n" } } }
+        ],
+        "uri" : "mine"
+      }
+    ]
+}' | http PUT [INSTANCE-URL]/messages \
+  'Authorization:Basic [BASIC-AUTH]' \
+  'Content-Type:application/json'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/messages', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "streams" : [
+      { "stages" : [
+          {
+              "_$match": {
+                "_$or" : [ { "operationType": "insert" }, { "operationType": "update" } ]
+            }
+          }
+      ],
+        "uri" : "all"
+      },
+      { "stages" : [
+          { "_$match" : { "fullDocument::name" : { "_$var" : "n" } } }
+        ],
+        "uri" : "mine"
+      }
+    ]
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
+
+NOTE: The request body is included in the examples above.
 
 Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
 
@@ -68,11 +154,57 @@ Note between the `_links` collection property the URIs of the
 change streams (returned with `?rep=SHAL`).
 
 ++++
-{% include code-header.html type="Request" %}
+<div x-data="requestTabs()">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
 ++++
 
-[source,http]
-GET /messages?rep=SHAL HTTP/1.1
+[source,bash]
+----
+curl -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
+  -H 'Authorization: Basic [BASIC-AUTH]'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/messages rep==SHAL \
+  'Authorization:Basic [BASIC-AUTH]'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/messages?rep=SHAL', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
 
 ++++
 {% include code-header.html type="Response" %}
@@ -120,24 +252,78 @@ $ websocat --text - autoreconnect:ws://admin:secret@127.0.0.1:8080/messages/_str
 
 To allow connections without authentication, you can define the following permission
 
-[source,http]
-POST /acl HTTP/1.1
-
 ++++
-{% include code-header.html type="Request body" %}
+<div x-data="requestTabs()">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
 ++++
-[source,json]
 
-
-[source,json]
+[source,bash]
 ----
-{
+curl -X POST '[INSTANCE-URL]/acl' \
+  -H 'Authorization: Basic [BASIC-AUTH]' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "_id": "unauthenticatedCanConnectToMyWebSocket",
+    "predicate": "path-prefix('"'"'/messages/_streams/all'"'"')",
+    "priority": 0,
+    "roles": [ "$unauthenticated" ]
+}'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+echo '{
+    "_id": "unauthenticatedCanConnectToMyWebSocket",
+    "predicate": "path-prefix('"'"'/messages/_streams/all'"'"')",
+    "priority": 0,
+    "roles": [ "$unauthenticated" ]
+}' | http POST [INSTANCE-URL]/acl \
+  'Authorization:Basic [BASIC-AUTH]' \
+  'Content-Type:application/json'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/acl', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
     "_id": "unauthenticatedCanConnectToMyWebSocket",
     "predicate": "path-prefix('/messages/_streams/all')",
     "priority": 0,
     "roles": [ "$unauthenticated" ]
-}
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
+
+++++
+  </div>
+</div>
+++++
 
 With this permission in place, you can connect to the WebSocket without authentication:
 
@@ -146,22 +332,72 @@ $ websocat --text - autoreconnect:ws://127.0.0.1:8080/messages/_streams/all
 
 If we now create a new document in the collection `messages`
 
-[source,http]
-POST /messages HTTP/1.1
-
 ++++
-{% include code-header.html type="Request body" %}
+<div x-data="requestTabs()">
+  <div class="tab-buttons">
+    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
+    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
+    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
+  </div>
+  
+  <div x-show="activeTab === 'curl'" class="tab-content">
 ++++
-[source,json]
 
-
-[source,json]
+[source,bash]
 ----
-{
+curl -X POST '[INSTANCE-URL]/messages' \
+  -H 'Authorization: Basic [BASIC-AUTH]' \
+  -H 'Content-Type: application/json' \
+  -d '{
     "message": "Hello WebSockets!",
     "name": "uji"
-}
+}'
 ----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'httpie'" class="tab-content">
+++++
+
+[source,bash]
+----
+echo '{
+    "message": "Hello WebSockets!",
+    "name": "uji"
+}' | http POST [INSTANCE-URL]/messages \
+  'Authorization:Basic [BASIC-AUTH]' \
+  'Content-Type:application/json'
+----
+
+++++
+  </div>
+  
+  <div x-show="activeTab === 'javascript'" class="tab-content">
+++++
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/messages', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "message": "Hello WebSockets!",
+    "name": "uji"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
+
+++++
+  </div>
+</div>
+++++
 
 We get the following output from `websocat`:
 

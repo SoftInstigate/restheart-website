@@ -2,18 +2,52 @@
 title: Databases and Collections
 menu: mongodb
 layout: docs-adoc
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 RESTHeart allows managing dbs and collections.
 
 === Create a collection
 
+==== cURL
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/foo \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "descr": "just a test collection" }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+echo '{ "descr": "just a test collection" }' | http PUT [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/foo', {
+  method: 'PUT',
+  body: JSON.stringify({ "descr": "just a test collection" }),
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+----
+
 [source,http]
 ----
-PUT /foo HTTP/1.1
-
-{ "descr": "just a test collection" }
-
 HTTP/1.1 201 Created
 ----
 
@@ -27,10 +61,35 @@ meaning for RESTheart that influences its behavior.
 
 The collection's properties can be read as follows:
 
+==== cURL
+
+[source,bash]
+----
+curl -X GET [INSTANCE-URL]/foo/_meta \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/foo/_meta Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/foo/_meta', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET /foo/_meta HTTP/1.1
-
 HTTP/1.1 200 OK
 
 {
@@ -51,12 +110,39 @@ HTTP/1.1 200 OK
 `PATCH` modifies only properties in the request body; `PUT` replaces the whole properties set.
 ====
 
+==== cURL
+
+[source,bash]
+----
+curl -X PATCH [INSTANCE-URL]/foo \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "owner": "Bob" }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/foo', {
+  method: 'PATCH',
+  body: JSON.stringify({ "owner": "Bob" }),
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+----
+
 [source,http]
 ----
-PATCH /newDb HTTP/1.1
-
-{ "owner": "Bob" }
-
 HTTP/1.1 200 OK
 ----
 
@@ -66,10 +152,35 @@ To delete a collection, the ETag must be passed using the `If-Match` request hea
 
 Let's try to delete the collection `foo` without passing it.
 
+==== cURL
+
+[source,bash]
+----
+curl -X DELETE [INSTANCE-URL]/foo \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/foo', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-DELETE /foo HTTP/1.1
-
 HTTP/1.1 409 Conflict
 ...
 ETag: 5d95ef77ab3cf85b199ed3b7
@@ -81,13 +192,39 @@ ETag: 5d95ef77ab3cf85b199ed3b7
 }
 ----
 
-Now let's pass the If-Match` request header, the db will be deleted.
+Now let's pass the If-Match` request header, the collection will be deleted.
+
+==== cURL
+
+[source,bash]
+----
+curl -X DELETE [INSTANCE-URL]/foo \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "If-Match: 5d95ef77ab3cf85b199ed3b7"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]" If-Match:5d95ef77ab3cf85b199ed3b7
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/foo', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'If-Match': '5d95ef77ab3cf85b199ed3b7'
+  }
+});
+----
 
 [source,http]
 ----
-DELETE /foo HTTP/1.1
-If-Match: 5d95ef77ab3cf85b199ed3b7
-
 HTTP/1.1 204 No Content
 ----
 
@@ -110,10 +247,35 @@ After restarting RESTHeart, all MongoDB resources are exposes by RESTHeart. With
 
 For instance, we can list the existing dbs as follows:
 
+==== cURL
+
+[source,bash]
+----
+curl -X GET [INSTANCE-URL]/ \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/ Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET / HTTP/1.1
-
 [
     "restheart",
     "myDb",
@@ -123,12 +285,39 @@ GET / HTTP/1.1
 
 === Create a db
 
+==== cURL
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/newDb \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "descr": "just a test db" }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+echo '{ "descr": "just a test db" }' | http PUT [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/newDb', {
+  method: 'PUT',
+  body: JSON.stringify({ "descr": "just a test db" }),
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+----
+
 [source,http]
 ----
-PUT /newDb HTTP/1.1
-
-{ "descr": "just a test db" }
-
 HTTP/1.1 201 Created
 ----
 
@@ -142,10 +331,35 @@ meaning for RESTheart that influences its behavior.
 
 This properties can be read as follows:
 
+==== cURL
+
+[source,bash]
+----
+curl -X GET [INSTANCE-URL]/newDb/_meta \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/newDb/_meta Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/newDb/_meta', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-GET /newDb/_meta HTTP/1.1
-
 HTTP/1.1 200 OK
 
 {
@@ -159,14 +373,41 @@ HTTP/1.1 200 OK
 
 === Modify the properties of a db
 
-`PUT` and `PATCH` verbs modify the properties of the collection.
+`PUT` and `PATCH` verbs modify the properties of the database.
+
+==== cURL
+
+[source,bash]
+----
+curl -X PATCH [INSTANCE-URL]/newDb \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "owner": "Bob" }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/newDb', {
+  method: 'PATCH',
+  body: JSON.stringify({ "owner": "Bob" }),
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+----
 
 [source,http]
 ----
-PATCH /newDb HTTP/1.1
-
-{ "owner": "Bob" }
-
 HTTP/1.1 200 OK
 ----
 
@@ -176,10 +417,35 @@ To delete a db, the ETag must be passed using the `If-Match` request header.
 
 Let's try to delete the `newDb` without passing it.
 
+==== cURL
+
+[source,bash]
+----
+curl -X DELETE [INSTANCE-URL]/newDb \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/newDb', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
 [source,http]
 ----
-DELETE /newDb HTTP/1.1
-
 HTTP/1.1 409 Conflict
 ...
 ETag: 5d95ed1dab3cf85b199ed3b6
@@ -193,15 +459,36 @@ ETag: 5d95ed1dab3cf85b199ed3b6
 
 Now let's pass the If-Match` request header, the db will be deleted.
 
+==== cURL
+
+[source,bash]
+----
+curl -X DELETE [INSTANCE-URL]/newDb \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "If-Match: 5d95ed1dab3cf85b199ed3b6"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]" If-Match:5d95ed1dab3cf85b199ed3b6
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/newDb', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'If-Match': '5d95ed1dab3cf85b199ed3b6'
+  }
+});
+----
+
 [source,http]
 ----
-DELETE /newDb HTTP/1.1
-If-Match: 5d95ed1dab3cf85b199ed3b6
-
 HTTP/1.1 204 No Content
 ----
-```
-
-I'll continue with the other files:
-
-2. etag.md:

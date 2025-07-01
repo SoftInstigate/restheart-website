@@ -19,7 +19,7 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ## List the collection indexes
 

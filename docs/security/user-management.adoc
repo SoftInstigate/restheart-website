@@ -2,7 +2,14 @@
 title: User Management
 layout: docs-adoc
 menu: setup
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 :page-liquid:
 
@@ -35,14 +42,37 @@ TIP: **mongoRealAuthenticator** can be configured to use different properties fo
 
 ## Get existing users
 
-++++
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/b6876216ee3fb0999f7c5178e42a7978f6cc3c4c/0"
-%}
-++++
+{% include code-header.html type="Request" %}
 
-[source,http]
-GET /users HTTP/1.1
+==== cURL
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X GET [INSTANCE-URL]/users
+----
+
+==== HTTPie
+[source,bash]
+----
+http -a [BASIC-AUTH] GET [INSTANCE-URL]/users
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/users', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+----
 
 ++++
 {% include code-header.html type="Response" %}
@@ -69,70 +99,185 @@ NOTE: For security reasons, it not possible to use the `filter` query parameter 
 
 ## Create a user
 
-++++
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/38c1eb85a21213dd39192ccd474789f4abdbd6bc/0"
-%}
-++++
+{% include code-header.html type="Request" %}
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /users HTTP/1.1
-
-{
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/users \
+  -H "Content-Type: application/json" \
+  -d '{
     "_id": "foo",
     "roles": [ "user" ],
     "password": "secret"
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http -a [BASIC-AUTH] POST [INSTANCE-URL]/users \
+  Content-Type:application/json \
+  _id="foo" \
+  roles:='["user"]' \
+  password="secret"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/users', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "_id": "foo",
+        "roles": [ "user" ],
+        "password": "secret"
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: The password is automatically encrypted by RESTHeart.
 
 ## Update a user
 
-++++
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/3e541e5b4f1ce82ae255b8f6746d49f5faed9778/0"
-%}
-++++
+{% include code-header.html type="Request" %}
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-PATCH /users/foo HTTP/1.1
-
-{
+curl -u [BASIC-AUTH] -X PATCH [INSTANCE-URL]/users/foo \
+  -H "Content-Type: application/json" \
+  -d '{
     "password": "betterSecret"
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http -a [BASIC-AUTH] PATCH [INSTANCE-URL]/users/foo \
+  Content-Type:application/json \
+  password="betterSecret"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/users/foo', {
+    method: 'PATCH',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "password": "betterSecret"
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 ## Delete a user
 
-++++
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/ae4858bc59f5ac755f03dc8858220e0a470a3779/0"
-%}
-++++
+{% include code-header.html type="Request" %}
 
-[source,http]
-DELETE /users/foo HTTP/1.1
+==== cURL
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X DELETE [INSTANCE-URL]/users/foo
+----
+
+==== HTTPie
+[source,bash]
+----
+http -a [BASIC-AUTH] DELETE [INSTANCE-URL]/users/foo
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/users/foo', {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => {
+    if (response.ok) {
+        console.log('User deleted successfully');
+    }
+})
+.catch(error => console.error('Error:', error));
+----
 
 ## Create an ACL document
 
-++++
-{% include code-header.html type="Request"
-    link="http://restninja.io/share/5ee142fbb84071261e56fc7f1904af6430b0495f/0"
-%}
-++++
+{% include code-header.html type="Request" %}
 
-[source,http]
+==== cURL
+[source,bash]
 ----
-POST /acl HTTP/1.1
-
-{
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/acl \
+  -H "Content-Type: application/json" \
+  -d '{
   "predicate": "path-prefix[/inventory] and method[GET]",
   "roles": [ "user" ],
   "priority": 1
-}
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http -a [BASIC-AUTH] POST [INSTANCE-URL]/acl \
+  Content-Type:application/json \
+  predicate="path-prefix[/inventory] and method[GET]" \
+  roles:='["user"]' \
+  priority:=1
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[INSTANCE-URL]/acl', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "predicate": "path-prefix[/inventory] and method[GET]",
+        "roles": [ "user" ],
+        "priority": 1
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 TIP: Check link:/docs/security/authorization/#format-of-permissions[Format of permission] for more information on ACL permissions.

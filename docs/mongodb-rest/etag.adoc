@@ -2,7 +2,14 @@
 title: ETag
 menu: mongodb
 layout: docs-adoc
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 The **ETag** or **entity tag** is part of HTTP; it is used for:
 
@@ -20,43 +27,150 @@ can note that any response includes the header ETag (other response
 headers are omitted for simplicity) and this is valid for any type of
 resource, included file resources.
 
+==== cURL
 [source,bash]
 ----
-PUT /test {"descr": "a db for testing" }
+curl -X PUT '[INSTANCE-URL]/test' \
+  -H 'Content-Type: application/json' \
+  -u '[BASIC-AUTH]' \
+  -d '{"descr": "a db for testing"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test' \
+  Content-Type:application/json \
+  --auth '[BASIC-AUTH]' \
+  descr="a db for testing"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"descr": "a db for testing"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 201 Created
 ETag: 55e84b95c2e66d1e0a8e46b2
 (other headers omitted)
-----
 
+==== cURL
 [source,bash]
 ----
-PUT /test/coll { "descr": "a collection for testing" }
+curl -X PUT '[INSTANCE-URL]/test/coll' \
+  -H 'Content-Type: application/json' \
+  -u '[BASIC-AUTH]' \
+  -d '{"descr": "a collection for testing"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test/coll' \
+  Content-Type:application/json \
+  --auth '[BASIC-AUTH]' \
+  descr="a collection for testing"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"descr": "a collection for testing"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 201 Created
 ETag: 55e84be2c2e66d1e0a8e46b3
 (other headers omitted)
-----
 
+==== cURL
 [source,bash]
 ----
-PUT /test/coll/doc { "descr": "a document for testing" }
+curl -X PUT '[INSTANCE-URL]/test/coll/doc' \
+  -H 'Content-Type: application/json' \
+  -u '[BASIC-AUTH]' \
+  -d '{"descr": "a document for testing"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test/coll/doc' \
+  Content-Type:application/json \
+  --auth '[BASIC-AUTH]' \
+  descr="a document for testing"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"descr": "a document for testing"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 201 Created
 ETag: 55e84c0ac2e66d1e0a8e46b4
 (other headers omitted)
-----
 
+==== cURL
+  
 [source,bash]
 ----
-GET /test/coll/doc HTTP/1.1
+curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+  -u '[BASIC-AUTH]'
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET '[INSTANCE-URL]/test/coll/doc' \
+  --auth '[BASIC-AUTH]'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 200 OK
 ETag: 55e84c0ac2e66d1e0a8e46b4
 (other headers omitted)
 
 { "descr": "a document for testing" }
-----
 
 === ETag for write requests
 
@@ -70,16 +184,43 @@ request.
 Let's try to update the document at URI `/test/coll/doc` forcing the ETag
 check with the `checkEtag` query parameter.
 
-[source,http]
+==== cURL
+  
+[source,bash]
 ----
-PUT /test/coll/doc?checkEtag HTTP/1.1
+curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  -H 'Content-Type: application/json' \
+  -u '[BASIC-AUTH]' \
+  -d '{"descry": "a document for testing but modified"}'
+----
 
-{ "descry": "a document for testing but modified" }
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  Content-Type:application/json \
+  --auth '[BASIC-AUTH]' \
+  descry="a document for testing but modified"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"descry": "a document for testing but modified"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 409 Conflict
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
-----
 
 RESTHeart send back the error message `409 Conflict`, showing that the
 document has not been updated.
@@ -88,16 +229,46 @@ Note that the _ETag_ header is present in the response.
 
 Let's try to pass now a wrong ETag via the _If-Match_ request header
 
-[source,http]
+==== cURL
+  
+[source,bash]
 ----
-PUT 127.0.0.1:8080/test/coll/doccheckEtag HTTP/1.1
-If-Match:wrong_etag
-{ "desc":"a document for testing but modified"}
+curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  -H 'Content-Type: application/json' \
+  -H 'If-Match: [ETAG-VALUE]' \
+  -u '[BASIC-AUTH]' \
+  -d '{"desc": "a document for testing but modified"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  Content-Type:application/json \
+  If-Match:'[ETAG-VALUE]' \
+  --auth '[BASIC-AUTH]' \
+  desc="a document for testing but modified"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'If-Match': '[ETAG-VALUE]',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"desc": "a document for testing but modified"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 412 Precondition Failed
 ...
 ETag: 55e84c0ac2e66d1e0a8e46b4
-----
 
 RESTHeart send back the error message `412 Precondition Failed`, showing
 that the document has not been updated.
@@ -106,17 +277,46 @@ Again the correct ETag header is present in the response.
 
 Let's try to pass now the correct ETag via the `If-Match` request header
 
+==== cURL
+  
 [source,bash]
 ----
-PUT /test/coll/doc?checkEtag HTTP/1.1
-If-Match:55e84c0ac2e66d1e0a8e46b4
+curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  -H 'Content-Type: application/json' \
+  -H 'If-Match: [ETAG-VALUE]' \
+  -u '[BASIC-AUTH]' \
+  -d '{"descr": "a document for testing but modified"}'
+----
 
-{"descr": "a document for testing but modified"}
+==== HTTPie
+[source,bash]
+----
+http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+  Content-Type:application/json \
+  If-Match:'[ETAG-VALUE]' \
+  --auth '[BASIC-AUTH]' \
+  descr="a document for testing but modified"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    'If-Match': '[ETAG-VALUE]',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: JSON.stringify({"descr": "a document for testing but modified"})
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
 
 HTTP/1.1 200 OK
 ETag: 55e84f5ac2e66d1e0a8e46b8
 (other headers omitted)
-----
 
 Yes, updated! And the response includes the new ETag value.
 
@@ -132,23 +332,78 @@ request header. In case the resource state has not been modified
 Not Modified*, without passing back the data and thus saving bandwidth.
 This is especially useful for file resources.
 
+==== cURL
+  
 [source,bash]
 ----
-GET /test/coll/doc HTTP/1.1
+curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+  -u '[BASIC-AUTH]'
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET '[INSTANCE-URL]/test/coll/doc' \
+  --auth '[BASIC-AUTH]'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+----
+
 HTTP/1.1 200 OK
 ETag: 55e84c0ac2e66d1e0a8e46b4
 (other headers omitted)
 
 {"descr": "a document for testing but modified"}
-----
 
+==== cURL
+  
 [source,bash]
 ----
-GET /test/coll/doc HTTP/1.1
-If-None-Match:55e84c0ac2e66d1e0a8e46b4
+curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+  -H 'If-None-Match: [ETAG-VALUE]' \
+  -u '[BASIC-AUTH]'
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET '[INSTANCE-URL]/test/coll/doc' \
+  If-None-Match:'[ETAG-VALUE]' \
+  --auth '[BASIC-AUTH]'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/test/coll/doc', {
+  method: 'GET',
+  headers: {
+    'If-None-Match': '[ETAG-VALUE]',
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.status === 304) {
+    console.log('Not Modified');
+  } else {
+    return response.json();
+  }
+})
+.then(data => data && console.log(data));
+----
 
 HTTP/1.1 304 Not Modified
-----
 
 === ETag policy
 

@@ -2,36 +2,111 @@
 title: REST API Tutorial with RESTHeart
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
 
 This tutorial introduces RESTHeart's MongoDB REST API through simple examples. You'll learn the basics of querying and modifying data using standard HTTP methods.
 
-=== Before running the examples
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
-All examples in this tutorial use the `inventory` collection. Make sure you have:
+=== Create and populate the `inventory` collection
 
-1. RESTHeart running on your local machine with default configuration
-2. A MongoDB instance running and connected to RESTHeart
-3. Created the `inventory` collection
+==== cURL
 
-TIP: You can use tools like curl, Postman, or Rest Ninja to execute these examples. For this tutorial, examples use the link:http://restninja.io[Rest Ninja] web interface.
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
 
-WARNING: The "Execute on Rest Ninja" feature requires Chrome or Firefox. It doesn't work with Safari due to HTTPS requirements.
+curl -X POST [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+  -d '[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+  ]'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
+
+echo '[
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+]' | http [INSTANCE-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const data = [
+   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
+   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
+   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
+   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
+   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
+];
+
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  method: 'POST',
+  body: JSON.stringify(data),
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  }
+});
+----
 
 === Retrieving documents
 
 To retrieve all documents from a collection, send a `GET` request:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/e1d4fc9769d1fd15fc11f8b0b360897668ff11a9/1"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory HTTP/1.1
+curl -X GET [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 The response will contain an array of all documents in the collection (limited by the default page size):
@@ -78,16 +153,33 @@ The response will contain an array of all documents in the collection (limited b
 
 You can filter documents using the `filter` query parameter with MongoDB query syntax:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/2f4fa18afdfd17aa5b1ce0af0e99316015d905a4/1"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-GET /inventory?filter={"qty":{"$gt":75}} HTTP/1.1
+curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"qty\":{\"\$gt\":75}}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"qty":{"$gt":75}}');
+const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 This returns only documents where the quantity is greater than 75:
@@ -118,18 +210,42 @@ This returns only documents where the quantity is greater than 75:
 
 To create a new document, use the `POST` method with a JSON body:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/39921ec3386f81ff963b070a64171e3c3968bd1f/5"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-POST /inventory HTTP/1.1
+curl -X POST [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C"}'
+----
 
-{"item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C"}
+==== HTTPie
+
+[source,bash]
+----
+http POST [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  item="newItem" qty:=10 size:='{"h": 2, "w": 4, "uom": "cm"}' status="C"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    item: 'newItem',
+    qty: 10,
+    size: { h: 2, w: 4, uom: 'cm' },
+    status: 'C'
+  })
+});
 ----
 
 The server responds with headers including a `Location` that points to the newly created document:
@@ -148,18 +264,43 @@ TIP: The `Location` header contains the URI of the new document. You can use thi
 
 You can create a document with a specific ID using the `PUT` method with the `?wm=upsert` query parameter:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="https://restninja.io/share/fe7c43013f9a9f8bc9e0f35d7e0980d14e2fd64c/9"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-PUT /inventory/newDocument?wm=upsert HTTP/1.1
+curl -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }'
+----
 
-{ "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/inventory/newDocument \
+  Authorization:"Basic [BASIC-AUTH]" \
+  wm==upsert \
+  item="yetAnotherItem" qty:=90 size:='{"h": 3, "w": 4, "uom": "cm"}' status="C"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/newDocument?wm=upsert', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    item: 'yetAnotherItem',
+    qty: 90,
+    size: { h: 3, w: 4, uom: 'cm' },
+    status: 'C'
+  })
+});
 ----
 
 NOTE: The `wm=upsert` parameter is needed because the default write mode for `PUT` is "update". The "upsert" mode creates the document if it doesn't exist.
@@ -168,18 +309,41 @@ NOTE: The `wm=upsert` parameter is needed because the default write mode for `PU
 
 To modify specific properties of an existing document, use the `PATCH` method:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/a2cad148132e2fa8a5c95e4e681b6c3a85f60215/5"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-PATCH /inventory/newDocument HTTP/1.1
+curl -X PATCH [INSTANCE-URL]/inventory/newDocument \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "qty": 40, "status": "A", "newProperty": "value" }'
+----
 
-{ "qty": 40, "status": "A", "newProperty": "value" }
+==== HTTPie
+
+[source,bash]
+----
+http PATCH [INSTANCE-URL]/inventory/newDocument \
+  Authorization:"Basic [BASIC-AUTH]" \
+  qty:=40 status="A" newProperty="value"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/newDocument', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    qty: 40,
+    status: 'A',
+    newProperty: 'value'
+  })
+});
 ----
 
 This updates only the specified fields and adds any new fields:
@@ -207,16 +371,32 @@ This updates only the specified fields and adds any new fields:
 
 To delete a document, use the `DELETE` method:
 
-++++
-{% include code-header.html
-    type="Request"
-    link="http://restninja.io/share/311d230363a4c073a1e67ef327bd403cadb1238f/0"
-%}
-++++
+==== cURL
 
-[source,http]
+[source,bash]
 ----
-DELETE /inventory/newDocument HTTP/1.1
+curl -X DELETE [INSTANCE-URL]/inventory/newDocument \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [INSTANCE-URL]/inventory/newDocument \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/inventory/newDocument', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
 A successful deletion returns a `204 No Content` status.

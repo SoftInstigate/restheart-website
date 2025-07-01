@@ -18,7 +18,7 @@ layout: docs
 
 {% include docs-head.html %}
 
-{% include running-examples.md %}
+{% include running-examples.adoc %}
 
 ## GET Documents from the Collection
 
