@@ -1,323 +1,282 @@
 ---
-title: Getting Started with RESTHeart Cloud
+title: RESTHeart Cloud - Getting Started
 layout: docs-adoc
 menu: cloud
+liquid: true
 ---
 
-Get your backend running in under 5 minutes! This guide will walk you through creating your first API instance and demonstrate how RESTHeart Cloud accelerates development. Each API instance provides a single database with collections that you'll create to build your application.
+Welcome to RESTHeart Cloud's interactive documentation! Configure your connection details below to see personalized examples throughout the documentation.
 
-=== Prerequisites
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
-* A web browser
-* An email address
-* Optional: curl, Postman, or any HTTP client for testing
+== Getting Started
 
-=== Step 1: Sign Up
+Now that you've configured your connection details, you can follow along with the examples below. All code snippets will automatically use your configuration.
 
-. Navigate to https://cloud.restheart.com
-. Click "Sign Up" or "Create Account"
-. Enter your email address and create a strong password
-. Verify your email address through the confirmation link
+== Basic Operations
 
-=== Step 2: Create Your First API Instance
+=== Creating a Database
 
-. Log in to your RESTHeart Cloud dashboard
-. Click "Create New API"
-. Choose your desired plan:
-   * **Free**: Perfect for learning and prototyping
-   * **Shared**: For small to medium applications
-   * **Dedicated**: Production-ready with dedicated resources
-. Select a geographical region (e.g., EU Central, US East)
-. Provide an optional name for your API instance
-. Click "Create"
+==== cURL
 
-⏱️ **Your API will be ready in seconds!**
-
-Your API instance gets a unique endpoint:
-`[instanceid].[region]-[tier].restheart.com`
-
-Example: `f2d222.eu-central-1-free-1.restheart.com`
-
-=== Understanding API Instances
-
-Each API instance in RESTHeart Cloud provides:
-
-* **One Database**: The root URL (`/`) represents your single database
-* **One User Base**: The `/users` collection stores all authentication information
-* **One ACL Set**: The `/acl` collection defines all permissions
-* **Isolated Environment**: Complete separation from other instances
-
-IMPORTANT: Create separate API instances for separate applications. If you're building multiple applications, don't try to share a single API instance between them. Each application should have its own API instance with its own users, permissions, and data collections.
-
-=== Step 3: Obtain Temporary JWT Token
-
-. In the API instance dashboard
-. Navigate to the "Security" or "Setup" section
-. Click "Generate Setup Token"
-. Copy the generated JWT token securely
-
-WARNING: This token has administrative privileges and expires quickly. Use it only for initial setup.
-
-=== Step 4: Create Your First Collections
-
-Unlike traditional databases where you need to create a database first, in RESTHeart Cloud:
-
-* Each API instance already has a single database at the root path (`/`)
-* You only need to create collections directly under the root
-* Each application should have its own API instance
-
-Let's create collections for a simple task management system:
+Create a new database using cURL:
 
 [source,bash]
 ----
-# Create a 'tasks' collection in your database
-curl -X PUT https://[your-instance].restheart.com/tasks \
-     -H "Authorization: Bearer [your-temporary-token]"
-
-# Create a 'categories' collection
-curl -X PUT https://[your-instance].restheart.com/categories \
-     -H "Authorization: Bearer [your-temporary-token]"
+curl -X PUT [INSTANCE-URL]/mydb \
+  -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
-🎉 **That's it!** You now have fully functional collections with REST endpoints in your database.
+==== HTTPie
 
-=== Step 5: Add Your First Task
-
-Insert a task document:
+Create a new database using HTTPie:
 
 [source,bash]
 ----
-curl -X POST https://[your-instance].restheart.com/tasks \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "title": "Learn RESTHeart Cloud",
-         "description": "Complete the getting started tutorial",
-         "status": "in-progress",
-         "priority": "high",
-         "createdAt": "2024-01-15T10:00:00Z"
-     }'
+http PUT [INSTANCE-URL]/mydb \
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
-=== Step 5.1: Query Your Data
+==== JavaScript
 
-RESTHeart automatically provides powerful querying capabilities:
+Create a new database using JavaScript:
 
-[source,bash]
-----
-# Get all tasks
-curl -H "Authorization: Bearer [your-temporary-token]" \
-     https://[your-instance].restheart.com/tasks
-
-# Get high-priority tasks only
-curl -H "Authorization: Bearer [your-temporary-token]" \
-     "https://[your-instance].restheart.com/tasks?filter={'priority':'high'}"
-
-# Get tasks sorted by creation date
-curl -H "Authorization: Bearer [your-temporary-token]" \
-     "https://[your-instance].restheart.com/tasks?sort={'createdAt':-1}"
-----
-
-=== Step 6: Set Up User Authentication
-
-Each API instance has its own user management system in the reserved `/users` collection:
-
-[source,bash]
-----
-# Create a task manager user
-curl -X POST https://[your-instance].restheart.com/users \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "taskmanager",
-         "password": "SecurePassword123!",
-         "email": "manager@company.com",
-         "roles": ["task-manager"]
-     }'
-
-# Create a regular user
-curl -X POST https://[your-instance].restheart.com/users \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "developer",
-         "password": "AnotherSecurePass456!",
-         "email": "dev@company.com",
-         "roles": ["task-user"]
-     }'
-----
-
-=== Step 7: Configure Permissions
-
-Set up role-based access control using the reserved `/acl` collection:
-
-[source,bash]
-----
-# Task managers can do everything
-curl -X POST https://[your-instance].restheart.com/acl \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "task-manager-full-access",
-         "roles": ["task-manager"],
-         "predicate": "path-prefix[\"/tasks\"]",
-         "priority": 100
-     }'
-
-# Regular users can only read and create tasks
-curl -X POST https://[your-instance].restheart.com/acl \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "_id": "task-user-limited-access",
-         "roles": ["task-user"],
-         "predicate": "path-prefix[\"/tasks\"] and (method[GET] or method[POST])",
-         "priority": 100
-     }'
-----
-
-=== Step 8: Test User Authentication
-
-Now test with your newly created users:
-
-[source,bash]
-----
-# Login as taskmanager (full access)
-curl -X GET https://[your-instance].restheart.com/tasks \
-     -u taskmanager:SecurePassword123!
-
-# Login as developer (limited access)
-curl -X GET https://[your-instance].restheart.com/tasks \
-     -u developer:AnotherSecurePass456!
-----
-
-=== 🚀 What You've Accomplished
-
-In just a few minutes, you've built a complete backend with:
-
-* ✅ **API Instance**: Your own dedicated RESTHeart environment
-* ✅ **Collections**: Ready to store your application data
-* ✅ **REST API**: Full CRUD operations with advanced querying
-* ✅ **User Management**: Secure authentication system via `/users`
-* ✅ **Access Control**: Role-based permissions via `/acl`
-* ✅ **Production-Ready**: HTTPS, encrypted data, monitoring
-
-=== When to Create Another API Instance
-
-Create separate API instances for:
-
-* **Different Applications**: Each application should have its own API instance
-* **Separate Environments**: Development, staging, and production
-* **Client Projects**: Separate instances for different clients
-* **Isolation Requirements**: When you need separate user bases or permissions
-
-Each API instance provides:
-* Single database at root path (`/`)
-* Dedicated user management (`/users` collection)
-* Dedicated permission system (`/acl` collection)
-* Separate monitoring and usage metrics
-
-=== Next Level: Real-Time Features
-
-Add WebSocket support for real-time task updates:
-
-[source,bash]
-----
-# Create a change stream for real-time updates
-curl -X POST https://[your-instance].restheart.com/_streams/task-updates \
-     -H "Authorization: Bearer [your-temporary-token]" \
-     -H "Content-Type: application/json" \
-     -d '{
-         "uri": "ws://[your-instance].restheart.com/_streams/task-updates",
-         "stages": [
-             {"$match": {"ns.coll": "tasks"}},
-             {"$project": {"_id": 1, "operationType": 1, "fullDocument": 1}}
-         ]
-     }'
-----
-
-Now any changes to tasks will be broadcast in real-time to connected WebSocket clients!
-
-=== Best Practices for Production
-
-* **Security**: Rotate tokens regularly and use strong passwords
-* **Performance**: Implement proper indexing for frequently queried fields
-* **Monitoring**: Use the dashboard to track API usage and performance
-* **Backup**: Enable automatic backups for production data
-* **Scaling**: Start with Free/Shared and upgrade to Dedicated as you grow
-
-=== Real-World Integration Examples
-
-==== Web Application
 [source,javascript]
 ----
-// Frontend JavaScript example
-const response = await fetch('https://[your-instance].restheart.com/tasks', {
-    method: 'POST',
-    headers: {
-        'Authorization': 'Basic ' + btoa('taskmanager:SecurePassword123!'),
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        title: 'New feature development',
-        status: 'todo',
-        assignee: 'john@company.com'
-    })
+const response = await fetch('[INSTANCE-URL]/mydb', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
 });
 ----
 
-==== Mobile App (React Native)
+=== Creating a Collection
+
+==== cURL
+
+Create a new collection using cURL:
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/mydb/mycollection \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+Create a new collection using HTTPie:
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/mydb/mycollection \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+Create a new collection using JavaScript:
+
 [source,javascript]
 ----
-// React Native example
-const createTask = async (task) => {
-    const response = await fetch('https://[your-instance].restheart.com/tasks', {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Basic ' + base64.encode('developer:AnotherSecurePass456!'),
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(task)
-    });
-    return response.json();
-};
+const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
 ----
 
-=== Troubleshooting
+=== Inserting Documents
 
-==== Common Issues
+==== cURL
 
-* **Token Expired**: Generate a new temporary token from the dashboard
-* **CORS Issues**: Configure CORS settings in your API instance settings
-* **Permission Denied**: Check user roles and ACL permissions
-* **Connection Problems**: Verify your instance URL and network connectivity
+Insert a document using cURL:
 
-==== Performance Tips
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/mydb/mycollection \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John", "age": 30}'
+----
 
-* Use query filters to limit returned data
-* Implement pagination for large datasets
-* Create indexes for frequently queried fields
-* Use aggregation pipelines for complex data processing
+==== HTTPie
 
-==== Getting Help
+Insert a document using HTTPie:
 
-* **Documentation**: https://restheart.org/docs
-* **Community Forum**: https://github.com/SoftInstigate/restheart/discussions
-* **Email Support**: support@restheart.com
-* **Live Chat**: Available in your dashboard (Shared/Dedicated tiers)
+[source,bash]
+----
+http POST [INSTANCE-URL]/mydb/mycollection \
+  Authorization:"Basic [BASIC-AUTH]" \
+  name="John" age:=30
+----
 
-=== Next Steps
+==== JavaScript
 
-==== 🎯 Immediate Actions
-* **Explore Your Dashboard**: Monitor API usage, manage users, view logs
-* **Try GraphQL**: Create GraphQL schemas for type-safe queries
-* **Set Up Webhooks**: Configure notifications for data changes
-* **Custom Domains**: Add your own domain (Shared/Dedicated tiers)
+Insert a document using JavaScript:
 
-==== 📚 Deep Dive Learning
-* link:user-management[User Management] - Complex permission scenarios
-* link:security[Security] - Production security hardening
-* link:../mongodb-rest/aggregations[Data Aggregations] - Data aggregation
-* link:../mongodb-graphql/tutorial[GraphQL API] - GraphQL API
+[source,javascript]
+----
+const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'John',
+    age: 30
+  })
+});
+----
 
-Start building your next application with RESTHeart Cloud today! 🚀
+=== Querying Documents
+
+==== cURL
+
+Query documents using cURL:
+
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/mydb/mycollection?filter={'age':{\$gt:25}}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+Query documents using HTTPie:
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/mydb/mycollection" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'age':{\$gt:25}}"
+----
+
+==== JavaScript
+
+Query documents using JavaScript:
+
+[source,javascript]
+----
+const filter = encodeURIComponent("{'age':{\$gt:25}}");
+const response = await fetch(`[INSTANCE-URL]/mydb/mycollection?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
+
+== Advanced Operations
+
+=== Bulk Operations
+
+==== cURL
+
+Perform bulk insert using cURL:
+
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/mydb/mycollection \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"name": "Alice", "age": 25},
+    {"name": "Bob", "age": 35},
+    {"name": "Charlie", "age": 28}
+  ]'
+----
+
+==== HTTPie
+
+Perform bulk insert using HTTPie:
+
+[source,bash]
+----
+echo '[
+  {"name": "Alice", "age": 25},
+  {"name": "Bob", "age": 35},
+  {"name": "Charlie", "age": 28}
+]' | http POST [INSTANCE-URL]/mydb/mycollection \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+
+Perform bulk insert using JavaScript:
+
+[source,javascript]
+----
+const documents = [
+  {name: 'Alice', age: 25},
+  {name: 'Bob', age: 35},
+  {name: 'Charlie', age: 28}
+];
+
+const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(documents)
+});
+----
+
+=== Aggregation Pipeline
+
+==== cURL
+
+Run an aggregation pipeline using cURL:
+
+[source,bash]
+----
+curl -X POST [INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"$group": {"_id": null, "avgAge": {"$avg": "$age"}}},
+    {"$project": {"_id": 0, "averageAge": "$avgAge"}}
+  ]'
+----
+
+==== HTTPie
+
+Run an aggregation pipeline using HTTPie:
+
+[source,bash]
+----
+echo '[
+  {"$group": {"_id": null, "avgAge": {"$avg": "$age"}}},
+  {"$project": {"_id": 0, "averageAge": "$avgAge"}}
+]' | http POST [INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+
+Run an aggregation pipeline using JavaScript:
+
+[source,javascript]
+----
+const pipeline = [
+  {$group: {_id: null, avgAge: {$avg: '$age'}}},
+  {$project: {_id: 0, averageAge: '$avgAge'}}
+];
+
+const response = await fetch('[INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(pipeline)
+});
+----

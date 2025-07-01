@@ -1,0 +1,69 @@
+<div
+  class="config-panel border rounded p-4 my-4"
+  x-data="interactiveDocs"
+  x-show="isInitialized"
+>
+  <h3 class="mb-3">🔧 Configuration</h3>
+  <div class="row g-3 mb-3">
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Client Type</label>
+      <select
+        x-model="clientType"
+        @change="onClientTypeChange()"
+        class="form-select"
+      >
+        <option value="all">Show All</option>
+        <option value="curl">cURL</option>
+        <option value="httpie">HTTPie</option>
+        <option value="javascript">JavaScript</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Instance URL</label>
+      <input
+        type="text"
+        x-model="instanceUrl"
+        @input="onInputChange()"
+        class="form-control"
+        placeholder="https://your-instance.restheart.com"
+      />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">JWT</label>
+      <input
+        type="text"
+        x-model="jwt"
+        @input="onInputChange()"
+        class="form-control"
+        placeholder="JWT"
+      />
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label fw-bold">password</label>
+      <input
+        type="password"
+        x-model="password"
+        @input="onInputChange()"
+        class="form-control"
+        placeholder="password"
+      />
+    </div>
+  </div>
+
+  <div class="setup-warning border rounded p-3 mt-3">
+    <h4 class="mb-2">⚠️ Setup Required</h4>
+    <p class="mb-0">
+      Before using these examples, get a JWT token from cloud.restheart.com
+    </p>
+  </div>
+
+  <div x-show="isShowingFiltered" class="client-status border rounded p-2 mt-3">
+    📱 Showing only <strong x-text="filteredClientName"></strong> examples
+  </div>
+
+  <div class="mt-3">
+    <button @click="clearValues()" class="btn btn-danger">Clear Values</button>
+    <small class="text-muted ms-2">Values are saved in your browser</small>
+  </div>
+</div>
