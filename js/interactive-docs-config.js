@@ -62,7 +62,6 @@ document.addEventListener("alpine:init", () => {
     // Initialize code block processing only when needed
     initializeCodeBlocks() {
       if (this.originalCodeBlocks.size === 0) {
-        console.log("Initializing code blocks for the first time...");
         this.storeOriginalCodeBlocks();
       }
     },
@@ -70,7 +69,6 @@ document.addEventListener("alpine:init", () => {
     // Store original content with placeholders to allow re-replacement
     storeOriginalCodeBlocks() {
       const codeBlocks = document.querySelectorAll("pre code");
-      console.log(`Found ${codeBlocks.length} code blocks to process`);
 
       codeBlocks.forEach((block, index) => {
         if (block.hasAttribute("data-block-id")) return; // Already processed
@@ -88,8 +86,6 @@ document.addEventListener("alpine:init", () => {
                                block.innerHTML.includes('<span class=') ||
                                block.parentElement.classList.contains('highlight') ||
                                block.parentElement.classList.contains('highlighter-rouge');
-        
-        console.log(`Block ${index}: hasHighlighting=${hasHighlighting}, innerHTML length=${originalHTML.length}, includes spans=${block.innerHTML.includes('<span class=')}`);
         
         this.originalCodeBlocks.set(blockId, {
           text: originalText,
@@ -136,28 +132,38 @@ document.addEventListener("alpine:init", () => {
 
     // Methods
     updateExamples() {
-      // Define all replacements
+      // Define all replacements - handle both plain text and HTML-separated brackets
       const replacements = [
+        // Plain text patterns
         { from: '\\[INSTANCE-URL\\]', to: this.displayInstanceUrl },
         { from: '\\[YOUR-USERNAME\\]', to: this.displayUsername },
         { from: '\\[YOUR-PASSWORD\\]', to: this.displayPassword },
         { from: '\\[BASIC-AUTH\\]', to: this.basicAuth },
-        { from: '\\[JWT\\]', to: this.displayJwt }
+        { from: '\\[JWT\\]', to: this.displayJwt },
+        // HTML-separated patterns (for syntax highlighted code where brackets are in spans)
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>INSTANCE-URL', to: this.displayInstanceUrl },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-USERNAME', to: this.displayUsername },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-PASSWORD', to: this.displayPassword },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>BASIC-AUTH', to: this.basicAuth },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>JWT', to: this.displayJwt }
       ];
 
       // Update code blocks using the stored original content
       this.originalCodeBlocks.forEach((originalData, blockId) => {
         const block = document.querySelector(`[data-block-id="${blockId}"]`);
+        
         if (block) {
           // Check if this block actually contains placeholders before updating
-          const hasPlaceholders = originalData.text.match(/\[(INSTANCE-URL|YOUR-USERNAME|YOUR-PASSWORD|BASIC-AUTH|JWT)\]/);
+          const hasPlaceholders = originalData.text.match(/\[(?:INSTANCE-URL|YOUR-USERNAME|YOUR-PASSWORD|BASIC-AUTH|JWT)\]/);
           
           if (hasPlaceholders) {
             if (originalData.hasHighlighting) {
               // For highlighted code, update HTML while preserving structure
               let updatedHTML = originalData.html;
+              
               replacements.forEach(({ from, to }) => {
-                updatedHTML = updatedHTML.replace(new RegExp(from, 'g'), to);
+                const replaceRegex = new RegExp(from, 'g');
+                updatedHTML = updatedHTML.replace(replaceRegex, to);
               });
               block.innerHTML = updatedHTML;
             } else {
