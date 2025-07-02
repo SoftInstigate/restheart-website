@@ -33,7 +33,7 @@ WARNING: *Security Notice*: The root user has complete access to your instance. 
 ----
 curl -X PUT [INSTANCE-URL]/users/root \
   -H "Authorization: Bearer [JWT]" \
-  -d '{"password": "[YOUR-PASSWORD]"}'
+  -d '{"password": "[YOUR-PASSWORD]", "roles": ["root"]}'
 ----
 
 ==== HTTPie
@@ -42,7 +42,8 @@ curl -X PUT [INSTANCE-URL]/users/root \
 ----
 http PUT [INSTANCE-URL]/users/root \
   Authorization:"Bearer [JWT]" \
-  password=[YOUR-PASSWORD]
+  password=[YOUR-PASSWORD] \
+  roles:='["root"]'
 ----
 
 ==== JavaScript
@@ -51,7 +52,7 @@ http PUT [INSTANCE-URL]/users/root \
 ----
 fetch('[INSTANCE-URL]/users/root', {
   method: 'PUT',
-  body: JSON.stringify({ "password": "[YOUR-PASSWORD]" }),
+  body: JSON.stringify({ "password": "[YOUR-PASSWORD]", "roles": ["root"] }),
   headers: {
     'Authorization': 'Bearer [JWT]'
   }
@@ -74,7 +75,6 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 - *Roles*: `["root"]` - Applied to users with the root role
 - *Priority*: `0` - High priority permission
 - *MongoDB Options*: Enables all management operations
-
 
 ==== cURL
 
