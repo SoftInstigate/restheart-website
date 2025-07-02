@@ -252,6 +252,21 @@ document.addEventListener("alpine:init", () => {
       // when we set the values above
     },
 
+    setLocalhostDefaults() {
+      this.instanceUrl = "http://localhost:8080";
+      this.username = "admin";
+      this.password = "secret";
+      this.clientType = "all";
+      this.jwt = "";
+
+      // Save the values and update examples
+      this.saveValues();
+      this.$nextTick(() => {
+        this.updateExamples();
+        this.filterCodeBlocks();
+      });
+    },
+
     clearValues() {
       this.instanceUrl = "";
       this.username = "";
