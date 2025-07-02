@@ -2,84 +2,13 @@
 title: RESTHeart Cloud Examples and Use Cases
 layout: docs-adoc
 menu: cloud
+liquid: true
 ---
 
 ++++
-<div class="code-examples-options text-center mb-4">
-  <label for="examples-format" class="code-examples-label">Choose your preferred format:</label>
-  <select id="examples-format" class="code-examples-select">
-    <option value="curl">cURL</option>
-    <option value="httpie">HTTPie</option>
-    <option value="javascript">JavaScript</option>
-  </select>
-</div>
-
-<style>
-.code-examples-options {
-  margin: 1rem 0 2rem 0;
-  padding: 1rem;
-  background-color: var(--code-bg-color, #f8f9fa);
-  border-radius: 8px;
-  border: 1px solid var(--border-color, #e1e5e9);
-}
-
-.code-examples-label {
-  display: inline-block;
-  margin-right: 0.5rem;
-  font-weight: 600;
-  color: var(--text-color, #333);
-}
-
-.code-examples-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color, #ccc);
-  border-radius: 4px;
-  background-color: white;
-  font-size: 1rem;
-  color: var(--text-color, #333);
-  cursor: pointer;
-}
-
-.code-examples-select:focus {
-  outline: none;
-  border-color: var(--primary-color, #007bff);
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.code-example {
-  display: none;
-}
-
-.code-example.active {
-  display: block;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const formatSelect = document.getElementById('examples-format');
-  
-  function updateCodeExamples() {
-    const selectedFormat = formatSelect.value;
-    
-    // Hide all code examples
-    document.querySelectorAll('.code-example').forEach(example => {
-      example.classList.remove('active');
-    });
-    
-    // Show examples for selected format
-    document.querySelectorAll(`.code-example-${selectedFormat}`).forEach(example => {
-      example.classList.add('active');
-    });
-  }
-  
-  // Set initial state
-  updateCodeExamples();
-  
-  // Listen for changes
-  formatSelect.addEventListener('change', updateCodeExamples);
-});
-</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
 ++++
 
 Discover how RESTHeart Cloud accelerates development across different industries and application types. Each example shows how you can get from idea to working backend in minutes.
@@ -92,42 +21,40 @@ Build a complete product management system with inventory, categories, and searc
 
 ===== Setup (2 minutes)
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
 # Create collections
-curl -X PUT https://[INSTANCE-URL]/products -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/categories -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/inventory -H "Authorization: [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/products \
+  -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
 # Create collections
-http PUT [INSTANCE-URL]/products Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/categories Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/inventory Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
 // Create collections
 const createCollections = async () => {
   const headers = {
-    'Authorization': '[BASIC-AUTH]'
+    'Authorization': 'Basic [BASIC-AUTH]'
   };
 
   fetch('[INSTANCE-URL]/products', {
@@ -173,26 +100,20 @@ const createCollections = async () => {
 createCollections();
 ----
 
-++++
-</div>
-++++
-
 ===== Sample Data
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
 # Add categories
 curl -X POST https://[INSTANCE-URL]/categories \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
 curl -X POST https://[INSTANCE-URL]/products \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
     "sku": "WH-001",
@@ -206,16 +127,13 @@ curl -X POST https://[INSTANCE-URL]/products \
   }'
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
 # Add categories
 http POST [INSTANCE-URL]/categories \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Electronics" \
   slug="electronics" \
@@ -223,7 +141,7 @@ http POST [INSTANCE-URL]/categories \
 
 # Add products
 http POST [INSTANCE-URL]/products \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Wireless Headphones" \
   sku="WH-001" \
@@ -236,10 +154,7 @@ http POST [INSTANCE-URL]/products \
   tags:='["audio", "wireless", "premium"]'
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -248,7 +163,7 @@ const addCategory = () => {
   fetch('[INSTANCE-URL]/categories', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -272,7 +187,7 @@ const addProduct = () => {
   fetch('[INSTANCE-URL]/products', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -302,15 +217,9 @@ addCategory();
 addProduct();
 ----
 
-++++
-</div>
-++++
-
 ===== Advanced Queries
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -327,10 +236,7 @@ curl "https://[INSTANCE-URL]/products?filter={'quantity':{\$lt:10}}"
 curl "https://[INSTANCE-URL]/products?filter={'category':'electronics'}&sort={price:1}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -347,10 +253,7 @@ http GET [INSTANCE-URL]/products filter=="{'quantity':{\$lt:10}}"
 http GET [INSTANCE-URL]/products filter=="{'category':'electronics'}" sort=="{price:1}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -406,30 +309,24 @@ getLowInventory();
 filterByCategory();
 ----
 
-++++
-</div>
-++++
-
 ==== Content Management System
 
 Create a headless CMS for blogs, news sites, or documentation.
 
 ===== Content Structure
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
 # Create content collections
-curl -X PUT https://[INSTANCE-URL]/articles -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/authors -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/media -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/media -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create author
 curl -X POST https://[INSTANCE-URL]/authors \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
     "email": "jane@example.com",
@@ -439,7 +336,7 @@ curl -X POST https://[INSTANCE-URL]/authors \
 
 # Create article
 curl -X POST https://[INSTANCE-URL]/articles \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
     "slug": "getting-started-restheart-cloud",
@@ -456,21 +353,18 @@ curl -X POST https://[INSTANCE-URL]/articles \
   }'
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
 # Create content collections
-http PUT [INSTANCE-URL]/articles Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/authors Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/media Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/articles Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/authors Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/media Authorization:"Basic [BASIC-AUTH]"
 
 # Create author
 http POST [INSTANCE-URL]/authors \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Jane Smith" \
   email="jane@example.com" \
@@ -479,7 +373,7 @@ http POST [INSTANCE-URL]/authors \
 
 # Create article
 http POST [INSTANCE-URL]/articles \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   title="Getting Started with RESTHeart Cloud" \
   slug="getting-started-restheart-cloud" \
@@ -495,16 +389,13 @@ http POST [INSTANCE-URL]/articles \
   }'
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
 // Create content collections
 const createContentCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers })
   .then(response => {
@@ -542,7 +433,7 @@ const createAuthor = () => {
   fetch('[INSTANCE-URL]/authors', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -567,7 +458,7 @@ const createArticle = () => {
   fetch('[INSTANCE-URL]/articles', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -601,15 +492,9 @@ createAuthor();
 createArticle();
 ----
 
-++++
-</div>
-++++
-
 ===== Content Delivery
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -623,10 +508,7 @@ curl "https://[INSTANCE-URL]/articles?filter={'slug':'getting-started-restheart-
 curl "https://[INSTANCE-URL]/articles?filter={\$text:{\$search:'RESTHeart API'}}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -640,10 +522,7 @@ http GET [INSTANCE-URL]/articles filter=="{'slug':'getting-started-restheart-clo
 http GET [INSTANCE-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -687,10 +566,6 @@ getArticleBySlug('getting-started-restheart-cloud');
 searchArticles('RESTHeart API');
 ----
 
-++++
-</div>
-++++
-
 === Mobile Applications
 
 ==== Social Media App Backend
@@ -699,20 +574,18 @@ Build a complete social platform with users, posts, likes, and real-time feature
 
 ===== User Profiles and Posts
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
 # Create social app collections
-curl -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/posts -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/followers -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create user profile
 curl -X POST https://[INSTANCE-URL]/profiles \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
     "displayName": "John Doe",
@@ -730,7 +603,7 @@ curl -X POST https://[INSTANCE-URL]/profiles \
 
 # Create a post
 curl -X POST https://[INSTANCE-URL]/posts \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
     "content": "Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀",
@@ -744,21 +617,18 @@ curl -X POST https://[INSTANCE-URL]/posts \
   }'
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
 # Create social app collections
-http PUT [INSTANCE-URL]/profiles Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/posts Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/followers Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/profiles Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/posts Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/followers Authorization:"Basic [BASIC-AUTH]"
 
 # Create user profile
 http POST [INSTANCE-URL]/profiles \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   username="johndoe" \
   displayName="John Doe" \
@@ -775,7 +645,7 @@ http POST [INSTANCE-URL]/profiles \
 
 # Create a post
 http POST [INSTANCE-URL]/posts \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   author="johndoe" \
   content="Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀" \
@@ -788,16 +658,13 @@ http POST [INSTANCE-URL]/posts \
   shares:=0
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
 // Create social app collections
 const createSocialCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers })
   .then(response => {
@@ -835,7 +702,7 @@ const createUserProfile = () => {
   fetch('[INSTANCE-URL]/profiles', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -868,7 +735,7 @@ const createPost = () => {
   fetch('[INSTANCE-URL]/posts', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -899,15 +766,9 @@ createUserProfile();
 createPost();
 ----
 
-++++
-</div>
-++++
-
 ===== Social Features
 
-++++
-<div class="code-example code-example-curl active">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -921,10 +782,7 @@ curl "https://[INSTANCE-URL]/posts?filter={'hashtags':{\$in:['#api']}}"
 curl "https://[INSTANCE-URL]/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -938,10 +796,7 @@ http GET [INSTANCE-URL]/posts filter=="{'hashtags':{\$in:['#api']}}"
 http GET [INSTANCE-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
 ----
 
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -986,30 +841,22 @@ searchPostsByHashtag('#api');
 getUserPosts('johndoe');
 ----
 
-++++
-</div>
-++++
-
 ==== Fitness Tracking App
 
 Create a comprehensive fitness backend with workouts, progress tracking, and goals.
 
 ===== Workout Data
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Setup fitness collections
-curl -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/progress -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
 
 # Add exercise definitions
 curl -X POST https://[INSTANCE-URL]/exercises \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
     "category": "strength",
@@ -1021,7 +868,7 @@ curl -X POST https://[INSTANCE-URL]/exercises \
 
 # Log workout
 curl -X POST https://[INSTANCE-URL]/workouts \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
     "date": "2024-01-15T07:00:00Z",
@@ -1041,22 +888,17 @@ curl -X POST https://[INSTANCE-URL]/workouts \
     "caloriesBurned": 200
   }'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Setup fitness collections
-http PUT [INSTANCE-URL]/workouts Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/exercises Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/progress Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/workouts Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/exercises Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/progress Authorization:"Basic [BASIC-AUTH]"
 
 # Add exercise definitions
 http POST [INSTANCE-URL]/exercises \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Push-ups" \
   category="strength" \
@@ -1067,7 +909,7 @@ http POST [INSTANCE-URL]/exercises \
 
 # Log workout
 http POST [INSTANCE-URL]/workouts \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   userId="user123" \
   date="2024-01-15T07:00:00Z" \
@@ -1086,17 +928,12 @@ http POST [INSTANCE-URL]/workouts \
   notes="Great morning workout, feeling strong!" \
   caloriesBurned:=200
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Setup fitness collections
 const createFitnessCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers })
   .then(response => {
@@ -1134,7 +971,7 @@ const addExercise = () => {
   fetch('[INSTANCE-URL]/exercises', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1161,7 +998,7 @@ const logWorkout = () => {
   fetch('[INSTANCE-URL]/workouts', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1198,11 +1035,6 @@ createFitnessCollections();
 addExercise();
 logWorkout();
 ----
-
-++++
-</div>
-++++
-
 === IoT and Data Collection
 
 ==== Smart Home Monitoring
@@ -1210,21 +1042,17 @@ logWorkout();
 Collect and analyze data from home sensors and devices.
 
 ===== Sensor Data Collection
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Create IoT collections
-curl -X PUT https://[INSTANCE-URL]/devices -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/readings -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register device
 curl -X POST https://[INSTANCE-URL]/devices \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
     "type": "temperature",
@@ -1237,7 +1065,7 @@ curl -X POST https://[INSTANCE-URL]/devices \
 
 # Submit sensor reading
 curl -X POST https://[INSTANCE-URL]/readings \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
     "timestamp": "2024-01-15T15:30:00Z",
@@ -1249,22 +1077,17 @@ curl -X POST https://[INSTANCE-URL]/readings \
     "location": "living-room"
   }'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Create IoT collections
-http PUT [INSTANCE-URL]/devices Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/readings Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/alerts Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/devices Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/readings Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/alerts Authorization:"Basic [BASIC-AUTH]"
 
 # Register device
 http POST [INSTANCE-URL]/devices \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   deviceId="temp-sensor-01" \
   type="temperature" \
@@ -1276,7 +1099,7 @@ http POST [INSTANCE-URL]/devices \
 
 # Submit sensor reading
 http POST [INSTANCE-URL]/readings \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   deviceId="temp-sensor-01" \
   timestamp="2024-01-15T15:30:00Z" \
@@ -1287,17 +1110,12 @@ http POST [INSTANCE-URL]/readings \
   }' \
   location="living-room"
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Create IoT collections
 const createIoTCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers })
   .then(response => {
@@ -1335,7 +1153,7 @@ const registerDevice = () => {
   fetch('[INSTANCE-URL]/devices', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1363,7 +1181,7 @@ const submitReading = () => {
   fetch('[INSTANCE-URL]/readings', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1392,17 +1210,8 @@ createIoTCollections();
 registerDevice();
 submitReading();
 ----
-
-++++
-</div>
-++++
-
 ===== Data Analysis
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Get recent readings
@@ -1410,7 +1219,7 @@ curl "https://[INSTANCE-URL]/readings?filter={'timestamp':{\$gte:'2024-01-15T00:
 
 # Average temperature by location
 curl -X POST https://[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
     {"$group": {
@@ -1420,12 +1229,7 @@ curl -X POST https://[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
     }}
   ]'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Get recent readings
@@ -1440,15 +1244,10 @@ echo '[
     "count": {"$sum": 1}
   }}
 ]' | http POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Get recent readings
@@ -1477,7 +1276,7 @@ const getAverageTemperatureByLocation = () => {
   fetch('[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
@@ -1493,30 +1292,21 @@ const getAverageTemperatureByLocation = () => {
 getRecentReadings();
 getAverageTemperatureByLocation();
 ----
-
-++++
-</div>
-++++
-
 ==== Environmental Monitoring
 
 Track air quality, weather conditions, and environmental data.
 
 ===== Environmental Data
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -X PUT https://[INSTANCE-URL]/stations -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/measurements -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register monitoring station
 curl -X POST https://[INSTANCE-URL]/stations \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
     "name": "Central Park Station",
@@ -1531,7 +1321,7 @@ curl -X POST https://[INSTANCE-URL]/stations \
 
 # Submit environmental measurement
 curl -X POST https://[INSTANCE-URL]/measurements \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
     "timestamp": "2024-01-15T16:00:00Z",
@@ -1550,21 +1340,16 @@ curl -X POST https://[INSTANCE-URL]/measurements \
     }
   }'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Environmental monitoring setup
-http PUT [INSTANCE-URL]/stations Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/measurements Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/stations Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/measurements Authorization:"Basic [BASIC-AUTH]"
 
 # Register monitoring station
 http POST [INSTANCE-URL]/stations \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   stationId="ENV-NYC-001" \
   name="Central Park Station" \
@@ -1578,7 +1363,7 @@ http POST [INSTANCE-URL]/stations \
 
 # Submit environmental measurement
 http POST [INSTANCE-URL]/measurements \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   stationId="ENV-NYC-001" \
   timestamp="2024-01-15T16:00:00Z" \
@@ -1596,17 +1381,12 @@ http POST [INSTANCE-URL]/measurements \
     "windSpeed": 8.5
   }'
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Environmental monitoring setup
 const createEnvironmentalCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers })
   .then(response => {
@@ -1634,7 +1414,7 @@ const registerStation = () => {
   fetch('[INSTANCE-URL]/stations', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1664,7 +1444,7 @@ const submitMeasurement = () => {
   fetch('[INSTANCE-URL]/measurements', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1700,11 +1480,6 @@ createEnvironmentalCollections();
 registerStation();
 submitMeasurement();
 ----
-
-++++
-</div>
-++++
-
 === Analytics and Reporting
 
 ==== Business Intelligence Dashboard
@@ -1712,21 +1487,17 @@ submitMeasurement();
 Create a comprehensive analytics backend for business metrics.
 
 ===== Sales Analytics
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Business analytics setup
-curl -X PUT https://[INSTANCE-URL]/sales -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/customers -H "Authorization: [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/analytics-products -H "Authorization: [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
 
 # Record sale
 curl -X POST https://[INSTANCE-URL]/sales \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
     "customerId": "CUST-001",
@@ -1747,22 +1518,17 @@ curl -X POST https://[INSTANCE-URL]/sales \
     "region": "north-america"
   }'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Business analytics setup
-http PUT [INSTANCE-URL]/sales Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/customers Authorization:[BASIC-AUTH]
-http PUT [INSTANCE-URL]/analytics-products Authorization:[BASIC-AUTH]
+http PUT [INSTANCE-URL]/sales Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/customers Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/analytics-products Authorization:"Basic [BASIC-AUTH]"
 
 # Record sale
 http POST [INSTANCE-URL]/sales \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   orderId="ORD-2024-001" \
   customerId="CUST-001" \
@@ -1782,17 +1548,12 @@ http POST [INSTANCE-URL]/sales \
   salesRep="john.doe@company.com" \
   region="north-america"
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Business analytics setup
 const createAnalyticsCollections = () => {
-  const headers = { 'Authorization': '[BASIC-AUTH]' };
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
   
   fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers })
   .then(response => {
@@ -1830,7 +1591,7 @@ const recordSale = () => {
   fetch('[INSTANCE-URL]/sales', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -1867,22 +1628,13 @@ const recordSale = () => {
 createAnalyticsCollections();
 recordSale();
 ----
-
-++++
-</div>
-++++
-
 ===== Analytics Queries
-
-++++
-<div class="code-example code-example-curl active">
-++++
-
+==== cURL
 [source,bash]
 ----
 # Daily sales aggregation
 curl -X POST https://[INSTANCE-URL]/sales/_aggrs/daily-sales \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
     {"$group": {
@@ -1896,7 +1648,7 @@ curl -X POST https://[INSTANCE-URL]/sales/_aggrs/daily-sales \
 
 # Top products by revenue
 curl -X POST https://[INSTANCE-URL]/sales/_aggrs/top-products \
-  -H "Authorization: [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
     {"$group": {
@@ -1909,12 +1661,7 @@ curl -X POST https://[INSTANCE-URL]/sales/_aggrs/top-products \
     {"$limit": 10}
   ]'
 ----
-
-++++
-</div>
-<div class="code-example code-example-httpie">
-++++
-
+==== HTTPie
 [source,bash]
 ----
 # Daily sales aggregation
@@ -1928,7 +1675,7 @@ echo '[
   }},
   {"$sort": {"_id": 1}}
 ]' | http POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 
 # Top products by revenue
@@ -1943,15 +1690,10 @@ echo '[
   {"$sort": {"totalRevenue": -1}},
   {"$limit": 10}
 ]' | http POST [INSTANCE-URL]/sales/_aggrs/top-products \
-  Authorization:[BASIC-AUTH] \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
-
-++++
-</div>
-<div class="code-example code-example-javascript">
-++++
-
+==== JavaScript
 [source,javascript]
 ----
 // Daily sales aggregation
@@ -1970,7 +1712,7 @@ const getDailySales = () => {
   fetch('[INSTANCE-URL]/sales/_aggrs/daily-sales', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
@@ -1999,7 +1741,7 @@ const getTopProducts = () => {
   fetch('[INSTANCE-URL]/sales/_aggrs/top-products', {
     method: 'POST',
     headers: {
-      'Authorization': '[BASIC-AUTH]',
+      'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
@@ -2015,11 +1757,6 @@ const getTopProducts = () => {
 getDailySales();
 getTopProducts();
 ----
-
-++++
-</div>
-++++
-
 === Real-Time Applications
 
 ==== Live Chat System

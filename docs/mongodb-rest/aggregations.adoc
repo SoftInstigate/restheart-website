@@ -39,7 +39,7 @@ To define an aggregation, use a `PATCH` request to update the collection metadat
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/mycollection" \
+curl -X PATCH "[INSTANCE-URL]/mycollection?wm=upsert" \
   -u "[BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -78,7 +78,7 @@ echo '{
       ]
     }
   ]
-}' | http PATCH "[INSTANCE-URL]/mycollection" \
+}' | http PATCH "[INSTANCE-URL]/mycollection?wm=upsert" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -86,7 +86,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/mycollection', {
+fetch('[INSTANCE-URL]/mycollection?wm=upsert', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -201,7 +201,7 @@ This returns sales data only for the "Widget Pro" product.
 
 ==== Default Values
 
-Since RESTHeart 7.3, you can specify default values for variables:
+You can specify default values for variables:
 
 [source,json]
 ----
@@ -229,7 +229,7 @@ Example with default value:
 
 ==== Dot Notation for Nested Variables
 
-Since RESTHeart 7.6, you can access nested properties in variables using dot notation:
+You can access nested properties in variables using dot notation:
 
 ==== cURL
 [source,bash]

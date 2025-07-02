@@ -2,7 +2,14 @@
 title: Caching
 layout: docs-adoc
 menu: mongodb
+liquid: true
 ---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
 
 RESTHeart speedups the execution of GET requests to collections, i.e. `GET /coll`, via caching.
 
@@ -13,15 +20,50 @@ MongoDB link:https://docs.mongodb.org/manual/reference/method/cursor.skip/#curso
 RESTHeart allows to link:/docs/mongodb-rest/read-docs[Read Documents] via GET requests
 on collections.
 
-```
-GET /test/coll?count&page=3&pagesize=10 HTTP/1.1
+==== cURL
 
-HTTP/1.1 200 OK
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll?count&page=3&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
 
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  count==true \
+  page==3 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll?count&page=3&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,json]
+----
 [
-    { <DOC30> }, { <DOC31> }, ... { <DOC39> }
+    { "DOC30": "..." },
+    { "DOC31": "..." },
+    ...
+    { "DOC39": "..." }
 ]
-```
+----
 
 Documents are returned as **paginated** result sets, i.e. each
 request returns a limited number of documents.
@@ -99,55 +141,198 @@ image::https://user-images.githubusercontent.com/7335252/205438554-fbf523ad-55b7
 
 To make sure that requests using caching return consistent data, link:/docs/mongodb-rest/transactions[transactions] can be used, since the *isolation* property of transactions guarantees consistency.
 
-create a session:
+===== Create a session
 
-[source,bash]
------
-POST /_sessions HTTP/1.1
-
-...
-Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0
------
-
-start a transactions
-
-[source,bash]
------
-POST /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns HTTP/1.1
-
-HTTP/1.1 201 Created
-Location: http://localhost:8009/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1
------
-
-get data in the transaction with caching
-
-[source,bash]
------
-GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=3&pagesize=10 HTTP/1.1
-
-HTTP/1.1 200 OK
-
-[
-    { <DOC30> }, { <DOC31> }, ... { <DOC39> }
-]
------
-
-[source,bash]
------
-GET /coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=4&pagesize=10 HTTP/1.1
-
-HTTP/1.1 200 OK
-
-[
-    { <DOC40> }, { <DOC41> }, ... { <DOC49> }
-]
------
-
-abort the transaction (since no data has been modified)
+==== cURL
 
 [source,bash]
 ----
-DELETE /_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1 HTTP/1.1
+curl -X POST "[INSTANCE-URL]/_sessions" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
 
-HTTP/1.1 204 No Content
+==== HTTPie
+
+[source,bash]
+----
+http POST "[INSTANCE-URL]/_sessions" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/_sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    const sessionUrl = response.headers.get('Location');
+    console.log('Session created:', sessionUrl);
+    return sessionUrl;
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Start a transaction
+
+==== cURL
+
+[source,bash]
+----
+curl -X POST "[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST "[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    const txnUrl = response.headers.get('Location');
+    console.log('Transaction started:', txnUrl);
+    return txnUrl;
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Get data in the transaction with caching
+
+==== cURL
+
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=3&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sid==11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 \
+  txn==1 \
+  cache==true \
+  page==3 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=3&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved cached data (page 3):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Get the next page:
+
+==== cURL
+
+[source,bash]
+----
+curl -X GET "[INSTANCE-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=4&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[INSTANCE-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sid==11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 \
+  txn==1 \
+  cache==true \
+  page==4 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=4&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved cached data (page 4):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Abort the transaction
+
+==== cURL
+
+[source,bash]
+----
+curl -X DELETE "[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE "[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Transaction aborted successfully');
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----

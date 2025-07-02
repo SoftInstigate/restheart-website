@@ -18,16 +18,7 @@ The following requests upsert a collection defining three change streams:
 - *all* bound at `/messages/_streams/all`
 - *mine* bound at `/messages/_streams/mine`
 
-++++
-<div x-data="requestTabs()">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
-  </div>
-  
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -54,11 +45,7 @@ curl -X PUT '[INSTANCE-URL]/messages' \
 }'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -84,11 +71,7 @@ echo '{
   'Content-Type:application/json'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -125,11 +108,6 @@ fetch('[INSTANCE-URL]/messages', {
 .catch(error => console.error('Error:', error));
 ----
 
-++++
-  </div>
-</div>
-++++
-
 NOTE: The request body is included in the examples above.
 
 Note that the `$match` stage specifies a condition on the `name` property using `fullDocument::name`.
@@ -156,16 +134,7 @@ This is because the Change Event looks like:
 Note between the `_links` collection property the URIs of the
 change streams (returned with `?rep=SHAL`).
 
-++++
-<div x-data="requestTabs()">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
-  </div>
-  
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -173,11 +142,7 @@ curl -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
   -H 'Authorization: Basic [BASIC-AUTH]'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -185,11 +150,7 @@ http GET [INSTANCE-URL]/messages rep==SHAL \
   'Authorization:Basic [BASIC-AUTH]'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -206,15 +167,6 @@ fetch('[INSTANCE-URL]/messages?rep=SHAL', {
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-  </div>
-</div>
-++++
-
-++++
-{% include code-header.html type="Response" %}
-++++
 
 [source,json]
 ----
@@ -258,16 +210,7 @@ $ websocat --text - autoreconnect:ws://admin:secret@127.0.0.1:8080/messages/_str
 
 To allow connections without authentication, you can define the following permission
 
-++++
-<div x-data="requestTabs()">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
-  </div>
-  
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -282,11 +225,7 @@ curl -X POST '[INSTANCE-URL]/acl' \
 }'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -300,11 +239,7 @@ echo '{
   'Content-Type:application/json'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -329,11 +264,6 @@ fetch('[INSTANCE-URL]/acl', {
 .catch(error => console.error('Error:', error));
 ----
 
-++++
-  </div>
-</div>
-++++
-
 With this permission in place, you can connect to the WebSocket without authentication:
 
 [source,bash]
@@ -341,16 +271,7 @@ $ websocat --text - autoreconnect:ws://127.0.0.1:8080/messages/_streams/all
 
 If we now create a new document in the collection `messages`
 
-++++
-<div x-data="requestTabs()">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{'active': activeTab === 'curl'}" class="tab-button">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{'active': activeTab === 'httpie'}" class="tab-button">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{'active': activeTab === 'javascript'}" class="tab-button">JavaScript</button>
-  </div>
-  
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
@@ -363,11 +284,7 @@ curl -X POST '[INSTANCE-URL]/messages' \
 }'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
@@ -379,11 +296,7 @@ echo '{
   'Content-Type:application/json'
 ----
 
-++++
-  </div>
-  
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -405,11 +318,6 @@ fetch('[INSTANCE-URL]/messages', {
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-  </div>
-</div>
-++++
 
 We get the following output from `websocat`:
 
