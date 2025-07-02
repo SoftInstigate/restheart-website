@@ -50,11 +50,17 @@ document.addEventListener("alpine:init", () => {
       this.loadSavedValues();
       this.isInitialized = true;
 
-      // Initialize the interactive elements marking but don't process code blocks yet
+      // Initialize the interactive elements and process code blocks with saved values
       this.$nextTick(() => {
         setTimeout(() => {
           this.markClientTypeElements();
           this.filterCodeBlocks();
+          
+          // If we have saved values, apply them to the code blocks immediately
+          if (this.instanceUrl || this.username || this.password) {
+            this.initializeCodeBlocks();
+            this.updateExamples();
+          }
         }, 100);
       });
     },
