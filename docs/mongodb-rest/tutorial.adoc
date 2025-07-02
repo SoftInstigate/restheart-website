@@ -23,7 +23,7 @@ curl -X PUT [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 
 curl -X POST [INSTANCE-URL]/inventory \
-  -H "Authorization: Basic [BASIC-AUTH]"
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -d '[
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
@@ -253,7 +253,8 @@ curl -X POST [INSTANCE-URL]/inventory \
 ----
 http POST [INSTANCE-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]" \
-  item="newItem" qty:=10 size:='{"h": 2, "w": 4, "uom": "cm"}' status="C"
+  item="newItem" qty:=10 size:='{"h": 2, "w": 4, "uom": "cm"}' \
+  status="C"
 ----
 
 ==== JavaScript
@@ -317,7 +318,8 @@ curl -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
 http PUT [INSTANCE-URL]/inventory/newDocument \
   Authorization:"Basic [BASIC-AUTH]" \
   wm==upsert \
-  item="yetAnotherItem" qty:=90 size:='{"h": 3, "w": 4, "uom": "cm"}' status="C"
+  item="yetAnotherItem" qty:=90 size:='{"h": 3, "w": 4, "uom": "cm"}' \
+  status="C"
 ----
 
 ==== JavaScript

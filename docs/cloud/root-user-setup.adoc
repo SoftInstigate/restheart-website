@@ -32,7 +32,8 @@ WARNING: *Security Notice*: The root user has complete access to your instance. 
 [source,bash]
 ----
 curl -X PUT [INSTANCE-URL]/users/root \
-  -H "Authorization: Bearer [JWT]" \-d '{"password": "[YOUR-PASSWORD]"}'
+  -H "Authorization: Bearer [JWT]" \
+  -d '{"password": "[YOUR-PASSWORD]"}'
 ----
 
 ==== HTTPie
@@ -40,7 +41,8 @@ curl -X PUT [INSTANCE-URL]/users/root \
 [source,bash]
 ----
 http PUT [INSTANCE-URL]/users/root \
-  Authorization:"Bearer [JWT]" password=[YOUR-PASSWORD]
+  Authorization:"Bearer [JWT]" \
+  password=[YOUR-PASSWORD]
 ----
 
 ==== JavaScript
@@ -88,7 +90,11 @@ curl -X PUT [INSTANCE-URL]/acl/rootCanDoEverything \
 [source,bash]
 ----
 http PUT [INSTANCE-URL]/acl/rootCanDoEverything \
-  Authorization:"Bearer [JWT]" predicate="path-prefix('/')" roles:='["root"]' priority:=0 mongo:='{"allowManagementRequests": true}'
+  Authorization:"Bearer [JWT]" \
+  predicate="path-prefix('/')" \
+  roles:='["root"]' \
+  priority:=0 \
+  mongo:='{"allowManagementRequests": true}'
 ----
 
 ==== JavaScript
