@@ -69,7 +69,7 @@ const createCollections = async () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/categories', {
     method: 'PUT',
     headers
@@ -82,7 +82,7 @@ const createCollections = async () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/inventory', {
     method: 'PUT',
     headers
@@ -168,7 +168,7 @@ const addCategory = () => {
     },
     body: JSON.stringify({
       name: "Electronics",
-      slug: "electronics", 
+      slug: "electronics",
       description: "Electronic devices and accessories"
     })
   })
@@ -322,7 +322,7 @@ Create a headless CMS for blogs, news sites, or documentation.
 # Create content collections
 curl -X PUT https://[INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
 curl -X PUT https://[INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/media -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT https://[INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create author
 curl -X POST https://[INSTANCE-URL]/authors \
@@ -360,7 +360,7 @@ curl -X POST https://[INSTANCE-URL]/articles \
 # Create content collections
 http PUT [INSTANCE-URL]/articles Authorization:"Basic [BASIC-AUTH]"
 http PUT [INSTANCE-URL]/authors Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/media Authorization:"Basic [BASIC-AUTH]"
+http PUT [INSTANCE-URL]/media.files Authorization:"Basic [BASIC-AUTH]"
 
 # Create author
 http POST [INSTANCE-URL]/authors \
@@ -396,7 +396,7 @@ http POST [INSTANCE-URL]/articles \
 // Create content collections
 const createContentCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -406,7 +406,7 @@ const createContentCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/authors', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -416,11 +416,11 @@ const createContentCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
-  fetch('[INSTANCE-URL]/media', { method: 'PUT', headers })
+
+  fetch('[INSTANCE-URL]/media.files', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
-      console.log('Media collection created successfully');
+      console.log('Media file bucket created successfully');
     } else {
       console.error('Failed to create media collection:', response.status);
     }
@@ -665,7 +665,7 @@ http POST [INSTANCE-URL]/posts \
 // Create social app collections
 const createSocialCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -675,7 +675,7 @@ const createSocialCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/posts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -685,7 +685,7 @@ const createSocialCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/followers', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -934,7 +934,7 @@ http POST [INSTANCE-URL]/workouts \
 // Setup fitness collections
 const createFitnessCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -944,7 +944,7 @@ const createFitnessCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/exercises', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -954,7 +954,7 @@ const createFitnessCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/progress', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1116,7 +1116,7 @@ http POST [INSTANCE-URL]/readings \
 // Create IoT collections
 const createIoTCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1126,7 +1126,7 @@ const createIoTCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/readings', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1136,7 +1136,7 @@ const createIoTCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/alerts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1387,7 +1387,7 @@ http POST [INSTANCE-URL]/measurements \
 // Environmental monitoring setup
 const createEnvironmentalCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1397,7 +1397,7 @@ const createEnvironmentalCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/measurements', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1554,7 +1554,7 @@ http POST [INSTANCE-URL]/sales \
 // Business analytics setup
 const createAnalyticsCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
-  
+
   fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1564,7 +1564,7 @@ const createAnalyticsCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/customers', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
@@ -1574,7 +1574,7 @@ const createAnalyticsCollections = () => {
     }
   })
   .catch(error => console.error('Error:', error));
-  
+
   fetch('[INSTANCE-URL]/analytics-products', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
