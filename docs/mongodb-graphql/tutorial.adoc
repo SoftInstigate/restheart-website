@@ -37,19 +37,71 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 
 Create the *star-wars-characters* collection. This is where the data will be inserted.
 
-{% capture code %}PUT [INSTANCE-URL]/star-wars-characters{% endcapture %}
-{% include interactive-code-example.html lang="bash" header="Create the star-wars-characters collection" curl=code httpie=code js=code %}
+==== cURL
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/star-wars-characters \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/star-wars-characters Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/star-wars-characters', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
 
 Create the *gql-apps* collection. This is where the GraphQL App definition will be inserted.
 
-{% capture code %}PUT [INSTANCE-URL]/gql-apps{% endcapture %}
-{% include interactive-code-example.html lang="bash" header="Create the gql-apps collection" curl=code httpie=code js=code %}
+==== cURL
+
+[source,bash]
+----
+curl -X PUT [INSTANCE-URL]/gql-apps \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [INSTANCE-URL]/gql-apps Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/gql-apps', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+});
+----
 
 **3 Insert data**
 
 Create documents in the *star-wars-characters* collection:
 
-{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+==== cURL
+
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
   -H "Content-Type: application/json" \
   -d '[
     {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
@@ -60,9 +112,14 @@ Create documents in the *star-wars-characters* collection:
     {"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
     {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
     {"_id":3000,"name":"TIE Advanced x1","length":9.2}
-  ]'{% endcapture %}
+  ]'
+----
 
-{% capture httpie_code %}http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
+==== HTTPie
+
+[source,bash]
+----
+http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
   "[BASIC-AUTH]" \
   Content-Type:application/json \
   <<< '[
@@ -74,12 +131,17 @@ Create documents in the *star-wars-characters* collection:
     {"_id":2000,"name":"C-3PO","friends":[1000,1002,1003,2001],"appearsIn":[4,5,6],"primaryFunction":"Protocol"},
     {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
     {"_id":3000,"name":"TIE Advanced x1","length":9.2}
-  ]'{% endcapture %}
+  ]'
+----
 
-{% capture js_code %}fetch('[INSTANCE-URL]/star-wars-characters?wm=upsert', {
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/star-wars-characters?wm=upsert', {
   method: 'POST',
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify([
@@ -92,36 +154,57 @@ Create documents in the *star-wars-characters* collection:
     {"_id":2001,"name":"R2-D2","friends":[1000,1002,1003],"appearsIn":[4,5,6],"primaryFunction":"Astromech","heroOf":6},
     {"_id":3000,"name":"TIE Advanced x1","length":9.2}
   ])
-});{% endcapture %}
+});
+----
 
-{% include interactive-code-example.html lang="bash" header="Insert Star Wars characters data" curl=curl_code httpie=httpie_code js=js_code %}
+**4 Get the GraphQl App Definition**
 
-**4 Insert the GraphQL App Definition**
+Download the GraphQL app definition json file.
+
+[source,bash]
+----
+curl -s https://restheart.org/docs/mongodb-graphql/graphql-app-definition.json --output graphql-app-definition.json
+----
+
+**5 Insert the GraphQL App Definition**
 
 To insert the GraphQL app definition, run the following:
 
-{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
-  -H "Content-Type: application/json" \
-  -d @graphql-app-definition.json{% endcapture %}
+==== cURL
 
-{% capture httpie_code %}http POST [INSTANCE-URL]/gql-apps wm==upsert \
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+  -H "Content-Type: application/json" \
+  -d @graphql-app-definition.json
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [INSTANCE-URL]/gql-apps wm==upsert \
   "[BASIC-AUTH]" \
   Content-Type:application/json \
-  < graphql-app-definition.json{% endcapture %}
+  < graphql-app-definition.json
+----
 
-{% capture js_code %}fetch('[INSTANCE-URL]/gql-apps?wm=upsert', {
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/gql-apps?wm=upsert', {
   method: 'POST',
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     // GraphQL App Definition JSON content
     // See the full definition below
   })
-});{% endcapture %}
-
-{% include interactive-code-example.html lang="bash" header="Insert GraphQL App Definition" curl=curl_code httpie=httpie_code js=js_code %}
+});
+----
 
 NOTE: Request body omitted because is quite long. Find it in the link:#the-full-graphql-app-definition[The full GraphQL APP definition] section.
 
@@ -136,7 +219,11 @@ The GraphQL API is ready to use!
 
 ==== hero
 
-{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+===== cURL
+
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
   -H "Content-Type: application/graphql" \
   -d '{
     hero(episode: JEDI) {
@@ -151,9 +238,14 @@ The GraphQL API is ready to use!
             homePlanet
         }
     }
-  }'{% endcapture %}
+  }'
+----
 
-{% capture httpie_code %}echo '{
+===== HTTPie
+
+[source,bash]
+----
+echo '{
     hero(episode: JEDI) {
         name
         friends {
@@ -168,12 +260,17 @@ The GraphQL API is ready to use!
     }
   }' | http POST [INSTANCE-URL]/graphql/star-wars \
   "[BASIC-AUTH]" \
-  Content-Type:application/graphql{% endcapture %}
+  Content-Type:application/graphql
+----
 
-{% capture js_code %}fetch('[INSTANCE-URL]/graphql/star-wars', {
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/graphql/star-wars', {
   method: 'POST',
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/graphql'
   },
   body: `{
@@ -190,9 +287,8 @@ The GraphQL API is ready to use!
         }
     }
   }`
-});{% endcapture %}
-
-{% include interactive-code-example.html lang="bash" header="Execute hero GraphQL query" curl=curl_code httpie=httpie_code js=js_code %}
+});
+----
 
 ++++
 {% include code-header.html
@@ -226,7 +322,11 @@ The GraphQL API is ready to use!
 
 ==== search
 
-{% capture curl_code %}curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+===== cURL
+
+[source,bash]
+----
+curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
   -H "Content-Type: application/graphql" \
   -d '{
     search(text: "an") {
@@ -238,9 +338,14 @@ The GraphQL API is ready to use!
             length
         }
     }
-  }'{% endcapture %}
+  }'
+----
 
-{% capture httpie_code %}echo '{
+===== HTTPie
+
+[source,bash]
+----
+echo '{
     search(text: "an") {
         ... on Character {
             name
@@ -252,12 +357,17 @@ The GraphQL API is ready to use!
     }
   }' | http POST [INSTANCE-URL]/graphql/star-wars \
   "[BASIC-AUTH]" \
-  Content-Type:application/graphql{% endcapture %}
+  Content-Type:application/graphql
+----
 
-{% capture js_code %}fetch('[INSTANCE-URL]/graphql/star-wars', {
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[INSTANCE-URL]/graphql/star-wars', {
   method: 'POST',
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH-B64]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/graphql'
   },
   body: `{
@@ -271,9 +381,8 @@ The GraphQL API is ready to use!
         }
     }
   }`
-});{% endcapture %}
-
-{% include interactive-code-example.html lang="bash" header="Execute search GraphQL query" curl=curl_code httpie=httpie_code js=js_code %}
+});
+----
 
 ++++
 {% include code-header.html
