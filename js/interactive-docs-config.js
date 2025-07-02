@@ -147,11 +147,11 @@ document.addEventListener("alpine:init", () => {
         { from: '\\[BASIC-AUTH\\]', to: this.basicAuth },
         { from: '\\[JWT\\]', to: this.displayJwt },
         // HTML-separated patterns (for syntax highlighted code where brackets are in spans)
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>INSTANCE-URL', to: this.displayInstanceUrl },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-USERNAME', to: this.displayUsername },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-PASSWORD', to: this.displayPassword },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>BASIC-AUTH', to: this.basicAuth },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>JWT', to: this.displayJwt }
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>INSTANCE-URL\\]', to: this.displayInstanceUrl },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-USERNAME\\]', to: this.displayUsername },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-PASSWORD\\]', to: this.displayPassword },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>BASIC-AUTH\\]', to: this.basicAuth },
+        { from: '<span[^>]*class="o"[^>]*>\\[</span>JWT\\]', to: this.displayJwt }
       ];
 
       // Update code blocks using the stored original content
