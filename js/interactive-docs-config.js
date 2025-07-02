@@ -50,65 +50,125 @@ document.addEventListener("alpine:init", () => {
       this.loadSavedValues();
       this.isInitialized = true;
 
-      // Initial setup with delay to ensure AsciiDoc content is fully rendered
+      // Initialize the interactive elements marking but don't process code blocks yet
       this.$nextTick(() => {
         setTimeout(() => {
-          this.storeOriginalCodeBlocks();
           this.markClientTypeElements();
-          this.updateExamples();
           this.filterCodeBlocks();
-        }, 500);
+        }, 100);
       });
+    },
+
+    // Initialize code block processing only when needed
+    initializeCodeBlocks() {
+      if (this.originalCodeBlocks.size === 0) {
+        console.log("Initializing code blocks for the first time...");
+        this.storeOriginalCodeBlocks();
+      }
     },
 
     // Store original content with placeholders to allow re-replacement
     storeOriginalCodeBlocks() {
       const codeBlocks = document.querySelectorAll("pre code");
+      console.log(`Found ${codeBlocks.length} code blocks to process`);
 
       codeBlocks.forEach((block, index) => {
-        const content = block.textContent || block.innerText;
-        if (content) {
-          // Use a unique ID for each block
-          const blockId = `code-block-${index}`;
-          block.setAttribute("data-block-id", blockId);
-          this.originalCodeBlocks.set(blockId, content);
-        }
-      });
-
-      // Also look for AsciiDoc-rendered code blocks
-      const asciiDocBlocks = document.querySelectorAll("pre code");
-      asciiDocBlocks.forEach((block, index) => {
         if (block.hasAttribute("data-block-id")) return; // Already processed
+        
+        // Use a unique ID for each block
+        const blockId = `code-block-${index}`;
+        block.setAttribute("data-block-id", blockId);
+        
+        // Store both the original text content and the HTML structure
+        const originalText = block.textContent || block.innerText;
+        const originalHTML = block.innerHTML;
+        
+        // More comprehensive highlighting detection
+        const hasHighlighting = block.querySelector('span[class*="hljs"], span[class*="token"], span[class*="highlight"], span[class*="rouge"], span.s, span.k, span.o, span.p') !== null ||
+                               block.innerHTML.includes('<span class=') ||
+                               block.parentElement.classList.contains('highlight') ||
+                               block.parentElement.classList.contains('highlighter-rouge');
+        
+        console.log(`Block ${index}: hasHighlighting=${hasHighlighting}, innerHTML length=${originalHTML.length}, includes spans=${block.innerHTML.includes('<span class=')}`);
+        
+        this.originalCodeBlocks.set(blockId, {
+          text: originalText,
+          html: originalHTML,
+          hasHighlighting: hasHighlighting
+        });
+      });
+    },
 
-        const content = block.textContent || block.innerText;
-        if (content) {
-          const blockId = `asciidoc-block-${index}`;
-          block.setAttribute("data-block-id", blockId);
-          this.originalCodeBlocks.set(blockId, content);
-        }
+    // Helper method to replace text in HTML while preserving syntax highlighting
+    replaceTextInHTML(html, replacements) {
+      let result = html;
+      replacements.forEach(({ from, to }) => {
+        // Replace in text nodes only, preserving HTML tags
+        const regex = new RegExp(from, 'g');
+        result = result.replace(regex, to);
+      });
+      return result;
+    },
+
+    // Helper method to replace text in all text nodes of an element
+    replaceTextInElement(element, replacements) {
+      const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+
+      const textNodes = [];
+      let node;
+      while (node = walker.nextNode()) {
+        textNodes.push(node);
+      }
+
+      textNodes.forEach(textNode => {
+        let text = textNode.textContent;
+        replacements.forEach(({ from, to }) => {
+          text = text.replace(new RegExp(from, 'g'), to);
+        });
+        textNode.textContent = text;
       });
     },
 
     // Methods
     updateExamples() {
+      // Define all replacements
+      const replacements = [
+        { from: '\\[INSTANCE-URL\\]', to: this.displayInstanceUrl },
+        { from: '\\[YOUR-USERNAME\\]', to: this.displayUsername },
+        { from: '\\[YOUR-PASSWORD\\]', to: this.displayPassword },
+        { from: '\\[BASIC-AUTH\\]', to: this.basicAuth },
+        { from: '\\[JWT\\]', to: this.displayJwt }
+      ];
+
       // Update code blocks using the stored original content
-      this.originalCodeBlocks.forEach((originalContent, blockId) => {
+      this.originalCodeBlocks.forEach((originalData, blockId) => {
         const block = document.querySelector(`[data-block-id="${blockId}"]`);
         if (block) {
-          let content = originalContent;
-
-          // Replace placeholders with current values
-          content = content.replace(
-            /\[INSTANCE-URL\]/g,
-            this.displayInstanceUrl,
-          );
-          content = content.replace(/\[YOUR-USERNAME\]/g, this.displayUsername);
-          content = content.replace(/\[YOUR-PASSWORD\]/g, this.displayPassword);
-          content = content.replace(/\[BASIC-AUTH\]/g, this.basicAuth);
-          content = content.replace(/\[JWT\]/g, this.displayJwt);
-
-          // Update block content
-          block.textContent = content;
+          // Check if this block actually contains placeholders before updating
+          const hasPlaceholders = originalData.text.match(/\[(INSTANCE-URL|YOUR-USERNAME|YOUR-PASSWORD|BASIC-AUTH|JWT)\]/);
+          
+          if (hasPlaceholders) {
+            if (originalData.hasHighlighting) {
+              // For highlighted code, update HTML while preserving structure
+              let updatedHTML = originalData.html;
+              replacements.forEach(({ from, to }) => {
+                updatedHTML = updatedHTML.replace(new RegExp(from, 'g'), to);
+              });
+              block.innerHTML = updatedHTML;
+            } else {
+              // For non-highlighted code, use text replacement to preserve any basic formatting
+              let content = originalData.text;
+              replacements.forEach(({ from, to }) => {
+                content = content.replace(new RegExp(from, 'g'), to);
+              });
+              block.textContent = content;
+            }
+          }
         }
       });
 
@@ -155,6 +215,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     onInputChange: Alpine.debounce(function () {
+      this.initializeCodeBlocks();
       this.updateExamples();
       this.saveValues();
     }, 100),
@@ -223,7 +284,8 @@ document.addEventListener("alpine:init", () => {
     },
 
     onClientTypeChange() {
-      // Always update examples and save values
+      // Initialize code blocks if needed, then update examples and save values
+      this.initializeCodeBlocks();
       this.updateExamples();
 
       // Use the filterCodeBlocks method to handle visibility
@@ -262,6 +324,7 @@ document.addEventListener("alpine:init", () => {
       // Save the values and update examples
       this.saveValues();
       this.$nextTick(() => {
+        this.initializeCodeBlocks();
         this.updateExamples();
         this.filterCodeBlocks();
       });
@@ -282,6 +345,7 @@ document.addEventListener("alpine:init", () => {
 
       // Update examples and reapply filtering with a slight delay to ensure DOM updates
       this.$nextTick(() => {
+        this.initializeCodeBlocks();
         this.updateExamples();
         this.filterCodeBlocks();
       });
