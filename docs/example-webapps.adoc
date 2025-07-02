@@ -115,4 +115,11 @@ const response = await fetch('https://demo.restheart.org/messages/', {
     "message": "RESTHeart rocks!!"
   })
 });
+
+if (!response.ok) {
+  throw new Error(`HTTP ${response.status}`);
+}
+
+const data = await response.json();
+console.log(data);
 ----

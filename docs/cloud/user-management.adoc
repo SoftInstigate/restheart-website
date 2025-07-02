@@ -68,7 +68,7 @@ http POST [INSTANCE-URL]/users \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/users', {
+fetch('[INSTANCE-URL]/users', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -80,7 +80,15 @@ const response = await fetch('[INSTANCE-URL]/users', {
     "roles": ["reader", "writer"],
     "email": "john@example.com"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User created successfully');
+  } else {
+    console.error('Failed to create user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: The password is automatically encrypted by RESTHeart when stored in MongoDB.
@@ -147,7 +155,7 @@ http POST [INSTANCE-URL]/acl \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/acl', {
+fetch('[INSTANCE-URL]/acl', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -163,7 +171,15 @@ const response = await fetch('[INSTANCE-URL]/acl', {
       "writeFilter": {"department": "engineering"}
     }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Permission created successfully');
+  } else {
+    console.error('Failed to create permission:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Advanced Permission Examples
@@ -232,7 +248,7 @@ http PATCH [INSTANCE-URL]/users/john_doe \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/users/john_doe', {
+fetch('[INSTANCE-URL]/users/john_doe', {
   method: 'PATCH',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -242,7 +258,15 @@ const response = await fetch('[INSTANCE-URL]/users/john_doe', {
     "roles": ["admin"],
     "email": "john.updated@example.com"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User updated successfully');
+  } else {
+    console.error('Failed to update user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Deleting Users
@@ -266,12 +290,20 @@ http DELETE [INSTANCE-URL]/users/john_doe \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/users/john_doe', {
+fetch('[INSTANCE-URL]/users/john_doe', {
   method: 'DELETE',
   headers: {
     'Authorization': '[BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User deleted successfully');
+  } else {
+    console.error('Failed to delete user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Common Permission Patterns

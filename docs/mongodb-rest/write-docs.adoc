@@ -107,7 +107,7 @@ http POST [INSTANCE-URL]/inventory \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory', {
+fetch('[INSTANCE-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -123,7 +123,16 @@ const response = await fetch('[INSTANCE-URL]/inventory', {
     },
     status: "A"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The response includes a `Location` header with the new document's URI:
@@ -170,7 +179,7 @@ http PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId?wm=upsert', {
+fetch('[INSTANCE-URL]/inventory/myCustomId?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -185,7 +194,16 @@ const response = await fetch('[INSTANCE-URL]/inventory/myCustomId?wm=upsert', {
       uom: "cm"
     }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Updating Documents
@@ -239,7 +257,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[INSTANCE-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -249,7 +267,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
     qty: 75,
     status: "B"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This only updates the `qty` and `status` fields, leaving all other fields unchanged.
@@ -282,7 +308,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[INSTANCE-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -291,7 +317,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
   body: JSON.stringify({
     "size.h": 20
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This updates only the height property within the size object.
@@ -320,7 +354,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[INSTANCE-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -329,7 +363,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
   body: JSON.stringify({
     "tags.1": "office"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This updates the second element of the `tags` array.
@@ -367,7 +409,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[INSTANCE-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -379,7 +421,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
     "$unset": { "discontinued": "" },
     "$currentDate": { "lastModified": true }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This:
@@ -432,12 +482,20 @@ http DELETE [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[INSTANCE-URL]/inventory/myCustomId', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Bulk Operations
@@ -480,7 +538,7 @@ echo '[
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory', {
+fetch('[INSTANCE-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -493,7 +551,16 @@ const response = await fetch('[INSTANCE-URL]/inventory', {
     { item: "planner", qty: 75, status: "D" },
     { item: "postcard", qty: 45, status: "A" }
   ])
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Bulk Updates
@@ -522,7 +589,7 @@ http PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"qty":{"$gt":50}}'), {
+fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"qty":{"$gt":50}}'), {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -531,7 +598,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURICom
   body: JSON.stringify({
     highQuantity: true
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This adds the `highQuantity` field to all documents with a quantity greater than 50.
@@ -557,12 +632,20 @@ http DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}'), {
+fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}'), {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This deletes all documents with a status of "D".

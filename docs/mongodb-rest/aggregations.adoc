@@ -86,7 +86,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/mycollection', {
+fetch('[INSTANCE-URL]/mycollection', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -108,10 +108,15 @@ const response = await fetch('[INSTANCE-URL]/mycollection', {
       }
     ]
   })
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This defines an aggregation named `sales-by-region` that:
@@ -179,15 +184,17 @@ const params = new URLSearchParams({
   avars: JSON.stringify({"productName":"Widget Pro"})
 });
 
-const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+fetch(`[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns sales data only for the "Widget Pro" product.
@@ -246,15 +253,17 @@ const params = new URLSearchParams({
   avars: JSON.stringify({"config":{"limit":10,"skip":20}})
 });
 
-const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 In the aggregation definition:
@@ -329,15 +338,17 @@ const params = new URLSearchParams({
   pagesize: 25
 });
 
-const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/paginated-results?${params}`, {
+fetch(`[INSTANCE-URL]/mycollection/_aggrs/paginated-results?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This skips the first 50 documents and returns the next 25.
@@ -432,15 +443,17 @@ http GET "[INSTANCE-URL]/mycollection/_aggrs/sales-summary" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/mycollection/_aggrs/sales-summary', {
+fetch('[INSTANCE-URL]/mycollection/_aggrs/sales-summary', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The response will be empty, but a new collection is created or updated:
@@ -462,15 +475,17 @@ http GET "[INSTANCE-URL]/categorySalesSummary" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categorySalesSummary', {
+fetch('[INSTANCE-URL]/categorySalesSummary', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -523,15 +538,17 @@ const params = new URLSearchParams({
   txn: 'transaction-id'
 });
 
-const response = await fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+fetch(`[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
-
-const data = await response.json();
-console.log(data);
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 See the link:/docs/mongodb-rest/transactions[Transactions] documentation for details.

@@ -70,12 +70,20 @@ http PUT "[INSTANCE-URL]/_schemas" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_schemas', {
+fetch('[INSTANCE-URL]/_schemas', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Schema store created successfully');
+  } else {
+    console.error('Failed to create schema store:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Step 2: Define a Schema
@@ -122,7 +130,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_schemas/address?wm=upsert', {
+fetch('[INSTANCE-URL]/_schemas/address?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -139,7 +147,15 @@ const response = await fetch('[INSTANCE-URL]/_schemas/address?wm=upsert', {
     },
     "required": ["address", "city", "country"]
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Address schema created successfully');
+  } else {
+    console.error('Failed to create address schema:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This schema defines an address format that requires the address, city, and country fields.
@@ -163,12 +179,17 @@ http GET "[INSTANCE-URL]/_schemas/address" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_schemas/address', {
+fetch('[INSTANCE-URL]/_schemas/address', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved address schema:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -222,7 +243,7 @@ http PUT "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/addresses', {
+fetch('[INSTANCE-URL]/addresses', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -233,7 +254,15 @@ const response = await fetch('[INSTANCE-URL]/addresses', {
       "schemaId": "address"
     }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection configured with schema validation');
+  } else {
+    console.error('Failed to configure collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The collection metadata's `jsonSchema` property has the following options:
@@ -309,7 +338,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_schemas/bson', {
+fetch('[INSTANCE-URL]/_schemas/bson', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -335,7 +364,15 @@ const response = await fetch('[INSTANCE-URL]/_schemas/bson', {
       }
     }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('BSON schema definitions created successfully');
+  } else {
+    console.error('Failed to create BSON schema:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Using BSON Types in Schemas
@@ -388,7 +425,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_schemas/post', {
+fetch('[INSTANCE-URL]/_schemas/post', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -408,7 +445,15 @@ const response = await fetch('[INSTANCE-URL]/_schemas/post', {
     },
     "required": ["title", "content"]
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Post schema with BSON references created successfully');
+  } else {
+    console.error('Failed to create post schema:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Testing the Validation
@@ -440,7 +485,7 @@ http POST "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/addresses', {
+fetch('[INSTANCE-URL]/addresses', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -449,7 +494,19 @@ const response = await fetch('[INSTANCE-URL]/addresses', {
   body: JSON.stringify({
     "address": "Via D'Annunzio 28"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document created successfully');
+  } else {
+    console.error('Validation failed:', response.status);
+    return response.json();
+  }
+})
+.then(errorData => {
+  if (errorData) console.log('Validation error:', errorData.message);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -497,7 +554,7 @@ http POST "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/addresses', {
+fetch('[INSTANCE-URL]/addresses', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -509,7 +566,15 @@ const response = await fetch('[INSTANCE-URL]/addresses', {
     "country": "Italy",
     "postal-code": "67100"
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Valid document created successfully');
+  } else {
+    console.error('Failed to create document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This document passes validation because it includes all required fields with the correct data types.
@@ -576,14 +641,26 @@ http PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/addresses/*?filter={"country":"Italy"}', {
+fetch('[INSTANCE-URL]/addresses/*?filter={"country":"Italy"}', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({ "updated": true })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Bulk update completed successfully');
+  } else {
+    console.error('Bulk update failed:', response.status);
+    return response.json();
+  }
+})
+.then(errorData => {
+  if (errorData) console.log('Error details:', errorData.message);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -629,7 +706,7 @@ http PATCH "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/addresses', {
+fetch('[INSTANCE-URL]/addresses', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -641,7 +718,15 @@ const response = await fetch('[INSTANCE-URL]/addresses', {
       "skipNotSupported": true
     }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection schema configuration updated');
+  } else {
+    console.error('Failed to update schema configuration:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Best Practices

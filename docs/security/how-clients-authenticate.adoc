@@ -68,7 +68,9 @@ fetch('[INSTANCE-URL]/', {
     }
 })
 .then(response => response.json())
-.then(data => console.log(data))
+.then(data => {
+    console.log('Retrieved data:', data);
+})
 .catch(error => console.error('Error:', error));
 ----
 
@@ -171,7 +173,9 @@ fetch('[INSTANCE-URL]/tokens/userid', {
     }
 })
 .then(response => response.json())
-.then(data => console.log(data))
+.then(data => {
+    console.log('Token information:', data);
+})
 .catch(error => console.error('Error:', error));
 ----
 
@@ -230,6 +234,8 @@ fetch('[INSTANCE-URL]/tokens/userid', {
 .then(response => {
     if (response.ok) {
         console.log('Token invalidated successfully');
+    } else {
+        console.error('Failed to invalidate token:', response.status);
     }
 })
 .catch(error => console.error('Error:', error));
@@ -313,7 +319,9 @@ fetch('[INSTANCE-URL]/roles/userid', {
     }
 })
 .then(response => response.json())
-.then(data => console.log(data))
+.then(data => {
+    console.log('User roles:', data);
+})
 .catch(error => console.error('Error:', error));
 ----
 

@@ -56,8 +56,14 @@ fetch('[INSTANCE-URL]/test', {
   },
   body: JSON.stringify({"descr": "a db for testing"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Database created successfully');
+  } else {
+    console.error('Failed to create database:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 201 Created
@@ -93,8 +99,14 @@ fetch('[INSTANCE-URL]/test/coll', {
   },
   body: JSON.stringify({"descr": "a collection for testing"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Collection created successfully');
+  } else {
+    console.error('Failed to create collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 201 Created
@@ -130,8 +142,14 @@ fetch('[INSTANCE-URL]/test/coll/doc', {
   },
   body: JSON.stringify({"descr": "a document for testing"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Document created successfully');
+  } else {
+    console.error('Failed to create document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 201 Created
@@ -163,7 +181,10 @@ fetch('[INSTANCE-URL]/test/coll/doc', {
   }
 })
 .then(response => response.json())
-.then(data => console.log(data));
+.then(data => {
+  console.log('Retrieved document:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 200 OK
@@ -214,8 +235,14 @@ fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
   },
   body: JSON.stringify({"descry": "a document for testing but modified"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 409 Conflict
@@ -262,8 +289,14 @@ fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
   },
   body: JSON.stringify({"desc": "a document for testing but modified"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 412 Precondition Failed
@@ -310,8 +343,14 @@ fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
   },
   body: JSON.stringify({"descr": "a document for testing but modified"})
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully with correct ETag');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 200 OK
@@ -357,7 +396,10 @@ fetch('[INSTANCE-URL]/test/coll/doc', {
   }
 })
 .then(response => response.json())
-.then(data => console.log(data));
+.then(data => {
+  console.log('Retrieved document (web caching example):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 HTTP/1.1 200 OK

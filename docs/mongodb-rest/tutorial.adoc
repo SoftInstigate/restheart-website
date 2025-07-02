@@ -60,22 +60,39 @@ const data = [
    { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
 ];
 
-const response = await fetch('[INSTANCE-URL]/inventory', {
+// Create collection
+fetch('[INSTANCE-URL]/inventory', {
   method: 'PUT',
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH]',
-    'Content-Type': 'application/json'
+    'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection created successfully');
+  } else {
+    console.error('Failed to create collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 
-const response = await fetch('[INSTANCE-URL]/inventory', {
+// Insert documents
+fetch('[INSTANCE-URL]/inventory', {
   method: 'POST',
   body: JSON.stringify(data),
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Documents inserted successfully');
+  } else {
+    console.error('Failed to insert documents:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Retrieving documents
@@ -102,11 +119,16 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory', {
+fetch('[INSTANCE-URL]/inventory', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The response will contain an array of all documents in the collection (limited by the default page size):
@@ -175,11 +197,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"qty":{"$gt":75}}');
-const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Filtered documents:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns only documents where the quantity is greater than 75:
@@ -233,7 +260,7 @@ http POST [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory', {
+fetch('[INSTANCE-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -245,7 +272,16 @@ const response = await fetch('[INSTANCE-URL]/inventory', {
     size: { h: 2, w: 4, uom: 'cm' },
     status: 'C'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The server responds with headers including a `Location` that points to the newly created document:
@@ -288,7 +324,7 @@ http PUT [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/newDocument?wm=upsert', {
+fetch('[INSTANCE-URL]/inventory/newDocument?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -300,7 +336,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/newDocument?wm=upsert', {
     size: { h: 3, w: 4, uom: 'cm' },
     status: 'C'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document created/updated successfully');
+  } else {
+    console.error('Failed to create/update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: The `wm=upsert` parameter is needed because the default write mode for `PUT` is "update". The "upsert" mode creates the document if it doesn't exist.
@@ -332,7 +376,7 @@ http PATCH [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/newDocument', {
+fetch('[INSTANCE-URL]/inventory/newDocument', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -343,7 +387,15 @@ const response = await fetch('[INSTANCE-URL]/inventory/newDocument', {
     status: 'A',
     newProperty: 'value'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This updates only the specified fields and adds any new fields:
@@ -391,12 +443,20 @@ http DELETE [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/newDocument', {
+fetch('[INSTANCE-URL]/inventory/newDocument', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document deleted successfully');
+  } else {
+    console.error('Failed to delete document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 A successful deletion returns a `204 No Content` status.

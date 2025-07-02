@@ -49,8 +49,12 @@ fetch('[INSTANCE-URL]/gql-apps', {
     'Authorization': '[BASIC-AUTH]'
   }
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 To upload the example GraphQL app definition, run the following:
@@ -97,8 +101,12 @@ fetch('[INSTANCE-URL]/gql-apps', {
   },
   body: JSON.stringify(mflixAppDefinition)
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 === query with `application/json`
@@ -150,8 +158,12 @@ fetch('[INSTANCE-URL]/graphql/mflix', {
     }
   })
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 ++++
@@ -260,8 +272,12 @@ fetch('[INSTANCE-URL]/graphql/mflix', {
   },
   body: query
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 
 ++++

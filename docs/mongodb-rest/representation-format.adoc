@@ -70,7 +70,12 @@ fetch('[INSTANCE-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', 
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
 ----+
 
 The correct request is:
@@ -98,7 +103,12 @@ fetch('[INSTANCE-URL]/inventory?filter={\'_id\':{\'$oid\':\'5d0b4e325beb2029a8d1
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
 ----+
 
 === JSON Mode
@@ -141,7 +151,12 @@ fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -189,7 +204,12 @@ fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (strict mode):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -239,7 +259,12 @@ fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (extended mode):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -295,7 +320,12 @@ fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (relaxed mode):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -348,7 +378,12 @@ fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.text())
+.then(data => {
+  console.log('Retrieved document (shell mode):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -422,7 +457,12 @@ fetch('[INSTANCE-URL]/inventory?rep=s', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (standard):', data);
+})
+.catch(error => console.error('Error:', error));
 
 // HAL representation
 fetch('[INSTANCE-URL]/inventory?rep=hal', {
@@ -430,7 +470,12 @@ fetch('[INSTANCE-URL]/inventory?rep=hal', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (HAL):', data);
+})
+.catch(error => console.error('Error:', error));
 
 // SHAL representation
 fetch('[INSTANCE-URL]/inventory?rep=shal', {
@@ -438,7 +483,12 @@ fetch('[INSTANCE-URL]/inventory?rep=shal', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (SHAL):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === HAL
@@ -476,7 +526,12 @@ fetch('[INSTANCE-URL]/inventory?rep=hal', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (HAL example):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -689,7 +744,12 @@ fetch('[INSTANCE-URL]/inventory?rep=shal', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (SHAL example):', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]

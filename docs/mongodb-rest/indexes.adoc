@@ -39,7 +39,10 @@ fetch('[INSTANCE-URL]/inventory/_indexes', {
   }
 })
 .then(response => response.json())
-.then(data => console.log(data));
+.then(data => {
+  console.log('Retrieved collection indexes:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,json]
@@ -103,8 +106,14 @@ fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
     "ops": {"unique": true, "sparse": true}
   })
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Index created successfully');
+  } else {
+    console.error('Failed to create index:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [NOTE]
@@ -149,8 +158,14 @@ fetch('[INSTANCE-URL]/inventory/_indexes/itemTextIndex', {
     "keys": { "item": "text" }
   })
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Text index created successfully');
+  } else {
+    console.error('Failed to create text index:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Delete an index
@@ -180,8 +195,14 @@ fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (response.ok) {
+    console.log('Index deleted successfully');
+  } else {
+    console.error('Failed to delete index:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Notes

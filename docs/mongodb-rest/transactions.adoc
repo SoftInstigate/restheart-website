@@ -73,7 +73,7 @@ http POST [INSTANCE-URL]/_sessions \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions', {
+fetch('[INSTANCE-URL]/_sessions', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -82,7 +82,16 @@ const response = await fetch('[INSTANCE-URL]/_sessions', {
   body: JSON.stringify({
     causallyConsistent: true
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Response:
@@ -127,7 +136,7 @@ http POST "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
+fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -137,7 +146,16 @@ const response = await fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
     name: "Session example",
     value: 42
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== cURL
@@ -157,12 +175,17 @@ http GET "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
+fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Transaction Lifecycle
@@ -202,12 +225,21 @@ http POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Response:
@@ -241,12 +273,17 @@ http GET "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Response:
@@ -289,7 +326,7 @@ http POST "[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -299,7 +336,16 @@ const response = await fetch('[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRAN
     owner: "Alice",
     balance: 1000
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== cURL
@@ -322,7 +368,7 @@ http PATCH "[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -331,7 +377,15 @@ const response = await fetch('[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[
   body: JSON.stringify({
     "$inc": { "balance": -100 }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== cURL
@@ -354,7 +408,7 @@ http PATCH "[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]"
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -363,7 +417,15 @@ const response = await fetch('[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn
   body: JSON.stringify({
     "$inc": { "balance": 100 }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Committing a Transaction
@@ -387,12 +449,20 @@ http PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Response:
@@ -423,12 +493,20 @@ http DELETE "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Response:
@@ -484,12 +562,21 @@ http POST "[INSTANCE-URL]/_sessions" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions', {
+fetch('[INSTANCE-URL]/_sessions', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]
@@ -517,12 +604,21 @@ http POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]
@@ -553,7 +649,7 @@ http PATCH "[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-I
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -562,7 +658,15 @@ const response = await fetch('[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&
   body: JSON.stringify({
     "$inc": { "balance": -100 }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]
@@ -592,7 +696,7 @@ http PATCH "[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-I
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -601,7 +705,15 @@ const response = await fetch('[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&
   body: JSON.stringify({
     "$inc": { "balance": 100 }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]
@@ -634,7 +746,7 @@ http POST "[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -646,7 +758,16 @@ const response = await fetch('[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[
     amount: 100,
     timestamp: { "$date": 1623408052123 }
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Resource created successfully');
+    console.log('Location:', response.headers.get('Location'));
+  } else {
+    console.error('Failed to create resource:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]
@@ -673,12 +794,20 @@ http PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
+fetch('[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 [source,http]

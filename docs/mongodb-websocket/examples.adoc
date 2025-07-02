@@ -117,7 +117,10 @@ fetch('[INSTANCE-URL]/messages', {
     ]
   })
 })
-.then(response => response.json())
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
@@ -196,7 +199,10 @@ fetch('[INSTANCE-URL]/messages?rep=SHAL', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
-.then(response => response.json())
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
@@ -315,7 +321,10 @@ fetch('[INSTANCE-URL]/acl', {
     "roles": [ "$unauthenticated" ]
   })
 })
-.then(response => response.json())
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
@@ -389,7 +398,10 @@ fetch('[INSTANCE-URL]/messages', {
     "name": "uji"
   })
 })
-.then(response => response.json())
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----

@@ -98,7 +98,7 @@ http PUT [INSTANCE-URL]/categories \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categories', {
+fetch('[INSTANCE-URL]/categories', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -114,7 +114,15 @@ const response = await fetch('[INSTANCE-URL]/categories', {
     }],
     description: 'Product categories organized in a tree'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create the root category:
@@ -140,7 +148,7 @@ http PUT [INSTANCE-URL]/categories/electronics \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categories/electronics', {
+fetch('[INSTANCE-URL]/categories/electronics', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -150,7 +158,15 @@ const response = await fetch('[INSTANCE-URL]/categories/electronics', {
     name: 'Electronics',
     description: 'Electronic devices and accessories'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create child categories referencing the parent:
@@ -176,7 +192,7 @@ http PUT [INSTANCE-URL]/categories/smartphones \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categories/smartphones', {
+fetch('[INSTANCE-URL]/categories/smartphones', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -187,7 +203,15 @@ const response = await fetch('[INSTANCE-URL]/categories/smartphones', {
     description: 'Mobile phones with advanced features',
     parentId: 'electronics'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 ==== cURL
@@ -211,7 +235,7 @@ http PUT [INSTANCE-URL]/categories/laptops \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categories/laptops', {
+fetch('[INSTANCE-URL]/categories/laptops', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -222,7 +246,15 @@ const response = await fetch('[INSTANCE-URL]/categories/laptops', {
     description: 'Portable computers',
     parentId: 'electronics'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Now when you request a child document with HAL representation:
@@ -246,12 +278,17 @@ http GET [INSTANCE-URL]/categories/smartphones \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f', {
+fetch('[INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 You'll get a response with a link to the parent:
@@ -301,7 +338,7 @@ http PUT [INSTANCE-URL]/albums \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums', {
+fetch('[INSTANCE-URL]/albums', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -310,7 +347,15 @@ const response = await fetch('[INSTANCE-URL]/albums', {
   body: JSON.stringify({
     description: 'Music albums'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create the bands collection with a relationship to albums:
@@ -336,7 +381,7 @@ http PUT [INSTANCE-URL]/bands \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands', {
+fetch('[INSTANCE-URL]/bands', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -352,7 +397,15 @@ const response = await fetch('[INSTANCE-URL]/bands', {
     }],
     description: 'Music bands and artists'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create some albums:
@@ -378,7 +431,7 @@ http PUT [INSTANCE-URL]/albums/album1 \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums/album1', {
+fetch('[INSTANCE-URL]/albums/album1', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -388,7 +441,15 @@ const response = await fetch('[INSTANCE-URL]/albums/album1', {
     title: 'The Dark Side of the Moon',
     year: 1973
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 ==== cURL
@@ -412,7 +473,7 @@ http PUT [INSTANCE-URL]/albums/album2 \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums/album2', {
+fetch('[INSTANCE-URL]/albums/album2', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -422,7 +483,15 @@ const response = await fetch('[INSTANCE-URL]/albums/album2', {
     title: 'Wish You Were Here',
     year: 1975
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create a band that references these albums:
@@ -448,7 +517,7 @@ http PUT [INSTANCE-URL]/bands/pinkfloyd \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands/pinkfloyd', {
+fetch('[INSTANCE-URL]/bands/pinkfloyd', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -459,7 +528,15 @@ const response = await fetch('[INSTANCE-URL]/bands/pinkfloyd', {
     formed: 1965,
     albumIds: ['album1', 'album2']
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . When you request the band document with HAL representation:
@@ -483,12 +560,17 @@ http GET [INSTANCE-URL]/bands/pinkfloyd \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
+fetch('[INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 You'll get a response with a link to query the albums:
@@ -538,7 +620,7 @@ http PUT [INSTANCE-URL]/bands \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands', {
+fetch('[INSTANCE-URL]/bands', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -554,7 +636,15 @@ const response = await fetch('[INSTANCE-URL]/bands', {
     }],
     description: 'Music bands and artists'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create the albums collection:
@@ -580,7 +670,7 @@ http PUT [INSTANCE-URL]/albums \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums', {
+fetch('[INSTANCE-URL]/albums', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -589,7 +679,15 @@ const response = await fetch('[INSTANCE-URL]/albums', {
   body: JSON.stringify({
     description: 'Music albums with band references'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create a band:
@@ -615,7 +713,7 @@ http PUT [INSTANCE-URL]/bands/beatles \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands/beatles', {
+fetch('[INSTANCE-URL]/bands/beatles', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -625,7 +723,15 @@ const response = await fetch('[INSTANCE-URL]/bands/beatles', {
     name: 'The Beatles',
     formed: 1960
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . Create albums that reference the band:
@@ -651,7 +757,7 @@ http PUT [INSTANCE-URL]/albums/abbey-road \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums/abbey-road', {
+fetch('[INSTANCE-URL]/albums/abbey-road', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -662,7 +768,15 @@ const response = await fetch('[INSTANCE-URL]/albums/abbey-road', {
     year: 1969,
     bandId: 'beatles'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 ==== cURL
@@ -686,7 +800,7 @@ http PUT [INSTANCE-URL]/albums/revolver \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/albums/revolver', {
+fetch('[INSTANCE-URL]/albums/revolver', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -697,7 +811,15 @@ const response = await fetch('[INSTANCE-URL]/albums/revolver', {
     year: 1966,
     bandId: 'beatles'
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 . When you request the band document with HAL representation:
@@ -721,12 +843,17 @@ http GET [INSTANCE-URL]/bands/beatles \
 ==== JavaScript
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/bands/beatles?rep=HAL&hal=f', {
+fetch('[INSTANCE-URL]/bands/beatles?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 +
 You'll get a response with a link to query all the band's albums:

@@ -39,11 +39,16 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory', {
+fetch('[INSTANCE-URL]/inventory', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns all documents in the collection, subject to pagination limits.
@@ -80,11 +85,16 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?page=2&pagesize=3', {
+fetch('[INSTANCE-URL]/inventory?page=2&pagesize=3', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Filtering Documents
@@ -113,11 +123,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"qty":{"$gt":50}}');
-const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns only documents where the quantity is greater than 50.
@@ -148,11 +163,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"$and":[{"qty":{"$gt":75}},{"status":"D"}]}');
-const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Alternatively, you can use multiple filter parameters:
@@ -179,11 +199,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
+fetch('[INSTANCE-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Counting Documents
@@ -212,11 +237,16 @@ http GET "[INSTANCE-URL]/inventory/_size" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"status":"A"}');
-const response = await fetch(`[INSTANCE-URL]/inventory/_size?filter=${filter}`, {
+fetch(`[INSTANCE-URL]/inventory/_size?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns the count of documents with status "A".
@@ -249,11 +279,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const keys = encodeURIComponent("{'item':1}");
-const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns only the `_id` and `item` fields for each document.
@@ -282,11 +317,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const keys = encodeURIComponent("{'item':0}");
-const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns all fields except `item` for each document.
@@ -315,11 +355,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
+fetch('[INSTANCE-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns only the `_id`, `item`, and `qty` fields.
@@ -353,11 +398,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?sort=status', {
+fetch('[INSTANCE-URL]/inventory?sort=status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This sorts documents by status in ascending order.
@@ -385,11 +435,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?sort=-status', {
+fetch('[INSTANCE-URL]/inventory?sort=-status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Multiple Fields Sorting
@@ -418,11 +473,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?sort=status&sort=-qty', {
+fetch('[INSTANCE-URL]/inventory?sort=status&sort=-qty', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This sorts first by status (ascending) and then by quantity (descending).
@@ -453,11 +513,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const sort = encodeURIComponent('{"status":1,"qty":-1}');
-const response = await fetch(`[INSTANCE-URL]/inventory?sort=${sort}`, {
+fetch(`[INSTANCE-URL]/inventory?sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Accessing Nested Properties
@@ -488,11 +553,16 @@ http GET "[INSTANCE-URL]/inventory" \
 ----
 const keys = encodeURIComponent("{'size.h':1}");
 const sort = encodeURIComponent("{'size.uom':1}");
-const response = await fetch(`[INSTANCE-URL]/inventory?keys=${keys}&sort=${sort}`, {
+fetch(`[INSTANCE-URL]/inventory?keys=${keys}&sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns only the height field from the size subdocument and sorts by the unit of measure.
@@ -529,14 +599,22 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/item" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/_indexes/item', {
+fetch('[INSTANCE-URL]/inventory/_indexes/item', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({"keys": {"item": 1}})
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ===== cURL
@@ -563,14 +641,22 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/status" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/_indexes/status', {
+fetch('[INSTANCE-URL]/inventory/_indexes/status', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({"keys":{"status": 1}})
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Using Hint
@@ -599,11 +685,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'item':1}");
-const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Or use the compact string format:
@@ -630,11 +721,16 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status', {
+fetch('[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: When using the `+` sign in URLs, encode it as `%2B` to prevent it being interpreted as a space.
@@ -667,11 +763,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'$natural':1}");
-const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 For a reverse collection scan:
@@ -698,11 +799,16 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'$natural':-1}");
-const response = await fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 ==== Text Search
@@ -735,14 +841,22 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/text" \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/inventory/_indexes/text', {
+fetch('[INSTANCE-URL]/inventory/_indexes/text', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({"keys": {"item": "text"}})
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Then search and sort by relevance score:
@@ -773,9 +887,14 @@ http GET "[INSTANCE-URL]/inventory" \
 const filter = encodeURIComponent('{"$text":{"$search":"paper"}}');
 const keys = encodeURIComponent('{"item":1,"score":{"$meta":"textScore"}}');
 const sort = encodeURIComponent('{"score":{"$meta":"textScore"}}');
-const response = await fetch(`[INSTANCE-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
+fetch(`[INSTANCE-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
 ----

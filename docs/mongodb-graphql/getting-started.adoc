@@ -77,8 +77,12 @@ fetch('[INSTANCE-URL]/gql-apps', {
     'Authorization': '[BASIC-AUTH]'
   }
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>
@@ -127,8 +131,12 @@ fetch('[INSTANCE-URL]/books', {
     'Authorization': '[BASIC-AUTH]'
   }
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>
@@ -222,8 +230,12 @@ fetch('[INSTANCE-URL]/books', {
   },
   body: JSON.stringify(books)
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>
@@ -357,8 +369,12 @@ fetch('[INSTANCE-URL]/gql-apps', {
   },
   body: JSON.stringify(graphqlApp)
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>
@@ -432,8 +448,12 @@ fetch('[INSTANCE-URL]/graphql/books', {
   },
   body: query
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>
@@ -502,8 +522,12 @@ fetch('[INSTANCE-URL]/graphql/books', {
   },
   body: query
 })
-.then(response => response.json())
-.then(data => console.log(data));
+.then(response => {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+})
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
 ----
 ++++
   </div>

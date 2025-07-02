@@ -25,7 +25,7 @@ Now that you've configured your connection details, you can follow along with th
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
+fetch('[INSTANCE-URL]/mydb/mycollection', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -35,7 +35,15 @@ const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
     name: 'John',
     age: 30
   })
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document created successfully');
+  } else {
+    console.error('Failed to create document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Querying Documents
@@ -64,11 +72,16 @@ http GET "[INSTANCE-URL]/mydb/mycollection" \
 [source,javascript]
 ----
 const filter = encodeURIComponent("{'age':{\$gt:25}}");
-const response = await fetch(`[INSTANCE-URL]/mydb/mycollection?filter=${filter}`, {
+fetch(`[INSTANCE-URL]/mydb/mycollection?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Query results:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 == Advanced Operations
@@ -114,14 +127,22 @@ const documents = [
   {name: 'Charlie', age: 28}
 ];
 
-const response = await fetch('[INSTANCE-URL]/mydb/mycollection', {
+fetch('[INSTANCE-URL]/mydb/mycollection', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify(documents)
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Bulk documents created successfully');
+  } else {
+    console.error('Failed to create bulk documents:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Aggregation Pipeline
@@ -160,12 +181,17 @@ const pipeline = [
   {$project: {_id: 0, averageAge: '$avgAge'}}
 ];
 
-const response = await fetch('[INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline', {
+fetch('[INSTANCE-URL]/mydb/mycollection/_aggrs/pipeline', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify(pipeline)
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Aggregation results:', data);
+})
+.catch(error => console.error('Error:', error));
 ----

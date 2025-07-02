@@ -48,13 +48,21 @@ http PUT [INSTANCE-URL]/users/root \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/users/root', {
+fetch('[INSTANCE-URL]/users/root', {
   method: 'PUT',
   body: JSON.stringify({ "password": "[YOUR-PASSWORD]" }),
   headers: {
     'Authorization': 'Bearer [JWT]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Root user created successfully');
+  } else {
+    console.error('Failed to create root user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Step 2: Set Up Root Permissions
@@ -88,13 +96,21 @@ http PUT [INSTANCE-URL]/acl/rootCanDoEverything \
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/acl/rootCanDoEverything', {
+fetch('[INSTANCE-URL]/acl/rootCanDoEverything', {
   method: 'PUT',
   body: JSON.stringify({"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true}}),
   headers: {
     'Authorization': 'Bearer [JWT]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Root permissions configured successfully');
+  } else {
+    console.error('Failed to configure root permissions:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 == Next Steps

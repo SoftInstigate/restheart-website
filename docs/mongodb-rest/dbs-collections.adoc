@@ -36,14 +36,22 @@ echo '{ "descr": "just a test collection" }' | http PUT [INSTANCE-URL]/foo Autho
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/foo', {
+fetch('[INSTANCE-URL]/foo', {
   method: 'PUT',
   body: JSON.stringify({ "descr": "just a test collection" }),
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection created successfully');
+  } else {
+    console.error('Failed to create collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -80,12 +88,17 @@ http GET [INSTANCE-URL]/foo/_meta Authorization:"Basic [BASIC-AUTH]"
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/foo/_meta', {
+fetch('[INSTANCE-URL]/foo/_meta', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved collection metadata:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -131,14 +144,22 @@ echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/foo Authorization:"Basic [
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/foo', {
+fetch('[INSTANCE-URL]/foo', {
   method: 'PATCH',
   body: JSON.stringify({ "owner": "Bob" }),
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection properties updated successfully');
+  } else {
+    console.error('Failed to update collection properties:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -171,12 +192,20 @@ http DELETE [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]"
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/foo', {
+fetch('[INSTANCE-URL]/foo', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection deletion request executed successfully');
+  } else {
+    console.error('Collection deletion request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -214,13 +243,21 @@ http DELETE [INSTANCE-URL]/foo Authorization:"Basic [BASIC-AUTH]" If-Match:5d95e
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/foo', {
+fetch('[INSTANCE-URL]/foo', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'If-Match': '5d95ef77ab3cf85b199ed3b7'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection deleted successfully');
+  } else {
+    console.error('Failed to delete collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -266,12 +303,17 @@ http GET [INSTANCE-URL]/ Authorization:"Basic [BASIC-AUTH]"
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/', {
+fetch('[INSTANCE-URL]/', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved databases:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -306,14 +348,22 @@ echo '{ "descr": "just a test db" }' | http PUT [INSTANCE-URL]/newDb Authorizati
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/newDb', {
+fetch('[INSTANCE-URL]/newDb', {
   method: 'PUT',
   body: JSON.stringify({ "descr": "just a test db" }),
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Database created successfully');
+  } else {
+    console.error('Failed to create database:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -350,12 +400,17 @@ http GET [INSTANCE-URL]/newDb/_meta Authorization:"Basic [BASIC-AUTH]"
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/newDb/_meta', {
+fetch('[INSTANCE-URL]/newDb/_meta', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved database metadata:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -396,14 +451,22 @@ echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/newDb Authorization:"Basic
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/newDb', {
+fetch('[INSTANCE-URL]/newDb', {
   method: 'PATCH',
   body: JSON.stringify({ "owner": "Bob" }),
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Database properties updated successfully');
+  } else {
+    console.error('Failed to update database properties:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -436,12 +499,20 @@ http DELETE [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]"
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/newDb', {
+fetch('[INSTANCE-URL]/newDb', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Database deletion request executed successfully');
+  } else {
+    console.error('Database deletion request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
@@ -479,13 +550,21 @@ http DELETE [INSTANCE-URL]/newDb Authorization:"Basic [BASIC-AUTH]" If-Match:5d9
 
 [source,javascript]
 ----
-const response = await fetch('[INSTANCE-URL]/newDb', {
+fetch('[INSTANCE-URL]/newDb', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
     'If-Match': '5d95ed1dab3cf85b199ed3b6'
   }
-});
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Database deleted successfully');
+  } else {
+    console.error('Failed to delete database:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]

@@ -130,20 +130,44 @@ const createCollections = async () => {
     'Authorization': '[BASIC-AUTH]'
   };
 
-  await fetch('[INSTANCE-URL]/products', {
+  fetch('[INSTANCE-URL]/products', {
     method: 'PUT',
     headers
-  });
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products collection created successfully');
+    } else {
+      console.error('Failed to create products collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
   
-  await fetch('[INSTANCE-URL]/categories', {
+  fetch('[INSTANCE-URL]/categories', {
     method: 'PUT',
     headers
-  });
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Categories collection created successfully');
+    } else {
+      console.error('Failed to create categories collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
   
-  await fetch('[INSTANCE-URL]/inventory', {
+  fetch('[INSTANCE-URL]/inventory', {
     method: 'PUT',
     headers
-  });
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Inventory collection created successfully');
+    } else {
+      console.error('Failed to create inventory collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 createCollections();
@@ -220,8 +244,8 @@ http POST [INSTANCE-URL]/products \
 [source,javascript]
 ----
 // Add categories
-const addCategory = async () => {
-  const response = await fetch('[INSTANCE-URL]/categories', {
+const addCategory = () => {
+  fetch('[INSTANCE-URL]/categories', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -232,13 +256,20 @@ const addCategory = async () => {
       slug: "electronics", 
       description: "Electronic devices and accessories"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Category created successfully');
+    } else {
+      console.error('Failed to create category:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Add products
-const addProduct = async () => {
-  const response = await fetch('[INSTANCE-URL]/products', {
+const addProduct = () => {
+  fetch('[INSTANCE-URL]/products', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -255,8 +286,15 @@ const addProduct = async () => {
       quantity: 50,
       tags: ["audio", "wireless", "premium"]
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Product created successfully');
+    } else {
+      console.error('Failed to create product:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -317,32 +355,48 @@ http GET [INSTANCE-URL]/products filter=="{'category':'electronics'}" sort=="{pr
 [source,javascript]
 ----
 // Search products by name
-const searchByName = async () => {
+const searchByName = () => {
   const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
-  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Filter by price range
-const filterByPriceRange = async () => {
+const filterByPriceRange = () => {
   const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
-  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Price range results:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Get products with low inventory
-const getLowInventory = async () => {
+const getLowInventory = () => {
   const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
-  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Low inventory products:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Category-based filtering with sorting
-const filterByCategory = async () => {
+const filterByCategory = () => {
   const filter = encodeURIComponent("{'category':'electronics'}");
   const sort = encodeURIComponent("{price:1}");
-  const response = await fetch(`[INSTANCE-URL]/products?filter=${filter}&sort=${sort}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/products?filter=${filter}&sort=${sort}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Category results:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute queries
@@ -449,17 +503,43 @@ http POST [INSTANCE-URL]/articles \
 [source,javascript]
 ----
 // Create content collections
-const createContentCollections = async () => {
+const createContentCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/authors', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/media', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Articles collection created successfully');
+    } else {
+      console.error('Failed to create articles collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/authors', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Authors collection created successfully');
+    } else {
+      console.error('Failed to create authors collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/media', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Media collection created successfully');
+    } else {
+      console.error('Failed to create media collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Create author
-const createAuthor = async () => {
-  const response = await fetch('[INSTANCE-URL]/authors', {
+const createAuthor = () => {
+  fetch('[INSTANCE-URL]/authors', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -471,13 +551,20 @@ const createAuthor = async () => {
       bio: "Tech writer and developer advocate",
       avatar: "https://example.com/avatars/jane.jpg"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Author created successfully');
+    } else {
+      console.error('Failed to create author:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Create article
-const createArticle = async () => {
-  const response = await fetch('[INSTANCE-URL]/articles', {
+const createArticle = () => {
+  fetch('[INSTANCE-URL]/articles', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -497,8 +584,15 @@ const createArticle = async () => {
         metaDescription: "Complete guide to building APIs with RESTHeart Cloud"
       }
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Article created successfully');
+    } else {
+      console.error('Failed to create article:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -554,25 +648,37 @@ http GET [INSTANCE-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
 [source,javascript]
 ----
 // Get published articles
-const getPublishedArticles = async () => {
+const getPublishedArticles = () => {
   const filter = encodeURIComponent("{'status':'published'}");
   const sort = encodeURIComponent("{publishedAt:-1}");
-  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}&sort=${sort}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/articles?filter=${filter}&sort=${sort}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Published articles:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Get article by slug
-const getArticleBySlug = async (slug) => {
+const getArticleBySlug = (slug) => {
   const filter = encodeURIComponent(`{'slug':'${slug}'}`);
-  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/articles?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Article:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Search articles
-const searchArticles = async (query) => {
+const searchArticles = (query) => {
   const filter = encodeURIComponent(`{\$text:{\$search:'${query}'}}`);
-  const response = await fetch(`[INSTANCE-URL]/articles?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/articles?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -690,17 +796,43 @@ http POST [INSTANCE-URL]/posts \
 [source,javascript]
 ----
 // Create social app collections
-const createSocialCollections = async () => {
+const createSocialCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/posts', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/followers', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Profiles collection created successfully');
+    } else {
+      console.error('Failed to create profiles collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/posts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Posts collection created successfully');
+    } else {
+      console.error('Failed to create posts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/followers', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Followers collection created successfully');
+    } else {
+      console.error('Failed to create followers collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Create user profile
-const createUserProfile = async () => {
-  const response = await fetch('[INSTANCE-URL]/profiles', {
+const createUserProfile = () => {
+  fetch('[INSTANCE-URL]/profiles', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -720,13 +852,20 @@ const createUserProfile = async () => {
         following: 0
       }
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('User profile created successfully');
+    } else {
+      console.error('Failed to create user profile:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Create a post
-const createPost = async () => {
-  const response = await fetch('[INSTANCE-URL]/posts', {
+const createPost = () => {
+  fetch('[INSTANCE-URL]/posts', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -743,8 +882,15 @@ const createPost = async () => {
       comments: 0,
       shares: 0
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Post created successfully');
+    } else {
+      console.error('Failed to create post:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -800,26 +946,38 @@ http GET [INSTANCE-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-
 [source,javascript]
 ----
 // Get user timeline (posts from followed users)
-const getUserTimeline = async (followedUsers) => {
+const getUserTimeline = (followedUsers) => {
   const filter = encodeURIComponent(`{'author':{\$in:${JSON.stringify(followedUsers)}}}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('User timeline:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Search posts by hashtag
-const searchPostsByHashtag = async (hashtag) => {
+const searchPostsByHashtag = (hashtag) => {
   const filter = encodeURIComponent(`{'hashtags':{\$in:['${hashtag}']}}`);
-  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/posts?filter=${filter}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Hashtag search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Get user's posts
-const getUserPosts = async (username) => {
+const getUserPosts = (username) => {
   const filter = encodeURIComponent(`{'author':'${username}'}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  const response = await fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('User posts:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -937,17 +1095,43 @@ http POST [INSTANCE-URL]/workouts \
 [source,javascript]
 ----
 // Setup fitness collections
-const createFitnessCollections = async () => {
+const createFitnessCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/exercises', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/progress', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Workouts collection created successfully');
+    } else {
+      console.error('Failed to create workouts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/exercises', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Exercises collection created successfully');
+    } else {
+      console.error('Failed to create exercises collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/progress', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Progress collection created successfully');
+    } else {
+      console.error('Failed to create progress collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Add exercise definitions
-const addExercise = async () => {
-  const response = await fetch('[INSTANCE-URL]/exercises', {
+const addExercise = () => {
+  fetch('[INSTANCE-URL]/exercises', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -961,13 +1145,20 @@ const addExercise = async () => {
       instructions: "Start in plank position, lower body until chest nearly touches floor, push back up",
       difficulty: "beginner"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Exercise added successfully');
+    } else {
+      console.error('Failed to add exercise:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Log workout
-const logWorkout = async () => {
-  const response = await fetch('[INSTANCE-URL]/workouts', {
+const logWorkout = () => {
+  fetch('[INSTANCE-URL]/workouts', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -991,8 +1182,15 @@ const logWorkout = async () => {
       notes: "Great morning workout, feeling strong!",
       caloriesBurned: 200
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Workout logged successfully');
+    } else {
+      console.error('Failed to log workout:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -1098,17 +1296,43 @@ http POST [INSTANCE-URL]/readings \
 [source,javascript]
 ----
 // Create IoT collections
-const createIoTCollections = async () => {
+const createIoTCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/readings', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/alerts', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Devices collection created successfully');
+    } else {
+      console.error('Failed to create devices collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/readings', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Readings collection created successfully');
+    } else {
+      console.error('Failed to create readings collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/alerts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Alerts collection created successfully');
+    } else {
+      console.error('Failed to create alerts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Register device
-const registerDevice = async () => {
-  const response = await fetch('[INSTANCE-URL]/devices', {
+const registerDevice = () => {
+  fetch('[INSTANCE-URL]/devices', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -1123,13 +1347,20 @@ const registerDevice = async () => {
       installDate: "2024-01-01T00:00:00Z",
       status: "active"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Device registered successfully');
+    } else {
+      console.error('Failed to register device:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Submit sensor reading
-const submitReading = async () => {
-  const response = await fetch('[INSTANCE-URL]/readings', {
+const submitReading = () => {
+  fetch('[INSTANCE-URL]/readings', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -1145,8 +1376,15 @@ const submitReading = async () => {
       },
       location: "living-room"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sensor reading submitted successfully');
+    } else {
+      console.error('Failed to submit sensor reading:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -1214,15 +1452,19 @@ echo '[
 [source,javascript]
 ----
 // Get recent readings
-const getRecentReadings = async () => {
+const getRecentReadings = () => {
   const filter = encodeURIComponent("{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}");
   const sort = encodeURIComponent("{timestamp:-1}");
-  const response = await fetch(`[INSTANCE-URL]/readings?filter=${filter}&sort=${sort}`);
-  return response.json();
+  fetch(`[INSTANCE-URL]/readings?filter=${filter}&sort=${sort}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Recent readings:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Average temperature by location
-const getAverageTemperatureByLocation = async () => {
+const getAverageTemperatureByLocation = () => {
   const pipeline = [
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
     {"$group": {
@@ -1232,15 +1474,19 @@ const getAverageTemperatureByLocation = async () => {
     }}
   ];
 
-  const response = await fetch('[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location', {
+  fetch('[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
-  });
-  return response.json();
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Average temperature by location:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -1359,16 +1605,33 @@ http POST [INSTANCE-URL]/measurements \
 [source,javascript]
 ----
 // Environmental monitoring setup
-const createEnvironmentalCollections = async () => {
+const createEnvironmentalCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/measurements', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Stations collection created successfully');
+    } else {
+      console.error('Failed to create stations collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/measurements', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Measurements collection created successfully');
+    } else {
+      console.error('Failed to create measurements collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Register monitoring station
-const registerStation = async () => {
-  const response = await fetch('[INSTANCE-URL]/stations', {
+const registerStation = () => {
+  fetch('[INSTANCE-URL]/stations', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -1385,13 +1648,20 @@ const registerStation = async () => {
       sensors: ["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"],
       status: "active"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Environmental monitoring station registered successfully');
+    } else {
+      console.error('Failed to register monitoring station:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Submit environmental measurement
-const submitMeasurement = async () => {
-  const response = await fetch('[INSTANCE-URL]/measurements', {
+const submitMeasurement = () => {
+  fetch('[INSTANCE-URL]/measurements', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -1414,8 +1684,15 @@ const submitMeasurement = async () => {
         windSpeed: 8.5
       }
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Environmental measurement submitted successfully');
+    } else {
+      console.error('Failed to submit environmental measurement:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -1514,17 +1791,43 @@ http POST [INSTANCE-URL]/sales \
 [source,javascript]
 ----
 // Business analytics setup
-const createAnalyticsCollections = async () => {
+const createAnalyticsCollections = () => {
   const headers = { 'Authorization': '[BASIC-AUTH]' };
   
-  await fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/customers', { method: 'PUT', headers });
-  await fetch('[INSTANCE-URL]/analytics-products', { method: 'PUT', headers });
+  fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sales collection created successfully');
+    } else {
+      console.error('Failed to create sales collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/customers', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Customers collection created successfully');
+    } else {
+      console.error('Failed to create customers collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+  
+  fetch('[INSTANCE-URL]/analytics-products', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Analytics products collection created successfully');
+    } else {
+      console.error('Failed to create analytics products collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Record sale
-const recordSale = async () => {
-  const response = await fetch('[INSTANCE-URL]/sales', {
+const recordSale = () => {
+  fetch('[INSTANCE-URL]/sales', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
@@ -1549,8 +1852,15 @@ const recordSale = async () => {
       salesRep: "john.doe@company.com",
       region: "north-america"
     })
-  });
-  return response.json();
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sale recorded successfully');
+    } else {
+      console.error('Failed to record sale:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute
@@ -1645,7 +1955,7 @@ echo '[
 [source,javascript]
 ----
 // Daily sales aggregation
-const getDailySales = async () => {
+const getDailySales = () => {
   const pipeline = [
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
     {"$group": {
@@ -1657,19 +1967,23 @@ const getDailySales = async () => {
     {"$sort": {"_id": 1}}
   ];
 
-  const response = await fetch('[INSTANCE-URL]/sales/_aggrs/daily-sales', {
+  fetch('[INSTANCE-URL]/sales/_aggrs/daily-sales', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
-  });
-  return response.json();
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Daily sales data:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Top products by revenue
-const getTopProducts = async () => {
+const getTopProducts = () => {
   const pipeline = [
     {"$unwind": "$items"},
     {"$group": {
@@ -1682,15 +1996,19 @@ const getTopProducts = async () => {
     {"$limit": 10}
   ];
 
-  const response = await fetch('[INSTANCE-URL]/sales/_aggrs/top-products', {
+  fetch('[INSTANCE-URL]/sales/_aggrs/top-products', {
     method: 'POST',
     headers: {
       'Authorization': '[BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(pipeline)
-  });
-  return response.json();
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Top products data:', data);
+  })
+  .catch(error => console.error('Error:', error));
 };
 
 // Execute

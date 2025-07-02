@@ -55,6 +55,14 @@ fetch('[INSTANCE-URL]/mybucket.files', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File bucket created successfully');
+  } else {
+    console.error('Failed to create file bucket:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 {% include code-header.html type="Response" %}
@@ -122,6 +130,18 @@ fetch('[INSTANCE-URL]/mybucket.files', {
   },
   body: formData
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File uploaded successfully');
+    return response.headers.get('Location');
+  } else {
+    console.error('Failed to upload file:', response.status);
+  }
+})
+.then(location => {
+  if (location) console.log('File location:', location);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 The request has two parts:
@@ -195,6 +215,14 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
   },
   body: formData
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File uploaded successfully with custom ID');
+  } else {
+    console.error('Failed to upload file:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Retrieving Files
@@ -231,6 +259,11 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved file metadata:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 {% include code-header.html type="Response" %}
@@ -300,6 +333,12 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id/binary', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
+.then(response => response.blob())
+.then(blob => {
+  console.log('Retrieved binary file:', blob);
+  // Process the binary data as needed
+})
+.catch(error => console.error('Error:', error));
 ----
 
 {% include code-header.html type="Response" %}
@@ -349,6 +388,11 @@ fetch(`[INSTANCE-URL]/mybucket.files?filter=${filter}`, {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
+.then(response => response.json())
+.then(data => {
+  console.log('Filtered files:', data);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 This returns metadata for all files with the specified author.
@@ -406,6 +450,14 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
     "metadata.tags": ["example", "documentation"]
   })
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File metadata updated successfully');
+  } else {
+    console.error('Failed to update file metadata:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 IMPORTANT: When updating metadata, use `Content-Type: application/json`, not multipart/form-data.
@@ -469,6 +521,14 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
     }
   })
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File metadata replaced successfully');
+  } else {
+    console.error('Failed to replace file metadata:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 NOTE: Update operators and aggregation pipelines cannot be used with file metadata updates.
@@ -505,6 +565,14 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
 })
+.then(response => {
+  if (response.ok) {
+    console.log('File deleted successfully');
+  } else {
+    console.error('Failed to delete file:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 === Important Notes
@@ -553,6 +621,18 @@ fetch('[INSTANCE-URL]/images.files', {
   },
   body: formData
 })
+.then(response => {
+  if (response.ok) {
+    console.log('Image uploaded successfully');
+    return response.headers.get('Location');
+  } else {
+    console.error('Failed to upload image:', response.status);
+  }
+})
+.then(location => {
+  if (location) console.log('Image location:', location);
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Access the image in a web page:
@@ -601,6 +681,14 @@ fetch('[INSTANCE-URL]/documents.files/contract-2023', {
   },
   body: formData
 })
+.then(response => {
+  if (response.ok) {
+    console.log('Document uploaded successfully');
+  } else {
+    console.error('Failed to upload document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----
 
 Update the file and increment version:
@@ -643,4 +731,12 @@ fetch('[INSTANCE-URL]/documents.files/contract-2023', {
   },
   body: updatedFormData
 })
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
 ----

@@ -70,7 +70,9 @@ fetch('[INSTANCE-URL]/users', {
     }
 })
 .then(response => response.json())
-.then(data => console.log(data))
+.then(data => {
+    console.log('Retrieved users:', data);
+})
 .catch(error => console.error('Error:', error));
 ----
 
@@ -142,8 +144,13 @@ fetch('[INSTANCE-URL]/users', {
         "password": "secret"
     })
 })
-.then(response => response.json())
-.then(data => console.log(data))
+.then(response => {
+    if (response.ok) {
+        console.log('User created successfully');
+    } else {
+        console.error('Failed to create user:', response.status);
+    }
+})
 .catch(error => console.error('Error:', error));
 ----
 
@@ -188,8 +195,13 @@ fetch('[INSTANCE-URL]/users/foo', {
         "password": "betterSecret"
     })
 })
-.then(response => response.json())
-.then(data => console.log(data))
+.then(response => {
+    if (response.ok) {
+        console.log('User updated successfully');
+    } else {
+        console.error('Failed to update user:', response.status);
+    }
+})
 .catch(error => console.error('Error:', error));
 ----
 
@@ -225,6 +237,8 @@ fetch('[INSTANCE-URL]/users/foo', {
 .then(response => {
     if (response.ok) {
         console.log('User deleted successfully');
+    } else {
+        console.error('Failed to delete user:', response.status);
     }
 })
 .catch(error => console.error('Error:', error));
@@ -275,8 +289,13 @@ fetch('[INSTANCE-URL]/acl', {
         "priority": 1
     })
 })
-.then(response => response.json())
-.then(data => console.log(data))
+.then(response => {
+    if (response.ok) {
+        console.log('ACL permission created successfully');
+    } else {
+        console.error('Failed to create ACL permission:', response.status);
+    }
+})
 .catch(error => console.error('Error:', error));
 ----
 
