@@ -10,7 +10,7 @@ liquid: true
 <script src="/js/interactive-docs-config.js"></script>
 {% include interactive-docs-config.html %}
 ++++
-The following table summarizes how resources are represented
+The following table shows how RESTHeart represents different resources:
 
 [%header,cols="1,1,1"]
 |===
@@ -23,11 +23,9 @@ The following table summarizes how resources are represented
 
 === BSON types
 
-MongoDB uses the https://en.wikipedia.org/wiki/BSON[BSON] data format
-which type system is a superset of JSON's. To preserve type information,
-MongoDB adds this extension to the JSON.
+MongoDB uses the https://en.wikipedia.org/wiki/BSON[BSON] data format. BSON's type system is a superset of JSON's. To preserve type information, MongoDB extends JSON with additional type representations.
 
-For instance, the `_id` of the following JSON document is an ObjectId.
+For example, the `_id` in the following JSON document is an ObjectId:
 
 [source,json]
 ----
@@ -45,7 +43,7 @@ For instance, the `_id` of the following JSON document is an ObjectId.
 The strict mode is used on both request and response resource representation and also on the query parameter `filter`
 ====
 
-The following `filter` won't find the document since the `_id` is an ObjectId (and not a String).
+The following `filter` won't find the document because the `_id` is an ObjectId, not a String:
 
 ==== cURL
 [source,bash]
@@ -78,7 +76,7 @@ fetch('[INSTANCE-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', 
 .catch(error => console.error('Error:', error));
 ----
 
-The correct request is:
+Here's the correct request:
 
 ==== cURL
 [source,bash]

@@ -4,27 +4,27 @@ layout: docs-adoc
 menu: overview
 ---
 
-RESTHeart is a framework for building cloud-native HTTP microservices, designed for the JVM and optimized for GraalVM. It leverages Java Virtual Threads for efficient high-concurrency handling.
+RESTHeart is a framework for building cloud-native HTTP microservices. It's designed for the JVM and optimized for GraalVM, using Java Virtual Threads for high-performance concurrent processing.
 
-It provides out-of-the-box authentication, authorization, and MongoDB APIs, enabling secure data exposure over REST, GraphQL, and WebSockets. RESTHeart is highly extensible through a plugin system, supports multiple languages (Java, Kotlin, JavaScript, TypeScript), and runs seamlessly in Docker, Kubernetes, and cloud environments.
+RESTHeart provides built-in authentication, authorization, and MongoDB APIs. This lets you securely expose data through REST, GraphQL, and WebSockets without additional configuration. The framework is highly extensible through plugins, supports multiple languages (Java, Kotlin, JavaScript, TypeScript), and runs seamlessly on Docker, Kubernetes, and cloud platforms.
 
-With instant startup, a declarative security model, and a simple yet powerful architecture, RESTHeart enables developers to build scalable and performant microservices with minimal effort.
+RESTHeart's instant startup, declarative security model, and simple architecture help developers build scalable microservices with minimal effort.
 
 ==== Speed and Ease
 
-RESTHeart prioritizes speed and simplicity, carefully crafted with top-notch libraries for a seamless developer experience.
+RESTHeart prioritizes speed and simplicity. It's built with high-quality libraries to provide a seamless developer experience.
 
-==== Embraces Virtual Threads for Superior Performance
+==== Virtual Threads for Superior Performance
 
-RESTHeart is the first framework to fully embrace the use of virtual threads, a groundbreaking feature introduced in Java 21. By leveraging virtual threads, RESTHeart achieves remarkable improvements in performance and efficiency. This innovative model makes RESTHeart faster, more lightweight, and simplifies the development of concurrent code. Virtual threads allow for better resource utilization and significantly reduce the complexity associated with concurrent programming, ensuring that RESTHeart remains at the forefront of high-performance, scalable frameworks.
+RESTHeart fully embraces virtual threads, the groundbreaking feature introduced in Java 21. Virtual threads deliver remarkable performance and efficiency improvements. This makes RESTHeart faster, more lightweight, and simplifies concurrent code development. Virtual threads provide better resource utilization and reduce the complexity of concurrent programming, keeping RESTHeart at the forefront of high-performance, scalable frameworks.
 
 ==== Empower Developers, Streamline Applications
 
-RESTHeart aims to empower developers with an intuitive framework encompassing essential features. This approach positions RESTHeart as a true low-code platform, offering developers customizable APIs that are ready to go.
+RESTHeart empowers developers with an intuitive framework that includes essential features. This low-code approach provides customizable, ready-to-use APIs out of the box.
 
-==== Plug-and-Play, Extendable APIs
+==== Plug-and-Play, Extensible APIs
 
-Save time and effort with RESTHeart's pre-configured APIs, covering a broad range of functionality. These APIs are highly customizable to fit your specific application needs.
+RESTHeart's pre-configured APIs save time and effort by covering a wide range of functionality. You can easily customize these APIs to fit your specific application needs.
 
 ++++
 <div class="col-md-8 col-12 mx-auto">
@@ -35,9 +35,9 @@ Save time and effort with RESTHeart's pre-configured APIs, covering a broad rang
 
 ==== What makes RESTHeart different from other frameworks?
 
-*RESTHeart* is a framework for building HTTP microservices comparable to others, like _Undertow_ (internally used by RESTHeart), _Vert.x_, _Quarkus_, _Spring Boot_, _Node.js_, etc.
+RESTHeart is similar to other HTTP microservice frameworks like _Undertow_ (which RESTHeart uses internally), _Vert.x_, _Quarkus_, _Spring Boot_, and _Node.js_.
 
-However, RESTHeart does not only comprise a framework but also a set of application-level features that allow developers to build their applications without the need to reinvent the wheel.
+However, RESTHeart goes beyond being just a framework. It includes application-level features that let developers build applications without reinventing the wheel.
 
 ++++
 <div class="col-md-8 col-12 mx-auto">
@@ -46,9 +46,9 @@ However, RESTHeart does not only comprise a framework but also a set of applicat
 </div>
 ++++
 
-`restheart-core` is the foundation of the platform, the runtime process responsible for handling the core services, parsing the configuration, registering the plugins, enforcing the security policy, resolving dependency injections with the available `Providers`, routing requests to the correct `Services`, executing `Interceptors` and `Initializers`.
+`restheart-core` is the platform's foundation. This runtime process handles core services, parses configuration, registers plugins, enforces security policies, resolves dependency injections with available `Providers`, routes requests to the correct `Services`, and executes `Interceptors` and `Initializers`.
 
-If you look at the RESTHeart installation directory structure, you will notice a directory called `plugins`:
+The RESTHeart installation directory includes a `plugins` folder:
 
 [source,bash]
 ----
@@ -60,22 +60,22 @@ plugins
 └── restheart-security.jar
 ----
 
-Those plugins implement application-level functionalities that help build applications.
+These plugins implement application-level functionality to help you build applications.
 
-For instance, the plugin `restheart-mongodb` implements the REST API for MongoDB and `restheart-security.jar` implements the ready-to-use Authentication and Authorization features.
+For example, the `restheart-mongodb` plugin implements the REST API for MongoDB, and `restheart-security.jar` provides ready-to-use authentication and authorization features.
 
-A developer can easily deploy a custom plugin, by just adding it into the `plugins` directory. The plugin is just a JAR file, in the case of Java or Kotlin and a directory with its `package.json` file in the case of JavaScript.
+You can easily deploy custom plugins by adding them to the `plugins` directory. Plugins are JAR files for Java or Kotlin, or directories with `package.json` files for JavaScript.
 
 ==== Built for developers
 
-RESTHeart is built for developers by developers and evolved by implementing dozens of real-world projects.
+RESTHeart is built by developers for developers. It has evolved through implementing dozens of real-world projects.
 
-- Only four, simple yet powerful building blocks: `Services`, `Providers` `Interceptors` and `Initializers`.
-- Starts in 100~ milliseconds, so code-deploy-test cycles are smooth and fast.
-- Each request is handled in a dedicated thread, so all code is _thread-safe_, _simple_ to write and maintain and _scales well_.
-- Powerful Dependency Injection via `@Inject` annotation and `Provider` plugin.
-- The framework is polyglot and supports *Java*, *Kotlin*, *JavaScript* and *Typescript*.
-- Well documented with many examples and tutorials available. Check link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples].
+- Only four simple yet powerful building blocks: `Services`, `Providers`, `Interceptors`, and `Initializers`.
+- Starts in ~100 milliseconds for smooth, fast code-deploy-test cycles.
+- Each request runs in a dedicated thread, making all code thread-safe, simple to write and maintain, and scalable.
+- Powerful dependency injection via `@Inject` annotation and `Provider` plugin.
+- Polyglot framework supporting *Java*, *Kotlin*, *JavaScript*, and *TypeScript*.
+- Well documented with many examples and tutorials. Check link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples].
 
 Here you have the _Hello World_ example in *Java*:
 

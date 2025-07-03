@@ -21,7 +21,7 @@ TIP: Watch link:https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s[Docker / Dock
 
 === Run RESTHeart with Docker in standalone mode
 
-When you run RESTHeart in standalone mode, it switches to a different default configuration that turns off all plugins that rely on MongoDB. This means you won't have access to the handy built-in features that make RESTHeart so great. But don't worry, you'll still be able to play with it and add your own custom plugins.
+When you run RESTHeart in standalone mode, it uses a different default configuration that disables all plugins that rely on MongoDB. This means you won't have access to the built-in features that make RESTHeart powerful. However, you can still experiment with it and add your own custom plugins.
 
 [source,bash]
 $ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
@@ -57,11 +57,11 @@ NOTE: This command relies on the docker support of `host.docker.internal`. If yo
 
 ## Run RESTHeart and network isolated MongoDB with Docker
 
-This setup involves a RESTHeart container interfacing with a MongoDB container via a private Docker network. This arrangement ensures network isolation, with the RESTHeart API serving as the sole entry point. This configuration allows the two containers to communicate securely and efficiently within their dedicated network environment, while external access is streamlined and controlled through the RESTHeart API
+This setup uses a RESTHeart container connecting to a MongoDB container via a private Docker network. This ensures network isolation, with the RESTHeart API as the only entry point. The containers communicate securely within their dedicated network, while external access is controlled through the RESTHeart API
 
 ### Setup Procedure
 
-This setup only needs to be completed once. Follow these steps:
+You only need to complete this setup once. Follow these steps:
 
 1) **Create a Docker Network**
 
@@ -133,7 +133,7 @@ WARNING: This setup is insecure and should be only used for developing or testin
 
 ### Setup Procedure
 
-This setup only needs to be completed once. Follow these steps:
+You only need to complete this setup once. Follow these steps:
 
 1) **Start MongoDB Container**
 

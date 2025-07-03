@@ -6,23 +6,23 @@ menu: security
 
 === Introduction
 
-See link:/docs/security/overview[Security Overview] for an high level view of the RESTHeart security model.
+See link:/docs/security/overview[Security Overview] for a high-level view of the RESTHeart security model.
 
-**RESTHeart** is built around a **pluggable architecture**. It comes with a strong security implementation but you can easily extend it by implementing plugins. This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins.
+**RESTHeart** uses a **pluggable architecture**. It comes with strong security implementation that you can easily extend by implementing plugins. This section documents the authentication plugins available out-of-the-box. You can also develop your own authentication plugins.
 
 === Authentication Mechanisms
 
 ==== JWT Authentication
 
-JWT Authentication manages the authentication following the link:https://jwt.io[JSON Web Token standard].
+JWT Authentication manages authentication following the link:https://jwt.io[JSON Web Token standard].
 
 The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`. If you want to disable checking `issuer` or  `audience`, set them to `null`. The property `audience` can be `null`, a String or an array of Strings.
 
-The authenticated client will gain the roles included in the JWT claim set by `rolesClaim` or the roles specified by the configuration option `fixedRoles`. It's not possible to set both `rolesClaim` and `fixedRoles`
+The authenticated client will receive the roles included in the JWT claim set by `rolesClaim` or the roles specified by the configuration option `fixedRoles`. You cannot set both `rolesClaim` and `fixedRoles`
 
-Supported algorithms are the HMAC256, HMAC384, HMAC512, RSA256, RSA384, RSA512.
+Supported algorithms are HMAC256, HMAC384, HMAC512, RSA256, RSA384, and RSA512.
 
-For HMAC the `key` configuration option specifies the secret, for RSA the public key.
+For HMAC, the `key` configuration option specifies the secret; for RSA, it specifies the public key.
 
 [source,yml]
 ----

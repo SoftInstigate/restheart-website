@@ -13,7 +13,7 @@ liquid: true
 
 :page-liquid:
 
-The following requests upsert a collection defining three change streams:
+The following requests create a collection with three change streams:
 
 - *all* bound at `/messages/_streams/all`
 - *mine* bound at `/messages/_streams/mine`
@@ -131,8 +131,7 @@ This is because the Change Event looks like:
 }
 ----
 
-Note between the `_links` collection property the URIs of the
-change streams (returned with `?rep=SHAL`).
+Note the `_links` collection property showing the URIs of the change streams (returned with `?rep=SHAL`).
 
 ==== cURL
 
@@ -182,7 +181,7 @@ fetch('[INSTANCE-URL]/messages?rep=SHAL', {
 }
 ----
 
-Alternatively, we can define a single change stream that either returns all messages or only those sent by a specific `name``. This can be achieved through a definition that utilizes optional stages:
+Alternatively, you can define a single change stream that returns either all messages or only those sent by a specific `name`. This can be achieved using optional stages:
 
 [source,json]
 ----
@@ -197,11 +196,11 @@ Alternatively, we can define a single change stream that either returns all mess
 }
 ----
 
-To subscribe to the change streams, we will use `websocat`, a Command-line client for WebSockets, like netcat (or curl) for `ws://`
+To subscribe to the change streams, we'll use `websocat`, a command-line client for WebSockets, like netcat (or curl) for `ws://`
 
 TIP: You can install `websocat` following the instructions at link:https://github.com/vi/websocat#installation[] or downloading binaries from link:https://github.com/vi/websocat/releases[]
 
-Connect to the change streams using the following command, given that the default user `admin` exists with the default password:
+Connect to the change streams using the following command (assuming the default user `admin` exists with the default password):
 
 [source,bash]
 $ websocat --text - autoreconnect:ws://admin:secret@127.0.0.1:8080/messages/_streams/all
@@ -268,7 +267,7 @@ With this permission in place, you can connect to the WebSocket without authenti
 [source,bash]
 $ websocat --text - autoreconnect:ws://127.0.0.1:8080/messages/_streams/all
 
-If we now create a new document in the collection `messages`
+If you now create a new document in the collection `messages`
 
 ==== cURL
 
@@ -318,7 +317,7 @@ fetch('[INSTANCE-URL]/messages', {
 .catch(error => console.error('Error:', error));
 ----
 
-We get the following output from `websocat`:
+You get the following output from `websocat`:
 
 [source,bash]
 ----
