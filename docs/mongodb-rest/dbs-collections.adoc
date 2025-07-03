@@ -19,7 +19,7 @@ RESTHeart allows managing dbs and collections.
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/foo \
+curl -i -X PUT [INSTANCE-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "descr": "just a test collection" }'
@@ -74,7 +74,7 @@ The collection's properties can be read as follows:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/foo/_meta \
+curl -i -X GET [INSTANCE-URL]/foo/_meta \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -129,7 +129,7 @@ HTTP/1.1 200 OK
 
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/foo \
+curl -i -X PATCH [INSTANCE-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "owner": "Bob" }'
@@ -180,7 +180,7 @@ Let's try to delete the collection `foo` without passing it.
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/foo \
+curl -i -X DELETE [INSTANCE-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -231,7 +231,7 @@ Now let's pass the If-Match` request header, the collection will be deleted.
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/foo \
+curl -i -X DELETE [INSTANCE-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "If-Match: 5d95ef77ab3cf85b199ed3b7"
 ----
@@ -294,7 +294,7 @@ For instance, we can list the existing dbs as follows:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/ \
+curl -i -X GET [INSTANCE-URL]/ \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -338,7 +338,7 @@ fetch('[INSTANCE-URL]/', {
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/newDb \
+curl -i -X PUT [INSTANCE-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "descr": "just a test db" }'
@@ -393,7 +393,7 @@ This properties can be read as follows:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/newDb/_meta \
+curl -i -X GET [INSTANCE-URL]/newDb/_meta \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -443,7 +443,7 @@ HTTP/1.1 200 OK
 
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/newDb \
+curl -i -X PATCH [INSTANCE-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "owner": "Bob" }'
@@ -494,7 +494,7 @@ Let's try to delete the `newDb` without passing it.
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/newDb \
+curl -i -X DELETE [INSTANCE-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -545,7 +545,7 @@ Now let's pass the If-Match` request header, the db will be deleted.
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/newDb \
+curl -i -X DELETE [INSTANCE-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "If-Match: 5d95ed1dab3cf85b199ed3b6"
 ----

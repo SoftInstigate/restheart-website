@@ -19,11 +19,12 @@ This tutorial introduces RESTHeart's MongoDB REST API through simple examples. Y
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/inventory \
+curl -i -X PUT [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 
-curl -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
   -d '[
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
    { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
@@ -103,7 +104,7 @@ To retrieve all documents from a collection, send a `GET` request:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/inventory \
+curl -i -X GET [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -179,7 +180,7 @@ You can filter documents using the `filter` query parameter with MongoDB query s
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -429,7 +430,7 @@ To delete a document, use the `DELETE` method:
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/inventory/newDocument \
+curl -i -X DELETE [INSTANCE-URL]/inventory/newDocument \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

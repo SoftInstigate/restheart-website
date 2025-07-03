@@ -18,7 +18,7 @@ To list the collection indexes use the following request:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory/_indexes" \
+curl -i -X GET "[INSTANCE-URL]/inventory/_indexes" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -76,7 +76,7 @@ To create an unique, sparse index on property `qty` run the following:
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"qty": 1},"ops": {"unique": true, "sparse": true }}'
@@ -130,7 +130,7 @@ To create a text index on property `item` run the following:
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/_indexes/itemTextIndex" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/itemTextIndex" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "keys": { "item": "text" } }'
@@ -175,7 +175,7 @@ To delete an index use the following request:
 ==== cURL
 [source,bash]
 ----
-curl -X DELETE "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+curl -i -X DELETE "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

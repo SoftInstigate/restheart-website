@@ -31,7 +31,7 @@ To store binary files, first create a file bucket:
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/mybucket.files \
+curl -i -X PUT [INSTANCE-URL]/mybucket.files \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -73,7 +73,7 @@ To upload a file, use a `POST` request with `multipart/form-data` encoding:
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/mybucket.files \
+curl -i -X POST [INSTANCE-URL]/mybucket.files \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -F "file=@/path/to/example.jpg" \
   -F 'metadata={"author":"SoftInstigate","category":"documentation"}'
@@ -141,7 +141,7 @@ To upload a file with a specific ID, use a `PUT` request:
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/mybucket.files/my-custom-id \
+curl -i -X PUT [INSTANCE-URL]/mybucket.files/my-custom-id \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -F "file=@/path/to/example.jpg" \
   -F 'metadata={"author":"SoftInstigate","category":"documentation"}'
@@ -195,7 +195,7 @@ To retrieve a file's metadata:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/mybucket.files/my-custom-id \
+curl -i -X GET [INSTANCE-URL]/mybucket.files/my-custom-id \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -269,7 +269,7 @@ Authorization: Basic [BASIC-AUTH]
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/mybucket.files/my-custom-id/binary \
+curl -i -X GET [INSTANCE-URL]/mybucket.files/my-custom-id/binary \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -314,7 +314,7 @@ You can query files by their metadata just like regular documents:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mybucket.files?filter={\"metadata.author\":\"SoftInstigate\"}" \
+curl -i -X GET "[INSTANCE-URL]/mybucket.files?filter={\"metadata.author\":\"SoftInstigate\"}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -357,7 +357,7 @@ To update specific metadata fields:
 
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/mybucket.files/my-custom-id \
+curl -i -X PATCH [INSTANCE-URL]/mybucket.files/my-custom-id \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -412,7 +412,7 @@ To completely replace the metadata:
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/mybucket.files/my-custom-id \
+curl -i -X PUT [INSTANCE-URL]/mybucket.files/my-custom-id \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -473,7 +473,7 @@ To delete a file and all its chunks:
 
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/mybucket.files/my-custom-id \
+curl -i -X DELETE [INSTANCE-URL]/mybucket.files/my-custom-id \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -522,7 +522,7 @@ fetch('[INSTANCE-URL]/mybucket.files/my-custom-id', {
 [source,bash]
 ----
 # Upload an image
-curl -X POST [INSTANCE-URL]/images.files \
+curl -i -X POST [INSTANCE-URL]/images.files \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -F "file=@/path/to/logo.png" \
   -F 'metadata={"purpose":"website"}'
@@ -583,7 +583,7 @@ Access the image in a web page:
 [source,bash]
 ----
 # Upload initial version
-curl -X PUT [INSTANCE-URL]/documents.files/contract-2023 \
+curl -i -X PUT [INSTANCE-URL]/documents.files/contract-2023 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -F "file=@/path/to/document.pdf" \
   -F 'metadata={"version":"1.0","author":"John"}'
@@ -636,7 +636,7 @@ Update the file and increment version:
 [source,bash]
 ----
 # Update the file and increment version
-curl -X PUT [INSTANCE-URL]/documents.files/contract-2023 \
+curl -i -X PUT [INSTANCE-URL]/documents.files/contract-2023 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -F "file=@/path/to/document_updated.pdf" \
   -F 'metadata={"version":"1.1","author":"John","updated":"2023-07-15"}'

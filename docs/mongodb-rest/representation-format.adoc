@@ -50,7 +50,7 @@ The following `filter` won't find the document since the `_id` is an ObjectId (a
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -83,7 +83,7 @@ The correct request is:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -132,7 +132,7 @@ The query parameter `jsonMode` allows to specify the JSON Mode
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -184,7 +184,7 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
+curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -239,7 +239,7 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
+curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -300,7 +300,7 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
+curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -358,7 +358,7 @@ SHELL JSON Mode is very useful since it *allows to use the response body directl
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
+curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -417,15 +417,15 @@ The `rep` query parameter can also be used for switching between representations
 [source,bash]
 ----
 # Standard representation
-curl -X GET "[INSTANCE-URL]/inventory?rep=s" \
+curl -i -X GET "[INSTANCE-URL]/inventory?rep=s" \
      -H "Authorization: Basic [BASIC-AUTH]"
 
 # HAL representation
-curl -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+curl -i -X GET "[INSTANCE-URL]/inventory?rep=hal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 
 # SHAL representation
-curl -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+curl -i -X GET "[INSTANCE-URL]/inventory?rep=shal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -506,7 +506,7 @@ A collection represented with `HAL` has its own _properties_, *embedded resource
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+curl -i -X GET "[INSTANCE-URL]/inventory?rep=hal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -724,7 +724,7 @@ In the following response the collection /inventory has the properties `_id`, `_
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+curl -i -X GET "[INSTANCE-URL]/inventory?rep=shal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

@@ -113,7 +113,8 @@ Create documents in the *star-wars-characters* collection:
 
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+curl -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+  -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/json" \
   -d '[
     {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
@@ -132,7 +133,7 @@ curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
 [source,bash]
 ----
 http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
-  "[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   <<< '[
     {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
@@ -192,7 +193,8 @@ To insert the GraphQL app definition, run the following:
 
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+curl -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+  -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/json" \
   -d @graphql-app-definition.json
 ----
@@ -202,7 +204,7 @@ curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
 [source,bash]
 ----
 http POST [INSTANCE-URL]/gql-apps wm==upsert \
-  "[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   < graphql-app-definition.json
 ----
@@ -247,7 +249,8 @@ The GraphQL API is ready to use!
 
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -X POST [INSTANCE-URL]/graphql/star-wars \
+  -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/graphql" \
   -d '{
     hero(episode: JEDI) {
@@ -283,7 +286,7 @@ echo '{
         }
     }
   }' | http POST [INSTANCE-URL]/graphql/star-wars \
-  "[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/graphql
 ----
 
@@ -319,12 +322,6 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
 .then(data => console.log(data))
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-{% include code-header.html
-    type="Response"
-%}
-++++
 
 [source,json]
 ----
@@ -356,7 +353,8 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
 
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -X POST [INSTANCE-URL]/graphql/star-wars \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
     search(text: "an") {
@@ -386,7 +384,7 @@ echo '{
         }
     }
   }' | http POST [INSTANCE-URL]/graphql/star-wars \
-  "[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/graphql
 ----
 
@@ -420,12 +418,6 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
 .catch(error => console.error('Error:', error));
 ----
 
-++++
-{% include code-header.html
-    type="Response"
-%}
-++++
-
 [source,json]
 ----
 {
@@ -445,7 +437,6 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
     }
 }
 ----
-
 
 === Understanding the GraphQL App Definition
 

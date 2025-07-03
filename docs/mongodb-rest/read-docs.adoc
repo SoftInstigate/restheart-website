@@ -25,7 +25,7 @@ To retrieve documents from a collection, send a `GET` request to the collection 
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/inventory \
+curl -i -X GET [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -70,7 +70,7 @@ Example - get the second page with 3 documents per page:
 
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/inventory?page=2&pagesize=3 \
+curl -i -X GET [INSTANCE-URL]/inventory?page=2&pagesize=3 \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -108,7 +108,7 @@ Use the `filter` parameter to specify which documents to return using MongoDB qu
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":50}}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":50}}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -148,7 +148,7 @@ Combine multiple conditions using MongoDB operators like `$and`:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -184,7 +184,7 @@ Alternatively, you can use multiple filter parameters:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}&filter={\"status\":\"D\"}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}&filter={\"status\":\"D\"}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -222,7 +222,7 @@ Instead of retrieving documents, you can count them by appending `_size` to the 
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory/_size?filter={\"status\":\"A\"}" \
+curl -i -X GET "[INSTANCE-URL]/inventory/_size?filter={\"status\":\"A\"}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -264,7 +264,7 @@ Use the `keys` parameter to specify which fields to include or exclude from the 
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?keys={'item':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -302,7 +302,7 @@ This returns only the `_id` and `item` fields for each document.
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?keys={'item':0}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':0}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -340,7 +340,7 @@ This returns all fields except `item` for each document.
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?keys={'item':1}&keys={'qty':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':1}&keys={'qty':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -384,7 +384,7 @@ For simple sorting, use `sort=fieldname` for ascending order or `sort=-fieldname
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?sort=status" \
+curl -i -X GET "[INSTANCE-URL]/inventory?sort=status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -421,7 +421,7 @@ For descending order:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?sort=-status" \
+curl -i -X GET "[INSTANCE-URL]/inventory?sort=-status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -458,7 +458,7 @@ Use multiple `sort` parameters to sort by multiple fields:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?sort=status&sort=-qty" \
+curl -i -X GET "[INSTANCE-URL]/inventory?sort=status&sort=-qty" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -498,7 +498,7 @@ You can also use MongoDB's sort expression format:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?sort={\"status\":1,\"qty\":-1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?sort={\"status\":1,\"qty\":-1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -536,7 +536,7 @@ Use dot notation to access nested document fields or array elements:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?keys={'size.h':1}&sort={'size.uom':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?keys={'size.h':1}&sort={'size.uom':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -582,7 +582,7 @@ Before using hints, create the indexes:
 
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/_indexes/item" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/item" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"item": 1}}'
@@ -624,7 +624,7 @@ fetch('[INSTANCE-URL]/inventory/_indexes/item', {
 
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/_indexes/status" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/status" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys":{"status": 1}}'
@@ -670,7 +670,7 @@ Specify which index to use:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?hint={'item':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?hint={'item':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -706,7 +706,7 @@ Or use the compact string format:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status" \
+curl -i -X GET "[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -748,7 +748,7 @@ Force a collection scan instead of using indexes:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -784,7 +784,7 @@ For a reverse collection scan:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':-1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':-1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -824,7 +824,7 @@ First, create the text index:
 
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/_indexes/text" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/text" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"item": "text"}}'
@@ -868,7 +868,7 @@ Then search and sort by relevance score:
 
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/inventory?filter={\"$text\":{\"$search\":\"paper\"}}&keys={\"item\":1,\"score\":{\"$meta\":\"textScore\"}}&sort={\"score\":{\"$meta\":\"textScore\"}}" \
+curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"$text\":{\"$search\":\"paper\"}}&keys={\"item\":1,\"score\":{\"$meta\":\"textScore\"}}&sort={\"score\":{\"$meta\":\"textScore\"}}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

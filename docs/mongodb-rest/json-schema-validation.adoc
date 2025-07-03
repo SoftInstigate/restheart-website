@@ -56,7 +56,7 @@ First, create a schema store to hold your JSON Schema definitions:
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/_schemas" \
+curl -i -X PUT "[INSTANCE-URL]/_schemas" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -93,7 +93,7 @@ Create a schema document that defines the structure for your data:
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
+curl -i -X PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -165,7 +165,7 @@ NOTE: RESTHeart automatically generates an `id` property for the schema (not to 
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/_schemas/address" \
+curl -i -X GET "[INSTANCE-URL]/_schemas/address" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -219,7 +219,7 @@ To enforce the schema on a collection, update the collection's metadata:
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/addresses" \
+curl -i -X PUT "[INSTANCE-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -283,7 +283,7 @@ MongoDB uses BSON (Binary JSON) which supports additional data types not availab
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/_schemas/bson" \
+curl -i -X PUT "[INSTANCE-URL]/_schemas/bson" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -382,7 +382,7 @@ You can reference these BSON type definitions in other schemas using the `$ref` 
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/_schemas/post" \
+curl -i -X PUT "[INSTANCE-URL]/_schemas/post" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -465,7 +465,7 @@ Let's see validation in action by attempting to create both valid and invalid do
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/addresses" \
+curl -i -X POST "[INSTANCE-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -528,7 +528,7 @@ The request is rejected because it's missing required fields defined in the sche
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/addresses" \
+curl -i -X POST "[INSTANCE-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -623,7 +623,7 @@ The jsonSchema validator has some limitations to be aware of:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
+curl -i -X PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "updated": true }'
@@ -680,7 +680,7 @@ To allow bulk PATCH operations without validation, add the `skipNotSupported` me
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/addresses" \
+curl -i -X PATCH "[INSTANCE-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{

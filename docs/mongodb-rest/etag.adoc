@@ -30,7 +30,7 @@ resource, included file resources.
 ==== cURL
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test' \
+curl -i -X PUT '[INSTANCE-URL]/test' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a db for testing"}'
@@ -73,7 +73,7 @@ ETag: 55e84b95c2e66d1e0a8e46b2
 ==== cURL
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test/coll' \
+curl -i -X PUT '[INSTANCE-URL]/test/coll' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a collection for testing"}'
@@ -116,7 +116,7 @@ ETag: 55e84be2c2e66d1e0a8e46b3
 ==== cURL
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X PUT '[INSTANCE-URL]/test/coll/doc' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a document for testing"}'
@@ -160,7 +160,7 @@ ETag: 55e84c0ac2e66d1e0a8e46b4
   
 [source,bash]
 ----
-curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
   -u '[BASIC-AUTH]'
 ----
 
@@ -209,7 +209,7 @@ check with the `checkEtag` query parameter.
   
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descry": "a document for testing but modified"}'
@@ -260,7 +260,7 @@ Let's try to pass now a wrong ETag via the _If-Match_ request header
   
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -H 'If-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]' \
@@ -314,7 +314,7 @@ Let's try to pass now the correct ETag via the `If-Match` request header
   
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -H 'If-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]' \
@@ -375,7 +375,7 @@ This is especially useful for file resources.
   
 [source,bash]
 ----
-curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
   -u '[BASIC-AUTH]'
 ----
 
@@ -412,7 +412,7 @@ ETag: 55e84c0ac2e66d1e0a8e46b4
   
 [source,bash]
 ----
-curl -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
   -H 'If-None-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]'
 ----

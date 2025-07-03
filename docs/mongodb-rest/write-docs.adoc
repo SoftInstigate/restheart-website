@@ -78,7 +78,7 @@ Use `POST` to create a document and let MongoDB generate an ObjectId:
 ==== cURL
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -152,7 +152,7 @@ Use `PUT` with the `?wm=upsert` parameter to create a document with a specific I
 ==== cURL
 [source,bash]
 ----
-curl -X PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
+curl -i -X PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -236,7 +236,7 @@ WARNING: This replaces the entire document. Any fields not included in the reque
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -289,7 +289,7 @@ Access nested document fields and array elements using dot notation:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -335,7 +335,7 @@ For array elements:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -383,7 +383,7 @@ Use MongoDB's update operators in `PATCH` requests for more complex updates:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -468,7 +468,7 @@ Use the `DELETE` method to remove documents:
 ==== cURL
 [source,bash]
 ----
-curl -X DELETE [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X DELETE [INSTANCE-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -509,7 +509,7 @@ Create multiple documents at once:
 ==== cURL
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
@@ -570,7 +570,7 @@ Update multiple documents using a filter:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
+curl -i -X PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -618,7 +618,7 @@ Delete multiple documents matching a filter:
 ==== cURL
 [source,bash]
 ----
-curl -X DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
+curl -i -X DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

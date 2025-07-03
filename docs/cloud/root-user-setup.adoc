@@ -31,17 +31,19 @@ WARNING: *Security Notice*: The root user has complete access to your instance. 
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/users/root \
+curl -i -X POST [INSTANCE-URL]/users?wm=upsert \
   -H "Authorization: Bearer [JWT]" \
-  -d '{"password": "[YOUR-PASSWORD]", "roles": ["root"]}'
+  -H "Content-Type: application/json" \
+  -d '{"_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"]}'
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/users/root \
+http POST [INSTANCE-URL]/users?wm=upsert \
   Authorization:"Bearer [JWT]" \
+  _id=root \
   password=[YOUR-PASSWORD] \
   roles:='["root"]'
 ----
@@ -50,11 +52,12 @@ http PUT [INSTANCE-URL]/users/root \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/users/root', {
-  method: 'PUT',
-  body: JSON.stringify({ "password": "[YOUR-PASSWORD]", "roles": ["root"] }),
+fetch('[INSTANCE-URL]/users?wm=upsert', {
+  method: 'POST',
+  body: JSON.stringify({ "_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"] }),
   headers: {
-    'Authorization': 'Bearer [JWT]'
+    'Authorization': 'Bearer [JWT]',
+    'Content-Type': 'application/json'
   }
 })
 .then(response => {
@@ -80,17 +83,19 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/acl/rootCanDoEverything \
+curl -i -X POST [INSTANCE-URL]/acl?wm=upsert \
   -H "Authorization: Bearer [JWT]" \
-  -d '{"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}'
+  -H "Content-Type: application/json" \
+  -d '{"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}'
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/acl/rootCanDoEverything \
+http POST [INSTANCE-URL]/acl?wm=upsert \
   Authorization:"Bearer [JWT]" \
+  _id=rootCanDoEverything \
   predicate="path-prefix('/')" \
   roles:='["root"]' \
   priority:=0 \
@@ -101,11 +106,12 @@ http PUT [INSTANCE-URL]/acl/rootCanDoEverything \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/acl/rootCanDoEverything', {
-  method: 'PUT',
-  body: JSON.stringify({"predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true}}),
+fetch('[INSTANCE-URL]/acl?wm=upsert', {
+  method: 'POST',
+  body: JSON.stringify({"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}),
   headers: {
-    'Authorization': 'Bearer [JWT]'
+    'Authorization': 'Bearer [JWT]',
+    'Content-Type': 'application/json'
   }
 })
 .then(response => {

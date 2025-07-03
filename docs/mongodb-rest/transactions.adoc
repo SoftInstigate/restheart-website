@@ -56,7 +56,7 @@ To start a session:
 ==== cURL
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/_sessions \
+curl -i -X POST [INSTANCE-URL]/_sessions \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"causallyConsistent": true}'
@@ -118,7 +118,7 @@ To execute requests within a session, add the `sid` query parameter:
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+curl -i -X POST "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Session example", "value": 42}'
@@ -161,7 +161,7 @@ fetch('[INSTANCE-URL]/collection?sid=[SESSION-ID]', {
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
+curl -i -X GET "[INSTANCE-URL]/collection?sid=[SESSION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -211,7 +211,7 @@ To start a transaction within a session:
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+curl -i -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -259,7 +259,7 @@ To check the current status of a transaction:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+curl -i -X GET "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -308,7 +308,7 @@ To include operations in a transaction, use both the `sid` and `txn` query param
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X POST "[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"owner": "Alice", "balance": 1000}'
@@ -351,7 +351,7 @@ fetch('[INSTANCE-URL]/accounts?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": -100}}'
@@ -391,7 +391,7 @@ fetch('[INSTANCE-URL]/accounts/bob?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/accounts/alice?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": 100}}'
@@ -435,7 +435,7 @@ When all operations have been executed successfully, commit the transaction:
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -479,7 +479,7 @@ If you need to cancel a transaction:
 ==== cURL
 [source,bash]
 ----
-curl -X DELETE "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+curl -i -X DELETE "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -548,7 +548,7 @@ The following example demonstrates a transfer between two bank accounts:
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/_sessions" \
+curl -i -X POST "[INSTANCE-URL]/_sessions" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -590,7 +590,7 @@ Location: http://localhost:8080/_sessions/session123
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
+curl -i -X POST "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -632,7 +632,7 @@ Location: http://localhost:8080/_sessions/session123/_txns/1
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": -100}}'
@@ -679,7 +679,7 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": 100}}'
@@ -726,7 +726,7 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
+curl -i -X POST "[INSTANCE-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"from": "accountA", "to": "accountB", "amount": 100, "timestamp": {"$date": 1623408052123}}'
@@ -780,7 +780,7 @@ HTTP/1.1 201 Created
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
+curl -i -X PATCH "[INSTANCE-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

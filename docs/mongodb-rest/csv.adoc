@@ -36,7 +36,7 @@ To import CSV data, send a `POST` request with the CSV content to the `/csv` end
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,name,city,lat,lon,note
@@ -108,7 +108,7 @@ To use a specific column as the document `_id`, specify its index (starting from
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'product_code,name,price,category
@@ -156,7 +156,7 @@ For tab-separated or other delimiter formats:
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d $'id\tname\tdepartment\tsalary\n1001\tJohn Smith\tEngineering\t75000\n1002\tMaria Garcia\tMarketing\t82000'
@@ -200,7 +200,7 @@ To update documents that already exist (based on `_id`):
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'product_code,name,price,category,in_stock
@@ -248,7 +248,7 @@ To add common properties to all imported documents:
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,product,amount,customer
@@ -356,7 +356,7 @@ public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResp
 ==== cURL
 [source,bash]
 ----
-curl -X POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
+curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,name,city,lat,lon

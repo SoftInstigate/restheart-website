@@ -184,12 +184,11 @@ fetch('[INSTANCE-URL]/messages?rep=SHAL', {
 
 Alternatively, we can define a single change stream that either returns all messages or only those sent by a specific `name``. This can be achieved through a definition that utilizes optional stages:
 
-
 [source,json]
 ----
 {
-    "streams" : [
-{ "stages" : [
+  "streams" : [
+    { "stages" : [
           { "$ifvar": [ "n", { "_$match" : { "fullDocument::name" : { "_$var" : "n" } } } ] }
         ],
         "uri" : "withOptionalStage"

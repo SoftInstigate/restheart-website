@@ -80,7 +80,7 @@ This pattern allows you to create hierarchical data where each document referenc
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/categories \
+curl -i -X PUT [INSTANCE-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}'
@@ -130,7 +130,7 @@ fetch('[INSTANCE-URL]/categories', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/categories/electronics \
+curl -i -X PUT [INSTANCE-URL]/categories/electronics \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "description": "Electronic devices and accessories"}'
@@ -174,7 +174,7 @@ fetch('[INSTANCE-URL]/categories/electronics', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/categories/smartphones \
+curl -i -X PUT [INSTANCE-URL]/categories/smartphones \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}'
@@ -217,7 +217,7 @@ fetch('[INSTANCE-URL]/categories/smartphones', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/categories/laptops \
+curl -i -X PUT [INSTANCE-URL]/categories/laptops \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}'
@@ -262,7 +262,7 @@ fetch('[INSTANCE-URL]/categories/laptops', {
 ==== cURL
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f \
+curl -i -X GET [INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -320,7 +320,7 @@ In this pattern, a document owns references to multiple related documents. For e
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums \
+curl -i -X PUT [INSTANCE-URL]/albums \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"description": "Music albums"}'
@@ -363,7 +363,7 @@ fetch('[INSTANCE-URL]/albums', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/bands \
+curl -i -X PUT [INSTANCE-URL]/bands \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}'
@@ -413,7 +413,7 @@ fetch('[INSTANCE-URL]/bands', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums/album1 \
+curl -i -X PUT [INSTANCE-URL]/albums/album1 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "The Dark Side of the Moon", "year": 1973}'
@@ -455,7 +455,7 @@ fetch('[INSTANCE-URL]/albums/album1', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums/album2 \
+curl -i -X PUT [INSTANCE-URL]/albums/album2 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Wish You Were Here", "year": 1975}'
@@ -499,7 +499,7 @@ fetch('[INSTANCE-URL]/albums/album2', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/bands/pinkfloyd \
+curl -i -X PUT [INSTANCE-URL]/bands/pinkfloyd \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}'
@@ -544,7 +544,7 @@ fetch('[INSTANCE-URL]/bands/pinkfloyd', {
 ==== cURL
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f \
+curl -i -X GET [INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -602,7 +602,7 @@ In this pattern, multiple documents reference a single document. For example, al
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/bands \
+curl -i -X PUT [INSTANCE-URL]/bands \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}'
@@ -652,7 +652,7 @@ fetch('[INSTANCE-URL]/bands', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums \
+curl -i -X PUT [INSTANCE-URL]/albums \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"description": "Music albums with band references"}'
@@ -695,7 +695,7 @@ fetch('[INSTANCE-URL]/albums', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/bands/beatles \
+curl -i -X PUT [INSTANCE-URL]/bands/beatles \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "The Beatles", "formed": 1960}'
@@ -739,7 +739,7 @@ fetch('[INSTANCE-URL]/bands/beatles', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums/abbey-road \
+curl -i -X PUT [INSTANCE-URL]/albums/abbey-road \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}'
@@ -782,7 +782,7 @@ fetch('[INSTANCE-URL]/albums/abbey-road', {
 ==== cURL
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/albums/revolver \
+curl -i -X PUT [INSTANCE-URL]/albums/revolver \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Revolver", "year": 1966, "bandId": "beatles"}'
@@ -827,7 +827,7 @@ fetch('[INSTANCE-URL]/albums/revolver', {
 ==== cURL
 [source,bash]
 ----
-curl -X GET [INSTANCE-URL]/bands/beatles?rep=HAL&hal=f \
+curl -i -X GET [INSTANCE-URL]/bands/beatles?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

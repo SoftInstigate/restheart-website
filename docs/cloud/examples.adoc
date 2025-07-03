@@ -26,11 +26,11 @@ Build a complete product management system with inventory, categories, and searc
 [source,bash]
 ----
 # Create collections
-curl -X PUT [INSTANCE-URL]/products \
+curl -i -X PUT [INSTANCE-URL]/products \
   -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT [INSTANCE-URL]/categories \
+curl -i -X PUT [INSTANCE-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT [INSTANCE-URL]/inventory \
+curl -i -X PUT [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -107,12 +107,12 @@ createCollections();
 [source,bash]
 ----
 # Add categories
-curl -X POST https://[INSTANCE-URL]/categories \
+curl -i -X POST https://[INSTANCE-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
-curl -X POST https://[INSTANCE-URL]/products \
+curl -i -X POST https://[INSTANCE-URL]/products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
@@ -224,7 +224,7 @@ addProduct();
 [source,bash]
 ----
 # Search products by name
-curl "https://[INSTANCE-URL]/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
+curl -i "https://[INSTANCE-URL]/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
 
 # Filter by price range
 curl "https://[INSTANCE-URL]/products?filter={'price':{\$gte:50,\$lte:150}}"
@@ -320,12 +320,12 @@ Create a headless CMS for blogs, news sites, or documentation.
 [source,bash]
 ----
 # Create content collections
-curl -X PUT https://[INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create author
-curl -X POST https://[INSTANCE-URL]/authors \
+curl -i -X POST https://[INSTANCE-URL]/authors \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
@@ -335,7 +335,7 @@ curl -X POST https://[INSTANCE-URL]/authors \
   }'
 
 # Create article
-curl -X POST https://[INSTANCE-URL]/articles \
+curl -i -X POST https://[INSTANCE-URL]/articles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
@@ -579,12 +579,12 @@ Build a complete social platform with users, posts, likes, and real-time feature
 [source,bash]
 ----
 # Create social app collections
-curl -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create user profile
-curl -X POST https://[INSTANCE-URL]/profiles \
+curl -i -X POST https://[INSTANCE-URL]/profiles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
@@ -602,7 +602,7 @@ curl -X POST https://[INSTANCE-URL]/profiles \
   }'
 
 # Create a post
-curl -X POST https://[INSTANCE-URL]/posts \
+curl -i -X POST https://[INSTANCE-URL]/posts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
@@ -850,12 +850,12 @@ Create a comprehensive fitness backend with workouts, progress tracking, and goa
 [source,bash]
 ----
 # Setup fitness collections
-curl -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
 
 # Add exercise definitions
-curl -X POST https://[INSTANCE-URL]/exercises \
+curl -i -X POST https://[INSTANCE-URL]/exercises \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
@@ -867,7 +867,7 @@ curl -X POST https://[INSTANCE-URL]/exercises \
   }'
 
 # Log workout
-curl -X POST https://[INSTANCE-URL]/workouts \
+curl -i -X POST https://[INSTANCE-URL]/workouts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
@@ -1046,12 +1046,12 @@ Collect and analyze data from home sensors and devices.
 [source,bash]
 ----
 # Create IoT collections
-curl -X PUT https://[INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register device
-curl -X POST https://[INSTANCE-URL]/devices \
+curl -i -X POST https://[INSTANCE-URL]/devices \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1064,7 +1064,7 @@ curl -X POST https://[INSTANCE-URL]/devices \
   }'
 
 # Submit sensor reading
-curl -X POST https://[INSTANCE-URL]/readings \
+curl -i -X POST https://[INSTANCE-URL]/readings \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1215,7 +1215,7 @@ submitReading();
 [source,bash]
 ----
 # Get recent readings
-curl "https://[INSTANCE-URL]/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
+curl -i "https://[INSTANCE-URL]/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
 
 # Average temperature by location
 curl -X POST https://[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \

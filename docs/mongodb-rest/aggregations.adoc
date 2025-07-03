@@ -39,7 +39,7 @@ To define an aggregation, use a `PATCH` request to update the collection metadat
 ==== cURL
 [source,bash]
 ----
-curl -X PATCH "[INSTANCE-URL]/mycollection?wm=upsert" \
+curl -i -X PATCH "[INSTANCE-URL]/mycollection?wm=upsert" \
   -u "[BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -165,7 +165,7 @@ When executing the aggregation, provide variable values using the `avars` query 
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?avars={\"productName\":\"Widget Pro\"}" \
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?avars={\"productName\":\"Widget Pro\"}" \
   -u "[BASIC-AUTH]"
 ----
 
@@ -234,7 +234,7 @@ You can access nested properties in variables using dot notation:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?avars={\"config\":{\"limit\":10,\"skip\":20}}" \
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?avars={\"config\":{\"limit\":10,\"skip\":20}}" \
   -u "[BASIC-AUTH]"
 ----
 
@@ -318,7 +318,7 @@ Request with pagination:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
   -u "[BASIC-AUTH]"
 ----
 
@@ -429,7 +429,7 @@ When this aggregation is executed, results are written to the `categorySalesSumm
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-summary" \
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-summary" \
   -u "[BASIC-AUTH]"
 ----
 
@@ -461,7 +461,7 @@ The response will be empty, but a new collection is created or updated:
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/categorySalesSummary" \
+curl -i -X GET "[INSTANCE-URL]/categorySalesSummary" \
   -u "[BASIC-AUTH]"
 ----
 
@@ -518,7 +518,7 @@ Execute aggregations within a transaction by including the `sid` and `txn` param
 ==== cURL
 [source,bash]
 ----
-curl -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
   -u "[BASIC-AUTH]"
 ----
 
