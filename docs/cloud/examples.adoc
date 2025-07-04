@@ -1218,7 +1218,7 @@ submitReading();
 curl -i "[INSTANCE-URL]/readings" --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
 
 # Average temperature by location
-curl -X POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+curl -i -X POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
@@ -1301,11 +1301,11 @@ Track air quality, weather conditions, and environmental data.
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -X PUT [INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT [INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register monitoring station
-curl -X POST [INSTANCE-URL]/stations \
+curl -i -X POST [INSTANCE-URL]/stations \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1320,7 +1320,7 @@ curl -X POST [INSTANCE-URL]/stations \
   }'
 
 # Submit environmental measurement
-curl -X POST [INSTANCE-URL]/measurements \
+curl -i -X POST [INSTANCE-URL]/measurements \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1491,12 +1491,12 @@ Create a comprehensive analytics backend for business metrics.
 [source,bash]
 ----
 # Business analytics setup
-curl -X PUT [INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT [INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT [INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
 
 # Record sale
-curl -X POST [INSTANCE-URL]/sales \
+curl -i -X POST [INSTANCE-URL]/sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
@@ -1633,7 +1633,7 @@ recordSale();
 [source,bash]
 ----
 # Daily sales aggregation
-curl -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
+curl -i -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
@@ -1647,7 +1647,7 @@ curl -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
   ]'
 
 # Top products by revenue
-curl -X POST [INSTANCE-URL]/sales/_aggrs/top-products \
+curl -i -X POST [INSTANCE-URL]/sales/_aggrs/top-products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
@@ -1767,12 +1767,12 @@ Build a real-time messaging platform with presence and typing indicators.
 [source,bash]
 ----
 # Chat collections
-curl -X PUT https://[instance].restheart.com/rooms -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/messages -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/presence -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/rooms -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/messages -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/presence -H "Authorization: Bearer [token]"
 
 # Create chat room
-curl -X POST https://[instance].restheart.com/rooms \
+curl -i -X POST https://[instance].restheart.com/rooms \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "General Discussion",
@@ -1788,7 +1788,7 @@ curl -X POST https://[instance].restheart.com/rooms \
   }'
 
 # Send message
-curl -X POST https://[instance].restheart.com/messages \
+curl -i -X POST https://[instance].restheart.com/messages \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "roomId": "general-discussion",
@@ -1805,7 +1805,7 @@ curl -X POST https://[instance].restheart.com/messages \
 [source,bash]
 ----
 # Create change stream for real-time messages
-curl -X POST https://[instance].restheart.com/_streams/chat-messages \
+curl -i -X POST https://[instance].restheart.com/_streams/chat-messages \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "uri": "chat-messages",
@@ -1827,11 +1827,11 @@ Create real-time polls and surveys with live result updates.
 [source,bash]
 ----
 # Polling collections
-curl -X PUT https://[instance].restheart.com/questions -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/votes -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/questions -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/votes -H "Authorization: Bearer [token]"
 
 # Create poll
-curl -X POST https://[instance].restheart.com/questions \
+curl -i -X POST https://[instance].restheart.com/questions \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "What is your favorite programming language?",
@@ -1850,7 +1850,7 @@ curl -X POST https://[instance].restheart.com/questions \
   }'
 
 # Cast vote
-curl -X POST https://[instance].restheart.com/votes \
+curl -i -X POST https://[instance].restheart.com/votes \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "pollId": "programming-languages-poll",
@@ -1875,12 +1875,12 @@ Configure collections to allow access via the `$unauthenticated` role for users 
 [source,bash]
 ----
 # Create public collections for open data
-curl -X PUT https://[instance].restheart.com/public-datasets -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/announcements -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/documentation -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/public-datasets -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/announcements -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/documentation -H "Authorization: Bearer [token]"
 
 # Configure public read access permissions
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "$unauthenticated",
@@ -1894,7 +1894,7 @@ curl -X PUT https://[instance].restheart.com/acl \
 [source,bash]
 ----
 # Add public announcements (admin-only write, public read)
-curl -X POST https://[instance].restheart.com/announcements \
+curl -i -X POST https://[instance].restheart.com/announcements \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "Platform Maintenance Scheduled",
@@ -1907,7 +1907,7 @@ curl -X POST https://[instance].restheart.com/announcements \
   }'
 
 # Add public dataset entry
-curl -X POST https://[instance].restheart.com/public-datasets \
+curl -i -X POST https://[instance].restheart.com/public-datasets \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "name": "City Weather Stations",
@@ -1957,11 +1957,11 @@ Create a knowledge base or documentation system with public read access and cont
 [source,bash]
 ----
 # Create documentation collections
-curl -X PUT https://[instance].restheart.com/docs -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/faqs -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/docs -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/faqs -H "Authorization: Bearer [token]"
 
 # Configure public read access for documentation
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "$unauthenticated",
@@ -1972,7 +1972,7 @@ curl -X PUT https://[instance].restheart.com/acl \
       }'
 
 # Configure editor write access for documentation
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "editor",
@@ -1984,7 +1984,7 @@ curl -X PUT https://[instance].restheart.com/acl \
       }'
 
 # Add documentation articles
-curl -X POST https://[instance].restheart.com/docs \
+curl -i -X POST https://[instance].restheart.com/docs \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started Guide",
@@ -2005,7 +2005,7 @@ curl -X POST https://[instance].restheart.com/docs \
 [source,bash]
 ----
 # Configure FAQ collection for public access
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "$unauthenticated",
@@ -2013,7 +2013,7 @@ curl -X PUT https://[instance].restheart.com/acl \
       }'
 
 # Add FAQ entries
-curl -X POST https://[instance].restheart.com/faqs \
+curl -i -X POST https://[instance].restheart.com/faqs \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "question": "How do I reset my password?",
@@ -2035,10 +2035,10 @@ Create a public events system where anyone can view upcoming events.
 [source,bash]
 ----
 # Create events collection
-curl -X PUT https://[instance].restheart.com/events -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/events -H "Authorization: Bearer [token]"
 
 # Configure public read access for future events only
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "$unauthenticated",
@@ -2052,7 +2052,7 @@ curl -X PUT https://[instance].restheart.com/acl \
       }'
 
 # Add public events
-curl -X POST https://[instance].restheart.com/events \
+curl -i -X POST https://[instance].restheart.com/events \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "title": "API Workshop: Building with RESTHeart",
@@ -2098,7 +2098,7 @@ curl "https://[instance].restheart.com/events" --data-urlencode "filter={'startD
 # 2. Never allow write access for $unauthenticated role
 
 # Example: Limit fields exposed to public users
-curl -X PUT https://[instance].restheart.com/acl \
+curl -i -X PUT https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
         "role": "$unauthenticated",
@@ -2125,12 +2125,12 @@ Build a SaaS platform with proper tenant isolation and billing.
 [source,bash]
 ----
 # SaaS collections
-curl -X PUT https://[instance].restheart.com/tenants -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/subscriptions -H "Authorization: Bearer [token]"
-curl -X PUT https://[instance].restheart.com/usage -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/tenants -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/subscriptions -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/usage -H "Authorization: Bearer [token]"
 
 # Create tenant
-curl -X POST https://[instance].restheart.com/tenants \
+curl -i -X POST https://[instance].restheart.com/tenants \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "tenantId": "acme-corp",
@@ -2154,7 +2154,7 @@ curl -X POST https://[instance].restheart.com/tenants \
 [source,bash]
 ----
 # Track API usage
-curl -X POST https://[instance].restheart.com/usage \
+curl -i -X POST https://[instance].restheart.com/usage \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "tenantId": "acme-corp",
@@ -2181,7 +2181,7 @@ curl -X POST https://[instance].restheart.com/usage \
 [source,bash]
 ----
 # Enable caching for frequently accessed data
-curl -X PUT https://[instance].restheart.com/products \
+curl -i -X PUT https://[instance].restheart.com/products \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "cachePolicy": {
@@ -2196,7 +2196,7 @@ curl -X PUT https://[instance].restheart.com/products \
 [source,bash]
 ----
 # Create indexes for better query performance
-curl -X PUT https://[instance].restheart.com/products/_indexes/category-price \
+curl -i -X PUT https://[instance].restheart.com/products/_indexes/category-price \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "keys": {"category": 1, "price": -1},
@@ -2204,7 +2204,7 @@ curl -X PUT https://[instance].restheart.com/products/_indexes/category-price \
   }'
 
 # Text index for search
-curl -X PUT https://[instance].restheart.com/products/_indexes/text-search \
+curl -i -X PUT https://[instance].restheart.com/products/_indexes/text-search \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
     "keys": {"name": "text", "description": "text", "tags": "text"},

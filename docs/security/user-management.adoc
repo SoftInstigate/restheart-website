@@ -47,7 +47,7 @@ TIP: **mongoRealAuthenticator** can be configured to use different properties fo
 ==== cURL
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X GET [INSTANCE-URL]/users
+curl -i -u [BASIC-AUTH] -X GET [INSTANCE-URL]/users
 ----
 
 ==== HTTPie
@@ -106,7 +106,7 @@ NOTE: For security reasons, it not possible to use the `filter` query parameter 
 ==== cURL
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/users \
+curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/users \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "foo",
@@ -163,7 +163,7 @@ NOTE: The password is automatically encrypted by RESTHeart.
 ==== cURL
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X PATCH [INSTANCE-URL]/users/foo \
+curl -i -u [BASIC-AUTH] -X PATCH [INSTANCE-URL]/users/foo \
   -H "Content-Type: application/json" \
   -d '{
     "password": "betterSecret"
@@ -212,7 +212,7 @@ fetch('[INSTANCE-URL]/users/foo', {
 ==== cURL
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X DELETE [INSTANCE-URL]/users/foo
+curl -i -u [BASIC-AUTH] -X DELETE [INSTANCE-URL]/users/foo
 ----
 
 ==== HTTPie
@@ -251,7 +251,7 @@ fetch('[INSTANCE-URL]/users/foo', {
 ==== cURL
 [source,bash]
 ----
-curl -u [BASIC-AUTH] -X POST [INSTANCE-URL]/acl \
+curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/acl \
   -H "Content-Type: application/json" \
   -d '{
   "predicate": "path-prefix[/inventory] and method[GET]",

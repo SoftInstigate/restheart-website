@@ -22,7 +22,7 @@ The following requests create a collection with three change streams:
 
 [source,bash]
 ----
-curl -X PUT '[INSTANCE-URL]/messages' \
+curl -i -X PUT '[INSTANCE-URL]/messages' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -137,7 +137,7 @@ Note the `_links` collection property showing the URIs of the change streams (re
 
 [source,bash]
 ----
-curl -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
+curl -i -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
   -H 'Authorization: Basic [BASIC-AUTH]'
 ----
 
@@ -212,7 +212,7 @@ To allow connections without authentication, you can define the following permis
 
 [source,bash]
 ----
-curl -X POST '[INSTANCE-URL]/acl' \
+curl -i -X POST '[INSTANCE-URL]/acl' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -273,7 +273,7 @@ If you now create a new document in the collection `messages`
 
 [source,bash]
 ----
-curl -X POST '[INSTANCE-URL]/messages' \
+curl -i -X POST '[INSTANCE-URL]/messages' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{

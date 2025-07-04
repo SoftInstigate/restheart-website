@@ -243,7 +243,7 @@ To create a new document, use the `POST` method with a JSON body:
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [INSTANCE-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C"}'
@@ -307,7 +307,7 @@ You can create a document with a specific ID using the `PUT` method with the `?w
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
+curl -i -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }'
@@ -361,7 +361,7 @@ To modify specific properties of an existing document, use the `PATCH` method:
 
 [source,bash]
 ----
-curl -X PATCH [INSTANCE-URL]/inventory/newDocument \
+curl -i -X PATCH [INSTANCE-URL]/inventory/newDocument \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "qty": 40, "status": "A", "newProperty": "value" }'

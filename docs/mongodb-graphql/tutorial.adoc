@@ -41,7 +41,7 @@ Create the *star-wars-characters* collection. This is where the data will be ins
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/star-wars-characters \
+curl -i -X PUT [INSTANCE-URL]/star-wars-characters \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -76,7 +76,7 @@ Create the *gql-apps* collection. This is where the GraphQL App definition will 
 
 [source,bash]
 ----
-curl -X PUT [INSTANCE-URL]/gql-apps \
+curl --i X PUT [INSTANCE-URL]/gql-apps \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -113,7 +113,7 @@ Create documents in the *star-wars-characters* collection:
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+curl -i -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/json" \
   -d '[
@@ -193,7 +193,7 @@ To insert the GraphQL app definition, run the following:
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+curl -i -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/json" \
   -d @graphql-app-definition.json
@@ -249,7 +249,7 @@ The GraphQL API is ready to use!
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -i -X POST [INSTANCE-URL]/graphql/star-wars \
   -H "Authorization: Basic [BASIC-AUTH]"
   -H "Content-Type: application/graphql" \
   -d '{
@@ -353,7 +353,7 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
 
 [source,bash]
 ----
-curl -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -i -X POST [INSTANCE-URL]/graphql/star-wars \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
