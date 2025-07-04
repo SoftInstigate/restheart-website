@@ -2,16 +2,23 @@
 title: Authentication and Authorization tutorial
 layout: docs-adoc
 menu: security
+liquid: true
 ---
 
 This tutorial aims to provide a thorough understanding of securing RESTHeart applications. RESTHeart offers robust security features, with **Authentication** and **Authorization** being central to these. This guide will explore the basic authentication. We'll also delve into authorization, focusing on Access Control Lists (ACLs) and their role in defining permissions.
 
 By the end of this tutorial, you'll have a solid foundation in securing RESTHeart applications, ensuring data security and controlled access.
 
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
 === What you need
 
 1. **Docker**: For running RESTHeart.
-2. **HTTPie**: A user-friendly command-line HTTP client. Download at link:https://httpie.io/cli[httpie.io/cli^].
+2. **HTTP Client**: Choose from cURL (usually pre-installed), HTTPie (download at link:https://httpie.io/cli[httpie.io/cli^]), or use the JavaScript examples directly in your browser's console.
 
 === Starting RESTHeart and MongoDB
 
@@ -32,44 +39,229 @@ WARNING: **Always change the `admin` user's password** to maintain security.
 
 To change the `admin` password:
 
+==== cURL
+
 [source,bash]
-$ http -a admin:secret PATCH :8080/users/admin password="my-strong-password"
+----
+curl -i -u admin:secret -X PATCH [INSTANCE-URL]/users/admin \
+  -H "Content-Type: application/json" \
+  -d '{"password": "my-strong-password"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret PATCH [INSTANCE-URL]/users/admin password="my-strong-password"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/users/admin", {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    password: "my-strong-password"
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Password updated successfully");
+  } else {
+    console.error("Failed to update password:", response.status);
+  }
+})
+.catch(error => console.error("Error:", error));
+----
 
 === Creating Collection /secrets
 
 Using `admin`, create the `/secrets` collection:
 
+==== cURL
+
 [source,bash]
-$ http -a admin:secret PUT :8080/secrets
+----
+curl -i -u admin:secret -X PUT [INSTANCE-URL]/secrets
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret PUT [INSTANCE-URL]/secrets
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/secrets", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]"
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Collection /secrets created successfully");
+  } else {
+    console.error("Failed to create collection:", response.status);
+  }
+})
+.catch(error => console.error("Error:", error));
+----
 
 === Creating Users alice and bob
 
 Next, create two users, `alice` and `bob`, each with the `user` role:
 
+==== cURL
+
 [source,bash]
 ----
-$ http -a admin:secret POST :8080/users _id=alice password=secret roles:='["user"]'
-$ http -a admin:secret POST :8080/users _id=bob password=secret roles:='["user"]'
+curl -i -u admin:secret -X POST [INSTANCE-URL]/users \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "alice", "password": "secret", "roles": ["user"]}'
+
+curl -i -u admin:secret -X POST [INSTANCE-URL]/users \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "bob", "password": "secret", "roles": ["user"]}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret POST [INSTANCE-URL]/users _id=alice password=secret roles:='["user"]'
+http -a admin:secret POST [INSTANCE-URL]/users _id=bob password=secret roles:='["user"]'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create alice
+fetch("[INSTANCE-URL]/users", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "alice",
+    password: "secret",
+    roles: ["user"]
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log("User alice created successfully");
+    
+    // Create bob
+    return fetch("[INSTANCE-URL]/users", {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic [BASIC-AUTH]",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        _id: "bob",
+        password: "secret",
+        roles: ["user"]
+      })
+    });
+  } else {
+    throw new Error("Failed to create alice: " + response.status);
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("User bob created successfully");
+  } else {
+    console.error("Failed to create bob:", response.status);
+  }
+})
+.catch(error => console.error("Error:", error));
 ----
 
 === Understanding Status Codes
 
-The `/users/{id}` endpoint can verify credentials. For example, using incorrect credentials for `alice`:
+The `/secrets` endpoint helps verify credentials. For example, using incorrect credentials for `alice`:
+
+==== cURL
 
 [source,bash]
 ----
-$ http -a alice:wrong GET :8080/secrets
-HTTP/1.1 401 Unauthorized
+curl -i -u alice:wrong -X GET [INSTANCE-URL]/secrets
+# HTTP/1.1 401 Unauthorized
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a alice:wrong GET [INSTANCE-URL]/secrets
+# HTTP/1.1 401 Unauthorized
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Using incorrect credentials
+fetch("[INSTANCE-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:wrong")
+  }
+})
+.then(response => {
+  console.log("Status:", response.status); // 401 Unauthorized
+})
+.catch(error => console.error("Error:", error));
 ----
 
 IMPORTANT: A `401 Unauthorized` response indicates failed authentication due to incorrect credentials. RESTHeart blocks requests to secure services without proper authentication.
 
 Attempting access with correct credentials:
 
+==== cURL
+
 [source,bash]
 ----
-$ http -a alice:secret GET :8080/secrets
-HTTP/1.1 403 Forbidden
+curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
+# HTTP/1.1 403 Forbidden
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a alice:secret GET [INSTANCE-URL]/secrets
+# HTTP/1.1 403 Forbidden
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Using correct credentials but no permissions
+fetch("[INSTANCE-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:secret")
+  }
+})
+.then(response => {
+  console.log("Status:", response.status); // 403 Forbidden
+})
+.catch(error => console.error("Error:", error));
 ----
 
 IMPORTANT: A `403 Forbidden` response means authentication succeeded, but the client lacks permission to access the resource.
@@ -127,57 +319,350 @@ Users can modify only their documents.
 
 To create these permissions, use the following commands:
 
-[source,bash]
-----
-$ http -a admin:secret POST :8080/acl _id=userCanAccessOwnSecret roles:='["user"]' priority:=100 predicate="method(GET) and path('/secrets')" mongo.readFilter:='{ "author": "@user._id" }'
-----
+**1. Allow GET on /secrets:**
+
+==== cURL
 
 [source,bash]
 ----
-$ http -a admin:secret POST :8080/acl _id=userCanCreateOwnSecret roles:='["user"]' priority:=100 predicate="method(POST) and path('/secrets')" mongo.mergeRequest:='{ "author": "@user._id" }'
+curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanAccessOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(GET) and path('\''/secrets'\'')",
+    "mongo": {
+      "readFilter": {"author": "@user._id"}
+    }
+  }'
 ----
+
+==== HTTPie
 
 [source,bash]
 ----
-$ http -a admin:secret POST :8080/acl _id=userCanModifyOwnSecret roles:='["user"]' priority:=100 predicate="method(PATCH) and path-template('/secrets/{id}')" mongo.writeFilter:='{ "author": "@user._id" }'
+http -a admin:secret POST [INSTANCE-URL]/acl \
+  _id=userCanAccessOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(GET) and path('/secrets')" \
+  mongo.readFilter:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanAccessOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(GET) and path('/secrets')",
+    mongo: {
+      readFilter: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
+----
+
+**2. Allow POST on /secrets:**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanCreateOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(POST) and path('\''/secrets'\'')",
+    "mongo": {
+      "mergeRequest": {"author": "@user._id"}
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret POST [INSTANCE-URL]/acl \
+  _id=userCanCreateOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(POST) and path('/secrets')" \
+  mongo.mergeRequest:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanCreateOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(POST) and path('/secrets')",
+    mongo: {
+      mergeRequest: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
+----
+
+**3. Allow PATCH on /secrets/{id}:**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanModifyOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(PATCH) and path-template('\''/secrets/{id}'\'')",
+    "mongo": {
+      "writeFilter": {"author": "@user._id"}
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret POST [INSTANCE-URL]/acl \
+  _id=userCanModifyOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(PATCH) and path-template('/secrets/{id}')" \
+  mongo.writeFilter:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanModifyOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(PATCH) and path-template('/secrets/{id}')",
+    mongo: {
+      writeFilter: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
 ----
 
 === Creating Secret Documents
 
 Let's have `alice` and `bob` create their secrets:
 
+==== cURL
+
 [source,bash]
 ----
-$ http -a bob:secret POST :8080/secrets message="Bob loves Alice"
-$ http -a alice:secret POST :8080/secrets message="Alice loves Bob"
+curl -i -u bob:secret -X POST [INSTANCE-URL]/secrets \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Bob loves Alice"}'
+
+curl -i -u alice:secret -X POST [INSTANCE-URL]/secrets \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Alice loves Bob"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a bob:secret POST [INSTANCE-URL]/secrets message="Bob loves Alice"
+http -a alice:secret POST [INSTANCE-URL]/secrets message="Alice loves Bob"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Bob creates his secret
+fetch("[INSTANCE-URL]/secrets", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic " + btoa("bob:secret"),
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "Bob loves Alice"
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Bob's secret created");
+    
+    // Alice creates her secret
+    return fetch("[INSTANCE-URL]/secrets", {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic " + btoa("alice:secret"),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Alice loves Bob"
+      })
+    });
+  } else {
+    throw new Error("Failed to create Bob's secret");
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Alice's secret created");
+  } else {
+    console.error("Failed to create Alice's secret");
+  }
+})
+.catch(error => console.error("Error:", error));
 ----
 
 === Reading Secret Documents
 
-Viewing with `admin`:
+**Viewing with `admin` (sees all secrets):**
+
+==== cURL
 
 [source,bash]
 ----
-$ http -a admin:secret -b GET :8080/secrets
+curl -i -u admin:secret -X GET [INSTANCE-URL]/secrets
 # Output includes both Alice's and Bob's messages
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a admin:secret -b GET [INSTANCE-URL]/secrets
+# Output includes both Alice's and Bob's messages
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("admin:secret")
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Admin sees all secrets:", data);
+  // Output includes both Alice's and Bob's messages
+})
+.catch(error => console.error("Error:", error));
 ----
 
 NOTE: The `author` property is correctly set for each document.
 
-Accessing `/secrets` as `alice`:
+**Accessing `/secrets` as `alice` (sees only her own secret):**
+
+==== cURL
 
 [source,bash]
 ----
-$ http -a alice:secret -b GET :8080/secrets
+curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
 # Output includes only Alice's message
 ----
 
-Similarly, accessing as `bob`:
+==== HTTPie
 
 [source,bash]
 ----
-$ http -a bob:secret -b GET :8080/secrets
+http -a alice:secret -b GET [INSTANCE-URL]/secrets
+# Output includes only Alice's message
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:secret")
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Alice sees her secrets:", data);
+  // Output includes only Alice's message
+})
+.catch(error => console.error("Error:", error));
+----
+
+**Similarly, accessing as `bob` (sees only his own secret):**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u bob:secret -X GET [INSTANCE-URL]/secrets
 # Output includes only Bob's message
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a bob:secret -b GET [INSTANCE-URL]/secrets
+# Output includes only Bob's message
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[INSTANCE-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("bob:secret")
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Bob sees his secrets:", data);
+  // Output includes only Bob's message
+})
+.catch(error => console.error("Error:", error));
 ----
 
 Let's take a moment to acknowledge the story of Alice and Bob. These two characters are entwined in an 'impossible love' story that symbolizes the challenges of secure communication in the digital age. And RESTHeart is no exception keeping their love hidden in the /secrets collection.
