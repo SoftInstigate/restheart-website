@@ -76,7 +76,7 @@ Create the *gql-apps* collection. This is where the GraphQL App definition will 
 
 [source,bash]
 ----
-curl --i X PUT [INSTANCE-URL]/gql-apps \
+curl -i -X PUT [INSTANCE-URL]/gql-apps \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -114,7 +114,7 @@ Create documents in the *star-wars-characters* collection:
 [source,bash]
 ----
 curl -i -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
-  -H "Authorization: Basic [BASIC-AUTH]"
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
     {"_id":1000,"name":"Luke Skywalker","friends":[1002,1003,2000,2001],"appearsIn":[4,5,6],"homePlanet":"Tatooine","heroOf":4},
@@ -194,7 +194,7 @@ To insert the GraphQL app definition, run the following:
 [source,bash]
 ----
 curl -i -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
-  -H "Authorization: Basic [BASIC-AUTH]"
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d @graphql-app-definition.json
 ----
@@ -250,7 +250,7 @@ The GraphQL API is ready to use!
 [source,bash]
 ----
 curl -i -X POST [INSTANCE-URL]/graphql/star-wars \
-  -H "Authorization: Basic [BASIC-AUTH]"
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
     hero(episode: JEDI) {
