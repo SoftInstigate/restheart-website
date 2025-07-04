@@ -53,47 +53,71 @@ echo '[
 
 [source,javascript]
 ----
-const data = [
-   { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
-   { "item": "notebook", "qty": 50, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "A" },
-   { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
-   { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
-   { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
-];
-
 // Create collection
-fetch('[INSTANCE-URL]/inventory', {
-  method: 'PUT',
+fetch("http://localhost:8080/inventory", {
+  method: "PUT",
   headers: {
-    'Authorization': 'Basic [BASIC-AUTH]'
-  }
-})
-.then(response => {
+    Authorization: "Basic YWRtaW46c2VjcmV0",
+  },
+}).then((response) => {
   if (response.ok) {
-    console.log('Collection created successfully');
-  } else {
-    console.error('Failed to create collection:', response.status);
-  }
-})
-.catch(error => console.error('Error:', error));
+    console.log("Collection created successfully");
 
-// Insert documents
-fetch('[INSTANCE-URL]/inventory', {
-  method: 'POST',
-  body: JSON.stringify(data),
-  headers: {
-    'Authorization': 'Basic [BASIC-AUTH]',
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-  if (response.ok) {
-    console.log('Documents inserted successfully');
+    const data = [
+      {
+        item: "journal",
+        qty: 25,
+        size: { h: 14, w: 21, uom: "cm" },
+        status: "A",
+      },
+      {
+        item: "notebook",
+        qty: 50,
+        size: { h: 8.5, w: 11, uom: "in" },
+        status: "A",
+      },
+      {
+        item: "paper",
+        qty: 100,
+        size: { h: 8.5, w: 11, uom: "in" },
+        status: "D",
+      },
+      {
+        item: "planner",
+        qty: 75,
+        size: { h: 22.85, w: 30, uom: "cm" },
+        status: "D",
+      },
+      {
+        item: "postcard",
+        qty: 45,
+        size: { h: 10, w: 15.25, uom: "cm" },
+        status: "A",
+      },
+    ];
+
+    // Insert documents
+    fetch("http://localhost:8080/inventory", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: "Basic YWRtaW46c2VjcmV0",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Documents inserted successfully");
+        } else {
+          console.error("Failed to insert documents:", response.status);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
   } else {
-    console.error('Failed to insert documents:', response.status);
+    console.error("Failed to create collection:", response.status);
   }
 })
-.catch(error => console.error('Error:', error));
+.catch((error) => console.error("Error:", error));
 ----
 
 === Retrieving documents
