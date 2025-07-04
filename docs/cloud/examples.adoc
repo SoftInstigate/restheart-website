@@ -107,12 +107,12 @@ createCollections();
 [source,bash]
 ----
 # Add categories
-curl -i -X POST https://[INSTANCE-URL]/categories \
+curl -i -X POST [INSTANCE-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
-curl -i -X POST https://[INSTANCE-URL]/products \
+curl -i -X POST [INSTANCE-URL]/products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
@@ -224,16 +224,16 @@ addProduct();
 [source,bash]
 ----
 # Search products by name
-curl -i "https://[INSTANCE-URL]/products?filter={'name':{\$regex:'headphones',\$options:'i'}}"
+curl -i "[INSTANCE-URL]/products" --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
 
 # Filter by price range
-curl "https://[INSTANCE-URL]/products?filter={'price':{\$gte:50,\$lte:150}}"
+curl "[INSTANCE-URL]/products" --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
 
 # Get products with low inventory
-curl "https://[INSTANCE-URL]/products?filter={'quantity':{\$lt:10}}"
+curl "[INSTANCE-URL]/products" --data-urlencode "filter={'quantity':{$lt:10}}"
 
 # Category-based filtering with sorting
-curl "https://[INSTANCE-URL]/products?filter={'category':'electronics'}&sort={price:1}"
+curl "[INSTANCE-URL]/products" --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
 ----
 
 ==== HTTPie
@@ -320,12 +320,12 @@ Create a headless CMS for blogs, news sites, or documentation.
 [source,bash]
 ----
 # Create content collections
-curl -i -X PUT https://[INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create author
-curl -i -X POST https://[INSTANCE-URL]/authors \
+curl -i -X POST [INSTANCE-URL]/authors \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
@@ -335,7 +335,7 @@ curl -i -X POST https://[INSTANCE-URL]/authors \
   }'
 
 # Create article
-curl -i -X POST https://[INSTANCE-URL]/articles \
+curl -i -X POST [INSTANCE-URL]/articles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
@@ -499,13 +499,13 @@ createArticle();
 [source,bash]
 ----
 # Get published articles
-curl "https://[INSTANCE-URL]/articles?filter={'status':'published'}&sort={publishedAt:-1}"
+curl "[INSTANCE-URL]/articles" --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
 
 # Get article by slug
-curl "https://[INSTANCE-URL]/articles?filter={'slug':'getting-started-restheart-cloud'}"
+curl "[INSTANCE-URL]/articles" --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-curl "https://[INSTANCE-URL]/articles?filter={\$text:{\$search:'RESTHeart API'}}"
+curl "[INSTANCE-URL]/articles" --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
 ----
 
 ==== HTTPie
@@ -579,12 +579,12 @@ Build a complete social platform with users, posts, likes, and real-time feature
 [source,bash]
 ----
 # Create social app collections
-curl -i -X PUT https://[INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create user profile
-curl -i -X POST https://[INSTANCE-URL]/profiles \
+curl -i -X POST [INSTANCE-URL]/profiles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
@@ -602,7 +602,7 @@ curl -i -X POST https://[INSTANCE-URL]/profiles \
   }'
 
 # Create a post
-curl -i -X POST https://[INSTANCE-URL]/posts \
+curl -i -X POST [INSTANCE-URL]/posts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
@@ -773,13 +773,13 @@ createPost();
 [source,bash]
 ----
 # Get user timeline (posts from followed users)
-curl "https://[INSTANCE-URL]/posts?filter={'author':{\$in:['user1','user2','user3']}}&sort={createdAt:-1}"
+curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
 
 # Search posts by hashtag
-curl "https://[INSTANCE-URL]/posts?filter={'hashtags':{\$in:['#api']}}"
+curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'hashtags':{$in:['#api']}}"
 
 # Get user's posts
-curl "https://[INSTANCE-URL]/posts?filter={'author':'johndoe'}&sort={createdAt:-1}"
+curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
 ----
 
 ==== HTTPie
@@ -850,12 +850,12 @@ Create a comprehensive fitness backend with workouts, progress tracking, and goa
 [source,bash]
 ----
 # Setup fitness collections
-curl -i -X PUT https://[INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
 
 # Add exercise definitions
-curl -i -X POST https://[INSTANCE-URL]/exercises \
+curl -i -X POST [INSTANCE-URL]/exercises \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
@@ -867,7 +867,7 @@ curl -i -X POST https://[INSTANCE-URL]/exercises \
   }'
 
 # Log workout
-curl -i -X POST https://[INSTANCE-URL]/workouts \
+curl -i -X POST [INSTANCE-URL]/workouts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
@@ -1046,12 +1046,12 @@ Collect and analyze data from home sensors and devices.
 [source,bash]
 ----
 # Create IoT collections
-curl -i -X PUT https://[INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT https://[INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register device
-curl -i -X POST https://[INSTANCE-URL]/devices \
+curl -i -X POST [INSTANCE-URL]/devices \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1064,7 +1064,7 @@ curl -i -X POST https://[INSTANCE-URL]/devices \
   }'
 
 # Submit sensor reading
-curl -i -X POST https://[INSTANCE-URL]/readings \
+curl -i -X POST [INSTANCE-URL]/readings \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1215,10 +1215,10 @@ submitReading();
 [source,bash]
 ----
 # Get recent readings
-curl -i "https://[INSTANCE-URL]/readings?filter={'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}&sort={timestamp:-1}"
+curl -i "[INSTANCE-URL]/readings" --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
 
 # Average temperature by location
-curl -X POST https://[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+curl -X POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
@@ -1301,11 +1301,11 @@ Track air quality, weather conditions, and environmental data.
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -X PUT https://[INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register monitoring station
-curl -X POST https://[INSTANCE-URL]/stations \
+curl -X POST [INSTANCE-URL]/stations \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1320,7 +1320,7 @@ curl -X POST https://[INSTANCE-URL]/stations \
   }'
 
 # Submit environmental measurement
-curl -X POST https://[INSTANCE-URL]/measurements \
+curl -X POST [INSTANCE-URL]/measurements \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1491,12 +1491,12 @@ Create a comprehensive analytics backend for business metrics.
 [source,bash]
 ----
 # Business analytics setup
-curl -X PUT https://[INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
-curl -X PUT https://[INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
+curl -X PUT [INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
 
 # Record sale
-curl -X POST https://[INSTANCE-URL]/sales \
+curl -X POST [INSTANCE-URL]/sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
@@ -1633,7 +1633,7 @@ recordSale();
 [source,bash]
 ----
 # Daily sales aggregation
-curl -X POST https://[INSTANCE-URL]/sales/_aggrs/daily-sales \
+curl -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
@@ -1647,7 +1647,7 @@ curl -X POST https://[INSTANCE-URL]/sales/_aggrs/daily-sales \
   ]'
 
 # Top products by revenue
-curl -X POST https://[INSTANCE-URL]/sales/_aggrs/top-products \
+curl -X POST [INSTANCE-URL]/sales/_aggrs/top-products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
@@ -1936,13 +1936,13 @@ curl -X POST https://[instance].restheart.com/public-datasets \
 curl "https://[instance].restheart.com/announcements"
 
 # Get active announcements
-curl "https://[instance].restheart.com/announcements?filter={'expiresAt':{\$gte:'2024-01-15T00:00:00Z'}}"
+curl "https://[instance].restheart.com/announcements" --data-urlencode "filter={'expiresAt':{$gte:'2024-01-15T00:00:00Z'}}"
 
 # Browse public datasets
 curl "https://[instance].restheart.com/public-datasets"
 
 # Search datasets by category
-curl "https://[instance].restheart.com/public-datasets?filter={'category':'environmental'}"
+curl "https://[instance].restheart.com/public-datasets" --data-urlencode "filter={'category':'environmental'}"
 
 # Get specific dataset information
 curl "https://[instance].restheart.com/public-datasets/city-weather-stations"
@@ -2079,13 +2079,13 @@ curl -X POST https://[instance].restheart.com/events \
 # Public users can access these without authentication
 
 # Get upcoming events
-curl "https://[instance].restheart.com/events?sort={startDate:1}"
+curl "https://[instance].restheart.com/events" --data-urlencode "sort={startDate:1}"
 
 # Filter events by category
-curl "https://[instance].restheart.com/events?filter={'category':'workshop'}"
+curl "https://[instance].restheart.com/events" --data-urlencode "filter={'category':'workshop'}"
 
 # Get events for a specific date range
-curl "https://[instance].restheart.com/events?filter={'startDate':{\$gte:'2024-01-20T00:00:00Z',\$lt:'2024-01-27T00:00:00Z'}}"
+curl "https://[instance].restheart.com/events" --data-urlencode "filter={'startDate':{$gte:'2024-01-20T00:00:00Z',$lt:'2024-01-27T00:00:00Z'}}"
 ----
 
 ===== Security Considerations for Public Access

@@ -165,8 +165,9 @@ When executing the aggregation, provide variable values using the `avars` query 
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product?avars={\"productName\":\"Widget Pro\"}" \
-  -u "[BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/sales-by-product" \
+  -u "[BASIC-AUTH]" \
+  --data-urlencode 'avars={"productName":"Widget Pro"}'
 ----
 
 ==== HTTPie
@@ -234,8 +235,9 @@ You can access nested properties in variables using dot notation:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline?avars={\"config\":{\"limit\":10,\"skip\":20}}" \
-  -u "[BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/mycollection/_aggrs/my-pipeline" \
+  -u "[BASIC-AUTH]" \
+  --data-urlencode 'avars={"config":{"limit":10,"skip":20}}'
 ----
 
 ==== HTTPie

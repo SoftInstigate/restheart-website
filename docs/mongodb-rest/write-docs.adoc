@@ -570,7 +570,8 @@ Update multiple documents using a filter:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
+curl -i -X PATCH '[INSTANCE-URL]/inventory/*' \
+  --data-urlencode 'filter={"qty":{"$gt":50}}' \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -618,7 +619,8 @@ Delete multiple documents matching a filter:
 ==== cURL
 [source,bash]
 ----
-curl -i -X DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
+curl -i -X DELETE '[INSTANCE-URL]/inventory/*' \
+  --data-urlencode 'filter={"status":"D"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

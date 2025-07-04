@@ -108,8 +108,9 @@ Use the `filter` parameter to specify which documents to return using MongoDB qu
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":50}}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'filter={"qty":{"$gt":50}}'
 ----
 
 ==== HTTPie
@@ -148,8 +149,9 @@ Combine multiple conditions using MongoDB operators like `$and`:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}'
 ----
 
 ==== HTTPie
@@ -184,8 +186,10 @@ Alternatively, you can use multiple filter parameters:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"qty\":{\"\$gt\":75}}&filter={\"status\":\"D\"}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'filter={"qty":{"$gt":75}}' \
+  --data-urlencode 'filter={"status":"D"}'
 ----
 
 ==== HTTPie
@@ -222,8 +226,9 @@ Instead of retrieving documents, you can count them by appending `_size` to the 
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory/_size?filter={\"status\":\"A\"}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory/_size" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'filter={"status":"A"}'
 ----
 
 ==== HTTPie
@@ -264,8 +269,9 @@ Use the `keys` parameter to specify which fields to include or exclude from the 
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':1}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "keys={'item':1}"
 ----
 
 ===== HTTPie
@@ -302,8 +308,9 @@ This returns only the `_id` and `item` fields for each document.
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':0}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "keys={'item':0}"
 ----
 
 ===== HTTPie
@@ -340,8 +347,10 @@ This returns all fields except `item` for each document.
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?keys={'item':1}&keys={'qty':1}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "keys={'item':1}" \
+  --data-urlencode "keys={'qty':1}"
 ----
 
 ===== HTTPie
@@ -498,8 +507,9 @@ You can also use MongoDB's sort expression format:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?sort={\"status\":1,\"qty\":-1}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'sort={"status":1,"qty":-1}'
 ----
 
 ===== HTTPie
@@ -536,8 +546,10 @@ Use dot notation to access nested document fields or array elements:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?keys={'size.h':1}&sort={'size.uom':1}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "keys={'size.h':1}" \
+  --data-urlencode "sort={'size.uom':1}"
 ----
 
 ==== HTTPie
@@ -670,7 +682,8 @@ Specify which index to use:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?hint={'item':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  --data-urlencode "hint={'item':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -748,7 +761,8 @@ Force a collection scan instead of using indexes:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  --data-urlencode "hint={'$natural':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -784,7 +798,8 @@ For a reverse collection scan:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?hint={'%24natural':-1}" \
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  --data-urlencode "hint={'$natural':-1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -868,8 +883,11 @@ Then search and sort by relevance score:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={\"$text\":{\"$search\":\"paper\"}}&keys={\"item\":1,\"score\":{\"$meta\":\"textScore\"}}&sort={\"score\":{\"$meta\":\"textScore\"}}" \
-  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode 'filter={"$text":{"$search":"paper"}}' \
+  --data-urlencode 'keys={"item":1,"score":{"$meta":"textScore"}}' \
+  --data-urlencode 'sort={"score":{"$meta":"textScore"}}'
 ----
 
 ===== HTTPie

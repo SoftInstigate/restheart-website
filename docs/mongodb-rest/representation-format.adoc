@@ -48,8 +48,9 @@ The following `filter` won't find the document because the `_id` is an ObjectId,
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
-     -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     --data-urlencode "filter={'_id':'5d0b4e325beb2029a8d1bd5e'}"
 ----
 
 ==== HTTPie
@@ -81,8 +82,9 @@ Here's the correct request:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?filter={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
-     -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X GET "[INSTANCE-URL]/inventory" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     --data-urlencode "filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}"
 ----
 
 ==== HTTPie
