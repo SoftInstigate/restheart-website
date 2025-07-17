@@ -83,11 +83,79 @@ The following table describes the arguments of the annotation for Services:
 |`true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secure`
 |no
 |`false`
+|`blocking`
+|`true` to execute the service in the worker thread pool (blocking mode), `false` to execute in the IO thread (non-blocking mode)
+|no
+|`true`
 |`dontIntercept`
 |list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
 |no
 |`{}`
 |===
+
+=== Blocking vs Non-Blocking Services
+
+RESTHeart allows you to control the execution model of your services using the `blocking` parameter in the `@RegisterPlugin` annotation.
+
+==== Blocking Services (Default)
+
+By default, services are executed in **blocking mode** (`blocking = true`). In this mode, when a request arrives, it is dispatched to a worker thread from the thread pool whose size is configured by the `worker-threads` parameter.
+
+This concurrency model performs well for CPU-bound and blocking operations, such as:
+- MongoDB operations executed with the `mongodb-driver-sync`
+- Database queries
+- File I/O operations
+- Network calls to external services
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "blocking-service",
+    description = "A service that performs blocking operations",
+    blocking = true)  // Default value, can be omitted
+public class BlockingService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Blocking operation - this will be executed in a worker thread
+        var result = performDatabaseQuery();
+        res.setContent(result);
+    }
+}
+----
+
+==== Non-Blocking Services
+
+For non-blocking operations, you can specify `blocking = false`. In this mode, the service is executed directly by the IO thread, avoiding the overhead of thread dispatching and context switching.
+
+This approach follows the **Event Loop** concurrency model and can perform better for:
+- Reactive operations
+- Async computations
+- Services that don't perform blocking I/O
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "non-blocking-service",
+    description = "A service that performs non-blocking operations",
+    blocking = false)  // Enable non-blocking mode
+public class NonBlockingService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Non-blocking operation - executed directly by IO thread
+        var result = performAsyncComputation();
+        res.setContent(result);
+    }
+}
+----
+
+==== Performance Considerations
+
+- **Blocking services**: Better for CPU-intensive tasks and operations that involve waiting for I/O
+- **Non-blocking services**: Better for lightweight operations and reactive programming patterns
+
+WARNING: Be careful not to perform blocking operations (like database calls) in non-blocking services, as this will block the IO thread and negatively impact performance.
+
+Since RESTHeart uses Virtual Threads, there are virtually no limits on the number of blocking threads.
 
 === Service with custom generic types
 

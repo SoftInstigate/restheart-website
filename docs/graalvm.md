@@ -151,6 +151,18 @@ In order to use Java or Kotlin plugins on RESTHeart native you must build them a
 
 Refer to [Deploy Java Plugins On Restheart Native](https://restheart.org/docs/plugins/deploy/#deploy-java-plugins-on-restheart-native) for detailed instructions on how to do it.
 
+### Automatic reflection configuration for plugins
+
+Since RESTHeart v7, plugin reflection configuration for native images is handled automatically. RESTHeart implements a GraalVM feature that automatically generates the necessary reflection configuration for plugins annotated with `@RegisterPlugin`.
+
+This means you no longer need to manually maintain `reflect-config.json` files for your plugins. The reflection configuration is automatically generated at build time, streamlining the development process for plugins that will be bundled in RESTHeart native builds.
+
+The automatic reflection configuration covers:
+- Plugin classes annotated with `@RegisterPlugin`
+- Plugin initialization methods
+- Dependency injection fields and methods
+- Provider implementations
+
 ## build native image
 
 Build image for local OS

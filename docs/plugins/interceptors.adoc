@@ -21,10 +21,12 @@ The special interceptor interface, `WildcardInterceptor`, intercepts requests ha
 - `JsonInterceptor`: Intercepts requests handled by services implementing `JsonService`
 - `BsonInterceptor`: Intercepts requests handled by services implementing `BsonService`
 - `MongoInterceptor`: Intercepts requests handled by the `MongoService`
-- `GraphQLInterceptor`: Intercepts GraphQL requests
+- `GraphQLInterceptor`: Intercepts GraphQL requests (available since RESTHeart v7)
 - `ProxyInterceptor`: Intercepts proxied requests
 
 NOTE: `MongoInterceptor` is particularly useful as it allows intercepting requests to the `MongoService`, adding logic to its data API. For instance, the following response interceptor removes the property `secret` from `GET /coll`.
+
+NOTE: `GraphQLInterceptor` became available in RESTHeart v7 when `GraphQLRequest` was moved to `restheart-commons`, enabling plugin developers to intercept and modify GraphQL requests and responses. This allows implementing custom logic such as query validation, result transformation, or access logging for GraphQL operations.
 
 [source,java]
 ----

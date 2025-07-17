@@ -295,6 +295,28 @@ public void init() {
 }
 ```
 
+=== MongoService Driver Update
+
+RESTHeart v8 completes the migration from `mongo-driver-legacy` to `mongo-driver-sync` that was started in v7.
+
+*Impact for Plugin Developers*
+
+This change affects plugins that:
+- Use `@Inject("mclient")` to access the MongoDB client
+- Interact with MongoDB through the MongoService
+- Implement custom MongoDB operations
+
+*Benefits*
+
+- Improved performance and stability
+- Better alignment with MongoDB's current driver architecture
+- Enhanced support for modern MongoDB features
+- Consistent synchronous API patterns
+
+*Migration Notes*
+
+No code changes are required for existing plugins using `@Inject("mclient")`, as the injected `MongoClient` interface remains the same. The underlying implementation has been updated to use the modern MongoDB driver.
+
 === Lazy-load Request Content
 
 Up to RESTHeart v7, requests processed by the `MongoService` are designed to lazy-load their content. This means that the request body is only read when `MongoRequest.getContent()` is invoked for the first time.
