@@ -36,7 +36,7 @@ To import CSV data, send a `POST` request with the CSV content to the `/csv` end
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=locations" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,name,city,lat,lon,note
@@ -48,7 +48,7 @@ curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=locations" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=locations" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      id,name,city,lat,lon,note
@@ -65,7 +65,7 @@ const csvData = `id,name,city,lat,lon,note
 2,Eiffel Tower,Paris,48.8583701,2.2944813,Iconic structure
 3,Statue of Liberty,New York,40.6892494,-74.0445004,Symbol of freedom`;
 
-fetch('[INSTANCE-URL]/csv?db=mydb&coll=locations', {
+fetch('[RESTHEART-URL]/csv?db=mydb&coll=locations', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -108,7 +108,7 @@ To use a specific column as the document `_id`, specify its index (starting from
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=products&id=0" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'product_code,name,price,category
@@ -119,7 +119,7 @@ XYZ456,Premium Gadget,49.99,Electronics'
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=products&id=0" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      product_code,name,price,category
@@ -134,7 +134,7 @@ const csvData = `product_code,name,price,category
 ABC123,Deluxe Widget,29.99,Tools
 XYZ456,Premium Gadget,49.99,Electronics`;
 
-fetch('[INSTANCE-URL]/csv?db=mydb&coll=products&id=0', {
+fetch('[RESTHEART-URL]/csv?db=mydb&coll=products&id=0', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -156,7 +156,7 @@ For tab-separated or other delimiter formats:
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=employees&sep=%09" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d $'id\tname\tdepartment\tsalary\n1001\tJohn Smith\tEngineering\t75000\n1002\tMaria Garcia\tMarketing\t82000'
@@ -165,7 +165,7 @@ curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=employees&sep=%09" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      $'id\tname\tdepartment\tsalary\n1001\tJohn Smith\tEngineering\t75000\n1002\tMaria Garcia\tMarketing\t82000'
@@ -178,7 +178,7 @@ const csvData = `id\tname\tdepartment\tsalary
 1001\tJohn Smith\tEngineering\t75000
 1002\tMaria Garcia\tMarketing\t82000`;
 
-fetch('[INSTANCE-URL]/csv?db=mydb&coll=employees&sep=%09', {
+fetch('[RESTHEART-URL]/csv?db=mydb&coll=employees&sep=%09', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -200,7 +200,7 @@ To update documents that already exist (based on `_id`):
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=products&id=0&update=true" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'product_code,name,price,category,in_stock
@@ -211,7 +211,7 @@ XYZ456,Premium Gadget,44.99,Electronics,false'
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=products&id=0&update=true" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      product_code,name,price,category,in_stock
@@ -226,7 +226,7 @@ const csvData = `product_code,name,price,category,in_stock
 ABC123,Deluxe Widget,24.99,Tools,true
 XYZ456,Premium Gadget,44.99,Electronics,false`;
 
-fetch('[INSTANCE-URL]/csv?db=mydb&coll=products&id=0&update=true', {
+fetch('[RESTHEART-URL]/csv?db=mydb&coll=products&id=0&update=true', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -248,7 +248,7 @@ To add common properties to all imported documents:
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,product,amount,customer
@@ -259,7 +259,7 @@ curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=import
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=sales&props=region&props=imported_date&values=Europe&values=2023-06-15" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      id,product,amount,customer
@@ -274,7 +274,7 @@ const csvData = `id,product,amount,customer
 1,Widget,100,Acme Inc
 2,Gadget,50,Example Corp`;
 
-const url = new URL('[INSTANCE-URL]/csv');
+const url = new URL('[RESTHEART-URL]/csv');
 url.searchParams.append('db', 'mydb');
 url.searchParams.append('coll', 'sales');
 url.searchParams.append('props', 'region');
@@ -356,7 +356,7 @@ public class CoordsToGeoJson implements Interceptor<BsonFromCsvRequest, BsonResp
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
+curl -i -X POST "[RESTHEART-URL]/csv?db=mydb&coll=poi&id=0" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      -H "Content-Type: text/csv" \
      -d 'id,name,city,lat,lon
@@ -367,7 +367,7 @@ curl -i -X POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0" \
+http POST "[RESTHEART-URL]/csv?db=mydb&coll=poi&id=0" \
      Authorization:"Basic [BASIC-AUTH]" \
      Content-Type:text/csv \
      id,name,city,lat,lon
@@ -382,7 +382,7 @@ const csvData = `id,name,city,lat,lon
 1,Eiffel Tower,Paris,48.8583701,2.2944813
 2,Coliseum,Rome,41.8902614,12.4930871`;
 
-fetch('[INSTANCE-URL]/csv?db=mydb&coll=poi&id=0', {
+fetch('[RESTHEART-URL]/csv?db=mydb&coll=poi&id=0', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',

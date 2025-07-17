@@ -18,21 +18,21 @@ To list the collection indexes use the following request:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory/_indexes" \
+curl -i -X GET "[RESTHEART-URL]/inventory/_indexes" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET [INSTANCE-URL]/inventory/_indexes \
+http GET [RESTHEART-URL]/inventory/_indexes \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes', {
+fetch('[RESTHEART-URL]/inventory/_indexes', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -76,7 +76,7 @@ To create an unique, sparse index on property `qty` run the following:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/qtyIndex" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"qty": 1},"ops": {"unique": true, "sparse": true }}'
@@ -85,7 +85,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
 ==== HTTPie
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/inventory/_indexes/qtyIndex \
+http PUT [RESTHEART-URL]/inventory/_indexes/qtyIndex \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   keys:='{"qty": 1}' \
@@ -95,7 +95,7 @@ http PUT [INSTANCE-URL]/inventory/_indexes/qtyIndex \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
+fetch('[RESTHEART-URL]/inventory/_indexes/qtyIndex', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -130,7 +130,7 @@ To create a text index on property `item` run the following:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/itemTextIndex" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/itemTextIndex" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "keys": { "item": "text" } }'
@@ -139,7 +139,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/itemTextIndex" \
 ==== HTTPie
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/inventory/_indexes/itemTextIndex \
+http PUT [RESTHEART-URL]/inventory/_indexes/itemTextIndex \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   keys:='{"item": "text"}'
@@ -148,7 +148,7 @@ http PUT [INSTANCE-URL]/inventory/_indexes/itemTextIndex \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/itemTextIndex', {
+fetch('[RESTHEART-URL]/inventory/_indexes/itemTextIndex', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -175,21 +175,21 @@ To delete an index use the following request:
 ==== cURL
 [source,bash]
 ----
-curl -i -X DELETE "[INSTANCE-URL]/inventory/_indexes/qtyIndex" \
+curl -i -X DELETE "[RESTHEART-URL]/inventory/_indexes/qtyIndex" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/inventory/_indexes/qtyIndex \
+http DELETE [RESTHEART-URL]/inventory/_indexes/qtyIndex \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/qtyIndex', {
+fetch('[RESTHEART-URL]/inventory/_indexes/qtyIndex', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

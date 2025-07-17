@@ -43,7 +43,7 @@ To change the `admin` password:
 
 [source,bash]
 ----
-curl -i -u admin:secret -X PATCH [INSTANCE-URL]/users/admin \
+curl -i -u admin:secret -X PATCH [RESTHEART-URL]/users/admin \
   -H "Content-Type: application/json" \
   -d '{"password": "my-strong-password"}'
 ----
@@ -52,14 +52,14 @@ curl -i -u admin:secret -X PATCH [INSTANCE-URL]/users/admin \
 
 [source,bash]
 ----
-http -a admin:secret PATCH [INSTANCE-URL]/users/admin password="my-strong-password"
+http -a admin:secret PATCH [RESTHEART-URL]/users/admin password="my-strong-password"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/users/admin", {
+fetch("[RESTHEART-URL]/users/admin", {
   method: "PATCH",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]",
@@ -87,21 +87,21 @@ Using `admin`, create the `/secrets` collection:
 
 [source,bash]
 ----
-curl -i -u admin:secret -X PUT [INSTANCE-URL]/secrets
+curl -i -u admin:secret -X PUT [RESTHEART-URL]/secrets
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
-http -a admin:secret PUT [INSTANCE-URL]/secrets
+http -a admin:secret PUT [RESTHEART-URL]/secrets
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "PUT",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]"
@@ -125,11 +125,11 @@ Next, create two users, `alice` and `bob`, each with the `user` role:
 
 [source,bash]
 ----
-curl -i -u admin:secret -X POST [INSTANCE-URL]/users \
+curl -i -u admin:secret -X POST [RESTHEART-URL]/users \
   -H "Content-Type: application/json" \
   -d '{"_id": "alice", "password": "secret", "roles": ["user"]}'
 
-curl -i -u admin:secret -X POST [INSTANCE-URL]/users \
+curl -i -u admin:secret -X POST [RESTHEART-URL]/users \
   -H "Content-Type: application/json" \
   -d '{"_id": "bob", "password": "secret", "roles": ["user"]}'
 ----
@@ -138,8 +138,8 @@ curl -i -u admin:secret -X POST [INSTANCE-URL]/users \
 
 [source,bash]
 ----
-http -a admin:secret POST [INSTANCE-URL]/users _id=alice password=secret roles:='["user"]'
-http -a admin:secret POST [INSTANCE-URL]/users _id=bob password=secret roles:='["user"]'
+http -a admin:secret POST [RESTHEART-URL]/users _id=alice password=secret roles:='["user"]'
+http -a admin:secret POST [RESTHEART-URL]/users _id=bob password=secret roles:='["user"]'
 ----
 
 ==== JavaScript
@@ -147,7 +147,7 @@ http -a admin:secret POST [INSTANCE-URL]/users _id=bob password=secret roles:='[
 [source,javascript]
 ----
 // Create alice
-fetch("[INSTANCE-URL]/users", {
+fetch("[RESTHEART-URL]/users", {
   method: "POST",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]",
@@ -164,7 +164,7 @@ fetch("[INSTANCE-URL]/users", {
     console.log("User alice created successfully");
     
     // Create bob
-    return fetch("[INSTANCE-URL]/users", {
+    return fetch("[RESTHEART-URL]/users", {
       method: "POST",
       headers: {
         "Authorization": "Basic [BASIC-AUTH]",
@@ -198,7 +198,7 @@ The `/secrets` endpoint helps verify credentials. For example, using incorrect c
 
 [source,bash]
 ----
-curl -i -u alice:wrong -X GET [INSTANCE-URL]/secrets
+curl -i -u alice:wrong -X GET [RESTHEART-URL]/secrets
 # HTTP/1.1 401 Unauthorized
 ----
 
@@ -206,7 +206,7 @@ curl -i -u alice:wrong -X GET [INSTANCE-URL]/secrets
 
 [source,bash]
 ----
-http -a alice:wrong GET [INSTANCE-URL]/secrets
+http -a alice:wrong GET [RESTHEART-URL]/secrets
 # HTTP/1.1 401 Unauthorized
 ----
 
@@ -215,7 +215,7 @@ http -a alice:wrong GET [INSTANCE-URL]/secrets
 [source,javascript]
 ----
 // Using incorrect credentials
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "GET",
   headers: {
     "Authorization": "Basic " + btoa("alice:wrong")
@@ -235,7 +235,7 @@ Attempting access with correct credentials:
 
 [source,bash]
 ----
-curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
+curl -i -u alice:secret -X GET [RESTHEART-URL]/secrets
 # HTTP/1.1 403 Forbidden
 ----
 
@@ -243,7 +243,7 @@ curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
 
 [source,bash]
 ----
-http -a alice:secret GET [INSTANCE-URL]/secrets
+http -a alice:secret GET [RESTHEART-URL]/secrets
 # HTTP/1.1 403 Forbidden
 ----
 
@@ -252,7 +252,7 @@ http -a alice:secret GET [INSTANCE-URL]/secrets
 [source,javascript]
 ----
 // Using correct credentials but no permissions
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "GET",
   headers: {
     "Authorization": "Basic " + btoa("alice:secret")
@@ -325,7 +325,7 @@ To create these permissions, use the following commands:
 
 [source,bash]
 ----
-curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+curl -i -u admin:secret -X POST [RESTHEART-URL]/acl \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "userCanAccessOwnSecret",
@@ -342,7 +342,7 @@ curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
 
 [source,bash]
 ----
-http -a admin:secret POST [INSTANCE-URL]/acl \
+http -a admin:secret POST [RESTHEART-URL]/acl \
   _id=userCanAccessOwnSecret \
   roles:='["user"]' \
   priority:=100 \
@@ -354,7 +354,7 @@ http -a admin:secret POST [INSTANCE-URL]/acl \
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/acl", {
+fetch("[RESTHEART-URL]/acl", {
   method: "POST",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]",
@@ -380,7 +380,7 @@ fetch("[INSTANCE-URL]/acl", {
 
 [source,bash]
 ----
-curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+curl -i -u admin:secret -X POST [RESTHEART-URL]/acl \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "userCanCreateOwnSecret",
@@ -397,7 +397,7 @@ curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
 
 [source,bash]
 ----
-http -a admin:secret POST [INSTANCE-URL]/acl \
+http -a admin:secret POST [RESTHEART-URL]/acl \
   _id=userCanCreateOwnSecret \
   roles:='["user"]' \
   priority:=100 \
@@ -409,7 +409,7 @@ http -a admin:secret POST [INSTANCE-URL]/acl \
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/acl", {
+fetch("[RESTHEART-URL]/acl", {
   method: "POST",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]",
@@ -435,7 +435,7 @@ fetch("[INSTANCE-URL]/acl", {
 
 [source,bash]
 ----
-curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
+curl -i -u admin:secret -X POST [RESTHEART-URL]/acl \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "userCanModifyOwnSecret",
@@ -452,7 +452,7 @@ curl -i -u admin:secret -X POST [INSTANCE-URL]/acl \
 
 [source,bash]
 ----
-http -a admin:secret POST [INSTANCE-URL]/acl \
+http -a admin:secret POST [RESTHEART-URL]/acl \
   _id=userCanModifyOwnSecret \
   roles:='["user"]' \
   priority:=100 \
@@ -464,7 +464,7 @@ http -a admin:secret POST [INSTANCE-URL]/acl \
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/acl", {
+fetch("[RESTHEART-URL]/acl", {
   method: "POST",
   headers: {
     "Authorization": "Basic [BASIC-AUTH]",
@@ -492,11 +492,11 @@ Let's have `alice` and `bob` create their secrets:
 
 [source,bash]
 ----
-curl -i -u bob:secret -X POST [INSTANCE-URL]/secrets \
+curl -i -u bob:secret -X POST [RESTHEART-URL]/secrets \
   -H "Content-Type: application/json" \
   -d '{"message": "Bob loves Alice"}'
 
-curl -i -u alice:secret -X POST [INSTANCE-URL]/secrets \
+curl -i -u alice:secret -X POST [RESTHEART-URL]/secrets \
   -H "Content-Type: application/json" \
   -d '{"message": "Alice loves Bob"}'
 ----
@@ -505,8 +505,8 @@ curl -i -u alice:secret -X POST [INSTANCE-URL]/secrets \
 
 [source,bash]
 ----
-http -a bob:secret POST [INSTANCE-URL]/secrets message="Bob loves Alice"
-http -a alice:secret POST [INSTANCE-URL]/secrets message="Alice loves Bob"
+http -a bob:secret POST [RESTHEART-URL]/secrets message="Bob loves Alice"
+http -a alice:secret POST [RESTHEART-URL]/secrets message="Alice loves Bob"
 ----
 
 ==== JavaScript
@@ -514,7 +514,7 @@ http -a alice:secret POST [INSTANCE-URL]/secrets message="Alice loves Bob"
 [source,javascript]
 ----
 // Bob creates his secret
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "POST",
   headers: {
     "Authorization": "Basic " + btoa("bob:secret"),
@@ -529,7 +529,7 @@ fetch("[INSTANCE-URL]/secrets", {
     console.log("Bob's secret created");
     
     // Alice creates her secret
-    return fetch("[INSTANCE-URL]/secrets", {
+    return fetch("[RESTHEART-URL]/secrets", {
       method: "POST",
       headers: {
         "Authorization": "Basic " + btoa("alice:secret"),
@@ -561,7 +561,7 @@ fetch("[INSTANCE-URL]/secrets", {
 
 [source,bash]
 ----
-curl -i -u admin:secret -X GET [INSTANCE-URL]/secrets
+curl -i -u admin:secret -X GET [RESTHEART-URL]/secrets
 # Output includes both Alice's and Bob's messages
 ----
 
@@ -569,7 +569,7 @@ curl -i -u admin:secret -X GET [INSTANCE-URL]/secrets
 
 [source,bash]
 ----
-http -a admin:secret -b GET [INSTANCE-URL]/secrets
+http -a admin:secret -b GET [RESTHEART-URL]/secrets
 # Output includes both Alice's and Bob's messages
 ----
 
@@ -577,7 +577,7 @@ http -a admin:secret -b GET [INSTANCE-URL]/secrets
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "GET",
   headers: {
     "Authorization": "Basic " + btoa("admin:secret")
@@ -599,7 +599,7 @@ NOTE: The `author` property is correctly set for each document.
 
 [source,bash]
 ----
-curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
+curl -i -u alice:secret -X GET [RESTHEART-URL]/secrets
 # Output includes only Alice's message
 ----
 
@@ -607,7 +607,7 @@ curl -i -u alice:secret -X GET [INSTANCE-URL]/secrets
 
 [source,bash]
 ----
-http -a alice:secret -b GET [INSTANCE-URL]/secrets
+http -a alice:secret -b GET [RESTHEART-URL]/secrets
 # Output includes only Alice's message
 ----
 
@@ -615,7 +615,7 @@ http -a alice:secret -b GET [INSTANCE-URL]/secrets
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "GET",
   headers: {
     "Authorization": "Basic " + btoa("alice:secret")
@@ -635,7 +635,7 @@ fetch("[INSTANCE-URL]/secrets", {
 
 [source,bash]
 ----
-curl -i -u bob:secret -X GET [INSTANCE-URL]/secrets
+curl -i -u bob:secret -X GET [RESTHEART-URL]/secrets
 # Output includes only Bob's message
 ----
 
@@ -643,7 +643,7 @@ curl -i -u bob:secret -X GET [INSTANCE-URL]/secrets
 
 [source,bash]
 ----
-http -a bob:secret -b GET [INSTANCE-URL]/secrets
+http -a bob:secret -b GET [RESTHEART-URL]/secrets
 # Output includes only Bob's message
 ----
 
@@ -651,7 +651,7 @@ http -a bob:secret -b GET [INSTANCE-URL]/secrets
 
 [source,javascript]
 ----
-fetch("[INSTANCE-URL]/secrets", {
+fetch("[RESTHEART-URL]/secrets", {
   method: "GET",
   headers: {
     "Authorization": "Basic " + btoa("bob:secret")

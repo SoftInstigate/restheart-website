@@ -22,7 +22,7 @@ The following requests create a collection with three change streams:
 
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/messages' \
+curl -i -X PUT '[RESTHEART-URL]/messages' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -66,7 +66,7 @@ echo '{
         "uri" : "mine"
       }
     ]
-}' | http PUT [INSTANCE-URL]/messages \
+}' | http PUT [RESTHEART-URL]/messages \
   'Authorization:Basic [BASIC-AUTH]' \
   'Content-Type:application/json'
 ----
@@ -75,7 +75,7 @@ echo '{
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/messages', {
+fetch('[RESTHEART-URL]/messages', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -137,7 +137,7 @@ Note the `_links` collection property showing the URIs of the change streams (re
 
 [source,bash]
 ----
-curl -i -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
+curl -i -X GET '[RESTHEART-URL]/messages?rep=SHAL' \
   -H 'Authorization: Basic [BASIC-AUTH]'
 ----
 
@@ -145,7 +145,7 @@ curl -i -X GET '[INSTANCE-URL]/messages?rep=SHAL' \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/messages rep==SHAL \
+http GET [RESTHEART-URL]/messages rep==SHAL \
   'Authorization:Basic [BASIC-AUTH]'
 ----
 
@@ -153,7 +153,7 @@ http GET [INSTANCE-URL]/messages rep==SHAL \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/messages?rep=SHAL', {
+fetch('[RESTHEART-URL]/messages?rep=SHAL', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -212,7 +212,7 @@ To allow connections without authentication, you can define the following permis
 
 [source,bash]
 ----
-curl -i -X POST '[INSTANCE-URL]/acl' \
+curl -i -X POST '[RESTHEART-URL]/acl' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -232,7 +232,7 @@ echo '{
     "predicate": "path-prefix('"'"'/messages/_streams/all'"'"')",
     "priority": 0,
     "roles": [ "$unauthenticated" ]
-}' | http POST [INSTANCE-URL]/acl \
+}' | http POST [RESTHEART-URL]/acl \
   'Authorization:Basic [BASIC-AUTH]' \
   'Content-Type:application/json'
 ----
@@ -241,7 +241,7 @@ echo '{
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/acl', {
+fetch('[RESTHEART-URL]/acl', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -273,7 +273,7 @@ If you now create a new document in the collection `messages`
 
 [source,bash]
 ----
-curl -i -X POST '[INSTANCE-URL]/messages' \
+curl -i -X POST '[RESTHEART-URL]/messages' \
   -H 'Authorization: Basic [BASIC-AUTH]' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -289,7 +289,7 @@ curl -i -X POST '[INSTANCE-URL]/messages' \
 echo '{
     "message": "Hello WebSockets!",
     "name": "uji"
-}' | http POST [INSTANCE-URL]/messages \
+}' | http POST [RESTHEART-URL]/messages \
   'Authorization:Basic [BASIC-AUTH]' \
   'Content-Type:application/json'
 ----
@@ -298,7 +298,7 @@ echo '{
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/messages', {
+fetch('[RESTHEART-URL]/messages', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',

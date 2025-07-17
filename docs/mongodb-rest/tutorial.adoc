@@ -19,10 +19,10 @@ This tutorial introduces RESTHeart's MongoDB REST API through simple examples. Y
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/inventory \
+curl -i -X PUT [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 
-curl -i -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
@@ -38,7 +38,7 @@ curl -i -X POST [INSTANCE-URL]/inventory \
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
 
 echo '[
    { "item": "journal", "qty": 25, "size": { "h": 14, "w": 21, "uom": "cm" }, "status": "A" },
@@ -46,7 +46,7 @@ echo '[
    { "item": "paper", "qty": 100, "size": { "h": 8.5, "w": 11, "uom": "in" }, "status": "D" },
    { "item": "planner", "qty": 75, "size": { "h": 22.85, "w": 30, "uom": "cm" }, "status": "D" },
    { "item": "postcard", "qty": 45, "size": { "h": 10, "w": 15.25, "uom": "cm" }, "status": "A" }
-]' | http [INSTANCE-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
+]' | http [RESTHEART-URL]/inventory Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
@@ -128,7 +128,7 @@ To retrieve all documents from a collection, send a `GET` request:
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/inventory \
+curl -i -X GET [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -136,7 +136,7 @@ curl -i -X GET [INSTANCE-URL]/inventory \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/inventory \
+http GET [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -144,7 +144,7 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory', {
+fetch('[RESTHEART-URL]/inventory', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -204,7 +204,7 @@ You can filter documents using the `filter` query parameter with MongoDB query s
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"qty":{"$gt":75}}'
 ----
@@ -213,7 +213,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"qty\":{\"\$gt\":75}}"
 ----
@@ -223,7 +223,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"qty":{"$gt":75}}');
-fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -267,7 +267,7 @@ To create a new document, use the `POST` method with a JSON body:
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"item": "newItem", "qty": 10, "size": { "h": 2, "w": 4, "uom": "cm" }, "status": "C"}'
@@ -277,7 +277,7 @@ curl -i -X POST [INSTANCE-URL]/inventory \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/inventory \
+http POST [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]" \
   item="newItem" qty:=10 size:='{"h": 2, "w": 4, "uom": "cm"}' \
   status="C"
@@ -287,7 +287,7 @@ http POST [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory', {
+fetch('[RESTHEART-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -331,7 +331,7 @@ You can create a document with a specific ID using the `PUT` method with the `?w
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
+curl -i -X PUT [RESTHEART-URL]/inventory/newDocument?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "item": "yetAnotherItem", "qty": 90, "size": { "h": 3, "w": 4, "uom": "cm" }, "status": "C" }'
@@ -341,7 +341,7 @@ curl -i -X PUT [INSTANCE-URL]/inventory/newDocument?wm=upsert \
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/inventory/newDocument \
+http PUT [RESTHEART-URL]/inventory/newDocument \
   Authorization:"Basic [BASIC-AUTH]" \
   wm==upsert \
   item="yetAnotherItem" qty:=90 size:='{"h": 3, "w": 4, "uom": "cm"}' \
@@ -352,7 +352,7 @@ http PUT [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/newDocument?wm=upsert', {
+fetch('[RESTHEART-URL]/inventory/newDocument?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -385,7 +385,7 @@ To modify specific properties of an existing document, use the `PATCH` method:
 
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/inventory/newDocument \
+curl -i -X PATCH [RESTHEART-URL]/inventory/newDocument \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "qty": 40, "status": "A", "newProperty": "value" }'
@@ -395,7 +395,7 @@ curl -i -X PATCH [INSTANCE-URL]/inventory/newDocument \
 
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/inventory/newDocument \
+http PATCH [RESTHEART-URL]/inventory/newDocument \
   Authorization:"Basic [BASIC-AUTH]" \
   qty:=40 status="A" newProperty="value"
 ----
@@ -404,7 +404,7 @@ http PATCH [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/newDocument', {
+fetch('[RESTHEART-URL]/inventory/newDocument', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -455,7 +455,7 @@ To delete a document, use the `DELETE` method:
 
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/inventory/newDocument \
+curl -i -X DELETE [RESTHEART-URL]/inventory/newDocument \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -463,7 +463,7 @@ curl -i -X DELETE [INSTANCE-URL]/inventory/newDocument \
 
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/inventory/newDocument \
+http DELETE [RESTHEART-URL]/inventory/newDocument \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -471,7 +471,7 @@ http DELETE [INSTANCE-URL]/inventory/newDocument \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/newDocument', {
+fetch('[RESTHEART-URL]/inventory/newDocument', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

@@ -26,11 +26,11 @@ Build a complete product management system with inventory, categories, and searc
 [source,bash]
 ----
 # Create collections
-curl -i -X PUT [INSTANCE-URL]/products \
+curl -i -X PUT [RESTHEART-URL]/products \
   -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/categories \
+curl -i -X PUT [RESTHEART-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/inventory \
+curl -i -X PUT [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -39,11 +39,11 @@ curl -i -X PUT [INSTANCE-URL]/inventory \
 [source,bash]
 ----
 # Create collections
-http PUT [INSTANCE-URL]/products \
+http PUT [RESTHEART-URL]/products \
   Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/categories \
+http PUT [RESTHEART-URL]/categories \
   Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/inventory \
+http PUT [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -57,7 +57,7 @@ const createCollections = async () => {
     'Authorization': 'Basic [BASIC-AUTH]'
   };
 
-  fetch('[INSTANCE-URL]/products', {
+  fetch('[RESTHEART-URL]/products', {
     method: 'PUT',
     headers
   })
@@ -70,7 +70,7 @@ const createCollections = async () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/categories', {
+  fetch('[RESTHEART-URL]/categories', {
     method: 'PUT',
     headers
   })
@@ -83,7 +83,7 @@ const createCollections = async () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/inventory', {
+  fetch('[RESTHEART-URL]/inventory', {
     method: 'PUT',
     headers
   })
@@ -107,12 +107,12 @@ createCollections();
 [source,bash]
 ----
 # Add categories
-curl -i -X POST [INSTANCE-URL]/categories \
+curl -i -X POST [RESTHEART-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
 
 # Add products
-curl -i -X POST [INSTANCE-URL]/products \
+curl -i -X POST [RESTHEART-URL]/products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Wireless Headphones",
@@ -132,7 +132,7 @@ curl -i -X POST [INSTANCE-URL]/products \
 [source,bash]
 ----
 # Add categories
-http POST [INSTANCE-URL]/categories \
+http POST [RESTHEART-URL]/categories \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Electronics" \
@@ -140,7 +140,7 @@ http POST [INSTANCE-URL]/categories \
   description="Electronic devices and accessories"
 
 # Add products
-http POST [INSTANCE-URL]/products \
+http POST [RESTHEART-URL]/products \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Wireless Headphones" \
@@ -160,7 +160,7 @@ http POST [INSTANCE-URL]/products \
 ----
 // Add categories
 const addCategory = () => {
-  fetch('[INSTANCE-URL]/categories', {
+  fetch('[RESTHEART-URL]/categories', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -184,7 +184,7 @@ const addCategory = () => {
 
 // Add products
 const addProduct = () => {
-  fetch('[INSTANCE-URL]/products', {
+  fetch('[RESTHEART-URL]/products', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -224,16 +224,16 @@ addProduct();
 [source,bash]
 ----
 # Search products by name
-curl -i "[INSTANCE-URL]/products" --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
+curl -i "[RESTHEART-URL]/products" --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
 
 # Filter by price range
-curl "[INSTANCE-URL]/products" --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
+curl "[RESTHEART-URL]/products" --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
 
 # Get products with low inventory
-curl "[INSTANCE-URL]/products" --data-urlencode "filter={'quantity':{$lt:10}}"
+curl "[RESTHEART-URL]/products" --data-urlencode "filter={'quantity':{$lt:10}}"
 
 # Category-based filtering with sorting
-curl "[INSTANCE-URL]/products" --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
+curl "[RESTHEART-URL]/products" --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
 ----
 
 ==== HTTPie
@@ -241,16 +241,16 @@ curl "[INSTANCE-URL]/products" --data-urlencode "filter={'category':'electronics
 [source,bash]
 ----
 # Search products by name
-http GET [INSTANCE-URL]/products filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
+http GET [RESTHEART-URL]/products filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
 
 # Filter by price range
-http GET [INSTANCE-URL]/products filter=="{'price':{\$gte:50,\$lte:150}}"
+http GET [RESTHEART-URL]/products filter=="{'price':{\$gte:50,\$lte:150}}"
 
 # Get products with low inventory
-http GET [INSTANCE-URL]/products filter=="{'quantity':{\$lt:10}}"
+http GET [RESTHEART-URL]/products filter=="{'quantity':{\$lt:10}}"
 
 # Category-based filtering with sorting
-http GET [INSTANCE-URL]/products filter=="{'category':'electronics'}" sort=="{price:1}"
+http GET [RESTHEART-URL]/products filter=="{'category':'electronics'}" sort=="{price:1}"
 ----
 
 ==== JavaScript
@@ -260,7 +260,7 @@ http GET [INSTANCE-URL]/products filter=="{'category':'electronics'}" sort=="{pr
 // Search products by name
 const searchByName = () => {
   const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
-  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Search results:', data);
@@ -271,7 +271,7 @@ const searchByName = () => {
 // Filter by price range
 const filterByPriceRange = () => {
   const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
-  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Price range results:', data);
@@ -282,7 +282,7 @@ const filterByPriceRange = () => {
 // Get products with low inventory
 const getLowInventory = () => {
   const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
-  fetch(`[INSTANCE-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Low inventory products:', data);
@@ -294,7 +294,7 @@ const getLowInventory = () => {
 const filterByCategory = () => {
   const filter = encodeURIComponent("{'category':'electronics'}");
   const sort = encodeURIComponent("{price:1}");
-  fetch(`[INSTANCE-URL]/products?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}&sort=${sort}`)
   .then(response => response.json())
   .then(data => {
     console.log('Category results:', data);
@@ -320,12 +320,12 @@ Create a headless CMS for blogs, news sites, or documentation.
 [source,bash]
 ----
 # Create content collections
-curl -i -X PUT [INSTANCE-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create author
-curl -i -X POST [INSTANCE-URL]/authors \
+curl -i -X POST [RESTHEART-URL]/authors \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Jane Smith",
@@ -335,7 +335,7 @@ curl -i -X POST [INSTANCE-URL]/authors \
   }'
 
 # Create article
-curl -i -X POST [INSTANCE-URL]/articles \
+curl -i -X POST [RESTHEART-URL]/articles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "title": "Getting Started with RESTHeart Cloud",
@@ -358,12 +358,12 @@ curl -i -X POST [INSTANCE-URL]/articles \
 [source,bash]
 ----
 # Create content collections
-http PUT [INSTANCE-URL]/articles Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/authors Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/media.files Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/articles Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/authors Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/media.files Authorization:"Basic [BASIC-AUTH]"
 
 # Create author
-http POST [INSTANCE-URL]/authors \
+http POST [RESTHEART-URL]/authors \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Jane Smith" \
@@ -372,7 +372,7 @@ http POST [INSTANCE-URL]/authors \
   avatar="https://example.com/avatars/jane.jpg"
 
 # Create article
-http POST [INSTANCE-URL]/articles \
+http POST [RESTHEART-URL]/articles \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   title="Getting Started with RESTHeart Cloud" \
@@ -397,7 +397,7 @@ http POST [INSTANCE-URL]/articles \
 const createContentCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/articles', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/articles', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Articles collection created successfully');
@@ -407,7 +407,7 @@ const createContentCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/authors', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/authors', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Authors collection created successfully');
@@ -417,7 +417,7 @@ const createContentCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/media.files', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/media.files', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Media file bucket created successfully');
@@ -430,7 +430,7 @@ const createContentCollections = () => {
 
 // Create author
 const createAuthor = () => {
-  fetch('[INSTANCE-URL]/authors', {
+  fetch('[RESTHEART-URL]/authors', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -455,7 +455,7 @@ const createAuthor = () => {
 
 // Create article
 const createArticle = () => {
-  fetch('[INSTANCE-URL]/articles', {
+  fetch('[RESTHEART-URL]/articles', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -499,13 +499,13 @@ createArticle();
 [source,bash]
 ----
 # Get published articles
-curl "[INSTANCE-URL]/articles" --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
+curl "[RESTHEART-URL]/articles" --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
 
 # Get article by slug
-curl "[INSTANCE-URL]/articles" --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
+curl "[RESTHEART-URL]/articles" --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-curl "[INSTANCE-URL]/articles" --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
+curl "[RESTHEART-URL]/articles" --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
 ----
 
 ==== HTTPie
@@ -513,13 +513,13 @@ curl "[INSTANCE-URL]/articles" --data-urlencode "filter={$text:{$search:'RESTHea
 [source,bash]
 ----
 # Get published articles
-http GET [INSTANCE-URL]/articles filter=="{'status':'published'}" sort=="{publishedAt:-1}"
+http GET [RESTHEART-URL]/articles filter=="{'status':'published'}" sort=="{publishedAt:-1}"
 
 # Get article by slug
-http GET [INSTANCE-URL]/articles filter=="{'slug':'getting-started-restheart-cloud'}"
+http GET [RESTHEART-URL]/articles filter=="{'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-http GET [INSTANCE-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
+http GET [RESTHEART-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
 ----
 
 ==== JavaScript
@@ -530,7 +530,7 @@ http GET [INSTANCE-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
 const getPublishedArticles = () => {
   const filter = encodeURIComponent("{'status':'published'}");
   const sort = encodeURIComponent("{publishedAt:-1}");
-  fetch(`[INSTANCE-URL]/articles?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}&sort=${sort}`)
   .then(response => response.json())
   .then(data => {
     console.log('Published articles:', data);
@@ -541,7 +541,7 @@ const getPublishedArticles = () => {
 // Get article by slug
 const getArticleBySlug = (slug) => {
   const filter = encodeURIComponent(`{'slug':'${slug}'}`);
-  fetch(`[INSTANCE-URL]/articles?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Article:', data);
@@ -552,7 +552,7 @@ const getArticleBySlug = (slug) => {
 // Search articles
 const searchArticles = (query) => {
   const filter = encodeURIComponent(`{\$text:{\$search:'${query}'}}`);
-  fetch(`[INSTANCE-URL]/articles?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Search results:', data);
@@ -579,12 +579,12 @@ Build a complete social platform with users, posts, likes, and real-time feature
 [source,bash]
 ----
 # Create social app collections
-curl -i -X PUT [INSTANCE-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
 
 # Create user profile
-curl -i -X POST [INSTANCE-URL]/profiles \
+curl -i -X POST [RESTHEART-URL]/profiles \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "username": "johndoe",
@@ -602,7 +602,7 @@ curl -i -X POST [INSTANCE-URL]/profiles \
   }'
 
 # Create a post
-curl -i -X POST [INSTANCE-URL]/posts \
+curl -i -X POST [RESTHEART-URL]/posts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "author": "johndoe",
@@ -622,12 +622,12 @@ curl -i -X POST [INSTANCE-URL]/posts \
 [source,bash]
 ----
 # Create social app collections
-http PUT [INSTANCE-URL]/profiles Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/posts Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/followers Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/profiles Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/posts Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/followers Authorization:"Basic [BASIC-AUTH]"
 
 # Create user profile
-http POST [INSTANCE-URL]/profiles \
+http POST [RESTHEART-URL]/profiles \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   username="johndoe" \
@@ -644,7 +644,7 @@ http POST [INSTANCE-URL]/profiles \
   }'
 
 # Create a post
-http POST [INSTANCE-URL]/posts \
+http POST [RESTHEART-URL]/posts \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   author="johndoe" \
@@ -666,7 +666,7 @@ http POST [INSTANCE-URL]/posts \
 const createSocialCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/profiles', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/profiles', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Profiles collection created successfully');
@@ -676,7 +676,7 @@ const createSocialCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/posts', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/posts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Posts collection created successfully');
@@ -686,7 +686,7 @@ const createSocialCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/followers', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/followers', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Followers collection created successfully');
@@ -699,7 +699,7 @@ const createSocialCollections = () => {
 
 // Create user profile
 const createUserProfile = () => {
-  fetch('[INSTANCE-URL]/profiles', {
+  fetch('[RESTHEART-URL]/profiles', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -732,7 +732,7 @@ const createUserProfile = () => {
 
 // Create a post
 const createPost = () => {
-  fetch('[INSTANCE-URL]/posts', {
+  fetch('[RESTHEART-URL]/posts', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -773,13 +773,13 @@ createPost();
 [source,bash]
 ----
 # Get user timeline (posts from followed users)
-curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
+curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
 
 # Search posts by hashtag
-curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'hashtags':{$in:['#api']}}"
+curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'hashtags':{$in:['#api']}}"
 
 # Get user's posts
-curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
+curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
 ----
 
 ==== HTTPie
@@ -787,13 +787,13 @@ curl "[INSTANCE-URL]/posts" --data-urlencode "filter={'author':'johndoe'}" --dat
 [source,bash]
 ----
 # Get user timeline (posts from followed users)
-http GET [INSTANCE-URL]/posts filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
+http GET [RESTHEART-URL]/posts filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
 
 # Search posts by hashtag
-http GET [INSTANCE-URL]/posts filter=="{'hashtags':{\$in:['#api']}}"
+http GET [RESTHEART-URL]/posts filter=="{'hashtags':{\$in:['#api']}}"
 
 # Get user's posts
-http GET [INSTANCE-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
+http GET [RESTHEART-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
 ----
 
 ==== JavaScript
@@ -804,7 +804,7 @@ http GET [INSTANCE-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-
 const getUserTimeline = (followedUsers) => {
   const filter = encodeURIComponent(`{'author':{\$in:${JSON.stringify(followedUsers)}}}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`)
   .then(response => response.json())
   .then(data => {
     console.log('User timeline:', data);
@@ -815,7 +815,7 @@ const getUserTimeline = (followedUsers) => {
 // Search posts by hashtag
 const searchPostsByHashtag = (hashtag) => {
   const filter = encodeURIComponent(`{'hashtags':{\$in:['${hashtag}']}}`);
-  fetch(`[INSTANCE-URL]/posts?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}`)
   .then(response => response.json())
   .then(data => {
     console.log('Hashtag search results:', data);
@@ -827,7 +827,7 @@ const searchPostsByHashtag = (hashtag) => {
 const getUserPosts = (username) => {
   const filter = encodeURIComponent(`{'author':'${username}'}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  fetch(`[INSTANCE-URL]/posts?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`)
   .then(response => response.json())
   .then(data => {
     console.log('User posts:', data);
@@ -850,12 +850,12 @@ Create a comprehensive fitness backend with workouts, progress tracking, and goa
 [source,bash]
 ----
 # Setup fitness collections
-curl -i -X PUT [INSTANCE-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
 
 # Add exercise definitions
-curl -i -X POST [INSTANCE-URL]/exercises \
+curl -i -X POST [RESTHEART-URL]/exercises \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "name": "Push-ups",
@@ -867,7 +867,7 @@ curl -i -X POST [INSTANCE-URL]/exercises \
   }'
 
 # Log workout
-curl -i -X POST [INSTANCE-URL]/workouts \
+curl -i -X POST [RESTHEART-URL]/workouts \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "userId": "user123",
@@ -892,12 +892,12 @@ curl -i -X POST [INSTANCE-URL]/workouts \
 [source,bash]
 ----
 # Setup fitness collections
-http PUT [INSTANCE-URL]/workouts Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/exercises Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/progress Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/workouts Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/exercises Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/progress Authorization:"Basic [BASIC-AUTH]"
 
 # Add exercise definitions
-http POST [INSTANCE-URL]/exercises \
+http POST [RESTHEART-URL]/exercises \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   name="Push-ups" \
@@ -908,7 +908,7 @@ http POST [INSTANCE-URL]/exercises \
   difficulty="beginner"
 
 # Log workout
-http POST [INSTANCE-URL]/workouts \
+http POST [RESTHEART-URL]/workouts \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   userId="user123" \
@@ -935,7 +935,7 @@ http POST [INSTANCE-URL]/workouts \
 const createFitnessCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/workouts', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/workouts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Workouts collection created successfully');
@@ -945,7 +945,7 @@ const createFitnessCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/exercises', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/exercises', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Exercises collection created successfully');
@@ -955,7 +955,7 @@ const createFitnessCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/progress', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/progress', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Progress collection created successfully');
@@ -968,7 +968,7 @@ const createFitnessCollections = () => {
 
 // Add exercise definitions
 const addExercise = () => {
-  fetch('[INSTANCE-URL]/exercises', {
+  fetch('[RESTHEART-URL]/exercises', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -995,7 +995,7 @@ const addExercise = () => {
 
 // Log workout
 const logWorkout = () => {
-  fetch('[INSTANCE-URL]/workouts', {
+  fetch('[RESTHEART-URL]/workouts', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1046,12 +1046,12 @@ Collect and analyze data from home sensors and devices.
 [source,bash]
 ----
 # Create IoT collections
-curl -i -X PUT [INSTANCE-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register device
-curl -i -X POST [INSTANCE-URL]/devices \
+curl -i -X POST [RESTHEART-URL]/devices \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1064,7 +1064,7 @@ curl -i -X POST [INSTANCE-URL]/devices \
   }'
 
 # Submit sensor reading
-curl -i -X POST [INSTANCE-URL]/readings \
+curl -i -X POST [RESTHEART-URL]/readings \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "deviceId": "temp-sensor-01",
@@ -1081,12 +1081,12 @@ curl -i -X POST [INSTANCE-URL]/readings \
 [source,bash]
 ----
 # Create IoT collections
-http PUT [INSTANCE-URL]/devices Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/readings Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/alerts Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/devices Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/readings Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/alerts Authorization:"Basic [BASIC-AUTH]"
 
 # Register device
-http POST [INSTANCE-URL]/devices \
+http POST [RESTHEART-URL]/devices \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   deviceId="temp-sensor-01" \
@@ -1098,7 +1098,7 @@ http POST [INSTANCE-URL]/devices \
   status="active"
 
 # Submit sensor reading
-http POST [INSTANCE-URL]/readings \
+http POST [RESTHEART-URL]/readings \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   deviceId="temp-sensor-01" \
@@ -1117,7 +1117,7 @@ http POST [INSTANCE-URL]/readings \
 const createIoTCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/devices', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/devices', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Devices collection created successfully');
@@ -1127,7 +1127,7 @@ const createIoTCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/readings', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/readings', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Readings collection created successfully');
@@ -1137,7 +1137,7 @@ const createIoTCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/alerts', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/alerts', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Alerts collection created successfully');
@@ -1150,7 +1150,7 @@ const createIoTCollections = () => {
 
 // Register device
 const registerDevice = () => {
-  fetch('[INSTANCE-URL]/devices', {
+  fetch('[RESTHEART-URL]/devices', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1178,7 +1178,7 @@ const registerDevice = () => {
 
 // Submit sensor reading
 const submitReading = () => {
-  fetch('[INSTANCE-URL]/readings', {
+  fetch('[RESTHEART-URL]/readings', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1215,10 +1215,10 @@ submitReading();
 [source,bash]
 ----
 # Get recent readings
-curl -i "[INSTANCE-URL]/readings" --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
+curl -i "[RESTHEART-URL]/readings" --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
 
 # Average temperature by location
-curl -i -X POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
@@ -1233,7 +1233,7 @@ curl -i -X POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
 [source,bash]
 ----
 # Get recent readings
-http GET [INSTANCE-URL]/readings filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
+http GET [RESTHEART-URL]/readings filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
 
 # Average temperature by location
 echo '[
@@ -1243,7 +1243,7 @@ echo '[
     "avgTemp": {"$avg": "$measurements.temperature"},
     "count": {"$sum": 1}
   }}
-]' | http POST [INSTANCE-URL]/readings/_aggrs/avg-temp-by-location \
+]' | http POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -1254,7 +1254,7 @@ echo '[
 const getRecentReadings = () => {
   const filter = encodeURIComponent("{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}");
   const sort = encodeURIComponent("{timestamp:-1}");
-  fetch(`[INSTANCE-URL]/readings?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/readings?filter=${filter}&sort=${sort}`)
   .then(response => response.json())
   .then(data => {
     console.log('Recent readings:', data);
@@ -1273,7 +1273,7 @@ const getAverageTemperatureByLocation = () => {
     }}
   ];
 
-  fetch('[INSTANCE-URL]/readings/_aggrs/avg-temp-by-location', {
+  fetch('[RESTHEART-URL]/readings/_aggrs/avg-temp-by-location', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1301,11 +1301,11 @@ Track air quality, weather conditions, and environmental data.
 [source,bash]
 ----
 # Environmental monitoring setup
-curl -i -X PUT [INSTANCE-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
 
 # Register monitoring station
-curl -i -X POST [INSTANCE-URL]/stations \
+curl -i -X POST [RESTHEART-URL]/stations \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1320,7 +1320,7 @@ curl -i -X POST [INSTANCE-URL]/stations \
   }'
 
 # Submit environmental measurement
-curl -i -X POST [INSTANCE-URL]/measurements \
+curl -i -X POST [RESTHEART-URL]/measurements \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "stationId": "ENV-NYC-001",
@@ -1344,11 +1344,11 @@ curl -i -X POST [INSTANCE-URL]/measurements \
 [source,bash]
 ----
 # Environmental monitoring setup
-http PUT [INSTANCE-URL]/stations Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/measurements Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/stations Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/measurements Authorization:"Basic [BASIC-AUTH]"
 
 # Register monitoring station
-http POST [INSTANCE-URL]/stations \
+http POST [RESTHEART-URL]/stations \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   stationId="ENV-NYC-001" \
@@ -1362,7 +1362,7 @@ http POST [INSTANCE-URL]/stations \
   status="active"
 
 # Submit environmental measurement
-http POST [INSTANCE-URL]/measurements \
+http POST [RESTHEART-URL]/measurements \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   stationId="ENV-NYC-001" \
@@ -1388,7 +1388,7 @@ http POST [INSTANCE-URL]/measurements \
 const createEnvironmentalCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/stations', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/stations', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Stations collection created successfully');
@@ -1398,7 +1398,7 @@ const createEnvironmentalCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/measurements', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/measurements', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Measurements collection created successfully');
@@ -1411,7 +1411,7 @@ const createEnvironmentalCollections = () => {
 
 // Register monitoring station
 const registerStation = () => {
-  fetch('[INSTANCE-URL]/stations', {
+  fetch('[RESTHEART-URL]/stations', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1441,7 +1441,7 @@ const registerStation = () => {
 
 // Submit environmental measurement
 const submitMeasurement = () => {
-  fetch('[INSTANCE-URL]/measurements', {
+  fetch('[RESTHEART-URL]/measurements', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1491,12 +1491,12 @@ Create a comprehensive analytics backend for business metrics.
 [source,bash]
 ----
 # Business analytics setup
-curl -i -X PUT [INSTANCE-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
-curl -i -X PUT [INSTANCE-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
 
 # Record sale
-curl -i -X POST [INSTANCE-URL]/sales \
+curl -i -X POST [RESTHEART-URL]/sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "orderId": "ORD-2024-001",
@@ -1522,12 +1522,12 @@ curl -i -X POST [INSTANCE-URL]/sales \
 [source,bash]
 ----
 # Business analytics setup
-http PUT [INSTANCE-URL]/sales Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/customers Authorization:"Basic [BASIC-AUTH]"
-http PUT [INSTANCE-URL]/analytics-products Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/sales Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/customers Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/analytics-products Authorization:"Basic [BASIC-AUTH]"
 
 # Record sale
-http POST [INSTANCE-URL]/sales \
+http POST [RESTHEART-URL]/sales \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   orderId="ORD-2024-001" \
@@ -1555,7 +1555,7 @@ http POST [INSTANCE-URL]/sales \
 const createAnalyticsCollections = () => {
   const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
 
-  fetch('[INSTANCE-URL]/sales', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/sales', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Sales collection created successfully');
@@ -1565,7 +1565,7 @@ const createAnalyticsCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/customers', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/customers', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Customers collection created successfully');
@@ -1575,7 +1575,7 @@ const createAnalyticsCollections = () => {
   })
   .catch(error => console.error('Error:', error));
 
-  fetch('[INSTANCE-URL]/analytics-products', { method: 'PUT', headers })
+  fetch('[RESTHEART-URL]/analytics-products', { method: 'PUT', headers })
   .then(response => {
     if (response.ok) {
       console.log('Analytics products collection created successfully');
@@ -1588,7 +1588,7 @@ const createAnalyticsCollections = () => {
 
 // Record sale
 const recordSale = () => {
-  fetch('[INSTANCE-URL]/sales', {
+  fetch('[RESTHEART-URL]/sales', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1633,7 +1633,7 @@ recordSale();
 [source,bash]
 ----
 # Daily sales aggregation
-curl -i -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
+curl -i -X POST [RESTHEART-URL]/sales/_aggrs/daily-sales \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
@@ -1647,7 +1647,7 @@ curl -i -X POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
   ]'
 
 # Top products by revenue
-curl -i -X POST [INSTANCE-URL]/sales/_aggrs/top-products \
+curl -i -X POST [RESTHEART-URL]/sales/_aggrs/top-products \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '[
     {"$unwind": "$items"},
@@ -1674,7 +1674,7 @@ echo '[
     "avgOrderValue": {"$avg": "$totalAmount"}
   }},
   {"$sort": {"_id": 1}}
-]' | http POST [INSTANCE-URL]/sales/_aggrs/daily-sales \
+]' | http POST [RESTHEART-URL]/sales/_aggrs/daily-sales \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 
@@ -1689,7 +1689,7 @@ echo '[
   }},
   {"$sort": {"totalRevenue": -1}},
   {"$limit": 10}
-]' | http POST [INSTANCE-URL]/sales/_aggrs/top-products \
+]' | http POST [RESTHEART-URL]/sales/_aggrs/top-products \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -1709,7 +1709,7 @@ const getDailySales = () => {
     {"$sort": {"_id": 1}}
   ];
 
-  fetch('[INSTANCE-URL]/sales/_aggrs/daily-sales', {
+  fetch('[RESTHEART-URL]/sales/_aggrs/daily-sales', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
@@ -1738,7 +1738,7 @@ const getTopProducts = () => {
     {"$limit": 10}
   ];
 
-  fetch('[INSTANCE-URL]/sales/_aggrs/top-products', {
+  fetch('[RESTHEART-URL]/sales/_aggrs/top-products', {
     method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',

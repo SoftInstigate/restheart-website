@@ -78,7 +78,7 @@ Use `POST` to create a document and let MongoDB generate an ObjectId:
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -96,7 +96,7 @@ curl -i -X POST [INSTANCE-URL]/inventory \
 ==== HTTPie
 [source,bash]
 ----
-http POST [INSTANCE-URL]/inventory \
+http POST [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]" \
   item="rubber" \
   qty:=15 \
@@ -107,7 +107,7 @@ http POST [INSTANCE-URL]/inventory \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory', {
+fetch('[RESTHEART-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -152,7 +152,7 @@ Use `PUT` with the `?wm=upsert` parameter to create a document with a specific I
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/myCustomId?wm=upsert" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -169,7 +169,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
 ==== HTTPie
 [source,bash]
 ----
-http PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
+http PUT "[RESTHEART-URL]/inventory/myCustomId?wm=upsert" \
   Authorization:"Basic [BASIC-AUTH]" \
   item="pencil" \
   qty:=55 \
@@ -179,7 +179,7 @@ http PUT "[INSTANCE-URL]/inventory/myCustomId?wm=upsert" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId?wm=upsert', {
+fetch('[RESTHEART-URL]/inventory/myCustomId?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -236,7 +236,7 @@ WARNING: This replaces the entire document. Any fields not included in the reque
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [RESTHEART-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -248,7 +248,7 @@ curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/inventory/myCustomId \
+http PATCH [RESTHEART-URL]/inventory/myCustomId \
   Authorization:"Basic [BASIC-AUTH]" \
   qty:=75 \
   status="B"
@@ -257,7 +257,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[RESTHEART-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -289,7 +289,7 @@ Access nested document fields and array elements using dot notation:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [RESTHEART-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -300,7 +300,7 @@ curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/inventory/myCustomId \
+http PATCH [RESTHEART-URL]/inventory/myCustomId \
   Authorization:"Basic [BASIC-AUTH]" \
   size.h:=20
 ----
@@ -308,7 +308,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[RESTHEART-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -335,7 +335,7 @@ For array elements:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [RESTHEART-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -346,7 +346,7 @@ curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/inventory/myCustomId \
+http PATCH [RESTHEART-URL]/inventory/myCustomId \
   Authorization:"Basic [BASIC-AUTH]" \
   tags.1="office"
 ----
@@ -354,7 +354,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[RESTHEART-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -383,7 +383,7 @@ Use MongoDB's update operators in `PATCH` requests for more complex updates:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X PATCH [RESTHEART-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -397,7 +397,7 @@ curl -i -X PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/inventory/myCustomId \
+http PATCH [RESTHEART-URL]/inventory/myCustomId \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   '\$inc:={"qty": 1}' \
@@ -409,7 +409,7 @@ http PATCH [INSTANCE-URL]/inventory/myCustomId \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[RESTHEART-URL]/inventory/myCustomId', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -468,21 +468,21 @@ Use the `DELETE` method to remove documents:
 ==== cURL
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/inventory/myCustomId \
+curl -i -X DELETE [RESTHEART-URL]/inventory/myCustomId \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/inventory/myCustomId \
+http DELETE [RESTHEART-URL]/inventory/myCustomId \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/myCustomId', {
+fetch('[RESTHEART-URL]/inventory/myCustomId', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -509,7 +509,7 @@ Create multiple documents at once:
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/inventory \
+curl -i -X POST [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
@@ -530,7 +530,7 @@ echo '[
   { "item": "paper", "qty": 100, "status": "D" },
   { "item": "planner", "qty": 75, "status": "D" },
   { "item": "postcard", "qty": 45, "status": "A" }
-]' | http POST [INSTANCE-URL]/inventory \
+]' | http POST [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -538,7 +538,7 @@ echo '[
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory', {
+fetch('[RESTHEART-URL]/inventory', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -570,7 +570,7 @@ Update multiple documents using a filter:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH '[INSTANCE-URL]/inventory/*' \
+curl -i -X PATCH '[RESTHEART-URL]/inventory/*' \
   --data-urlencode 'filter={"qty":{"$gt":50}}' \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
@@ -582,7 +582,7 @@ curl -i -X PATCH '[INSTANCE-URL]/inventory/*' \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
+http PATCH '[RESTHEART-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
   Authorization:"Basic [BASIC-AUTH]" \
   highQuantity:=true
 ----
@@ -590,7 +590,7 @@ http PATCH '[INSTANCE-URL]/inventory/*?filter={"qty":{"$gt":50}}' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"qty":{"$gt":50}}'), {
+fetch('[RESTHEART-URL]/inventory/*?filter=' + encodeURIComponent('{"qty":{"$gt":50}}'), {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -619,7 +619,7 @@ Delete multiple documents matching a filter:
 ==== cURL
 [source,bash]
 ----
-curl -i -X DELETE '[INSTANCE-URL]/inventory/*' \
+curl -i -X DELETE '[RESTHEART-URL]/inventory/*' \
   --data-urlencode 'filter={"status":"D"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -627,14 +627,14 @@ curl -i -X DELETE '[INSTANCE-URL]/inventory/*' \
 ==== HTTPie
 [source,bash]
 ----
-http DELETE '[INSTANCE-URL]/inventory/*?filter={"status":"D"}' \
+http DELETE '[RESTHEART-URL]/inventory/*?filter={"status":"D"}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}'), {
+fetch('[RESTHEART-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}'), {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

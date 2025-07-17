@@ -22,7 +22,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     get displayInstanceUrl() {
-      return this.instanceUrl || "[INSTANCE-URL]";
+      return this.instanceUrl || "[RESTHEART-URL]";
     },
 
     get displayUsername() {
@@ -55,7 +55,7 @@ document.addEventListener("alpine:init", () => {
         setTimeout(() => {
           this.markClientTypeElements();
           this.filterCodeBlocks();
-          
+
           // If we have saved values, apply them to the code blocks immediately
           if (this.instanceUrl || this.username || this.password) {
             this.initializeCodeBlocks();
@@ -78,25 +78,28 @@ document.addEventListener("alpine:init", () => {
 
       codeBlocks.forEach((block, index) => {
         if (block.hasAttribute("data-block-id")) return; // Already processed
-        
+
         // Use a unique ID for each block
         const blockId = `code-block-${index}`;
         block.setAttribute("data-block-id", blockId);
-        
+
         // Store both the original text content and the HTML structure
         const originalText = block.textContent || block.innerText;
         const originalHTML = block.innerHTML;
-        
+
         // More comprehensive highlighting detection
-        const hasHighlighting = block.querySelector('span[class*="hljs"], span[class*="token"], span[class*="highlight"], span[class*="rouge"], span.s, span.k, span.o, span.p') !== null ||
-                               block.innerHTML.includes('<span class=') ||
-                               block.parentElement.classList.contains('highlight') ||
-                               block.parentElement.classList.contains('highlighter-rouge');
-        
+        const hasHighlighting =
+          block.querySelector(
+            'span[class*="hljs"], span[class*="token"], span[class*="highlight"], span[class*="rouge"], span.s, span.k, span.o, span.p',
+          ) !== null ||
+          block.innerHTML.includes("<span class=") ||
+          block.parentElement.classList.contains("highlight") ||
+          block.parentElement.classList.contains("highlighter-rouge");
+
         this.originalCodeBlocks.set(blockId, {
           text: originalText,
           html: originalHTML,
-          hasHighlighting: hasHighlighting
+          hasHighlighting: hasHighlighting,
         });
       });
     },
@@ -106,7 +109,7 @@ document.addEventListener("alpine:init", () => {
       let result = html;
       replacements.forEach(({ from, to }) => {
         // Replace in text nodes only, preserving HTML tags
-        const regex = new RegExp(from, 'g');
+        const regex = new RegExp(from, "g");
         result = result.replace(regex, to);
       });
       return result;
@@ -118,19 +121,19 @@ document.addEventListener("alpine:init", () => {
         element,
         NodeFilter.SHOW_TEXT,
         null,
-        false
+        false,
       );
 
       const textNodes = [];
       let node;
-      while (node = walker.nextNode()) {
+      while ((node = walker.nextNode())) {
         textNodes.push(node);
       }
 
-      textNodes.forEach(textNode => {
+      textNodes.forEach((textNode) => {
         let text = textNode.textContent;
         replacements.forEach(({ from, to }) => {
-          text = text.replace(new RegExp(from, 'g'), to);
+          text = text.replace(new RegExp(from, "g"), to);
         });
         textNode.textContent = text;
       });
@@ -141,39 +144,68 @@ document.addEventListener("alpine:init", () => {
       // Define all replacements - handle both plain text and HTML-separated brackets
       const replacements = [
         // Plain text patterns
-        { from: '\\[INSTANCE-URL\\]', to: this.displayInstanceUrl },
-        { from: '\\[YOUR-USERNAME\\]', to: this.displayUsername },
-        { from: '\\[YOUR-PASSWORD\\]', to: this.displayPassword },
-        { from: '\\[BASIC-AUTH\\]', to: this.basicAuth },
-        { from: '\\[JWT\\]', to: this.displayJwt },
+        { from: "\\[RESTHEART-URL\\]", to: this.displayInstanceUrl },
+        { from: "\\[YOUR-USERNAME\\]", to: this.displayUsername },
+        { from: "\\[YOUR-PASSWORD\\]", to: this.displayPassword },
+        { from: "\\[BASIC-AUTH\\]", to: this.basicAuth },
+        { from: "\\[JWT\\]", to: this.displayJwt },
         // HTML-separated patterns (for syntax highlighted code where brackets are in spans)
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>INSTANCE-URL\\]', to: this.displayInstanceUrl },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-USERNAME\\]', to: this.displayUsername },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-PASSWORD\\]', to: this.displayPassword },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>BASIC-AUTH\\]', to: this.basicAuth },
-        { from: '<span[^>]*class="o"[^>]*>\\[</span>JWT\\]', to: this.displayJwt },
+        {
+          from: '<span[^>]*class="o"[^>]*>\\[</span>RESTHEART-URL\\]',
+          to: this.displayInstanceUrl,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-USERNAME\\]',
+          to: this.displayUsername,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>\\[</span>YOUR-PASSWORD\\]',
+          to: this.displayPassword,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>\\[</span>BASIC-AUTH\\]',
+          to: this.basicAuth,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>\\[</span>JWT\\]',
+          to: this.displayJwt,
+        },
         // HTTPie parameter patterns (for placeholders like "param=[PLACEHOLDER]")
-        { from: '<span[^>]*class="o"[^>]*>=\\[</span>YOUR-PASSWORD\\]', to: `=${this.displayPassword}` },
-        { from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>YOUR-PASSWORD\\]"', to: `: "${this.displayPassword}"` },
-        { from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>INSTANCE-URL\\]"', to: `: "${this.displayInstanceUrl}"` },
-        { from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>JWT\\]"', to: `: "${this.displayJwt}"` }
+        {
+          from: '<span[^>]*class="o"[^>]*>=\\[</span>YOUR-PASSWORD\\]',
+          to: `=${this.displayPassword}`,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>YOUR-PASSWORD\\]"',
+          to: `: "${this.displayPassword}"`,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>RESTHEART-URL\\]"',
+          to: `: "${this.displayInstanceUrl}"`,
+        },
+        {
+          from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>JWT\\]"',
+          to: `: "${this.displayJwt}"`,
+        },
       ];
 
       // Update code blocks using the stored original content
       this.originalCodeBlocks.forEach((originalData, blockId) => {
         const block = document.querySelector(`[data-block-id="${blockId}"]`);
-        
+
         if (block) {
           // Check if this block actually contains placeholders before updating
-          const hasPlaceholders = originalData.text.match(/\[(?:INSTANCE-URL|YOUR-USERNAME|YOUR-PASSWORD|BASIC-AUTH|JWT)\]/);
-          
+          const hasPlaceholders = originalData.text.match(
+            /\[(?:RESTHEART-URL|YOUR-USERNAME|YOUR-PASSWORD|BASIC-AUTH|JWT)\]/,
+          );
+
           if (hasPlaceholders) {
             if (originalData.hasHighlighting) {
               // For highlighted code, update HTML while preserving structure
               let updatedHTML = originalData.html;
-              
+
               replacements.forEach(({ from, to }) => {
-                const replaceRegex = new RegExp(from, 'g');
+                const replaceRegex = new RegExp(from, "g");
                 updatedHTML = updatedHTML.replace(replaceRegex, to);
               });
               block.innerHTML = updatedHTML;
@@ -181,7 +213,7 @@ document.addEventListener("alpine:init", () => {
               // For non-highlighted code, use text replacement to preserve any basic formatting
               let content = originalData.text;
               replacements.forEach(({ from, to }) => {
-                content = content.replace(new RegExp(from, 'g'), to);
+                content = content.replace(new RegExp(from, "g"), to);
               });
               block.textContent = content;
             }
@@ -313,7 +345,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     saveValues() {
-      localStorage.setItem("restheart-instance-url", this.instanceUrl);
+      localStorage.setItem("restheart-RESTHEART-URL", this.instanceUrl);
       localStorage.setItem("restheart-username", this.username);
       localStorage.setItem("restheart-password", this.password);
       localStorage.setItem("restheart-client-type", this.clientType);
@@ -321,7 +353,7 @@ document.addEventListener("alpine:init", () => {
     },
 
     loadSavedValues() {
-      this.instanceUrl = localStorage.getItem("restheart-instance-url") || "";
+      this.instanceUrl = localStorage.getItem("restheart-RESTHEART-URL") || "";
       this.username = localStorage.getItem("restheart-username") || "";
       this.password = localStorage.getItem("restheart-password") || "";
       this.clientType = localStorage.getItem("restheart-client-type") || "all";
@@ -354,7 +386,7 @@ document.addEventListener("alpine:init", () => {
       this.clientType = "all";
       this.jwt = "";
 
-      localStorage.removeItem("restheart-instance-url");
+      localStorage.removeItem("restheart-RESTHEART-URL");
       localStorage.removeItem("restheart-username");
       localStorage.removeItem("restheart-password");
       localStorage.removeItem("restheart-client-type");

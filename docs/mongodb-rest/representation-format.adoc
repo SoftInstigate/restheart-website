@@ -48,7 +48,7 @@ The following `filter` won't find the document because the `_id` is an ObjectId,
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      --data-urlencode "filter={'_id':'5d0b4e325beb2029a8d1bd5e'}"
 ----
@@ -56,7 +56,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "filter=={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -64,7 +64,7 @@ http GET "[INSTANCE-URL]/inventory" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', {
+fetch('[RESTHEART-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -82,7 +82,7 @@ Here's the correct request:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
      -H "Authorization: Basic [BASIC-AUTH]" \
      --data-urlencode "filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}"
 ----
@@ -90,7 +90,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "filter=={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -98,7 +98,7 @@ http GET "[INSTANCE-URL]/inventory" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?filter={\'_id\':{\'$oid\':\'5d0b4e325beb2029a8d1bd5e\'}}', {
+fetch('[RESTHEART-URL]/inventory?filter={\'_id\':{\'$oid\':\'5d0b4e325beb2029a8d1bd5e\'}}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -132,21 +132,21 @@ The query parameter `jsonMode` allows to specify the JSON Mode
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613', {
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -184,14 +184,14 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      "jsonMode==strict" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -199,7 +199,7 @@ http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict', {
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -239,14 +239,14 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      "jsonMode==extended" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -254,7 +254,7 @@ http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended', {
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -300,14 +300,14 @@ HTTP/1.1 200 OK
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      "jsonMode==relaxed" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -315,7 +315,7 @@ http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed', {
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -358,14 +358,14 @@ SHELL JSON Mode is very useful since it *allows to use the response body directl
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
      "jsonMode==shell" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -373,7 +373,7 @@ http GET "[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell', {
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -417,15 +417,15 @@ The `rep` query parameter can also be used for switching between representations
 [source,bash]
 ----
 # Standard representation
-curl -i -X GET "[INSTANCE-URL]/inventory?rep=s" \
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=s" \
      -H "Authorization: Basic [BASIC-AUTH]"
 
 # HAL representation
-curl -i -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=hal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 
 # SHAL representation
-curl -i -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=shal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -433,17 +433,17 @@ curl -i -X GET "[INSTANCE-URL]/inventory?rep=shal" \
 [source,bash]
 ----
 # Standard representation
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "rep==s" \
      "Authorization:Basic [BASIC-AUTH]"
 
 # HAL representation
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "rep==hal" \
      "Authorization:Basic [BASIC-AUTH]"
 
 # SHAL representation
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "rep==shal" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -452,7 +452,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 // Standard representation
-fetch('[INSTANCE-URL]/inventory?rep=s', {
+fetch('[RESTHEART-URL]/inventory?rep=s', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -465,7 +465,7 @@ fetch('[INSTANCE-URL]/inventory?rep=s', {
 .catch(error => console.error('Error:', error));
 
 // HAL representation
-fetch('[INSTANCE-URL]/inventory?rep=hal', {
+fetch('[RESTHEART-URL]/inventory?rep=hal', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -478,7 +478,7 @@ fetch('[INSTANCE-URL]/inventory?rep=hal', {
 .catch(error => console.error('Error:', error));
 
 // SHAL representation
-fetch('[INSTANCE-URL]/inventory?rep=shal', {
+fetch('[RESTHEART-URL]/inventory?rep=shal', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -506,14 +506,14 @@ A collection represented with `HAL` has its own _properties_, *embedded resource
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?rep=hal" \
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=hal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "rep==hal" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -521,7 +521,7 @@ http GET "[INSTANCE-URL]/inventory" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?rep=hal', {
+fetch('[RESTHEART-URL]/inventory?rep=hal', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -724,14 +724,14 @@ In the following response the collection /inventory has the properties `_id`, `_
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?rep=shal" \
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=shal" \
      -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
      "rep==shal" \
      "Authorization:Basic [BASIC-AUTH]"
 ----
@@ -739,7 +739,7 @@ http GET "[INSTANCE-URL]/inventory" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?rep=shal', {
+fetch('[RESTHEART-URL]/inventory?rep=shal', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

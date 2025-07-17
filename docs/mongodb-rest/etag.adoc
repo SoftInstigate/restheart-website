@@ -30,7 +30,7 @@ resource, included file resources.
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test' \
+curl -i -X PUT '[RESTHEART-URL]/test' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a db for testing"}'
@@ -39,7 +39,7 @@ curl -i -X PUT '[INSTANCE-URL]/test' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test' \
+http PUT '[RESTHEART-URL]/test' \
   Content-Type:application/json \
   --auth '[BASIC-AUTH]' \
   descr="a db for testing"
@@ -48,7 +48,7 @@ http PUT '[INSTANCE-URL]/test' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test', {
+fetch('[RESTHEART-URL]/test', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ ETag: 55e84b95c2e66d1e0a8e46b2
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test/coll' \
+curl -i -X PUT '[RESTHEART-URL]/test/coll' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a collection for testing"}'
@@ -82,7 +82,7 @@ curl -i -X PUT '[INSTANCE-URL]/test/coll' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test/coll' \
+http PUT '[RESTHEART-URL]/test/coll' \
   Content-Type:application/json \
   --auth '[BASIC-AUTH]' \
   descr="a collection for testing"
@@ -91,7 +91,7 @@ http PUT '[INSTANCE-URL]/test/coll' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll', {
+fetch('[RESTHEART-URL]/test/coll', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ ETag: 55e84be2c2e66d1e0a8e46b3
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X PUT '[RESTHEART-URL]/test/coll/doc' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descr": "a document for testing"}'
@@ -125,7 +125,7 @@ curl -i -X PUT '[INSTANCE-URL]/test/coll/doc' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test/coll/doc' \
+http PUT '[RESTHEART-URL]/test/coll/doc' \
   Content-Type:application/json \
   --auth '[BASIC-AUTH]' \
   descr="a document for testing"
@@ -134,7 +134,7 @@ http PUT '[INSTANCE-URL]/test/coll/doc' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc', {
+fetch('[RESTHEART-URL]/test/coll/doc', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -160,21 +160,21 @@ ETag: 55e84c0ac2e66d1e0a8e46b4
   
 [source,bash]
 ----
-curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[RESTHEART-URL]/test/coll/doc' \
   -u '[BASIC-AUTH]'
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET '[INSTANCE-URL]/test/coll/doc' \
+http GET '[RESTHEART-URL]/test/coll/doc' \
   --auth '[BASIC-AUTH]'
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc', {
+fetch('[RESTHEART-URL]/test/coll/doc', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -209,7 +209,7 @@ check with the `checkEtag` query parameter.
   
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -u '[BASIC-AUTH]' \
   -d '{"descry": "a document for testing but modified"}'
@@ -218,7 +218,7 @@ curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+http PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   Content-Type:application/json \
   --auth '[BASIC-AUTH]' \
   descry="a document for testing but modified"
@@ -227,7 +227,7 @@ http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+fetch('[RESTHEART-URL]/test/coll/doc?checkEtag', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ Let's try to pass now a wrong ETag via the _If-Match_ request header
   
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -H 'If-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]' \
@@ -270,7 +270,7 @@ curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+http PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   Content-Type:application/json \
   If-Match:'[ETAG-VALUE]' \
   --auth '[BASIC-AUTH]' \
@@ -280,7 +280,7 @@ http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+fetch('[RESTHEART-URL]/test/coll/doc?checkEtag', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -314,7 +314,7 @@ Let's try to pass now the correct ETag via the `If-Match` request header
   
 [source,bash]
 ----
-curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+curl -i -X PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   -H 'Content-Type: application/json' \
   -H 'If-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]' \
@@ -324,7 +324,7 @@ curl -i -X PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== HTTPie
 [source,bash]
 ----
-http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
+http PUT '[RESTHEART-URL]/test/coll/doc?checkEtag' \
   Content-Type:application/json \
   If-Match:'[ETAG-VALUE]' \
   --auth '[BASIC-AUTH]' \
@@ -334,7 +334,7 @@ http PUT '[INSTANCE-URL]/test/coll/doc?checkEtag' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc?checkEtag', {
+fetch('[RESTHEART-URL]/test/coll/doc?checkEtag', {
   method: 'PUT',
   headers: {
     'Content-Type': 'application/json',
@@ -375,21 +375,21 @@ This is especially useful for file resources.
   
 [source,bash]
 ----
-curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[RESTHEART-URL]/test/coll/doc' \
   -u '[BASIC-AUTH]'
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET '[INSTANCE-URL]/test/coll/doc' \
+http GET '[RESTHEART-URL]/test/coll/doc' \
   --auth '[BASIC-AUTH]'
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc', {
+fetch('[RESTHEART-URL]/test/coll/doc', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -412,7 +412,7 @@ ETag: 55e84c0ac2e66d1e0a8e46b4
   
 [source,bash]
 ----
-curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
+curl -i -X GET '[RESTHEART-URL]/test/coll/doc' \
   -H 'If-None-Match: [ETAG-VALUE]' \
   -u '[BASIC-AUTH]'
 ----
@@ -420,7 +420,7 @@ curl -i -X GET '[INSTANCE-URL]/test/coll/doc' \
 ==== HTTPie
 [source,bash]
 ----
-http GET '[INSTANCE-URL]/test/coll/doc' \
+http GET '[RESTHEART-URL]/test/coll/doc' \
   If-None-Match:'[ETAG-VALUE]' \
   --auth '[BASIC-AUTH]'
 ----
@@ -428,7 +428,7 @@ http GET '[INSTANCE-URL]/test/coll/doc' \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/test/coll/doc', {
+fetch('[RESTHEART-URL]/test/coll/doc', {
   method: 'GET',
   headers: {
     'If-None-Match': '[ETAG-VALUE]',

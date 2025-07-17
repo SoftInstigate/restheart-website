@@ -41,7 +41,7 @@ Create the *star-wars-characters* collection. This is where the data will be ins
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/star-wars-characters \
+curl -i -X PUT [RESTHEART-URL]/star-wars-characters \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -49,14 +49,14 @@ curl -i -X PUT [INSTANCE-URL]/star-wars-characters \
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/star-wars-characters Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/star-wars-characters Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/star-wars-characters', {
+fetch('[RESTHEART-URL]/star-wars-characters', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -76,7 +76,7 @@ Create the *gql-apps* collection. This is where the GraphQL App definition will 
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/gql-apps \
+curl -i -X PUT [RESTHEART-URL]/gql-apps \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -84,14 +84,14 @@ curl -i -X PUT [INSTANCE-URL]/gql-apps \
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/gql-apps Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/gql-apps Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/gql-apps', {
+fetch('[RESTHEART-URL]/gql-apps', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -113,7 +113,7 @@ Create documents in the *star-wars-characters* collection:
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
+curl -i -X POST [RESTHEART-URL]/star-wars-characters?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
@@ -132,7 +132,7 @@ curl -i -X POST [INSTANCE-URL]/star-wars-characters?wm=upsert \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
+http POST [RESTHEART-URL]/star-wars-characters wm==upsert \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   <<< '[
@@ -151,7 +151,7 @@ http POST [INSTANCE-URL]/star-wars-characters wm==upsert \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/star-wars-characters?wm=upsert', {
+fetch('[RESTHEART-URL]/star-wars-characters?wm=upsert', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -193,7 +193,7 @@ To insert the GraphQL app definition, run the following:
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
+curl -i -X POST [RESTHEART-URL]/gql-apps?wm=upsert \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d @graphql-app-definition.json
@@ -203,7 +203,7 @@ curl -i -X POST [INSTANCE-URL]/gql-apps?wm=upsert \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/gql-apps wm==upsert \
+http POST [RESTHEART-URL]/gql-apps wm==upsert \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   < graphql-app-definition.json
@@ -213,7 +213,7 @@ http POST [INSTANCE-URL]/gql-apps wm==upsert \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/gql-apps?wm=upsert', {
+fetch('[RESTHEART-URL]/gql-apps?wm=upsert', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -249,7 +249,7 @@ The GraphQL API is ready to use!
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -i -X POST [RESTHEART-URL]/graphql/star-wars \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -285,7 +285,7 @@ echo '{
             homePlanet
         }
     }
-  }' | http POST [INSTANCE-URL]/graphql/star-wars \
+  }' | http POST [RESTHEART-URL]/graphql/star-wars \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/graphql
 ----
@@ -294,7 +294,7 @@ echo '{
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/graphql/star-wars', {
+fetch('[RESTHEART-URL]/graphql/star-wars', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -353,7 +353,7 @@ fetch('[INSTANCE-URL]/graphql/star-wars', {
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/graphql/star-wars \
+curl -i -X POST [RESTHEART-URL]/graphql/star-wars \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -383,7 +383,7 @@ echo '{
             length
         }
     }
-  }' | http POST [INSTANCE-URL]/graphql/star-wars \
+  }' | http POST [RESTHEART-URL]/graphql/star-wars \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/graphql
 ----
@@ -392,7 +392,7 @@ echo '{
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/graphql/star-wars', {
+fetch('[RESTHEART-URL]/graphql/star-wars', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',

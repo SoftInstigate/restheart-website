@@ -47,13 +47,13 @@ TIP: **mongoRealAuthenticator** can be configured to use different properties fo
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X GET [INSTANCE-URL]/users
+curl -i -u [BASIC-AUTH] -X GET [RESTHEART-URL]/users
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] GET [INSTANCE-URL]/users
+http -a [BASIC-AUTH] GET [RESTHEART-URL]/users
 ----
 
 ==== JavaScript
@@ -63,7 +63,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/users', {
+fetch('[RESTHEART-URL]/users', {
     method: 'GET',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -106,7 +106,7 @@ NOTE: For security reasons, it not possible to use the `filter` query parameter 
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/users \
+curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/users \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "foo",
@@ -118,7 +118,7 @@ curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/users \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] POST [INSTANCE-URL]/users \
+http -a [BASIC-AUTH] POST [RESTHEART-URL]/users \
   Content-Type:application/json \
   _id="foo" \
   roles:='["user"]' \
@@ -132,7 +132,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/users', {
+fetch('[RESTHEART-URL]/users', {
     method: 'POST',
     headers: {
         'Authorization': `Basic ${credentials}`,
@@ -163,7 +163,7 @@ NOTE: The password is automatically encrypted by RESTHeart.
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X PATCH [INSTANCE-URL]/users/foo \
+curl -i -u [BASIC-AUTH] -X PATCH [RESTHEART-URL]/users/foo \
   -H "Content-Type: application/json" \
   -d '{
     "password": "betterSecret"
@@ -173,7 +173,7 @@ curl -i -u [BASIC-AUTH] -X PATCH [INSTANCE-URL]/users/foo \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] PATCH [INSTANCE-URL]/users/foo \
+http -a [BASIC-AUTH] PATCH [RESTHEART-URL]/users/foo \
   Content-Type:application/json \
   password="betterSecret"
 ----
@@ -185,7 +185,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/users/foo', {
+fetch('[RESTHEART-URL]/users/foo', {
     method: 'PATCH',
     headers: {
         'Authorization': `Basic ${credentials}`,
@@ -212,13 +212,13 @@ fetch('[INSTANCE-URL]/users/foo', {
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X DELETE [INSTANCE-URL]/users/foo
+curl -i -u [BASIC-AUTH] -X DELETE [RESTHEART-URL]/users/foo
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] DELETE [INSTANCE-URL]/users/foo
+http -a [BASIC-AUTH] DELETE [RESTHEART-URL]/users/foo
 ----
 
 ==== JavaScript
@@ -228,7 +228,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/users/foo', {
+fetch('[RESTHEART-URL]/users/foo', {
     method: 'DELETE',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -251,7 +251,7 @@ fetch('[INSTANCE-URL]/users/foo', {
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/acl \
+curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/acl \
   -H "Content-Type: application/json" \
   -d '{
   "predicate": "path-prefix[/inventory] and method[GET]",
@@ -263,7 +263,7 @@ curl -i -u [BASIC-AUTH] -X POST [INSTANCE-URL]/acl \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] POST [INSTANCE-URL]/acl \
+http -a [BASIC-AUTH] POST [RESTHEART-URL]/acl \
   Content-Type:application/json \
   predicate="path-prefix[/inventory] and method[GET]" \
   roles:='["user"]' \
@@ -277,7 +277,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/acl', {
+fetch('[RESTHEART-URL]/acl', {
     method: 'POST',
     headers: {
         'Authorization': `Basic ${credentials}`,

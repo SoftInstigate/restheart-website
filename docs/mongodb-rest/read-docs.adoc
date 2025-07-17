@@ -25,7 +25,7 @@ To retrieve documents from a collection, send a `GET` request to the collection 
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/inventory \
+curl -i -X GET [RESTHEART-URL]/inventory \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -33,7 +33,7 @@ curl -i -X GET [INSTANCE-URL]/inventory \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/inventory \
+http GET [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -41,7 +41,7 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory', {
+fetch('[RESTHEART-URL]/inventory', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -70,7 +70,7 @@ Example - get the second page with 3 documents per page:
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/inventory?page=2&pagesize=3 \
+curl -i -X GET [RESTHEART-URL]/inventory?page=2&pagesize=3 \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -78,7 +78,7 @@ curl -i -X GET [INSTANCE-URL]/inventory?page=2&pagesize=3 \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/inventory \
+http GET [RESTHEART-URL]/inventory \
   Authorization:"Basic [BASIC-AUTH]" \
   page==2 \
   pagesize==3
@@ -88,7 +88,7 @@ http GET [INSTANCE-URL]/inventory \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?page=2&pagesize=3', {
+fetch('[RESTHEART-URL]/inventory?page=2&pagesize=3', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -108,7 +108,7 @@ Use the `filter` parameter to specify which documents to return using MongoDB qu
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"qty":{"$gt":50}}'
 ----
@@ -117,7 +117,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"qty\":{\"\$gt\":50}}"
 ----
@@ -127,7 +127,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"qty":{"$gt":50}}');
-fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -149,7 +149,7 @@ Combine multiple conditions using MongoDB operators like `$and`:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}'
 ----
@@ -158,7 +158,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}"
 ----
@@ -168,7 +168,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"$and":[{"qty":{"$gt":75}},{"status":"D"}]}');
-fetch(`[INSTANCE-URL]/inventory?filter=${filter}`, {
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -186,7 +186,7 @@ Alternatively, you can use multiple filter parameters:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"qty":{"$gt":75}}' \
   --data-urlencode 'filter={"status":"D"}'
@@ -196,7 +196,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"qty\":{\"\$gt\":75}}" \
   filter=="{\"status\":\"D\"}"
@@ -206,7 +206,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
+fetch('[RESTHEART-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -226,7 +226,7 @@ Instead of retrieving documents, you can count them by appending `_size` to the 
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory/_size" \
+curl -i -X GET "[RESTHEART-URL]/inventory/_size" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"status":"A"}'
 ----
@@ -235,7 +235,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory/_size" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory/_size" \
+http GET "[RESTHEART-URL]/inventory/_size" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"status\":\"A\"}"
 ----
@@ -245,7 +245,7 @@ http GET "[INSTANCE-URL]/inventory/_size" \
 [source,javascript]
 ----
 const filter = encodeURIComponent('{"status":"A"}');
-fetch(`[INSTANCE-URL]/inventory/_size?filter=${filter}`, {
+fetch(`[RESTHEART-URL]/inventory/_size?filter=${filter}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -269,7 +269,7 @@ Use the `keys` parameter to specify which fields to include or exclude from the 
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode "keys={'item':1}"
 ----
@@ -278,7 +278,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   keys=="{'item':1}"
 ----
@@ -288,7 +288,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const keys = encodeURIComponent("{'item':1}");
-fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -308,7 +308,7 @@ This returns only the `_id` and `item` fields for each document.
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode "keys={'item':0}"
 ----
@@ -317,7 +317,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   keys=="{'item':0}"
 ----
@@ -327,7 +327,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const keys = encodeURIComponent("{'item':0}");
-fetch(`[INSTANCE-URL]/inventory?keys=${keys}`, {
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -347,7 +347,7 @@ This returns all fields except `item` for each document.
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode "keys={'item':1}" \
   --data-urlencode "keys={'qty':1}"
@@ -357,7 +357,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   keys=="{'item':1}" \
   keys=="{'qty':1}"
@@ -367,7 +367,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
+fetch('[RESTHEART-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -393,7 +393,7 @@ For simple sorting, use `sort=fieldname` for ascending order or `sort=-fieldname
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?sort=status" \
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -401,7 +401,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory?sort=status" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   sort==status
 ----
@@ -410,7 +410,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?sort=status', {
+fetch('[RESTHEART-URL]/inventory?sort=status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -430,7 +430,7 @@ For descending order:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?sort=-status" \
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=-status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -438,7 +438,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory?sort=-status" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   sort==-status
 ----
@@ -447,7 +447,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?sort=-status', {
+fetch('[RESTHEART-URL]/inventory?sort=-status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -467,7 +467,7 @@ Use multiple `sort` parameters to sort by multiple fields:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?sort=status&sort=-qty" \
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=status&sort=-qty" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -475,7 +475,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory?sort=status&sort=-qty" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   sort==status \
   sort==-qty
@@ -485,7 +485,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?sort=status&sort=-qty', {
+fetch('[RESTHEART-URL]/inventory?sort=status&sort=-qty', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -507,7 +507,7 @@ You can also use MongoDB's sort expression format:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'sort={"status":1,"qty":-1}'
 ----
@@ -516,7 +516,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   sort=="{\"status\":1,\"qty\":-1}"
 ----
@@ -526,7 +526,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const sort = encodeURIComponent('{"status":1,"qty":-1}');
-fetch(`[INSTANCE-URL]/inventory?sort=${sort}`, {
+fetch(`[RESTHEART-URL]/inventory?sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -546,7 +546,7 @@ Use dot notation to access nested document fields or array elements:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode "keys={'size.h':1}" \
   --data-urlencode "sort={'size.uom':1}"
@@ -556,7 +556,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   keys=="{'size.h':1}" \
   sort=="{'size.uom':1}"
@@ -568,7 +568,7 @@ http GET "[INSTANCE-URL]/inventory" \
 ----
 const keys = encodeURIComponent("{'size.h':1}");
 const sort = encodeURIComponent("{'size.uom':1}");
-fetch(`[INSTANCE-URL]/inventory?keys=${keys}&sort=${sort}`, {
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}&sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -594,7 +594,7 @@ Before using hints, create the indexes:
 
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/item" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/item" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"item": 1}}'
@@ -605,7 +605,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/item" \
 [source,bash]
 ----
 echo '{"keys": {"item": 1}}' | \
-http PUT "[INSTANCE-URL]/inventory/_indexes/item" \
+http PUT "[RESTHEART-URL]/inventory/_indexes/item" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -614,7 +614,7 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/item" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/item', {
+fetch('[RESTHEART-URL]/inventory/_indexes/item', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -636,7 +636,7 @@ fetch('[INSTANCE-URL]/inventory/_indexes/item', {
 
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/status" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/status" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys":{"status": 1}}'
@@ -647,7 +647,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/status" \
 [source,bash]
 ----
 echo '{"keys":{"status": 1}}' | \
-http PUT "[INSTANCE-URL]/inventory/_indexes/status" \
+http PUT "[RESTHEART-URL]/inventory/_indexes/status" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -656,7 +656,7 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/status" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/status', {
+fetch('[RESTHEART-URL]/inventory/_indexes/status', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -682,7 +682,7 @@ Specify which index to use:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   --data-urlencode "hint={'item':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -691,7 +691,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   hint=="{'item':1}"
 ----
@@ -701,7 +701,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'item':1}");
-fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -719,7 +719,7 @@ Or use the compact string format:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status" \
+curl -i -X GET "[RESTHEART-URL]/inventory?hint=%2Bitem&hint=-status" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -727,7 +727,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   hint=="+item" \
   hint=="-status"
@@ -737,7 +737,7 @@ http GET "[INSTANCE-URL]/inventory" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory?hint=%2Bitem&hint=-status', {
+fetch('[RESTHEART-URL]/inventory?hint=%2Bitem&hint=-status', {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -761,7 +761,7 @@ Force a collection scan instead of using indexes:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   --data-urlencode "hint={'$natural':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -770,7 +770,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   hint=="{'%24natural':1}"
 ----
@@ -780,7 +780,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'$natural':1}");
-fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -798,7 +798,7 @@ For a reverse collection scan:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   --data-urlencode "hint={'$natural':-1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -807,7 +807,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   hint=="{'%24natural':-1}"
 ----
@@ -817,7 +817,7 @@ http GET "[INSTANCE-URL]/inventory" \
 [source,javascript]
 ----
 const hint = encodeURIComponent("{'$natural':-1}");
-fetch(`[INSTANCE-URL]/inventory?hint=${hint}`, {
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }
@@ -839,7 +839,7 @@ First, create the text index:
 
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/text" \
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/text" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"keys": {"item": "text"}}'
@@ -850,7 +850,7 @@ curl -i -X PUT "[INSTANCE-URL]/inventory/_indexes/text" \
 [source,bash]
 ----
 echo '{"keys": {"item": "text"}}' | \
-http PUT "[INSTANCE-URL]/inventory/_indexes/text" \
+http PUT "[RESTHEART-URL]/inventory/_indexes/text" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -859,7 +859,7 @@ http PUT "[INSTANCE-URL]/inventory/_indexes/text" \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/inventory/_indexes/text', {
+fetch('[RESTHEART-URL]/inventory/_indexes/text', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -883,7 +883,7 @@ Then search and sort by relevance score:
 
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/inventory" \
+curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   --data-urlencode 'filter={"$text":{"$search":"paper"}}' \
   --data-urlencode 'keys={"item":1,"score":{"$meta":"textScore"}}' \
@@ -894,7 +894,7 @@ curl -i -X GET "[INSTANCE-URL]/inventory" \
 
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/inventory" \
+http GET "[RESTHEART-URL]/inventory" \
   Authorization:"Basic [BASIC-AUTH]" \
   filter=="{\"\$text\":{\"\$search\":\"paper\"}}" \
   keys=="{\"item\":1,\"score\":{\"\$meta\":\"textScore\"}}" \
@@ -908,7 +908,7 @@ http GET "[INSTANCE-URL]/inventory" \
 const filter = encodeURIComponent('{"$text":{"$search":"paper"}}');
 const keys = encodeURIComponent('{"item":1,"score":{"$meta":"textScore"}}');
 const sort = encodeURIComponent('{"score":{"$meta":"textScore"}}');
-fetch(`[INSTANCE-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
   }

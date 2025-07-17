@@ -43,7 +43,7 @@ You can create users using the `/users` collection with the temporary JWT token.
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/users \
+curl -i -X POST [RESTHEART-URL]/users \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -57,7 +57,7 @@ curl -i -X POST [INSTANCE-URL]/users \
 ==== HTTPie
 [source,bash]
 ----
-http POST [INSTANCE-URL]/users \
+http POST [RESTHEART-URL]/users \
   Authorization:"[BASIC-AUTH]" \
   _id=john_doe \
   password=SecurePassword123! \
@@ -68,7 +68,7 @@ http POST [INSTANCE-URL]/users \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/users', {
+fetch('[RESTHEART-URL]/users', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -122,7 +122,7 @@ Here's an example of creating a basic permission:
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -140,7 +140,7 @@ curl -i -X POST [INSTANCE-URL]/acl \
 ==== HTTPie
 [source,bash]
 ----
-http POST [INSTANCE-URL]/acl \
+http POST [RESTHEART-URL]/acl \
   Authorization:"[BASIC-AUTH]" \
   _id=project-manager-permission \
   roles:='["project_manager"]' \
@@ -155,7 +155,7 @@ http POST [INSTANCE-URL]/acl \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/acl', {
+fetch('[RESTHEART-URL]/acl', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -227,7 +227,7 @@ Update user information or roles:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/users/john_doe \
+curl -i -X PATCH [RESTHEART-URL]/users/john_doe \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -239,7 +239,7 @@ curl -i -X PATCH [INSTANCE-URL]/users/john_doe \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH [INSTANCE-URL]/users/john_doe \
+http PATCH [RESTHEART-URL]/users/john_doe \
   Authorization:"[BASIC-AUTH]" \
   roles:='["admin"]' \
   email=john.updated@example.com
@@ -248,7 +248,7 @@ http PATCH [INSTANCE-URL]/users/john_doe \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/users/john_doe', {
+fetch('[RESTHEART-URL]/users/john_doe', {
   method: 'PATCH',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -276,21 +276,21 @@ Remove a user from the system:
 ==== cURL
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/users/john_doe \
+curl -i -X DELETE [RESTHEART-URL]/users/john_doe \
   -H "Authorization: [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/users/john_doe \
+http DELETE [RESTHEART-URL]/users/john_doe \
   Authorization:"[BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/users/john_doe', {
+fetch('[RESTHEART-URL]/users/john_doe', {
   method: 'DELETE',
   headers: {
     'Authorization': '[BASIC-AUTH]'

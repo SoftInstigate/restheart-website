@@ -56,21 +56,21 @@ First, create a schema store to hold your JSON Schema definitions:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/_schemas" \
+curl -i -X PUT "[RESTHEART-URL]/_schemas" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http PUT "[INSTANCE-URL]/_schemas" \
+http PUT "[RESTHEART-URL]/_schemas" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/_schemas', {
+fetch('[RESTHEART-URL]/_schemas', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -93,7 +93,7 @@ Create a schema document that defines the structure for your data:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
+curl -i -X PUT "[RESTHEART-URL]/_schemas/address?wm=upsert" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -122,7 +122,7 @@ echo '{
     "country": { "type": "string"}
   },
   "required": ["address", "city", "country"]
-}' | http PUT "[INSTANCE-URL]/_schemas/address?wm=upsert" \
+}' | http PUT "[RESTHEART-URL]/_schemas/address?wm=upsert" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -130,7 +130,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/_schemas/address?wm=upsert', {
+fetch('[RESTHEART-URL]/_schemas/address?wm=upsert', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -165,21 +165,21 @@ NOTE: RESTHeart automatically generates an `id` property for the schema (not to 
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/_schemas/address" \
+curl -i -X GET "[RESTHEART-URL]/_schemas/address" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/_schemas/address" \
+http GET "[RESTHEART-URL]/_schemas/address" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/_schemas/address', {
+fetch('[RESTHEART-URL]/_schemas/address', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -219,7 +219,7 @@ To enforce the schema on a collection, update the collection's metadata:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/addresses" \
+curl -i -X PUT "[RESTHEART-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -232,7 +232,7 @@ curl -i -X PUT "[INSTANCE-URL]/addresses" \
 ==== HTTPie
 [source,bash]
 ----
-http PUT "[INSTANCE-URL]/addresses" \
+http PUT "[RESTHEART-URL]/addresses" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   jsonSchema:='{
@@ -243,7 +243,7 @@ http PUT "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/addresses', {
+fetch('[RESTHEART-URL]/addresses', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -283,7 +283,7 @@ MongoDB uses BSON (Binary JSON) which supports additional data types not availab
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/_schemas/bson" \
+curl -i -X PUT "[RESTHEART-URL]/_schemas/bson" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -330,7 +330,7 @@ echo '{
       "additionalProperties": false
     }
   }
-}' | http PUT "[INSTANCE-URL]/_schemas/bson" \
+}' | http PUT "[RESTHEART-URL]/_schemas/bson" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -338,7 +338,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/_schemas/bson', {
+fetch('[RESTHEART-URL]/_schemas/bson', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -382,7 +382,7 @@ You can reference these BSON type definitions in other schemas using the `$ref` 
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/_schemas/post" \
+curl -i -X PUT "[RESTHEART-URL]/_schemas/post" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -417,7 +417,7 @@ echo '{
     "publishDate": { "$ref": "http://schema-store/restheart/bson#/definitions/date" }
   },
   "required": ["title", "content"]
-}' | http PUT "[INSTANCE-URL]/_schemas/post" \
+}' | http PUT "[RESTHEART-URL]/_schemas/post" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -425,7 +425,7 @@ echo '{
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/_schemas/post', {
+fetch('[RESTHEART-URL]/_schemas/post', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -465,7 +465,7 @@ Let's see validation in action by attempting to create both valid and invalid do
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/addresses" \
+curl -i -X POST "[RESTHEART-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -476,7 +476,7 @@ curl -i -X POST "[INSTANCE-URL]/addresses" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/addresses" \
+http POST "[RESTHEART-URL]/addresses" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   address="Via D'Annunzio 28"
@@ -485,7 +485,7 @@ http POST "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/addresses', {
+fetch('[RESTHEART-URL]/addresses', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -528,7 +528,7 @@ The request is rejected because it's missing required fields defined in the sche
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/addresses" \
+curl -i -X POST "[RESTHEART-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -542,7 +542,7 @@ curl -i -X POST "[INSTANCE-URL]/addresses" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/addresses" \
+http POST "[RESTHEART-URL]/addresses" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   address="Via D'Annunzio, 28" \
@@ -554,7 +554,7 @@ http POST "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/addresses', {
+fetch('[RESTHEART-URL]/addresses', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -623,7 +623,7 @@ The jsonSchema validator has some limitations to be aware of:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH "[INSTANCE-URL]/addresses/*" \
+curl -i -X PATCH "[RESTHEART-URL]/addresses/*" \
   --data-urlencode 'filter={"country":"Italy"}' \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
@@ -633,7 +633,7 @@ curl -i -X PATCH "[INSTANCE-URL]/addresses/*" \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
+http PATCH "[RESTHEART-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   updated:=true
@@ -642,7 +642,7 @@ http PATCH "[INSTANCE-URL]/addresses/*?filter={\"country\":\"Italy\"}" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/addresses/*?filter={"country":"Italy"}', {
+fetch('[RESTHEART-URL]/addresses/*?filter={"country":"Italy"}', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -681,7 +681,7 @@ To allow bulk PATCH operations without validation, add the `skipNotSupported` me
 ==== cURL
 [source,bash]
 ----
-curl -i -X PATCH "[INSTANCE-URL]/addresses" \
+curl -i -X PATCH "[RESTHEART-URL]/addresses" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -695,7 +695,7 @@ curl -i -X PATCH "[INSTANCE-URL]/addresses" \
 ==== HTTPie
 [source,bash]
 ----
-http PATCH "[INSTANCE-URL]/addresses" \
+http PATCH "[RESTHEART-URL]/addresses" \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   jsonSchema:='{
@@ -707,7 +707,7 @@ http PATCH "[INSTANCE-URL]/addresses" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/addresses', {
+fetch('[RESTHEART-URL]/addresses', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',

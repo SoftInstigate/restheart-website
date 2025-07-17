@@ -22,38 +22,22 @@ a standard method for an HTTP user agent to provide a *username* and
 
 Here's how to authenticate with basic credentials:
 
-++++
-<div class="code-tabs" x-data="{ activeTab: 'curl' }">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
-  </div>
 
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
-curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
-http -a [BASIC-AUTH] GET [INSTANCE-URL]/
+http -a [BASIC-AUTH] GET [RESTHEART-URL]/
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -61,7 +45,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/', {
+fetch('[RESTHEART-URL]/', {
     method: 'GET',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -73,11 +57,6 @@ fetch('[INSTANCE-URL]/', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-  </div>
-</div>
-++++
 
 === Basic Authentication for dummies
 
@@ -127,38 +106,21 @@ invalidate it. Of course clients can only request their own tokens
 
 To get information about your auth token:
 
-++++
-<div class="code-tabs" x-data="{ activeTab: 'curl' }">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
-  </div>
-
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
-curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/tokens/userid
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/tokens/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
-http -a [BASIC-AUTH] GET [INSTANCE-URL]/tokens/userid
+http -a [BASIC-AUTH] GET [RESTHEART-URL]/tokens/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -166,7 +128,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/tokens/userid', {
+fetch('[RESTHEART-URL]/tokens/userid', {
     method: 'GET',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -179,45 +141,23 @@ fetch('[INSTANCE-URL]/tokens/userid', {
 .catch(error => console.error('Error:', error));
 ----
 
-++++
-  </div>
-</div>
-++++
-
 To invalidate your auth token:
 
-++++
-<div class="code-tabs" x-data="{ activeTab: 'curl' }">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
-  </div>
-
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
-curl -i --user [BASIC-AUTH] -X DELETE [INSTANCE-URL]/tokens/userid
+curl -i --user [BASIC-AUTH] -X DELETE [RESTHEART-URL]/tokens/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
-http -a [BASIC-AUTH] DELETE [INSTANCE-URL]/tokens/userid
+http -a [BASIC-AUTH] DELETE [RESTHEART-URL]/tokens/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -225,7 +165,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/tokens/userid', {
+fetch('[RESTHEART-URL]/tokens/userid', {
     method: 'DELETE',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -240,11 +180,6 @@ fetch('[INSTANCE-URL]/tokens/userid', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-  </div>
-</div>
-++++
 
 TIP: The Authentication Token is a very important feature when you are
 developing a web application. Since every request needs to include the
@@ -273,38 +208,21 @@ The default restheart configuration file sets up the useful service **roles**, b
 
 Here's how to check credentials using the roles endpoint:
 
-++++
-<div class="code-tabs" x-data="{ activeTab: 'curl' }">
-  <div class="tab-buttons">
-    <button @click="activeTab = 'curl'" :class="{ active: activeTab === 'curl' }">cURL</button>
-    <button @click="activeTab = 'httpie'" :class="{ active: activeTab === 'httpie' }">HTTPie</button>
-    <button @click="activeTab = 'javascript'" :class="{ active: activeTab === 'javascript' }">JavaScript</button>
-  </div>
-
-  <div x-show="activeTab === 'curl'" class="tab-content">
-++++
+==== cURL
 
 [source,bash]
 ----
-curl -i --user [BASIC-AUTH] -X GET [INSTANCE-URL]/roles/userid
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/roles/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'httpie'" class="tab-content">
-++++
+==== HTTPie
 
 [source,bash]
 ----
-http -a [BASIC-AUTH] GET [INSTANCE-URL]/roles/userid
+http -a [BASIC-AUTH] GET [RESTHEART-URL]/roles/userid
 ----
 
-++++
-  </div>
-
-  <div x-show="activeTab === 'javascript'" class="tab-content">
-++++
+==== JavaScript
 
 [source,javascript]
 ----
@@ -312,7 +230,7 @@ const username = 'your-username';
 const password = 'your-password';
 const credentials = btoa(`${username}:${password}`);
 
-fetch('[INSTANCE-URL]/roles/userid', {
+fetch('[RESTHEART-URL]/roles/userid', {
     method: 'GET',
     headers: {
         'Authorization': `Basic ${credentials}`
@@ -324,11 +242,6 @@ fetch('[INSTANCE-URL]/roles/userid', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
-++++
-  </div>
-</div>
-++++
 
 The possible response codes of the request GET `/roles/<userid>`
 are:

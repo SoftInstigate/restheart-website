@@ -41,19 +41,19 @@ Create the collection for storing GraphQL app definitions:
 
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/gql-apps" \
+curl -i -X PUT "[RESTHEART-URL]/gql-apps" \
   -H "Authorization: [BASIC-AUTH]"
 ----
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/gql-apps \
+http PUT [RESTHEART-URL]/gql-apps \
   Authorization:[BASIC-AUTH]
 ----
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/gql-apps', {
+fetch('[RESTHEART-URL]/gql-apps', {
   method: 'PUT',
   headers: {
     'Authorization': '[BASIC-AUTH]'
@@ -73,19 +73,19 @@ Let's create a simple book catalog API. First, create a collection for books:
 
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/books" \
+curl -i -X PUT "[RESTHEART-URL]/books" \
   -H "Authorization: [BASIC-AUTH]"
 ----
 
 [source,bash]
 ----
-http PUT [INSTANCE-URL]/books \
+http PUT [RESTHEART-URL]/books \
   Authorization:[BASIC-AUTH]
 ----
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/books', {
+fetch('[RESTHEART-URL]/books', {
   method: 'PUT',
   headers: {
     'Authorization': '[BASIC-AUTH]'
@@ -103,7 +103,7 @@ Add some sample data:
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/books" \
+curl -i -X POST "[RESTHEART-URL]/books" \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '[
@@ -126,7 +126,7 @@ curl -i -X POST "[INSTANCE-URL]/books" \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/books \
+http POST [RESTHEART-URL]/books \
   Authorization:[BASIC-AUTH] \
   Content-Type:application/json \
   _id:=1 \
@@ -160,7 +160,7 @@ const books = [
   }
 ];
 
-fetch('[INSTANCE-URL]/books', {
+fetch('[RESTHEART-URL]/books', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -180,7 +180,7 @@ Now, create your GraphQL app definition:
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/gql-apps" \
+curl -i -X POST "[RESTHEART-URL]/gql-apps" \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -215,7 +215,7 @@ curl -i -X POST "[INSTANCE-URL]/gql-apps" \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/gql-apps \
+http POST [RESTHEART-URL]/gql-apps \
   Authorization:[BASIC-AUTH] \
   Content-Type:application/json \
   _id="book-catalog" \
@@ -277,7 +277,7 @@ const graphqlApp = {
   }
 };
 
-fetch('[INSTANCE-URL]/gql-apps', {
+fetch('[RESTHEART-URL]/gql-apps', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -299,7 +299,7 @@ fetch('[INSTANCE-URL]/gql-apps', {
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/books" \
+curl -i -X POST "[RESTHEART-URL]/graphql/books" \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -319,7 +319,7 @@ echo '{
         author
         year
     }
-}' | http POST [INSTANCE-URL]/graphql/books \
+}' | http POST [RESTHEART-URL]/graphql/books \
   Authorization:[BASIC-AUTH] \
   Content-Type:application/graphql
 ----
@@ -334,7 +334,7 @@ const query = `{
   }
 }`;
 
-fetch('[INSTANCE-URL]/graphql/books', {
+fetch('[RESTHEART-URL]/graphql/books', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',
@@ -354,7 +354,7 @@ fetch('[INSTANCE-URL]/graphql/books', {
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/books" \
+curl -i -X POST "[RESTHEART-URL]/graphql/books" \
   -H "Authorization: [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -372,7 +372,7 @@ echo '{
         title
         author
     }
-}' | http POST [INSTANCE-URL]/graphql/books \
+}' | http POST [RESTHEART-URL]/graphql/books \
   Authorization:[BASIC-AUTH] \
   Content-Type:application/graphql
 ----
@@ -386,7 +386,7 @@ const query = `{
   }
 }`;
 
-fetch('[INSTANCE-URL]/graphql/books', {
+fetch('[RESTHEART-URL]/graphql/books', {
   method: 'POST',
   headers: {
     'Authorization': '[BASIC-AUTH]',

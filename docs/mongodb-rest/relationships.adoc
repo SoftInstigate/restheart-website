@@ -80,7 +80,7 @@ This pattern allows you to create hierarchical data where each document referenc
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/categories \
+curl -i -X PUT [RESTHEART-URL]/categories \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}'
@@ -90,7 +90,7 @@ curl -i -X PUT [INSTANCE-URL]/categories \
 [source,bash]
 ----
 echo '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}' | \
-http PUT [INSTANCE-URL]/categories \
+http PUT [RESTHEART-URL]/categories \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -98,7 +98,7 @@ http PUT [INSTANCE-URL]/categories \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/categories', {
+fetch('[RESTHEART-URL]/categories', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -130,7 +130,7 @@ fetch('[INSTANCE-URL]/categories', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/categories/electronics \
+curl -i -X PUT [RESTHEART-URL]/categories/electronics \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Electronics", "description": "Electronic devices and accessories"}'
@@ -140,7 +140,7 @@ curl -i -X PUT [INSTANCE-URL]/categories/electronics \
 [source,bash]
 ----
 echo '{"name": "Electronics", "description": "Electronic devices and accessories"}' | \
-http PUT [INSTANCE-URL]/categories/electronics \
+http PUT [RESTHEART-URL]/categories/electronics \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -148,7 +148,7 @@ http PUT [INSTANCE-URL]/categories/electronics \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/categories/electronics', {
+fetch('[RESTHEART-URL]/categories/electronics', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -174,7 +174,7 @@ fetch('[INSTANCE-URL]/categories/electronics', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/categories/smartphones \
+curl -i -X PUT [RESTHEART-URL]/categories/smartphones \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}'
@@ -184,7 +184,7 @@ curl -i -X PUT [INSTANCE-URL]/categories/smartphones \
 [source,bash]
 ----
 echo '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}' | \
-http PUT [INSTANCE-URL]/categories/smartphones \
+http PUT [RESTHEART-URL]/categories/smartphones \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -192,7 +192,7 @@ http PUT [INSTANCE-URL]/categories/smartphones \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/categories/smartphones', {
+fetch('[RESTHEART-URL]/categories/smartphones', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -217,7 +217,7 @@ fetch('[INSTANCE-URL]/categories/smartphones', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/categories/laptops \
+curl -i -X PUT [RESTHEART-URL]/categories/laptops \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}'
@@ -227,7 +227,7 @@ curl -i -X PUT [INSTANCE-URL]/categories/laptops \
 [source,bash]
 ----
 echo '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}' | \
-http PUT [INSTANCE-URL]/categories/laptops \
+http PUT [RESTHEART-URL]/categories/laptops \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -235,7 +235,7 @@ http PUT [INSTANCE-URL]/categories/laptops \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/categories/laptops', {
+fetch('[RESTHEART-URL]/categories/laptops', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -262,14 +262,14 @@ fetch('[INSTANCE-URL]/categories/laptops', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f \
+curl -i -X GET [RESTHEART-URL]/categories/smartphones?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET [INSTANCE-URL]/categories/smartphones \
+http GET [RESTHEART-URL]/categories/smartphones \
   Authorization:"Basic [BASIC-AUTH]" \
   rep==HAL \
   hal==f
@@ -278,7 +278,7 @@ http GET [INSTANCE-URL]/categories/smartphones \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/categories/smartphones?rep=HAL&hal=f', {
+fetch('[RESTHEART-URL]/categories/smartphones?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -320,7 +320,7 @@ In this pattern, a document owns references to multiple related documents. For e
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums \
+curl -i -X PUT [RESTHEART-URL]/albums \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"description": "Music albums"}'
@@ -330,7 +330,7 @@ curl -i -X PUT [INSTANCE-URL]/albums \
 [source,bash]
 ----
 echo '{"description": "Music albums"}' | \
-http PUT [INSTANCE-URL]/albums \
+http PUT [RESTHEART-URL]/albums \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -338,7 +338,7 @@ http PUT [INSTANCE-URL]/albums \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums', {
+fetch('[RESTHEART-URL]/albums', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -363,7 +363,7 @@ fetch('[INSTANCE-URL]/albums', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/bands \
+curl -i -X PUT [RESTHEART-URL]/bands \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}'
@@ -373,7 +373,7 @@ curl -i -X PUT [INSTANCE-URL]/bands \
 [source,bash]
 ----
 echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}' | \
-http PUT [INSTANCE-URL]/bands \
+http PUT [RESTHEART-URL]/bands \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -381,7 +381,7 @@ http PUT [INSTANCE-URL]/bands \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands', {
+fetch('[RESTHEART-URL]/bands', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -413,7 +413,7 @@ fetch('[INSTANCE-URL]/bands', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums/album1 \
+curl -i -X PUT [RESTHEART-URL]/albums/album1 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "The Dark Side of the Moon", "year": 1973}'
@@ -423,7 +423,7 @@ curl -i -X PUT [INSTANCE-URL]/albums/album1 \
 [source,bash]
 ----
 echo '{"title": "The Dark Side of the Moon", "year": 1973}' | \
-http PUT [INSTANCE-URL]/albums/album1 \
+http PUT [RESTHEART-URL]/albums/album1 \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -431,7 +431,7 @@ http PUT [INSTANCE-URL]/albums/album1 \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums/album1', {
+fetch('[RESTHEART-URL]/albums/album1', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -455,7 +455,7 @@ fetch('[INSTANCE-URL]/albums/album1', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums/album2 \
+curl -i -X PUT [RESTHEART-URL]/albums/album2 \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Wish You Were Here", "year": 1975}'
@@ -465,7 +465,7 @@ curl -i -X PUT [INSTANCE-URL]/albums/album2 \
 [source,bash]
 ----
 echo '{"title": "Wish You Were Here", "year": 1975}' | \
-http PUT [INSTANCE-URL]/albums/album2 \
+http PUT [RESTHEART-URL]/albums/album2 \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -473,7 +473,7 @@ http PUT [INSTANCE-URL]/albums/album2 \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums/album2', {
+fetch('[RESTHEART-URL]/albums/album2', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -499,7 +499,7 @@ fetch('[INSTANCE-URL]/albums/album2', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/bands/pinkfloyd \
+curl -i -X PUT [RESTHEART-URL]/bands/pinkfloyd \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}'
@@ -509,7 +509,7 @@ curl -i -X PUT [INSTANCE-URL]/bands/pinkfloyd \
 [source,bash]
 ----
 echo '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}' | \
-http PUT [INSTANCE-URL]/bands/pinkfloyd \
+http PUT [RESTHEART-URL]/bands/pinkfloyd \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -517,7 +517,7 @@ http PUT [INSTANCE-URL]/bands/pinkfloyd \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands/pinkfloyd', {
+fetch('[RESTHEART-URL]/bands/pinkfloyd', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -544,14 +544,14 @@ fetch('[INSTANCE-URL]/bands/pinkfloyd', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f \
+curl -i -X GET [RESTHEART-URL]/bands/pinkfloyd?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET [INSTANCE-URL]/bands/pinkfloyd \
+http GET [RESTHEART-URL]/bands/pinkfloyd \
   Authorization:"Basic [BASIC-AUTH]" \
   rep==HAL \
   hal==f
@@ -560,7 +560,7 @@ http GET [INSTANCE-URL]/bands/pinkfloyd \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
+fetch('[RESTHEART-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -602,7 +602,7 @@ In this pattern, multiple documents reference a single document. For example, al
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/bands \
+curl -i -X PUT [RESTHEART-URL]/bands \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}'
@@ -612,7 +612,7 @@ curl -i -X PUT [INSTANCE-URL]/bands \
 [source,bash]
 ----
 echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}' | \
-http PUT [INSTANCE-URL]/bands \
+http PUT [RESTHEART-URL]/bands \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -620,7 +620,7 @@ http PUT [INSTANCE-URL]/bands \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands', {
+fetch('[RESTHEART-URL]/bands', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -652,7 +652,7 @@ fetch('[INSTANCE-URL]/bands', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums \
+curl -i -X PUT [RESTHEART-URL]/albums \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"description": "Music albums with band references"}'
@@ -662,7 +662,7 @@ curl -i -X PUT [INSTANCE-URL]/albums \
 [source,bash]
 ----
 echo '{"description": "Music albums with band references"}' | \
-http PUT [INSTANCE-URL]/albums \
+http PUT [RESTHEART-URL]/albums \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -670,7 +670,7 @@ http PUT [INSTANCE-URL]/albums \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums', {
+fetch('[RESTHEART-URL]/albums', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -695,7 +695,7 @@ fetch('[INSTANCE-URL]/albums', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/bands/beatles \
+curl -i -X PUT [RESTHEART-URL]/bands/beatles \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"name": "The Beatles", "formed": 1960}'
@@ -705,7 +705,7 @@ curl -i -X PUT [INSTANCE-URL]/bands/beatles \
 [source,bash]
 ----
 echo '{"name": "The Beatles", "formed": 1960}' | \
-http PUT [INSTANCE-URL]/bands/beatles \
+http PUT [RESTHEART-URL]/bands/beatles \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -713,7 +713,7 @@ http PUT [INSTANCE-URL]/bands/beatles \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands/beatles', {
+fetch('[RESTHEART-URL]/bands/beatles', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -739,7 +739,7 @@ fetch('[INSTANCE-URL]/bands/beatles', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums/abbey-road \
+curl -i -X PUT [RESTHEART-URL]/albums/abbey-road \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}'
@@ -749,7 +749,7 @@ curl -i -X PUT [INSTANCE-URL]/albums/abbey-road \
 [source,bash]
 ----
 echo '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}' | \
-http PUT [INSTANCE-URL]/albums/abbey-road \
+http PUT [RESTHEART-URL]/albums/abbey-road \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -757,7 +757,7 @@ http PUT [INSTANCE-URL]/albums/abbey-road \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums/abbey-road', {
+fetch('[RESTHEART-URL]/albums/abbey-road', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -782,7 +782,7 @@ fetch('[INSTANCE-URL]/albums/abbey-road', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/albums/revolver \
+curl -i -X PUT [RESTHEART-URL]/albums/revolver \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"title": "Revolver", "year": 1966, "bandId": "beatles"}'
@@ -792,7 +792,7 @@ curl -i -X PUT [INSTANCE-URL]/albums/revolver \
 [source,bash]
 ----
 echo '{"title": "Revolver", "year": 1966, "bandId": "beatles"}' | \
-http PUT [INSTANCE-URL]/albums/revolver \
+http PUT [RESTHEART-URL]/albums/revolver \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json
 ----
@@ -800,7 +800,7 @@ http PUT [INSTANCE-URL]/albums/revolver \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/albums/revolver', {
+fetch('[RESTHEART-URL]/albums/revolver', {
   method: 'PUT',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -827,14 +827,14 @@ fetch('[INSTANCE-URL]/albums/revolver', {
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/bands/beatles?rep=HAL&hal=f \
+curl -i -X GET [RESTHEART-URL]/bands/beatles?rep=HAL&hal=f \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET [INSTANCE-URL]/bands/beatles \
+http GET [RESTHEART-URL]/bands/beatles \
   Authorization:"Basic [BASIC-AUTH]" \
   rep==HAL \
   hal==f
@@ -843,7 +843,7 @@ http GET [INSTANCE-URL]/bands/beatles \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/bands/beatles?rep=HAL&hal=f', {
+fetch('[RESTHEART-URL]/bands/beatles?rep=HAL&hal=f', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

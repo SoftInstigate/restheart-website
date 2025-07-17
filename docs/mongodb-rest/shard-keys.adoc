@@ -38,7 +38,7 @@ Add the `shardkey` query parameter to your request, providing a JSON document co
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/db/collection/documentId" \
+curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
   --data-urlencode 'shardkey={"fieldName":value}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -46,14 +46,14 @@ curl -i -X GET "[INSTANCE-URL]/db/collection/documentId" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/db/collection/documentId?shardkey={\"fieldName\":value}" \
+http GET "[RESTHEART-URL]/db/collection/documentId?shardkey={\"fieldName\":value}" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/db/collection/documentId?shardkey={"fieldName":value}', {
+fetch('[RESTHEART-URL]/db/collection/documentId?shardkey={"fieldName":value}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -71,7 +71,7 @@ For compound shard keys, include all fields that make up the key:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/db/collection/documentId" \
+curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
   --data-urlencode 'shardkey={"field1":value1,"field2":value2}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -79,14 +79,14 @@ curl -i -X GET "[INSTANCE-URL]/db/collection/documentId" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/db/collection/documentId?shardkey={\"field1\":value1,\"field2\":value2}" \
+http GET "[RESTHEART-URL]/db/collection/documentId?shardkey={\"field1\":value1,\"field2\":value2}" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/db/collection/documentId?shardkey={"field1":value1,"field2":value2}', {
+fetch('[RESTHEART-URL]/db/collection/documentId?shardkey={"field1":value1,"field2":value2}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -108,7 +108,7 @@ If a collection is sharded on field `region`:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa" \
+curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
   --data-urlencode 'shardkey={"region":"EU"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -116,14 +116,14 @@ curl -i -X GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\"}" \
+http GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\"}" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU"}', {
+fetch('[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU"}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -143,7 +143,7 @@ If a collection is sharded on fields `region` and `type`:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa" \
+curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
   --data-urlencode 'shardkey={"region":"EU","type":"premium"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
@@ -151,14 +151,14 @@ curl -i -X GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\",\"type\":\"premium\"}" \
+http GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\",\"type\":\"premium\"}" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU","type":"premium"}', {
+fetch('[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU","type":"premium"}', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

@@ -12,7 +12,7 @@ Create your root user account with full administrative privileges. This setup gi
 This wizard will:
 
 1. *Create a root user* with your chosen credentials
-2. *Set up full permissions* allowing all operations on your instance
+2. *Set up full permissions* allowing all operations on your API Service
 3. *Test the authentication* to ensure everything works correctly
 
 WARNING: *Security Notice*: The root user has complete access to your instance. Choose strong credentials and keep them secure.
@@ -31,7 +31,7 @@ WARNING: *Security Notice*: The root user has complete access to your instance. 
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/users?wm=upsert \
+curl -i -X POST [RESTHEART-URL]/users?wm=upsert \
   -H "Authorization: Bearer [JWT]" \
   -H "Content-Type: application/json" \
   -d '{"_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"]}'
@@ -41,7 +41,7 @@ curl -i -X POST [INSTANCE-URL]/users?wm=upsert \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/users?wm=upsert \
+http POST [RESTHEART-URL]/users?wm=upsert \
   Authorization:"Bearer [JWT]" \
   _id=root \
   password=[YOUR-PASSWORD] \
@@ -52,7 +52,7 @@ http POST [INSTANCE-URL]/users?wm=upsert \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/users?wm=upsert', {
+fetch('[RESTHEART-URL]/users?wm=upsert', {
   method: 'POST',
   body: JSON.stringify({ "_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"] }),
   headers: {
@@ -83,7 +83,7 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 
 [source,bash]
 ----
-curl -i -X POST [INSTANCE-URL]/acl?wm=upsert \
+curl -i -X POST [RESTHEART-URL]/acl?wm=upsert \
   -H "Authorization: Bearer [JWT]" \
   -H "Content-Type: application/json" \
   -d '{"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}'
@@ -93,7 +93,7 @@ curl -i -X POST [INSTANCE-URL]/acl?wm=upsert \
 
 [source,bash]
 ----
-http POST [INSTANCE-URL]/acl?wm=upsert \
+http POST [RESTHEART-URL]/acl?wm=upsert \
   Authorization:"Bearer [JWT]" \
   _id=rootCanDoEverything \
   predicate="path-prefix('/')" \
@@ -106,7 +106,7 @@ http POST [INSTANCE-URL]/acl?wm=upsert \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/acl?wm=upsert', {
+fetch('[RESTHEART-URL]/acl?wm=upsert', {
   method: 'POST',
   body: JSON.stringify({"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongoOptions": {"allowManagementRequests": true}}),
   headers: {

@@ -586,7 +586,7 @@ In order to make a query you can use HTTP request with POST method and both cont
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
+curl -i -X POST "[RESTHEART-URL]/graphql/<app-uri>" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -599,7 +599,7 @@ curl -i -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
 [source,http]
 ----
 POST /graphql/<app-uri> HTTP/1.1
-Host: [INSTANCE-URL]
+Host: [RESTHEART-URL]
 Authorization: Basic [BASIC-AUTH]
 Content-Type: application/json
 
@@ -612,7 +612,7 @@ Content-Type: application/json
 
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/graphql/<app-uri>" \
+http POST "[RESTHEART-URL]/graphql/<app-uri>" \
   "Authorization:Basic [BASIC-AUTH]" \
   "Content-Type:application/json" \
   query="query test_operation(\$name: String){ userByName(_name: \$name){name posts{text}} }" \
@@ -624,7 +624,7 @@ http POST "[INSTANCE-URL]/graphql/<app-uri>" \
 
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
+curl -i -X POST "[RESTHEART-URL]/graphql/<app-uri>" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -640,7 +640,7 @@ curl -i -X POST "[INSTANCE-URL]/graphql/<app-uri>" \
 [source,http]
 ----
 POST /graphql/<app-uri> HTTP/1.1
-Host: [INSTANCE-URL]
+Host: [RESTHEART-URL]
 Authorization: Basic [BASIC-AUTH]
 Content-Type: application/graphql
 
@@ -663,7 +663,7 @@ echo '{
         text
       }
   }
-}' | http POST "[INSTANCE-URL]/graphql/<app-uri>" \
+}' | http POST "[RESTHEART-URL]/graphql/<app-uri>" \
   "Authorization:Basic [BASIC-AUTH]" \
   "Content-Type:application/graphql"
 ----

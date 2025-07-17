@@ -29,21 +29,21 @@ To create the *gql-apps* collection, run the following:
 ==== cURL
 [source,bash]
 ----
-curl -i -X PUT "[INSTANCE-URL]/gql-apps" \
+curl -i -X PUT "[RESTHEART-URL]/gql-apps" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http PUT "[INSTANCE-URL]/gql-apps" \
+http PUT "[RESTHEART-URL]/gql-apps" \
   "Authorization:Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/gql-apps', {
+fetch('[RESTHEART-URL]/gql-apps', {
   method: 'PUT',
   headers: {
     'Authorization': '[BASIC-AUTH]'
@@ -64,7 +64,7 @@ NOTE: Due to the length of this GraphQL app definition, only the basic structure
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/gql-apps" \
+curl -i -X POST "[RESTHEART-URL]/gql-apps" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d @mflix-graphql-app.json
@@ -73,7 +73,7 @@ curl -i -X POST "[INSTANCE-URL]/gql-apps" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/gql-apps" \
+http POST "[RESTHEART-URL]/gql-apps" \
   "Authorization:Basic [BASIC-AUTH]" \
   "Content-Type:application/json" \
   < mflix-graphql-app.json
@@ -93,7 +93,7 @@ const mflixAppDefinition = {
   // ... complete schema and mappings
 };
 
-fetch('[INSTANCE-URL]/gql-apps', {
+fetch('[RESTHEART-URL]/gql-apps', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -116,7 +116,7 @@ To execute a GraphQL request to *Mflix* app with *Content-Type* `application/jso
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/mflix" \
+curl -i -X POST "[RESTHEART-URL]/graphql/mflix" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
@@ -131,7 +131,7 @@ curl -i -X POST "[INSTANCE-URL]/graphql/mflix" \
 ==== HTTPie
 [source,bash]
 ----
-http POST "[INSTANCE-URL]/graphql/mflix" \
+http POST "[RESTHEART-URL]/graphql/mflix" \
   "Authorization:Basic [BASIC-AUTH]" \
   "Content-Type:application/json" \
   query="query exampleOperation(\$year: Int!, \$limit: Int = 0){MoviesByYear(year: \$year, limit: \$limit){ title comments{ text user{name} date} tomatoesRate}}" \
@@ -144,7 +144,7 @@ http POST "[INSTANCE-URL]/graphql/mflix" \
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/graphql/mflix', {
+fetch('[RESTHEART-URL]/graphql/mflix', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -218,7 +218,7 @@ To execute a GraphQL request to *Mflix* app with *Content-Type* `application/gra
 ==== cURL
 [source,bash]
 ----
-curl -i -X POST "[INSTANCE-URL]/graphql/mflix" \
+curl -i -X POST "[RESTHEART-URL]/graphql/mflix" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/graphql" \
   -d '{
@@ -245,7 +245,7 @@ echo '{
         }
         tomatoesRate
     }
-}' | http POST "[INSTANCE-URL]/graphql/mflix" \
+}' | http POST "[RESTHEART-URL]/graphql/mflix" \
   "Authorization:Basic [BASIC-AUTH]" \
   "Content-Type:application/graphql"
 ----
@@ -264,7 +264,7 @@ const query = `{
     }
 }`;
 
-fetch('[INSTANCE-URL]/graphql/mflix', {
+fetch('[RESTHEART-URL]/graphql/mflix', {
   method: 'POST',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',

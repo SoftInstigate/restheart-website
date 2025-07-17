@@ -19,7 +19,7 @@ RESTHeart allows you to manage databases and collections.
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/foo \
+curl -i -X PUT [RESTHEART-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "descr": "just a test collection" }'
@@ -29,7 +29,7 @@ curl -i -X PUT [INSTANCE-URL]/foo \
 
 [source,bash]
 ----
-echo '{ "descr": "just a test collection" }' | http PUT [INSTANCE-URL]/foo \
+echo '{ "descr": "just a test collection" }' | http PUT [RESTHEART-URL]/foo \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -37,7 +37,7 @@ echo '{ "descr": "just a test collection" }' | http PUT [INSTANCE-URL]/foo \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/foo', {
+fetch('[RESTHEART-URL]/foo', {
   method: 'PUT',
   body: JSON.stringify({ "descr": "just a test collection" }),
   headers: {
@@ -74,7 +74,7 @@ The collection's properties can be read as follows:
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/foo/_meta \
+curl -i -X GET [RESTHEART-URL]/foo/_meta \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -82,7 +82,7 @@ curl -i -X GET [INSTANCE-URL]/foo/_meta \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/foo/_meta \
+http GET [RESTHEART-URL]/foo/_meta \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -90,7 +90,7 @@ http GET [INSTANCE-URL]/foo/_meta \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/foo/_meta', {
+fetch('[RESTHEART-URL]/foo/_meta', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -129,7 +129,7 @@ HTTP/1.1 200 OK
 
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/foo \
+curl -i -X PATCH [RESTHEART-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "owner": "Bob" }'
@@ -139,7 +139,7 @@ curl -i -X PATCH [INSTANCE-URL]/foo \
 
 [source,bash]
 ----
-echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/foo \
+echo '{ "owner": "Bob" }' | http PATCH [RESTHEART-URL]/foo \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -147,7 +147,7 @@ echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/foo \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/foo', {
+fetch('[RESTHEART-URL]/foo', {
   method: 'PATCH',
   body: JSON.stringify({ "owner": "Bob" }),
   headers: {
@@ -180,7 +180,7 @@ Let's try to delete the collection `foo` without passing it.
 
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/foo \
+curl -i -X DELETE [RESTHEART-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -188,7 +188,7 @@ curl -i -X DELETE [INSTANCE-URL]/foo \
 
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/foo \
+http DELETE [RESTHEART-URL]/foo \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -196,7 +196,7 @@ http DELETE [INSTANCE-URL]/foo \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/foo', {
+fetch('[RESTHEART-URL]/foo', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -231,7 +231,7 @@ Now let's pass the If-Match` request header, the collection will be deleted.
 
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/foo \
+curl -i -X DELETE [RESTHEART-URL]/foo \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "If-Match: 5d95ef77ab3cf85b199ed3b7"
 ----
@@ -240,7 +240,7 @@ curl -i -X DELETE [INSTANCE-URL]/foo \
 
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/foo \
+http DELETE [RESTHEART-URL]/foo \
   Authorization:"Basic [BASIC-AUTH]" \
   If-Match:5d95ef77ab3cf85b199ed3b7
 ----
@@ -249,7 +249,7 @@ http DELETE [INSTANCE-URL]/foo \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/foo', {
+fetch('[RESTHEART-URL]/foo', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
@@ -294,7 +294,7 @@ For instance, we can list the existing dbs as follows:
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/ \
+curl -i -X GET [RESTHEART-URL]/ \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -302,7 +302,7 @@ curl -i -X GET [INSTANCE-URL]/ \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/ \
+http GET [RESTHEART-URL]/ \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -310,7 +310,7 @@ http GET [INSTANCE-URL]/ \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/', {
+fetch('[RESTHEART-URL]/', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -338,7 +338,7 @@ fetch('[INSTANCE-URL]/', {
 
 [source,bash]
 ----
-curl -i -X PUT [INSTANCE-URL]/newDb \
+curl -i -X PUT [RESTHEART-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "descr": "just a test db" }'
@@ -348,7 +348,7 @@ curl -i -X PUT [INSTANCE-URL]/newDb \
 
 [source,bash]
 ----
-echo '{ "descr": "just a test db" }' | http PUT [INSTANCE-URL]/newDb \
+echo '{ "descr": "just a test db" }' | http PUT [RESTHEART-URL]/newDb \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -356,7 +356,7 @@ echo '{ "descr": "just a test db" }' | http PUT [INSTANCE-URL]/newDb \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/newDb', {
+fetch('[RESTHEART-URL]/newDb', {
   method: 'PUT',
   body: JSON.stringify({ "descr": "just a test db" }),
   headers: {
@@ -393,7 +393,7 @@ This properties can be read as follows:
 
 [source,bash]
 ----
-curl -i -X GET [INSTANCE-URL]/newDb/_meta \
+curl -i -X GET [RESTHEART-URL]/newDb/_meta \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -401,7 +401,7 @@ curl -i -X GET [INSTANCE-URL]/newDb/_meta \
 
 [source,bash]
 ----
-http GET [INSTANCE-URL]/newDb/_meta \
+http GET [RESTHEART-URL]/newDb/_meta \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -409,7 +409,7 @@ http GET [INSTANCE-URL]/newDb/_meta \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/newDb/_meta', {
+fetch('[RESTHEART-URL]/newDb/_meta', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -443,7 +443,7 @@ HTTP/1.1 200 OK
 
 [source,bash]
 ----
-curl -i -X PATCH [INSTANCE-URL]/newDb \
+curl -i -X PATCH [RESTHEART-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "owner": "Bob" }'
@@ -453,7 +453,7 @@ curl -i -X PATCH [INSTANCE-URL]/newDb \
 
 [source,bash]
 ----
-echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/newDb \
+echo '{ "owner": "Bob" }' | http PATCH [RESTHEART-URL]/newDb \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -461,7 +461,7 @@ echo '{ "owner": "Bob" }' | http PATCH [INSTANCE-URL]/newDb \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/newDb', {
+fetch('[RESTHEART-URL]/newDb', {
   method: 'PATCH',
   body: JSON.stringify({ "owner": "Bob" }),
   headers: {
@@ -494,7 +494,7 @@ Let's try to delete the `newDb` without passing it.
 
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/newDb \
+curl -i -X DELETE [RESTHEART-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -502,7 +502,7 @@ curl -i -X DELETE [INSTANCE-URL]/newDb \
 
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/newDb \
+http DELETE [RESTHEART-URL]/newDb \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -510,7 +510,7 @@ http DELETE [INSTANCE-URL]/newDb \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/newDb', {
+fetch('[RESTHEART-URL]/newDb', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -545,7 +545,7 @@ Now let's pass the If-Match` request header, the db will be deleted.
 
 [source,bash]
 ----
-curl -i -X DELETE [INSTANCE-URL]/newDb \
+curl -i -X DELETE [RESTHEART-URL]/newDb \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "If-Match: 5d95ed1dab3cf85b199ed3b6"
 ----
@@ -554,7 +554,7 @@ curl -i -X DELETE [INSTANCE-URL]/newDb \
 
 [source,bash]
 ----
-http DELETE [INSTANCE-URL]/newDb \
+http DELETE [RESTHEART-URL]/newDb \
   Authorization:"Basic [BASIC-AUTH]" \
   If-Match:5d95ed1dab3cf85b199ed3b6
 ----
@@ -563,7 +563,7 @@ http DELETE [INSTANCE-URL]/newDb \
 
 [source,javascript]
 ----
-fetch('[INSTANCE-URL]/newDb', {
+fetch('[RESTHEART-URL]/newDb', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]',
