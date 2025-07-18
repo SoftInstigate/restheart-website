@@ -405,10 +405,16 @@ graphql:
   # default-limit is used for queries that don't not specify a limit
   default-limit: 100
   # max-limit is the maximum value for a Query limit
-  max-limit: 1000
+  max-limit: 1_000
   # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
-  query-time-limit: 0
+  query-time-limit: 0 # in msecs
   verbose: false
+
+# Automatically creates indexes on {"descriptor.uri":1} and {"descriptor.name":1}
+# for GraphQL applications to improve query performance when fetching app definitions
+# at scale. Enable if you have many GraphQL applications.
+createIndexesOnGqlApps:
+  enabled: false
 ----
 
 NOTE: `app-cache-enabled` and `app-cache-ttr` are available from v8.0.9 and v8.0.11, respectively. Earlier versions use an expiring cache policy with TTL configurable via the now-deprecated `graphql/app-def-cache-ttl` option. See link:https://github.com/SoftInstigate/restheart/issues/523[issue #523].
