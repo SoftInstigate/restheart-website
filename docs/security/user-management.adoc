@@ -42,18 +42,16 @@ TIP: **mongoRealAuthenticator** can be configured to use different properties fo
 
 ## Get existing users
 
-{% include code-header.html type="Request" %}
-
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X GET [RESTHEART-URL]/users
+curl -i -X GET [RESTHEART-URL]/users -H "Authorization: Basic [BASIC-AUTH]" \
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] GET [RESTHEART-URL]/users
+http GET [RESTHEART-URL]/users Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
@@ -76,10 +74,6 @@ fetch('[RESTHEART-URL]/users', {
 .catch(error => console.error('Error:', error));
 ----
 
-++++
-{% include code-header.html type="Response" %}
-++++
-
 [source,json]
 ----
 [
@@ -101,12 +95,11 @@ NOTE: For security reasons, it not possible to use the `filter` query parameter 
 
 ## Create a user
 
-{% include code-header.html type="Request" %}
-
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/users \
+curl -i -X POST [RESTHEART-URL]/users \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "foo",
@@ -118,7 +111,8 @@ curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/users \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] POST [RESTHEART-URL]/users \
+http POST [RESTHEART-URL]/users \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   _id="foo" \
   roles:='["user"]' \
@@ -158,12 +152,11 @@ NOTE: The password is automatically encrypted by RESTHeart.
 
 ## Update a user
 
-{% include code-header.html type="Request" %}
-
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X PATCH [RESTHEART-URL]/users/foo \
+curl -i -X PATCH [RESTHEART-URL]/users/foo \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "password": "betterSecret"
@@ -173,7 +166,7 @@ curl -i -u [BASIC-AUTH] -X PATCH [RESTHEART-URL]/users/foo \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] PATCH [RESTHEART-URL]/users/foo \
+http PATCH [RESTHEART-URL]/users/foo \
   Content-Type:application/json \
   password="betterSecret"
 ----
@@ -207,18 +200,16 @@ fetch('[RESTHEART-URL]/users/foo', {
 
 ## Delete a user
 
-{% include code-header.html type="Request" %}
-
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X DELETE [RESTHEART-URL]/users/foo
+curl -i -X DELETE [RESTHEART-URL]/users/foo -H "Authorization: Basic [BASIC-AUTH]" \
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] DELETE [RESTHEART-URL]/users/foo
+http DELETE [RESTHEART-URL]/users/foo Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
@@ -246,12 +237,11 @@ fetch('[RESTHEART-URL]/users/foo', {
 
 ## Create an ACL document
 
-{% include code-header.html type="Request" %}
-
 ==== cURL
 [source,bash]
 ----
-curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
   "predicate": "path-prefix[/inventory] and method[GET]",
@@ -263,7 +253,8 @@ curl -i -u [BASIC-AUTH] -X POST [RESTHEART-URL]/acl \
 ==== HTTPie
 [source,bash]
 ----
-http -a [BASIC-AUTH] POST [RESTHEART-URL]/acl \
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   predicate="path-prefix[/inventory] and method[GET]" \
   roles:='["user"]' \
