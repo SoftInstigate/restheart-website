@@ -491,18 +491,22 @@ dateHeader:
 # Options:
 # - log-level: to set the log level. Value can be OFF, ERROR, WARN, INFO, DEBUG, TRACE and ALL. (default value is INFO)
 # - log-to-console: true => log messages to the console (default value: true)
-# - ansi-console: use Ansi console for logging. Default to 'true' if parameter missing, for backward compatibility
+# - ansi-console: whether console supports native ANSI colors; when false, uses jansi library to enable ANSI color support (primarily for Windows compatibility). Only applies to console logging, not file logging.
+# - no-colors: disables all color output in both console and file logging, overriding ansiConsole setting
 # - log-to-file: true => log messages to a file (default value: false)
 # - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
 # - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
 # - full-stacktrace: true to log the full stacktrace of exceptions
 # - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
 # - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
+# - requests-log-exclude-patterns: Request path patterns to exclude from logging
+# - requests-log-exclude-interval: Optional: Interval in minutes for logging excluded requests (default: 10)
 
 logging:
   log-level: INFO
   log-to-console: true
   ansi-console: true
+  no-colors: false
   log-to-file: false
   log-file-path: restheart.log
   packages: [ "org.restheart", "com.restheart" ]
@@ -516,6 +520,15 @@ logging:
   #  - uber-trace-id     # jaeger header, see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity
   #  - traceparent       # vv opencensus.io headers, see https://github.com/w3c/distributed-tracing/blob/master/trace_context/HTTP_HEADER_FORMAT.md
   #  - tracestate        # ^^
+
+  requests-log-exclude-patterns:
+  #  - "/ping"              # Exact match for load balancer health checks
+  #  - "/health"            # Exact match for health endpoint
+  #  - "/_ping"             # Exact match for internal ping
+  #  - "/monitoring/*"      # Wildcard: excludes all paths starting with /monitoring/
+  #  - "/api/*/status"      # Wildcard: excludes /api/v1/status, /api/v2/status, etc.
+
+  requests-log-exclude-interval: 10
 ----
 
 === Metrics
