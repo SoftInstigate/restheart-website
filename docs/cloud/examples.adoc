@@ -2115,6 +2115,48 @@ curl -i -X PUT https://[instance].restheart.com/acl \
       }'
 ----
 
+===== Additional Public Collection Permissions
+
+Configure ACL permissions for collections used in the examples above that show unauthenticated GET requests.
+
+[source,bash]
+----
+# Configure public read access for products collection (e-commerce examples)
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/products)"
+      }'
+
+# Configure public read access for articles collection (CMS examples)
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/articles)",
+        "mongo": {
+          "readFilter": {"status": "published"}
+        }
+      }'
+
+# Configure public read access for posts collection (social media examples)
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/posts)"
+      }'
+
+# Configure public read access for readings collection (IoT examples)
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "role": "$unauthenticated",
+        "predicate": "method(GET) and path-prefix(/readings)"
+      }'
+----
+
 === Advanced Integration Examples
 
 ==== Multi-tenant SaaS Application
