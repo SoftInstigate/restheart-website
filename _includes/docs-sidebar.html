@@ -1,4 +1,4 @@
-<a data-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a data-bs-toggle="collapse" href="#overview" role="button" aria-expanded="false" aria-controls="collapseExample">
     <h2>Overview</h2>
 </a>
 <ul id="overview" class="collapse">
@@ -17,7 +17,7 @@
     <li><a href="/docs/video-tutorials">Video Tutorials</a></li>
 </ul>
 
-<a data-toggle="collapse" href="#cloud" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a data-bs-toggle="collapse" href="#cloud" role="button" aria-expanded="false" aria-controls="collapseExample">
     <h2 class="mt-2">RESTHeart Cloud</h2>
 </a>
 <ul id="cloud" class="collapse">
@@ -34,7 +34,7 @@
     <li><a href="/docs/cloud/sophia/api-documentation">API Documentation</a></li>
 </ul>
 
-<a data-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a data-bs-toggle="collapse" href="#setup" role="button" aria-expanded="false" aria-controls="collapseExample">
 <h2 class="mt-2">Setup</h2>
 </a>
 <ul id="setup" class="collapse">
@@ -57,7 +57,7 @@
     <li><a href="/docs/enterprise-license">Enterprise License</a></li>
 </ul>
 
-<a data-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a data-bs-toggle="collapse" href="#framework" role="button" aria-expanded="false" aria-controls="collapseExample">
     <h2 class="mt-2">Framework</h2>
 </a>
 <ul id="framework" class="collapse">
@@ -79,7 +79,7 @@
     <li><a href="/docs/plugins/token-managers">Token Managers</a></li>
 </ul>
 
-<a data-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a data-bs-toggle="collapse" href="#security" role="button" aria-expanded="false" aria-controls="collapseExample">
     <h2 class="mt-2">Security Plugins</h2>
 </a>
 <ul id="security" class="collapse">
@@ -89,7 +89,7 @@
     <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
 </ul>
 
-<a  data-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a  data-bs-toggle="collapse" href="#mongodb" role="button" aria-expanded="false" aria-controls="collapseExample">
     <h2 class="mt-2">MongoDB Plugins</h2>
 </a>
 <ul id="mongodb" class="collapse">
@@ -149,12 +149,20 @@
     const currentPath = window.location.pathname;
 
     if (menu) {
-        $(`#${menu}`).collapse('show');
+        // Use Bootstrap 5 Collapse API instead of jQuery
+        const menuElement = document.getElementById(menu);
+        if (menuElement) {
+            const bsCollapse = new bootstrap.Collapse(menuElement, {
+                show: true
+            });
+        }
     }
 
-    $('a').each(function() {
-        if ($(this).attr('href') === currentPath || `${$(this).attr('href')}/` === currentPath) {
-            $(this).addClass('active');
+    // Update link highlighting to use vanilla JS instead of jQuery
+    document.querySelectorAll('a').forEach(function(link) {
+        const href = link.getAttribute('href');
+        if (href === currentPath || `${href}/` === currentPath) {
+            link.classList.add('active');
         }
     });
 </script>

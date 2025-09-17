@@ -1,134 +1,170 @@
 <section class="examples mt-1 mb-0 black-background">
-    <ul class="nav nav-tabs nav-justified" role="tablist">
-        <li class="nav-item"><a class="examples__link nav-link active" data-toggle="tab" href="#service-java" role="tab">Service in Java</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#interceptor-java" role="tab">Interceptor in Java</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-kotlin" role="tab">Service in Kotlin</a></li>
-        <li class="nav-item"><a class="examples__link nav-link" data-toggle="tab" href="#service-javascript" role="tab">Service in JavaScript</a></li>
-    </ul>
-    <div class="tab-content pt-4 pb-5">
-        <div class="tab-pane fade show active" id="service-java" role="tabpanel">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-md-4 mb-4">
-                            <h2 class="examples__title">Implement web services in minutes.</h2>
-                            <p class="examples__desc">
-                                Implement a simple interface and deploy the web service
-                                by copying its jar file into the plugins directory.
-                            </p>
-                            <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service" target="_blank" class="btn btn-o-white">See it on GitHub</a>
-                            <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white mt-2">More examples</a>
-                        </div>
-                        <div class="col-md-8">
-{% highlight java %}
-@RegisterPlugin(name = "greetings", description = "just another Hello World")
-public class GreeterService implements JsonService {
-    @Override
-    public void handle(JsonRequest req, JsonResponse res) {
-        switch(req.getMethod()) {
-            case GET -> res.setContent(object().put("message", "Hello World!"));
-            case OPTIONS -> handleOptions(req);
-            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
-        }
-    }
-}
-{% endhighlight %}
-                        </div>
-                    </div>
-                </div>
+  <ul class="nav nav-tabs nav-justified" role="tablist">
+    <li class="nav-item">
+      <a
+        class="examples__link nav-link active"
+        data-bs-toggle="tab"
+        href="#service-java"
+        role="tab"
+        >Service in Java</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="examples__link nav-link"
+        data-bs-toggle="tab"
+        href="#interceptor-java"
+        role="tab"
+        >Interceptor in Java</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="examples__link nav-link"
+        data-bs-toggle="tab"
+        href="#service-kotlin"
+        role="tab"
+        >Service in Kotlin</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="examples__link nav-link"
+        data-bs-toggle="tab"
+        href="#service-javascript"
+        role="tab"
+        >Service in JavaScript</a
+      >
+    </li>
+  </ul>
+  <div class="tab-content pt-4 pb-5">
+    <div class="tab-pane fade show active" id="service-java" role="tabpanel">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4">
+            <h2 class="examples__title">Implement web services in minutes.</h2>
+            <p class="examples__desc">
+              Implement a simple interface and deploy the web service by copying
+              its jar file into the plugins directory.
+            </p>
+            <a
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service"
+              target="_blank"
+              class="btn btn-o-white"
+              >See it on GitHub</a
+            >
+            <a
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples"
+              target="_blank"
+              class="btn btn-o-white mt-2"
+              >More examples</a
+            >
+          </div>
+          <div class="col-md-8">
+            {% highlight java %} @RegisterPlugin(name = "greetings", description
+            = "just another Hello World") public class GreeterService implements
+            JsonService { @Override public void handle(JsonRequest req,
+            JsonResponse res) { switch(req.getMethod()) { case GET ->
+            res.setContent(object().put("message", "Hello World!")); case
+            OPTIONS -> handleOptions(req); default ->
+            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED); } } } {%
+            endhighlight %}
+          </div>
         </div>
-        <div class="tab-pane fade show" id="service-kotlin" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4 mb-4">
-                        <h2 class="examples__title">Implement plugins in Kotlin.</h2>
-                        <p class="examples__desc">
-                            You can use Java and <strong>Kotlin</strong> to implement plugins.
-                        </p>
-                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples/kotlin-greeter-service" target="_blank" class="btn btn-o-white">Kotlin Service example</a>
-                    </div>
-                    <div class="col-md-8">
-{% highlight java %}
-@RegisterPlugin(name = "kotlinGreeterService", description = "just another Hello World in Kotlin")
-class GreeterService : JsonService {
-    override fun handle(req: JsonRequest, res: JsonResponse) {
-        when(req.method) {
-            METHOD.GET -> res.content = obj().put("msg", "Hello World").get()
-            METHOD.OPTIONS -> handleOptions(req);
-            else -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
-        }
-    }
-}
-{% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="interceptor-java" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4 mb-4">
-                        <h2 class="examples__title">Snoop and modify requests at different
-                            stages of their lifecycle.</h2>
-                            <p class="examples__desc">
-                                This interceptor applies to requests of the hello web service adding a timestamp to the response content.
-                            <br/>
-                                Interceptor can be executed at different points of the request as defined
-                                by the <i>interceptPoint</i> parameter of the annotation <i>RegisterPlugin</i>
-                            </p>
-                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white">More examples</a>
-                    </div>
-                    <div class="col-md-8">
-{% highlight java %}
-@RegisterPlugin(name = "helloInterceptor",
-    description = "add a timestamp to the response of /greetings",
-    interceptPoint = InterceptPoint.RESPONSE)
-public class HelloInterceptor implements JsonInterceptor {
-    @Override
-    public void handle(JsonRequest req, JsonResponse res) {
-        res.getContent()
-            .getAsJsonObject()
-            .addProperty("timestamp", Instant.now().toString());
-    }
-
-    @Override
-    public boolean resolve(JsonRequest req, JsonResponse res) {
-        return req.isHandledBy("greetings");
-    }
-}
-{% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="service-javascript" role="tabpanel">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4 mb-4">
-                        <h2 class="examples__title">Implement plugins in JavaScript.</h2>
-                            <p class="examples__desc">
-                                This is yet another Hello World web service.
-                            <br/>
-                                Running RESTHeart on the GraalVM allows you to deploy JavaScript Services and Interceptors.
-                            </p>
-                        <a href="https://github.com/SoftInstigate/restheart/tree/master/examples" target="_blank" class="btn btn-o-white">More examples</a>
-                    </div>
-                    <div class="col-md-8">
-{% highlight javascript %}
-export const options = {
-    name: "helloWorldService",
-    description: "just another Hello World",
-    uri: "/hello"
-}
-
-export function handle(req, res) {
-    res.setContent(JSON.stringify({ msg: 'Hello World' }));
-    res.setContentTypeAsJson();
-}
-{% endhighlight %}
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="tab-pane fade show" id="service-kotlin" role="tabpanel">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4">
+            <h2 class="examples__title">Implement plugins in Kotlin.</h2>
+            <p class="examples__desc">
+              You can use Java and <strong>Kotlin</strong> to implement plugins.
+            </p>
+            <a
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples/kotlin-greeter-service"
+              target="_blank"
+              class="btn btn-o-white"
+              >Kotlin Service example</a
+            >
+          </div>
+          <div class="col-md-8">
+            {% highlight java %} @RegisterPlugin(name = "kotlinGreeterService",
+            description = "just another Hello World in Kotlin") class
+            GreeterService : JsonService { override fun handle(req: JsonRequest,
+            res: JsonResponse) { when(req.method) { METHOD.GET -> res.content =
+            obj().put("msg", "Hello World").get() METHOD.OPTIONS ->
+            handleOptions(req); else ->
+            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED); } } } {%
+            endhighlight %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="interceptor-java" role="tabpanel">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4">
+            <h2 class="examples__title">
+              Snoop and modify requests at different stages of their lifecycle.
+            </h2>
+            <p class="examples__desc">
+              This interceptor applies to requests of the hello web service
+              adding a timestamp to the response content.
+              <br />
+              Interceptor can be executed at different points of the request as
+              defined by the <i>interceptPoint</i> parameter of the annotation
+              <i>RegisterPlugin</i>
+            </p>
+            <a
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples"
+              target="_blank"
+              class="btn btn-o-white"
+              >More examples</a
+            >
+          </div>
+          <div class="col-md-8">
+            {% highlight java %} @RegisterPlugin(name = "helloInterceptor",
+            description = "add a timestamp to the response of /greetings",
+            interceptPoint = InterceptPoint.RESPONSE) public class
+            HelloInterceptor implements JsonInterceptor { @Override public void
+            handle(JsonRequest req, JsonResponse res) { res.getContent()
+            .getAsJsonObject() .addProperty("timestamp",
+            Instant.now().toString()); } @Override public boolean
+            resolve(JsonRequest req, JsonResponse res) { return
+            req.isHandledBy("greetings"); } } {% endhighlight %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="service-javascript" role="tabpanel">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4">
+            <h2 class="examples__title">Implement plugins in JavaScript.</h2>
+            <p class="examples__desc">
+              This is yet another Hello World web service.
+              <br />
+              Running RESTHeart on the GraalVM allows you to deploy JavaScript
+              Services and Interceptors.
+            </p>
+            <a
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples"
+              target="_blank"
+              class="btn btn-o-white"
+              >More examples</a
+            >
+          </div>
+          <div class="col-md-8">
+            {% highlight javascript %} export const options = { name:
+            "helloWorldService", description: "just another Hello World", uri:
+            "/hello" } export function handle(req, res) {
+            res.setContent(JSON.stringify({ msg: 'Hello World' }));
+            res.setContentTypeAsJson(); } {% endhighlight %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
