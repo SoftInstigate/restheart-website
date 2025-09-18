@@ -223,44 +223,111 @@ addProduct();
 
 [source,bash]
 ----
-# Search products by name
-curl -i "[RESTHEART-URL]/products" --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
+# First, create permission for unauthenticated read access to products
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "role": "$unauthenticated",
+    "predicate": "path[/products] and method[GET]",
+    "mongo": {
+      "readFilter": {"$expr": true}
+    }
+  }'
 
-# Filter by price range
-curl "[RESTHEART-URL]/products" --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
+# Search products by name (requires $unauthenticated read permission or basic auth)
+curl -i "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
 
-# Get products with low inventory
-curl "[RESTHEART-URL]/products" --data-urlencode "filter={'quantity':{$lt:10}}"
+# Filter by price range (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
 
-# Category-based filtering with sorting
-curl "[RESTHEART-URL]/products" --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
+# Get products with low inventory (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'quantity':{$lt:10}}"
+
+# Category-based filtering with sorting (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
+# First, create permission for unauthenticated read access to products
+http PUT [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  role="$unauthenticated" \
+  predicate="path[/products] and method[GET]" \
+  mongo:='{
+    "readFilter": {"$expr": true}
+  }'
+
 # Search products by name
-http GET [RESTHEART-URL]/products filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
 
 # Filter by price range
-http GET [RESTHEART-URL]/products filter=="{'price':{\$gte:50,\$lte:150}}"
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'price':{\$gte:50,\$lte:150}}"
 
 # Get products with low inventory
-http GET [RESTHEART-URL]/products filter=="{'quantity':{\$lt:10}}"
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'quantity':{\$lt:10}}"
 
 # Category-based filtering with sorting
-http GET [RESTHEART-URL]/products filter=="{'category':'electronics'}" sort=="{price:1}"
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'category':'electronics'}" sort=="{price:1}"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
+// First, create permission for unauthenticated read access to products
+const createProductsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      role: "$unauthenticated",
+      predicate: "path[/products] and method[GET]",
+      mongo: {
+        readFilter: {"$expr": true}
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products read permission created successfully');
+    } else {
+      console.error('Failed to create products read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
 // Search products by name
 const searchByName = () => {
   const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
-  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Search results:', data);
@@ -271,7 +338,11 @@ const searchByName = () => {
 // Filter by price range
 const filterByPriceRange = () => {
   const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
-  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Price range results:', data);
@@ -282,7 +353,11 @@ const filterByPriceRange = () => {
 // Get products with low inventory
 const getLowInventory = () => {
   const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
-  fetch(`[RESTHEART-URL]/products?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Low inventory products:', data);
@@ -294,7 +369,11 @@ const getLowInventory = () => {
 const filterByCategory = () => {
   const filter = encodeURIComponent("{'category':'electronics'}");
   const sort = encodeURIComponent("{price:1}");
-  fetch(`[RESTHEART-URL]/products?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/products?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Category results:', data);
@@ -302,7 +381,8 @@ const filterByCategory = () => {
   .catch(error => console.error('Error:', error));
 };
 
-// Execute queries
+// Execute
+createProductsReadPermission();
 searchByName();
 filterByPriceRange();
 getLowInventory();
@@ -498,39 +578,102 @@ createArticle();
 
 [source,bash]
 ----
-# Get published articles
-curl "[RESTHEART-URL]/articles" --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
+# First, create permission for unauthenticated read access to published articles
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "role": "$unauthenticated",
+    "predicate": "path[/articles] and method[GET]",
+    "mongo": {
+      "readFilter": {"status": "published"}
+    }
+  }'
 
-# Get article by slug
-curl "[RESTHEART-URL]/articles" --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
+# Get published articles (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
 
-# Search articles
-curl "[RESTHEART-URL]/articles" --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
+# Get article by slug (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
+
+# Search articles (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
+# First, create permission for unauthenticated read access to published articles
+http PUT [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  role="$unauthenticated" \
+  predicate="path[/articles] and method[GET]" \
+  mongo:='{
+    "readFilter": {"status": "published"}
+  }'
+
 # Get published articles
-http GET [RESTHEART-URL]/articles filter=="{'status':'published'}" sort=="{publishedAt:-1}"
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'status':'published'}" sort=="{publishedAt:-1}"
 
 # Get article by slug
-http GET [RESTHEART-URL]/articles filter=="{'slug':'getting-started-restheart-cloud'}"
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'slug':'getting-started-restheart-cloud'}"
 
 # Search articles
-http GET [RESTHEART-URL]/articles filter=="{\$text:{\$search:'RESTHeart API'}}"
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\$text:{\$search:'RESTHeart API'}}"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
+// First, create permission for unauthenticated read access to published articles
+const createArticlesReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      role: "$unauthenticated",
+      predicate: "path[/articles] and method[GET]",
+      mongo: {
+        readFilter: {"status": "published"}
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Articles read permission created successfully');
+    } else {
+      console.error('Failed to create articles read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
 // Get published articles
 const getPublishedArticles = () => {
   const filter = encodeURIComponent("{'status':'published'}");
   const sort = encodeURIComponent("{publishedAt:-1}");
-  fetch(`[RESTHEART-URL]/articles?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Published articles:', data);
@@ -541,7 +684,11 @@ const getPublishedArticles = () => {
 // Get article by slug
 const getArticleBySlug = (slug) => {
   const filter = encodeURIComponent(`{'slug':'${slug}'}`);
-  fetch(`[RESTHEART-URL]/articles?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Article:', data);
@@ -552,7 +699,11 @@ const getArticleBySlug = (slug) => {
 // Search articles
 const searchArticles = (query) => {
   const filter = encodeURIComponent(`{\$text:{\$search:'${query}'}}`);
-  fetch(`[RESTHEART-URL]/articles?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Search results:', data);
@@ -561,6 +712,7 @@ const searchArticles = (query) => {
 };
 
 // Execute
+createArticlesReadPermission();
 getPublishedArticles();
 getArticleBySlug('getting-started-restheart-cloud');
 searchArticles('RESTHeart API');
@@ -772,39 +924,102 @@ createPost();
 
 [source,bash]
 ----
-# Get user timeline (posts from followed users)
-curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
+# First, create permission for unauthenticated read access to posts
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "role": "$unauthenticated",
+    "predicate": "path[/posts] and method[GET]",
+    "mongo": {
+      "readFilter": {"$expr": true}
+    }
+  }'
 
-# Search posts by hashtag
-curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'hashtags':{$in:['#api']}}"
+# Get user timeline (posts from followed users) - requires $unauthenticated read permission or basic auth
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
 
-# Get user's posts
-curl "[RESTHEART-URL]/posts" --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
+# Search posts by hashtag - requires $unauthenticated read permission or basic auth
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'hashtags':{$in:['#api']}}"
+
+# Get user's posts - requires $unauthenticated read permission or basic auth
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
+# First, create permission for unauthenticated read access to posts
+http PUT [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  role="$unauthenticated" \
+  predicate="path[/posts] and method[GET]" \
+  mongo:='{
+    "readFilter": {"$expr": true}
+  }'
+
 # Get user timeline (posts from followed users)
-http GET [RESTHEART-URL]/posts filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
 
 # Search posts by hashtag
-http GET [RESTHEART-URL]/posts filter=="{'hashtags':{\$in:['#api']}}"
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'hashtags':{\$in:['#api']}}"
 
 # Get user's posts
-http GET [RESTHEART-URL]/posts filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
+// First, create permission for unauthenticated read access to posts
+const createPostsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      role: "$unauthenticated",
+      predicate: "path[/posts] and method[GET]",
+      mongo: {
+        readFilter: {"$expr": true}
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Posts read permission created successfully');
+    } else {
+      console.error('Failed to create posts read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
 // Get user timeline (posts from followed users)
 const getUserTimeline = (followedUsers) => {
   const filter = encodeURIComponent(`{'author':{\$in:${JSON.stringify(followedUsers)}}}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('User timeline:', data);
@@ -815,7 +1030,11 @@ const getUserTimeline = (followedUsers) => {
 // Search posts by hashtag
 const searchPostsByHashtag = (hashtag) => {
   const filter = encodeURIComponent(`{'hashtags':{\$in:['${hashtag}']}}`);
-  fetch(`[RESTHEART-URL]/posts?filter=${filter}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Hashtag search results:', data);
@@ -827,7 +1046,11 @@ const searchPostsByHashtag = (hashtag) => {
 const getUserPosts = (username) => {
   const filter = encodeURIComponent(`{'author':'${username}'}`);
   const sort = encodeURIComponent("{createdAt:-1}");
-  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('User posts:', data);
@@ -836,6 +1059,7 @@ const getUserPosts = (username) => {
 };
 
 // Execute
+createPostsReadPermission();
 getUserTimeline(['user1', 'user2', 'user3']);
 searchPostsByHashtag('#api');
 getUserPosts('johndoe');
@@ -1214,8 +1438,21 @@ submitReading();
 ==== cURL
 [source,bash]
 ----
-# Get recent readings
-curl -i "[RESTHEART-URL]/readings" --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
+# First, create permission for unauthenticated read access to IoT readings
+curl -i -X PUT [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "role": "$unauthenticated",
+    "predicate": "path[/readings] and method[GET]",
+    "mongo": {
+      "readFilter": {"$expr": true}
+    }
+  }'
+
+# Get recent readings - requires $unauthenticated read permission or basic auth
+curl -i "[RESTHEART-URL]/readings" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
 
 # Average temperature by location
 curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
@@ -1232,8 +1469,20 @@ curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
 ==== HTTPie
 [source,bash]
 ----
+# First, create permission for unauthenticated read access to IoT readings
+http PUT [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  role="$unauthenticated" \
+  predicate="path[/readings] and method[GET]" \
+  mongo:='{
+    "readFilter": {"$expr": true}
+  }'
+
 # Get recent readings
-http GET [RESTHEART-URL]/readings filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
+http GET [RESTHEART-URL]/readings \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
 
 # Average temperature by location
 echo '[
@@ -1250,11 +1499,41 @@ echo '[
 ==== JavaScript
 [source,javascript]
 ----
+// First, create permission for unauthenticated read access to IoT readings
+const createReadingsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      role: "$unauthenticated",
+      predicate: "path[/readings] and method[GET]",
+      mongo: {
+        readFilter: {"$expr": true}
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Readings read permission created successfully');
+    } else {
+      console.error('Failed to create readings read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
 // Get recent readings
 const getRecentReadings = () => {
   const filter = encodeURIComponent("{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}");
   const sort = encodeURIComponent("{timestamp:-1}");
-  fetch(`[RESTHEART-URL]/readings?filter=${filter}&sort=${sort}`)
+  fetch(`[RESTHEART-URL]/readings?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
   .then(response => response.json())
   .then(data => {
     console.log('Recent readings:', data);
@@ -1289,6 +1568,7 @@ const getAverageTemperatureByLocation = () => {
 };
 
 // Execute
+createReadingsReadPermission();
 getRecentReadings();
 getAverageTemperatureByLocation();
 ----
