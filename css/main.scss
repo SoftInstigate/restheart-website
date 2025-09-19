@@ -3,20 +3,17 @@
 
 @charset "utf-8";
 
-// Core
-@import "variables";
+// All @use statements must come first
+@use "variables";
+@use "base";
+@use "layout";
+@use "components";
+@use "syntax";
+@use "utilities";
+@use "infinite-slider";
 
-// Asciidoctor
+// Then @import statements
 @import "asciidoctor.css";
-
-// Base styles
-@import "base";
-@import "layout";
-@import "components";
-@import "syntax";
-@import "utilities";
-
-@import "infinite-slider";
 
 html {
   scroll-behavior: smooth;
@@ -24,12 +21,12 @@ html {
 }
 
 body {
-  background-color: $background-color;
-  color: $text-color;
+  background-color: variables.$background-color;
+  color: variables.$text-color;
 }
 
 // Mobile responsive classes
-@media screen and (max-width: $breakpoint-md) {
+@media screen and (max-width: variables.$breakpoint-md) {
   .mobile-hidden {
     display: none;
   }
@@ -59,7 +56,7 @@ body {
   font-size: 1.9vw;
 }
 
-@media screen and (max-width: $breakpoint-md) {
+@media screen and (max-width: variables.$breakpoint-md) {
   .top-1 {
     font-size: 42px;
   }
@@ -90,7 +87,7 @@ body {
   }
 }
 
-@media screen and (min-width: $breakpoint-xl) {
+@media screen and (min-width: variables.$breakpoint-xl) {
   .top-1 {
     font-size: 64px;
   }
@@ -109,7 +106,7 @@ body {
 }
 
 .background-black {
-  background-color: $color-black;
+  background-color: variables.$color-black;
 }
 
 .text-lightcyan {
@@ -168,13 +165,13 @@ iframe {
     position: absolute;
     right: 1rem;
     top: 0.5rem;
-    color: $color-gray;
+    color: variables.$color-gray;
     font-size: 0.8em;
   }
 }
 
 // Attention banner animation
-@media screen and (min-width: $breakpoint-md) {
+@media screen and (min-width: variables.$breakpoint-md) {
   .attention-banner {
     animation: subtle-pulse 3s ease-in-out infinite;
 

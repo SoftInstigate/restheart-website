@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // Typography
 $base-font-family: "Noto", sans-serif;
 $base-font-size: 18px;
@@ -21,14 +23,17 @@ $color-secondary: #294172; // Fedora Dark Blue
 $color-tertiary: #cccccc;
 $color-highlight: #e59728; // Orange
 $color-link: #f8a839;
-$color-link-hover: darken($color-primary, 25%); // Friends Magenta
+$color-link-hover: color.adjust(
+  $color-primary,
+  $lightness: -25%
+); // Friends Magenta
 
 // Base colors
 $color-white: #ffffff;
 $color-black: #212121;
 $color-gray: #828282;
-$color-gray-light: lighten($color-gray, 40%);
-$color-gray-dark: darken($color-gray, 25%);
+$color-gray-light: color.adjust($color-gray, $lightness: 40%);
+$color-gray-dark: color.adjust($color-gray, $lightness: -25%);
 
 // Theme colors
 $background-color: $color-black;
@@ -38,7 +43,7 @@ $border-color: $color-gray;
 // Code highlighting colors
 $code-background: #212121;
 $code-text: #cccccc;
-$code-comment: darken($color-primary, 20%);
+$code-comment: color.adjust($color-primary, $lightness: -20%);
 $code-keyword: #f8a839;
 $code-string: #f8a839;
 $code-variable: #2a68fa;
