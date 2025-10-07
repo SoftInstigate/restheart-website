@@ -44,7 +44,7 @@ You can create users using the `/users` collection with the temporary JWT token.
 [source,bash]
 ----
 curl -i -X POST [RESTHEART-URL]/users \
-  -H "Authorization: [BASIC-AUTH]" \
+  -H "Authorization:Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "john_doe",
@@ -58,7 +58,7 @@ curl -i -X POST [RESTHEART-URL]/users \
 [source,bash]
 ----
 http POST [RESTHEART-URL]/users \
-  Authorization:"[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   _id=john_doe \
   password=SecurePassword123! \
   roles:='["reader", "writer"]' \
@@ -71,7 +71,7 @@ http POST [RESTHEART-URL]/users \
 fetch('[RESTHEART-URL]/users', {
   method: 'POST',
   headers: {
-    'Authorization': '[BASIC-AUTH]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -123,7 +123,7 @@ Here's an example of creating a basic permission:
 [source,bash]
 ----
 curl -i -X POST [RESTHEART-URL]/acl \
-  -H "Authorization: [BASIC-AUTH]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "project-manager-permission",
@@ -228,7 +228,7 @@ Update user information or roles:
 [source,bash]
 ----
 curl -i -X PATCH [RESTHEART-URL]/users/john_doe \
-  -H "Authorization: [BASIC-AUTH]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "roles": ["admin"],
@@ -240,7 +240,7 @@ curl -i -X PATCH [RESTHEART-URL]/users/john_doe \
 [source,bash]
 ----
 http PATCH [RESTHEART-URL]/users/john_doe \
-  Authorization:"[BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   roles:='["admin"]' \
   email=john.updated@example.com
 ----
@@ -277,14 +277,14 @@ Remove a user from the system:
 [source,bash]
 ----
 curl -i -X DELETE [RESTHEART-URL]/users/john_doe \
-  -H "Authorization: [BASIC-AUTH]"
+  -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
 http DELETE [RESTHEART-URL]/users/john_doe \
-  Authorization:"[BASIC-AUTH]"
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
