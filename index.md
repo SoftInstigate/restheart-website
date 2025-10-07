@@ -27,16 +27,13 @@ stars-bounce: true
                 });
             </script>
         </div>
-        <h3 class="font-weight-bold highlightcolor mt-5">Run this docker command to start <span class="small text-muted mt-0">(go to <a href="/docs/setup">Setup</a> for more installation options)</span></h3>
-        <div class="container">
-            <div class="listingblock my-0">
-                <div class="content">
-<pre class="rouge highlight text-center">
-<code data-lang="bash"><span class="nv">$ </span>docker pull softinstigate/restheart && curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml <span class="nt">--output</span> docker-compose.yml <span class="o">&amp;&amp;</span> docker compose up --attach restheart</code>
-</pre>
-                </div>
+          <div class="my-4 mx-2">
+            <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold mt-5 btn-lg text-black">🚀 Try RESTHeart Cloud FREE - No Installation Required!</a>
+            <div class="mt-4 white">
+                Start building instantly • Scale to production when ready
+                (go to <a href="/docs/setup">Setup</a> for more installation options)
             </div>
-        </div>
+          </div>
         <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
         <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
         <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
