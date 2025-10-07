@@ -86,7 +86,7 @@ The admin permission (`/_acl/rootCanDoEverything`) grants full access to all end
 curl -i -X POST [RESTHEART-URL]/acl?wm=upsert \
   -H "Authorization: Bearer [JWT]" \
   -H "Content-Type: application/json" \
-  -d '{"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true}}'
+  -d '{"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true, "allowWriteMode": true}}'
 ----
 
 ==== HTTPie
@@ -99,7 +99,7 @@ http POST [RESTHEART-URL]/acl?wm=upsert \
   predicate="path-prefix('/')" \
   roles:='["root"]' \
   priority:=0 \
-  mongo:='{"allowManagementRequests": true}'
+  mongo:='{"allowManagementRequests": true, "allowWriteMode": true}'
 ----
 
 ==== JavaScript
@@ -108,7 +108,7 @@ http POST [RESTHEART-URL]/acl?wm=upsert \
 ----
 fetch('[RESTHEART-URL]/acl?wm=upsert', {
   method: 'POST',
-  body: JSON.stringify({"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true}}),
+  body: JSON.stringify({"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true, "allowWriteMode": true}}),
   headers: {
     'Authorization': 'Bearer [JWT]',
     'Content-Type': 'application/json'
