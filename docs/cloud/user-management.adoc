@@ -44,7 +44,7 @@ You can create users using the `/users` collection with the temporary JWT token.
 [source,bash]
 ----
 curl -i -X POST [RESTHEART-URL]/users \
-  -H ":Basic [BASIC-AUTH]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "john_doe",
@@ -58,7 +58,7 @@ curl -i -X POST [RESTHEART-URL]/users \
 [source,bash]
 ----
 http POST [RESTHEART-URL]/users \
-  :"Basic [BASIC-AUTH]" \
+  Authorization:"Basic [BASIC-AUTH]" \
   _id=john_doe \
   password=SecurePassword123! \
   roles:='["reader", "writer"]' \
@@ -71,7 +71,7 @@ http POST [RESTHEART-URL]/users \
 fetch('[RESTHEART-URL]/users', {
   method: 'POST',
   headers: {
-    '': 'Basic [BASIC-AUTH]',
+    'Authorization': 'Basic [BASIC-AUTH]',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -123,7 +123,7 @@ Here's an example of creating a basic permission:
 [source,bash]
 ----
 curl -i -X POST [RESTHEART-URL]/acl \
-  -H ": Basic [BASIC-AUTH]" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "project-manager-permission",
