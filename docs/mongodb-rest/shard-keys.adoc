@@ -39,7 +39,7 @@ Add the `shardkey` query parameter to your request, providing a JSON document co
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
-  --data-urlencode 'shardkey={"fieldName":value}' \
+  -G --data-urlencode 'shardkey={"fieldName":value}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -72,7 +72,7 @@ For compound shard keys, include all fields that make up the key:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
-  --data-urlencode 'shardkey={"field1":value1,"field2":value2}' \
+  -G --data-urlencode 'shardkey={"field1":value1,"field2":value2}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -109,7 +109,7 @@ If a collection is sharded on field `region`:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
-  --data-urlencode 'shardkey={"region":"EU"}' \
+  -G --data-urlencode 'shardkey={"region":"EU"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -144,7 +144,7 @@ If a collection is sharded on fields `region` and `type`:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
-  --data-urlencode 'shardkey={"region":"EU","type":"premium"}' \
+  -G --data-urlencode 'shardkey={"region":"EU","type":"premium"}' \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 

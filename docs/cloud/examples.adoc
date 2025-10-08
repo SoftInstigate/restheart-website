@@ -237,22 +237,23 @@ curl -i -X PUT [RESTHEART-URL]/acl \
 # Search products by name (requires $unauthenticated read permission or basic auth)
 curl -i "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
+  -G --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
 
 # Filter by price range (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
+  -G --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
 
 # Get products with low inventory (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "filter={'quantity':{$lt:10}}"
+  -G --data-urlencode "filter={'quantity':{$lt:10}}"
 
 # Category-based filtering with sorting (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "filter={'category':'electronics'}" --data-urlencode "sort={price:1}"
+  -G --data-urlencode "filter={'category':'electronics'}" \
+  -G --data-urlencode "sort={price:1}"
 ----
 
 ==== HTTPie

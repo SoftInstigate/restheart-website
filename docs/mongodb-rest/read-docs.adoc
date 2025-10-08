@@ -110,7 +110,7 @@ Use the `filter` parameter to specify which documents to return using MongoDB qu
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'filter={"qty":{"$gt":50}}'
+  -G --data-urlencode 'filter={"qty":{"$gt":50}}'
 ----
 
 ==== HTTPie
@@ -151,7 +151,7 @@ Combine multiple conditions using MongoDB operators like `$and`:
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}'
+  -G --data-urlencode 'filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}'
 ----
 
 ==== HTTPie
@@ -188,7 +188,7 @@ Alternatively, you can use multiple filter parameters:
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'filter={"qty":{"$gt":75}}' \
+  -G --data-urlencode 'filter={"qty":{"$gt":75}}' \
   --data-urlencode 'filter={"status":"D"}'
 ----
 
@@ -228,7 +228,7 @@ Instead of retrieving documents, you can count them by appending `_size` to the 
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory/_size" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'filter={"status":"A"}'
+  -G --data-urlencode 'filter={"status":"A"}'
 ----
 
 ==== HTTPie
@@ -271,7 +271,7 @@ Use the `keys` parameter to specify which fields to include or exclude from the 
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "keys={'item':1}"
+  -G --data-urlencode "keys={'item':1}"
 ----
 
 ===== HTTPie
@@ -310,7 +310,7 @@ This returns only the `_id` and `item` fields for each document.
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "keys={'item':0}"
+  -G --data-urlencode "keys={'item':0}"
 ----
 
 ===== HTTPie
@@ -349,8 +349,8 @@ This returns all fields except `item` for each document.
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "keys={'item':1}" \
-  --data-urlencode "keys={'qty':1}"
+  -G --data-urlencode "keys={'item':1}" \
+  -G --data-urlencode "keys={'qty':1}"
 ----
 
 ===== HTTPie
@@ -509,7 +509,7 @@ You can also use MongoDB's sort expression format:
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'sort={"status":1,"qty":-1}'
+  -G --data-urlencode 'sort={"status":1,"qty":-1}'
 ----
 
 ===== HTTPie
@@ -548,8 +548,8 @@ Use dot notation to access nested document fields or array elements:
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode "keys={'size.h':1}" \
-  --data-urlencode "sort={'size.uom':1}"
+  -G --data-urlencode "keys={'size.h':1}" \
+  -G --data-urlencode "sort={'size.uom':1}"
 ----
 
 ==== HTTPie
@@ -683,7 +683,7 @@ Specify which index to use:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
-  --data-urlencode "hint={'item':1}" \
+  -G --data-urlencode "hint={'item':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -762,7 +762,7 @@ Force a collection scan instead of using indexes:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
-  --data-urlencode "hint={'$natural':1}" \
+  -G --data-urlencode "hint={'$natural':1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -799,7 +799,7 @@ For a reverse collection scan:
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
-  --data-urlencode "hint={'$natural':-1}" \
+  -G --data-urlencode "hint={'$natural':-1}" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
@@ -885,9 +885,9 @@ Then search and sort by relevance score:
 ----
 curl -i -X GET "[RESTHEART-URL]/inventory" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  --data-urlencode 'filter={"$text":{"$search":"paper"}}' \
-  --data-urlencode 'keys={"item":1,"score":{"$meta":"textScore"}}' \
-  --data-urlencode 'sort={"score":{"$meta":"textScore"}}'
+  -G --data-urlencode 'filter={"$text":{"$search":"paper"}}' \
+  -G --data-urlencode 'keys={"item":1,"score":{"$meta":"textScore"}}' \
+  -G --data-urlencode 'sort={"score":{"$meta":"textScore"}}'
 ----
 
 ===== HTTPie
