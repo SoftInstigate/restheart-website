@@ -544,7 +544,6 @@ For more information on transaction limits, see the https://docs.mongodb.com/man
 The following example demonstrates a transfer between two bank accounts:
 
 . Create a session
-+
 ==== cURL
 [source,bash]
 ----
@@ -578,7 +577,7 @@ fetch('[RESTHEART-URL]/_sessions', {
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 201 Created
@@ -586,7 +585,7 @@ Location: http://localhost:8080/_sessions/session123
 ----
 
 . Start a transaction
-+
+
 ==== cURL
 [source,bash]
 ----
@@ -620,7 +619,7 @@ fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns', {
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 201 Created
@@ -628,7 +627,7 @@ Location: http://localhost:8080/_sessions/session123/_txns/1
 ----
 
 . Debit from account A
-+
+
 ==== cURL
 [source,bash]
 ----
@@ -668,14 +667,14 @@ fetch('[RESTHEART-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]',
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 200 OK
 ----
 
 . Credit to account B
-+
+
 ==== cURL
 [source,bash]
 ----
@@ -715,14 +714,14 @@ fetch('[RESTHEART-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]',
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 200 OK
 ----
 
 . Add transaction record
-+
+
 ==== cURL
 [source,bash]
 ----
@@ -769,14 +768,14 @@ fetch('[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 201 Created
 ----
 
 . Commit the transaction
-+
+
 ==== cURL
 [source,bash]
 ----
@@ -809,7 +808,7 @@ fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
 })
 .catch(error => console.error('Error:', error));
 ----
-+
+
 [source,http]
 ----
 HTTP/1.1 200 OK
