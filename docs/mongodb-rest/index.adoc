@@ -1,0 +1,96 @@
+---
+title: REST API Overview
+layout: docs-adoc
+menu: mongodb
+---
+
+This section describes the REST API that allows you to interact with MongoDB using standard HTTP methods.
+
+> Representational State Transfer (REST) is an architectural style that defines a set of constraints to be used for creating web services. RESTful web services allow the requesting systems to access and manipulate textual representations of web resources by using a uniform and predefined set of stateless operations.
+
+Ref: https://en.wikipedia.org/wiki/Representational_state_transfer
+
+=== RESTHeart MongoDB REST API
+
+__RESTHeart provides a complete REST API for MongoDB__ that allows you to create, read, update, and delete documents using standard HTTP methods (GET, POST, PUT, PATCH, DELETE).
+
+With RESTHeart you can __build modern applications that interact with MongoDB through a RESTful interface__, without writing backend code. The API follows REST principles and uses JSON for data exchange.
+
+For example, to retrieve documents from the `inventory` collection, simply send a GET request to `http://mydomain.com/inventory`. To create a new document, POST your JSON data to the same URI.
+
+++++
+<img src="/images/restheart-what-is-it.svg" width="80%" height="auto" class="image-center img-responsive" />
+++++
+
+The REST API eliminates the need for custom backend code for common database operations, allowing you to focus on building your application's frontend.
+
+++++
+<div class="alert alert-success" role="alert">
+    <h2 class="alert-heading"><strong>Zero coding required.</strong></h2>
+    <hr class="my-2">
+    <p>Access MongoDB data with simple HTTP requests.</p>
+    <p>Check the <a class="alert-link" href="/docs/mongodb-rest/tutorial">tutorial</a> to get started!</p>
+</div>
+++++
+
+=== Key Features
+
+* **Standard HTTP Methods**: Use GET, POST, PUT, PATCH, DELETE to interact with your data
+* **JSON Documents**: Work with JSON representations of MongoDB documents
+* **Query Documents**: Filter, sort, project, and paginate results using query parameters
+* **Aggregations**: Execute MongoDB aggregation pipelines via REST
+* **Bulk Operations**: Insert, update, or delete multiple documents in a single request
+* **GridFS Support**: Store and retrieve binary files
+* **Transactions**: Execute multiple operations atomically
+* **JSON Schema Validation**: Enforce data structure and validation rules
+* **ETags for Concurrency Control**: Prevent conflicts with optimistic locking
+
+=== API Resources
+
+RESTHeart exposes MongoDB resources through intuitive URIs:
+
+* **Databases**: `/{db}` - Create, delete, or get information about a database
+* **Collections**: `/{db}/{collection}` - Create, delete, or query collections
+* **Documents**: `/{db}/{collection}/{id}` - Create, read, update, or delete specific documents
+* **Aggregations**: `/{db}/{collection}/_aggrs/{aggregation}` - Execute predefined aggregation pipelines
+* **File Buckets**: `/{db}/{bucket}.files` - Store and retrieve files using GridFS
+* **Indexes**: `/{db}/{collection}/_indexes` - Manage collection indexes
+* **Sessions**: `/{db}/_sessions` - Manage transactions
+
+=== Getting Started
+
+The best way to learn the REST API is through hands-on examples:
+
+1. **link:/docs/mongodb-rest/tutorial[Tutorial]** - Start here to learn the basics through simple examples
+2. **link:/docs/mongodb-rest/read-docs[Reading Documents]** - Learn about querying, filtering, sorting, and pagination
+3. **link:/docs/mongodb-rest/write-docs[Writing Documents]** - Master creating, updating, and deleting documents
+4. **link:/docs/mongodb-rest/aggregations[Aggregations]** - Run powerful aggregation pipelines via REST
+
+=== How It Works
+
+RESTHeart acts as a REST API server that sits between your application and MongoDB:
+
+[source]
+----
+Client Application → HTTP/REST → RESTHeart → MongoDB Protocol → MongoDB
+----
+
+Your application makes standard HTTP requests to RESTHeart, which translates them into MongoDB operations. Responses are returned as JSON documents.
+
+=== Authentication and Security
+
+RESTHeart includes built-in authentication and authorization:
+
+* **Multiple Authentication Mechanisms**: Basic Auth, JWT tokens, and more
+* **Access Control Lists (ACLs)**: Fine-grained permissions for resources
+* **MongoDB Roles Integration**: Leverage existing MongoDB user roles
+* **Request Predicates**: Control access based on request properties
+
+See the link:/docs/security/overview[Security documentation] for details.
+
+=== Next Steps
+
+* **link:/docs/mongodb-rest/tutorial[Follow the tutorial]** to get hands-on experience
+* **link:/docs/mongodb-rest/resource-uri[Learn about URI format]** to understand RESTHeart's URI structure
+* **link:/docs/mongodb-rest/representation-format[Explore representation formats]** to understand JSON document formats
+* **link:/docs/setup[Install RESTHeart]** to start building your application
