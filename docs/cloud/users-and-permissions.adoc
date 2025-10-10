@@ -1,0 +1,390 @@
+---
+title: Users and Permissions in RESTHeart Cloud
+layout: docs-adoc
+menu: cloud
+liquid: true
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+=== Overview
+
+RESTHeart Cloud provides a flexible and secure user management system that allows you to create, manage, and control access to your API resources through the `/users` and `/acl` collections.
+
+IMPORTANT: **Need more details?** This page provides quick examples for RESTHeart Cloud. For comprehensive documentation, see: +
+📚 link:/docs/security/user-management[**User Management Guide**] - Complete user CRUD operations +
+🔐 link:/docs/security/permissions[**Permission Management Guide**] - Advanced permissions, predicates, filters, and patterns
+
+=== User Document Structure
+
+In RESTHeart Cloud, a user document requires only three fields:
+
+* `_id`: The username (used as the document identifier)
+* `password`: The user's password (automatically encrypted by RESTHeart)
+* `roles`: Array of role names assigned to the user
+
+Example of a minimal valid user document:
+
+[source,json]
+----
+{
+    "_id": "john_doe",
+    "roles": [ "reader", "writer" ],
+    "password": "SecurePassword123!"
+}
+----
+
+You can include additional fields like `email`, `active`, or any custom properties as needed, but they are not required by the system.
+
+=== Creating Users
+
+You can create users using the `/users` collection with the temporary JWT token.
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/users \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "john_doe",
+    "password": "SecurePassword123!",
+    "roles": ["reader", "writer"],
+    "email": "john@example.com"
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/users \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=john_doe \
+  password=SecurePassword123! \
+  roles:='["reader", "writer"]' \
+  email=john@example.com
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/users', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "john_doe",
+    "password": "SecurePassword123!",
+    "roles": ["reader", "writer"],
+    "email": "john@example.com"
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User created successfully');
+  } else {
+    console.error('Failed to create user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+NOTE: The password is automatically encrypted by RESTHeart when stored in MongoDB.
+
+=== Roles and Permissions
+
+==== Understanding Role-Based Access Control
+
+RESTHeart Cloud uses a role-based permission system where:
+
+1. Each user is assigned one or more roles (in the `roles` array)
+2. Permissions are defined in `/acl` documents that specify what actions are allowed for each role
+3. The `admin` role is configured as the root role by default (has full access)
+
+You can define any custom roles (like `reader`, `writer`, `manager`, etc.) and grant them specific permissions using the ACL collection.
+
+==== Permission Structure
+
+Permissions in RESTHeart Cloud follow the format defined by the `mongoAclAuthorizer`. Each permission document contains:
+
+* `_id`: Unique identifier for the permission
+* `roles`: Array of roles this permission applies to
+* `predicate`: Condition that determines when this permission applies
+* `priority`: Numeric value determining precedence (higher values have higher priority)
+* `mongo`: Optional object with MongoDB-specific permissions
+
+TIP: For comprehensive permission documentation including `readFilter`, `writeFilter`, `mergeRequest`, `projectResponse`, advanced predicates, and complete examples, see link:/docs/security/permissions[**Permission Management**].
+
+==== Creating Permissions
+
+Here's an example of creating a basic permission:
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "project-manager-permission",
+    "roles": ["project_manager"],
+    "predicate": "path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"department": "engineering"},
+      "writeFilter": {"department": "engineering"}
+    }
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=project-manager-permission \
+  roles:='["project_manager"]' \
+  predicate="path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])" \
+  priority:=100 \
+  mongo:='{
+    "readFilter": {"department": "engineering"},
+    "writeFilter": {"department": "engineering"}
+  }'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/acl', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "project-manager-permission",
+    "roles": ["project_manager"],
+    "predicate": "path-prefix[\"/projects\"] and (method[GET] or method[POST] or method[PUT])",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"department": "engineering"},
+      "writeFilter": {"department": "engineering"}
+    }
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Permission created successfully');
+  } else {
+    console.error('Failed to create permission:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Advanced Permission Examples
+
+===== Data Filtering Based on User
+
+This permission allows users to see only their own data:
+
+[source,json]
+----
+{
+    "_id": "users-see-own-data",
+    "roles": ["user"],
+    "predicate": "path-prefix[\"/data\"] and method[GET]",
+    "priority": 100,
+    "mongo": {
+        "readFilter": { "owner": "@user._id" }
+    }
+}
+----
+
+===== Auto-adding User ID to Created Documents
+
+This permission ensures that when a user creates a document, their ID is automatically added as the owner:
+
+[source,json]
+----
+{
+    "_id": "users-create-own-data",
+    "roles": ["user"],
+    "predicate": "path-prefix[\"/data\"] and method[POST]",
+    "priority": 100,
+    "mongo": {
+        "mergeRequest": { "owner": "@user._id" }
+    }
+}
+----
+
+=== Managing Users
+
+==== Updating Users
+
+Update user information or roles:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PATCH [RESTHEART-URL]/users/john_doe \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "roles": ["admin"],
+    "email": "john.updated@example.com"
+  }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH [RESTHEART-URL]/users/john_doe \
+  Authorization:"Basic [BASIC-AUTH]" \
+  roles:='["admin"]' \
+  email=john.updated@example.com
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/users/john_doe', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "roles": ["admin"],
+    "email": "john.updated@example.com"
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User updated successfully');
+  } else {
+    console.error('Failed to update user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Deleting Users
+
+Remove a user from the system:
+
+==== cURL
+[source,bash]
+----
+curl -i -X DELETE [RESTHEART-URL]/users/john_doe \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/users/john_doe \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/users/john_doe', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('User deleted successfully');
+  } else {
+    console.error('Failed to delete user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Common Permission Patterns
+
+==== Path-based Access Control
+
+[source,json]
+----
+{
+    "_id": "writers-full-access",
+    "roles": ["writer"],
+    "predicate": "path-prefix[\"/content\"] and (method[GET] or method[POST] or method[PUT] or method[PATCH])",
+    "priority": 100
+}
+----
+
+==== Method-based Restrictions
+
+[source,json]
+----
+{
+    "_id": "readers-read-only",
+    "roles": ["reader"],
+    "predicate": "method[GET]",
+    "priority": 100
+}
+----
+
+==== Property-level Permissions
+
+Hide sensitive fields from the response:
+
+[source,json]
+----
+{
+    "_id": "hide-sensitive-data",
+    "roles": ["reader"],
+    "predicate": "path-prefix[\"/users\"] and method[GET]",
+    "priority": 100,
+    "mongo": {
+        "projectResponse": { "password": 0, "secretNotes": 0 }
+    }
+}
+----
+
+=== Security Considerations
+
+* Passwords are automatically encrypted with bcrypt
+* Temporary tokens have limited lifespans
+* Role-based access control with ACL permissions
+* Request predicates control precise access patterns
+* Document-level security through readFilter and writeFilter
+* All user management actions are logged
+
+=== Best Practices
+
+* Always use strong, unique passwords
+* Assign users the minimum required roles (principle of least privilege)
+* Create granular permissions with specific predicates
+* Use `readFilter` to control data visibility
+* Use `mergeRequest` to enforce ownership
+* Use higher priority values for more specific permissions
+* Regularly review and audit user roles and permissions
+
+=== Troubleshooting
+
+* *Permission Denied*: Check that the user has the correct roles and that a permission exists for those roles
+* *Can't Access Data*: Verify there are no `readFilter` restrictions limiting visibility
+* *Unexpected Content*: Check for `mergeRequest` permissions that might be modifying data
+* *Authentication Failed*: Ensure the username and password are correct
+
+=== Next Steps
+
+* link:/docs/security/permissions[**Permission Management**] - Comprehensive guide with advanced features
+* link:/docs/security/user-management[**User Management**] - Detailed user management documentation
+* link:/docs/security/authorization[Authorization Overview] - Understanding RESTHeart's security model
+* link:../mongodb-rest/tutorial[Explore MongoDB REST API]
+* link:getting-started[Return to Getting Started Guide]
