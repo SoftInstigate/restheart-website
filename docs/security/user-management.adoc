@@ -1,7 +1,7 @@
 ---
 title: User Management
 layout: docs-adoc
-menu: setup
+menu: security
 liquid: true
 ---
 
@@ -38,7 +38,7 @@ With the default configuration, a user is represented as follows:
 
 TIP: **mongoRealAuthenticator** can be configured to use different properties for the username, roles an password. Check  link:/docs/security/authentication/#mongo-realm-authenticator[mongoRealAuthenticator] for more information.
 
-## Get existing users
+=== Get existing users
 
 ==== cURL
 [source,bash]
@@ -91,7 +91,7 @@ NOTE: The password is always hidden on GET requests.
 
 NOTE: For security reasons, it not possible to use the `filter` query parameter on the password field; the following request is forbidden and will cause an error: `GET /users?filter={"password":{"$regex":"^a.*"}}`
 
-## Create a user
+=== Create a user
 
 ==== cURL
 [source,bash]
@@ -148,7 +148,7 @@ fetch('[RESTHEART-URL]/users', {
 
 NOTE: The password is automatically encrypted by RESTHeart.
 
-## Update a user
+=== Update a user
 
 ==== cURL
 [source,bash]
@@ -196,7 +196,7 @@ fetch('[RESTHEART-URL]/users/foo', {
 .catch(error => console.error('Error:', error));
 ----
 
-## Delete a user
+=== Delete a user
 
 ==== cURL
 [source,bash]
@@ -233,9 +233,13 @@ fetch('[RESTHEART-URL]/users/foo', {
 .catch(error => console.error('Error:', error));
 ----
 
-## Create an ACL document
+=== Managing Permissions
 
-==== cURL
+For detailed information about creating and managing permissions, including advanced permission features like predicates, MongoDB-specific permissions, filters, and complete examples, see link:/docs/security/permissions[Permission Management].
+
+==== Quick Example: Create a Basic Permission
+
+===== cURL
 [source,bash]
 ----
 curl -i -X POST [RESTHEART-URL]/acl \
@@ -248,7 +252,7 @@ curl -i -X POST [RESTHEART-URL]/acl \
 }'
 ----
 
-==== HTTPie
+===== HTTPie
 [source,bash]
 ----
 http POST [RESTHEART-URL]/acl \
@@ -259,7 +263,7 @@ http POST [RESTHEART-URL]/acl \
   priority:=1
 ----
 
-==== JavaScript
+===== JavaScript
 [source,javascript]
 ----
 const username = 'your-username';
@@ -288,6 +292,6 @@ fetch('[RESTHEART-URL]/acl', {
 .catch(error => console.error('Error:', error));
 ----
 
-TIP: Check link:/docs/security/authorization/#format-of-permissions[Format of permission] for more information on ACL permissions.
+TIP: For comprehensive permission documentation including advanced features like `readFilter`, `writeFilter`, `mergeRequest`, `projectResponse`, predicates, and complete examples, see link:/docs/security/permissions[Permission Management].
 
 TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=1828s[Managing users with practical examples]
