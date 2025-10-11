@@ -237,23 +237,23 @@ curl -i -X PUT [RESTHEART-URL]/acl \
 # Search products by name (requires $unauthenticated read permission or basic auth)
 curl -i "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'name':{$regex:'headphones',$options:'i'}}"
+  -G --data-urlencode "filter={'name':{'$regex':'headphones','$options':'i'}}"
 
 # Filter by price range (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'price':{$gte:50,$lte:150}}"
+  -G --data-urlencode "filter={'price':{'$gte':50,'$lte':150}}"
 
 # Get products with low inventory (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'quantity':{$lt:10}}"
+  -G --data-urlencode "filter={'quantity':{'$lt':10}}"
 
 # Category-based filtering with sorting (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/products" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -G --data-urlencode "filter={'category':'electronics'}" \
-  -G --data-urlencode "sort={price:1}"
+  -G --data-urlencode "sort={'price':1}"
 ----
 
 ==== HTTPie
@@ -593,7 +593,7 @@ curl -i -X PUT [RESTHEART-URL]/acl \
 # Get published articles (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/articles" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={publishedAt:-1}"
+  -G --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={'publishedAt':-1}"
 
 # Get article by slug (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/articles" \
@@ -603,7 +603,7 @@ curl "[RESTHEART-URL]/articles" \
 # Search articles (requires $unauthenticated read permission or basic auth)
 curl "[RESTHEART-URL]/articles" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={$text:{$search:'RESTHeart API'}}"
+  -G --data-urlencode "filter={'$text':{'$search':'RESTHeart API'}}"
 ----
 
 ==== HTTPie
@@ -939,17 +939,17 @@ curl -i -X PUT [RESTHEART-URL]/acl \
 # Get user timeline (posts from followed users) - requires $unauthenticated read permission or basic auth
 curl "[RESTHEART-URL]/posts" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'author':{$in:['user1','user2','user3']}}" --data-urlencode "sort={createdAt:-1}"
+  -G --data-urlencode "filter={'author':{'$in':['user1','user2','user3']}}" --data-urlencode "sort={'createdAt':-1}"
 
 # Search posts by hashtag - requires $unauthenticated read permission or basic auth
 curl "[RESTHEART-URL]/posts" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'hashtags':{$in:['#api']}}"
+  -G --data-urlencode "filter={'hashtags':{'$in':['#api']}}"
 
 # Get user's posts - requires $unauthenticated read permission or basic auth
 curl "[RESTHEART-URL]/posts" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={createdAt:-1}"
+  -G --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={'createdAt':-1}"
 ----
 
 ==== HTTPie
@@ -1453,7 +1453,7 @@ curl -i -X PUT [RESTHEART-URL]/acl \
 # Get recent readings - requires $unauthenticated read permission or basic auth
 curl -i "[RESTHEART-URL]/readings" \
   -H "Authorization: Basic [BASIC-AUTH]" \
-  -G --data-urlencode "filter={'timestamp':{$gte:'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={timestamp:-1}"
+  -G --data-urlencode "filter={'timestamp':{'$gte':'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={'timestamp':-1}"
 
 # Average temperature by location
 curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
@@ -2217,7 +2217,7 @@ curl -i -X POST https://[instance].restheart.com/public-datasets \
 curl "https://[instance].restheart.com/announcements"
 
 # Get active announcements
-curl "https://[instance].restheart.com/announcements" -G --data-urlencode "filter={'expiresAt':{$gte:'2024-01-15T00:00:00Z'}}"
+curl "https://[instance].restheart.com/announcements" -G --data-urlencode "filter={'expiresAt':{'$gte':'2024-01-15T00:00:00Z'}}"
 
 # Browse public datasets
 curl "https://[instance].restheart.com/public-datasets"
@@ -2360,13 +2360,13 @@ curl -i -X POST https://[instance].restheart.com/events \
 # Public users can access these without authentication
 
 # Get upcoming events
-curl "https://[instance].restheart.com/events" -G --data-urlencode "sort={startDate:1}"
+curl "https://[instance].restheart.com/events" -G --data-urlencode "sort={'startDate':1}"
 
 # Filter events by category
 curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'category':'workshop'}"
 
 # Get events for a specific date range
-curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'startDate':{$gte:'2024-01-20T00:00:00Z',$lt:'2024-01-27T00:00:00Z'}}"
+curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'startDate':{'$gte':'2024-01-20T00:00:00Z','$lt':'2024-01-27T00:00:00Z'}}"
 ----
 
 ===== Security Considerations for Public Access
