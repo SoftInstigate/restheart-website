@@ -671,12 +671,15 @@ http DELETE [RESTHEART-URL]/acl/userCanReadInventory \
 
 ==== With fileAclAuthorizer (Configuration File)
 
-Edit your ACL configuration file (e.g., `acl.yml`):
+You can configure ACL permissions in two ways with fileAclAuthorizer:
+
+===== Option 1: Inline Permissions (in main configuration file)
+
+Define permissions directly in your main RESTHeart configuration file:
 
 [source,yml]
 ----
 fileAclAuthorizer:
-  conf-file: ./acl.yml
   permissions:
     - _id: adminFullAccess
       roles: [ admin ]
@@ -704,7 +707,47 @@ fileAclAuthorizer:
           {"author": "@user._id", "createdAt": "@now"}
 ----
 
-After editing the file, restart RESTHeart to apply changes.
+===== Option 2: Separate ACL Configuration File
+
+Define permissions in a separate configuration file:
+
+[source,yml]
+----
+fileAclAuthorizer:
+  conf-file: ./acl.yml
+----
+
+Then create `acl.yml`:
+
+[source,yml]
+----
+- _id: adminFullAccess
+  roles: [ admin ]
+  predicate: path-prefix('/')
+  priority: 0
+  mongo:
+    allowManagementRequests: true
+    allowBulkPatch: true
+    allowBulkDelete: true
+
+- _id: userCanReadInventory
+  roles: [ user ]
+  predicate: method(GET) and path-prefix('/inventory')
+  priority: 100
+
+- _id: userCanCreateOwnData
+  roles: [ user ]
+  predicate: >
+    method(POST)
+    and path-template('/{userid}')
+    and equals(@user._id, ${userid})
+  priority: 100
+  mongo:
+    mergeRequest: >
+      {"author": "@user._id", "createdAt": "@now"}
+----
+
+After editing the configuration, restart RESTHeart to apply changes.
 
 === Configuration
 
