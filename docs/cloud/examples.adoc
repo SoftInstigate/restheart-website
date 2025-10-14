@@ -228,10 +228,7 @@ curl -i -X PUT [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "role": "$unauthenticated",
-    "predicate": "path[/products] and method[GET]",
-    "mongo": {
-      "readFilter": {"$expr": true}
-    }
+    "predicate": "path[/products] and method[GET]"
   }'
 
 # Search products by name (requires $unauthenticated read permission or basic auth)
@@ -265,10 +262,7 @@ http PUT [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   role="$unauthenticated" \
-  predicate="path[/products] and method[GET]" \
-  mongo:='{
-    "readFilter": {"$expr": true}
-  }'
+  predicate="path[/products] and method[GET]"
 
 # Search products by name
 http GET [RESTHEART-URL]/products \
@@ -305,10 +299,7 @@ const createProductsReadPermission = () => {
     },
     body: JSON.stringify({
       role: "$unauthenticated",
-      predicate: "path[/products] and method[GET]",
-      mongo: {
-        readFilter: {"$expr": true}
-      }
+      predicate: "path[/products] and method[GET]"
     })
   })
   .then(response => {
@@ -1010,10 +1001,7 @@ curl -i -X PUT [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "role": "$unauthenticated",
-    "predicate": "path[/posts] and method[GET]",
-    "mongo": {
-      "readFilter": {"$expr": true}
-    }
+    "predicate": "path[/posts] and method[GET]"
   }'
 
 # Get user timeline (posts from followed users) - requires $unauthenticated read permission or basic auth
@@ -1041,10 +1029,7 @@ http PUT [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   role="$unauthenticated" \
-  predicate="path[/posts] and method[GET]" \
-  mongo:='{
-    "readFilter": {"$expr": true}
-  }'
+  predicate="path[/posts] and method[GET]"
 
 # Get user timeline (posts from followed users)
 http GET [RESTHEART-URL]/posts \
@@ -1076,10 +1061,7 @@ const createPostsReadPermission = () => {
     },
     body: JSON.stringify({
       role: "$unauthenticated",
-      predicate: "path[/posts] and method[GET]",
-      mongo: {
-        readFilter: {"$expr": true}
-      }
+      predicate: "path[/posts] and method[GET]"
     })
   })
   .then(response => {
@@ -1524,10 +1506,7 @@ curl -i -X PUT [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
     "role": "$unauthenticated",
-    "predicate": "path[/readings] and method[GET]",
-    "mongo": {
-      "readFilter": {"$expr": true}
-    }
+    "predicate": "path[/readings] and method[GET]"
   }'
 
 # Get recent readings - requires $unauthenticated read permission or basic auth
@@ -1555,10 +1534,7 @@ http PUT [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
   role="$unauthenticated" \
-  predicate="path[/readings] and method[GET]" \
-  mongo:='{
-    "readFilter": {"$expr": true}
-  }'
+  predicate="path[/readings] and method[GET]"
 
 # Get recent readings
 http GET [RESTHEART-URL]/readings \
@@ -1590,10 +1566,7 @@ const createReadingsReadPermission = () => {
     },
     body: JSON.stringify({
       role: "$unauthenticated",
-      predicate: "path[/readings] and method[GET]",
-      mongo: {
-        readFilter: {"$expr": true}
-      }
+      predicate: "path[/readings] and method[GET]"
     })
   })
   .then(response => {
