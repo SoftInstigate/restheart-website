@@ -224,11 +224,12 @@ addProduct();
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to products
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-    "role": "$unauthenticated",
-    "predicate": "path[/products] and method[GET]"
+    "_id": "allCanGetProducts",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/products) and method(GET)"
   }'
 
 # Search products by name (requires $unauthenticated read permission or basic auth)
@@ -258,11 +259,12 @@ curl "[RESTHEART-URL]/products" \
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to products
-http PUT [RESTHEART-URL]/acl \
+http POST [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
-  role="$unauthenticated" \
-  predicate="path[/products] and method[GET]"
+  _id="allCanGetProducts" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/products) and method(GET)"
 
 # Search products by name
 http GET [RESTHEART-URL]/products \
@@ -292,14 +294,15 @@ http GET [RESTHEART-URL]/products \
 // First, create permission for unauthenticated read access to products
 const createProductsReadPermission = () => {
   fetch('[RESTHEART-URL]/acl', {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      role: "$unauthenticated",
-      predicate: "path[/products] and method[GET]"
+      _id: "allCanGetProducts",
+      roles: ["$unauthenticated"],
+      predicate: "path(/products) and method(GET)"
     })
   })
   .then(response => {
@@ -651,11 +654,12 @@ createArticle();
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to published articles
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-    "role": "$unauthenticated",
-    "predicate": "path[/articles] and method[GET]",
+    "_id": "allCanGetPublishedArticles",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/articles) and method(GET)",
     "mongo": {
       "readFilter": {"status": "published"}
     }
@@ -682,11 +686,12 @@ curl "[RESTHEART-URL]/articles" \
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to published articles
-http PUT [RESTHEART-URL]/acl \
+http POST [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
-  role="$unauthenticated" \
-  predicate="path[/articles] and method[GET]" \
+  _id="allCanGetPublishedArticles" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/articles) and method(GET)" \
   mongo:='{
     "readFilter": {"status": "published"}
   }'
@@ -714,14 +719,15 @@ http GET [RESTHEART-URL]/articles \
 // First, create permission for unauthenticated read access to published articles
 const createArticlesReadPermission = () => {
   fetch('[RESTHEART-URL]/acl', {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      role: "$unauthenticated",
-      predicate: "path[/articles] and method[GET]",
+      _id: "allCanGetPublishedArticles",
+      roles: ["$unauthenticated"],
+      predicate: "path(/articles) and method(GET)",
       mongo: {
         readFilter: {"status": "published"}
       }
@@ -997,11 +1003,12 @@ createPost();
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to posts
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-    "role": "$unauthenticated",
-    "predicate": "path[/posts] and method[GET]"
+    "_id": "allCanGetPosts",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/posts) and method(GET)"
   }'
 
 # Get user timeline (posts from followed users) - requires $unauthenticated read permission or basic auth
@@ -1025,11 +1032,12 @@ curl "[RESTHEART-URL]/posts" \
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to posts
-http PUT [RESTHEART-URL]/acl \
+http POST [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
-  role="$unauthenticated" \
-  predicate="path[/posts] and method[GET]"
+  _id="allCanGetPosts" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/posts) and method(GET)"
 
 # Get user timeline (posts from followed users)
 http GET [RESTHEART-URL]/posts \
@@ -1054,14 +1062,15 @@ http GET [RESTHEART-URL]/posts \
 // First, create permission for unauthenticated read access to posts
 const createPostsReadPermission = () => {
   fetch('[RESTHEART-URL]/acl', {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      role: "$unauthenticated",
-      predicate: "path[/posts] and method[GET]"
+      _id: "allCanGetPosts",
+      roles: ["$unauthenticated"],
+      predicate: "path(/posts) and method(GET)"
     })
   })
   .then(response => {
@@ -1502,11 +1511,12 @@ submitReading();
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to IoT readings
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-    "role": "$unauthenticated",
-    "predicate": "path[/readings] and method[GET]"
+    "_id": "allCanGetReadings",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/readings) and method(GET)"
   }'
 
 # Get recent readings - requires $unauthenticated read permission or basic auth
@@ -1530,11 +1540,12 @@ curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
 [source,bash]
 ----
 # First, create permission for unauthenticated read access to IoT readings
-http PUT [RESTHEART-URL]/acl \
+http POST [RESTHEART-URL]/acl \
   Authorization:"Basic [BASIC-AUTH]" \
   Content-Type:application/json \
-  role="$unauthenticated" \
-  predicate="path[/readings] and method[GET]"
+  _id="allCanGetReadings" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/readings) and method(GET)"
 
 # Get recent readings
 http GET [RESTHEART-URL]/readings \
@@ -1559,14 +1570,15 @@ echo '[
 // First, create permission for unauthenticated read access to IoT readings
 const createReadingsReadPermission = () => {
   fetch('[RESTHEART-URL]/acl', {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': 'Basic [BASIC-AUTH]',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      role: "$unauthenticated",
-      predicate: "path[/readings] and method[GET]"
+      _id: "allCanGetReadings",
+      roles: ["$unauthenticated"],
+      predicate: "path(/readings) and method(GET)"
     })
   })
   .then(response => {
@@ -2214,13 +2226,13 @@ curl -i -X PUT https://[instance].restheart.com/announcements -H "Authorization:
 curl -i -X PUT https://[instance].restheart.com/documentation -H "Authorization: Bearer [token]"
 
 # Configure public read access permissions
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetPublicDatasets",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/public-datasets)"
-      }
-    }'
+      }'
 ----
 
 ===== Public Content Examples
@@ -2295,10 +2307,11 @@ curl -i -X PUT https://[instance].restheart.com/docs -H "Authorization: Bearer [
 curl -i -X PUT https://[instance].restheart.com/faqs -H "Authorization: Bearer [token]"
 
 # Configure public read access for documentation
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetPublishedDocs",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/docs)",
         "mongo": {
           "readFilter": {"status": "published"}
@@ -2306,10 +2319,11 @@ curl -i -X PUT https://[instance].restheart.com/acl \
       }'
 
 # Configure editor write access for documentation
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "editor",
+        "_id": "editorsCanManageDocs",
+        "roles": ["editor"],
         "predicate": "(method(GET) or method(POST) or method(PATCH)) and path-prefix(/docs)",
         "mongo": {
           "mergeRequest": { "author": "@user._id" },
@@ -2339,10 +2353,11 @@ curl -i -X POST https://[instance].restheart.com/docs \
 [source,bash]
 ----
 # Configure FAQ collection for public access
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetFaqs",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/faqs)"
       }'
 
@@ -2372,10 +2387,11 @@ Create a public events system where anyone can view upcoming events.
 curl -i -X PUT https://[instance].restheart.com/events -H "Authorization: Bearer [token]"
 
 # Configure public read access for future events only
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetPublishedEvents",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/events)",
         "mongo": {
           "readFilter": {
@@ -2432,11 +2448,12 @@ curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'sta
 # 2. Never allow write access for $unauthenticated role
 
 # Example: Limit fields exposed to public users
-curl -i -X PUT https://[instance].restheart.com/acl \
+curl -i -X POST https://[instance].restheart.com/acl \
   -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
-        "predicate": "method(GET) and path('/events')",
+        "_id": "allCanGetPublicEventsLimitedFields",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path(/events)",
         "mongo": {
           "readFilter": {"public": true},
           "projectResponse": {
@@ -2456,18 +2473,20 @@ Configure ACL permissions for collections used in the examples above that show u
 [source,bash]
 ----
 # Configure public read access for products collection (e-commerce examples)
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetProducts",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/products)"
       }'
 
 # Configure public read access for articles collection (CMS examples)
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetPublishedArticles",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/articles)",
         "mongo": {
           "readFilter": {"status": "published"}
@@ -2475,18 +2494,20 @@ curl -i -X PUT [RESTHEART-URL]/acl \
       }'
 
 # Configure public read access for posts collection (social media examples)
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetPosts",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/posts)"
       }'
 
 # Configure public read access for readings collection (IoT examples)
-curl -i -X PUT [RESTHEART-URL]/acl \
+curl -i -X POST [RESTHEART-URL]/acl \
   -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
   -d '{
-        "role": "$unauthenticated",
+        "_id": "allCanGetReadings",
+        "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/readings)"
       }'
 ----
