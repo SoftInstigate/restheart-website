@@ -42,6 +42,7 @@ curl -i -X POST [RESTHEART-URL]/acl \
     "_id": "allCanGetPublishedArticles",
     "roles": ["$unauthenticated"],
     "predicate": "path(/articles) and method(GET)",
+    "priority": 100,
     "mongo": {
       "readFilter": {"status": "published"}
     }
@@ -92,6 +93,7 @@ http POST [RESTHEART-URL]/acl \
   _id="allCanGetPublishedArticles" \
   roles:='["$unauthenticated"]' \
   predicate="path(/articles) and method(GET)" \
+  priority:=100 \
   mongo:='{
     "readFilter": {"status": "published"}
   }'
@@ -375,7 +377,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
     "_id": "allCanGetPosts",
     "roles": ["$unauthenticated"],
-    "predicate": "path(/posts) and method(GET)"
+    "predicate": "path(/posts) and method(GET)",
+    "priority": 100
   }'
 
 # Create user profile
@@ -427,7 +430,8 @@ http POST [RESTHEART-URL]/acl \
   Content-Type:application/json \
   _id="allCanGetPosts" \
   roles:='["$unauthenticated"]' \
-  predicate="path(/posts) and method(GET)"
+  predicate="path(/posts) and method(GET)" \
+  priority:=100
 
 # Create user profile
 http POST [RESTHEART-URL]/profiles \
@@ -908,7 +912,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
     "_id": "allCanGetReadings",
     "roles": ["$unauthenticated"],
-    "predicate": "path(/readings) and method(GET)"
+    "predicate": "path(/readings) and method(GET)",
+    "priority": 100
   }'
 
 # Register device
@@ -952,7 +957,8 @@ http POST [RESTHEART-URL]/acl \
   Content-Type:application/json \
   _id="allCanGetReadings" \
   roles:='["$unauthenticated"]' \
-  predicate="path(/readings) and method(GET)"
+  predicate="path(/readings) and method(GET)" \
+  priority:=100
 
 # Register device
 http POST [RESTHEART-URL]/devices \
@@ -1787,7 +1793,8 @@ curl -i -X POST https://[instance].restheart.com/acl \
   -d '{
         "_id": "allCanGetPublicDatasets",
         "roles": ["$unauthenticated"],
-        "predicate": "method(GET) and path-prefix(/public-datasets)"
+        "predicate": "method(GET) and path-prefix(/public-datasets)",
+        "priority": 100
       }'
 ----
 
@@ -1869,6 +1876,7 @@ curl -i -X POST https://[instance].restheart.com/acl \
         "_id": "allCanGetPublishedDocs",
         "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/docs)",
+        "priority": 100,
         "mongo": {
           "readFilter": {"status": "published"}
         }
@@ -1881,6 +1889,7 @@ curl -i -X POST https://[instance].restheart.com/acl \
         "_id": "editorsCanManageDocs",
         "roles": ["editor"],
         "predicate": "(method(GET) or method(POST) or method(PATCH)) and path-prefix(/docs)",
+        "priority": 100,
         "mongo": {
           "mergeRequest": { "author": "@user._id" },
           "writeFilter": { "author": "@user._id" }
@@ -1914,7 +1923,8 @@ curl -i -X POST https://[instance].restheart.com/acl \
   -d '{
         "_id": "allCanGetFaqs",
         "roles": ["$unauthenticated"],
-        "predicate": "method(GET) and path-prefix(/faqs)"
+        "predicate": "method(GET) and path-prefix(/faqs)",
+        "priority": 100
       }'
 
 # Add FAQ entries
@@ -1949,6 +1959,7 @@ curl -i -X POST https://[instance].restheart.com/acl \
         "_id": "allCanGetPublishedEvents",
         "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/events)",
+        "priority": 100,
         "mongo": {
           "readFilter": {
             "status": "published",
@@ -2010,6 +2021,7 @@ curl -i -X POST https://[instance].restheart.com/acl \
         "_id": "allCanGetPublicEventsLimitedFields",
         "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path(/events)",
+        "priority": 100,
         "mongo": {
           "readFilter": {"public": true},
           "projectResponse": {
@@ -2034,7 +2046,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
         "_id": "allCanGetProducts",
         "roles": ["$unauthenticated"],
-        "predicate": "method(GET) and path-prefix(/products)"
+        "predicate": "method(GET) and path-prefix(/products)",
+        "priority": 100
       }'
 
 # Configure public read access for articles collection (CMS examples)
@@ -2044,6 +2057,7 @@ curl -i -X POST [RESTHEART-URL]/acl \
         "_id": "allCanGetPublishedArticles",
         "roles": ["$unauthenticated"],
         "predicate": "method(GET) and path-prefix(/articles)",
+        "priority": 100,
         "mongo": {
           "readFilter": {"status": "published"}
         }
@@ -2055,7 +2069,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
         "_id": "allCanGetPosts",
         "roles": ["$unauthenticated"],
-        "predicate": "method(GET) and path-prefix(/posts)"
+        "predicate": "method(GET) and path-prefix(/posts)",
+        "priority": 100
       }'
 
 # Configure public read access for readings collection (IoT examples)
@@ -2064,7 +2079,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
         "_id": "allCanGetReadings",
         "roles": ["$unauthenticated"],
-        "predicate": "method(GET) and path-prefix(/readings)"
+        "predicate": "method(GET) and path-prefix(/readings)",
+        "priority": 100
       }'
 ----
 

@@ -61,7 +61,8 @@ curl -i -X POST [RESTHEART-URL]/acl \
   -d '{
     "_id": "allCanGetProducts",
     "roles": ["$unauthenticated"],
-    "predicate": "path(/products) and method(GET)"
+    "predicate": "path(/products) and method(GET)",
+    "priority": 100
   }'
 ----
 
@@ -83,7 +84,8 @@ http POST [RESTHEART-URL]/acl \
   Content-Type:application/json \
   _id="allCanGetProducts" \
   roles:='["$unauthenticated"]' \
-  predicate="path(/products) and method(GET)"
+  predicate="path(/products) and method(GET)" \
+  priority:=100
 ----
 
 ==== JavaScript
@@ -147,7 +149,8 @@ const createProductsReadPermission = () => {
     body: JSON.stringify({
       _id: "allCanGetProducts",
       roles: ["$unauthenticated"],
-      predicate: "path(/products) and method(GET)"
+      predicate: "path(/products) and method(GET)",
+      priority: 100
     })
   })
   .then(response => {
