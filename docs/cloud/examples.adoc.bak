@@ -20,6 +20,476 @@ Discover how RESTHeart Cloud accelerates development across different industries
 
 === Web Applications
 
+==== HTTPie
+
+[source,bash]
+----
+# Create collections
+http PUT [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to products
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="allCanGetProducts" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/products) and method(GET)"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create collections
+const createCollections = async () => {
+  const headers = {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  };
+
+  fetch('[RESTHEART-URL]/products', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products collection created successfully');
+    } else {
+      console.error('Failed to create products collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/categories', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Categories collection created successfully');
+    } else {
+      console.error('Failed to create categories collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/inventory', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Inventory collection created successfully');
+    } else {
+      console.error('Failed to create inventory collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create permission for unauthenticated read access to products
+const createProductsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: "allCanGetProducts",
+      roles: ["$unauthenticated"],
+      predicate: "path(/products) and method(GET)"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products read permission created successfully');
+    } else {
+      console.error('Failed to create products read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createCollections();
+createProductsReadPermission();
+----
+
+===== Sample Data
+
+==== cURL
+
+[source,bash]
+----
+# Add categories
+curl -i -X POST [RESTHEART-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
+
+# Add products
+curl -i -X POST [RESTHEART-URL]/products \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "Wireless Headphones",
+    "sku": "WH-001",
+    "price": 99.99,
+    "category": "electronics",
+    "description": "High-quality wireless headphones with noise cancellation",
+    "features": ["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"],
+    "inStock": true,
+    "quantity": 50,
+    "tags": ["audio", "wireless", "premium"]
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Add categories
+http POST [RESTHEART-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  name="Electronics" \
+  slug="electronics" \
+  description="Electronic devices and accessories"
+
+# Add products
+http POST [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  name="Wireless Headphones" \
+  sku="WH-001" \
+  price:=99.99 \
+  category="electronics" \
+  description="High-quality wireless headphones with noise cancellation" \
+  features:='["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"]' \
+  inStock:=true \
+  quantity:=50 \
+  tags:='["audio", "wireless", "premium"]'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Add categories
+const addCategory = () => {
+  fetch('[RESTHEART-URL]/categories', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Electronics",
+      slug: "electronics",
+      description: "Electronic devices and accessories"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Category created successfully');
+    } else {
+      console.error('Failed to create category:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Add products
+const addProduct = () => {
+  fetch('[RESTHEART-URL]/products', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Wireless Headphones",
+      sku: "WH-001",
+      price: 99.99,
+      category: "electronics",
+      description: "High-quality wireless headphones with noise cancellation",
+      features: ["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"],
+      inStock: true,
+      quantity: 50,
+      tags: ["audio", "wireless", "premium"]
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Product created successfully');
+    } else {
+      console.error('Failed to create product:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+addCategory();
+addProduct();
+----
+
+===== Advanced Queries
+
+==== cURL
+
+[source,bash]
+----
+# Search products by name
+curl -i "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'name':{'$regex':'headphones','$options':'i'}}"
+
+# Filter by price range
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'price':{'$gte':50,'$lte':150}}"
+
+# Get products with low inventory
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'quantity':{'$lt':10}}"
+
+# Category-based filtering with sorting
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'category':'electronics'}" \
+  -G --data-urlencode "sort={'price':1}"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Search products by name
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
+
+# Filter by price range
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'price':{\$gte:50,\$lte:150}}"
+
+# Get products with low inventory
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'quantity':{\$lt:10}}"
+
+# Category-based filtering with sorting
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'category':'electronics'}" sort=="{price:1}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Search products by name
+const searchByName = () => {
+  const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Filter by price range
+const filterByPriceRange = () => {
+  const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Price range results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Get products with low inventory
+const getLowInventory = () => {
+  const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Low inventory products:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Category-based filtering with sorting
+const filterByCategory = () => {
+  const filter = encodeURIComponent("{'category':'electronics'}");
+  const sort = encodeURIComponent("{price:1}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Category results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+searchByName();
+filterByPriceRange();
+getLowInventory();
+filterByCategory();
+----
+
+==== Try it with a Frontend
+
+Now that you have a working backend, check out our link:#frontend-examples[Frontend Examples] section to build a complete web application with Vue.js, React, or Angular!
+
+=== Frontend Examples
+
+Ready to build complete web applications with Vue.js, React, or Angular? We've created three full-featured frontend implementations that demonstrate how to build production-ready applications with RESTHeart Cloud.
+
+[TIP]
+====
+All three frontend examples are available in our GitHub repository: https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^]
+
+Each implementation is a complete single-page application featuring:
+
+* **Product search by name** - Real-time search functionality
+* **Price range filtering** - Interactive price filters
+* **Category filtering** - Browse products by category
+* **Real-time updates** - Live data from RESTHeart Cloud
+* **Responsive design** - Works on desktop, tablet, and mobile
+* **Production-ready code** - Best practices for each framework
+====
+
+==== Prerequisites
+
+Before you start with the frontend examples, make sure you have completed the backend setup from the link:#e-commerce-product-catalog[E-commerce Product Catalog] example, including:
+
+* Creating the `products` and `categories` collections
+* Adding sample product data
+* Configuring ACL for unauthenticated read access to products
+
+==== Getting Started
+
+1. **Clone the repository:**
++
+[source,bash]
+----
+git clone https://github.com/SoftInstigate/restheart-cloud-examples.git
+cd restheart-cloud-examples
+----
+
+2. **Choose your framework:**
++
+[source,bash]
+----
+# For Vue.js
+cd vue-product-search
+
+# OR for React
+cd react-product-search
+
+# OR for Angular
+cd angular-product-search
+----
+
+3. **Configure your RESTHeart Cloud instance:**
++
+For Vue.js and React:
++
+[source,bash]
+----
+cp .env.example .env
+# Edit .env and set VITE_RESTHEART_URL to your RESTHeart Cloud instance URL
+----
++
+For Angular:
++
+[source,bash]
+----
+# Edit src/environments/environment.ts and set restHeartUrl to your instance URL
+----
+
+4. **Install dependencies and run:**
++
+[source,bash]
+----
+npm install
+npm run dev  # For Vue.js and React
+npm start    # For Angular
+----
+
+==== What's Included
+
+Each framework implementation includes:
+
+* **Search Component** - Full-text product search with debouncing
+* **Filter Components** - Price range and category filters
+* **Product Grid** - Responsive product display
+* **State Management** - Framework-specific state handling (Pinia/Redux/Services)
+* **API Integration** - RESTHeart Cloud REST API integration
+* **Error Handling** - Graceful error handling and loading states
+* **TypeScript Support** - Full TypeScript support (React and Angular)
+
+==== Framework-Specific Features
+
+**Vue.js Example:**
+
+* Composition API
+* Pinia for state management
+* Vite for fast development
+* Tailwind CSS for styling
+
+**React Example:**
+
+* Functional components with hooks
+* Context API for state management
+* Vite for fast development
+* Tailwind CSS for styling
+* TypeScript
+
+**Angular Example:**
+
+* Standalone components (Angular 17+)
+* Services for data management
+* RxJS for reactive programming
+* Angular Material for UI components
+* TypeScript
+
+==== Next Steps
+
+After running the examples, you can:
+
+* Customize the UI to match your brand
+* Add more features like cart functionality, user authentication, or reviews
+* Extend the backend with additional collections and relationships
+* Deploy your application to production
+
+For more backend examples and use cases, continue exploring the sections below.
+
 ==== Content Management System
 
 Create a headless CMS for blogs, news sites, or documentation.

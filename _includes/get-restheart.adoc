@@ -1,4 +1,94 @@
-=== Before Running Examples
+++++
+<style>
+  .setup-panel {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    margin: 1.5rem 0;
+    background-color: #212529;
+    color: #f8f9fa;
+  }
+  .setup-header {
+    cursor: pointer;
+    user-select: none;
+    padding: 1.5rem;
+  }
+  .setup-header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  .setup-header h3 {
+    display: inline;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  .setup-collapse-icon {
+    transition: transform 0.3s ease;
+    float: right;
+  }
+  .setup-header.collapsed .setup-collapse-icon {
+    transform: rotate(-90deg);
+  }
+  /* Prevent flash of content on page load */
+  #setupContent {
+    visibility: hidden;
+  }
+  #setupContent.collapse-ready {
+    visibility: visible;
+  }
+  .setup-content-inner {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+</style>
+<script>
+  // Remember setup section collapse state
+  (function () {
+    const isCollapsed = localStorage.getItem("setupSectionCollapsed") === "true";
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initSetupCollapse);
+    } else {
+      initSetupCollapse();
+    }
+
+    function initSetupCollapse() {
+      const setupContent = document.getElementById("setupContent");
+      const setupHeader = document.querySelector(".setup-header");
+
+      if (!setupContent) return;
+
+      if (isCollapsed) {
+        setupContent.classList.remove("show");
+        if (setupHeader) {
+          setupHeader.classList.add("collapsed");
+          setupHeader.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      setupContent.classList.add("collapse-ready");
+
+      setupContent.addEventListener("hidden.bs.collapse", function () {
+        localStorage.setItem("setupSectionCollapsed", "true");
+      });
+
+      setupContent.addEventListener("shown.bs.collapse", function () {
+        localStorage.setItem("setupSectionCollapsed", "false");
+      });
+    }
+  })();
+</script>
+<div class="setup-panel">
+  <div
+    class="setup-header"
+    data-bs-toggle="collapse"
+    data-bs-target="#setupContent"
+    aria-expanded="true"
+    aria-controls="setupContent"
+  >
+    <h3>⚡ Setup Guide</h3>
+    <span class="setup-collapse-icon">▼</span>
+  </div>
+  <div class="collapse show" id="setupContent">
+    <div class="setup-content-inner">
+++++
 
 To run the examples on this page, you need a RESTHeart instance.
 
@@ -18,3 +108,9 @@ TIP: All code examples on this page will automatically use your configured RESTH
 If you prefer local development, follow the link:/docs/setup[Setup Guide] to install RESTHeart on your machine.
 
 NOTE: Local instances run at `http://localhost:8080` with default credentials `admin:secret`
+
+++++
+    </div>
+  </div>
+</div>
+++++
