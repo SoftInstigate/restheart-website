@@ -37,15 +37,6 @@ A complete e-commerce product catalog application featuring:
 * **RESTful API** - Fully functional REST API with MongoDB
 * **Authentication** - Secure access control with ACL
 
-== Prerequisites
-
-Before starting, make sure you have:
-
-* A RESTHeart Cloud account (link:/docs/cloud/getting-started[Get Started])
-* Your RESTHeart Cloud URL and credentials
-* Node.js installed (for running the frontend)
-* Basic knowledge of REST APIs
-
 == Part 1: Backend Setup
 
 === Step 1: Create Collections
@@ -176,121 +167,115 @@ createProductsReadPermission();
 
 === Step 2: Add Sample Data
 
-Now add some sample data to test your API:
+Instead of manually creating each product, you can download sample data files and import them to your instance.
+
+First, download the sample data files:
+
+==== Download Sample Data
+
+[source,bash]
+----
+# Download categories
+curl -o categories.json https://restheart.org/assets/categories.json
+
+# Download products
+curl -o products.json https://restheart.org/assets/products.json
+----
+
+Now import the data to your RESTHeart instance:
 
 ==== cURL
 
 [source,bash]
 ----
-# Add categories
-curl -i -X POST [RESTHEART-URL]/categories \
-  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
-  -d '{"name": "Electronics", "slug": "electronics", "description": "Electronic devices and accessories"}'
+# Import categories
+curl -X POST [RESTHEART-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d @categories.json
 
-# Add products
-curl -i -X POST [RESTHEART-URL]/products \
-  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
-  -d '{
-    "name": "Wireless Headphones",
-    "sku": "WH-001",
-    "price": 99.99,
-    "category": "electronics",
-    "description": "High-quality wireless headphones with noise cancellation",
-    "features": ["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"],
-    "inStock": true,
-    "quantity": 50,
-    "tags": ["audio", "wireless", "premium"]
-  }'
+# Import products
+curl -X POST [RESTHEART-URL]/products \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d @products.json
 ----
 
 ==== HTTPie
 
 [source,bash]
 ----
-# Add categories
+# Import categories
 http POST [RESTHEART-URL]/categories \
   Authorization:"Basic [BASIC-AUTH]" \
-  Content-Type:application/json \
-  name="Electronics" \
-  slug="electronics" \
-  description="Electronic devices and accessories"
+  Content-Type:application/json < categories.json
 
-# Add products
+# Import products
 http POST [RESTHEART-URL]/products \
   Authorization:"Basic [BASIC-AUTH]" \
-  Content-Type:application/json \
-  name="Wireless Headphones" \
-  sku="WH-001" \
-  price:=99.99 \
-  category="electronics" \
-  description="High-quality wireless headphones with noise cancellation" \
-  features:='["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"]' \
-  inStock:=true \
-  quantity:=50 \
-  tags:='["audio", "wireless", "premium"]'
+  Content-Type:application/json < products.json
 ----
 
 ==== JavaScript
 
 [source,javascript]
 ----
-// Add categories
-const addCategory = () => {
-  fetch('[RESTHEART-URL]/categories', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Basic [BASIC-AUTH]',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: "Electronics",
-      slug: "electronics",
-      description: "Electronic devices and accessories"
-    })
-  })
-  .then(response => {
+const fs = require('fs');
+
+// Read and import categories
+const importCategories = async () => {
+  try {
+    const categories = JSON.parse(fs.readFileSync('categories.json', 'utf8'));
+
+    const response = await fetch('[RESTHEART-URL]/categories', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic [BASIC-AUTH]',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(categories)
+    });
+
     if (response.ok) {
-      console.log('Category created successfully');
+      console.log('Categories imported successfully');
     } else {
-      console.error('Failed to create category:', response.status);
+      console.error('Failed to import categories:', response.status);
     }
-  })
-  .catch(error => console.error('Error:', error));
+  } catch (error) {
+    console.error('Error importing categories:', error);
+  }
 };
 
-// Add products
-const addProduct = () => {
-  fetch('[RESTHEART-URL]/products', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Basic [BASIC-AUTH]',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: "Wireless Headphones",
-      sku: "WH-001",
-      price: 99.99,
-      category: "electronics",
-      description: "High-quality wireless headphones with noise cancellation",
-      features: ["Bluetooth 5.0", "30-hour battery", "Active noise cancellation"],
-      inStock: true,
-      quantity: 50,
-      tags: ["audio", "wireless", "premium"]
-    })
-  })
-  .then(response => {
+// Read and import products
+const importProducts = async () => {
+  try {
+    const products = JSON.parse(fs.readFileSync('products.json', 'utf8'));
+
+    const response = await fetch('[RESTHEART-URL]/products', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic [BASIC-AUTH]',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(products)
+    });
+
     if (response.ok) {
-      console.log('Product created successfully');
+      console.log('Products imported successfully');
     } else {
-      console.error('Failed to create product:', response.status);
+      console.error('Failed to import products:', response.status);
     }
-  })
-  .catch(error => console.error('Error:', error));
+  } catch (error) {
+    console.error('Error importing products:', error);
+  }
 };
 
-// Execute
-addCategory();
-addProduct();
+// Execute imports
+(async () => {
+  await importCategories();
+  await importProducts();
+  console.log('Data import completed!');
+})();
 ----
 
 === Step 3: Test Your API
@@ -497,72 +482,6 @@ Make sure you've completed the backend setup steps above, including:
 
 Without these steps, the frontend applications won't be able to fetch data from your RESTHeart Cloud instance.
 ====
-
-=== What's Included in Each Frontend
-
-Each framework implementation includes:
-
-* **Search Component** - Full-text product search with debouncing
-* **Filter Components** - Price range and category filters
-* **Product Grid** - Responsive product display
-* **State Management** - Framework-specific state handling (Pinia/Redux/Services)
-* **API Integration** - RESTHeart Cloud REST API integration
-* **Error Handling** - Graceful error handling and loading states
-* **TypeScript Support** - Full TypeScript support (React and Angular)
-
-=== Framework-Specific Features
-
-==== Vue.js Example
-
-* Composition API
-* Pinia for state management
-* Vite for fast development
-* Tailwind CSS for styling
-
-==== React Example
-
-* Functional components with hooks
-* Context API for state management
-* Vite for fast development
-* Tailwind CSS for styling
-* TypeScript
-
-==== Angular Example
-
-* Standalone components (Angular 17+)
-* Services for data management
-* RxJS for reactive programming
-* Angular Material for UI components
-* TypeScript
-
-== Next Steps
-
-After completing this example, you can:
-
-=== Enhance Your Application
-
-* **Add Shopping Cart** - Implement cart functionality with sessions
-* **User Authentication** - Add user registration and login
-* **Product Reviews** - Allow customers to rate and review products
-* **Image Upload** - Store product images using GridFS
-* **Order Management** - Create order tracking and history
-* **Payment Integration** - Connect to payment gateways like Stripe
-
-=== Explore More Features
-
-* **Aggregations** - Use MongoDB aggregation pipelines for analytics
-* **Change Streams** - Implement real-time updates with Server-Sent Events
-* **File Storage** - Use GridFS for binary file storage
-* **GraphQL** - Try RESTHeart's GraphQL API
-* **Webhooks** - Set up webhooks for event-driven integrations
-
-=== Deploy to Production
-
-* **Frontend Deployment** - Deploy your frontend to Vercel, Netlify, or AWS
-* **Custom Domain** - Configure a custom domain for your RESTHeart Cloud instance
-* **Environment Variables** - Set up proper environment configurations
-* **Security Hardening** - Review and enhance your ACL rules
-* **Performance Optimization** - Implement caching and indexing strategies
 
 === Learn More
 
