@@ -14,13 +14,13 @@ The following HTTP requests metrics are collected by RESTHeart:
 
 Additionally, RESTHeart captures JVM metrics such as memory usage and garbage collector data.
 
-## Handling Missing Metrics Registries (added in v. 8.8.2)
+## Handling Missing Metrics Registries (added in v. 8.9.0)
 
 By default, RESTHeart returns HTTP 404 when a metrics registry for a requested path does not exist (i.e., no matching traffic has occurred yet). This behavior is compatible with legacy clients that expect a 404 for non-existent metrics.
 
 However, some monitoring tools (such as Prometheus) expect a 200 OK response from metrics endpoints, even if no metrics are available yet. To support this, you can configure RESTHeart to return HTTP 200 with an empty body for missing registries.
 
-To enable Prometheus compatibility, starting from RESTHeart v 8.8.2 you can add the following to your configuration:
+To enable Prometheus compatibility, starting from RESTHeart v 8.9.0 you can add the following to your configuration:
 
 [source,yml]
 metrics:
