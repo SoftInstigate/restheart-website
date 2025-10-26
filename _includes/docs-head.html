@@ -1,5 +1,28 @@
 <div class="docs-head d-flex align-items-center justify-content-between">
-  <h2 class="d-flex align-items-center m-0 pe-3">
+  <h2 class="d-flex align-items-center m-0 pe-3 flex-wrap">
     <span>{{ page.title }}</span>
+    {% if page.applies_to %}
+    <span class="applies-to-badge ms-3 d-inline-flex align-items-center gap-1">
+      {% if page.applies_to == 'restheart' %}
+      <span
+        class="badge bg-primary"
+        title="Applies to self-hosted RESTHeart only"
+      >
+        <i class="icon-desktop"></i> RESTHeart
+      </span>
+      {% elsif page.applies_to == 'cloud' %}
+      <span class="badge bg-info" title="Applies to RESTHeart Cloud only">
+        <i class="icon-cloud"></i> Cloud
+      </span>
+      {% elsif page.applies_to == 'both' %}
+      <span class="badge bg-primary" title="Applies to self-hosted RESTHeart">
+        <i class="icon-desktop"></i> RESTHeart
+      </span>
+      <span class="badge bg-info" title="Applies to RESTHeart Cloud">
+        <i class="icon-cloud"></i> Cloud
+      </span>
+      {% endif %}
+    </span>
+    {% endif %}
   </h2>
 </div>
