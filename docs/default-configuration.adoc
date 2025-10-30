@@ -358,6 +358,33 @@ mongo:
   aggregation-time-limit: 0 # in milliseconds
 ----
 
+=== MongoDB Probe Service
+
+Lightweight MongoDB connectivity probe service for readiness checks.
+
+[source,yml]
+----
+# MongoDB Probe Service
+# Endpoint:
+# - GET /health/db
+# Must respond with HTTP 200 OK if MongoDB is reachable within the configured timeout.
+# Purpose:
+# Performs a minimal, non-destructive ping against MongoDB (runs `db.runCommand({ ping: 1 })`) to verify connectivity
+# and report a small JSON status payload. Intended to be cheap and suitable for health/readiness checks.
+# Response example:
+# {
+#     "db": "admin",
+#     "pingMs": 2,
+#     "status": "ok"
+# }
+database-probe:
+  enabled: true
+  # how long to wait for the ping before timing out (ms)
+  timeout-ms: 2000
+  # database name to run the ping against
+  dbname: admin
+----
+
 === MongoDB GraphQL Service
 
 [source,yml]
