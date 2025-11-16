@@ -3,7 +3,7 @@ title: Proxing requests
 layout: docs
 menu: setup
 interactive: true
-applies_to: both
+applies_to: restheart
 ---
 
 <div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
