@@ -29,5 +29,5 @@ applies_to: both
       };
     }
   </script>
-  <iframe src="https://sophia.restheart.com" scrolling="yes"></iframe>
+  <iframe src="https://sophia.restheart.com?scope=[%22restheart%22,%22both%22]" scrolling="yes"></iframe>
 </div>
