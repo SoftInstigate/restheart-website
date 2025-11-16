@@ -1,7 +1,7 @@
 ---
 layout: no-footer
 slack: false
-applies_to: cloud
+applies_to: both
 ---
 
 <div class="iframe-parent m-0 p-0">
