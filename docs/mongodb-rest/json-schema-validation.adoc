@@ -281,6 +281,8 @@ The collection metadata's `jsonSchema` property has the following options:
 
 MongoDB uses BSON (Binary JSON) which supports additional data types not available in standard JSON. To validate these types, you can define schema definitions for BSON types.
 
+Note: Prefix Bson types with an underscore to prevent the request parser from interpreting them as actual Bson types, e.g., use _$date instead of $date.
+
 ==== Example: Defining BSON Types Schema
 
 ==== cURL
@@ -296,14 +298,14 @@ curl -i -X PUT "[RESTHEART-URL]/_schemas/bson" \
       "date": {
         "type": "object",
         "properties": {
-          "$date": { "type": "number" }
+          "_$date": { "type": "number" }
         },
         "additionalProperties": false
       },
       "objectid": {
         "type": "object",
         "properties": {
-          "$oid": { "type": "string" }
+          "_$oid": { "type": "string" }
         },
         "additionalProperties": false
       }
