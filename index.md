@@ -16,7 +16,7 @@ stars-bounce: true
         <div>
             <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
             <div id="sophiaLoading" class="text-muted">Loading...</div>
-            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto" style="border: none; width: 100%; display: none;"></iframe>
+            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto&scope=[%22restheart%22,%22both%22]" style="border: none; width: 100%; display: none;"></iframe>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const sophiaFrame = document.getElementById('sophiaFrame');
