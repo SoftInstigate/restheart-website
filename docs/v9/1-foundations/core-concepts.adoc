@@ -1,0 +1,383 @@
+---
+title: Core Concepts
+layout: docs-adoc
+menu: overview
+applies_to: both
+---
+
+== Core Concepts
+
+This page explains RESTHeart's architecture and the key concepts you need to understand.
+
+**Prerequisites:** Read link:/docs/v9/1-foundations/introduction[Introduction to RESTHeart] first.
+
+== The RESTHeart Runtime
+
+At its core, RESTHeart is a runtime process (`restheart-core`) that:
+
+1. **Loads Configuration** - Reads settings from configuration files or environment variables
+2. **Registers Plugins** - Discovers and initializes plugins from the `plugins/` directory
+3. **Routes Requests** - Maps incoming HTTP requests to the correct service
+4. **Enforces Security** - Applies authentication and authorization rules
+5. **Executes Interceptors** - Runs interceptors at various stages of request processing
+6. **Manages Lifecycle** - Handles startup, shutdown, and plugin initialization
+
+When you start RESTHeart with `java -jar restheart.jar`, this runtime process begins and loads everything needed to handle HTTP requests.
+
+== Standard Plugins
+
+RESTHeart ships with standard plugins in the `plugins/` directory:
+
+[source,bash]
+----
+plugins/
+├── restheart-graphql.jar           # GraphQL API for MongoDB
+├── restheart-mongoclient-provider.jar  # MongoDB connection provider
+├── restheart-mongodb.jar            # REST API for MongoDB
+├── restheart-polyglot.jar           # JavaScript/TypeScript support
+└── restheart-security.jar           # Authentication & Authorization
+----
+
+These plugins provide the ready-to-use MongoDB APIs you can use without writing code.
+
+**Key point:** These are just plugins! RESTHeart treats them the same as custom plugins you develop.
+
+== The Four Plugin Types
+
+RESTHeart has four types of plugins, each serving a specific purpose:
+
+=== 1. Services
+
+**Purpose:** Handle HTTP requests at specific URIs.
+
+**Use cases:**
+- REST APIs
+- GraphQL endpoints
+- Custom business logic endpoints
+- File uploads/downloads
+- WebSocket connections
+
+**Example:** The MongoDB REST API is implemented as a Service that handles requests to `/{db}/{collection}`.
+
+**Learn more:** link:/docs/v9/6-framework/services[Developing Services]
+
+=== 2. Interceptors
+
+**Purpose:** Monitor and modify requests/responses as they flow through RESTHeart.
+
+**Use cases:**
+- Logging requests
+- Adding custom headers
+- Transforming responses
+- Validating request data
+- Enforcing business rules
+
+**Intercept points:**
+- `REQUEST_BEFORE_AUTH` - Before authentication
+- `REQUEST_AFTER_AUTH` - After authentication, before the service
+- `RESPONSE` - After the service, before sending to client
+- `RESPONSE_ASYNC` - Asynchronously after sending response
+
+**Example:** A logging interceptor that records every API call.
+
+**Learn more:** link:/docs/v9/6-framework/interceptors[Developing Interceptors]
+
+=== 3. Providers
+
+**Purpose:** Supply objects to other plugins via dependency injection.
+
+**Use cases:**
+- Database connections
+- Configuration objects
+- External API clients
+- Shared utilities
+
+**Example:** The `mongoclient-provider` makes the MongoDB client available to other plugins with `@Inject("mclient")`.
+
+**Learn more:** link:/docs/v9/6-framework/providers[Providers and Dependency Injection]
+
+=== 4. Initializers
+
+**Purpose:** Execute initialization logic at startup.
+
+**Use cases:**
+- Database schema setup
+- Loading reference data
+- Starting background tasks
+- Warming up caches
+
+**Init points:**
+- `BEFORE_STARTUP` - Before RESTHeart starts accepting requests
+- `AFTER_STARTUP` - After RESTHeart is ready
+
+**Example:** An initializer that creates default database indexes on startup.
+
+**Learn more:** link:/docs/v9/6-framework/initializers[Initializers]
+
+== Request Lifecycle
+
+Understanding how RESTHeart processes requests is key to working with the framework.
+
+=== The Flow
+
+[source,text]
+----
+1. HTTP Request arrives
+   ↓
+2. REQUEST_BEFORE_AUTH Interceptors run
+   ↓
+3. Authentication (identify the user)
+   ↓
+4. Authorization (check permissions)
+   ↓
+5. REQUEST_AFTER_AUTH Interceptors run
+   ↓
+6. Service handles the request
+   ↓
+7. RESPONSE Interceptors run
+   ↓
+8. HTTP Response sent to client
+   ↓
+9. RESPONSE_ASYNC Interceptors run (optional)
+----
+
+=== Key Points
+
+**Virtual Threads:** Each request runs in its own virtual thread. This means:
+- Your code is thread-safe by default
+- No need for async/await or callbacks
+- Simple, straightforward code
+- Excellent scalability
+
+**Interceptor Order:** Multiple interceptors at the same point run by priority (lower number = higher priority).
+
+**Service Matching:** RESTHeart routes requests to services based on URI patterns configured with `@RegisterPlugin`.
+
+== Plugin Discovery
+
+RESTHeart automatically discovers plugins at startup:
+
+=== Java/Kotlin Plugins
+
+1. RESTHeart scans JAR files in `plugins/` directory
+2. Looks for classes annotated with `@RegisterPlugin`
+3. Instantiates and registers the plugins
+
+=== JavaScript Plugins
+
+1. RESTHeart scans directories in `plugins/` for `package.json`
+2. Loads JavaScript files as plugins
+3. Executes via the polyglot plugin
+
+**Deployment:** Just drop a JAR file or directory in `plugins/` and restart RESTHeart!
+
+== Configuration
+
+=== Plugin Configuration
+
+Each plugin can have configuration in `restheart.yml`:
+
+[source,yaml]
+----
+ping:
+  enabled: true
+  secure: false
+  uri: /ping
+  msg: 'Hello from RESTHeart!'
+----
+
+**Special options:**
+- `enabled` - Enable/disable the plugin
+- `uri` - Override default URI (Services only)
+- `secure` - Require authentication (Services only)
+
+Plugins access their configuration with:
+
+[source,java]
+----
+@Inject("conf")
+Map<String, Object> conf;
+----
+
+=== RESTHeart Configuration
+
+Main configuration file: `restheart.yml`
+
+**Key sections:**
+- `http-listener` - Port, host, TLS settings
+- `mclient` - MongoDB connection string
+- `mongo` - MongoDB service configuration
+- Plugin-specific sections
+
+**Override methods:**
+1. Configuration file: `java -jar restheart.jar restheart.yml`
+2. Environment variable: `RHO='/http-listener/port->9090'`
+3. Override file: `java -jar restheart.jar -o overrides.yml`
+
+**Learn more:** link:/docs/v9/5-deployment/configuration[Configuration Guide]
+
+== Dependency Injection
+
+RESTHeart provides dependency injection through the `@Inject` annotation.
+
+=== Built-in Providers
+
+[source,java]
+----
+@Inject("conf")
+Map<String, Object> conf;  // Plugin's configuration
+
+@Inject("rh-config")
+Configuration rhConfig;  // RESTHeart's global configuration
+
+@Inject("mclient")
+MongoClient mclient;  // MongoDB client
+
+@Inject("registry")
+PluginsRegistry registry;  // Access other plugins
+
+@Inject("acl-registry")
+ACLRegistry aclRegistry;  // Programmatic ACL management
+----
+
+=== Custom Providers
+
+You can create your own providers to supply custom objects:
+
+[source,java]
+----
+@RegisterPlugin(name = "myProvider", description = "Custom provider")
+public class MyProvider implements Provider<MyService> {
+    @Override
+    public MyService get(PluginRecord<?> caller) {
+        return new MyService();
+    }
+}
+----
+
+Then inject it:
+
+[source,java]
+----
+@Inject("myProvider")
+MyService myService;
+----
+
+== Security Architecture
+
+RESTHeart's security has three layers:
+
+=== 1. Authentication Mechanisms
+
+Extract credentials from requests (Basic Auth, JWT, tokens, etc.)
+
+=== 2. Authenticators
+
+Verify credentials and build the user account (check username/password, validate JWT, etc.)
+
+=== 3. Authorizers
+
+Check if the authenticated user has permission to perform the request (ACLs, role-based, etc.)
+
+**Security plugins** let you customize any of these layers.
+
+**Learn more:**
+- link:/docs/v9/1-foundations/security-fundamentals[Security Fundamentals]
+- link:/docs/v9/4-security/overview[Security Overview]
+- link:/docs/v9/7-security-plugins/overview[Developing Security Plugins]
+
+== Virtual Threads
+
+RESTHeart uses Java 21's virtual threads for superior performance:
+
+**Benefits:**
+- **Lightweight** - Millions of virtual threads vs thousands of platform threads
+- **Simple code** - No async/await complexity
+- **Better performance** - Efficient resource utilization
+- **Scalability** - Handle massive concurrency
+
+**For developers:** Write synchronous code that looks simple but scales massively.
+
+[source,java]
+----
+// This looks synchronous but doesn't block platform threads
+var data = mongoClient.find("db", "collection");  
+response.setContent(data);
+----
+
+== Polyglot Support
+
+RESTHeart supports multiple languages for plugin development:
+
+=== Java
+
+The native language, best performance:
+
+[source,java]
+----
+@RegisterPlugin(name = "myService")
+public class MyService implements JsonService {
+    public void handle(JsonRequest req, JsonResponse res) {
+        res.setContent(object().put("message", "Hello"));
+    }
+}
+----
+
+=== Kotlin
+
+Concise JVM language with full interop:
+
+[source,kotlin]
+----
+@RegisterPlugin(name = "myService")
+class MyService : JsonService {
+    override fun handle(req: JsonRequest, res: JsonResponse) {
+        res.setContent(Json.obj().put("message", "Hello"))
+    }
+}
+----
+
+=== JavaScript/TypeScript
+
+Familiar syntax for web developers:
+
+[source,javascript]
+----
+export const options = { name: "myService" }
+
+export function handle(request, response) {
+    response.setContent(JSON.stringify({ message: "Hello" }));
+    response.setContentTypeAsJson();
+}
+----
+
+**Important:** JavaScript plugins run on virtual threads too - no async/await needed!
+
+== Performance Characteristics
+
+**Startup Time:** ~100ms (with standard plugins)  
+**Memory Footprint:** ~50MB heap (configurable)  
+**Request Latency:** Sub-millisecond for simple operations  
+**Throughput:** Hundreds of thousands of requests per second  
+**GraalVM Native:** ~40MB binary, instant startup (<10ms)
+
+**Learn more:** link:/docs/v9/9-reference/performances[Performance Guide]
+
+== What's Next?
+
+Now that you understand RESTHeart's architecture:
+
+=== Continue Foundations
+
+* link:/docs/v9/1-foundations/security-fundamentals[Security Fundamentals] - How security works
+* link:/docs/v9/1-foundations/setup[Setup Guide] - Detailed installation
+
+=== Start Building
+
+* **Use MongoDB APIs:** link:/docs/v9/2-mongodb-rest/tutorial[REST API Tutorial]
+* **Develop Plugins:** link:/docs/v9/6-framework/tutorial[Plugin Development Tutorial]
+
+=== Explore Topics
+
+* link:/docs/v9/5-deployment/configuration[Configuration] - Configure RESTHeart
+* link:/docs/v9/6-framework/overview[Framework Overview] - Plugin development details

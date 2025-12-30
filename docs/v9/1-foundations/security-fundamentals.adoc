@@ -1,0 +1,403 @@
+---
+title: Security Fundamentals
+layout: docs-adoc
+menu: overview
+applies_to: both
+---
+
+== Security Fundamentals
+
+RESTHeart includes comprehensive security out of the box. This page covers the basics you need to know.
+
+**Prerequisites:** 
+- link:/docs/v9/1-foundations/introduction[Introduction to RESTHeart]
+- link:/docs/v9/1-foundations/core-concepts[Core Concepts]
+
+== Authentication vs Authorization
+
+**Authentication** (AuthN) answers: *"Who are you?"*
+- Verifies user identity
+- Checks credentials (username/password, JWT token, API key, etc.)
+- Results in a `401 Unauthorized` if authentication fails
+
+**Authorization** (AuthZ) answers: *"What are you allowed to do?"*
+- Checks permissions for the authenticated user
+- Verifies if the user can perform the requested operation
+- Results in a `403 Forbidden` if authorization fails
+
+**Example flow:**
+1. Client sends request with `Authorization: Basic YWRtaW46c2VjcmV0`
+2. **Authentication:** RESTHeart verifies username and password → User is `admin`
+3. **Authorization:** RESTHeart checks if `admin` can access the requested resource → Access granted
+4. Request proceeds to the service
+
+== The Default Security Setup
+
+RESTHeart comes pre-configured with MongoDB-based security:
+
+=== Default Authenticator: mongoRealmAuthenticator
+
+Stores user credentials in the MongoDB `/users` collection.
+
+**User document structure:**
+[source,json]
+----
+{
+  "_id": "admin",
+  "password": "$2a$10$...",  // bcrypt hash
+  "roles": ["admin"]
+}
+----
+
+=== Default Authorizer: mongoAclAuthorizer
+
+Stores permissions in the MongoDB `/acl` collection.
+
+**Permission document structure:**
+[source,json]
+----
+{
+  "roles": ["admin"],
+  "predicate": "path-prefix('/') and method(GET)",
+  "priority": 1
+}
+----
+
+=== The Default Admin User
+
+RESTHeart creates a default user on first startup:
+- **Username:** `admin`
+- **Password:** `secret`
+- **Role:** `admin` (configured as root role with full access)
+
+⚠️ **CRITICAL: Change the default password immediately!**
+
+[source,bash]
+----
+$ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
+  -H "Content-Type: application/json" \
+  -d '{"password": "my-strong-password"}'
+----
+
+== How RESTHeart Security Works
+
+RESTHeart uses a **pluggable security architecture**. Everything is a plugin:
+
+++++
+<div class="text-center my-4">
+<img src="/images/restheart-security-explained.png" class="img-fluid" alt="RESTHeart security architecture" />
+</div>
+++++
+
+=== The Security Flow
+
+[source,text]
+----
+1. Request arrives
+   ↓
+2. Authentication Mechanisms extract credentials
+   ↓
+3. Authenticators verify credentials → Build Account
+   ↓
+4. Authorizers check permissions → Allow/Deny
+   ↓
+5. Request proceeds (if authorized)
+----
+
+=== 1. Authentication Mechanisms
+
+**Purpose:** Extract credentials from HTTP requests.
+
+**Built-in mechanisms:**
+- **BasicAuthMechanism** - Parses `Authorization: Basic` header
+- **JwtAuthenticationMechanism** - Parses and validates JWT tokens
+- **TokenAuthenticationMechanism** - Handles RESTHeart auth tokens
+- **IdentityAuthMechanism** - Binds all requests to a fixed identity (testing/development)
+
+**How it works:**
+1. Mechanism extracts credentials (e.g., username/password from Basic Auth header)
+2. Passes credentials to an Authenticator for verification
+3. Multiple mechanisms can be configured
+
+**Example:** `BasicAuthMechanism` extracts:
+[source,text]
+----
+Authorization: Basic YWRtaW46c2VjcmV0
+                     ↓ (base64 decode)
+                username=admin, password=secret
+----
+
+=== 2. Authenticators
+
+**Purpose:** Verify credentials and build the user Account.
+
+**Built-in authenticators:**
+- **mongoRealmAuthenticator** - Verifies against MongoDB `/users` collection
+- **fileRealmAuthenticator** - Verifies against configuration file
+- **jwtAuthenticator** - Validates JWT signatures and claims
+
+**How it works:**
+1. Receives credentials from Authentication Mechanism
+2. Verifies credentials (checks password hash, validates token, etc.)
+3. Builds an Account object with user ID and roles
+4. Returns the Account to RESTHeart
+
+**Example:** `mongoRealmAuthenticator` checks:
+1. Does user `admin` exist in `/users` collection?
+2. Does the password hash match?
+3. Returns Account with roles: `["admin"]`
+
+=== 3. Authorizers
+
+**Purpose:** Check if the authenticated user has permission for the request.
+
+**Built-in authorizers:**
+- **mongoAclAuthorizer** - Checks permissions in MongoDB `/acl` collection
+- **fileAclAuthorizer** - Checks permissions in configuration file
+
+**How it works:**
+1. Receives the authenticated Account and the request
+2. Checks if any ACL rule grants permission
+3. Returns `ALLOWED` or `FORBIDDEN`
+
+**Example:** `mongoAclAuthorizer` checks:
+1. Find all ACL rules matching user's roles
+2. Evaluate predicates (path, method, etc.)
+3. Return highest priority matching rule
+
+=== 4. Token Managers
+
+**Purpose:** Generate and validate auth tokens for session management.
+
+**How it works:**
+1. After successful authentication, Token Manager generates a token
+2. Token returned in `Auth-Token` response header
+3. Client includes token in future requests
+4. Token Manager validates token without re-checking credentials
+
+**Benefits:**
+- Reduces authentication overhead
+- Enables stateless sessions
+- Custom token formats (JWT, opaque, etc.)
+
+== Making Authenticated Requests
+
+=== Basic Authentication
+
+The simplest method - send username and password:
+
+[source,bash]
+----
+$ curl -u admin:secret http://localhost:8080/mydb/mycollection
+----
+
+Or with explicit header:
+[source,bash]
+----
+$ curl -H "Authorization: Basic YWRtaW46c2VjcmV0" http://localhost:8080/mydb/mycollection
+----
+
+=== Token Authentication
+
+1. **Authenticate and get token:**
+[source,bash]
+----
+$ curl -i -u admin:secret http://localhost:8080/ping
+
+HTTP/1.1 200 OK
+Auth-Token: 3uv0e1g09jfao3q37p8jt07oas
+...
+----
+
+2. **Use token for subsequent requests:**
+[source,bash]
+----
+$ curl -H "Auth-Token: 3uv0e1g09jfao3q37p8jt07oas" http://localhost:8080/mydb/mycollection
+----
+
+=== JWT Authentication
+
+Configure JWT authenticator and send JWT in header:
+[source,bash]
+----
+$ curl -H "Authorization: Bearer eyJhbGc..." http://localhost:8080/mydb/mycollection
+----
+
+**Learn more:** link:/docs/v9/4-security/authentication[Authentication Methods]
+
+== Understanding HTTP Status Codes
+
+**401 Unauthorized** - Authentication failed
+- No credentials provided
+- Invalid credentials
+- Expired token
+
+[source,bash]
+----
+$ curl http://localhost:8080/mydb/mycollection
+
+HTTP/1.1 401 Unauthorized
+{"message": "Unauthorized"}
+----
+
+**403 Forbidden** - Authorization failed
+- Valid credentials, but insufficient permissions
+- User authenticated but not allowed to perform this action
+
+[source,bash]
+----
+$ curl -u user:password http://localhost:8080/admin/data
+
+HTTP/1.1 403 Forbidden
+{"message": "Forbidden"}
+----
+
+== Common Security Configurations
+
+=== Public Read, Authenticated Write
+
+Allow anyone to read, require authentication for writes:
+
+[source,json]
+----
+{
+  "_id": "public-read",
+  "roles": ["$unauthenticated"],
+  "predicate": "path-prefix('/data') and method(GET)",
+  "priority": 100
+}
+----
+
+[source,json]
+----
+{
+  "_id": "auth-write",
+  "roles": ["user"],
+  "predicate": "path-prefix('/data') and (method(POST) or method(PUT) or method(DELETE))",
+  "priority": 100
+}
+----
+
+=== User-Scoped Data Access
+
+Users can only access their own data:
+
+[source,json]
+----
+{
+  "_id": "user-own-data",
+  "roles": ["user"],
+  "predicate": "path-prefix('/users') and equals(@user._id, ${_id})",
+  "priority": 100
+}
+----
+
+This checks that the authenticated user's ID matches the `_id` in the URL.
+
+=== Role-Based Access
+
+Different roles, different permissions:
+
+[source,json]
+----
+{
+  "_id": "admin-full",
+  "roles": ["admin"],
+  "predicate": "path-prefix('/')",
+  "priority": 1
+}
+----
+
+[source,json]
+----
+{
+  "_id": "editor-write",
+  "roles": ["editor"],
+  "predicate": "path-prefix('/content') and not method(DELETE)",
+  "priority": 10
+}
+----
+
+[source,json]
+----
+{
+  "_id": "viewer-read",
+  "roles": ["viewer"],
+  "predicate": "path-prefix('/content') and method(GET)",
+  "priority": 100
+}
+----
+
+**Learn more:** link:/docs/v9/4-security/permissions[Permission Management]
+
+== File-Based Security (Alternative)
+
+For simpler deployments, use file-based security instead of MongoDB:
+
+=== Enable File Realm
+
+Edit `restheart.yml`:
+
+[source,yaml]
+----
+fileRealmAuthenticator:
+  enabled: true
+  users:
+    - userid: admin
+      password: secret
+      roles: [admin]
+    - userid: user
+      password: pass
+      roles: [user]
+
+mongoRealmAuthenticator:
+  enabled: false  # Disable MongoDB authenticator
+----
+
+=== Enable File ACL
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - roles: [admin]
+      predicate: path-prefix('/')
+      priority: 1
+    - roles: [user]
+      predicate: path-prefix('/data') and method(GET)
+      priority: 10
+
+mongoAclAuthorizer:
+  enabled: false  # Disable MongoDB authorizer
+----
+
+**Use case:** Docker containers, testing, simple deployments.
+
+== Security Best Practices
+
+1. **Change default credentials** immediately
+2. **Use HTTPS in production** - link:/docs/v9/4-security/tls[TLS Configuration]
+3. **Apply least privilege** - Give users minimum required permissions
+4. **Use strong passwords** - Enforce password policies
+5. **Enable security hardening** - link:/docs/v9/4-security/security-hardening[Security Hardening Guide]
+6. **Monitor authentication failures** - link:/docs/v9/5-deployment/auditing[Enable Auditing]
+7. **Secure MongoDB connection** - link:/docs/v9/4-security/secure-connection-to-mongodb[MongoDB TLS]
+
+== What's Next?
+
+You now understand RESTHeart's security fundamentals!
+
+=== Continue Learning
+
+* link:/docs/v9/2-mongodb-rest/tutorial[REST API Tutorial] - Use the API with authentication
+* link:/docs/v9/4-security/tutorial[Security Tutorial] - Hands-on security configuration
+* link:/docs/v9/4-security/user-management[User Management] - Create and manage users
+* link:/docs/v9/4-security/permissions[Permissions] - Configure fine-grained access control
+
+=== Security In Depth
+
+* link:/docs/v9/4-security/authentication[Authentication Methods] - All authentication options
+* link:/docs/v9/4-security/authorization[Advanced Authorization] - Complex permission rules
+* link:/docs/v9/4-security/security-hardening[Security Hardening] - Production security
+* link:/docs/v9/7-security-plugins/overview[Security Plugins] - Extend security layer
