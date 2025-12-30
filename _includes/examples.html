@@ -66,6 +66,15 @@ fetch(url)
       <a
         class="examples__link nav-link"
         data-bs-toggle="tab"
+        href="#python"
+        role="tab"
+        >Python</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="examples__link nav-link"
+        data-bs-toggle="tab"
         href="#swift"
         role="tab"
         >Swift</a
@@ -224,6 +233,43 @@ public void printOutMessages() throws UnirestException {
         </div>
       </div>
     </div>
+    <div class="tab-pane fade" id="python" role="tabpanel">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4">
+            <h2 class="examples__title">Query documents with Python.</h2>
+            <p class="examples__desc">
+              The GET request has two query parameters:
+              <code class="black">filter</code> to apply a query and
+              <code class="black">pagesize</code> to limit the response to one
+              document.
+              <br />
+              This example uses the popular
+              <a class="text-danger" href="https://requests.readthedocs.io/" target="_blank">requests</a>
+              library.
+            </p>
+            <a href="/try" class="btn btn-o-white">More examples</a>
+          </div>
+          <div class="col-md-8">
+            {% highlight python %}
+import requests
+import json
+
+url = "https://demo.restheart.org/messages"
+params = {
+    "filter": '{"from":"Bob"}',
+    "pagesize": "1"
+}
+
+response = requests.get(url, params=params)
+data = response.json()
+
+print(json.dumps(data, indent=2))
+{% endhighlight %}
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="tab-pane fade" id="swift" role="tabpanel">
       <div class="container">
         <div class="row align-items-center">
@@ -231,46 +277,38 @@ public void printOutMessages() throws UnirestException {
             <h2 class="examples__title">Query documents with Swift.</h2>
             <p class="examples__desc">
               The GET request has two query parameters:
-              <code class="black">filter</code> to appy a query and
+              <code class="black">filter</code> to apply a query and
               <code class="black">pagesize</code> to limit the response to one
               document.
               <br />
-              Here we use the JSONSerialization to parse the response body.
+              This example uses modern Swift with async/await (Swift 5.5+).
             </p>
             <a href="/try" class="btn btn-o-white">More examples</a>
           </div>
           <div class="col-md-8">
             {% highlight swift %}
-import UIKit
-import PlaygroundSupport
+import Foundation
 
-var urlComponents = URLComponents(string: "https://demo.restheart.org/messages")
-
-// set the query parameters
-var queryItems = [URLQueryItem]()
-queryItems.append(URLQueryItem(name: "pagesize", value: "1"))
-queryItems.append(URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}"))
-urlComponents?.queryItems = queryItems
-
-var urlRequest = URLRequest(url: (urlComponents?.url)!)
-// set request method
-urlRequest.httpMethod = "GET"
-
-URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-  guard let dataResponse = data, error == nil else {
-    print(error?.localizedDescription ?? "Response Error")
-    return
+func fetchMessages() async throws {
+  var components = URLComponents(string: "https://demo.restheart.org/messages")
+  components?.queryItems = [
+    URLQueryItem(name: "pagesize", value: "1"),
+    URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}")
+  ]
+  
+  guard let url = components?.url else {
+    throw URLError(.badURL)
   }
-  do {
-    let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
-    print(jsonResponse)
-  } catch let jsonError {
-    print(jsonError)
-  }
-}.resume()
+  
+  let (data, _) = try await URLSession.shared.data(from: url)
+  let json = try JSONSerialization.jsonObject(with: data)
+  print(json)
+}
 
-// only needed in playground
-PlaygroundPage.current.needsIndefiniteExecution = true
+// Usage
+Task {
+  try await fetchMessages()
+}
 {% endhighlight %}
           </div>
         </div>
