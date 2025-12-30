@@ -86,8 +86,8 @@
   background-color: var(--primarycolor);
   color: #fff;
   font-size: 0;
-  width: 4rem;
-  height: 4rem;
+  width: 4.5rem;
+  height: 4.5rem;
   padding: 0;
   border-radius: 50%;
   display: flex;
@@ -95,36 +95,69 @@
   align-items: center;
   justify-content: center;
   text-transform: none;
-  bottom: 1rem;
-  right: 1rem;
-  box-shadow: 7.3px 6.8px 23px 0 rgba(0, 0, 0, 0.08);
+  bottom: 1.5rem;
+  right: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slack-pulse 5s ease-in-out infinite;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slack-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .gitter-open-chat-button:after {
   content: "Slack";
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .gitter-open-chat-button:before {
   content: "";
   display: inline-block;
   vertical-align: top;
-  font-size: 22px;
+  font-size: 24px;
   width: 1em;
   height: 1em;
   background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDM3MCAzNzAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDM3MCAzNzA7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij4KPHBhdGggZD0iTTMxNC44MzQsNTAuMjNDMjgwLjAyNCwyMC4wNDUsMjMzLjkxNSwzLjQyMywxODUsMy40MjNjLTQ4LjkxNSwwLTk1LjAyNCwxNi42MjItMTI5LjgzNCw0Ni44MDcgIEMxOS41OTMsODEuMDc3LDAsMTIyLjMxNywwLDE2Ni4zNTFjMCw0My4xMzIsMTkuMjI4LDg0LjA3Myw1My4yNjMsMTE0LjQ0MWMtMTUuNzc3LDI3LjM1NC00Mi4yNDYsNTMuMDA4LTQyLjU1MSw1My4zMDIgIGMtNS43NjQsNS41NDQtNy40MDgsMTQuMTE3LTQuMTA4LDIxLjRjMy4wNzksNi43ODksOS44MzIsMTEuMDgzLDE3LjE4OCwxMS4wODNjMC41MzksMCwxLjA4My0wLjAyMywxLjYyOC0wLjA3ICBjMy4xNjktMC4yNzMsNzYuNDM1LTYuODg3LDE0MC4wMTEtMzguMTM5YzYuNTE4LDAuNjA1LDEzLjA3OSwwLjkxMiwxOS41NywwLjkxMmM0OC45MTUsMCw5NS4wMjQtMTYuNjIzLDEyOS44MzQtNDYuODA3ICBDMzUwLjQwNywyNTEuNjI0LDM3MCwyMTAuMzg1LDM3MCwxNjYuMzUxQzM3MCwxMjIuMzE3LDM1MC40MDcsODEuMDc3LDMxNC44MzQsNTAuMjN6IE05MC42MTEsMTg1ICBjLTE1Ljc0MSwwLTI4LjU1MS0xMi44MDgtMjguNTUxLTI4LjU1MWMwLTE1Ljc0MiwxMi44MS0yOC41NSwyOC41NTEtMjguNTVjMTUuNzQ0LDAsMjguNTUxLDEyLjgwOCwyOC41NTEsMjguNTUgIEMxMTkuMTYyLDE3Mi4xOTIsMTA2LjM1NSwxODUsOTAuNjExLDE4NXogTTE4NSwxODVjLTE1Ljc0MiwwLTI4LjU1MS0xMi44MDgtMjguNTUxLTI4LjU1MWMwLTE1Ljc0MiwxMi44MDktMjguNTUsMjguNTUxLTI4LjU1ICBzMjguNTUxLDEyLjgwOCwyOC41NTEsMjguNTVDMjEzLjU1MSwxNzIuMTkyLDIwMC43NDIsMTg1LDE4NSwxODV6IE0yNzkuMzg5LDE4NWMtMTUuNzQ0LDAtMjguNTUxLTEyLjgwOC0yOC41NTEtMjguNTUxICBjMC0xNS43NDIsMTIuODA3LTI4LjU1LDI4LjU1MS0yOC41NWMxNS43NDEsMCwyOC41NTEsMTIuODA4LDI4LjU1MSwyOC41NUMzMDcuOTQsMTcyLjE5MiwyOTUuMTMsMTg1LDI3OS4zODksMTg1eiIgZmlsbD0iI0ZGRkZGRiIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K);
   background-size: contain;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  transition: transform 0.6s ease;
 }
 
 .gitter-open-chat-button.is-collapsed {
   transform: translateY(150%);
+  opacity: 0;
 }
 
 .gitter-open-chat-button:focus,
 .gitter-open-chat-button:hover {
-  content: "";
-  background-color: #294172;
+  background-color: #d89028;
+  color: #000;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.gitter-open-chat-button:active {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gitter-open-chat-button:focus {
+  outline: 3px solid rgba(248, 168, 57, 0.5);
+  outline-offset: 3px;
 }
 
 .footer__like {
