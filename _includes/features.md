@@ -2,7 +2,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">MongoDB's best friend</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">MongoDB's best friend</span></div>
                 <p>RESTHeart unlocks all the features of MongoDB via <strong>REST</strong>, <strong>GraphQL</strong> and <strong>WebSocket</strong> APIs. </p>
                 <p class="mt-1">
                     Also supports Mongo Atlas, FerretDB, AWS DocumentDB, and Azure Cosmos DB
@@ -16,7 +16,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">Container friendly</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">Container friendly</span></div>
                 <p>
                     RESTHeart is available as a <strong>Docker image</strong> and tailored for the <strong>GraalVM</strong> to build lightweight native images with instant startup time, low memory footprint.
                 </p>
@@ -33,7 +33,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">Declarative Access Control</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">Declarative Access Control</span></div>
                 <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
                 </p>
             </div>
@@ -44,11 +44,11 @@
     </article>
 </div>
 
-<div class="row mt-4  mx-auto">
-    <article class="mt-4 mt-lg-0 col-lg-8 offset-lg-2 zoom">
+<div class="row mt-4">
+    <article class="mt-4 mt-lg-0 col-12 col-lg-8 offset-lg-2 zoom">
         <div class="card newsText text-justified h-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">Enhanced Development Framework</span></div>
+                <div class="top-4 mb-4"><span class="text-primary"> Development Framework</span></div>
                 <div>
                     <p>
                      Unlock the Power of Microservices with Ease: discover our innovative development framework that simplifies the creation of microservices in Java, Kotlin, JavaScript, or TypeScript. Our framework provides a set of simple yet robust building blocks: Service, Provider, Interceptor, and Initializer.
@@ -66,7 +66,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">REST Data API</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">REST Data API</span></div>
                 <p>
                 Read, write and search JSON documents with HTTP requests <strong>without coding</strong>; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
                 </p>
@@ -79,7 +79,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">GraphQL Data API</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">GraphQL Data API</span></div>
                 <p>
                     The GraphQL plugin works side by side with the REST plugin to get an unified API to build modern applications. GraphQL applications are configured through an API <strong>without coding</strong>.
                 </p>
@@ -92,7 +92,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="highlightcolor">WebSocket Data API</span></div>
+                <div class="top-4 mb-4"><span class="text-primary">WebSocket Data API</span></div>
                 <p>
                 The WebSocket API notifies clients of data changes in real time and supports thousands of connected clients. Data streams are configured through an API <strong>without coding</strong>.
                 </p>
