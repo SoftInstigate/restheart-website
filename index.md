@@ -48,11 +48,12 @@ stars-bounce: true
             </div>
           </div>
         </div>
-        <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
+        <h3 class="font-weight-bold highlightcolor mt-3">Get Started</h3>
         <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
         <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
         <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
         <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
+        <p class="white mt-3" style="font-size: 0.95rem; opacity: 0.85;">Setup instructions included in each tutorial</p>
     </div>
 </section>
 
