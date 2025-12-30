@@ -20,7 +20,6 @@ stars-bounce: true
               <div class="mt-4 white">
                   Start building instantly • Scale to production when ready • No Installation Required!
               </div>
-              <div class="mt-4 white small">go to <a href="/docs/setup">Setup</a> for more installation options</div>
             </div>
             <div class="col-md-6 px-4">
               <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">💬 Chat with Sophia AI</a>
