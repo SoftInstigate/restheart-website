@@ -61,14 +61,23 @@
             >
           </div>
           <div class="col-md-8">
-            {% highlight java %} @RegisterPlugin(name = "greetings", description
-            = "just another Hello World") public class GreeterService implements
-            JsonService { @Override public void handle(JsonRequest req,
-            JsonResponse res) { switch(req.getMethod()) { case GET ->
-            res.setContent(object().put("message", "Hello World!")); case
-            OPTIONS -> handleOptions(req); default ->
-            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED); } } } {%
-            endhighlight %}
+            {% highlight java %}
+@RegisterPlugin(name="greetings", description="just another Hello World")
+public class GreeterService implements JsonService {
+
+  @Override
+  public void handle(JsonRequest req, JsonResponse res) {
+    switch(req.getMethod()) {
+      case GET ->
+        res.setContent(object().put("message", "Hello World!"));
+      case OPTIONS ->
+        handleOptions(req);
+      default ->
+        res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+    }
+  }
+}
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -89,14 +98,22 @@
             >
           </div>
           <div class="col-md-8">
-            {% highlight java %} @RegisterPlugin(name = "kotlinGreeterService",
-            description = "just another Hello World in Kotlin") class
-            GreeterService : JsonService { override fun handle(req: JsonRequest,
-            res: JsonResponse) { when(req.method) { METHOD.GET -> res.content =
-            obj().put("msg", "Hello World").get() METHOD.OPTIONS ->
-            handleOptions(req); else ->
-            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED); } } } {%
-            endhighlight %}
+            {% highlight kotlin %}
+@RegisterPlugin(name="kotlinGreeterService", description="just another Hello World")
+class GreeterService : JsonService {
+
+  override fun handle(req: JsonRequest, res: JsonResponse) {
+    when(req.method) {
+      METHOD.GET ->
+        res.content = obj().put("msg", "Hello World").get()
+      METHOD.OPTIONS ->
+        handleOptions(req)
+      else ->
+        res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
+    }
+  }
+}
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -124,15 +141,26 @@
             >
           </div>
           <div class="col-md-8">
-            {% highlight java %} @RegisterPlugin(name = "helloInterceptor",
-            description = "add a timestamp to the response of /greetings",
-            interceptPoint = InterceptPoint.RESPONSE) public class
-            HelloInterceptor implements JsonInterceptor { @Override public void
-            handle(JsonRequest req, JsonResponse res) { res.getContent()
-            .getAsJsonObject() .addProperty("timestamp",
-            Instant.now().toString()); } @Override public boolean
-            resolve(JsonRequest req, JsonResponse res) { return
-            req.isHandledBy("greetings"); } } {% endhighlight %}
+            {% highlight java %}
+@RegisterPlugin(
+  name = "helloInterceptor",
+  description = "add a timestamp to the response of /greetings",
+  interceptPoint = InterceptPoint.RESPONSE)
+public class HelloInterceptor implements JsonInterceptor {
+
+  @Override
+  public void handle(JsonRequest req, JsonResponse res) {
+    res.getContent()
+      .getAsJsonObject()
+      .addProperty("timestamp", Instant.now().toString());
+  }
+
+  @Override
+  public boolean resolve(JsonRequest req, JsonResponse res) {
+    return req.isHandledBy("greetings");
+  }
+}
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -157,11 +185,18 @@
             >
           </div>
           <div class="col-md-8">
-            {% highlight javascript %} export const options = { name:
-            "helloWorldService", description: "just another Hello World", uri:
-            "/hello" } export function handle(req, res) {
-            res.setContent(JSON.stringify({ msg: 'Hello World' }));
-            res.setContentTypeAsJson(); } {% endhighlight %}
+            {% highlight javascript %}
+export const options = {
+  name: "helloWorldService",
+  description: "just another Hello World",
+  uri: "/hello"
+}
+
+export function handle(req, res) {
+  res.setContent(JSON.stringify({ msg: 'Hello World' }));
+  res.setContentTypeAsJson();
+}
+{% endhighlight %}
           </div>
         </div>
       </div>

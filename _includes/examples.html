@@ -94,10 +94,17 @@ fetch(url)
             <a href="/try" class="btn btn-o-white">More examples</a>
           </div>
           <div class="col-md-8 sm">
-            {% highlight bash %} $ http -b GET
-            https://demo.restheart.org/messages'?filter={"from":"Bob"}&pagesize=1'
-            [ { "_id": { "$oid": "5c50963e477870eb8258fa68" }, "from": "Bob",
-            "message": "was here" } ] {% endhighlight %}
+            {% highlight bash %}
+$ http -b GET https://demo.restheart.org/messages'?filter={"from":"Bob"}&pagesize=1'
+
+[
+  {
+    "_id": { "$oid": "5c50963e477870eb8258fa68" },
+    "from": "Bob",
+    "message": "was here"
+  }
+]
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -127,11 +134,18 @@ fetch(url)
             <a href="/try" class="btn btn-o-white">More examples</a>
           </div>
           <div class="col-md-8">
-            {% highlight bash %} $ curl -G --data-urlencode
-            'filter={"from":"Bob"}'
-            https://demo.restheart.org/messages?pagesize=1 [ { "_id": { "$oid":
-            "5c50963e477870eb8258fa68" }, "from": "Bob", "message": "was here",
-            } ] {% endhighlight %}
+            {% highlight bash %}
+$ curl -G --data-urlencode 'filter={"from":"Bob"}' \
+  https://demo.restheart.org/messages?pagesize=1
+
+[
+  {
+    "_id": { "$oid": "5c50963e477870eb8258fa68" },
+    "from": "Bob",
+    "message": "was here"
+  }
+]
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -158,11 +172,14 @@ fetch(url)
             <a onclick="openES6Example()" class="btn btn-o-white">Run it</a>
           </div>
           <div class="col-md-8">
-            {% highlight javascript %} const url =
-            encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=1');
-            fetch(url) .then(response => response.json()) .then(json =>
-            JSON.stringify(json, null, 2)) .then(docs => console.log(docs)); {%
-            endhighlight %}
+            {% highlight javascript %}
+const url = encodeURI('https://demo.restheart.org/messages?filter={"from":"Bob"}&pagesize=1');
+
+fetch(url)
+  .then(response => response.json())
+  .then(json => JSON.stringify(json, null, 2))
+  .then(docs => console.log(docs));
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -190,13 +207,19 @@ fetch(url)
             <a href="/try" class="btn btn-o-white">More examples</a>
           </div>
           <div class="col-md-8">
-            {% highlight java %} public void printOutMessages() throws
-            UnirestException { var resp =
-            Unirest.get("https://demo.restheart.org/messages")
-            .queryString("filter", "{'from':'Bob'}") .queryString("pagesize",
-            "1") .asJson(); // print out each message
-            resp.getBody().getArray().forEach(msg ->
-            System.out.println(msg.toString())); } {% endhighlight %}
+            {% highlight java %}
+public void printOutMessages() throws UnirestException {
+  var resp = Unirest.get("https://demo.restheart.org/messages")
+    .queryString("filter", "{'from':'Bob'}")
+    .queryString("pagesize", "1")
+    .asJson();
+  
+  // print out each message
+  resp.getBody().getArray().forEach(msg -> 
+    System.out.println(msg.toString())
+  );
+}
+{% endhighlight %}
           </div>
         </div>
       </div>
@@ -217,23 +240,38 @@ fetch(url)
             <a href="/try" class="btn btn-o-white">More examples</a>
           </div>
           <div class="col-md-8">
-            {% highlight swift %} import UIKit import PlaygroundSupport var
-            urlComponents = URLComponents(string:
-            "https://demo.restheart.org/messages") // set the query parameters
-            var queryItems = [URLQueryItem]()
-            queryItems.append(URLQueryItem(name: "pagesize", value: "1"))
-            queryItems.append(URLQueryItem(name: "filter", value:
-            "{\"from\":\"Bob\"}")) urlComponents?.queryItems = queryItems var
-            urlRequest = URLRequest(url: (urlComponents?.url)!) // set request
-            method urlRequest.httpMethod = "GET"
-            URLSession.shared.dataTask(with: urlRequest) { (data, response,
-            error) in guard let dataResponse = data, error == nil else {
-            print(error?.localizedDescription ?? "Response Error") return } do {
-            let jsonResponse = try JSONSerialization.jsonObject(with:
-            dataResponse, options: []) print(jsonResponse) } catch let jsonError
-            { print(jsonError) } }.resume() // only needed in playground
-            PlaygroundPage.current.needsIndefiniteExecution = true {%
-            endhighlight %}
+            {% highlight swift %}
+import UIKit
+import PlaygroundSupport
+
+var urlComponents = URLComponents(string: "https://demo.restheart.org/messages")
+
+// set the query parameters
+var queryItems = [URLQueryItem]()
+queryItems.append(URLQueryItem(name: "pagesize", value: "1"))
+queryItems.append(URLQueryItem(name: "filter", value: "{\"from\":\"Bob\"}"))
+urlComponents?.queryItems = queryItems
+
+var urlRequest = URLRequest(url: (urlComponents?.url)!)
+// set request method
+urlRequest.httpMethod = "GET"
+
+URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+  guard let dataResponse = data, error == nil else {
+    print(error?.localizedDescription ?? "Response Error")
+    return
+  }
+  do {
+    let jsonResponse = try JSONSerialization.jsonObject(with: dataResponse, options: [])
+    print(jsonResponse)
+  } catch let jsonError {
+    print(jsonError)
+  }
+}.resume()
+
+// only needed in playground
+PlaygroundPage.current.needsIndefiniteExecution = true
+{% endhighlight %}
           </div>
         </div>
       </div>
