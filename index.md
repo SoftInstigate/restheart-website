@@ -13,18 +13,26 @@ stars-bounce: true
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
-        <div class="mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
-          <div class="row gx-5 mx-3">
-            <div class="col-md-6 mb-5 mb-md-0 px-4">
-              <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">🚀 Try RESTHeart Cloud</a>
-              <div class="mt-4 white">
-                  Start building instantly • Scale to production when ready • No Installation Required!
+        <div class="hero-cta-container mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
+          <div class="row gx-4 mx-4 align-items-stretch">
+            <div class="col-md-6 mb-5 mb-md-0 d-flex">
+              <div class="cta-card">
+                <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">
+                  <span class="cta-emoji">🚀</span> Try RESTHeart Cloud
+                </a>
+                <div class="cta-description mt-4 white">
+                    Start building instantly • Scale to production when ready • No Installation Required!
+                </div>
               </div>
             </div>
-            <div class="col-md-6 px-4">
-              <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">💬 Chat with Sophia AI</a>
-              <div class="mt-4 white">
-                  Get instant answers about RESTHeart • No need to read through all the docs!
+            <div class="col-md-6 d-flex">
+              <div class="cta-card">
+                <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">
+                  <span class="cta-emoji">💬</span> Chat with Sophia AI
+                </a>
+                <div class="cta-description mt-4 white">
+                    Get instant answers about RESTHeart • No need to read through all the docs!
+                </div>
               </div>
             </div>
           </div>
