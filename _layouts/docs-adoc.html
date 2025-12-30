@@ -6,66 +6,69 @@ layout: default
   <div class="row flex-xl-nowrap">
       <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
           <div class="bd-sidebar__head">
-              <div class="dropdown d-flex justify-content-center w-100">
-                  <button class="btn btn-secondary dropdown-toggle w-100 p-1 mb-2" type="button"
-                      id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      v{{ page.docs_version }}
-                  </button>
-                  <div class="dropdown-menu mt-2 me-1 pb-2" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 8 %}
-                          <strong>v8</strong>
-                          {% else %}
-                          v8
-                          {% endif %}
-                      </a>
-                      <a class="dropdown-item" href="{{ "/docs/v7" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 7 %}
-                          <strong>v7</strong>
-                          {% else %}
-                          v7
-                          {% endif %}
-                      </a>
-                      <a class="dropdown-item" href="{{ "/docs/v6" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 6 %}
-                          <strong>v6</strong>
-                          {% else %}
-                          v6
-                          {% endif %}
-                      </a>
-                      <a class="dropdown-item" href="{{ "/docs/v5" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 5 %}
-                          <strong>v5</strong>
-                          {% else %}
-                          v5
-                          {% endif %}
-                      </a>
-                      <a class="dropdown-item" href="{{ "/docs/v4" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 4 %}
-                          <strong>v4</strong>
-                          {% else %}
-                          v4
-                          {% endif %}
-                      </a>
-                      <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
-                          {% if page.docs_version == 3 %}
-                          <strong>v3</strong>
-                          {% else %}
-                          v3
-                          {% endif %}
-                      </a>
+              <div class="d-flex gap-2 mb-2">
+                  <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle p-1" type="button"
+                          id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                          style="min-width: 70px; height: 2rem;">
+                          v{{ page.docs_version }}
+                      </button>
+                      <div class="dropdown-menu mt-2 me-1 pb-2" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 8 %}
+                              <strong>v8</strong>
+                              {% else %}
+                              v8
+                              {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{{ "/docs/v7" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 7 %}
+                              <strong>v7</strong>
+                              {% else %}
+                              v7
+                              {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{{ "/docs/v6" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 6 %}
+                              <strong>v6</strong>
+                              {% else %}
+                              v6
+                              {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{{ "/docs/v5" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 5 %}
+                              <strong>v5</strong>
+                              {% else %}
+                              v5
+                              {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{{ "/docs/v4" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 4 %}
+                              <strong>v4</strong>
+                              {% else %}
+                              v4
+                              {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{{ "/docs/v3" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 3 %}
+                              <strong>v3</strong>
+                              {% else %}
+                              v3
+                              {% endif %}
+                          </a>
+                      </div>
                   </div>
+                  <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex flex-grow-1" method="get"
+                      name="searchform">
+                      <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 %}/v{{ page.docs_version }}{% endif %}">
+                      <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
+                          placeholder="Search docs..." required="required" type="text">
+                      <button class="bd-sidebar__submit" type="submit">
+                          <svg width="16" height="16">
+                              <use xlink:href="/images/sprite.svg#search" /></svg>
+                      </button>
+                  </form>
               </div>
-              <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex" method="get"
-                  name="searchform" target="_blank">
-                  <input name="sitesearch" type="hidden" value="restheart.org/docs">
-                  <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
-                      placeholder="Search" required="required" type="text">
-                  <button class="bd-sidebar__submit" type="submit">
-                      <svg width="16" height="16">
-                          <use xlink:href="/images/sprite.svg#search" /></svg>
-                  </button>
-              </form>
               <div class="d-flex flex-wrap justify-content-between align-items-center">
                   <a href="https://github.com/SoftInstigate/restheart-website/edit/master/{{ page.path }}"
                       class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
