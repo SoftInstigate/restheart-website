@@ -2,7 +2,6 @@
 layout: default
 stars-bounce: true
 ---
-{% include run-restheart-seriously-banner.html %}
 
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
