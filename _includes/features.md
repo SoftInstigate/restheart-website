@@ -53,12 +53,6 @@
                     <p>
                      Unlock the Power of Microservices with Ease: discover our innovative development framework that simplifies the creation of microservices in Java, Kotlin, JavaScript, or TypeScript. Our framework provides a set of simple yet robust building blocks: Service, Provider, Interceptor, and Initializer.
                     </p>
-                    <p>
-                    <strong>Focus on Your Microservice Logic, Not the Complexity.</strong> Experience the freedom to code your microservice logic without worrying about complex and time-consuming tasks. Our framework takes care of crucial aspects such as runtime process management, security, concurrency, HTTP transport protocol, request routing, logging, configuration, and data protection.
-                    </p>
-                    <p>
-                    The RESTHeart runtime leverages a scalable and pooled thread-per-request concurrency model. This means that developers, including those working with JavaScript, can enjoy a streamlined development process <strong>without the complexities of asynchronous programming</strong>.
-                    </p>
                 </div>
             </div>
             <div class="d-flex w-100 justify-content-center">

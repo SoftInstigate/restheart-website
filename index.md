@@ -6,13 +6,20 @@ stars-bounce: true
 
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
-        <img width="160" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
+        <img width="120" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
         <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart Framework</h1>
         <p class="top-6 text-break white mt-2 mx-4">
             ✅&nbsp;Instant REST, GraphQL and Websockets APIs for <strong>MongoDB</strong>.
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
+        <div class="my-3 mx-2">
+          <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold mt-5 btn-lg text-black">🚀 Try RESTHeart Cloud FREE</a>
+          <div class="mt-4 white">
+              Start building instantly • Scale to production when ready • No Installation Required!
+          </div>
+          <div class="mt-4 white small">go to <a href="/docs/setup">Setup</a> for more installation options</div>
+        </div>
         <div>
             <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
             <div id="sophiaLoading" class="text-muted">Loading...</div>
@@ -27,13 +34,6 @@ stars-bounce: true
                 });
             </script>
         </div>
-          <div class="my-4 mx-2">
-            <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold mt-5 btn-lg text-black">🚀 Try RESTHeart Cloud FREE - No Installation Required!</a>
-            <div class="mt-4 white">
-                Start building instantly • Scale to production when ready
-                (go to <a href="/docs/setup">Setup</a> for more installation options)
-            </div>
-          </div>
         <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
         <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
         <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
