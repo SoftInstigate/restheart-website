@@ -1,169 +1,327 @@
 ---
-title: Get Started with RESTHeart v8
+title: RESTHeart v9 Documentation
 layout: docs-adoc
 menu: overview
 applies_to: both
 ---
 
-RESTHeart is a framework for building cloud-native HTTP microservices. It's designed for the JVM and optimized for GraalVM, using Java Virtual Threads for high-performance concurrent processing.
+= RESTHeart v9 Documentation
 
-RESTHeart provides built-in authentication, authorization, and MongoDB APIs. This lets you securely expose data through REST, GraphQL, and WebSockets without additional configuration. The framework is highly extensible through plugins, supports multiple languages (Java, Kotlin, JavaScript, TypeScript), and runs seamlessly on Docker, Kubernetes, and cloud platforms.
+Welcome to RESTHeart v9! This documentation is organized to help you learn progressively and find information quickly.
 
-RESTHeart's instant startup, declarative security model, and simple architecture help developers build scalable microservices with minimal effort.
+== 🚀 Quick Start
 
-==== Speed and Ease
+New to RESTHeart? Start here:
 
-RESTHeart prioritizes speed and simplicity. It's built with high-quality libraries to provide a seamless developer experience.
+[.btn.btn-lg.btn-primary.m-2]
+link:/docs/v9/1-foundations/quick-start[Quick Start →]
 
-==== Virtual Threads for Superior Performance
+Get RESTHeart running in 5 minutes.
 
-RESTHeart fully embraces virtual threads, the groundbreaking feature introduced in Java 21. Virtual threads deliver remarkable performance and efficiency improvements. This makes RESTHeart faster, more lightweight, and simplifies concurrent code development. Virtual threads provide better resource utilization and reduce the complexity of concurrent programming, keeping RESTHeart at the forefront of high-performance, scalable frameworks.
+== 📚 Learning Paths
 
-==== Empower Developers, Streamline Applications
+Choose the path that matches your goal:
 
-RESTHeart empowers developers with an intuitive framework that includes essential features. This low-code approach provides customizable, ready-to-use APIs out of the box.
+=== Path 1: MongoDB API User (No Coding Required)
 
-==== Plug-and-Play, Extensible APIs
+*Goal:* Build applications using RESTHeart's MongoDB APIs without writing backend code.
 
-RESTHeart's pre-configured APIs save time and effort by covering a wide range of functionality. You can easily customize these APIs to fit your specific application needs.
+*Time:* ~4 hours | *Difficulty:* Beginner
 
-++++
-<div class="col-md-8 col-12 mx-auto">
-    <img class="img-responsive" src="/images/modular-and-extensible.png"/>
-    <p class="small text-muted text-center">RESTHeart features set</p>
-</div>
-++++
+[cols="1,4", options="header"]
+|===
+|Step |Topic
 
-==== What makes RESTHeart different from other frameworks?
+|1
+|link:/docs/v9/1-foundations/introduction[What is RESTHeart?] (10 min)
 
-RESTHeart is similar to other HTTP microservice frameworks like _Undertow_ (which RESTHeart uses internally), _Vert.x_, _Quarkus_, _Spring Boot_, and _Node.js_.
+|2
+|link:/docs/v9/1-foundations/quick-start[Quick Start] (15 min)
 
-However, RESTHeart goes beyond being just a framework. It includes application-level features that let developers build applications without reinventing the wheel.
+|3
+|link:/docs/v9/1-foundations/security-fundamentals[Security Fundamentals] (20 min)
 
-++++
-<div class="col-md-8 col-12 mx-auto">
-    <img class="mx-auto img-responsive" src="/images/restheart-modular-architecture.png"/>
-    <p class="small text-muted text-center">RESTHeart modular architecture</p>
-</div>
-++++
+|4
+|link:/docs/v9/2-mongodb-rest/tutorial[REST API Tutorial] (30 min)
 
-`restheart-core` is the platform's foundation. This runtime process handles core services, parses configuration, registers plugins, enforces security policies, resolves dependency injections with available `Providers`, routes requests to the correct `Services`, and executes `Interceptors` and `Initializers`.
+|5
+|link:/docs/v9/2-mongodb-rest/read-docs[Reading Data] (30 min)
 
-The RESTHeart installation directory includes a `plugins` folder:
+|6
+|link:/docs/v9/2-mongodb-rest/write-docs[Writing Data] (30 min)
 
-[source,bash]
-----
-plugins
-├── restheart-graphql.jar
-├── restheart-mongoclient-provider.jar
-├── restheart-mongodb.jar
-├── restheart-polyglot.jar
-└── restheart-security.jar
-----
+|7
+|link:/docs/v9/2-mongodb-rest/aggregations[Aggregations] (20 min)
 
-These plugins implement application-level functionality to help you build applications.
+|8
+|link:/docs/v9/4-security/tutorial[Security Tutorial] (30 min)
 
-For example, the `restheart-mongodb` plugin implements the REST API for MongoDB, and `restheart-security.jar` provides ready-to-use authentication and authorization features.
+|9
+|link:/docs/v9/4-security/user-management[User Management] (20 min)
 
-You can easily deploy custom plugins by adding them to the `plugins` directory. Plugins are JAR files for Java or Kotlin, or directories with `package.json` files for JavaScript.
+|10
+|link:/docs/v9/4-security/permissions[Permissions] (30 min)
 
-==== Built for developers
+|11
+|link:/docs/v9/5-deployment/configuration[Configuration] (20 min)
+|===
 
-RESTHeart is built by developers for developers. It has evolved through implementing dozens of real-world projects.
+**✓ You're now ready to deploy a production MongoDB API!**
 
-- Only four simple yet powerful building blocks: `Services`, `Providers`, `Interceptors`, and `Initializers`.
-- Starts in ~100 milliseconds for smooth, fast code-deploy-test cycles.
-- Each request runs in a dedicated thread, making all code thread-safe, simple to write and maintain, and scalable.
-- Powerful dependency injection via `@Inject` annotation and `Provider` plugin.
-- Polyglot framework supporting *Java*, *Kotlin*, *JavaScript*, and *TypeScript*.
-- Well documented with many examples and tutorials. Check link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples].
+*Next steps:* Explore link:/docs/v9/2-mongodb-rest/transactions[Transactions], link:/docs/v9/2-mongodb-rest/files[File Storage], link:/docs/v9/2-mongodb-rest/json-schema-validation[Schema Validation]
 
-Here you have the _Hello World_ example in *Java*:
+'''
 
-[source,java]
-----
-@RegisterPlugin(name = "greetings", description = "just another Hello World")
-public class GreeterService implements JsonService {
-    @Override
-    public void handle(JsonRequest request, JsonResponse response) {
-        response.setContent(object().put("message", "Hello World!"));
-    }
-}
-----
+=== Path 2: Plugin Developer
 
-And the same in *Javascript*
+*Goal:* Extend RESTHeart with custom services and interceptors.
 
-[source,javascript]
-----
-export const options = { name: "greetings", description: "just another Hello World" }
+*Time:* ~3 hours | *Difficulty:* Intermediate
 
-export function handle(request, response) {
-    response.setContent(JSON.stringify({ msg: 'Hello World' }));
-    response.setContentTypeAsJson();
-}
-----
+[cols="1,4", options="header"]
+|===
+|Step |Topic
 
-NOTE: Javascript is executed in a thread-safe, multi-threading concurrency environment. So you don't need to deal with async/await, promises, observable or any other fancy stuff. *Just clean and simple code*.
+|1
+|link:/docs/v9/1-foundations/introduction[What is RESTHeart?] (10 min)
 
-==== Features
+|2
+|link:/docs/v9/1-foundations/quick-start[Quick Start] (15 min)
 
-RESTHeart provides developers with the features required by most applications: authentication, authorization and data management:
+|3
+|link:/docs/v9/1-foundations/core-concepts[Core Concepts] (30 min)
 
-- Declarative Authentication and Authorization.
-- Instant REST, GraphQL and WebSocket API for MongoDB.
-- SDK to easily develop custom features.
+|4
+|link:/docs/v9/6-framework/overview[Framework Overview] (20 min)
 
-> Most applications just require this. Then you just run a stock RESTHeart. Really, no code!
+|5
+|link:/docs/v9/6-framework/tutorial[Plugin Tutorial] (45 min)
 
-TIP: Check the link:/docs/try[demo Web Chat application]. It requires *zero* lines of backend code.
+|6
+|link:/docs/v9/6-framework/services[Developing Services] (30 min)
 
-==== The perfect MongoDB’s companion
+|7
+|link:/docs/v9/6-framework/interceptors[Developing Interceptors] (20 min)
 
-RESTHeart is the best API for MongoDB any compatible database (like link:https://www.ferretdb.io[FerretDB], AWS DocumentDB and Azure CosmosDB).
+|8
+|link:/docs/v9/6-framework/providers[Providers & Dependency Injection] (15 min)
 
-- It exposes the full database’s capabilities via *REST*, *GraphQL* and *WebSocket* APIs.
-- Developers don’t need to write a single line of backend code to handle data with Mobile Apps, Web Apps or Integration Middleware.
-- The Instant Data API cuts development complexity and costs by up to 90%.
+|9
+|link:/docs/v9/6-framework/deploy[Deploying Plugins] (20 min)
+|===
 
-++++
-<div class="col-md-8 col-12 mx-auto">
-    <img class="img-responsive" src="/images/mongodb-supported-features.png"/>
-    <p class="small text-muted text-center">MongoDB features supported by RESTHeart</p>
-</div>
-++++
+**✓ You can now build and deploy custom plugins!**
 
-==== Extreme Performances
+*Next steps:* Try link:/docs/v9/6-framework/core-plugins-js[JavaScript Plugins], learn link:/docs/v9/6-framework/initializers[Initializers], explore link:/docs/v9/7-security-plugins/overview[Security Plugin Development]
 
-*Hundreds of thousands TPS*
+'''
 
-RESTHeart parallel architecture provides superior performance.
-link:/docs/performances[Read More]
+=== Path 3: DevOps / Site Reliability Engineer
 
-*Horizontal scaling*
+*Goal:* Deploy and operate RESTHeart in production.
 
-RESTHeart is fully stateless and allows clustering, to reach demanding
-requirements.
-link:/docs/clustering[Read More]
+*Time:* ~2 hours | *Difficulty:* Intermediate
 
-*Even faster on GraalVM*
+[cols="1,4", options="header"]
+|===
+|Step |Topic
 
-RESTHeart on GraalVM provides a
-native solution with instant startup time and a smaller memory footprint.
-This is perfect when deploying to Kubernetes clusters,
-where regular Java applications usually consume too many resources.
+|1
+|link:/docs/v9/1-foundations/introduction[What is RESTHeart?] (10 min)
 
-==== Deploy at rest
+|2
+|link:/docs/v9/1-foundations/setup[Installation] (20 min)
 
-RESTHeart is tailored for the JVM, GraalVM, Docker or Kubernetes,
-designed to radically simplify microservices development and deployment.
+|3
+|link:/docs/v9/1-foundations/setup-with-docker[Docker Setup] (20 min)
 
-- Ready-to-run Runtime.
-- Available as a standalone JAR file, native binary or Docker image.
-- Deploy it on Cloud and On-Premises.
+|4
+|link:/docs/v9/5-deployment/configuration[Configuration] (30 min)
 
-==== Open-source and business-friendly licenses
+|5
+|link:/docs/v9/4-security/security-hardening[Security Hardening] (20 min)
 
-RESTHeart is dual-licensed under the AGPL and a *Business Friendly* Enterprise License.
+|6
+|link:/docs/v9/4-security/tls[TLS Configuration] (15 min)
 
-- Use the free AGPL distribution without feature restrictions.
-- Rely on the Enterprise License for production-grade support and to use RESTHeart in closed-source products or services link:https://restheart.com[Read More].
+|7
+|link:/docs/v9/5-deployment/logging[Logging] (10 min)
+
+|8
+|link:/docs/v9/5-deployment/monitoring[Monitoring] (15 min)
+
+|9
+|link:/docs/v9/5-deployment/clustering[Clustering & Load Balancing] (20 min)
+|===
+
+**✓ You're ready to run RESTHeart in production!**
+
+*Next steps:* Optimize with link:/docs/v9/5-deployment/graalvm[GraalVM Native Image], set up link:/docs/v9/5-deployment/auditing[Auditing], configure link:/docs/v9/5-deployment/proxy[Reverse Proxy]
+
+'''
+
+=== Path 4: GraphQL Developer
+
+*Goal:* Build GraphQL APIs on top of MongoDB.
+
+*Time:* ~2 hours | *Difficulty:* Intermediate
+
+[cols="1,4", options="header"]
+|===
+|Step |Topic
+
+|1
+|link:/docs/v9/1-foundations/introduction[What is RESTHeart?] (10 min)
+
+|2
+|link:/docs/v9/1-foundations/quick-start[Quick Start] (15 min)
+
+|3
+|link:/docs/v9/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial] (30 min)
+
+|4
+|link:/docs/v9/3-graphql-websocket/graphql/getting-started[Getting Started] (20 min)
+
+|5
+|link:/docs/v9/3-graphql-websocket/graphql/graphql-apps[GraphQL Apps] (20 min)
+
+|6
+|link:/docs/v9/3-graphql-websocket/graphql/schema[Schema Design] (20 min)
+
+|7
+|link:/docs/v9/3-graphql-websocket/graphql/mappings[Mappings] (20 min)
+
+|8
+|link:/docs/v9/3-graphql-websocket/graphql/resolvers[Resolvers] (20 min)
+|===
+
+**✓ You can now build GraphQL APIs with RESTHeart!**
+
+*Next steps:* Learn link:/docs/v9/3-graphql-websocket/graphql/n-plus-one[Performance Optimization], study link:/docs/v9/3-graphql-websocket/graphql/complex-app-example[Advanced Example], review link:/docs/v9/3-graphql-websocket/graphql/best-practices[Best Practices]
+
+'''
+
+== 📖 Browse Documentation by Topic
+
+Prefer to explore on your own? Browse by topic:
+
+=== link:/docs/v9/1-foundations/introduction[Part 1: Foundations]
+Introduction, installation, core concepts, and security fundamentals.
+
+*Start here if you're new to RESTHeart.*
+
+=== link:/docs/v9/2-mongodb-rest/[Part 2: MongoDB REST API]
+Complete guide to the REST API - CRUD, queries, aggregations, transactions, and performance.
+
+*Read this to use RESTHeart's MongoDB API without coding.*
+
+=== link:/docs/v9/3-graphql-websocket/graphql/[Part 3: GraphQL & WebSocket APIs]
+GraphQL API for flexible queries and WebSocket API for real-time data.
+
+*Alternative APIs for specific use cases.*
+
+=== link:/docs/v9/4-security/overview[Part 4: Security]
+User management, authentication methods, authorization, and production security.
+
+*Essential for securing your APIs.*
+
+=== link:/docs/v9/5-deployment/configuration[Part 5: Configuration & Deployment]
+Configuration options, deployment scenarios, operations, and performance tuning.
+
+*Deploy RESTHeart to production.*
+
+=== link:/docs/v9/6-framework/overview[Part 6: Extending RESTHeart]
+Plugin development - Services, Interceptors, Providers, and Initializers.
+
+*Build custom functionality with the framework.*
+
+=== link:/docs/v9/7-security-plugins/overview[Part 7: Extending Security]
+Develop custom authentication and authorization plugins.
+
+*Extend the security layer.*
+
+=== link:/docs/v9/8-cloud/cloud/[Part 8: RESTHeart Cloud]
+RESTHeart Cloud features, Sophia AI, and webhooks.
+
+*Use the managed cloud offering.*
+
+=== link:/docs/v9/9-reference/faq[Part 9: Reference]
+API reference, migration guides, FAQ, examples, and resources.
+
+*Quick reference and additional resources.*
+
+== 🔗 Quick Links
+
+[.row]
+====
+[.col-md-3.col-6.mb-3]
+--
+[.card.h-100]
+[.card-body]
+link:/docs/v9/1-foundations/quick-start[⚡ *Quick Start*]
+
+Get running in 5 minutes
+--
+
+[.col-md-3.col-6.mb-3]
+--
+[.card.h-100]
+[.card-body]
+link:/docs/v9/9-reference/faq[❓ *FAQ*]
+
+Common questions answered
+--
+
+[.col-md-3.col-6.mb-3]
+--
+[.card.h-100]
+[.card-body]
+link:/docs/v9/9-reference/example-webapps[💡 *Examples*]
+
+Sample applications
+--
+
+[.col-md-3.col-6.mb-3]
+--
+[.card.h-100]
+[.card-body]
+link:/docs/v9/2-mongodb-rest/demo-webapp.html[🎮 *Live Demo*]
+
+Try the demo app
+--
+====
+
+== 🎓 Tutorials
+
+Hands-on guides to get you started:
+
+* link:/docs/v9/2-mongodb-rest/tutorial[REST API Tutorial] - Learn the REST API through examples
+* link:/docs/v9/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial] - Build a GraphQL API
+* link:/docs/v9/3-graphql-websocket/websocket/tutorial[WebSocket Tutorial] - Real-time data with WebSockets
+* link:/docs/v9/4-security/tutorial[Security Tutorial] - Set up authentication and authorization
+* link:/docs/v9/6-framework/tutorial[Plugin Development Tutorial] - Build your first plugin
+
+== 🌟 Why RESTHeart?
+
+* **Zero Code Required** - Use MongoDB APIs out of the box
+* **Instant APIs** - REST, GraphQL, WebSocket for MongoDB
+* **Secure by Default** - Built-in authentication and authorization
+* **Highly Extensible** - Simple plugin system in Java, Kotlin, or JavaScript
+* **High Performance** - Virtual threads for massive scalability
+* **Cloud Ready** - Docker, Kubernetes, GraalVM native images
+
+== 💬 Community & Support
+
+* **GitHub:** link:https://github.com/SoftInstigate/restheart[SoftInstigate/restheart]
+* **Issues:** link:https://github.com/SoftInstigate/restheart/issues[Report a bug or request a feature]
+* **Examples:** link:https://github.com/SoftInstigate/restheart/tree/master/examples[Plugin examples on GitHub]
+* **Enterprise Support:** link:/docs/v9/9-reference/enterprise-license[Enterprise License and Support]
+
+== 📰 Stay Updated
+
+* link:/docs/v9/9-reference/blog-posts[Blog Posts] - Technical articles and announcements
+* link:https://github.com/SoftInstigate/restheart/issues?q=is%3Aissue+is%3Aopen+label%3A%22feature+request%22[Roadmap] - Upcoming features
+
+---
+
+*Ready to dive in?* Choose a link:/docs/v9/#learning-paths[learning path] or jump straight to the link:/docs/v9/1-foundations/quick-start[Quick Start]!
