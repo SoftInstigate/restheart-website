@@ -13,15 +13,15 @@ stars-bounce: true
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
-        <div class="my-3 mx-2">
-          <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold mt-5 btn-lg text-black">🚀 Try RESTHeart Cloud FREE</a>
+        <div class="my-5 mx-2 py-4 px-3" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
+          <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">🚀 Try RESTHeart Cloud FREE</a>
           <div class="mt-4 white">
               Start building instantly • Scale to production when ready • No Installation Required!
           </div>
           <div class="mt-4 white small">go to <a href="/docs/setup">Setup</a> for more installation options</div>
         </div>
         <div>
-            <h3 class="font-weight-bold highlightcolor mt-3 text-center">Ask Sophia AI about RESTHeart</h3>
+            <h3 class="font-weight-bold highlightcolor text-center">Ask Sophia AI about RESTHeart</h3>
             <div id="sophiaLoading" class="text-muted">Loading...</div>
             <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto&scope=[%22restheart%22,%22both%22]" style="border: none; width: 100%; display: none;"></iframe>
             <script>
