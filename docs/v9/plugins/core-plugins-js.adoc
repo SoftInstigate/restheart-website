@@ -1,0 +1,259 @@
+---
+title: Develop Core Plugins in JavaScript
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+:page-liquid:
+
+=== Introduction
+
+_Services_ and _Interceptors_ can be developed in _JavaScript_ and _TypeScript_ when running RESTHeart with the GraalVM or using RESTHeart native.
+
+TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin[example JS plugins]
+
+NOTE: The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the `native-image` tool. See link:https://restheart.org/docs/graalvm#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native-image]
+
+=== RESTHeart Concurrency Model
+
+RESTHeart is a multi-threaded application and it handles each request in a dedicated thread. This makes all code running in a request thread safe, and this also applies to JavaScript services and interceptors.
+
+This is different than usual JavaScript concurrency model, where all code is usually executed in a single thread and requires asynchronous programming, with callbacks, promises, observable, etc.
+
+In RESTHeart, you can write simple JavaScript code that also includes blocking calls, without incurring in performance problems.
+
+=== Service
+
+The JavaScript code that defines a `Service` must export the object `options` and the function `handle(req, res)`.
+
+The resulting service will be a special instance of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/plugins/StringService.html[StringService], that delegates the handling logic to the JavaScript code. For this reason, the request and response bodies are treated as strings.
+
+[source,javascript]
+----
+export const options = {
+    name: "helloWorldService",
+    description: "just another Hello World",
+    uri: "/hello"
+}
+
+export function handle(req, res) {
+    res.setContent(`{ "msg": `Hello ${rc.name || 'World'}` } `);
+    res.setContentTypeAsJson();
+}
+----
+
+==== The object `options`
+
+The `options` object must contain the following properties:
+
+[.table]
+|===
+|param |description |mandatory |default value
+
+|`name`
+|the name of the service
+|yes
+|*none*
+
+|`description`
+|description of the service
+|yes
+|*none*
+
+|`uri`
+|the uri of the service
+|yes
+|*none*
+
+|`secured`
+|`true` to require successful authentication and authorization to be invoked;
+|no
+|`false`
+
+|`matchPolicy`
+| `PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>` | no  | `PREFIX`
+
+|`modulesReplacements`
+| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
+
+|===
+
+==== The function `handle(req, res)`
+
+The `handle` functions accepts two parameters: the request and the response. These are Java objects of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
+
+=== Interceptor
+
+The JavaScript code that defines an `Interceptor` export the object `options` and the functions `handle(req, res)` and `resolve(req)`.
+
+[source,javascript]
+----
+export const options = {
+    name: "helloWorldInterceptor",
+    description: "modifies the response of helloWorldService",
+    interceptPoint: "RESPONSE"
+}
+
+export function handle(request, response) {
+    const rc = JSON.parse(response.getContent() || '{}');
+
+    let modifiedBody = {
+        msg: rc.msg + ' from Italy with Love';
+    }
+
+    response.setContent(JSON.stringify(modifiedBody));
+    response.setContentTypeAsJson();
+}
+
+export function resolve(request) {
+    return request.isHandledBy("helloWorldService");
+}
+----
+
+==== The object `options`
+
+The `options` object must contain the following properties:
+
+[.table]
+|===
+|param |description |mandatory |default value
+
+|`name`
+|the name of the interceptor
+|yes
+|*none*
+
+|`description`
+|description of the interceptor
+|yes
+|*none*
+
+|`interceptPoint`
+| the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC` | no  | REQUEST_AFTER_AUTH
+
+|`pluginClass`
+| the class of the interceptor that must match the service to intercept (e.g. `MongoInterceptor` can intercept a request handled by the `MongoService`), `StringInterceptor`, `BsonInterceptor`, `ByteArrayProxyInterceptor`, `CsvInterceptor`, `JsonInterceptor`, `MongoInterceptor`
+|no
+|`StringInterceptor`
+
+
+|`modulesReplacements`
+| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
+
+|===
+
+==== The function `resolve(req)`
+
+The function `resolve()` accepts one parameter `req`, a Java object of the concrete subclass of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] defined by the parameter `pluginClass`, e.g. with  `pluginClass: "StringInterceptor"`, the request class is link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest].
+
+An interceptor of a given class, can intercept requests handled by all services with matching types, e.g. `MongoInterceptor` can intercept requests handled by the `MongoService`.
+
+When `resolve()` returns `true` the interceptor will be actually invoked, i.e. this function allows to select the requests to intercept.
+
+==== The function `handle(req, res)`
+
+The `handle()` functions accepts two parameters: the request and the response.
+These a Java objects of the concrete subclasses of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Response.html[Response] respectively.  For the default `pluginClass: "StringInterceptor"`, these are link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
+
+=== Packaging
+
+The plugins js files must be placed in a folder with a `package.json` file.
+
+NOTE: a single plugin folder can contain multiple Services and Interceptors.
+
+The `package.json` muse declare the services in the `rh:services` array and interceptors in the `rh:interceptors` array.
+
+[source,json]
+----
+{
+  "name": "restheart-js-foo",
+  "version": "1.0.0",
+  "description": "test js plugins for RESTHeart",
+  "rh:services": [ "foo.js" ],
+  "rh:interceptors": [ "foo-interceptor.js" ]
+}
+----
+
+=== Modules
+
+The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/require-module-service.mjs[require-module-service.mjs] for an example.
+
+IMPORTANT: The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
+
+For instance, you cannot use the module `http`, and there is no pure JS implementation available. In this case, you can rely on <<interop,Java/Javascript interoperability>>  and use the  standard Java libraries and all the libraries that are available in RESTHeart.
+
+See link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[GraalVM Modules] for more details.
+
+=== Deploy
+
+To the JavaScript plugin, just copy the folder containing the scripts and the file `package.json` into the `plugins` directory of RESTHeart.
+
+NOTE: JS plugins can be added or updated without requiring to restart the server, ie RESTHeart supports JS plugins hot deployment.
+
+If you modify the code, you can force RESTHeart to update it by touching the plugin folder.
+
+[source,bash]
+$ touch plugins/my-plugin
+
+=== Configuration parameters
+
+It is possible to pass configuration parameters to a plugin by defining them in the RESTHeart's configuration file using the plugin's name:
+
+[source,yml]
+----
+foo: # <-- name of the plugin
+    arg: value
+----
+
+The arguments are available in the `pluginArgs` object.
+
+[source,javascript]
+----
+const arg = pluginArgs.arg
+----
+
+=== Java/JavaScript interoperability [[interop]]
+
+GraalVM allows to execute JavaScript code from RESTHeart and allows interoperability with Java code.
+
+This means that all the Java classes shipped with RESTHeart can be used in JavaScript code.
+
+For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/http-client.mjs[http-client.mjs] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
+
+=== MongoDB driver
+
+The MongoDb Java driver, configured by RESTHeart configuration file and already connected to MongoDB, is available in the JavaScript code as `mclient`.
+
+See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/mclient-service.mjs[mclient-service.mjs] for an example of how to use it.
+
+=== Logging
+
+The RESTHeart Java logger can be used from JavaScript code.
+
+[source,javascript]
+----
+LOGGER.debug("pluginArgs {}", pluginArgs);
+----
+
+Pay attention to logging null values. With:
+
+[source,javascript]
+----
+var foo = null;
+LOGGER.debug("this is null {}", foo);
+----
+
+An error will be raised.
+
+[source,bash]
+----
+org.graalvm.polyglot.PolyglotException: TypeError: invokeMember (debug) on ch.qos.logback.classic.Logger@697713cb failed due to: Multiple applicable overloads found for method name debug...
+----
+
+To avoid it, use the following code:
+
+[source,javascript]
+----
+var foo = null;
+LOGGER.debug("this is null {}", foo ? foo : "null");
+----

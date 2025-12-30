@@ -1,0 +1,45 @@
+---
+title: Security Overview
+layout: docs-adoc
+menu: framework
+applies_to: both
+---
+
+=== Introduction
+
+RESTHeart provides **Authentication** and **Authorization** services. It supports different authentication and authorization schemes, including users and permissions stored in MongoDB collections.
+
+The default configuration enables `mongoRealmAuthenticator` and `mongoAclAuthorizer`. These plugins use MongoDB collections (by default `/users` and `/acl`) to store user credentials and permissions.
+
+RESTHeart can also store users and permissions in configuration files using `fileRealmAuthenticator` and `fileAclAuthorizer`. You need to update the configuration to enable these plugins.
+
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=77s[Authentication and Authorization in RESTHeart]
+
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=123s[Understanding RESTHeart security]
+
+=== Understanding RESTHeart security
+
+RESTHeart uses a **pluggable architecture**. It includes strong security features, and you can extend it by implementing plugins.
+
+In RESTHeart, everything is a plugin: Authentication Mechanisms, Authenticators, Authorizers, Token Managers, and Services.
+
+[img-fluid]
+image::/images/restheart-security-explained.png[restheart-security explained]
+
+**Authentication Mechanisms** handle different authentication schemes.
+For example, _BasicAuthMechanism_ handles Basic Authentication. It extracts credentials from request headers and passes them to an Authenticator for verification.
+
+Another example is _IdentityAuthMechanism_, which binds requests to a single identity from configuration. This mechanism doesn't require an Authenticator to build the account.
+
+RESTHeart allows defining several mechanisms. When a request arrives, the `authenticate()` method is called on each mechanism until one of these occurs:
+
+-   no `VETOER` denies it and at least one `ALLOWER` allows it &#8594; the request proceeds to Authorization phase;
+-   The list of mechanisms is exhausted &#8594; the request fails with code `401 Unauthorized`.
+
+The **Authenticator** verifies credentials extracted by Authentication Mechanisms. For example, _BasicAuthMechanism_ extracts credentials as username and password. The Authenticator can check these against a database or LDAP server. Note that some Authentication Mechanisms don't require an Authenticator to build the Account.
+
+The **Authorizer** checks if the user can perform the request against an Access Control List. For example, `mongoAclAuthorizer` checks if the request is allowed by looking at permissions defined in a MongoDB collection.
+
+The **Token Manager** generates and validates auth-tokens. When a client successfully authenticates, the Token Manager generates an auth-token returned in the `Auth-Token` response header. This token can authenticate further requests. This requires an Authentication Manager to handle it using the Token Manager for token validation.
+
+A **Service** is a simple way to implement Web Services that expose additional custom logic.

@@ -1,0 +1,852 @@
+---
+title: Authentication and Authorization tutorial
+layout: docs-adoc
+menu: security
+liquid: true
+applies_to: both
+---
+
+This tutorial provides a thorough understanding of securing RESTHeart applications. RESTHeart offers robust security features, with **Authentication** and **Authorization** being central to these. This guide will explore basic authentication and delve into authorization, focusing on Access Control Lists (ACLs) and their role in defining fine-grained permissions.
+
+By the end of this tutorial, you'll have a solid foundation in securing RESTHeart applications, ensuring data security and controlled access.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+=== Prerequisites: The Root User
+
+This tutorial assumes you're using RESTHeart Cloud or have configured a root user with full administrative privileges.
+
+TIP: If you're using RESTHeart Cloud, follow the link:/docs/cloud/root-user-setup[Root User Setup] guide to create your root user with the `root` role and full permissions.
+
+The root user has complete access to your RESTHeart instance, allowing you to:
+
+- Create and manage collections
+- Create and manage users
+- Configure permissions (ACLs)
+- Perform all database operations
+
+=== Creating the /secrets Collection
+
+Using your root user credentials, create the `/secrets` collection:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/secrets \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [RESTHEART-URL]/secrets \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/secrets", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]"
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Collection /secrets created successfully");
+  } else {
+    console.error("Failed to create collection:", response.status);
+  }
+})
+.catch(error => console.error("Error:", error));
+----
+
+=== Creating Users alice and bob
+
+Next, create two users, `alice` and `bob`, each with the `user` role:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/users \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "alice", "password": "secret", "roles": ["user"]}'
+
+curl -i -X POST [RESTHEART-URL]/users \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "bob", "password": "secret", "roles": ["user"]}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/users \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=alice password=secret roles:='["user"]'
+
+http POST [RESTHEART-URL]/users \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=bob password=secret roles:='["user"]'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create alice
+fetch("[RESTHEART-URL]/users", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "alice",
+    password: "secret",
+    roles: ["user"]
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log("User alice created successfully");
+
+    // Create bob
+    return fetch("[RESTHEART-URL]/users", {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic [BASIC-AUTH]",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        _id: "bob",
+        password: "secret",
+        roles: ["user"]
+      })
+    });
+  } else {
+    throw new Error("Failed to create alice: " + response.status);
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("User bob created successfully");
+  } else {
+    console.error("Failed to create bob:", response.status);
+  }
+})
+.catch(error => console.error("Error:", error));
+----
+
+=== Understanding Status Codes
+
+The `/secrets` endpoint helps verify credentials. For example, using incorrect credentials for `alice`:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u alice:wrong -X GET [RESTHEART-URL]/secrets
+# HTTP/1.1 401 Unauthorized
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a alice:wrong GET [RESTHEART-URL]/secrets
+# HTTP/1.1 401 Unauthorized
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Using incorrect credentials
+fetch("[RESTHEART-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:wrong")
+  }
+})
+.then(response => {
+  console.log("Status:", response.status); // 401 Unauthorized
+})
+.catch(error => console.error("Error:", error));
+----
+
+IMPORTANT: A `401 Unauthorized` response indicates failed authentication due to incorrect credentials. RESTHeart blocks requests to secure services without proper authentication.
+
+Attempting access with correct credentials:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u alice:secret -X GET [RESTHEART-URL]/secrets
+# HTTP/1.1 403 Forbidden
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a alice:secret GET [RESTHEART-URL]/secrets
+# HTTP/1.1 403 Forbidden
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Using correct credentials but no permissions
+fetch("[RESTHEART-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:secret")
+  }
+})
+.then(response => {
+  console.log("Status:", response.status); // 403 Forbidden
+})
+.catch(error => console.error("Error:", error));
+----
+
+IMPORTANT: A `403 Forbidden` response means authentication succeeded, but the client lacks permission to access the resource.
+
+RESTHeart's default authorizer, `mongoAclAuthorizer`, enforces permissions based on user roles and ACL configurations.
+
+=== Configuring Access for user Role on /secrets
+
+We aim to allow `user` role to create and access their own documents in `/secrets`, and to modify only their documents.
+
+1) **Allow `GET` on `/secrets`**:
+
+Users can only access documents they created.
+
+[source,bash]
+----
+{
+    "_id": "userCanAccessOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(GET) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "readFilter": "{ author: @user._id }" }
+}
+----
+
+2) **Allow `POST` on `/secrets`**:
+
+Users can create new documents, setting the `author` to their `_id`.
+
+[source,bash]
+----
+{
+    "_id": "userCanCreateOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(POST) and path('/secrets')",
+    "priority": 100,
+    "mongo": { "mergeRequest": { "author": "@user._id" } }
+}
+----
+
+3) **Allow `PATCH` on `/secrets/{id}`**:
+
+Users can modify only their documents.
+
+[source,bash]
+----
+{
+    "_id": "userCanModifyOwnSecret",
+    "roles": [ "user" ],
+    "predicate": "method(PATCH) and path-template('/secrets/{id}')",
+    "priority": 100,
+    "mongo": { "writeFilter": { "author": "@user._id" } }
+}
+----
+
+To create these permissions, use the following commands:
+
+**1. Allow GET on /secrets:**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanAccessOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(GET) and path('\''/secrets'\'')",
+    "mongo": {
+      "readFilter": {"author": "@user._id"}
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=userCanAccessOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(GET) and path('/secrets')" \
+  mongo.readFilter:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanAccessOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(GET) and path('/secrets')",
+    mongo: {
+      readFilter: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
+----
+
+**2. Allow POST on /secrets:**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanCreateOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(POST) and path('\''/secrets'\'')",
+    "mongo": {
+      "mergeRequest": {"author": "@user._id"}
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=userCanCreateOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(POST) and path('/secrets')" \
+  mongo.mergeRequest:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanCreateOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(POST) and path('/secrets')",
+    mongo: {
+      mergeRequest: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
+----
+
+**3. Allow PATCH on /secrets/{id}:**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanModifyOwnSecret",
+    "roles": ["user"],
+    "priority": 100,
+    "predicate": "method(PATCH) and path-template('\''/secrets/{id}'\'')",
+    "mongo": {
+      "writeFilter": {"author": "@user._id"}
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  _id=userCanModifyOwnSecret \
+  roles:='["user"]' \
+  priority:=100 \
+  predicate="method(PATCH) and path-template('/secrets/{id}')" \
+  mongo.writeFilter:='{"author": "@user._id"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/acl", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    _id: "userCanModifyOwnSecret",
+    roles: ["user"],
+    priority: 100,
+    predicate: "method(PATCH) and path-template('/secrets/{id}')",
+    mongo: {
+      writeFilter: {"author": "@user._id"}
+    }
+  })
+})
+.then(response => response.ok ? console.log("ACL created") : console.error("Failed"))
+.catch(error => console.error("Error:", error));
+----
+
+=== Creating Secret Documents
+
+Let's have `alice` and `bob` create their secrets:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u bob:secret -X POST [RESTHEART-URL]/secrets \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Bob loves Alice"}'
+
+curl -i -u alice:secret -X POST [RESTHEART-URL]/secrets \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Alice loves Bob"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a bob:secret POST [RESTHEART-URL]/secrets message="Bob loves Alice"
+http -a alice:secret POST [RESTHEART-URL]/secrets message="Alice loves Bob"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Bob creates his secret
+fetch("[RESTHEART-URL]/secrets", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic " + btoa("bob:secret"),
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "Bob loves Alice"
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Bob's secret created");
+
+    // Alice creates her secret
+    return fetch("[RESTHEART-URL]/secrets", {
+      method: "POST",
+      headers: {
+        "Authorization": "Basic " + btoa("alice:secret"),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Alice loves Bob"
+      })
+    });
+  } else {
+    throw new Error("Failed to create Bob's secret");
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log("Alice's secret created");
+  } else {
+    console.error("Failed to create Alice's secret");
+  }
+})
+.catch(error => console.error("Error:", error));
+----
+
+=== Reading Secret Documents
+
+**Viewing with `root` user (sees all secrets):**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/secrets \
+  -H "Authorization: Basic [BASIC-AUTH]"
+# Output includes both Alice's and Bob's messages
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -b GET [RESTHEART-URL]/secrets \
+  Authorization:"Basic [BASIC-AUTH]"
+# Output includes both Alice's and Bob's messages
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic [BASIC-AUTH]"
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Root user sees all secrets:", data);
+  // Output includes both Alice's and Bob's messages
+})
+.catch(error => console.error("Error:", error));
+----
+
+NOTE: The `author` property is correctly set for each document.
+
+**Accessing `/secrets` as `alice` (sees only her own secret):**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u alice:secret -X GET [RESTHEART-URL]/secrets
+# Output includes only Alice's message
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a alice:secret -b GET [RESTHEART-URL]/secrets
+# Output includes only Alice's message
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:secret")
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Alice sees her secrets:", data);
+  // Output includes only Alice's message
+})
+.catch(error => console.error("Error:", error));
+----
+
+**Similarly, accessing as `bob` (sees only his own secret):**
+
+==== cURL
+
+[source,bash]
+----
+curl -i -u bob:secret -X GET [RESTHEART-URL]/secrets
+# Output includes only Bob's message
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a bob:secret -b GET [RESTHEART-URL]/secrets
+# Output includes only Bob's message
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch("[RESTHEART-URL]/secrets", {
+  method: "GET",
+  headers: {
+    "Authorization": "Basic " + btoa("bob:secret")
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log("Bob sees his secrets:", data);
+  // Output includes only Bob's message
+})
+.catch(error => console.error("Error:", error));
+----
+
+Let's take a moment to acknowledge the story of Alice and Bob. These two characters are entwined in an 'impossible love' story that symbolizes the challenges of secure communication in the digital age. And RESTHeart is no exception keeping their love hidden in the /secrets collection.
+
+=== Understanding How the Permissions Work
+
+Let's break down what makes these permissions so powerful:
+
+==== 1. The `readFilter` - Data Visibility Control
+
+The first permission uses `readFilter` to automatically filter data based on the user:
+
+[source,json]
+----
+"mongo": { "readFilter": "{ author: @user._id }" }
+----
+
+This means:
+- When Alice requests `/secrets`, RESTHeart automatically adds `{ author: "alice" }` to the query
+- When Bob requests `/secrets`, RESTHeart automatically adds `{ author: "bob" }` to the query
+- The root user, having full permissions, sees everything without filters
+
+TIP: `readFilter` is perfect for multi-tenant applications where users should only see their own data. It works transparently without requiring client-side filtering.
+
+==== 2. The `mergeRequest` - Server-Side Data Injection
+
+The second permission uses `mergeRequest` to automatically add properties to new documents:
+
+[source,json]
+----
+"mongo": { "mergeRequest": { "author": "@user._id" } }
+----
+
+This is crucial because:
+- Users cannot forge the `author` field - it's set server-side
+- Even if a malicious client tries to set `"author": "bob"` when authenticated as Alice, RESTHeart overwrites it with `"author": "alice"`
+- This guarantees data integrity and prevents privilege escalation
+
+WARNING: Never rely on client-provided ownership fields. Always use `mergeRequest` to enforce ownership server-side.
+
+==== 3. The `writeFilter` - Update Protection
+
+The third permission uses `writeFilter` to restrict which documents can be modified:
+
+[source,json]
+----
+"mongo": { "writeFilter": { "author": "@user._id" } }
+----
+
+This ensures:
+- Alice can only PATCH documents where `author` equals `"alice"`
+- Even if Alice knows Bob's document ID, she cannot modify it
+- Updates to documents not matching the filter return a `404 Not Found` (the document "doesn't exist" from Alice's perspective)
+
+==== 4. Predicates - Fine-Grained Access Control
+
+Each permission uses predicates to define exactly when it applies:
+
+[source,text]
+----
+method(GET) and path('/secrets')           # Only for GET requests to /secrets
+method(POST) and path('/secrets')          # Only for POST requests to /secrets
+method(PATCH) and path-template('/secrets/{id}')  # Only for PATCH to specific documents
+----
+
+This granular control allows you to:
+- Define different permissions for different HTTP methods
+- Use path templates to match dynamic URLs
+- Combine conditions with `and`, `or`, and `not`
+
+=== Advanced Permission Patterns
+
+Now that you understand the basics, here are some advanced patterns you can use:
+
+==== Pattern 1: Hiding Sensitive Fields
+
+You can use `projectResponse` to hide sensitive fields from responses:
+
+[source,json]
+----
+{
+  "_id": "userCanReadSecretsWithoutLog",
+  "roles": ["user"],
+  "predicate": "method(GET) and path('/secrets')",
+  "priority": 100,
+  "mongo": {
+    "readFilter": {"author": "@user._id"},
+    "projectResponse": {"internalNotes": 0, "debugInfo": 0}
+  }
+}
+----
+
+This removes `internalNotes` and `debugInfo` from all responses to users with the `user` role.
+
+==== Pattern 2: Restricting Query Parameters
+
+Prevent users from using certain query parameters that might expose data:
+
+[source,json]
+----
+{
+  "_id": "userCanReadWithLimitedParams",
+  "roles": ["user"],
+  "predicate": "method(GET) and path('/secrets') and qparams-blacklist(filter, sort)",
+  "priority": 100,
+  "mongo": {
+    "readFilter": {"author": "@user._id"}
+  }
+}
+----
+
+This prevents users from using `?filter=` or `?sort=` query parameters, limiting their ability to query the data.
+
+==== Pattern 3: Controlling Request Body
+
+You can restrict what fields users can send in the request body:
+
+[source,json]
+----
+{
+  "_id": "userCanOnlySetAllowedFields",
+  "roles": ["user"],
+  "predicate": "method(POST) and path('/secrets') and bson-request-whitelist(message, tags)",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": {"author": "@user._id", "createdAt": "@now"}
+  }
+}
+----
+
+This ensures users can only set `message` and `tags` fields. Any other fields in the request are rejected.
+
+==== Pattern 4: Adding Timestamps Automatically
+
+Automatically add timestamps to track when documents are created or modified:
+
+[source,json]
+----
+{
+  "_id": "autoAddTimestamps",
+  "roles": ["user"],
+  "predicate": "method(POST) and path('/secrets')",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": {
+      "author": "@user._id",
+      "createdAt": "@now"
+    }
+  }
+},
+{
+  "_id": "autoUpdateTimestamps",
+  "roles": ["user"],
+  "predicate": "method(PATCH) and path-template('/secrets/{id}')",
+  "priority": 100,
+  "mongo": {
+    "writeFilter": {"author": "@user._id"},
+    "mergeRequest": {
+      "modifiedAt": "@now",
+      "modifiedBy": "@user._id"
+    }
+  }
+}
+----
+
+The `@now` variable is replaced with the current timestamp, providing automatic audit trails.
+
+=== Permission Priority and Evaluation
+
+When multiple permissions match a request, RESTHeart evaluates them by priority (higher numbers first):
+
+[source,json]
+----
+[
+  {
+    "_id": "specificException",
+    "roles": ["user"],
+    "predicate": "path('/secrets/public')",
+    "priority": 200,
+    "mongo": null
+  },
+  {
+    "_id": "generalRule",
+    "roles": ["user"],
+    "predicate": "path-prefix('/secrets')",
+    "priority": 100,
+    "mongo": {"readFilter": {"author": "@user._id"}}
+  }
+]
+----
+
+In this example:
+- The `specificException` (priority 200) is checked first
+- If the path is `/secrets/public`, access is denied (null mongo permissions)
+- Otherwise, the `generalRule` (priority 100) applies the read filter
+
+TIP: Use higher priority values for specific rules and exceptions, lower priority for general access rules.
+
+=== Best Practices Summary
+
+1. **Always use `mergeRequest`** to set ownership fields server-side - never trust client data
+2. **Combine `writeFilter` and `mergeRequest`** to ensure users can only modify their own documents
+3. **Use `readFilter`** for multi-tenant data isolation
+4. **Use `projectResponse`** to hide sensitive fields from responses
+5. **Leverage predicates** to create fine-grained access control
+6. **Use `qparams-whitelist` or `bson-request-whitelist`** instead of blacklists when possible
+7. **Test your permissions thoroughly** with different user roles and edge cases
+
+=== Next Steps
+
+Now that you understand authentication and authorization basics, explore:
+
+- link:/docs/security/permissions[Permission Management] - Comprehensive guide with all available options
+- link:/docs/security/user-management[User Management] - Complete user CRUD operations and user properties
+- link:/docs/security/authentication[Authentication] - Different authentication mechanisms (JWT, OAuth2, etc.)
+- link:/docs/security/authorization[Authorization Overview] - Understanding RESTHeart's security architecture
+
+TIP: Watch the link:https://www.youtube.com/watch?v=QVk0aboHayM&t=1553s[Authorization via file and MongoDB] video tutorial for a visual walkthrough of permissions.

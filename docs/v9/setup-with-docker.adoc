@@ -1,0 +1,250 @@
+---
+title: Setup with Docker
+layout: docs-adoc
+menu: setup
+applies_to: restheart
+---
+
+TIP: If Docker isn’t your thing, check out the link:/docs/setup[setup] section for alternative installation methods.
+
+=== Run with docker compose
+
+NOTE: This is the quickest way to run RESTHeart.
+
+To run both RESTHeart and MongoDB services you can use `docker compose`. Just copy and paste the following shell command:
+
+[source,bash]
+----
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml && docker compose up --attach restheart
+----
+
+TIP: Watch link:https://www.youtube.com/watch?v=dzggm7Wp2fU&t=206s[Docker / Docker Compose] video.
+
+=== Run RESTHeart with Docker in standalone mode
+
+When you run RESTHeart in standalone mode, it uses a different default configuration that disables all plugins that rely on MongoDB. This means you won't have access to the built-in features that make RESTHeart powerful. However, you can still experiment with it and add your own custom plugins.
+
+[source,bash]
+$ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
+
+NOTE: the `RHO` environment variable sets the password for the user `admin`.
+
+=== Run RESTHeart with Docker, MongoDB running on localhost
+
+This runs RESTHeart with Docker connecting to MongoDB running on the localhost.
+
+If MongoDB is not already running, the following command will start a replica set and initiate it (the replica set is not required but enables RESTHeart to support transactions and change streams). Note that the data path is `/tmp/db`.
+
+[source,bash]
+----
+$ mkdir -p /tmp/db && mongod --fork --syslog --replSet=foo -dbpath=/tmp/db && mongosh --quiet --eval 'if (!rs.isMaster().ismaster) rs.initiate();'
+----
+
+Run RESTHeart with:
+
+[.text-muted]
+On OSX and Windows:
+
+[source,bash]
+$ docker run --rm -p "8080:8080" softinstigate/restheart
+
+[.text-muted]
+On Linux
+
+[source,bash]
+$ docker run --rm -p "8080:8080" --add-host host.docker.internal:host-gateway softinstigate/restheart
+
+NOTE: This command relies on the docker support of `host.docker.internal`. If you are using an old docker version or a docker runtime that does not support it, than you need to configure the docker network accordingly (you can refer to the brilliant link:https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach["From inside of a Docker container, how do I connect to the localhost of the machine?" on StackOverflow]) or use one of the an alternative methods described in the further sections.
+
+## Run RESTHeart and network isolated MongoDB with Docker
+
+This setup uses a RESTHeart container connecting to a MongoDB container via a private Docker network. This ensures network isolation, with the RESTHeart API as the only entry point. The containers communicate securely within their dedicated network, while external access is controlled through the RESTHeart API
+
+### Setup Procedure
+
+You only need to complete this setup once. Follow these steps:
+
+1) **Create a Docker Network**
+
+Create a dedicated network for RESTHeart and MongoDB communication:
+
+[source,bash]
+$ docker network create restheart-network
+
+2) **Start MongoDB Container**
+
+Launch a MongoDB container within the created network:
+
+[source,bash]
+$ docker run -d --name mongodb --network restheart-network mongo --replSet=rs0
+
+3) **Initialize MongoDB as a Single Node Replica Set**
+
+Initialize the MongoDB instance to work as a single node replica set:
+
+[source,bash]
+$ docker run -it --network restheart-network --rm mongo mongosh --host mongodb --quiet --eval "rs.initiate()"
+
+4) **Launch RESTHeart Container**
+
+Run the RESTHeart container, linking it to the MongoDB container:
+
+[source,bash]
+$ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+
+5) **Test the Setup**
+
+Execute a test request to verify that RESTHeart is running:
+
+[source,bash]
+----
+$ http -b http://localhost:8080/ping
+# Expected Output: Greetings from RESTHeart!
+----
+
+### Stopping the Containers
+
+To stop both RESTHeart and MongoDB containers, use the following command:
+
+[source,bash]
+$ docker stop restheart mongodb
+
+### Restarting the Containers
+
+The RESTHeart container is stateless and is removed upon stopping (due to the `--rm` option). However, the MongoDB container retains its state and is not removed on stop. To restart, use the following commands:
+
+1) **Start MongoDB Container**
+
+[source,bash]
+$ docker start mongodb
+
+2) **Run RESTHeart Container**
+
+[source,bash]
+$ docker run --name restheart --rm --network restheart-network -p 8080:8080 -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+
+### How to connect to MongoDB with mongosh
+
+[source,bash]
+$ docker run -it --network restheart-network --rm mongo mongosh --host mongodb
+
+## For development: run RESTHeart and open MongoDB with Docker
+
+WARNING: This setup is insecure and should be only used for developing or testing purposes.
+
+### Setup Procedure
+
+You only need to complete this setup once. Follow these steps:
+
+1) **Start MongoDB Container**
+
+Launch a MongoDB container:
+
+[source,bash]
+$ docker run -d --name mongodb -p 27017:27017 mongo --replSet=rs0
+
+2) **Initialize MongoDB as a Single Node Replica Set**
+
+Initialize the MongoDB instance to work as a single node replica set:
+
+[source,bash]
+$ docker exec mongodb mongosh --quiet --eval "rs.initiate()"
+
+3) **Launch RESTHeart Container**
+
+Run the RESTHeart container, linking it to the MongoDB container:
+
+[source,bash]
+$ docker run --name restheart --rm -p "8080:8080" softinstigate/restheart
+
+4) **Test the Setup**
+
+Execute a test request to verify that RESTHeart is running:
+
+[source,bash]
+----
+$ http -b http://localhost:8080/ping
+# Expected Output: Greetings from RESTHeart!
+----
+
+### Stopping the Containers
+
+To stop both RESTHeart and MongoDB containers, use the following command:
+
+[source,bash]
+$ docker stop restheart mongodb
+
+### Restarting the Containers
+
+The RESTHeart container is stateless and is removed upon stopping (due to the `--rm` option). However, the MongoDB container retains its state and is not removed on stop. To restart, use the following commands:
+
+1) **Start MongoDB Container**
+
+[source,bash]
+$ docker start mongodb
+
+2) **Run RESTHeart Container**
+
+[source,bash]
+$ docker run --name restheart --rm -p "8080:8080" softinstigate/restheart
+
+### Run RESTHeart with custom plugin
+
+If the plugin jar file is in the directory `./target`, this command starts RESTHeart with the plugin integrated:
+
+[source,bash]
+$ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart
+
+NOTE: This command requires RESTHeart version equal or greater than 7.7.
+
+### Run RESTHeart with remote debugging
+
+This runs RESTHeart enabling remote debugging (port 4000).
+
+[source,bash]
+$ docker run --rm -p 8080:8080 -p 4000:4000 --entrypoint "java" softinstigate/restheart -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:4000 -jar restheart.jar
+
+### How to connect to MongoDB with mongosh
+
+[source,bash]
+$ docker exec -it mongodb mongosh
+
+=== The RESTHeart Docker tags
+
+RESTHeart Docker images come in four different versions:
+
+- Standard multi-arch (FROM eclipse-temurin)
+- Graalvm (FROM softinstigate/graalvm)
+- distroless (FROM gcr.io/distroless/java21-debian12)
+- native (FROM debian:12.6-slim)
+
+These are example tags:
+
+[cols="1,1,3"]
+|===
+|**Tag**|**Example**|**Description**
+|`<version>`|`latest`, `8`, `8.1`, `8.0.1`|**The standard image.**  This is usually the one you want to use. Keep in mind it doesn't support running JavaScript plugins. `docker pull softinstigate/restheart:latest`
+|`<version>-distroless`|`latest-distroless`, `8-distroless`, `8.1-distroless`, `8.0.1-distroless` | Similar to the standard image, this image contains only RESTHeart and its runtime dependencies. It does not contain a package manager, shells or any other programs you would expect to find in a standard Linux distribution. `docker pull softinstigate/restheart:latest-distroless`
+|`<version>-graalvm`|`latest-graalvm`, `8-graalvm`, `8.1-graalvm`, `8.0.1-graalvm` | RESTHeart running on the GraalVM that will let you JavaScript plugins. Check out the link:/docs/plugins/core-plugins-js[Plugins in JavaScript] for more info. This is the biggest image (about 600Mbytes). `docker pull softinstigate/restheart:latest-graalvm`
+|`<version>-native`|`latest-native`, `8-native`, `8.1-native`, `8.0.1-native` | RESTHeart built as a native binary. It is the smallest image with lightning-fast startup time. This is the perfect choice for deploying in a Kubernetes cluster. It can only execute JavaScript plugins. Check out link:/docs/plugins/deploy#deploy-java-plugins-on-restheart-native[Deploy Java plugins on RESTHeart Native] for more info. `docker pull softinstigate/restheart:latest-native`
+|===
+
+=== Dockerfile
+
+- link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile[Dockerfile]
+- link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile.distroless[Dockerfile.distroless]
+- link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile.graalvm[Dockerfile.graalvm]
+- link:https://github.com/SoftInstigate/restheart/blob/master/core/Dockerfile.native[Dockerfile.native]
+
+The "distroless" images are for special deployment requirements, where having the smallest possible image size and the very minimal security attack surface is required and their tag contains a `distroless` label. You usually don't need these images unless you exactly know what you are doing.
+
+Images tags ending with `-native` are created with the link:https://www.graalvm.org/reference-manual/native-image/[GraalVM Native Image technology] starting from stable builds of the product, especially suited for high demanding environments, like Kubernetes. These are experimental and not fully documented yet, please contact us for questions.
+
+=== What's next
+
+- Check that RESTHeart is up and running, opening the URL link:http://localhost:8080/ping[http://localhost:8080/ping], you should see the message: `Greetings from RESTHeart!`
+- Check the link:/docs/configuration[Configuration] page
+- Play with the link:/docs/mongodb-rest/tutorial[REST API Tutorial]
+- Play with the link:/docs/mongodb-graphql/tutorial[GraphQL API Tutorial]
+- Deploy some plugins from the the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples repo]
+- Load the link:/docs/mongodb-rest/sample-data[sample data] into MongoDB and play with the Data API.

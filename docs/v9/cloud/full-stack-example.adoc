@@ -1,0 +1,525 @@
+---
+title: Full-Stack Web Application Example
+layout: docs-adoc
+menu: cloud
+liquid: true
+applies_to: cloud
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+Build a complete full-stack web application with RESTHeart Cloud! This example demonstrates how to create both the backend API and a production-ready frontend using Vue.js, React, or Angular.
+
+[TIP]
+====
+This example combines:
+
+* **Backend**: RESTHeart Cloud API with product catalog, search, and filtering
+* **Frontend**: Three complete implementations (Vue.js, React, Angular) available at https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^]
+
+You'll have a working full-stack application in under 10 minutes!
+====
+
+== What You'll Build
+
+A complete e-commerce product catalog application featuring:
+
+* **Product Management** - Create, read, update, and delete products
+* **Search Functionality** - Real-time product search by name
+* **Price Filtering** - Interactive price range filters
+* **Category Browsing** - Browse products by category
+* **Responsive Design** - Works on desktop, tablet, and mobile
+* **RESTful API** - Fully functional REST API with MongoDB
+* **Authentication** - Secure access control with ACL
+
+== Part 1: Backend Setup
+
+=== Step 1: Create Collections
+
+First, create the collections for products, categories, and inventory:
+
+==== cURL
+
+[source,bash]
+----
+# Create collections
+curl -i -X PUT [RESTHEART-URL]/products \
+  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to products
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "_id": "allCanGetProducts",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/products) and method(GET)",
+    "priority": 100
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Create collections
+http PUT [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to products
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="allCanGetProducts" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/products) and method(GET)" \
+  priority:=100
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create collections
+const createCollections = async () => {
+  const headers = {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  };
+
+  fetch('[RESTHEART-URL]/products', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products collection created successfully');
+    } else {
+      console.error('Failed to create products collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/categories', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Categories collection created successfully');
+    } else {
+      console.error('Failed to create categories collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/inventory', {
+    method: 'PUT',
+    headers
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Inventory collection created successfully');
+    } else {
+      console.error('Failed to create inventory collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create permission for unauthenticated read access to products
+const createProductsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: "allCanGetProducts",
+      roles: ["$unauthenticated"],
+      predicate: "path(/products) and method(GET)",
+      priority: 100
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Products read permission created successfully');
+    } else {
+      console.error('Failed to create products read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createCollections();
+createProductsReadPermission();
+----
+
+=== Step 2: Add Sample Data
+
+Instead of manually creating each product, you can download sample data files and import them to your instance.
+
+First, download the sample data files:
+
+==== Download Sample Data
+
+[source,bash]
+----
+# Download categories
+curl -o categories.json https://restheart.org/assets/categories.json
+
+# Download products
+curl -o products.json https://restheart.org/assets/products.json
+----
+
+Now import the data to your RESTHeart instance:
+
+==== cURL
+
+[source,bash]
+----
+# Import categories
+curl -X POST [RESTHEART-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d @categories.json
+
+# Import products
+curl -X POST [RESTHEART-URL]/products \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d @products.json
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Import categories
+http POST [RESTHEART-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json < categories.json
+
+# Import products
+http POST [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json < products.json
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const fs = require('fs');
+
+// Read and import categories
+const importCategories = async () => {
+  try {
+    const categories = JSON.parse(fs.readFileSync('categories.json', 'utf8'));
+
+    const response = await fetch('[RESTHEART-URL]/categories', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic [BASIC-AUTH]',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(categories)
+    });
+
+    if (response.ok) {
+      console.log('Categories imported successfully');
+    } else {
+      console.error('Failed to import categories:', response.status);
+    }
+  } catch (error) {
+    console.error('Error importing categories:', error);
+  }
+};
+
+// Read and import products
+const importProducts = async () => {
+  try {
+    const products = JSON.parse(fs.readFileSync('products.json', 'utf8'));
+
+    const response = await fetch('[RESTHEART-URL]/products', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic [BASIC-AUTH]',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(products)
+    });
+
+    if (response.ok) {
+      console.log('Products imported successfully');
+    } else {
+      console.error('Failed to import products:', response.status);
+    }
+  } catch (error) {
+    console.error('Error importing products:', error);
+  }
+};
+
+// Execute imports
+(async () => {
+  await importCategories();
+  await importProducts();
+  console.log('Data import completed!');
+})();
+----
+
+=== Step 3: Test Your API
+
+Test the API endpoints to make sure everything is working:
+
+==== cURL
+
+[source,bash]
+----
+# Search products by name
+curl -i "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'name':{'$regex':'headphones','$options':'i'}}"
+
+# Filter by price range
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'price':{'$gte':50,'$lte':150}}"
+
+# Get products with low inventory
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'quantity':{'$lt':10}}"
+
+# Category-based filtering with sorting
+curl "[RESTHEART-URL]/products" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'category':'electronics'}" \
+  -G --data-urlencode "sort={'price':1}"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Search products by name
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'name':{\$regex:'headphones',\$options:'i'}}"
+
+# Filter by price range
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'price':{\$gte:50,\$lte:150}}"
+
+# Get products with low inventory
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'quantity':{\$lt:10}}"
+
+# Category-based filtering with sorting
+http GET [RESTHEART-URL]/products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'category':'electronics'}" sort=="{price:1}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Search products by name
+const searchByName = () => {
+  const filter = encodeURIComponent("{'name':{\$regex:'headphones',\$options:'i'}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Filter by price range
+const filterByPriceRange = () => {
+  const filter = encodeURIComponent("{'price':{\$gte:50,\$lte:150}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Price range results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Get products with low inventory
+const getLowInventory = () => {
+  const filter = encodeURIComponent("{'quantity':{\$lt:10}}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Low inventory products:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Category-based filtering with sorting
+const filterByCategory = () => {
+  const filter = encodeURIComponent("{'category':'electronics'}");
+  const sort = encodeURIComponent("{price:1}");
+  fetch(`[RESTHEART-URL]/products?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Category results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+searchByName();
+filterByPriceRange();
+getLowInventory();
+filterByCategory();
+----
+
+== Part 2: Frontend Setup
+
+Now that your backend is ready, let's build the frontend! We've created three complete implementations using modern JavaScript frameworks.
+
+=== Choose Your Framework
+
+All three frontend examples are available in our GitHub repository: https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^]
+
+Each implementation is a complete single-page application featuring:
+
+* **Product search by name** - Real-time search functionality
+* **Price range filtering** - Interactive price filters
+* **Category filtering** - Browse products by category
+* **Real-time updates** - Live data from RESTHeart Cloud
+* **Responsive design** - Works on desktop, tablet, and mobile
+* **Production-ready code** - Best practices for each framework
+
+=== Getting Started with the Frontend
+
+==== 1. Clone the Repository
+
+[source,bash]
+----
+git clone https://github.com/SoftInstigate/restheart-cloud-examples.git
+cd restheart-cloud-examples
+----
+
+==== 2. Choose Your Framework
+
+[source,bash]
+----
+# For Vue.js
+cd vue-product-search
+
+# OR for React
+cd react-product-search
+
+# OR for Angular
+cd angular-product-search
+----
+
+==== 3. Configure Your RESTHeart Cloud Instance
+
+For Vue.js and React:
+
+[source,bash]
+----
+cp .env.example .env
+# Edit .env and set VITE_RESTHEART_URL to your RESTHeart Cloud instance URL
+----
+
+For Angular:
+
+[source,bash]
+----
+# Edit src/environments/environment.ts and set restHeartUrl to your instance URL
+----
+
+==== 4. Install Dependencies and Run
+
+[source,bash]
+----
+npm install
+npm run dev  # For Vue.js and React
+npm start    # For Angular
+----
+
+[NOTE]
+====
+Make sure you've completed the backend setup steps above, including:
+
+* Creating the `products` collection
+* Adding sample product data
+* Configuring the ACL for unauthenticated read access
+
+Without these steps, the frontend applications won't be able to fetch data from your RESTHeart Cloud instance.
+====
+
+=== Learn More
+
+* link:/docs/cloud/examples[More Backend Examples] - Explore additional use cases
+* link:/docs/cloud/users-and-permissions[Users and Permissions] - Deep dive into ACL
+* https://restheart.org/docs[RESTHeart Documentation^] - Full documentation
+* https://github.com/SoftInstigate/restheart-cloud-examples[GitHub Examples^] - Source code and more examples
+
+== Troubleshooting
+
+=== Frontend Can't Connect to Backend
+
+* Verify your RESTHeart URL is correct in the environment configuration
+* Check that the ACL permission for unauthenticated access is created
+* Ensure your RESTHeart Cloud instance is running
+* Check browser console for CORS errors
+
+=== No Products Showing
+
+* Verify you've added sample data using the backend setup steps
+* Check the products collection exists: `curl [RESTHEART-URL]/products`
+* Verify the ACL allows unauthenticated GET requests to /products
+
+=== Search/Filter Not Working
+
+* Check that your MongoDB queries are properly formatted
+* Verify the filter parameters are correctly URL-encoded
+* Test the API endpoints directly with cURL or HTTPie
+* Check for JavaScript errors in the browser console
+
+== Support
+
+Need help? Here are some resources:
+
+* https://github.com/SoftInstigate/restheart-cloud-examples/issues[Report Issues on GitHub^]
+* https://github.com/SoftInstigate/restheart/discussions[Community Discussions^]
+* mailto:support@restheart.com[Email Support]

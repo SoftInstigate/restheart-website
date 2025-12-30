@@ -1,0 +1,319 @@
+---
+title: Services
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+A **Service** hooks up a web service to an URI. Whenever there's a request that matches with the URI, its `handle(req, res)` method will be executed.
+
+IMPORTANT: A `Service` consists of a class implementing one of the `Service` interfaces such as `JsonService` and annotated with `@RegisterPlugin`.
+
+The `req` and `res` arguments allow to retrieve request content, query parameters and headers and set the response status code, content and headers respectively. For instance, `res.setStatusCode(200)` sets the response status code.
+
+NOTE: No need to worry about the actual HTTP data transmission - RESTHeart will handle that for you automatically using the data set in the `res` object.
+
+=== The Service class
+
+A `Service` consists of a class implementing one of the `Service` interfaces such as `JsonService` and annotated with `@RegisterPlugin`.
+
+The following Service interfaces are provided and differ from the data type used to hold the request and response content:
+
+- `ByteArrayService`
+- `StringService`
+- `JsonService`
+- `BsonService`
+
+For instance, `BsonService` uses `BsonValue` to hold request and response content: this is useful when you cope with MongoDb that represents data using this class.
+
+The code of example link:https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service[greeter-service] implementing `JsonService` follows:
+
+[source,java]
+----
+RegisterPlugin(name = "greetings", description = "just another Hello World")
+public class GreeterService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        switch(req.getMethod()) {
+            case GET -> res.setContent(object().put("message", "Hello World!"));
+            case OPTIONS -> handleOptions(req);
+            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+        }
+    }
+}
+----
+
+The key method is `handle(req, res)` that is executed when a request matching the service's URI hits RESTHeart.
+
+NOTE: the verb `OPTIONS` is handled by the ready-to-use `handleOptions(req)` method. It copes with link:/docs/plugins/services#cors-headers[CORS headers] making sure the Web Service can be safely invoked by browsers.
+
+=== @RegisterPlugin annotation
+
+The class implementing the `Service` interfaces must be a annotated with `@RegisterPlugin` to:
+
+- allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
+- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+
+The following table describes the arguments of the annotation for Services:
+
+[options="header"]
+[cols="1,3,1,1"]
+|===
+|param |description |mandatory |default value
+|`name`
+|the name of the Service
+|yes
+|*none*
+|`description`
+|description of the Service
+|yes
+|*none*
+|`enabledByDefault`
+|`true` to enable the plugin; can be overridden by the plugin configuration option `enabled`
+|no
+|`true`
+|`defaultURI`
+|the default URI of the Service; can be overridden by the service configuration option `uri`
+|no
+|/&lt;srv-name&gt;
+|`matchPolicy`
+|`PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>`
+|no
+|`PREFIX`
+|`secure`
+|`true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secure`
+|no
+|`false`
+|`blocking`
+|`true` to execute the service in the worker thread pool (blocking mode), `false` to execute in the IO thread (non-blocking mode)
+|no
+|`true`
+|`dontIntercept`
+|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
+|no
+|`{}`
+|===
+
+=== Blocking vs Non-Blocking Services
+
+RESTHeart allows you to control the execution model of your services using the `blocking` parameter in the `@RegisterPlugin` annotation.
+
+==== Blocking Services (Default)
+
+By default, services are executed in **blocking mode** (`blocking = true`). In this mode, when a request arrives, it is dispatched to a worker thread from the thread pool whose size is configured by the `worker-threads` parameter.
+
+This concurrency model performs well for CPU-bound and blocking operations, such as:
+- MongoDB operations executed with the `mongodb-driver-sync`
+- Database queries
+- File I/O operations
+- Network calls to external services
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "blocking-service",
+    description = "A service that performs blocking operations",
+    blocking = true)  // Default value, can be omitted
+public class BlockingService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Blocking operation - this will be executed in a worker thread
+        var result = performDatabaseQuery();
+        res.setContent(result);
+    }
+}
+----
+
+==== Non-Blocking Services
+
+For non-blocking operations, you can specify `blocking = false`. In this mode, the service is executed directly by the IO thread, avoiding the overhead of thread dispatching and context switching.
+
+This approach follows the **Event Loop** concurrency model and can perform better for:
+- Reactive operations
+- Async computations
+- Services that don't perform blocking I/O
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "non-blocking-service",
+    description = "A service that performs non-blocking operations",
+    blocking = false)  // Enable non-blocking mode
+public class NonBlockingService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Non-blocking operation - executed directly by IO thread
+        var result = performAsyncComputation();
+        res.setContent(result);
+    }
+}
+----
+
+==== Performance Considerations
+
+- **Blocking services**: Better for CPU-intensive tasks and operations that involve waiting for I/O
+- **Non-blocking services**: Better for lightweight operations and reactive programming patterns
+
+WARNING: Be careful not to perform blocking operations (like database calls) in non-blocking services, as this will block the IO thread and negatively impact performance.
+
+Since RESTHeart uses Virtual Threads, there are virtually no limits on the number of blocking threads.
+
+=== Service with custom generic types
+
+To implement a `Service` that handles different types of `Request` and `Response`, it must implement the base `Service` interface.
+
+The base `Service` interface requires to implement methods to initialize and retrieve the `Request` and `Response` objects.
+
+The following example shows how to handle XML content:
+
+[source,java]
+----
+@RegisterPlugin(name = "myXmlService",
+    description = "example service consuming XML requests",
+    enabledByDefault = true,
+    defaultURI = "/xml")
+public class MyXmlService implements Service<XmlRequest, XmlResponse> {
+    public void handle(XmlRequest req, XmlResponse res) {
+        // handling logic omitted
+    }
+
+    @Override
+    default Consumer<HttpServerExchange> requestInitializer() {
+        return e -> XmlRequest.init(e);
+    }
+
+    @Override
+    default Consumer<HttpServerExchange> responseInitializer() {
+        return e -> XmlResponse.init(e);
+    }
+
+    @Override
+    default Function<HttpServerExchange, JsonRequest> request() {
+        return e -> XmlRequest.of(e);
+    }
+
+    @Override
+    default Function<HttpServerExchange, JsonResponse> response() {
+        return e -> XmlResponse.of(e);
+    }
+}
+----
+
+The example follows a pattern that delegates the actual initialization (in `requestInitializer()` and `responseInitializer()`) and retrieval of the object from the exchange (in `request()` and `response()`) to the concrete class, as follows:
+
+[source,java]
+----
+public class XmlRequest extends ServiceRequest<Document> {
+    private XmlRequest(HttpServerExchange exchange) {
+        super(exchange);
+    }
+
+    public static XmlRequest init(HttpServerExchange exchange) {
+        return new XmlRequest(exchange);
+    }
+
+    public static XmlRequest of(HttpServerExchange exchange) {
+        return of(exchange, XmlRequest.class);
+    }
+
+    @Override
+    public Document parseContent() throws IOException, BadRequestException {
+        try {
+            var dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            var rawContent = ChannelReader.read(wrapped.getRequestChannel());
+            return dBuilder.parse(rawContent);
+        } catch(SAXException se) {
+            throw new BadRequestException("Invalid XML", se);
+        }
+    }
+}
+----
+
+In the constructor a call to `super(exchange)` attaches the object to the `HttpServerExchange`. The object is retrieved using the inherited `of()` method that gets the instance attachment from the `HttpServerExchange`. This is fundamental for two reasons: first the same request and response objects must be shared by the all handlers of the processing chain. Second, this avoid the need to parse the content several times for performance reasons.
+
+TIP: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=680s[Services]
+
+=== CORS Headers
+
+CORS stands for link:https://en.wikipedia.org/wiki/Cross-origin_resource_sharing[Cross-origin resource sharing]
+and it is a mechanism to allow resources on a web page to be requested
+from another domain outside the domain from which the resource
+originated.
+
+Imagine the case of a web site, where the static resources (html, css
+and javascript) are served by **domain1.com**. On the other end,
+RESTHeart is running on a different server in **domain2.com**.
+
+Without CORS support, the javascript logic could not actually request
+data to RESTHeart, forcing to have both static resources and RESTHeart
+running in the same domain.
+
+What happens behind the scene, for AJAX and HTTP request methods that
+can modify data, the CORS specification mandates that browsers
+"preflight" the request, soliciting supported methods from the server
+with an HTTP OPTIONS request header, and then, upon "approval" from the
+server, sending the actual request with the actual HTTP request method.
+
+==== CORS Support
+
+RESTHeart always returns CORS headers to allow requests originated
+from different domains.
+
+The following example, highlights the CORS headers returned by
+RESTHeart, in the case of a collection resource.
+
+**Request**
+
+[source,bash]
+OPTIONS /test/coll HTTP/1.1
+
+**Response**
+
+[source,bash]
+----
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Accept, Accept-Encoding, Authorization, Content-Length, Content-Type, Host, If-Match, Origin, X-Requested-With, User-Agent, No-Auth-Challenge
+Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, Auth-Token, Auth-Token-Valid-Until, Auth-Token-Location
+----
+
+==== Customize CORS Headers
+
+The `Service` interface extends the following interface:
+
+[source,java]
+----
+public interface CORSHeaders {
+        /**
+        * @return the values of the Access-Control-Expose-Headers
+        *//
+        default String accessControlExposeHeaders() {
+           // return the defaults headers
+        }
+
+        /**
+        * @return the values of the Access-Control-Allow-Credentials
+        *//
+        default String accessControlAllowCredentials() {
+           // return the defaults headers
+        }
+
+        /**
+        * @return the values of the Access-Control-Allow-Origin
+        *//
+        default String accessControlAllowOrigin() {
+           // return the defaults headers
+        }
+
+        /**
+        * @return the values of the Access-Control-Allow-Methods
+        *//
+        default String accessControlAllowMethods() {
+           // return the defaults headers
+        }
+    }
+----
+
+RESTHeart uses those methods to return the CORS headers. Overriding the methods allow to set or add custom CORS headers.

@@ -1,0 +1,263 @@
+---
+title: Plugins
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+RESTHeart is ready to go as soon as you install and configure it.
+
+It comes with comprehensive MongoDB API and security functionality, so for many standard web applications the basic features of RESTHeart are sufficient.
+
+These functionalities are provided by the standard plugins distributed with RESTHeart. You can find them in the `./plugins` directory:
+
+[source,bash]
+----
+plugins
+├── restheart-graphql.jar
+├── restheart-mongoclient-provider.jar
+├── restheart-mongodb.jar
+├── restheart-polyglot.jar
+└── restheart-security.jar
+----
+
+Developing plugins for RESTHeart is an excellent way to extend the basic API. RESTHeart provides the flexibility to develop plugins in Java, Kotlin, and JavaScript.
+
+There are 4 types of plugins:
+
+- **Services** extend the API by adding Web Services
+- **Interceptors** monitor and modify requests and responses at different stages of the request lifecycle
+- **Initializers** execute initialization logic at startup time
+- **Providers** implement the Dependency Injection mechanism to provide objects to other plugins via the `@Inject` annotation
+
+It is also possible to extend the security layer by developing security plugins. Refer to the link:/docs/plugins/security-plugins[Develop Security Plugins] documentation for more information.
+
+IMPORTANT: Have a look at the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples] for some code examples.
+
+=== Plugin Skeleton Project
+
+To quickly start a new plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository].
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart-plugin-skeleton.git && cd restheart-plugin-skeleton
+$ ./mvnw clean package && docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart -s
+----
+
+The project skeleton defines a dummy Service bound at `/srv`:
+
+[source]
+----
+$ curl localhost:8080/srv
+
+{"message":"Hello World!","rnd":"njXZksfKFW"}%
+----
+
+IMPORTANT: check the repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/README.md[README.md] for more information.
+
+=== Dependency
+
+The only required dependency to develop a plugin is `restheart-commons`.
+
+With maven:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.restheart</groupId>
+    <artifactId>restheart-commons</artifactId>
+    <version>VERSION</version>
+</dependency>
+----
+
+=== @RegisterPlugin annotation
+
+All plugins must be a annotated with `@RegisterPlugin` to:
+
+- allow RESTHeart to find plugins' implementation classes in deployed jars (see link:/docs/plugins/deploy[How to Deploy Plugins])
+- specify parameters such us the URI of a Service or the intercept point of an Interceptor.
+
+An example follows:
+
+[source,java]
+----
+@RegisterPlugin(name = "foo",
+    description = "just an example service",
+    defaultUri="/foo",      // optional, default /<service-name>
+    secure=false,           // optional, default false
+    enabledByDefault=false) // optional, default true
+public class MyPlugin implements JsonService {
+...
+}
+----
+
+The following table describes the arguments of the annotation:
+
+[options="header"]
+|===
+|param |plugin |description |mandatory |default value
+|`name`
+|all
+|the name of the plugin
+|yes
+|*none*
+|`description`
+|all
+|description of the plugin
+|yes
+|*none*
+|`enabledByDefault`
+|all
+|`true` to enable the plugin; can be overridden by the plugin configuration option `enabled`
+|no
+|`true`
+|`defaultURI`
+|service
+|the default URI of the Service; can be overridden by the service configuration option `uri`
+|no
+|/&lt;srv-name&gt;
+|`matchPolicy`
+|service
+|`PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>`
+|no
+|`PREFIX`
+|`secure`
+|service
+|`true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secure`
+|no
+|`false`
+|`dontIntercept`
+|service
+|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
+|no
+|`{}`
+|`interceptPoint`
+|interceptor
+|the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
+|no
+|REQUEST_AFTER_AUTH
+|`initPoint`
+|initializer
+|specify when the initializer is executed: `BEFORE_STARTUP`, `AFTER_STARTUP`
+|no
+|`AFTER_STARTUP`
+|`requiresContent`
+|proxy interceptor
+|Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC)
+|no
+|`false`
+|`priority`
+|interceptor, initializer
+|the execution priority (less is higher priority)
+|no
+|`10`
+|===
+
+NOTE: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=108s[Dependencies, annotations and parameters]
+
+=== Plugin Configuration
+
+A plugins has a name as defined by the the `@RegisterPlugin` annotation. To define a configuration for a plugin just use its name in the configuration file:
+
+[source,yml]
+----
+ping:
+    enabled: true
+    secure: false
+    uri: /ping
+    msg: 'Ping!'
+----
+
+`enabled` `secure` and `uri` are special configuration options that are automatically managed by RESTHeart:
+
+- *enabled*: for enabling or disabling the plugin via configuration overwriting the `enabledByDefault` property of `@RegisterPlugin`
+- *uri*: applies to Services to bind them to the URI overwriting the `defaultUri` property of `@RegisterPlugin`
+- *secure*: applies to Services, with `secure: true` the service request goes thought the authentication and authorization phases, with `secure: false` the service is fully open.
+
+WARNING: Service have `secure: false` by default. If a service is deployed and has no configuration it will be fully open. If your service needs to be protected, add a configuration for it with `secure: true`
+
+The plugin consumes the configuration with a field annotated with `@Inject("conf")`:
+
+[source,java]
+----
+@Inject("conf")
+Map<String, Object> conf;
+----
+
+`argValue()` is an helper method to simplify retrieving the value of the configuration argument.
+
+NOTE: Watch link:https://www.youtube.com/watch?v=GReteuiMUio&t=356s[Plugin configuration]
+
+=== Dependency injection
+
+Available providers allow to inject the following objects:
+
+-   `@Inject("config")` - injects the plugins configuration as a `Map<String, Object>`
+-   `@Inject("rh-config")` - injects the RESTHeart `org.restheart.configuration.Configuration` object.
+-   `@Inject("registry")` - injects the `PluginsRegistry` singleton that allows a plugin to get the reference of other plugins.
+-   `@Inject("mclient")` - injects the `MongoClient` object that has been already initialized and connected to MongoDB by the `mongo-client-provider`.
+-   `@Inject("acl-registry")` - injects the ACL registry to define permission programmatically
+-   `@Inject("gql-app-definition-cache")` - injects the `LoadingCache<String, GraphQLApp> gqlAppDefsCache` object that allows to use the GQL App definition cache to implement custom invalidation logic. Available from v8.0.9.
+
+[source,java]
+----
+@Inject("registry")
+private PluginsRegistry registry;
+----
+
+[source,java]
+----
+@Inject("mclient")
+private MongoClient mclient;
+----
+
+[source,java]
+----
+@Inject("acl-registry")
+ACLRegistry registry;
+----
+
+[source,java]
+----
+@Inject("gql-app-definition-cache")
+LoadingCache<String, GraphQLApp> gqlAppDefsCache;
+----
+
+=== Request and Response Generic Classes
+
+*Services* and *Interceptor* are generic classes. They use type parameters for Request and Response classes.
+
+Many concrete implementations of specialized Request and Response exist in the `org.restheart.exchange` package to simplify development:
+
+- `JsonRequest` and `JsonResponse`
+- `BsonRequest` and `BsonResponse`
+- `MongoRequest` and `MongoResponse`
+- `ByteArrayRequest` and `ByteArrayResponse`
+- `StringRequest` and `StringResponse`
+- `BsonFromCsvRequest`
+
+Those implementations differ on the data type used to hold the request and response content. For example, `ByteArrayRequest` and `BsonRequest` hold content as `byte[]` and `BsonValue` respectively.
+
+Different implementation can also provide some helper methods to cope with specific request parameter. For instance, the `MongoRequest`, i.e. the request used by the MongoService, has the method `getPageSize()` because this is a query parameter used by that service.
+
+When a request hits RESTHeart, it determines which service will handle it. The Service implementation is responsible of instantiating the correct Request and Response objects that will be used along the whole exchange processing chain.
+
+The `ServiceRequest` class features an abstract method to read and parse the request content:
+
+```java
+/**
+ * Parses the content from the exchange and converts it into an instance of the specified type {@code T}.
+ *
+ * This method retrieves data from the exchange, interprets it according to the expected format, and converts
+ * this data into an object of type {@code T}.
+ *
+ * @return an instance of {@code T} representing the parsed content
+ * @throws IOException if an I/O error occurs
+ * @throws BadRequestException if the content doesn't conform to the expected format of type {@code T}
+ */
+public abstract T parseContent() throws IOException, BadRequestException;
+```
+
+`ServiceRequest.parseContent()` is called by `ServiceRequest.getContent()` on its first invocation. The parsed content is then cached and linked to the request, ensuring that any subsequent calls will reuse the already parsed content object.
+
+This approach makes handling request content more efficient by reducing unnecessary parsing and processing overhead.

@@ -1,0 +1,174 @@
+---
+title: GraphQL Best Practices
+layout: docs-adoc
+menu: mongodb
+applies_to: both
+---
+
+This guide outlines best practices for building robust, secure, and performant GraphQL APIs with RESTHeart.
+
+=== Schema Design
+
+==== Type Definitions
+
+1. *Clear Type Names*
+- Use descriptive, domain-specific names
+- Follow PascalCase convention
+- Avoid abbreviations unless widely understood
+
+2. *Field Naming*
+- Use camelCase for field names
+- Be consistent with naming patterns
+- Make names self-descriptive
+
+[source,graphql]
+----
+# Good
+type UserProfile {
+  firstName: String!
+  lastName: String!
+  emailAddress: String!
+}
+
+# Avoid
+type UP {
+  fname: String!
+  lname: String!
+  email: String!
+}
+----
+
+3. *Nullability*
+- Make fields non-null (`!`) when they're required
+- Consider optional fields for future extensibility
+- Use non-null lists `[Type!]` when elements are required
+
+=== Query Design
+
+1. *Pagination*
+- Always paginate list queries
+- Use cursor-based pagination for large datasets
+- Include total counts when needed
+
+[source,graphql]
+----
+type Query {
+  users(
+    first: Int = 10
+    after: String
+  ): UserConnection!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+----
+
+2. *Filtering*
+- Use input types for complex filters
+- Support multiple filter combinations
+- Provide sensible defaults
+
+[source,graphql]
+----
+input UserFilter {
+  name: String
+  age: IntRange
+  status: UserStatus
+  AND: [UserFilter!]
+  OR: [UserFilter!]
+}
+
+input IntRange {
+  min: Int
+  max: Int
+}
+----
+
+=== MongoDB Integration
+
+==== Collection Mapping
+
+1. *Document Structure*
+- Map GraphQL types to logical MongoDB collections
+- Use embedded documents judiciously
+- Consider denormalization for performance
+
+2. *Indexes*
+- Create indexes for frequently queried fields
+- Index fields used in sorting
+- Use compound indexes for complex queries
+
+==== Query Optimization
+
+1. *Field Selection*
+- Project only needed fields
+- Use MongoDB aggregation for complex transformations
+- Avoid retrieving large arrays if possible
+
+[source,json]
+----
+{
+    "mappings": {
+        "Query": {
+            "userProfile": {
+                "db": "users",
+                "collection": "profiles",
+                "find": { "_id": { "$arg": "userId" } },
+                "project": {
+                    "firstName": 1,
+                    "lastName": 1,
+                    "email": 1
+                }
+            }
+        }
+    }
+}
+----
+
+2. *Aggregation Pipelines*
+- Keep pipelines simple and efficient
+- Use early filtering stages
+- Limit memory usage in group operations
+
+=== Performance
+
+==== N+1 Prevention
+
+1. *DataLoader Usage*
+- Enable batching for related data
+- Configure appropriate batch sizes
+- Use caching when data is relatively static
+
+[source,json]
+----
+{
+    "mappings": {
+        "Post": {
+            "author": {
+                "db": "users",
+                "collection": "authors",
+                "find": { "_id": { "$fk": "authorId" } },
+                "dataLoader": {
+                    "batching": true,
+                    "caching": true,
+                    "maxBatchSize": 100
+                }
+            }
+        }
+    }
+}
+----
+
+2. *Relationship Loading*
+- Use single queries for related data when possible
+- Consider denormalization for frequently accessed data
+- Monitor query patterns
+
+== Next Steps
+
+- Explore link:/docs/mongodb-graphql/complex-app-example[Complex App Example]
+- Learn about link:/docs/mongodb-graphql/optimization[Performance Optimization]
+- Check out link:/docs/mongodb-graphql/tutorial[Basic Tutorial]

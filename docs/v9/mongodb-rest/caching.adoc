@@ -1,0 +1,341 @@
+---
+title: Caching
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+RESTHeart speedups the execution of GET requests to collections, i.e. `GET /coll`, via caching.
+
+This applies when several documents need to be read from a
+collection and can moderate the effects of the
+MongoDB link:https://docs.mongodb.org/manual/reference/method/cursor.skip/#cursor.skip[cursor.skip()] method **that slows downs linearly**.
+
+RESTHeart allows to link:/docs/mongodb-rest/read-docs[Read Documents] via GET requests
+on collections.
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll?count&page=3&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  count==true \
+  page==3 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll?count&page=3&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,json]
+----
+[
+    { "DOC30": "..." },
+    { "DOC31": "..." },
+    ...
+    { "DOC39": "..." }
+]
+----
+
+Documents are returned as **paginated** result sets, i.e. each
+request returns a limited number of documents.
+
+Pagination is controlled via the following query parameters:
+
+-  `page`: the range of documents to return
+-  `pagesize`: the number of documents to return (default value is 100,
+    maximum is 1000).
+
+**Behind the scene, this is implemented via the MongoDB *cursor.skip()*
+method;**
+
+The issue is that MongoDB queries with a large "skip" slow down
+linearly. As the MongoDB manual says:
+
+> The `cursor.skip()` method is often expensive because it requires the server to walk from the beginning of the collection or index to get the offset or skip position before beginning to return result. As offset (e.g. pageNumber above) increases, `cursor.skip()` will become slower and more CPU intensive. With larger collections, `cursor.skip()` may become IO bound.
+
+That is why the MongoDB documentation section about
+link:https://www.mongodb.com/docs/manual/reference/method/cursor.skip/#using-range-queries[skips] suggests:
+
+> Range queries can use indexes to avoid scanning unwanted documents, typically yielding better performance as the offset grows compared to using `skip()` for pagination.
+
+## How it works
+
+If the request contains the query parameter `?cache`, than the query cursor used to retrieve the `pagesize` documents is cached. This allows to cache up to `batchSize` documents.
+
+A subsequent request, on the same collection, and with the very same `filter`, `sort`, `hint`, etc. parameters can reuse the cached cursor, avoiding the need to query MongoDB, and speeding up the request.
+
+NOTE: as with any caching system, the performance gain comes at a price. The cached documents pages can be obsolete, since cached documents could have been modified or deleted and new documents could have been created.
+
+## Configuration
+
+The following configuration applies on caching
+
+[source,yml]
+----
+mongo:
+    # get collection cache speedups GET /coll?cache requests
+    get-collection-cache-size: 100
+    get-collection-cache-ttl: 10_000 # Time To Live, default 10 seconds
+    get-collection-cache-docs: 1000 # number of documents to cache for each request
+----
+
+[options="header"]
+|===
+|parameter |description |default value
+|`get-collection-cache-size`
+|the maximum number of cached cursors
+|100
+|`get-collection-cache-ttl`
+|the time in milliseconds that an cursor is cached before it’s deleted
+|10000 (10 seconds)
+|`get-collection-cache-docs`
+|the number of documents to cache per each query (must be >= `/mongo/max-pagesize`)
+|1000
+|===
+
+## Results
+
+The issue link:https://github.com/SoftInstigate/restheart/issues/442[442] on github, has the following performance results on a collection with 6+ millions documents.
+
+Without caching (total time = ~12 seconds):
+
+[img-fluid]
+image::https://user-images.githubusercontent.com/7335252/204082210-f62b8a13-d78d-4e13-b7e5-d6456d1ca7f6.png[without caching]
+
+With caching (total time = ~2 seconds):
+
+[img-fluid]
+image::https://user-images.githubusercontent.com/7335252/205438554-fbf523ad-55b7-416a-9d81-37fe23fa5f2d.png[with caching]
+
+
+## Cache consistency with transactions
+
+To make sure that requests using caching return consistent data, link:/docs/mongodb-rest/transactions[transactions] can be used, since the *isolation* property of transactions guarantees consistency.
+
+===== Create a session
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST "[RESTHEART-URL]/_sessions" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST "[RESTHEART-URL]/_sessions" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/_sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    const sessionUrl = response.headers.get('Location');
+    console.log('Session created:', sessionUrl);
+    return sessionUrl;
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Start a transaction
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST "[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST "[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    const txnUrl = response.headers.get('Location');
+    console.log('Transaction started:', txnUrl);
+    return txnUrl;
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Get data in the transaction with caching
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=3&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sid==11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 \
+  txn==1 \
+  cache==true \
+  page==3 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=3&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved cached data (page 3):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Get the next page:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=4&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sid==11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0 \
+  txn==1 \
+  cache==true \
+  page==4 \
+  pagesize==10
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll?sid=11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0&txn=1&cache&page=4&pagesize=10', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved cached data (page 4):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Abort the transaction
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X DELETE "[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE "[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/_sessions/11c3ceb6-7b97-4f34-ba3f-689ea22ce6e0/_txns/1', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Transaction aborted successfully');
+  } else {
+    throw new Error(`HTTP ${response.status}`);
+  }
+})
+.catch(error => console.error('Error:', error));
+----

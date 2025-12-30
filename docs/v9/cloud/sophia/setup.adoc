@@ -1,0 +1,106 @@
+---
+title: Sophia AI - Setup
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+=== Overview
+
+Sophia is exclusively available as a managed service through *RESTHeart Cloud* in the dedicated tier. As a cloud service, there's no software installation or infrastructure setup required on your end. This guide covers the essential configuration steps needed to set up your knowledge base and optimize Sophia for your organization.
+
+=== Getting Started
+
+==== 1. RESTHeart Cloud Account
+- Sign up for RESTHeart Cloud
+- Note: Sophia requires a dedicated service. You also need Mongo Atlas and AWS accounts. 
+- Contact link:mailto:support@restheart.com[support@restheart.com] to request a dedicated service with Sophia plugin.
+
+==== 2. AWS Bedrock Access Configuration
+*Required*: Sophia requires AWS Bedrock access to provide AI responses. You must configure this before using the service:
+
+===== Step 1: Create AWS IAM Policy
+Create a custom managed policy named `InvokeBedrockModel`:
+
+[source,json]
+----
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "InvokeBedrockModel",
+            "Effect": "Allow",
+            "Action": [
+                "bedrock:InvokeModel",
+                "bedrock:InvokeModelWithResponseStream"
+            ],
+            "Resource": "arn:aws:bedrock:*::foundation-model/*"
+        }
+    ]
+}
+----
+
+===== Step 2: Create AWS IAM User
+- Create a new IAM user dedicated to Sophia
+- Attach the `InvokeBedrockModel` policy to this user
+- Generate access keys for the user
+
+==== 3. MongoDB Vector Index Configuration
+
+For optimal document search performance, Sophia requires a vector search index on your knowledge base documents. You need to create the vector index on Mongo Atlas.
+
+=====  Vector Index Structure
+
+The vector index enables semantic search across your documents. Here's the standard configuration used by Sophia:
+
+[source,json]
+----
+{
+  "name": "vector_index",
+  "fields": [
+    {
+      "numDimensions": 1536,
+      "path": "vector",
+      "similarity": "cosine",
+      "type": "vector"
+    },
+    {
+      "path": "metadata.tags",
+      "type": "filter"
+    }
+  ]
+}
+----
+
+===== Index Components
+
+*Vector Field*
+
+- `numDimensions: 1536` (matches Claude embedding dimensions)
+- `similarity: Cosine` similarity for document matching
+- `path: "vector"` field containing document embeddings
+
+*Filter Field*
+
+- `path: "metadata.tags"` for content access control
+- `type: "filter"` enables tag-based document filtering
+
+===== Creating the Index
+
+If you need to manually create or update the vector index:
+
+====== Via MongoDB Atlas UI
+1. Navigate to your MongoDB Atlas cluster
+2. Go to "Search" → "Search Indexes"
+3. Click "Create Search Index"
+4. Select "JSON Editor"
+5. Paste the vector index configuration above
+6. Set index name as "vector_index"
+7. Apply to the "textSegments" collection
+
+====== Via MongoDB Compass
+1. Connect to your MongoDB cluster
+2. Navigate to the "textSegments" collection
+3. Go to "Indexes" tab
+4. Click "Create Index"
+5. Use the index configuration provided above

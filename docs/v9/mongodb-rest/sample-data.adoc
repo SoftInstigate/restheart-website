@@ -1,0 +1,86 @@
+---
+title: Load Sample Data into MongoDB
+layout: docs-adoc
+menu: mongodb
+sitemap: false
+applies_to: both
+---
+
+MongoDB provides a sample data set for testing and development.
+
+This section describes how to load it into your MongoDB instance and configure RESTHeart to use it.
+
+=== Install the Database tools
+
+You need `mongorestore` that is part of the MongoDB Database Tool.
+
+To install it please refer to link:https://docs.mongodb.com/database-tools/[https://docs.mongodb.com/database-tools]
+
+=== Download the sample data
+
+Download the sample data via the curl command:
+
+[source,bash]
+----
+$ curl https://atlas-education.s3.amazonaws.com/sampledata.archive -o sampledata.archive
+----
+
+TIP: The data set is also available at the following address `https://download.restheart.com/sampledata.archive`. DISCLAIMER: the original data set is provided by MongoDB and available at this address only for educational purposes, MongoDB license terms might apply.
+
+=== Restore the sample data
+
+Make sure MongoDB is running on `localhost:27017` (this command assumes it is not running with authentication required).
+
+[source,bash]
+----
+$ mongorestore --archive=sampledata.archive
+----
+
+=== The sample data
+
+The sample data consist of the following databases:
+
+[source,json]
+----
+[   "sample_airbnb",
+    "sample_analytics",
+    "sample_geospatial",
+    "sample_mflix",
+    "sample_restaurants",
+    "sample_supplies",
+    "sample_training",
+    "sample_weatherdata"
+]
+----
+
+Note that the default configuration of RESTHeart does not expose the sample data. It exposes only the database `restheart`.
+
+You can expose all databases setting the `mongo-mounts` in the `restheart.yml` configuration file as follows:
+
+[source,yml]
+----
+mongo-mounts:
+  - what: "*" # default value is /restheart. "*" means expose all databases
+    where: /
+----
+
+NOTE: With this configuration the URI of a collection is `/<db>/<collection>` in contrast with the default configuration where it is just `/<collection>` being it this case the `<db>` set to `restheart`.
+
+For this the mount, the URI `/sample_mflix/movies` maps to the collection `sample_mflix.movies`: the request `GET /sample_mflix/movies` retrieves the movies in the database `sample_mflix`.
+
+Alternatively you can simply add one or more database mounts as follows:
+
+[source,yml]
+----
+mongo-mounts:
+  - what: "/restheart"
+    where: /
+  - what: "/sample_mflix"
+    where: /mflix
+----
+
+NOTE: With this configuration the URI of a collection of the database `restheart` is `/<collection>` and the URI of a collection of the database `sample_mflix` is `/mflix/<collection>`.
+
+For the first mount, the URI `/users` maps to the collection `restheart.users`: the request `GET /users` retrieves the users in the database `restheart`.
+
+For the second mount, the URI `/mflix/movies` maps to the collection `sample_mflix.movies`: the request `GET /mflix/movies` retrieves the movies in the database `sample_mflix`.

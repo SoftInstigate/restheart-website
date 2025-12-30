@@ -1,0 +1,375 @@
+---
+title: Documentation
+layout: docs-adoc
+menu: setup
+applies_to: restheart
+---
+
+=== Introduction
+
+RESTHeart uses for logging the http://logback.qos.ch[LogBack] implementation of http://www.slf4j.org[SLF4J].
+
+=== Default LogBack configuration
+
+restheart.jar embeds the following default `logback.xml` configuration.
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n %throwable{short}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+----
+
+IMPORTANT: the default configuration logs messages only from the packages `org.restheart` and `com.restheart`. If you are developing a plugin, you'll need to modify the configuration to get log messages from your classes.
+
+The following command executes RESTHeart overriding the configuration to enable logging from the classes of the package `com.foo.bar` and its sub-packages:
+
+[source,bash]
+----
+$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "com.foo.bar" ]' java -jar restheart.jar
+----
+
+=== Logging configuration
+
+The default logging configuration follows:
+
+[source,yml]
+----
+# Logging
+# see https://restheart.org/docs/logging
+# Options:
+# - log-level: to set the log level. Value can be OFF, ERROR, WARN, INFO, DEBUG, TRACE and ALL. (default value is INFO)
+# - log-to-console: true => log messages to the console (default value: true)
+# - ansi-console: use Ansi console for logging. Default to 'true' if parameter missing, for backward compatibility
+# - log-to-file: true => log messages to a file (default value: false)
+# - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
+# - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
+# - full-stacktrace: true to log the full stackstrace of exceptions
+# - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
+# - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
+
+# Logging
+# See https://restheart.org/docs/logging
+# Options:
+# - log-level: to set the log level. Value can be OFF, ERROR, WARN, INFO, DEBUG, TRACE and ALL. (default value is INFO)
+# - log-to-console: true => log messages to the console (default value: true)
+# - ansi-console: whether console supports native ANSI colors; when false, uses jansi library to enable ANSI color support (primarily for Windows compatibility). Only applies to console logging, not file logging.
+# - no-colors: disables all color output in both console and file logging, overriding ansiConsole setting
+# - log-to-file: true => log messages to a file (default value: false)
+# - log-file-path: to specify the log file path (default value: restheart.log in system temporary directory)
+# - packages: only messages form these packages are logged, e.g. [ "org.restheart", "com.restheart", "io.undertow", "org.mongodb" ]
+# - full-stacktrace: true to log the full stacktrace of exceptions
+# - requests-log-mode: 0 => no log, 1 => light log, 2 => detailed dump (use 2 only for development, it can log credentials)
+# - tracing-headers (default, empty = no tracing): add tracing HTTP headers (Use with %X{header-name} in logback.xml); see https://restheart.org/docs/auditing
+
+logging:
+  log-level: INFO
+  log-to-console: true
+  ansi-console: true
+  no-colors: false
+  log-to-file: false
+  log-file-path: restheart.log
+  packages: [ "org.restheart", "com.restheart" ]
+  full-stacktrace: false
+  requests-log-mode: 1
+  tracing-headers:
+  #  - x-b3-traceid      # vv Zipkin headers, see https://github.com/openzipkin/b3-propagation
+  #  - x-b3-spanid
+  #  - x-b3-parentspanid
+  #  - x-b3-sampled      # ^^
+  #  - uber-trace-id     # jaeger header, see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity
+  #  - traceparent       # vv opencensus.io headers, see https://github.com/w3c/distributed-tracing/blob/master/trace_context/HTTP_HEADER_FORMAT.md
+  #  - tracestate        # ^^
+
+  # Request path patterns to exclude from logging
+  requests-log-exclude-patterns:
+  #  - "/ping"              # Exact match for load balancer health checks
+  #  - "/health"            # Exact match for health endpoint
+  #  - "/_ping"             # Exact match for internal ping
+  #  - "/monitoring/*"      # Wildcard: excludes all paths starting with /monitoring/
+  #  - "/api/*/status"      # Wildcard: excludes /api/v1/status, /api/v2/status, etc.
+
+  # Optional: Interval in minutes for logging excluded requests (default: 10)
+  requests-log-exclude-interval: 10
+----
+
+=== Request Logging Exclusion Patterns (v8.7.0+)
+
+Starting from RESTHeart v8.7.0, you can exclude specific request paths from being logged to reduce log noise from health checks, monitoring endpoints, and other frequent automated requests.
+
+==== Configuration
+
+Add the `requests-log-exclude-patterns` array to your logging configuration. Optionally configure the `requests-log-exclude-interval` to control how often excluded requests are logged:
+
+[source,yml]
+----
+logging:
+  log-level: INFO
+  log-to-console: true
+  requests-log-mode: 1
+
+  # Request path patterns to exclude from logging
+  requests-log-exclude-patterns:
+    - "/ping"              # Exact match for load balancer health checks
+    - "/health"            # Exact match for health endpoint
+    - "/_ping"             # Exact match for internal ping
+    - "/monitoring/*"      # Wildcard: excludes all paths starting with /monitoring/
+    - "/api/*/status"      # Wildcard: excludes /api/v1/status, /api/v2/status, etc.
+
+  # Optional: Interval in minutes for logging excluded requests (default: 10)
+  # Logs the first excluded request, then again every 10 minutes
+  # Set to 0 or negative to log only the first occurrence and disable further logging
+  requests-log-exclude-interval: 10
+----
+
+==== Pattern Types
+
+===== Exact Matches
+
+[source,yml]
+----
+- "/ping"      # Matches exactly "/ping"
+- "/health"    # Matches exactly "/health"
+----
+
+===== Wildcard Patterns
+
+[source,yml]
+----
+- "/monitoring/*"     # Matches "/monitoring/health", "/monitoring/status", etc.
+- "/api/*/status"     # Matches "/api/v1/status", "/api/v2/status", etc.
+- "/app/v*/health"    # Matches "/app/v1.0/health", "/app/v2.5/health", etc.
+----
+
+==== Use Cases
+
+===== Load Balancer Health Checks
+
+[source,yml]
+----
+requests-log-exclude-patterns:
+  - "/ping"
+  - "/health"
+  - "/_health"
+----
+
+===== Monitoring and Metrics Endpoints
+
+[source,yml]
+----
+requests-log-exclude-patterns:
+  - "/metrics"
+  - "/monitoring/*"
+  - "/actuator/*"
+----
+
+===== API Versioning
+
+[source,yml]
+----
+requests-log-exclude-patterns:
+  - "/api/*/health"     # Excludes health checks across all API versions
+  - "/api/*/ping"       # Excludes pings across all API versions
+----
+
+==== Before and After
+
+===== Before (Noisy Logs)
+
+[source,log]
+----
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:34640 => status=200 elapsed=2ms contentLength=140
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:34641 => status=200 elapsed=1ms contentLength=140
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:34642 => status=200 elapsed=2ms contentLength=140
+INFO  o.restheart.handlers.RequestLogger - POST http://10.0.1.47:8080/api/users from /10.0.2.65:34643 => status=201 elapsed=45ms contentLength=256
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:34644 => status=200 elapsed=1ms contentLength=140
+----
+
+===== After (Clean Logs with Time-Based Excluded Request Logging)
+
+[source,log]
+----
+INFO  o.restheart.handlers.RequestLogger - First excluded request for pattern '/ping' (will log again every 10 minutes):
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:34640 => status=200 elapsed=2ms contentLength=140
+INFO  o.restheart.handlers.RequestLogger - POST http://10.0.1.47:8080/api/users from /10.0.2.65:34643 => status=201 elapsed=45ms contentLength=256
+
+... (all /ping requests are silently excluded for 10 minutes) ...
+
+INFO  o.restheart.handlers.RequestLogger - Excluded request for pattern '/ping' (last logged 10 minutes ago):
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:44640 => status=200 elapsed=1ms contentLength=140
+
+... (all /ping requests are silently excluded for another 10 minutes) ...
+
+INFO  o.restheart.handlers.RequestLogger - Excluded request for pattern '/ping' (last logged 10 minutes ago):
+INFO  o.restheart.handlers.RequestLogger - GET http://10.0.1.47:8080/ping from /10.0.2.65:54640 => status=200 elapsed=2ms contentLength=140
+----
+
+==== Excluded Request Time-Based Logging
+
+To maintain visibility into the health of excluded endpoints while reducing log noise, the system implements a time-based logging mechanism:
+
+* **First occurrence**: Always logged with full request details to confirm the pattern is working
+* **Periodic logging**: After the configured time interval (in minutes), the next excluded request is logged with complete request information
+* **Full request details**: When logged, excluded requests show the same information as regular requests (method, URL, status, timing, etc.)
+* **Time elapsed**: Shows how long since the last excluded request was logged for this pattern
+
+This provides insight into:
+
+* Whether load balancer health checks are working correctly
+* The exact timing and response details of periodic health checks
+* Confirmation that monitoring endpoints are still being called regularly
+* Performance characteristics of excluded endpoints (response times, status codes)
+* The time intervals between health check activities
+
+==== Configuration Edge Cases
+
+===== Zero or Negative Interval Values
+
+If you set `requests-log-exclude-interval` to 0 or a negative value:
+
+[source,yml]
+----
+logging:
+  requests-log-exclude-interval: 0  # Log only the first excluded request
+----
+
+**Behavior**: Only the first excluded request for each pattern will be logged with the message "logging disabled for subsequent requests". All subsequent excluded requests will be completely silent.
+
+**Use case**: When you want to confirm that exclusion patterns are working but don't want any periodic logging of excluded requests.
+
+===== Empty Patterns List
+
+If `requests-log-exclude-patterns` is empty or not specified:
+
+[source,yml]
+----
+logging:
+  requests-log-exclude-patterns: []  # No exclusions
+----
+
+**Behavior**: All requests are logged normally, exactly like the original behavior.
+
+===== Configuration Value Types
+
+The `requests-log-exclude-interval` accepts numeric values in minutes and handles type conversion automatically:
+
+[source,yml]
+----
+logging:
+  requests-log-exclude-interval: 10     # Log every 10 minutes
+  # or
+  requests-log-exclude-interval: 5      # Log every 5 minutes
+  # or
+  requests-log-exclude-interval: 60     # Log every hour
+----
+
+Both integer and long formats work correctly thanks to automatic type conversion in the configuration parser.
+
+==== Backward Compatibility
+
+This feature is fully backward compatible. If `requests-log-exclude-patterns` is not specified in your configuration, all requests will be logged as before.
+
+==== Performance Impact
+
+The pattern matching is performed only when request logging is enabled (`requests-log-mode > 0`). The matching uses efficient string operations and compiled regex patterns for wildcard matching. The time-based logging uses a lightweight `ConcurrentHashMap` to track last logged times per pattern, so the performance impact is minimal.
+
+=== Specify a custom LogBack configuration
+
+To define a different LogBack configuration, set the property `logback.configurationFile`, as follows:
+
+[source,bash]
+$ java -Dlogback.configurationFile=./logback.xml -jar restheart.jar
+
+=== Custom LogBack with docker compose
+
+To use a custom LogBack configuration when running RESTHeart with docker compose:
+
+1. override the `entrypoint` to specify the `logback.configurationFile` JVM property
+2. mount the custom `logback.xml` configuration file into the docker image using `volume`
+
+Replace the `restheart` service definition in the link:https://github.com/SoftInstigate/restheart/blob/master/docker-compose.yml[docker-compose.yml] with the following:
+
+[source,yml]
+----
+    restheart:
+        image: softinstigate/restheart:latest
+        container_name: restheart
+        # override the entrypoint to specify the logback.configurationFile JVM property
+        entrypoint: [ "java", "-Dfile.encoding=UTF-8", "-Dlogback.configurationFile=etc/logback.xml", "-server", "-jar", "restheart.jar", "etc/restheart.yml"]
+        # mount the custom `logback.xml` configuration file
+        volumes:
+            - ./etc/logback.xml:/opt/restheart/etc/logback.xml:ro
+        command: ["--envFile", "/opt/restheart/etc/default.properties"]
+        environment:
+        RHO: >
+            /mclient/connection-string->"mongodb://mongodb";
+            /http-listener/host->"0.0.0.0";
+        depends_on:
+        - mongodb
+        - mongodb-init
+        ports:
+        - "8080:8080"
+----
+
+=== Example: print the full stack trace
+
+The following command sets the configuration option `/logging/full-stacktrace` to `true` to configure the logback appender to log the full stack trace of exceptions
+
+[source,bash]
+----
+$ RHO='/logging/full-stacktrace->true' java -jar restheart.jar
+----
+
+NOTE: `/logging/full-stacktrace` is available from RESTHeart 7.2.0. For previous releases you need to specify a custom `logback.xml` configuration file.
+
+=== Example: enable logging from the MongoDB driver
+
+To enable logging from the MongoDB driver, override the configuration option `/logging/packages` as follows:
+
+[source,bash]
+----
+$ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar
+----
+
+=== Example: log trace headers
+
+Trace headers allow to trace a request context propagation across service boundaries. See for reference link:https://github.com/openzipkin/b3-propagation[b3-propagation]
+
+Too enable log trace headers first override the `/logging/equests-log-trace-headers` configuration options
+
+Then a custom `logback.xml` with the following `pattern` (note that it includes `%X{x-b3-traceid}`) must be used:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread / %X{x-b3-traceid}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+----
+
+[source,bash]
+----
+$ RHO='/logging/requests-log-trace-headers -> [ "x-b3-traceid", "uber-trace-id", "traceparent" ]' java -Dlogback.configurationFile=./logback.xml -jar restheart.jar
+----
+
+NOTE: Watch link:https://www.youtube.com/watch?v=dzggm7Wp2fU&t=1152s[Logging]

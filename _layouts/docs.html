@@ -25,6 +25,14 @@ layout: default
             >
               <a
                 class="dropdown-item"
+                href="{{ '/docs/v9' | prepend: site.baseurl }}"
+              >
+                {% if page.docs_version == 9 %}
+                <strong>v9 (snapshot)</strong>
+                {% else %} v9 (snapshot) {% endif %}
+              </a>
+              <a
+                class="dropdown-item"
                 href="{{ '/docs' | prepend: site.baseurl }}"
               >
                 {% if page.docs_version == 8 %}
@@ -79,7 +87,7 @@ layout: default
             method="get"
             name="searchform"
           >
-          <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 %}/v{{ page.docs_version }}{% endif %}" />
+          <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 and page.docs_version != 9 %}/v{{ page.docs_version }}{% elsif page.docs_version == 9 %}/v9{% endif %}" />
           <input
             autocomplete="on"
             class="form-control input-sm search bd-sidebar__input"
@@ -139,6 +147,7 @@ layout: default
         elsif page.docs_version == 3 %} {% include docs-v3-sidebar.html %} {%
         elsif page.docs_version == 5 %} {% include docs-v5-sidebar.html %} {%
         elsif page.docs_version == 6 %} {% include docs-v6-sidebar.html %} {%
+        elsif page.docs_version == 9 %} {% include docs-v9-sidebar.html %} {%
         else %} {% include docs-sidebar.html %} {% endif %}
       </div>
     </div>

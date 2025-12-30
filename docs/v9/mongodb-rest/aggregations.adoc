@@ -1,0 +1,637 @@
+---
+title: Aggregations
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+Aggregations are powerful operations that process data records and return computed results. You can analyze data, perform calculations, and transform documents through a series of stages called a pipeline.
+
+With RESTHeart, you can easily execute MongoDB aggregations through simple REST API calls.
+
+=== Running Aggregations
+
+To execute an aggregation, send a `GET` request to:
+
+[source]
+----
+GET /collection/_aggrs/aggregation-name?avars={"var1":"value1"}
+----
+
+RESTHeart will process the request and return the computed results in the response body.
+
+TIP: By default, aggregation results are returned directly in the response without being written to the database. For persistent results, use link:#materialized-views[Materialized Views].
+
+=== Defining Aggregations
+
+Aggregations must be defined in the collection's metadata before they can be used.
+
+==== Creating an Aggregation
+
+To define an aggregation, use a `PATCH` request to update the collection metadata:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PATCH "[RESTHEART-URL]/mycollection?wm=upsert" \
+  -u "[BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "aggrs": [
+    {
+      "uri": "sales-by-region",
+      "stages": [
+        { "$match": { "status": "completed" } },
+        { "$group": {
+            "_id": "$region",
+            "total": { "$sum": "$amount" }
+          }
+        },
+        { "$sort": { "total": -1 } }
+      ]
+    }
+  ]
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{
+  "aggrs": [
+    {
+      "uri": "sales-by-region",
+      "stages": [
+        { "$match": { "status": "completed" } },
+        { "$group": {
+            "_id": "$region",
+            "total": { "$sum": "$amount" }
+          }
+        },
+        { "$sort": { "total": -1 } }
+      ]
+    }
+  ]
+}' | http PATCH "[RESTHEART-URL]/mycollection?wm=upsert" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mycollection?wm=upsert', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "aggrs": [
+      {
+        "uri": "sales-by-region",
+        "stages": [
+          { "$match": { "status": "completed" } },
+          { "$group": {
+              "_id": "$region",
+              "total": { "$sum": "$amount" }
+            }
+          },
+          { "$sort": { "total": -1 } }
+        ]
+      }
+    ]
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+This defines an aggregation named `sales-by-region` that:
+1. Filters for completed sales
+2. Groups documents by region
+3. Calculates the total amount for each region
+4. Sorts the results by total in descending order
+
+==== Aggregation Properties
+
+[cols="1,3,1", options="header"]
+|===
+|Property |Description |Required
+|`uri` |The name used in the URL path: `/collection/_aggrs/uri` |Yes
+|`stages` |Array of MongoDB aggregation pipeline stages |Yes
+|`allowDiskUse` |Allows operations to use more than 100MB of memory |No (default: false)
+|===
+
+=== Parameterizing Aggregations
+
+Make your aggregations dynamic by using variables that can be passed at runtime.
+
+==== The $var Operator
+
+Use the `$var` operator in your aggregation stages to reference variables:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "sales-by-product",
+      "stages": [
+        { "$match": { "product": { "$var": "productName" } } },
+        { "$group": { "_id": "$month", "sales": { "$sum": "$amount" } } }
+      ]
+    }
+  ]
+}
+----
+
+==== Passing Variables
+
+When executing the aggregation, provide variable values using the `avars` query parameter:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+  -u "[BASIC-AUTH]" \
+  -G --data-urlencode 'avars={"productName":"Widget Pro"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+  avars=='{"productName":"Widget Pro"}' \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  avars: JSON.stringify({"productName":"Widget Pro"})
+});
+
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns sales data only for the "Widget Pro" product.
+
+==== Default Values
+
+You can specify default values for variables:
+
+[source,json]
+----
+{ "$var": [ "sortField", { "date": -1 } ] }
+----
+
+This uses the provided `sortField` value if available, otherwise defaults to sorting by date in descending order.
+
+Example with default value:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "recent-orders",
+      "stages": [
+        { "$sort": { "$var": [ "sortBy", { "date": -1 } ] } },
+        { "$limit": 10 }
+      ]
+    }
+  ]
+}
+----
+
+==== Dot Notation for Nested Variables
+
+You can access nested properties in variables using dot notation:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+  -u "[BASIC-AUTH]" \
+  -G --data-urlencode 'avars={"config":{"limit":10,"skip":20}}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+  avars=='{"config":{"limit":10,"skip":20}}' \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  avars: JSON.stringify({"config":{"limit":10,"skip":20}})
+});
+
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+In the aggregation definition:
+
+[source,json]
+----
+{ "$limit": { "$var": "config.limit" } }
+----
+
+This resolves to `{ "$limit": 10 }`.
+
+=== Predefined Variables
+
+RESTHeart provides several predefined variables that you can use in your aggregations:
+
+[cols="1,3", options="header"]
+|===
+|Variable |Description
+|`@user` |The authenticated user object (e.g., `@user._id`)
+|`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`)
+|`@page` |Current page number from query parameter
+|`@pagesize` |Page size from query parameter
+|`@skip` |Calculated as `(page-1)*pagesize`
+|`@limit` |Same as `@pagesize`
+|===
+
+=== Pagination in Aggregations
+
+Unlike regular document queries, pagination in aggregations must be handled explicitly using the `$skip` and `$limit` stages.
+
+Use the predefined variables to implement pagination:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "paginated-results",
+      "stages": [
+        { "$match": { "active": true } },
+        { "$sort": { "lastName": 1 } },
+        { "$skip": { "$var": "@skip" } },
+        { "$limit": { "$var": "@limit" } }
+      ]
+    }
+  ]
+}
+----
+
+Request with pagination:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results" \
+  page==3 pagesize==25 \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  page: 3,
+  pagesize: 25
+});
+
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/paginated-results?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This skips the first 50 documents and returns the next 25.
+
+=== Conditional Stages with $ifvar
+
+Since RESTHeart 7.3, you can include stages conditionally based on whether specific variables are provided.
+
+==== Basic Conditional Stage
+
+Include a stage only if a variable is provided:
+
+[source,json]
+----
+{
+  "uri": "conditional-pipeline",
+  "stages": [
+    { "$match": { "type": "product" } },
+    { "$ifvar": [ "category", { "$match": { "category": { "$var": "category" } } } ] }
+  ]
+}
+----
+
+The second stage only applies if the `category` variable is provided.
+
+==== Multiple Required Variables
+
+Require multiple variables for a stage:
+
+[source,json]
+----
+{ "$ifvar": [ ["minPrice", "maxPrice"],
+  { "$match": {
+      "price": {
+        "$gte": { "$var": "minPrice" },
+        "$lte": { "$var": "maxPrice" }
+      }
+    }
+  }
+]}
+----
+
+==== Else Clause
+
+Provide an alternative stage when variables are missing:
+
+[source,json]
+----
+{ "$ifvar": [ "sortBy",
+  { "$sort": { "$var": "sortBy" } },
+  { "$sort": { "createdAt": -1 } }
+]}
+----
+
+This sorts by the provided field if `sortBy` is given, otherwise sorts by creation date.
+
+=== Materialized Views
+
+Create persistent collections based on aggregation results using the `$merge` stage:
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "sales-summary",
+      "stages": [
+        { "$group": { "_id": "$category", "totalSales": { "$sum": "$amount" } } },
+        { "$merge": { "into": "categorySalesSummary" } }
+      ]
+    }
+  ]
+}
+----
+
+When this aggregation is executed, results are written to the `categorySalesSummary` collection:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mycollection/_aggrs/sales-summary', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+The response will be empty, but a new collection is created or updated:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/categorySalesSummary" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/categorySalesSummary" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categorySalesSummary', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+[
+  { "_id": "electronics", "totalSales": 253489.99 },
+  { "_id": "furniture", "totalSales": 187245.50 }
+]
+----
+
+==== Incremental Updates
+
+The `$merge` stage is more efficient than the older `$out` stage because it can update existing documents rather than replacing the entire collection each time.
+
+=== Security Considerations
+
+RESTHeart checks variables for MongoDB operators to prevent injection attacks. This protection can be disabled in the configuration file, but this is strongly discouraged.
+
+[source,yml]
+----
+mongo:
+    aggregation-check-operators: true  # Default setting
+----
+
+=== Transaction Support
+
+Execute aggregations within a transaction by including the `sid` and `txn` parameters:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+  sid==session-id txn==transaction-id \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({
+  sid: 'session-id',
+  txn: 'transaction-id'
+});
+
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+See the link:/docs/mongodb-rest/transactions[Transactions] documentation for details.
+
+=== Example Use Cases
+
+==== Monthly Sales Report
+
+[source,json]
+----
+{
+  "uri": "monthly-sales",
+  "stages": [
+    { "$match": {
+        "date": {
+          "$gte": { "$var": [ "startDate", { "$date": "2023-01-01T00:00:00Z" } ] },
+          "$lte": { "$var": [ "endDate", { "$date": "2023-12-31T23:59:59Z" } ] }
+        }
+      }
+    },
+    { "$group": {
+        "_id": { "$dateToString": { "format": "%Y-%m", "date": "$date" } },
+        "count": { "$sum": 1 },
+        "totalAmount": { "$sum": "$amount" }
+      }
+    },
+    { "$sort": { "_id": 1 } }
+  ]
+}
+----
+
+==== User Activity Analytics
+
+[source,json]
+----
+{
+  "uri": "user-activity",
+  "stages": [
+    { "$match": { "userId": { "$var": "userId" } } },
+    { "$group": {
+        "_id": "$activityType",
+        "count": { "$sum": 1 },
+        "lastActivity": { "$max": "$timestamp" }
+      }
+    },
+    { "$sort": { "count": -1 } }
+  ]
+}
+----
+
+=== Map-Reduce (Deprecated)
+
+WARNING: Map-reduce operations are deprecated in MongoDB. Use aggregation pipelines instead.
+
+For legacy systems, RESTHeart still supports map-reduce:
+
+[source,json]
+----
+{
+  "type": "mapReduce",
+  "uri": "word-count",
+  "map": "function() { var words = this.text.split(' '); words.forEach(function(word) { emit(word.toLowerCase(), 1); }); }",
+  "reduce": "function(key, values) { return Array.sum(values); }",
+  "query": { "type": { "$var": "documentType" } }
+}
+----
+
+Variables can be used in both the query and JavaScript functions. In JavaScript functions, use `JSON.parse($vars)` to access variables:
+
+[source,js]
+----
+function() {
+  var minLength = JSON.parse($vars).minLength || 0;
+  var words = this.text.split(' ');
+  words.forEach(function(word) {
+    if (word.length > minLength) {
+      emit(word.toLowerCase(), 1);
+    }
+  });
+}
+----

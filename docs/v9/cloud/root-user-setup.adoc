@@ -1,0 +1,136 @@
+---
+title: RESTHeart Cloud - Root User Setup
+layout: docs-adoc
+menu: cloud
+liquid: true
+applies_to: cloud
+---
+
+Create your root user account with full administrative privileges. This setup gives you complete control over your RESTHeart Cloud instance.
+
+TIP: **Looking for more?** After setting up your root user, learn how to link:/docs/security/user-management[**manage users**] and link:/docs/security/permissions[**configure permissions**] for your application.
+
+== What This Setup Does
+
+This wizard will:
+
+1. *Create a root user* with your chosen credentials
+2. *Set up full permissions* allowing all operations on your API Service
+3. *Test the authentication* to ensure everything works correctly
+
+WARNING: *Security Notice*: The root user has complete access to your instance. Choose strong credentials and keep them secure.
+
+== Wizard Setup
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include root-user-config.html %}
+++++
+
+=== Step 1: Create Root User
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/users?wm=upsert \
+  -H "Authorization: Bearer [JWT]" \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"]}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/users?wm=upsert \
+  Authorization:"Bearer [JWT]" \
+  _id=root \
+  password=[YOUR-PASSWORD] \
+  roles:='["root"]'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/users?wm=upsert', {
+  method: 'POST',
+  body: JSON.stringify({ "_id": "root", "password": "[YOUR-PASSWORD]", "roles": ["root"] }),
+  headers: {
+    'Authorization': 'Bearer [JWT]',
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Root user created successfully');
+  } else {
+    console.error('Failed to create root user:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Step 2: Set Up Root Permissions
+
+The admin permission (`/_acl/rootCanDoEverything`) grants full access to all endpoints and operations. This permission uses:
+
+- *Predicate*: `path-prefix('/')` - Matches all paths
+- *Roles*: `["root"]` - Applied to users with the root role
+- *Priority*: `0` - High priority permission
+- *MongoDB Options*: Enables all management operations
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl?wm=upsert \
+  -H "Authorization: Bearer [JWT]" \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true, "allowWriteMode": true}}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl?wm=upsert \
+  Authorization:"Bearer [JWT]" \
+  _id=rootCanDoEverything \
+  predicate="path-prefix('/')" \
+  roles:='["root"]' \
+  priority:=0 \
+  mongo:='{"allowManagementRequests": true, "allowWriteMode": true}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/acl?wm=upsert', {
+  method: 'POST',
+  body: JSON.stringify({"_id": "rootCanDoEverything", "predicate": "path-prefix('/')", "roles": ["root"], "priority": 0, "mongo": {"allowManagementRequests": true, "allowWriteMode": true}}),
+  headers: {
+    'Authorization': 'Bearer [JWT]',
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Root permissions configured successfully');
+  } else {
+    console.error('Failed to configure root permissions:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+== Next Steps
+
+Once your root user is set up, you can:
+
+1. *Create additional users* with specific roles and permissions
+2. *Set up collections* for your application data
+3. *Configure roles and permissions* for different user types

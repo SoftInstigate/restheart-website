@@ -14,6 +14,13 @@ layout: default
                           v{{ page.docs_version }}
                       </button>
                       <div class="dropdown-menu mt-2 me-1 pb-2" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{{ "/docs/v9" | prepend: site.baseurl }}">
+                              {% if page.docs_version == 9 %}
+                              <strong>v9 (snapshot)</strong>
+                              {% else %}
+                              v9 (snapshot)
+                              {% endif %}
+                          </a>
                         <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
                               {% if page.docs_version == 8 %}
                               <strong>v8</strong>
@@ -60,7 +67,7 @@ layout: default
                   </div>
                   <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex flex-grow-1" method="get"
                       name="searchform">
-                      <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 %}/v{{ page.docs_version }}{% endif %}">
+                      <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 and page.docs_version != 9 %}/v{{ page.docs_version }}{% elsif page.docs_version == 9 %}/v9{% endif %}">
                       <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
                           placeholder="Search docs..." required="required" type="text">
                       <button class="bd-sidebar__submit" type="submit">
@@ -96,6 +103,8 @@ layout: default
                   {% include docs-v6-sidebar.html %}
               {% elsif page.docs_version == 7 %}
                   {% include docs-v7-sidebar.html %}
+              {% elsif page.docs_version == 9 %}
+                  {% include docs-v9-sidebar.html %}
               {% else %}
                   {% include docs-sidebar.html %}
               {% endif %}

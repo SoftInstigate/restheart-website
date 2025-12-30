@@ -1,0 +1,65 @@
+---
+title: Providers
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+`Provider` classes in RESTHeart work together with the `@Inject` and `@OnInit` annotations to form a Dependency Injection mechanism.
+
+=== The Provider class
+
+A Provider class must implements the interface `Provider` and must be annotated with `@RegisterPlugin`:
+
+[source,java]
+----
+RegisterPlugin(name="hello-world-message", description="a dummy provider")
+class MyProvider implements Provider<String> {
+    @Override
+    public String get(PluginRecord<?> caller) {
+        return "Hello World!";
+    }
+}
+----
+
+Given the `hello-world-message` provider, we can inject its provided object into any Plugin with the `@Inject` annotation:
+
+[source,java]
+----
+@RegisterPlugin(name = "greetings", description = "just another Hello World")
+public class GreeterService implements JsonService {
+    @Inject("hello-world-message")
+    private String message;
+
+    @OnInit
+    public void init() {
+        // called after all @Inject fields are resolved
+    }
+
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        switch(req.getMethod()) {
+            case GET -> res.setContent(object().put("message", message));
+            case OPTIONS -> handleOptions(req);
+            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+        }
+    }
+}
+----
+
+=== @RegisterPlugin annotation
+
+The following table describes the arguments of the annotation:
+
+[options="header"]
+|===
+|param |description |mandatory |default value
+|`name`
+|the name of the provider
+|yes
+|*none*
+|`description`
+|description of the provider
+|yes
+|*none*
+|===

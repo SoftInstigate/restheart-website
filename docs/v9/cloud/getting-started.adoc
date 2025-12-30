@@ -1,0 +1,135 @@
+---
+title: RESTHeart Cloud - Getting Started
+layout: docs-adoc
+menu: cloud
+liquid: true
+applies_to: cloud
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+++++
+
+Welcome to RESTHeart Cloud! This guide will help you set up your first API and prepare to use all the examples in our documentation.
+
+== Step 1: Sign Up for RESTHeart Cloud
+
+First, create your free account and set up your API Service:
+
+. *Visit https://cloud.restheart.com* and sign up for a free account
+. *Create a new API* by clicking "Create API"
+. *Choose the "Dev" tier* - it's completely free and perfect for getting started
+. *Note your API URL* - it will look something like `https://705560.eu-west-1-test-free-1.restheart.com`
+
+TIP: Keep the RESTHeart Cloud dashboard open in another tab - you'll need to copy some values from it in the next step.
+
+== Step 2: Set Up Root User
+
+Before you can use your API, you need to create a root user with full privileges. This requires the Temporary Admin JWT from your cloud dashboard.
+
+. *Get your Temporary Admin JWT* from the RESTHeart Cloud dashboard
+. *Follow the root user setup guide*: link:/docs/cloud/root-user-setup[Root User Setup]
+. *Create your root user* with username and password of your choice
+
+WARNING: The Temporary Admin JWT is only valid for a short time and should only be used to create the root user.
+
+== Step 3: Configure the Documentation Examples
+
+Now you're ready to use all the interactive examples in our documentation! Configure the documentation to point to your API:
+
+. *Set your RESTHeart URL* to your API URL (e.g., `https://705560.eu-west-1-test-free-1.restheart.com`)
+. *Set your Username* to the root user you created
+. *Set your Password* to the root user password you created
+
+++++
+{% include interactive-docs-config.html %}
+++++
+
+== Step 4: Test Your Setup
+
+Let's verify everything is working by creating your first collection:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PUT "[RESTHEART-URL]/test-collection" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT "[RESTHEART-URL]/test-collection" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/test-collection', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Collection created successfully!');
+  } else {
+    console.error('Failed to create collection:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+If this returns a success response, congratulations! Your RESTHeart Cloud API is ready to use.
+
+== What's Next?
+
+Now that your API is set up and configured, you can:
+
+* *Explore Examples*: Check out link:/docs/cloud/examples[RESTHeart Cloud Examples] for real-world use cases
+* *Learn the Basics*: Start with link:/docs/mongodb-rest/tutorial[MongoDB REST Tutorial]
+* *Secure Your API*: Set up proper link:/docs/cloud/users-and-permissions[Users and Permissions] and link:/docs/cloud/security[Security]
+* *Go Advanced*: Try link:/docs/mongodb-rest/aggregations[Aggregations], link:/docs/mongodb-websocket/examples[WebSockets], or link:/docs/mongodb-graphql/getting-started[GraphQL]
+
+== Configuration Persistence
+
+Your configuration settings (RESTHeart URL, Username, Password) are saved in your browser and persist across documentation pages. This means you can browse all our interactive examples and they'll automatically use your RESTHeart Cloud API.
+
+== Troubleshooting
+
+*Authentication Issues*
+
+- Make sure you completed the root user setup
+- Verify your username and password are correct
+- Check that your RESTHeart URL doesn't have a trailing slash
+
+*Connection Issues*
+
+- Confirm your API URL is correct (check the RESTHeart Cloud dashboard)
+- Ensure your API Service is running (check the dashboard status)
+
+*Need Help?*
+
+- Join our community on Slack
+- Check the link:/docs/faq[FAQ] for common questions
+- Contact support through the RESTHeart Cloud dashboard
+
+== Free Tier Limits
+
+The Dev tier includes:
+
+- *120 Requests/Minute Limit*
+- *100 Mb storage*
+- *Community support*
+
+Perfect for development, testing, and small projects. You can upgrade anytime as your needs grow.
+
+---
+
+Ready to build amazing APIs? Let's dive into the examples! 🚀

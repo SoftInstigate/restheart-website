@@ -1,0 +1,52 @@
+{
+  "_id": "star-wars",
+  "descriptor": {
+    "name": "star-wars",
+    "description": "GraphQL application used in the Star Wars Tutorial",
+    "enabled": true,
+    "uri": "star-wars"
+  },
+  "schema": "union SearchResult = Human | Droid | Starship enum LengthUnit { METER } enum Episode { NEWHOPE EMPIRE JEDI } type Starship { _id: Int! name: String!  length(unit: LengthUnit = METER): Float } interface Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! } type Human implements Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! homePlanet: String! } type Droid implements Character { _id: Int! name: String! friends: [Character]! appearsIn: [Episode]! primaryFunction: String! } type Query { hero(episode: Episode!): Character search(text: String!): [SearchResult] }",
+  "mappings": {
+    "Episode": { "NEWHOPE": 4, "EMPIRE": 5, "JEDI": 6 },
+    "SearchResult": {
+      "$typeResolver": {
+        "Human": "field-exists(homePlanet)",
+        "Droid": "field-exists(primaryFunction)",
+        "Starship": "field-exists(length)"
+      }
+    },
+    "Character": {
+      "$typeResolver": {
+        "Human": "field-exists(homePlanet)",
+        "Droid": "field-exists(primaryFunction)"
+      }
+    },
+    "Human": {
+      "friends": {
+        "db": "restheart",
+        "collection": "star-wars-characters",
+        "find": { "_id": { "$in": { "$fk": "friends" } } }
+      }
+    },
+    "Droid": {
+      "friends": {
+        "db": "restheart",
+        "collection": "star-wars-characters",
+        "find": { "_id": { "$in": { "$fk": "friends" } } }
+      }
+    },
+    "Query": {
+      "hero": {
+        "db": "restheart",
+        "collection": "star-wars-characters",
+        "find": { "heroOf": { "$arg": "episode" } }
+      },
+      "search": {
+        "db": "restheart",
+        "collection": "star-wars-characters",
+        "find": { "name": { "$regex": { "$arg": "text" }, "$options": "i" } }
+      }
+    }
+  }
+}
