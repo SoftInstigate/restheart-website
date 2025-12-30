@@ -13,26 +13,22 @@ stars-bounce: true
             ✅&nbsp;Declarative Security, no code required.
             ✅&nbsp;Implement your Backend in minutes.
         </p>
-        <div class="my-5 mx-2 py-4 px-3" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
-          <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">🚀 Try RESTHeart Cloud FREE</a>
-          <div class="mt-4 white">
-              Start building instantly • Scale to production when ready • No Installation Required!
+        <div class="mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
+          <div class="row gx-5 mx-3">
+            <div class="col-md-6 mb-5 mb-md-0 px-4">
+              <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">🚀 Try RESTHeart Cloud</a>
+              <div class="mt-4 white">
+                  Start building instantly • Scale to production when ready • No Installation Required!
+              </div>
+              <div class="mt-4 white small">go to <a href="/docs/setup">Setup</a> for more installation options</div>
+            </div>
+            <div class="col-md-6 px-4">
+              <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">💬 Chat with Sophia AI</a>
+              <div class="mt-4 white">
+                  Get instant answers about RESTHeart • No need to read through all the docs!
+              </div>
+            </div>
           </div>
-          <div class="mt-4 white small">go to <a href="/docs/setup">Setup</a> for more installation options</div>
-        </div>
-        <div>
-            <h3 class="font-weight-bold highlightcolor text-center">Ask Sophia AI about RESTHeart</h3>
-            <div id="sophiaLoading" class="text-muted">Loading...</div>
-            <iframe id="sophiaFrame" src="https://sophia.restheart.com?h=auto&scope=[%22restheart%22,%22both%22]" style="border: none; width: 100%; display: none;"></iframe>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const sophiaFrame = document.getElementById('sophiaFrame');
-                    sophiaFrame.onload = function() {
-                        sophiaFrame.style.display = 'block';
-                        sophiaLoading.style.display = 'none';
-                    };
-                });
-            </script>
         </div>
         <h3 class="font-weight-bold highlightcolor mt-3">Then check the tutorials</h3>
         <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
@@ -41,27 +37,6 @@ stars-bounce: true
         <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
     </div>
 </section>
-
-<!-- scroll to bottom of sophia iframe chat when it resizes -->
-<script>
-  var preventScroll = 0; // trick to avoid scrolling on first load
-  document.addEventListener("DOMContentLoaded", () => preventScroll = 0);
-  iframeResize({
-    license: 'GPLv3',
-    waitForLoad: true,
-    onResized: ({ iframe, height, width, type }) => {
-      if (document.readyState === 'complete') {
-        if (preventScroll > 3) {
-          const offset = iframe.offsetTop;
-          const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-          window.scrollTo({top: height+offset-vh, left: 0, behavior: 'smooth'});
-        } else {
-          preventScroll++;
-        }
-      }
-    }
-  }, '#sophiaFrame' );
-</script>
 
 <!-- <section id="article-at-aws-blog" class="call-to-action black-background">
     <div class="container-fluid">
