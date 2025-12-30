@@ -6,12 +6,24 @@ stars-bounce: true
 <section id="top" class="text-center pt-2 pb-2">
     <div class="mt-0 mb-4">
         <img width="120" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
-        <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart Framework</h1>
-        <p class="top-6 text-break white mt-2 mx-4">
-            ✅&nbsp;Instant REST, GraphQL and Websockets APIs for <strong>MongoDB</strong>.
-            ✅&nbsp;Declarative Security, no code required.
-            ✅&nbsp;Implement your Backend in minutes.
-        </p>
+        <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart</h1>
+        <h2 class="top-6 text-break mt-3 mx-4" style="font-size: 1.75rem; font-weight: 400; line-height: 1.4; color: var(--primarycolor);">
+            The <strong style="font-weight: 600;">Backend Framework</strong> with MongoDB Data APIs.
+        </h2>
+        <div class="mt-2 mx-4">
+            <p class="text-break white mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Modern development framework.
+            </p>
+            <p class="text-break white mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Ready-to-use MongoDB Data APIs with REST, GraphQL and WebSockets.
+            </p>
+            <p class="text-break white mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Declarative Security implementation.
+            </p>
+        </div>
         <div class="hero-cta-container mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
           <div class="row gx-4 mx-4 align-items-stretch">
             <div class="col-md-6 mb-5 mb-md-0 d-flex">
