@@ -232,6 +232,15 @@ PUT /inventory/myCustomId HTTP/1.1
 
 WARNING: This replaces the entire document. Any fields not included in the request will be removed.
 
+
+[WARNING]
+====
+**PUT replaces the entire document.** Any fields not included in your request will be deleted.
+
+**PATCH updates only specified fields.** Other fields remain unchanged.
+
+For most updates, use PATCH to avoid accidentally deleting fields.
+====
 ==== PATCH - Update Specific Fields
 
 `PATCH` modifies only the specified fields:
@@ -503,6 +512,18 @@ fetch('[RESTHEART-URL]/inventory/myCustomId', {
 
 === Bulk Operations
 
+
+[CAUTION]
+====
+Bulk operations affect **all documents matching the filter**. 
+
+**Before running a bulk update or delete:**
+1. Test your filter with a GET request to see which documents match
+2. Consider using pagination to limit the impact
+3. Have a backup or be able to restore data
+
+Example: `curl "[RESTHEART-URL]/inventory/*?filter={\"status\":\"D\"}"` to verify which documents would be affected
+====
 Perform operations on multiple documents with a single request.
 
 ==== Bulk Inserts
