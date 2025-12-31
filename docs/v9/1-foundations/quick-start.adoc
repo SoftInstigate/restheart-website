@@ -43,7 +43,7 @@ Run RESTHeart in standalone mode (without MongoDB):
 $ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
 ----
 
-NOTE: Standalone mode disables MongoDB plugins. Use this for experimenting with custom plugins.
+NOTE: Standalone mode runs RESTHeart without MongoDB, which disables all MongoDB-related features (REST API, GraphQL, etc.). This mode is useful when you want to develop and test custom plugins that don't require MongoDB, or when you want to use RESTHeart as a lightweight HTTP server framework.
 
 === Option 3: JAR File
 
@@ -80,15 +80,21 @@ If you used Docker Compose, RESTHeart is connected to MongoDB. Let's create some
 
 === Step 1: Create a Database and Collection
 
+We'll use HTTP PUT requests to create resources. PUT is idempotent, meaning you can run it multiple times safely.
+
 [source,bash]
 ----
 $ curl -u admin:secret -X PUT http://localhost:8080/mydb
 ----
 
+This creates a database named `mydb`.
+
 [source,bash]
 ----
 $ curl -u admin:secret -X PUT http://localhost:8080/mydb/mycollection
 ----
+
+This creates a collection named `mycollection` within `mydb`.
 
 === Step 2: Insert a Document
 
@@ -110,10 +116,14 @@ You'll see your document in the response!
 
 === Step 4: Query Documents
 
+Filter documents using MongoDB query syntax in the `filter` parameter:
+
 [source,bash]
 ----
 $ curl -u admin:secret "http://localhost:8080/mydb/mycollection?filter={\"age\":30}"
 ----
+
+This returns all documents where `age` equals 30. The filter uses MongoDB's JSON query format. For more complex queries, see the link:/docs/v9/2-mongodb-rest/read-docs[Reading Data Guide].
 
 Congratulations! You've:
 - ✓ Started RESTHeart
@@ -125,9 +135,9 @@ All without writing a single line of backend code!
 
 == Understanding Authentication
 
-RESTHeart creates a default `admin` user with password `secret`.
+RESTHeart includes a default `admin` user (password: `secret`) for development and testing. This user is stored in MongoDB's `/users` collection when using Docker Compose, or in the configuration file when running standalone.
 
-⚠️ **IMPORTANT:** Change this password before deploying to production!
+⚠️ **IMPORTANT:** This is a development credential only. Change this password before deploying to production!
 
 [source,bash]
 ----
