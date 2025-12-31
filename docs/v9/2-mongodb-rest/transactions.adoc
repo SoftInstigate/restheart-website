@@ -555,24 +555,24 @@ For more information on transaction limits, see the https://docs.mongodb.com/man
 The following example demonstrates a transfer between two bank accounts:
 
 . Create a session
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X POST "[RESTHEART-URL]/_sessions" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http POST "[RESTHEART-URL]/_sessions" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/_sessions', {
   method: 'POST',
   headers: {
@@ -589,7 +589,9 @@ fetch('[RESTHEART-URL]/_sessions', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 201 Created
@@ -597,24 +599,24 @@ Location: http://localhost:8080/_sessions/session123
 ----
 
 . Start a transaction
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X POST "[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http POST "[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns', {
   method: 'POST',
   headers: {
@@ -631,7 +633,9 @@ fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 201 Created
@@ -639,27 +643,27 @@ Location: http://localhost:8080/_sessions/session123/_txns/1
 ----
 
 . Debit from account A
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X PATCH "[RESTHEART-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": -100}}'
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http PATCH "[RESTHEART-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   Authorization:"Basic [BASIC-AUTH]" \
   '$inc[balance]':=-100
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
@@ -679,34 +683,36 @@ fetch('[RESTHEART-URL]/accounts/accountA?sid=[SESSION-ID]&txn=[TRANSACTION-ID]',
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 200 OK
 ----
 
 . Credit to account B
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X PATCH "[RESTHEART-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"$inc": {"balance": 100}}'
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http PATCH "[RESTHEART-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   Authorization:"Basic [BASIC-AUTH]" \
   '$inc[balance]':=100
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
@@ -726,26 +732,28 @@ fetch('[RESTHEART-URL]/accounts/accountB?sid=[SESSION-ID]&txn=[TRANSACTION-ID]',
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 200 OK
 ----
 
 . Add transaction record
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X POST "[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{"from": "accountA", "to": "accountB", "amount": 100, "timestamp": {"$date": 1623408052123}}'
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http POST "[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   Authorization:"Basic [BASIC-AUTH]" \
   from="accountA" \
@@ -753,10 +761,10 @@ http POST "[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]" \
   amount:=100 \
   'timestamp[$date]':=1623408052123
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
   method: 'POST',
   headers: {
@@ -780,31 +788,33 @@ fetch('[RESTHEART-URL]/transactions?sid=[SESSION-ID]&txn=[TRANSACTION-ID]', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 201 Created
 ----
 
 . Commit the transaction
-
-==== cURL
++
 [source,bash]
 ----
+# cURL
 curl -i -X PATCH "[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
   -H "Authorization: Basic [BASIC-AUTH]"
 ----
-
-==== HTTPie
++
 [source,bash]
 ----
+# HTTPie
 http PATCH "[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
-
-==== JavaScript
++
 [source,javascript]
 ----
+// JavaScript
 fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
   method: 'PATCH',
   headers: {
@@ -820,12 +830,13 @@ fetch('[RESTHEART-URL]/_sessions/[SESSION-ID]/_txns/[TRANSACTION-ID]', {
 })
 .catch(error => console.error('Error:', error));
 ----
-
++
+Response:
++
 [source,http]
 ----
 HTTP/1.1 200 OK
 ----
-
 === Best Practices
 
 . *Keep transactions short and simple*
