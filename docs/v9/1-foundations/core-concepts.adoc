@@ -141,18 +141,30 @@ Understanding how RESTHeart processes requests is key to working with the framew
 9. RESPONSE_ASYNC Interceptors run (optional)
 ----
 
-=== Key Points
 
-**Virtual Threads:** Each request runs in its own virtual thread. This means:
-- Your code is thread-safe by default
+=== Understanding the Lifecycle
+
+**1. Virtual Threads = Simple Code**
+
+Each request runs in its own virtual thread. This means:
+- Your code is thread-safe by default (no shared state between requests)
 - No need for async/await or callbacks
-- Simple, straightforward code
-- Excellent scalability
+- Write straightforward, synchronous code
+- Excellent scalability (millions of concurrent requests)
 
-**Interceptor Order:** Multiple interceptors at the same point run by priority (lower number = higher priority).
+**2. Interceptor Execution Order**
 
-**Service Matching:** RESTHeart routes requests to services based on URI patterns configured with `@RegisterPlugin`.
+When multiple interceptors exist at the same point:
+- They run in order of **priority** (lower number = runs first)
+- Priority 1 runs before priority 10
+- Use priorities to control execution sequence
 
+**3. Service Routing**
+
+RESTHeart matches requests to services by:
+- URI patterns in `@RegisterPlugin(defaultURI = "/myservice")`
+- First matching service handles the request
+- Use specific patterns to avoid conflicts
 == Plugin Discovery
 
 RESTHeart automatically discovers plugins at startup:
@@ -163,13 +175,22 @@ RESTHeart automatically discovers plugins at startup:
 2. Looks for classes annotated with `@RegisterPlugin`
 3. Instantiates and registers the plugins
 
+**Troubleshooting:** If your plugin doesn't load, check:
+- JAR file is in the `plugins/` directory
+- Class has `@RegisterPlugin` annotation
+- No compilation errors in the plugin
+- Check logs for "Registered plugin" messages on startup
+
 === JavaScript Plugins
 
 1. RESTHeart scans directories in `plugins/` for `package.json`
 2. Loads JavaScript files as plugins
 3. Executes via the polyglot plugin
 
-**Deployment:** Just drop a JAR file or directory in `plugins/` and restart RESTHeart!
+**Troubleshooting:** JavaScript plugins require:
+- GraalVM-based RESTHeart image (not standard image)
+- Valid `package.json` with plugin definition
+- `restheart-polyglot.jar` in `plugins/` directory
 
 == Configuration
 
@@ -210,13 +231,68 @@ Main configuration file: `restheart.yml`
 - Plugin-specific sections
 
 **Override methods:**
-1. Configuration file: `java -jar restheart.jar restheart.yml`
-2. Environment variable: `RHO='/http-listener/port->9090'`
-3. Override file: `java -jar restheart.jar -o overrides.yml`
 
+**Configuration Override Methods:**
+
+**1. Configuration File**
+[source,bash]
+----
+$ java -jar restheart.jar custom-config.yml
+----
+
+**2. Environment Variable (RHO)**
+
+Override specific settings without editing files:
+
+[source,bash]
+----
+$ RHO='/http-listener/port->9090' java -jar restheart.jar
+----
+
+**RHO Syntax:**
+```
+RHO='/path/to/setting->value'
+```
+
+- Path uses forward slashes: `/section/subsection/key`
+- Arrow `->` separates path from value
+- Multiple overrides: `/setting1->value1;/setting2->value2`
+
+**Examples:**
+[source,bash]
+----
+# Change port
+$ RHO='/http-listener/port->9090'
+
+# Multiple overrides
+$ RHO='/http-listener/port->9090;/mclient/connection-string->"mongodb://localhost"'
+
+# Boolean value
+$ RHO='/logging/log-to-console->false'
+----
+
+**3. Override File**
+[source,bash]
+----
+$ java -jar restheart.jar -o overrides.yml
+----
 **Learn more:** link:/docs/v9/5-deployment/configuration[Configuration Guide]
 
 == Dependency Injection
+
+**What is Dependency Injection?**
+
+Instead of creating objects yourself, RESTHeart provides (injects) them into your plugin. This gives you access to RESTHeart's built-in services and configuration.
+
+**How it works:**
+1. Add `@Inject("name")` to a field in your plugin
+2. RESTHeart automatically provides the object when your plugin loads
+3. Use the injected object in your plugin code
+
+**Why use it:**
+- Access MongoDB client without managing connections
+- Read configuration without parsing files
+- Use RESTHeart services without manual setup
 
 RESTHeart provides dependency injection through the `@Inject` annotation.
 
@@ -351,6 +427,22 @@ export function handle(request, response) {
 }
 ----
 
+**Important differences from Node.js:**
+- Runs on virtual threads (not Node's event loop)
+- No need for async/await for I/O operations
+- Synchronous-style code that doesn't block
+- No Node.js stdlib - use Java libraries instead
+
+**When to use JavaScript plugins:**
+- Rapid prototyping
+- Simple request/response transformations
+- Leveraging JavaScript string/JSON manipulation
+- Teams with JavaScript expertise
+
+**When to use Java instead:**
+- Performance-critical code
+- Complex business logic
+- Access to Java ecosystem libraries
 **Important:** JavaScript plugins run on virtual threads too - no async/await needed!
 
 == Performance Characteristics
