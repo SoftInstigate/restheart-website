@@ -5,7 +5,24 @@ menu: setup
 applies_to: restheart
 ---
 
-TIP: If Docker isn’t your thing, check out the link:/docs/setup[setup] section for alternative installation methods.
+TIP: If Docker isn’t your thing, check out the link:/docs/v9/1-foundations/setup[setup] section for alternative installation methods.
+
+
+== Which Docker Setup Should I Use?
+
+Choose based on your needs:
+
+[cols="2,3,2"]
+|===
+|**Setup**|**Use Case**|**Complexity**
+|**Docker Compose** (Recommended)|Most users - includes MongoDB|⭐ Easy
+|Standalone|Developing custom plugins only|⭐ Easy
+|MongoDB on localhost|RESTHeart in Docker, MongoDB outside|⭐⭐ Moderate
+|Network isolated|Production-like security setup|⭐⭐⭐ Advanced
+|Development (open MongoDB)|Testing with external MongoDB tools|⭐⭐ Moderate
+|===
+
+**If you're unsure, use Docker Compose.**
 
 === Run with docker compose
 
@@ -21,9 +38,13 @@ $ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-c
 
 === Run RESTHeart with Docker in standalone mode
 
-When you run RESTHeart in standalone mode, it uses a different default configuration that disables all plugins that rely on MongoDB. This means you won't have access to the built-in features that make RESTHeart powerful. However, you can still experiment with it and add your own custom plugins.
+
+Standalone mode runs RESTHeart without MongoDB. Learn more about link:/docs/v9/1-foundations/setup#what-is-standalone-mode[when to use standalone mode].
 
 [source,bash]
+$ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
+
+NOTE: the `RHO` environment variable sets the password for the user `admin`.
 $ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
 
 NOTE: the `RHO` environment variable sets the password for the user `admin`.
@@ -59,6 +80,20 @@ NOTE: This command relies on the docker support of `host.docker.internal`. If yo
 
 This setup uses a RESTHeart container connecting to a MongoDB container via a private Docker network. This ensures network isolation, with the RESTHeart API as the only entry point. The containers communicate securely within their dedicated network, while external access is controlled through the RESTHeart API
 
+
+=== Understanding This Setup
+
+This configuration uses a **Docker network** to isolate RESTHeart and MongoDB:
+
+- Both containers communicate via a private network
+- Only RESTHeart's port (8080) is exposed to your host machine
+- MongoDB is not directly accessible from outside the Docker network
+- This mimics a production security model
+
+**Use this setup for:**
+- Learning production deployment patterns
+- Testing security configurations
+- Development environments needing network isolation
 ### Setup Procedure
 
 You only need to complete this setup once. Follow these steps:
@@ -90,6 +125,13 @@ Run the RESTHeart container, linking it to the MongoDB container:
 
 [source,bash]
 $ docker run --name restheart --rm --network restheart-network -p "8080:8080" -e RHO='/http-listener/host->"0.0.0.0";/mclient/connection-string->"mongodb://mongodb"' softinstigate/restheart
+
+
+**Command breakdown:**
+- `--network restheart-network` - Connects to the isolated network
+- `-p "8080:8080"` - Exposes RESTHeart's API port
+- `--rm` - Automatically removes container on stop (stateless)
+- `-e RHO='...'` - Configures MongoDB connection string to use hostname `mongodb` (the container name)
 
 5) **Test the Setup**
 
@@ -196,6 +238,15 @@ $ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plu
 
 NOTE: This command requires RESTHeart version equal or greater than 7.7.
 
+**How this works:**
+- `-v ./target:/opt/restheart/plugins/custom` mounts your local `./target` directory
+- RESTHeart scans `/opt/restheart/plugins/` on startup
+- Your plugin JAR files in `./target` will be loaded automatically
+
+**Requirements:**
+- Plugin JAR must be in `./target` on your host machine
+- RESTHeart version must be >= 7.7
+
 ### Run RESTHeart with remote debugging
 
 This runs RESTHeart enabling remote debugging (port 4000).
@@ -212,6 +263,18 @@ $ docker exec -it mongodb mongosh
 
 RESTHeart Docker images come in four different versions:
 
+
+==== Which Docker Tag Should I Use?
+
+**For most users:** Use `latest` (the standard image)
+
+**Choose a different tag if:**
+- You need JavaScript plugins → Use `latest-graalvm`
+- You need smallest image size → Use `latest-distroless`
+- You're deploying to Kubernetes → Use `latest-native`
+- You need a specific version → Use version tags like `8.1.5`
+
+==== Docker Tag Reference
 - Standard multi-arch (FROM eclipse-temurin)
 - Graalvm (FROM softinstigate/graalvm)
 - distroless (FROM gcr.io/distroless/java21-debian12)
@@ -239,11 +302,27 @@ The "distroless" images are for special deployment requirements, where having th
 
 Images tags ending with `-native` are created with the link:https://www.graalvm.org/reference-manual/native-image/[GraalVM Native Image technology] starting from stable builds of the product, especially suited for high demanding environments, like Kubernetes. These are experimental and not fully documented yet, please contact us for questions.
 
-=== What's next
+=== What's Next?
 
-- Check that RESTHeart is up and running, opening the URL link:http://localhost:8080/ping[http://localhost:8080/ping], you should see the message: `Greetings from RESTHeart!`
-- Check the link:/docs/configuration[Configuration] page
-- Play with the link:/docs/mongodb-rest/tutorial[REST API Tutorial]
-- Play with the link:/docs/mongodb-graphql/tutorial[GraphQL API Tutorial]
-- Deploy some plugins from the the link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples repo]
+==== Verify Installation
+
+1. Open link:http://localhost:8080/ping[http://localhost:8080/ping] - you should see "Greetings from RESTHeart!"
+2. Check link:/docs/v9/1-foundations/quick-start#your-first-request[Your First Request] to make an API call
+
+==== Learn Core Concepts
+
+Before diving into features, understand how RESTHeart works:
+- link:/docs/v9/1-foundations/core-concepts[Core Concepts] - Architecture and plugin system
+- link:/docs/v9/1-foundations/security-fundamentals[Security Fundamentals] - Authentication and authorization
+
+==== Start Building
+
+Choose your learning path:
+- **MongoDB User:** link:/docs/v9/2-mongodb-rest/tutorial[REST API Tutorial] or link:/docs/v9/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial]
+- **Plugin Developer:** link:/docs/v9/6-framework/tutorial[Plugin Development Tutorial]
+- **DevOps:** link:/docs/v9/5-deployment/configuration[Configuration Guide]
+
+==== Load Sample Data
+
+link:/docs/v9/2-mongodb-rest/sample-data[Sample Data] provides ready-to-use MongoDB collections for experimenting with the API.
 - Load the link:/docs/mongodb-rest/sample-data[sample data] into MongoDB and play with the Data API.
