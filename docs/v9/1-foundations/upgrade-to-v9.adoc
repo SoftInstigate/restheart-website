@@ -1,0 +1,697 @@
+---
+title: Upgrade to RESTHeart v9
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart v9 introduces significant new features, improvements, and changes focused on security, performance, developer experience, and standards compliance.
+
+This page summarizes the new features and provides guidance on upgrading from previous versions.
+
+=== Summary
+
+==== Core
+
+[options="header"]
+[cols="1,2"]
+|===
+|Feature |Description
+|Java 25 LTS Migration
+|Upgraded to Java 25 LTS for enhanced performance, security, and long-term support
+|Consolidate Docker Images to GraalVM Only
+|Simplified Docker deployment with two variants: GraalVM-based (full plugin support) and native binary (optimized for Kubernetes)
+|Enhanced RESTHeart Plugin Logging
+|Comprehensive debug-level logging with tree-style visual grouping and tracing IDs for better observability
+|Custom Metrics Support for Monitoring Plugin
+|Programmatic API for registering and collecting application-specific metrics (counters, gauges, histograms, summaries)
+|Refactor Cache Implementation
+|Migrated from `AsyncLoadingCache` to `LoadingCache` for improved performance and reduced overhead
+|GraalVM Native Image Support
+|RESTHeart officially listed as framework tested with GraalVM native image
+|===
+
+==== MongoService
+
+[options="header"]
+[cols="1,2"]
+|===
+|Feature |Description
+|Improve Aggregation Pipeline Security
+|Stage and operator blacklisting to prevent dangerous operations and JavaScript execution in aggregation pipelines
+|Remove Deprecated Map-Reduce Pipeline Type
+|Eliminated support for MongoDB's deprecated map-reduce functionality in favor of aggregation pipelines
+|Cleanup Bad Request Response
+|Simplified error responses by removing redundant exception metadata
+|===
+
+==== GraphQLService
+
+[options="header"]
+[cols="1,2"]
+|===
+|Feature |Description
+|Simplify GraphQL App Descriptor
+|Streamlined configuration with optional URI field and automatic URI generation from `_id`
+|===
+
+==== Security
+
+[options="header"]
+[cols="1,2"]
+|===
+|Feature |Description
+|Simplify Authentication with OAuth 2.0-Compatible /token Endpoint
+|Dedicated `/token` and `/token/cookie` endpoints following OAuth 2.0 conventions with 85% performance improvement
+|Add `REQUEST_AFTER_FAILED_AUTH` InterceptPoint
+|New intercept point for custom handling of failed authentication/authorization attempts
+|Add Request Body Predicates
+|Support for `@request.body` variables in ACL predicates for fine-grained authorization based on payload content
+|New Permission Variables - @rnd and @qparams
+|Cryptographically secure random string generation and query parameter access in ACL system
+|Add Request Attached Parameters to Account Properties
+|Transfer request parameters to account properties after successful authentication for enhanced authorization
+|===
+
+=== Details
+
+==== Java 25 LTS Migration
+
+RESTHeart v9 requires Java 25 LTS, released on September 16, 2025.
+
+Note that Java 25 is a Long-Term Support (LTS) release.
+
+**Key Changes:**
+
+- Updated to Java 25 across the entire codebase
+- GraalVM configuration refactored from separate config files to unified `reachability-metadata.json` format
+- Updated `undertow-core` and `wildfly-common` versions for Java 25 native image compatibility
+- Docker base image updated to `eclipse-temurin:25-jre`
+- Upgraded `Dockerfile.graalvm` to version 25-graalce
+
+==== Consolidate Docker Images to GraalVM Only
+
+RESTHeart v9 consolidates Docker image distribution from three variants to two, eliminating the OpenJDK variant.
+
+**New Image Strategy:**
+
+1. **`softinstigate/restheart:latest`** (GraalVM-based)
+   - Supports dynamic JAR and JavaScript plugin loading
+   - ~256MB minimum RAM
+   - 2-3 second startup time
+   - Complete plugin functionality enabled by default
+
+2. **`softinstigate/restheart:latest-native`** (Native binary)
+   - Optimized for Kubernetes environments
+   - ~64MB minimum RAM
+   - <100ms startup time
+   - JavaScript-only plugin support
+
+**Benefits:**
+
+- Reduced maintenance overhead
+- Eliminated user confusion regarding image selection
+- Improved default plugin functionality
+- Maintained optimization for Kubernetes deployments
+
+==== Enhanced RESTHeart Plugin Logging
+
+RESTHeart v9 introduces comprehensive debug-level logging across all plugin types for improved observability.
+
+**Enhanced Logging Coverage:**
+
+- Interceptors (pre-auth, post-auth, post-request, async post-request)
+- Services, Providers, Initializers
+- Authentication Mechanisms, Authenticators, Authorizers, Token Managers
+
+**Key Features:**
+
+- Tree-style visual log grouping for better readability
+- Tracing IDs added to log messages for request tracking
+- Reusable security handlers to reduce redundant initialization logs
+- Logs moved to TRACE level to reduce DEBUG-level verbosity
+- Fixed alignment and visual grouping of authentication/authorization logs
+
+This enhancement makes it easier to:
+
+- Debug issues in the request processing pipeline
+- Monitor performance and identify bottlenecks
+- Understand authentication and authorization decisions
+- Troubleshoot interceptor chains
+
+==== Custom Metrics Support for Monitoring Plugin
+
+RESTHeart v9 extends the monitoring plugin to allow registration and collection of custom application-specific metrics.
+
+**Supported Metric Types:**
+
+- **Counter** - Monotonically increasing values (e.g., requests processed)
+- **Gauge** - Current value that can increase or decrease (e.g., queue size)
+- **Histogram** - Distribution of values (e.g., request durations)
+- **Summary** - Similar to histogram with configurable quantiles
+
+**Usage Example:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "customMetricsInit",
+    description = "Registers custom metrics",
+    enabledByDefault = true)
+public class CustomMetricsInitializer implements Initializer {
+    @Override
+    public void init() {
+        // Register a counter
+        Metrics.registerCounter(
+            "custom_requests_total",
+            "Total number of custom requests",
+            "endpoint", "method"
+        );
+        
+        // Register a gauge
+        Metrics.registerGauge(
+            "cache_size",
+            "Current cache size",
+            () -> getCacheSize()
+        );
+    }
+}
+----
+
+**Key Features:**
+
+- Register metrics at startup using Initializers
+- Update metrics during request handling in Services/Interceptors
+- Expose metrics at `/metrics` endpoint in Prometheus format
+- Support for custom labels
+- Configuration via `restheart.yml`
+
+==== Refactor Cache Implementation from AsyncLoadingCache to LoadingCache
+
+RESTHeart v9 migrates from Caffeine's `AsyncLoadingCache` to `LoadingCache`.
+
+**Rationale:**
+
+With recent Java improvements, blocking operations no longer pin virtual threads to platform threads, eliminating the original need for the async variant.
+
+**Benefits:**
+
+- Reduced overhead from unnecessary virtual thread creation
+- Simpler, more straightforward codebase
+- Improved performance with less context switching
+- Enhanced debugging and reasoning about synchronous operations
+- Proper virtual thread release during blocking operations
+
+==== GraalVM Native Image Support
+
+RESTHeart is now officially listed on GraalVM's framework compatibility page as a tested framework that fully supports native image compilation.
+
+**Implementation Highlights:**
+
+- Automatic reflection configuration of plugins for native images
+- Streamlined plugin development for native builds
+- Unified reachability metadata configuration format
+- Explicit initialization of PluginsClassloader for native image execution
+
+==== Improve Aggregation Pipeline Security with Stage and Operator Blacklisting
+
+RESTHeart v9 addresses a security gap where dangerous MongoDB operators could bypass protections when used in aggregation pipelines.
+
+**Security Controls:**
+
+1. **Stage-Level Blocking** - Restricts dangerous pipeline stages:
+   - `$out` - Writing to collections
+   - `$merge` - Merging data into collections
+   - `$lookup` - Cross-collection joins
+   - `$graphLookup` - Graph traversal operations
+   - `$unionWith` - Combining collections
+
+2. **Operator-Level Blocking** - Prevents JavaScript-executing operators:
+   - `$where` - JavaScript filter expressions
+   - `$function` - Custom JavaScript functions
+   - `$accumulator` - JavaScript-based aggregation
+
+3. **Cross-Database Validation** - Ensures lookup operations only reference collections in the same database
+
+4. **JavaScript Execution Control** - Comprehensive blocking of all JavaScript-executing operators
+
+**Configuration Example:**
+
+[source,yml]
+----
+mongo:
+  aggregationSecurity:
+    blacklistedStages:
+      - $out
+      - $merge
+      - $lookup
+      - $graphLookup
+      - $unionWith
+    blacklistedOperators:
+      - $where
+      - $function
+      - $accumulator
+    allowCrossDatabaseOperations: false
+    allowJavaScriptExecution: false
+----
+
+**Error Handling:**
+
+Security violations return HTTP 403 Forbidden with specific violation types:
+
+- `BLACKLISTED_STAGE`
+- `BLACKLISTED_OPERATOR`
+- `CROSS_DATABASE_ACCESS`
+- `CROSS_DATABASE_OUTPUT`
+- `JAVASCRIPT_EXECUTION`
+
+**Note:** Feature is enabled by default with conservative settings.
+
+==== Remove Deprecated Map-Reduce Pipeline Type
+
+RESTHeart v9 eliminates support for MongoDB's map-reduce pipeline functionality.
+
+**Breaking Change:** Users must migrate to aggregation pipelines before upgrading to v9.
+
+**Rationale:**
+
+- MongoDB deprecated map-reduce starting in version 5.0
+- Map-reduce aggregations are inherently difficult to secure
+- RESTHeart maintained this feature through v7 and v8 for backward compatibility
+- Reduces code complexity and maintenance burden
+
+==== Cleanup Bad Request Response from MongoService
+
+RESTHeart v9 simplifies error responses when MongoDB requests fail due to invalid request bodies.
+
+**Before:**
+
+[source,json]
+----
+{
+  "exception": "org.restheart.exchange.BadRequestException",
+  "exception message": "Invalid JSON. JSON reader was expecting a value but found 'x1'.",
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Invalid JSON. JSON reader was expecting a value but found 'x1'."
+}
+----
+
+**After:**
+
+[source,json]
+----
+{
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Invalid JSON. JSON reader was expecting a value but found 'x1'."
+}
+----
+
+The response now contains only essential information without redundant exception metadata.
+
+==== Simplify GraphQL App Descriptor
+
+RESTHeart v9 streamlines the GraphQL App Description document structure in MongoDB.
+
+**Key Changes:**
+
+1. **Remove `descriptor.name`** - The `_id` field becomes the sole identifier
+2. **Make `descriptor.uri` optional** - Auto-generates URIs following pattern `/{_id}` when omitted
+3. **Enforce string type for `_id`** - Required when no custom URI is specified
+4. **Prevent URI collisions** - Validation prevents `_id` values from matching existing URIs and vice versa
+
+**Minimal Configuration Example:**
+
+[source,json]
+----
+{
+  "_id": "user-api"
+}
+----
+
+This automatically generates the URI `/user-api`.
+
+**Custom URI Example:**
+
+[source,json]
+----
+{
+  "_id": "user-api",
+  "descriptor": {
+    "uri": "/v1/users"
+  }
+}
+----
+
+**Migration:** Remove `descriptor.name` from existing GraphQL app definition documents.
+
+==== Simplify Authentication with OAuth 2.0-Compatible /token Endpoint
+
+RESTHeart v9 replaces the approach of allowing authentication on any secure endpoint with dedicated `/token` endpoints following OAuth 2.0 conventions.
+
+**Problems Addressed:**
+
+1. **Security concerns** - Token generation was possible on any endpoint (e.g., `/users?set-auth-cookie`)
+2. **Performance issues** - TokenInjector ran on EVERY authenticated request with 2-5ms cache lookup overhead
+3. **Design clarity** - Previous system was non-intuitive and violated REST principles
+
+**New Endpoints:**
+
+1. **POST /token**
+   - OAuth 2.0-style endpoint
+   - Supports HTTP Basic Auth and form-based credentials
+   - Returns `access_token`, `token_type`, and `expires_in`
+
+2. **POST /token/cookie**
+   - Sets HttpOnly cookies without exposing tokens in response bodies
+   - Enhanced security for browser-based applications
+
+**Example Request:**
+
+[source,bash]
+----
+# Using Basic Auth
+curl -X POST http://localhost:8080/token \
+  -u username:password
+
+# Using form data (OAuth 2.0 style)
+curl -X POST http://localhost:8080/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=admin&password=secret"
+----
+
+**Example Response:**
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900
+}
+----
+
+**Performance Improvement:**
+
+85% performance improvement for token-based authentication (347ms → 50ms for 100 requests)
+
+**Configuration Changes:**
+
+- Default JWT authentication is now enabled
+- RND tokens are disabled by default
+- Cookie handlers are enabled by default
+
+==== Add `REQUEST_AFTER_FAILED_AUTH` InterceptPoint
+
+RESTHeart v9 introduces a new intercept point that activates when authentication or authorization fails.
+
+**Use Cases:**
+
+- Protection against brute force attacks
+- Customized error responses for auth failures
+- Security event logging
+- Rate limiting based on failed attempts
+
+**Example Implementation:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "failedAuthLogger",
+    description = "Logs failed authentication attempts",
+    interceptPoint = InterceptPoint.REQUEST_AFTER_FAILED_AUTH)
+public class FailedAuthLoggerInterceptor implements WildcardInterceptor {
+    @Override
+    public void handle(Request<?> request, Response<?> response) throws Exception {
+        var account = request.getAuthenticatedAccount();
+        var clientIp = request.getRemoteAddress();
+        
+        if (account == null) {
+            LOGGER.warn("Authentication failed from IP: {}", clientIp);
+        } else {
+            LOGGER.warn("Authorization failed for user: {} from IP: {}", 
+                account.getPrincipal(), clientIp);
+        }
+    }
+
+    @Override
+    public boolean resolve(Request<?> request, Response<?> response) {
+        return true; // Intercept all failed auth attempts
+    }
+}
+----
+
+The intercept point executes after auth failures but before sending error responses to clients, allowing custom handling and logging.
+
+==== Add Request Body Predicates
+
+RESTHeart v9 implements support for `@request.body` variables in the ACL predicate system.
+
+**Key Features:**
+
+- Access to complete request bodies and nested properties via dot notation
+- Array element indexing (e.g., `@request.body.roles.0`)
+- Support for BsonRequest, JsonRequest, and MongoRequest types
+- Integration with Undertow comparison operators: `equals()`, `greater-than()`, `less-than()`, `regex()`
+
+**Configuration Example:**
+
+[source,yml]
+----
+permissions:
+  - role: user
+    predicate: >
+      path-prefix('/transactions') and 
+      method(POST) and 
+      less-than(@request.body.amount, 1000)
+----
+
+This example restricts users to creating transactions with amounts less than 1000.
+
+**Nested Property Access:**
+
+[source,yml]
+----
+permissions:
+  - role: user
+    predicate: >
+      path-prefix('/orders') and 
+      equals(@request.body.payment.method, 'credit_card')
+----
+
+**Notable Behavior:**
+
+Missing properties and non-JSON/BSON requests resolve to `null`, implementing fail-safe denial semantics.
+
+==== New Permission Variables - @rnd and @qparams
+
+RESTHeart v9 adds two new variables to the Access Control List (ACL) system.
+
+**@rnd(bits)** - Cryptographically Secure Random String Generation
+
+Generates random strings using `java.security.SecureRandom`, encoded as hexadecimal.
+
+**Use Cases:**
+
+- Secure user registration with automatic OTP generation
+- API key generation for service accounts
+- Temporary access tokens for password reset workflows
+- Multi-factor authentication with verification codes
+
+**Example - User Registration with OTP:**
+
+[source,yml]
+----
+permissions:
+  - role: $unauthenticated
+    predicate: path('/users') and method(POST)
+    mongo:
+      mergeRequest:
+        otp: "@rnd(32)"
+        verified: false
+        role: "pending"
+----
+
+**@qparams['key']** - Query Parameter Access
+
+Retrieves query parameter values from request URLs for authorization decisions.
+
+**Example - OTP Verification:**
+
+[source,yml]
+----
+permissions:
+  - role: pending
+    predicate: >
+      path('/users/{userid}/verify') and
+      method(PATCH) and
+      equals(@user._id, '{userid}') and
+      equals(@user.otp, @qparams['otp'])
+    mongo:
+      mergeRequest:
+        verified: true
+        role: "user"
+----
+
+**Complete Workflow:**
+
+1. User registers → System generates OTP and stores it
+2. User receives OTP (via email/SMS)
+3. User calls verify endpoint with OTP as query parameter
+4. System validates OTP using `@qparams['otp']`
+5. Upon success, user role is escalated and account is verified
+
+==== Add Request Attached Parameters to Account Properties in MongoRealmAuthenticator
+
+RESTHeart v9 enhances MongoRealmAuthenticator to automatically include specified request parameters as account properties after successful authentication.
+
+**Problem:**
+
+Interceptors running at `BEFORE_AUTH` can attach parameters using `request.attachParam(key, value)`, but these parameters were not carried over to authenticated account properties.
+
+**Solution:**
+
+Add an `attached-props` configuration option:
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+  enabled: true
+  users-db: restheart
+  users-collection: users
+  attached-props:
+    - tenantId
+    - organizationId
+    - host
+----
+
+**Behaviors:**
+
+- Only listed parameters are copied (backward compatible)
+- Missing parameters are silently skipped
+- Parameters are transferred after successful authentication
+
+**Use Cases:**
+
+1. **Custom attributes** - Attach organizational metadata or user-specific data accessible throughout request lifecycle
+2. **Dynamic authorization** - Use account properties in security predicates without additional database lookups
+
+**Example - Multi-tenant Authorization:**
+
+An interceptor at `BEFORE_AUTH` extracts tenant ID from request and attaches it:
+
+[source,java]
+----
+@Override
+public void handle(Request<?> request, Response<?> response) {
+    var tenantId = extractTenantId(request);
+    request.attachParam("tenantId", tenantId);
+}
+----
+
+After authentication, the tenant ID is available in account properties and can be used in ACL predicates:
+
+[source,yml]
+----
+permissions:
+  - role: user
+    predicate: equals(@user.tenantId, @request.tenantId)
+----
+
+=== Upgrade Guide
+
+==== Prerequisites
+
+- Java 25 LTS must be installed
+- MongoDB 5.0 or later is recommended
+- Review deprecated features list
+
+==== Breaking Changes
+
+1. **Map-Reduce Pipelines Removed**
+   - Action: Migrate all map-reduce aggregations to standard aggregation pipelines before upgrading
+
+2. **Docker Image Changes**
+   - Action: Update Docker references from `softinstigate/restheart` (OpenJDK) to the GraalVM-based image
+   - Note: The `latest` tag now points to the GraalVM image
+
+3. **GraphQL App Descriptor Structure**
+   - Action: Remove `descriptor.name` field from GraphQL app definition documents
+   - Action: Ensure `_id` fields are strings if not using custom URIs
+
+4. **Token Authentication Endpoints**
+   - Action: Update client applications to use `/token` or `/token/cookie` endpoints
+   - Action: Remove `?set-auth-cookie` and similar query parameters from API calls
+
+==== Configuration Updates
+
+**Default JWT Authentication:**
+
+JWT authentication is now enabled by default. If you prefer RND tokens, update your configuration:
+
+[source,yml]
+----
+jwtTokenManager:
+  enabled: false
+
+rndTokenManager:
+  enabled: true
+----
+
+**Aggregation Security:**
+
+Review and configure aggregation security settings based on your security requirements:
+
+[source,yml]
+----
+mongo:
+  aggregationSecurity:
+    blacklistedStages:
+      - $out
+      - $merge
+    allowJavaScriptExecution: false
+----
+
+**MongoRealmAuthenticator:**
+
+If using attached parameters, add the `attached-props` configuration:
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+  attached-props:
+    - tenantId
+    - customAttribute
+----
+
+==== Migration Steps
+
+1. **Backup your configuration and data**
+2. **Update to Java 25 LTS**
+3. **Review and update configuration file** following the examples above
+4. **Migrate map-reduce pipelines to aggregation pipelines**
+5. **Update GraphQL app definition documents**
+6. **Update client applications** to use new `/token` endpoints
+7. **Test in a staging environment** before production deployment
+8. **Update Docker images** if using containerized deployments
+9. **Monitor logs** using the enhanced logging features to verify correct operation
+
+==== Testing the Upgrade
+
+After upgrading, verify the following:
+
+1. **Authentication** - Test login via `/token` endpoint
+2. **Authorization** - Verify ACL rules work as expected
+3. **Aggregation Pipelines** - Ensure aggregations execute correctly with security controls
+4. **GraphQL** - Test GraphQL endpoints with updated app descriptors
+5. **Custom Plugins** - Verify custom plugins work with new logging and metrics features
+6. **Docker Deployment** - Confirm correct image is being used and startup is successful
+
+=== Getting Help
+
+If you encounter issues during the upgrade:
+
+- Check the link:https://restheart.org/docs/v9[RESTHeart v9 Documentation]
+- Review the link:https://github.com/SoftInstigate/restheart/milestone/61?closed=1[v9.0.0 Milestone Issues]
+- Ask questions on the link:https://github.com/SoftInstigate/restheart/discussions[GitHub Discussions]
+- Report bugs on link:https://github.com/SoftInstigate/restheart/issues[GitHub Issues]
