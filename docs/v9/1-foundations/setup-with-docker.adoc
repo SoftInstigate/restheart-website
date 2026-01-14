@@ -8,6 +8,46 @@ applies_to: restheart
 TIP: If Docker isn’t your thing, check out the link:/docs/v9/1-foundations/setup[setup] section for alternative installation methods.
 
 
+== Docker Images in RESTHeart v9
+
+RESTHeart v9 consolidates Docker images from three variants to two for simplified deployment:
+
+[cols="2,3,2,2"]
+|===
+|**Image**|**Description**|**Startup**|**Memory**
+
+|**`softinstigate/restheart:latest`**
+|GraalVM-based image with full plugin support (JAR and JavaScript)
+|2-3 seconds
+|~256MB minimum
+
+|**`softinstigate/restheart:latest-native`**
+|Native binary optimized for Kubernetes (JavaScript plugins only)
+|<100ms
+|~64MB minimum
+|===
+
+**Key Changes from v8:**
+
+- ❌ **Removed**: OpenJDK-based image (replaced by GraalVM)
+- ✅ **Default**: GraalVM image is now the standard (`latest` tag)
+- ✅ **Native**: Optimized for Kubernetes deployments
+- ✅ **Full plugins**: Dynamic JAR and JavaScript plugin loading by default
+
+**Why This Change?**
+
+GraalVM now provides performance and size parity with OpenJDK while offering:
+- Full plugin functionality enabled by default
+- Better long-term support and performance
+- Unified image for most deployment scenarios
+
+**Which Image Should I Use?**
+
+- **`latest`** - For most deployments, development, and when you need to load custom JAR plugins
+- **`latest-native`** - For Kubernetes, serverless, or when you need the fastest possible startup and lowest memory footprint
+
+IMPORTANT: The native image only supports JavaScript plugins. If you need custom Java/Kotlin plugins, use the GraalVM-based `latest` image or build a custom native image.
+
 == Which Docker Setup Should I Use?
 
 Choose based on your needs:

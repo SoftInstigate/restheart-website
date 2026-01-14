@@ -200,6 +200,12 @@ Predicates can reference dynamic values using special variables:
 |Properties of authenticated user (e.g., `@user._id`, `@user.userid`, `@user.email`)
 |`@request`
 |Request properties (e.g., `@request.remoteIp`)
+|`@request.body`
+|Request body content for fine-grained authorization (e.g., `@request.body.amount`, `@request.body.items.0`)
+|`@qparams['key']`
+|Query parameter value by key (e.g., `@qparams['category']`, `@qparams['status']`)
+|`@rnd(bits)`
+|Cryptographically secure random string (hexadecimal, e.g., `@rnd(32)` for 32-bit random value)
 |`@mongoPermissions`
 |Current MongoDB permissions object (e.g., `@mongoPermissions.writeFilter`)
 |`@now`
@@ -226,6 +232,146 @@ This permission:
 - Matches paths like `/john123`, `/mary456`
 - Extracts the `{userid}` from the path
 - Only authorizes if `${userid}` equals the authenticated user's `_id`
+
+===== Example: Request Body Predicates
+
+Control authorization based on the content of the request body:
+
+[source,json]
+----
+{
+  "_id": "limitTransactionAmount",
+  "roles": ["user"],
+  "predicate": "path('/transactions') and method(POST) and less-than(@request.body.amount, 1000)",
+  "priority": 100
+}
+----
+
+This permission:
+- Allows users to create transactions via `POST /transactions`
+- Only authorizes transactions where the `amount` field is less than 1000
+- Requests with `amount >= 1000` are rejected with 403 Forbidden
+
+**Nested Properties:**
+
+[source,json]
+----
+{
+  "_id": "requireCreditCardPayment",
+  "roles": ["customer"],
+  "predicate": "path('/orders') and method(POST) and equals(@request.body.payment.method, 'credit_card')",
+  "priority": 100
+}
+----
+
+**Array Elements:**
+
+[source,json]
+----
+{
+  "_id": "limitFirstItem",
+  "roles": ["user"],
+  "predicate": "path('/carts') and less-than(@request.body.items.0.quantity, 10)",
+  "priority": 100
+}
+----
+
+NOTE: Missing properties and non-JSON/BSON requests resolve to `null`, implementing fail-safe denial semantics.
+
+===== Example: Query Parameter Access with @qparams
+
+Authorize requests based on query parameter values:
+
+[source,json]
+----
+{
+  "_id": "userCanFilterOwnCategory",
+  "roles": ["user"],
+  "predicate": "path('/products') and method(GET) and equals(@qparams['category'], @user.category)",
+  "priority": 100
+}
+----
+
+This permission:
+- Allows users to query products via `GET /products?category=electronics`
+- Only authorizes if the `category` query parameter matches the user's assigned category
+- Example: User with `category: "electronics"` can only query `?category=electronics`
+
+===== Example: Secure Random Strings with @rnd
+
+Generate cryptographically secure random values for tokens, OTPs, and API keys:
+
+**User Registration with OTP:**
+
+[source,json]
+----
+{
+  "_id": "userSignup",
+  "roles": ["$unauthenticated"],
+  "predicate": "path('/users') and method(POST)",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": {
+      "otp": "@rnd(32)",
+      "verified": false,
+      "role": "pending"
+    }
+  }
+}
+----
+
+This permission:
+- Allows unauthenticated users to register via `POST /users`
+- Automatically generates a 32-bit random OTP (8 hexadecimal characters)
+- Sets initial user status as `verified: false` and `role: "pending"`
+
+**Account Verification:**
+
+[source,json]
+----
+{
+  "_id": "verifyAccount",
+  "roles": ["pending"],
+  "predicate": "path-template('/users/{userid}/verify') and method(PATCH) and equals(@user._id, ${userid}) and equals(@user.otp, @qparams['otp'])",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": {
+      "verified": true,
+      "role": "user"
+    }
+  }
+}
+----
+
+This permission:
+- Allows pending users to verify their account via `PATCH /users/{userid}/verify?otp=abc123def`
+- Validates that the OTP in the query parameter matches the stored OTP
+- Upon success, escalates user to `role: "user"` and sets `verified: true`
+
+**Complete OTP Workflow:**
+
+1. User registers: `POST /users` → System generates and stores OTP
+2. User receives OTP via email/SMS (handled by your application)
+3. User verifies: `PATCH /users/{userid}/verify?otp={received-otp}`
+4. System validates OTP from `@qparams['otp']` against `@user.otp`
+5. On match: user is verified and granted full access
+
+**Other Use Cases for @rnd:**
+
+[source,json]
+----
+{
+  "mongo": {
+    "mergeRequest": {
+      "apiKey": "@rnd(128)",          // 128-bit API key (32 hex chars)
+      "resetToken": "@rnd(64)",        // Password reset token
+      "sessionId": "@rnd(256)"         // Session identifier
+    }
+  }
+}
+----
+
+IMPORTANT: `@rnd()` uses `java.security.SecureRandom` for cryptographic security. The parameter specifies bits, resulting in `bits/4` hexadecimal characters (e.g., `@rnd(32)` = 8 hex characters).
 
 [[mongopermissions]]
 === MongoDB-Specific Permissions

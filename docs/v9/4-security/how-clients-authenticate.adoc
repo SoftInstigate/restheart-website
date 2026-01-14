@@ -103,7 +103,226 @@ In other words:
 
 === Authentication Token
 
-RESTHeart default configuration includes the **tokenBasicAuthMechanism** and the **rndTokenManager**.
+==== Modern OAuth 2.0 Token Endpoint (Recommended)
+
+RESTHeart v9 introduces dedicated OAuth 2.0-compatible token endpoints for secure and standards-compliant authentication. This is the recommended approach for new applications.
+
+**Available Endpoints:**
+
+* `POST /token` - Returns JWT token in response body (OAuth 2.0 Resource Owner Password Credentials Grant)
+* `POST /token/cookie` - Sets JWT token as HttpOnly cookie (enhanced security for browser-based apps)
+
+**Benefits:**
+
+* 85% performance improvement over the legacy token injection approach
+* Standards-compliant OAuth 2.0 implementation
+* Reduced attack surface with dedicated endpoints
+* Centralized authentication audit trails
+* No overhead on every authenticated request
+
+===== Basic Authentication Method
+
+Send credentials using HTTP Basic Authentication:
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -u [BASIC-AUTH]
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/token \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/token', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Access token:', data.access_token);
+    console.log('Expires in:', data.expires_in, 'seconds');
+    // Store the token for future requests
+    sessionStorage.setItem('auth_token', data.access_token);
+})
+.catch(error => console.error('Error:', error));
+----
+
+**Response:**
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900
+}
+----
+
+===== OAuth 2.0 Form Data Method
+
+Send credentials using OAuth 2.0 form data (application/x-www-form-urlencoded):
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=admin&password=secret"
+----
+
+==== HTTPie
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=password \
+  username=admin \
+  password=secret
+----
+
+==== JavaScript
+[source,javascript]
+----
+const formData = new URLSearchParams({
+    grant_type: 'password',
+    username: 'your-username',
+    password: 'your-password'
+});
+
+fetch('[RESTHEART-URL]/token', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Access token:', data.access_token);
+    sessionStorage.setItem('auth_token', data.access_token);
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Using the Token
+
+Once you have the token, use it as a Bearer token in the Authorization header:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/mycollection \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/mycollection \
+  "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+==== JavaScript
+[source,javascript]
+----
+const token = sessionStorage.getItem('auth_token');
+
+fetch('[RESTHEART-URL]/mycollection', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log('Data:', data))
+.catch(error => console.error('Error:', error));
+----
+
+===== Cookie-Based Authentication
+
+For browser-based applications, use the `/token/cookie` endpoint to set an HttpOnly cookie (more secure as the token isn't exposed to JavaScript):
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token/cookie \
+  -u [BASIC-AUTH] \
+  -c cookies.txt
+----
+
+==== HTTPie
+[source,bash]
+----
+http --session=./session.json POST [RESTHEART-URL]/token/cookie \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/token/cookie', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    },
+    credentials: 'include'  // Important: include cookies
+})
+.then(response => {
+    if (response.ok) {
+        console.log('Authenticated! Cookie set.');
+        // Subsequent requests will automatically include the cookie
+    }
+})
+.catch(error => console.error('Error:', error));
+
+// Subsequent requests automatically include the cookie
+fetch('[RESTHEART-URL]/mycollection', {
+    method: 'GET',
+    credentials: 'include'  // Important: include cookies
+})
+.then(response => response.json())
+.then(data => console.log('Data:', data))
+.catch(error => console.error('Error:', error));
+----
+
+**Configuration:**
+
+The JWT Token Manager is enabled by default in RESTHeart v9:
+
+[source,yml]
+----
+jwtTokenManager:
+    key: secret  # Change this in production!
+    enabled: true
+    ttl: 15  # Token time-to-live in minutes
+    srv-uri: /tokens
+    issuer: restheart.com
+----
+
+IMPORTANT: Always change the `key` value in production to a strong, random secret.
+
+==== Legacy Token Management (Automatic Injection)
+
+NOTE: This is the legacy token management approach. For new applications, use the OAuth 2.0 `/token` endpoint described above.
+
+RESTHeart can also automatically inject auth tokens into response headers. The default configuration includes the **tokenBasicAuthMechanism** and the **rndTokenManager**.
 
 With those plugins enabled, when a request is successfully authenticated, an auth token is generated by the Token Manager and included in every subsequent responses.
 

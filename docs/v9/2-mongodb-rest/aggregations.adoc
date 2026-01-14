@@ -508,6 +508,8 @@ The `$merge` stage is more efficient than the older `$out` stage because it can 
 
 === Security Considerations
 
+==== Operator Injection Protection
+
 RESTHeart checks variables for MongoDB operators to prevent injection attacks. This protection can be disabled in the configuration file, but this is strongly discouraged.
 
 [source,yml]
@@ -515,6 +517,57 @@ RESTHeart checks variables for MongoDB operators to prevent injection attacks. T
 mongo:
     aggregation-check-operators: true  # Default setting
 ----
+
+==== Aggregation Pipeline Security
+
+RESTHeart v9 introduces comprehensive security controls for aggregation pipelines to prevent dangerous operations:
+
+**Stage Blacklisting**
+
+Certain pipeline stages can be restricted to prevent unauthorized data access or modification:
+
+- `$out` - Writing to collections
+- `$merge` - Merging data into collections  
+- `$lookup` - Cross-collection joins
+- `$graphLookup` - Graph traversal operations
+- `$unionWith` - Combining collections
+
+**Operator Blacklisting**
+
+JavaScript-executing operators are blocked by default for security:
+
+- `$where` - JavaScript filter expressions
+- `$function` - Custom JavaScript functions
+- `$accumulator` - JavaScript-based aggregation
+
+**Configuration Example**
+
+[source,yml]
+----
+mongo:
+  aggregationSecurity:
+    blacklistedStages:
+      - $out
+      - $merge
+      - $lookup
+      - $graphLookup
+      - $unionWith
+    blacklistedOperators:
+      - $where
+      - $function
+      - $accumulator
+    allowCrossDatabaseOperations: false
+    allowJavaScriptExecution: false
+----
+
+When security violations occur, RESTHeart returns HTTP 403 Forbidden with specific violation types:
+
+- `BLACKLISTED_STAGE` - Attempted to use a prohibited pipeline stage
+- `BLACKLISTED_OPERATOR` - Attempted to use a prohibited operator
+- `CROSS_DATABASE_ACCESS` - Attempted to access collections in a different database
+- `JAVASCRIPT_EXECUTION` - Attempted to execute JavaScript code
+
+IMPORTANT: These security controls are enabled by default with conservative settings to protect your data
 
 === Transaction Support
 
@@ -604,34 +657,4 @@ See the link:/docs/mongodb-rest/transactions[Transactions] documentation for det
 }
 ----
 
-=== Map-Reduce (Deprecated)
 
-WARNING: Map-reduce operations are deprecated in MongoDB. Use aggregation pipelines instead.
-
-For legacy systems, RESTHeart still supports map-reduce:
-
-[source,json]
-----
-{
-  "type": "mapReduce",
-  "uri": "word-count",
-  "map": "function() { var words = this.text.split(' '); words.forEach(function(word) { emit(word.toLowerCase(), 1); }); }",
-  "reduce": "function(key, values) { return Array.sum(values); }",
-  "query": { "type": { "$var": "documentType" } }
-}
-----
-
-Variables can be used in both the query and JavaScript functions. In JavaScript functions, use `JSON.parse($vars)` to access variables:
-
-[source,js]
-----
-function() {
-  var minLength = JSON.parse($vars).minLength || 0;
-  var words = this.text.split(' ');
-  words.forEach(function(word) {
-    if (word.length > minLength) {
-      emit(word.toLowerCase(), 1);
-    }
-  });
-}
-----

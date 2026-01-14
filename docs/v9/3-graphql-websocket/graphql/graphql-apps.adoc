@@ -62,26 +62,85 @@ A GraphQL application definition is composed by three sections:
 
 === Descriptor
 
-Here you can specify:
+The descriptor section has been simplified in RESTHeart v9 to reduce configuration redundancy.
 
--  `name`: GraphQL application name.
--  `description`: GraphQL application description.
--  `enabled`: can be `true` or `false`.
--  `uri`: specifies at which endpoint your GraphQL application is reachable (e.g. `/graphql/uri`). If the `uri` parameter is missing the application's name is used instead.
+==== Required Fields
+
+- `_id`: The document identifier, which also serves as the application name
+
+==== Optional Fields
+
+- `descriptor.description`: GraphQL application description
+- `descriptor.enabled`: can be `true` or `false` (default: `true`)
+- `descriptor.uri`: Custom endpoint path. If omitted, uses `/_id` as the URI
+
+==== Simplified Configuration (v9)
+
+**Minimal Example:**
 
 [source,json]
 ----
 {
+  "_id": "myapp",
+  "schema": "...",
+  "mappings": "..."
+}
+----
+
+This creates a GraphQL application accessible at `/graphql/myapp`.
+
+**With Custom URI:**
+
+[source,json]
+----
+{
+  "_id": "user-api",
   "descriptor": {
-    "name": "MyApp",
-    "description": "my first test GraphQL application",
-    "enabled": true,
-    "uri": "myapp"
+    "uri": "/v1/users",
+    "description": "User management API",
+    "enabled": true
   },
   "schema": "...",
   "mappings": "..."
 }
 ----
+
+This creates a GraphQL application accessible at `/graphql/v1/users`.
+
+==== Key Changes from v8
+
+RESTHeart v9 streamlines the GraphQL App Definition:
+
+1. **Removed `descriptor.name`** - The `_id` field now serves as the sole identifier
+2. **Optional URI** - When `descriptor.uri` is omitted, the URI auto-generates as `/{_id}`
+3. **String `_id` required** - When not using a custom URI, `_id` must be a string
+4. **URI collision prevention** - Validation prevents `_id` values from matching existing custom URIs and vice versa
+
+**Migration from v8:**
+
+If migrating from v8, remove the `descriptor.name` field from your GraphQL app definitions:
+
+[source,json]
+----
+// v8 (old)
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "descriptor": {
+    "name": "myapp",  // Remove this field
+    "uri": "/myapp"
+  }
+}
+
+// v9 (new)
+{
+  "_id": "myapp",  // Use meaningful string IDs
+  "descriptor": {
+    "uri": "/myapp"  // Optional - will default to /myapp
+  }
+}
+----
+
+IMPORTANT: The `_id` field must be a string when relying on automatic URI generation. Custom URIs can use any `_id` format.
 
 === Schema
 

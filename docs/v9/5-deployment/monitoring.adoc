@@ -192,3 +192,351 @@ Summary of behaviors:
 The `org.restheart.metrics.Metrics.attachMetricLabels(Request<?> request, List<MetricLabel> labels)` method provides the capability to include custom labels in the metrics that are being collected.
 
 For example, the `GraphQLService` utilizes this method to include the `query` label in the metrics, which corresponds to the name of the executed GraphQL query.
+
+== Custom Metrics (RESTHeart v9)
+
+RESTHeart v9 introduces a programmatic API for registering and collecting custom application-specific metrics. This allows you to track business metrics, performance indicators, and domain-specific measurements alongside the built-in HTTP and JVM metrics.
+
+=== Supported Metric Types
+
+RESTHeart supports four standard Prometheus metric types:
+
+[cols="2,4,2"]
+|===
+|**Type**|**Description**|**Use Case**
+
+|**Counter**
+|Monotonically increasing value (can only go up)
+|Request counts, error counts, orders processed
+
+|**Gauge**
+|Value that can increase or decrease
+|Active connections, queue size, temperature
+
+|**Histogram**
+|Samples observations and counts them in configurable buckets
+|Request durations, response sizes
+
+|**Summary**
+|Similar to histogram, with configurable quantiles
+|Request latencies, SLA measurements
+|===
+
+=== Registering Custom Metrics
+
+Custom metrics must be registered during application startup using an Initializer plugin.
+
+==== Example: Counter Metric
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "customMetricsInit",
+    description = "Registers custom metrics",
+    enabledByDefault = true)
+public class CustomMetricsInitializer implements Initializer {
+    @Override
+    public void init() {
+        // Register a counter with labels
+        Metrics.registerCounter(
+            "custom_requests_total",
+            "Total number of custom requests",
+            "endpoint",  // Label names
+            "method"
+        );
+    }
+}
+----
+
+==== Example: Gauge Metric
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "cacheMetricsInit",
+    description = "Registers cache size gauge",
+    enabledByDefault = true)
+public class CacheMetricsInitializer implements Initializer {
+    
+    private final CacheService cacheService;
+    
+    @Inject("cacheService")
+    public CacheMetricsInitializer(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+    
+    @Override
+    public void init() {
+        // Register a gauge with a supplier function
+        Metrics.registerGauge(
+            "cache_size",
+            "Current cache size",
+            () -> cacheService.getCacheSize()
+        );
+    }
+}
+----
+
+==== Example: Histogram Metric
+
+[source,java]
+----
+@Override
+public void init() {
+    // Register a histogram with custom buckets
+    Metrics.registerHistogram(
+        "order_value_dollars",
+        "Distribution of order values in USD",
+        new double[]{10, 50, 100, 500, 1000, 5000}  // Bucket boundaries
+    );
+}
+----
+
+==== Example: Summary Metric
+
+[source,java]
+----
+@Override
+public void init() {
+    // Register a summary with quantiles
+    Metrics.registerSummary(
+        "api_latency_seconds",
+        "API request latency",
+        0.5, 0.9, 0.99  // 50th, 90th, 99th percentiles
+    );
+}
+----
+
+=== Updating Custom Metrics
+
+Once registered, you can update metrics from Services or Interceptors during request handling.
+
+==== Updating Counters
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "orderService",
+    description = "Order processing service")
+public class OrderService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Process order...
+        
+        // Increment counter with labels
+        Metrics.counter("custom_requests_total")
+            .labels("orders", req.getMethod().toString())
+            .inc();
+        
+        if (orderSuccessful) {
+            Metrics.counter("orders_processed_total").inc();
+        }
+    }
+}
+----
+
+==== Updating Gauges
+
+[source,java]
+----
+// Increment gauge
+Metrics.gauge("active_connections").inc();
+
+// Decrement gauge
+Metrics.gauge("active_connections").dec();
+
+// Set to specific value
+Metrics.gauge("queue_size").set(42);
+----
+
+==== Recording Histogram/Summary Values
+
+[source,java]
+----
+@Override
+public void handle(JsonRequest req, JsonResponse res) {
+    long startTime = System.nanoTime();
+    
+    // Process request...
+    
+    long duration = System.nanoTime() - startTime;
+    
+    // Record observation in histogram
+    Metrics.histogram("request_duration_seconds")
+        .observe(duration / 1_000_000_000.0);
+    
+    // Record observation in summary
+    Metrics.summary("api_latency_seconds")
+        .observe(duration / 1_000_000_000.0);
+}
+----
+
+=== Complete Example: Business Metrics
+
+This example shows how to track business metrics for an e-commerce application:
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "businessMetricsInit",
+    description = "Registers business metrics",
+    enabledByDefault = true)
+public class BusinessMetricsInitializer implements Initializer {
+    @Override
+    public void init() {
+        // Order metrics
+        Metrics.registerCounter(
+            "orders_total",
+            "Total number of orders",
+            "status"  // pending, completed, failed
+        );
+        
+        Metrics.registerHistogram(
+            "order_value_dollars",
+            "Order value distribution",
+            new double[]{10, 50, 100, 500, 1000}
+        );
+        
+        // Cart metrics
+        Metrics.registerGauge(
+            "active_carts",
+            "Number of active shopping carts"
+        );
+        
+        // Performance metrics
+        Metrics.registerSummary(
+            "checkout_duration_seconds",
+            "Time to complete checkout",
+            0.5, 0.95, 0.99
+        );
+    }
+}
+----
+
+**Using the metrics:**
+
+[source,java]
+----
+@RegisterPlugin(name = "orderService")
+public class OrderService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        var order = req.getContent();
+        double orderValue = order.get("total").asDouble();
+        
+        long startTime = System.nanoTime();
+        
+        try {
+            // Process order...
+            processOrder(order);
+            
+            // Track successful order
+            Metrics.counter("orders_total")
+                .labels("completed")
+                .inc();
+            
+            Metrics.histogram("order_value_dollars")
+                .observe(orderValue);
+            
+        } catch (Exception e) {
+            // Track failed order
+            Metrics.counter("orders_total")
+                .labels("failed")
+                .inc();
+        } finally {
+            // Track checkout duration
+            long duration = System.nanoTime() - startTime;
+            Metrics.summary("checkout_duration_seconds")
+                .observe(duration / 1_000_000_000.0);
+        }
+    }
+}
+----
+
+=== Querying Custom Metrics
+
+Custom metrics are exposed at the same `/metrics` endpoint as built-in metrics:
+
+[source,bash]
+----
+# Get all metrics
+$ http -a admin:secret :8080/metrics
+
+# Custom metrics appear in the list
+[
+    "/jvm",
+    "/{tenant}/ping",
+    "/custom"  # Your custom metrics
+]
+
+# Query custom metrics
+$ http -a admin:secret :8080/metrics/custom
+
+# TYPE orders_total counter
+orders_total{status="completed",} 1523.0
+orders_total{status="failed",} 12.0
+
+# TYPE order_value_dollars histogram
+order_value_dollars_bucket{le="10.0",} 45.0
+order_value_dollars_bucket{le="50.0",} 234.0
+order_value_dollars_bucket{le="100.0",} 456.0
+order_value_dollars_sum 45678.90
+order_value_dollars_count 789.0
+
+# TYPE active_carts gauge
+active_carts 42.0
+
+# TYPE checkout_duration_seconds summary
+checkout_duration_seconds{quantile="0.5",} 0.234
+checkout_duration_seconds{quantile="0.95",} 1.456
+checkout_duration_seconds{quantile="0.99",} 2.789
+checkout_duration_seconds_sum 1234.567
+checkout_duration_seconds_count 789.0
+----
+
+=== Configuration
+
+Configure the metrics endpoint in `restheart.yml`:
+
+[source,yml]
+----
+metrics:
+  enabled: true
+  uri: /metrics
+  missing-registry-status-code: 200  # Prometheus-friendly
+----
+
+=== Best Practices
+
+1. **Register at startup** - Always register metrics in an Initializer, not during request handling
+2. **Use descriptive names** - Follow Prometheus naming conventions: `subsystem_metric_unit`
+3. **Add helpful descriptions** - Make metrics self-documenting
+4. **Choose appropriate types**:
+   - Use Counters for things that only increase
+   - Use Gauges for values that fluctuate
+   - Use Histograms/Summaries for distributions
+5. **Label carefully** - Labels create new time series; avoid high-cardinality labels
+6. **Monitor costs** - Each unique label combination creates a separate metric
+
+=== Retrieving Existing Metrics
+
+You can also retrieve and manipulate existing metrics programmatically:
+
+[source,java]
+----
+// Get an existing counter
+Counter counter = Metrics.getCounter("http_requests_total");
+if (counter != null) {
+    counter.inc();
+}
+
+// Get an existing gauge
+Gauge gauge = Metrics.getGauge("cache_size");
+if (gauge != null) {
+    gauge.set(newSize);
+}
+----
+
+This allows multiple plugins to update the same metrics without re-registering them.

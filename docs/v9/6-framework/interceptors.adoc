@@ -96,7 +96,7 @@ public class MyPlugin implements JsonService {
 |no
 |`true`
 |`interceptPoint`
-|the intercept point: `REQUEST_BEFORE_EXCHANGE_INIT`, `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
+|the intercept point: `REQUEST_BEFORE_EXCHANGE_INIT`, `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `REQUEST_AFTER_FAILED_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
 |no
 |`REQUEST_AFTER_AUTH`
 |`requiresContent`
@@ -149,3 +149,172 @@ public class XmlToBsonTransformer implements WildcardInterceptor {
 IMPORTANT: Only `WildcardInterceptor` can use the `REQUEST_BEFORE_EXCHANGE_INIT` intercept point.
 
 For a practical example of transforming request and response content to and from a different format than expected by a service, refer to the link:https://github.com/SoftInstigate/restheart/tree/master/examples/protobuffer-contacts[protobuffer-contacts] example.
+
+---
+
+=== Handling Failed Authentication (v9)
+
+RESTHeart v9 introduces the `REQUEST_AFTER_FAILED_AUTH` intercept point, which executes when authentication or authorization fails. This enables custom handling for failed security attempts before the error response is sent to the client.
+
+==== Use Cases
+
+- **Brute Force Protection**: Detect and respond to repeated failed authentication attempts
+- **Custom Error Responses**: Provide user-friendly error messages for auth failures
+- **Security Event Logging**: Track and log authentication failures for audit and security monitoring
+- **Rate Limiting**: Implement rate limiting based on failed authentication attempts
+- **Account Lockout**: Temporarily lock accounts after multiple failed attempts
+
+==== Example: Logging Failed Authentication
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "failedAuthLogger",
+    description = "Logs failed authentication and authorization attempts",
+    interceptPoint = InterceptPoint.REQUEST_AFTER_FAILED_AUTH,
+    enabledByDefault = true)
+public class FailedAuthLoggerInterceptor implements WildcardInterceptor {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(FailedAuthLoggerInterceptor.class);
+    
+    @Override
+    public void handle(Request<?> request, Response<?> response) throws Exception {
+        var account = request.getAuthenticatedAccount();
+        var clientIp = request.getRemoteAddress();
+        var path = request.getPath();
+        
+        if (account == null) {
+            // Authentication failed - no valid credentials provided
+            LOGGER.warn("Authentication failed from IP: {} attempting to access: {}", 
+                clientIp, path);
+        } else {
+            // Authorization failed - valid credentials but insufficient permissions
+            LOGGER.warn("Authorization failed for user: {} from IP: {} attempting to access: {}", 
+                account.getPrincipal(), clientIp, path);
+        }
+    }
+
+    @Override
+    public boolean resolve(Request<?> request, Response<?> response) {
+        return true; // Intercept all failed auth attempts
+    }
+}
+----
+
+==== Example: Brute Force Protection
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "bruteForceProtection",
+    description = "Detects and blocks brute force attacks",
+    interceptPoint = InterceptPoint.REQUEST_AFTER_FAILED_AUTH,
+    enabledByDefault = true)
+public class BruteForceProtectionInterceptor implements WildcardInterceptor {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(BruteForceProtectionInterceptor.class);
+    
+    // Track failed attempts per IP
+    private final LoadingCache<String, AtomicInteger> failedAttempts = Caffeine.newBuilder()
+        .expireAfterWrite(15, TimeUnit.MINUTES)
+        .build(key -> new AtomicInteger(0));
+    
+    private static final int MAX_ATTEMPTS = 5;
+    private static final int LOCKOUT_MINUTES = 15;
+    
+    @Override
+    public void handle(Request<?> request, Response<?> response) throws Exception {
+        var clientIp = request.getRemoteAddress();
+        var attempts = failedAttempts.get(clientIp);
+        int failedCount = attempts.incrementAndGet();
+        
+        if (failedCount >= MAX_ATTEMPTS) {
+            LOGGER.error("Brute force attack detected from IP: {}. {} failed attempts. " +
+                "Access blocked for {} minutes.", 
+                clientIp, failedCount, LOCKOUT_MINUTES);
+            
+            // Optionally: modify response to indicate account lockout
+            response.setStatusCode(429); // Too Many Requests
+            response.setContent(BsonDocument.parse(
+                "{\"error\": \"Too many failed authentication attempts. " +
+                "Account temporarily locked.\"}"
+            ));
+        } else {
+            LOGGER.warn("Failed authentication from IP: {}. Attempt {}/{}", 
+                clientIp, failedCount, MAX_ATTEMPTS);
+        }
+    }
+
+    @Override
+    public boolean resolve(Request<?> request, Response<?> response) {
+        // Only trigger for authentication failures (not authorization)
+        return request.getAuthenticatedAccount() == null;
+    }
+}
+----
+
+==== Example: Custom Error Response
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "friendlyAuthErrorResponder",
+    description = "Provides user-friendly error messages for auth failures",
+    interceptPoint = InterceptPoint.REQUEST_AFTER_FAILED_AUTH,
+    enabledByDefault = true)
+public class FriendlyAuthErrorInterceptor implements WildcardInterceptor {
+    
+    @Override
+    public void handle(Request<?> request, Response<?> response) throws Exception {
+        var account = request.getAuthenticatedAccount();
+        
+        BsonDocument errorResponse;
+        
+        if (account == null) {
+            // Authentication failed
+            errorResponse = BsonDocument.parse("""
+                {
+                    "error": "Invalid username or password",
+                    "code": "AUTH_FAILED",
+                    "message": "Please check your credentials and try again."
+                }
+                """);
+        } else {
+            // Authorization failed
+            errorResponse = BsonDocument.parse("""
+                {
+                    "error": "Access denied",
+                    "code": "INSUFFICIENT_PERMISSIONS",
+                    "message": "You do not have permission to access this resource.",
+                    "requiredRole": "admin"
+                }
+                """);
+        }
+        
+        response.setContent(errorResponse);
+    }
+
+    @Override
+    public boolean resolve(Request<?> request, Response<?> response) {
+        return true; // Apply to all failed auth attempts
+    }
+}
+----
+
+==== Key Characteristics
+
+- **Execution Timing**: Runs after authentication/authorization fails but before the error response is sent to the client
+- **Access to Failure Context**: Can distinguish between authentication failures (`account == null`) and authorization failures (`account != null`)
+- **Response Modification**: Can modify the error response status code and body
+- **Request Information**: Full access to request details (IP address, path, headers, etc.)
+
+==== Integration with Existing Security
+
+This intercept point works seamlessly with RESTHeart's existing security infrastructure:
+
+- Compatible with all authentication mechanisms (Basic Auth, JWT, custom)
+- Works with all authorizers (File ACL, MongoDB ACL, custom)
+- Integrates with the security audit trail
+- No impact on successful authentication/authorization flows
+
+IMPORTANT: Only `WildcardInterceptor` can use the `REQUEST_AFTER_FAILED_AUTH` intercept point, as it needs to handle requests regardless of their specific type.
