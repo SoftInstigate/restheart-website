@@ -1,7 +1,7 @@
 ---
 title: Blog posts
 layout: docs
-menu: overview
+menu: reference
 applies_to: restheart
 ---
 

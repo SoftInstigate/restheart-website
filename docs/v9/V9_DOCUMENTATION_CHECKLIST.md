@@ -734,3 +734,167 @@ When updating this checklist:
 3. Update statistics summary
 4. Verify all links are correct
 5. Update "Document Information" section
+
+---
+
+## Menu Property Updates (Sidebar Navigation)
+
+### What Was Fixed
+
+RESTHeart v9 reorganized the documentation structure into 8 parts. The `menu` property in each documentation file controls which sidebar section expands when that page is viewed. All menu properties have been updated to match the new structure.
+
+### Menu Mapping
+
+The sidebar uses the following ID-to-menu mapping:
+
+| Part ID | Menu Value | Section | Directory |
+|---------|------------|---------|-----------|
+| `part1` | `overview` | Foundations | `1-foundations/` |
+| `part2` | `mongodb` | MongoDB REST API | `2-mongodb-rest/` |
+| `part3` | `graphql` | GraphQL & WebSocket | `3-graphql-websocket/` |
+| `part4` | `security` | Security | `4-security/` |
+| `part5` | `setup` | Configuration & Deployment | `5-deployment/` |
+| `part6` | `framework` | Framework | `6-framework/` |
+| `part7` | `cloud` | RESTHeart Cloud | `8-cloud/` |
+| `part8` | `reference` | Reference | `9-reference/` |
+
+### Files Updated (21 files)
+
+**1-foundations/ (2 files)**
+- `setup-with-docker.adoc` - Changed from `setup` to `overview`
+- `setup.adoc` - Changed from `setup` to `overview`
+
+**3-graphql-websocket/ (14 files)**
+- All GraphQL files - Changed from `mongodb` to `graphql`
+  - `graphql/best-practices.adoc`
+  - `graphql/complex-app-example.adoc`
+  - `graphql/getting-started.adoc`
+  - `graphql/graphql-apps.adoc`
+  - `graphql/index.adoc`
+  - `graphql/mappings.adoc`
+  - `graphql/n-plus-one.adoc`
+  - `graphql/resolvers.adoc`
+  - `graphql/schema.adoc`
+  - `graphql/tutorial.adoc`
+- All WebSocket files - Changed from `mongodb` to `graphql`
+  - `websocket/change-streams.adoc`
+  - `websocket/index.adoc`
+  - `websocket/tutorial.adoc`
+  - `websocket/variables.adoc`
+
+**9-reference/ (5 files)**
+- All reference files - Changed from `overview` to `reference`
+  - `blog-posts.md`
+  - `example-webapps.adoc`
+  - `faq.adoc`
+  - `performances.adoc`
+  - `upgrade-to-v8.adoc`
+
+### Statistics
+
+- **Files Updated:** 21
+- **Insertions:** 21 lines
+- **Deletions:** 21 lines
+- **Net Change:** 0 (pure property updates)
+
+### Verification
+
+To verify menu properties are correct:
+
+```bash
+# Check all menu values
+grep -r "^menu:" docs/v9 --include="*.adoc" --include="*.md" | sed 's/.*menu: //' | sort | uniq -c
+
+# Should show:
+#   8 overview     (1-foundations)
+#  19 mongodb      (2-mongodb-rest)
+#  14 graphql      (3-graphql-websocket)
+#   7 security     (4-security)
+#  13 setup        (5-deployment)
+#  14 framework    (6-framework)
+#  16 cloud        (8-cloud)
+#   5 reference    (9-reference)
+```
+
+### How It Works
+
+The sidebar JavaScript (`_includes/docs-v9-sidebar.html`) contains a mapping that converts menu values to part IDs:
+
+```javascript
+const menuMapping = {
+    'overview': 'part1',
+    'mongodb': 'part2',
+    'graphql': 'part3',
+    'security': 'part4',
+    'setup': 'part5',
+    'framework': 'part6',
+    'cloud': 'part7',
+    'reference': 'part8'
+};
+```
+
+When a page loads with `menu: graphql`, the script expands the `part3` section in the sidebar.
+
+---
+
+## Final Summary
+
+### Total Changes Across All Updates
+
+**Documentation Files:** 8 files modified (content updates)
+**Menu Properties:** 21 files modified (navigation updates)
+**Supporting Files:** 5 files modified (navigation/layout)
+**New Files:** 2 files created (upgrade guide + checklist)
+
+**Grand Total:** 36 files changed
+
+### Content Changes
+- **Lines Added:** 1,085 (new content)
+- **Lines Removed:** 31 (map-reduce removal)
+- **Net Content:** +1,054 lines
+
+### Menu Property Changes
+- **Lines Changed:** 42 (21 removed, 21 added)
+- **Net Menu Changes:** 0 (pure replacements)
+
+### Combined Statistics
+- **Total Lines Changed:** +1,054 lines
+- **Files Modified/Created:** 36 files
+- **Features Documented:** 15/15 (100%)
+- **Documentation Coverage:** Complete
+
+---
+
+## Commit Message Suggestion
+
+```
+docs: Complete RESTHeart v9 documentation update
+
+- Add comprehensive upgrade guide (21KB) with all v9 features
+- Document OAuth 2.0 /token endpoint with examples
+- Document new permission variables (@rnd, @qparams, @request.body)
+- Document aggregation pipeline security controls
+- Document custom metrics API for monitoring
+- Document REQUEST_AFTER_FAILED_AUTH intercept point
+- Document simplified GraphQL app descriptor
+- Document Docker image consolidation (GraalVM + Native)
+- Remove map-reduce documentation (feature removed)
+- Remove v3-v7 documentation (287 files)
+- Update all menu properties for new sidebar structure
+- Update version selection dropdowns (v8 + v9 only)
+
+Files changed: 36
+Lines added: 1,085
+Features documented: 15/15 milestone features
+
+Resolves: #566, #567, #577, #583, #584, #558, #570, #569, #576
+Related: #556, #557, #564, #521, #581, #574
+```
+
+---
+
+## Document Update History
+
+- **2026-01-14**: Initial creation - Complete v9 documentation update
+- **2026-01-14**: Added menu property update section (21 files)
+
