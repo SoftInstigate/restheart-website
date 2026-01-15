@@ -87,10 +87,10 @@ In some use cases, native image might result in slightly worse peak performance.
 
 We suggest to install GraalVM with [sdkman](https://sdkman.io)
 
-You need at least version 23.1.2 for Java 21:
+You need at least version 25.0.1:
 
 ```bash
-$ sdk install java 21.0.2-graalce
+$ sdk install java 25.0.1-graalce
 ```
 ## Run RESTHeart with GraalVM
 
@@ -98,9 +98,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "21.0.2" 2024-01-16
-OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
-OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
+openjdk version "25.0.1" 2025-10-21
+OpenJDK Runtime Environment GraalVM CE 25.0.1+8.1 (build 25.0.1+8-jvmci-b01)
+OpenJDK 64-Bit Server VM GraalVM CE 25.0.1+8.1 (build 25.0.1+8-jvmci-b01, mixed mode, sharing)
 ```
 
 Then just run RESTHeart as usual:
@@ -130,9 +130,9 @@ Check that GraalVM SDK is active:
 
 ```bash
 $ java -version
-openjdk version "21.0.2" 2024-01-16
-OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
-OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
+openjdk version "25.0.1" 2025-10-21
+OpenJDK Runtime Environment GraalVM CE 25.0.1+8.1 (build 25.0.1+8-jvmci-b01)
+OpenJDK 64-Bit Server VM GraalVM CE 25.0.1+8.1 (build 25.0.1+8-jvmci-b01, mixed mode, sharing)
 ```
 
 You can then simply build it with:

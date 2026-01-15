@@ -367,7 +367,7 @@ Check if the authenticated user has permission to perform the request (ACLs, rol
 
 == Virtual Threads
 
-RESTHeart uses Java 21's virtual threads for superior performance:
+RESTHeart uses Java 25's virtual threads for superior performance:
 
 **Benefits:**
 - **Lightweight** - Millions of virtual threads vs thousands of platform threads
@@ -380,7 +380,7 @@ RESTHeart uses Java 21's virtual threads for superior performance:
 [source,java]
 ----
 // This looks synchronous but doesn't block platform threads
-var data = mongoClient.find("db", "collection");  
+var data = mongoClient.find("db", "collection");
 response.setContent(data);
 ----
 
@@ -450,10 +450,10 @@ export function handle(request, response) {
 
 == Performance Characteristics
 
-**Startup Time:** ~100ms (with standard plugins)  
-**Memory Footprint:** ~50MB heap (configurable)  
-**Request Latency:** Sub-millisecond for simple operations  
-**Throughput:** Hundreds of thousands of requests per second  
+**Startup Time:** ~100ms (with standard plugins)
+**Memory Footprint:** ~50MB heap (configurable)
+**Request Latency:** Sub-millisecond for simple operations
+**Throughput:** Hundreds of thousands of requests per second
 **GraalVM Native:** ~40MB binary, instant startup (<10ms)
 
 **Learn more:** link:/docs/reference/performances[Performance Guide]
