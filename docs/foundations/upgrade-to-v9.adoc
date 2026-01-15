@@ -23,6 +23,8 @@ This page summarizes the new features and provides guidance on upgrading from pr
 |Simplified Docker deployment with two variants: GraalVM-based (full plugin support) and native binary (optimized for Kubernetes)
 |Enhanced RESTHeart Plugin Logging
 |Comprehensive debug-level logging with tree-style visual grouping and tracing IDs for better observability
+|Distributed Tracing Headers Support
+|Automatic capture and display of tracing headers in request logs for distributed tracing integration with Zipkin, Jaeger, and OpenTelemetry
 |Custom Metrics Support for Monitoring Plugin
 |Programmatic API for registering and collecting application-specific metrics (counters, gauges, histograms, summaries)
 |Refactor Cache Implementation
@@ -138,6 +140,64 @@ This enhancement makes it easier to:
 - Monitor performance and identify bottlenecks
 - Understand authentication and authorization decisions
 - Troubleshoot interceptor chains
+
+==== Distributed Tracing Headers Support
+
+RESTHeart v9 simplifies distributed tracing integration by automatically displaying configured tracing headers in request logs without requiring custom Logback configuration.
+
+**Problems Addressed:**
+
+Previously, displaying tracing headers in logs required:
+1. Custom Logback configuration files
+2. Manual pattern modifications with MDC variables
+3. Additional setup friction for teams integrating with tracing systems
+
+**New Approach:**
+
+Simply configure the headers you want to track in `restheart.yml`:
+
+[source,yml]
+----
+logging:
+  tracing-headers:
+    - x-b3-traceid      # Zipkin
+    - x-request-id      # Custom
+    - uber-trace-id     # Jaeger
+----
+
+**Key Features:**
+
+- Automatic display of all configured tracing headers in logs
+- Echo captured headers back in HTTP responses
+- Fallback to auto-generated trace IDs when headers are absent
+- Headers remain accessible in SLF4J MDC for custom logging
+- Performance-optimized with cached HttpString instances
+
+**Log Output:**
+
+When tracing headers are present:
+
+[source,text]
+----
+[x-b3-traceid: 7f8a3d2c, x-request-id: abc123] ⚬ GET http://localhost:8080/ping => status=200 elapsed=56ms
+----
+
+When no headers are present (fallback):
+
+[source,text]
+----
+[trace-id: 0001] ⚬ GET http://localhost:8080/ping => status=200 elapsed=56ms
+----
+
+**Benefits:**
+
+- Zero custom configuration required
+- Seamless integration with Zipkin, Jaeger, and OpenTelemetry
+- First configured header becomes primary trace ID
+- Request correlation across distributed systems
+- No performance overhead for requests without headers
+
+See the link:/docs/deployment/auditing[Auditing documentation] for complete configuration details.
 
 ==== Custom Metrics Support for Monitoring Plugin
 
