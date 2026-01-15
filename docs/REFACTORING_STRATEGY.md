@@ -215,24 +215,24 @@ Welcome to RESTHeart v9! This documentation can be used in two ways:
 
 *Time:* ~4 hours
 
-1. link:/docs/1-foundations/introduction[What is RESTHeart?] (10 min)
-2. link:/docs/1-foundations/quick-start[Quick Start] (15 min)
-3. link:/docs/1-foundations/security-fundamentals[Security Fundamentals] (20 min)
-4. link:/docs/2-mongodb-rest/tutorial[REST API Tutorial] (30 min)
-5. link:/docs/2-mongodb-rest/read-docs[Reading Data] (30 min)
-6. link:/docs/2-mongodb-rest/write-docs[Writing Data] (30 min)
-7. link:/docs/2-mongodb-rest/aggregations[Aggregations] (20 min)
-8. link:/docs/4-security/tutorial[Security Tutorial] (30 min)
-9. link:/docs/4-security/user-management[User Management] (20 min)
-10. link:/docs/4-security/permissions[Permissions] (30 min)
-11. link:/docs/5-deployment/configuration[Configuration] (20 min)
+1. link:/docs/foundations/introduction[What is RESTHeart?] (10 min)
+2. link:/docs/foundations/quick-start[Quick Start] (15 min)
+3. link:/docs/foundations/security-fundamentals[Security Fundamentals] (20 min)
+4. link:/docs/mongodb-rest/tutorial[REST API Tutorial] (30 min)
+5. link:/docs/mongodb-rest/read-docs[Reading Data] (30 min)
+6. link:/docs/mongodb-rest/write-docs[Writing Data] (30 min)
+7. link:/docs/mongodb-rest/aggregations[Aggregations] (20 min)
+8. link:/docs/security/tutorial[Security Tutorial] (30 min)
+9. link:/docs/security/user-management[User Management] (20 min)
+10. link:/docs/security/permissions[Permissions] (30 min)
+11. link:/docs/deployment/configuration[Configuration] (20 min)
 
 **✓ You're now ready to deploy a production MongoDB API!**
 
 *Next steps:*
-- Explore link:/docs/2-mongodb-rest/transactions[Transactions]
-- Learn link:/docs/2-mongodb-rest/files[File Storage with GridFS]
-- Add link:/docs/2-mongodb-rest/json-schema-validation[Schema Validation]
+- Explore link:/docs/mongodb-rest/transactions[Transactions]
+- Learn link:/docs/mongodb-rest/files[File Storage with GridFS]
+- Add link:/docs/mongodb-rest/json-schema-validation[Schema Validation]
 
 ---
 
@@ -242,22 +242,22 @@ Welcome to RESTHeart v9! This documentation can be used in two ways:
 
 *Time:* ~3 hours
 
-1. link:/docs/1-foundations/introduction[What is RESTHeart?] (10 min)
-2. link:/docs/1-foundations/quick-start[Quick Start] (15 min)
-3. link:/docs/1-foundations/core-concepts[Core Concepts] (30 min)
-4. link:/docs/6-framework/overview[Framework Overview] (20 min)
-5. link:/docs/6-framework/tutorial[Plugin Tutorial] (45 min)
-6. link:/docs/6-framework/services[Developing Services] (30 min)
-7. link:/docs/6-framework/interceptors[Developing Interceptors] (20 min)
-8. link:/docs/6-framework/providers[Providers & Dependency Injection] (15 min)
-9. link:/docs/6-framework/deploy[Deploying Plugins] (20 min)
+1. link:/docs/foundations/introduction[What is RESTHeart?] (10 min)
+2. link:/docs/foundations/quick-start[Quick Start] (15 min)
+3. link:/docs/foundations/core-concepts[Core Concepts] (30 min)
+4. link:/docs/framework/overview[Framework Overview] (20 min)
+5. link:/docs/framework/tutorial[Plugin Tutorial] (45 min)
+6. link:/docs/framework/services[Developing Services] (30 min)
+7. link:/docs/framework/interceptors[Developing Interceptors] (20 min)
+8. link:/docs/framework/providers[Providers & Dependency Injection] (15 min)
+9. link:/docs/framework/deploy[Deploying Plugins] (20 min)
 
 **✓ You can now build and deploy custom plugins!**
 
 *Next steps:*
-- Try link:/docs/6-framework/core-plugins-js[JavaScript Plugins]
-- Learn link:/docs/6-framework/initializers[Initializers]
-- Explore link:/docs/7-security-plugins/overview[Security Plugin Development]
+- Try link:/docs/framework/core-plugins-js[JavaScript Plugins]
+- Learn link:/docs/framework/initializers[Initializers]
+- Explore link:/docs/framework/overview[Security Plugin Development]
 
 ---
 
@@ -267,22 +267,22 @@ Welcome to RESTHeart v9! This documentation can be used in two ways:
 
 *Time:* ~2 hours
 
-1. link:/docs/1-foundations/introduction[What is RESTHeart?] (10 min)
-2. link:/docs/1-foundations/setup[Installation] (20 min)
-3. link:/docs/1-foundations/setup-with-docker[Docker Setup] (20 min)
-4. link:/docs/5-deployment/configuration[Configuration] (30 min)
-5. link:/docs/4-security/security-hardening[Security Hardening] (20 min)
-6. link:/docs/4-security/tls[TLS Configuration] (15 min)
-7. link:/docs/5-deployment/logging[Logging] (10 min)
-8. link:/docs/5-deployment/monitoring[Monitoring] (15 min)
-9. link:/docs/5-deployment/clustering[Clustering & Load Balancing] (20 min)
+1. link:/docs/foundations/introduction[What is RESTHeart?] (10 min)
+2. link:/docs/foundations/setup[Installation] (20 min)
+3. link:/docs/foundations/setup-with-docker[Docker Setup] (20 min)
+4. link:/docs/deployment/configuration[Configuration] (30 min)
+5. link:/docs/security/security-hardening[Security Hardening] (20 min)
+6. link:/docs/security/tls[TLS Configuration] (15 min)
+7. link:/docs/deployment/logging[Logging] (10 min)
+8. link:/docs/deployment/monitoring[Monitoring] (15 min)
+9. link:/docs/deployment/clustering[Clustering & Load Balancing] (20 min)
 
 **✓ You're ready to run RESTHeart in production!**
 
 *Next steps:*
-- Optimize with link:/docs/5-deployment/graalvm[GraalVM Native Image]
-- Set up link:/docs/5-deployment/auditing[Auditing]
-- Configure link:/docs/5-deployment/proxy[Reverse Proxy]
+- Optimize with link:/docs/deployment/graalvm[GraalVM Native Image]
+- Set up link:/docs/deployment/auditing[Auditing]
+- Configure link:/docs/deployment/proxy[Reverse Proxy]
 
 ---
 
@@ -292,21 +292,21 @@ Welcome to RESTHeart v9! This documentation can be used in two ways:
 
 *Time:* ~2 hours
 
-1. link:/docs/1-foundations/introduction[What is RESTHeart?] (10 min)
-2. link:/docs/1-foundations/quick-start[Quick Start] (15 min)
-3. link:/docs/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial] (30 min)
-4. link:/docs/3-graphql-websocket/graphql/getting-started[Getting Started] (20 min)
-5. link:/docs/3-graphql-websocket/graphql/graphql-apps[GraphQL Apps] (20 min)
-6. link:/docs/3-graphql-websocket/graphql/schema[Schema Design] (20 min)
-7. link:/docs/3-graphql-websocket/graphql/mappings[Mappings] (20 min)
-8. link:/docs/3-graphql-websocket/graphql/resolvers[Resolvers] (20 min)
+1. link:/docs/foundations/introduction[What is RESTHeart?] (10 min)
+2. link:/docs/foundations/quick-start[Quick Start] (15 min)
+3. link:/docs/graphql-websocket/graphql/tutorial[GraphQL Tutorial] (30 min)
+4. link:/docs/graphql-websocket/graphql/getting-started[Getting Started] (20 min)
+5. link:/docs/graphql-websocket/graphql/graphql-apps[GraphQL Apps] (20 min)
+6. link:/docs/graphql-websocket/graphql/schema[Schema Design] (20 min)
+7. link:/docs/graphql-websocket/graphql/mappings[Mappings] (20 min)
+8. link:/docs/graphql-websocket/graphql/resolvers[Resolvers] (20 min)
 
 **✓ You can now build GraphQL APIs with RESTHeart!**
 
 *Next steps:*
-- Learn link:/docs/3-graphql-websocket/graphql/n-plus-one[Performance Optimization]
-- Study link:/docs/3-graphql-websocket/graphql/complex-app-example[Advanced Example]
-- Review link:/docs/3-graphql-websocket/graphql/best-practices[Best Practices]
+- Learn link:/docs/graphql-websocket/graphql/n-plus-one[Performance Optimization]
+- Study link:/docs/graphql-websocket/graphql/complex-app-example[Advanced Example]
+- Review link:/docs/graphql-websocket/graphql/best-practices[Best Practices]
 
 ---
 
@@ -326,17 +326,17 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
 
 == Quick Links
 
-* link:/docs/1-foundations/quick-start[⚡ Quick Start] - Get running in 5 minutes
-* link:/docs/9-reference/faq[❓ FAQ] - Common questions
-* link:/docs/9-reference/example-webapps[💡 Examples] - Sample applications
-* link:/docs/2-mongodb-rest/tutorial[📚 REST Tutorial] - Hands-on REST API guide
-* link:/docs/3-graphql-websocket/graphql/tutorial[📚 GraphQL Tutorial] - Hands-on GraphQL guide
+* link:/docs/foundations/quick-start[⚡ Quick Start] - Get running in 5 minutes
+* link:/docs/reference/faq[❓ FAQ] - Common questions
+* link:/docs/reference/example-webapps[💡 Examples] - Sample applications
+* link:/docs/mongodb-rest/tutorial[📚 REST Tutorial] - Hands-on REST API guide
+* link:/docs/graphql-websocket/graphql/tutorial[📚 GraphQL Tutorial] - Hands-on GraphQL guide
 
 == Community & Support
 
 * link:https://github.com/SoftInstigate/restheart[GitHub Repository]
 * link:https://github.com/SoftInstigate/restheart/issues[Report Issues]
-* link:/docs/9-reference/enterprise-license[Enterprise Support]
+* link:/docs/reference/enterprise-license[Enterprise Support]
 ```
 
 ---
@@ -368,12 +368,12 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 1: Foundations</h3>
     </a>
     <ul id="part1" class="collapse">
-      <li><a href="/docs/1-foundations/introduction">Introduction</a></li>
-      <li><a href="/docs/1-foundations/quick-start">Quick Start</a></li>
-      <li><a href="/docs/1-foundations/setup">Setup</a></li>
-      <li><a href="/docs/1-foundations/setup-with-docker">Docker Setup</a></li>
-      <li><a href="/docs/1-foundations/core-concepts">Core Concepts</a></li>
-      <li><a href="/docs/1-foundations/security-fundamentals">Security Fundamentals</a></li>
+      <li><a href="/docs/foundations/introduction">Introduction</a></li>
+      <li><a href="/docs/foundations/quick-start">Quick Start</a></li>
+      <li><a href="/docs/foundations/setup">Setup</a></li>
+      <li><a href="/docs/foundations/setup-with-docker">Docker Setup</a></li>
+      <li><a href="/docs/foundations/core-concepts">Core Concepts</a></li>
+      <li><a href="/docs/foundations/security-fundamentals">Security Fundamentals</a></li>
     </ul>
   </div>
   
@@ -382,25 +382,25 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 2: MongoDB REST API</h3>
     </a>
     <ul id="part2" class="collapse">
-      <li><a href="/docs/2-mongodb-rest/">Overview</a></li>
-      <li><a href="/docs/2-mongodb-rest/tutorial"><strong>Tutorial</strong></a></li>
-      <li><a href="/docs/2-mongodb-rest/read-docs">Reading Data</a></li>
-      <li><a href="/docs/2-mongodb-rest/write-docs">Writing Data</a></li>
-      <li><a href="/docs/2-mongodb-rest/aggregations">Aggregations</a></li>
-      <li><a href="/docs/2-mongodb-rest/transactions">Transactions</a></li>
-      <li><a href="/docs/2-mongodb-rest/files">File Storage</a></li>
-      <li><a href="/docs/2-mongodb-rest/indexes">Indexes</a></li>
-      <li><a href="/docs/2-mongodb-rest/json-schema-validation">Schema Validation</a></li>
-      <li><a href="/docs/2-mongodb-rest/relationships">Relationships</a></li>
-      <li><a href="/docs/2-mongodb-rest/etag">ETags</a></li>
-      <li><a href="/docs/2-mongodb-rest/caching">Caching</a></li>
-      <li><a href="/docs/2-mongodb-rest/read-write-concerns">Read/Write Concerns</a></li>
-      <li><a href="/docs/2-mongodb-rest/dbs-collections">Databases & Collections</a></li>
-      <li><a href="/docs/2-mongodb-rest/resource-uri">Resource URIs</a></li>
-      <li><a href="/docs/2-mongodb-rest/representation-format">Response Format</a></li>
-      <li><a href="/docs/2-mongodb-rest/csv">CSV Import</a></li>
-      <li><a href="/docs/2-mongodb-rest/shard-keys">Shard Keys</a></li>
-      <li><a href="/docs/2-mongodb-rest/sample-data">Sample Data</a></li>
+      <li><a href="/docs/mongodb-rest/">Overview</a></li>
+      <li><a href="/docs/mongodb-rest/tutorial"><strong>Tutorial</strong></a></li>
+      <li><a href="/docs/mongodb-rest/read-docs">Reading Data</a></li>
+      <li><a href="/docs/mongodb-rest/write-docs">Writing Data</a></li>
+      <li><a href="/docs/mongodb-rest/aggregations">Aggregations</a></li>
+      <li><a href="/docs/mongodb-rest/transactions">Transactions</a></li>
+      <li><a href="/docs/mongodb-rest/files">File Storage</a></li>
+      <li><a href="/docs/mongodb-rest/indexes">Indexes</a></li>
+      <li><a href="/docs/mongodb-rest/json-schema-validation">Schema Validation</a></li>
+      <li><a href="/docs/mongodb-rest/relationships">Relationships</a></li>
+      <li><a href="/docs/mongodb-rest/etag">ETags</a></li>
+      <li><a href="/docs/mongodb-rest/caching">Caching</a></li>
+      <li><a href="/docs/mongodb-rest/read-write-concerns">Read/Write Concerns</a></li>
+      <li><a href="/docs/mongodb-rest/dbs-collections">Databases & Collections</a></li>
+      <li><a href="/docs/mongodb-rest/resource-uri">Resource URIs</a></li>
+      <li><a href="/docs/mongodb-rest/representation-format">Response Format</a></li>
+      <li><a href="/docs/mongodb-rest/csv">CSV Import</a></li>
+      <li><a href="/docs/mongodb-rest/shard-keys">Shard Keys</a></li>
+      <li><a href="/docs/mongodb-rest/sample-data">Sample Data</a></li>
     </ul>
   </div>
   
@@ -410,24 +410,24 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
     </a>
     <ul id="part3" class="collapse">
       <li class="subsection">GraphQL API</li>
-      <li><a href="/docs/3-graphql-websocket/graphql/">Overview</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/tutorial"><strong>Tutorial</strong></a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/getting-started">Getting Started</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/graphql-apps">GraphQL Apps</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/schema">Schema Design</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/mappings">Mappings</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/resolvers">Resolvers</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/complex-app-example">Advanced Example</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/n-plus-one">Performance</a></li>
-      <li><a href="/docs/3-graphql-websocket/graphql/best-practices">Best Practices</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/">Overview</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/tutorial"><strong>Tutorial</strong></a></li>
+      <li><a href="/docs/graphql-websocket/graphql/getting-started">Getting Started</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/graphql-apps">GraphQL Apps</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/schema">Schema Design</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/mappings">Mappings</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/resolvers">Resolvers</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/complex-app-example">Advanced Example</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/n-plus-one">Performance</a></li>
+      <li><a href="/docs/graphql-websocket/graphql/best-practices">Best Practices</a></li>
       
       <li class="subsection">WebSocket API</li>
-      <li><a href="/docs/3-graphql-websocket/websocket/">Overview</a></li>
-      <li><a href="/docs/3-graphql-websocket/websocket/tutorial"><strong>Tutorial</strong></a></li>
-      <li><a href="/docs/3-graphql-websocket/websocket/change-streams">Change Streams</a></li>
-      <li><a href="/docs/3-graphql-websocket/websocket/variables">Variables</a></li>
+      <li><a href="/docs/graphql-websocket/websocket/">Overview</a></li>
+      <li><a href="/docs/graphql-websocket/websocket/tutorial"><strong>Tutorial</strong></a></li>
+      <li><a href="/docs/graphql-websocket/websocket/change-streams">Change Streams</a></li>
+      <li><a href="/docs/graphql-websocket/websocket/variables">Variables</a></li>
       
-      <li><a href="/docs/3-graphql-websocket/choosing-api">Choosing an API</a></li>
+      <li><a href="/docs/graphql-websocket/choosing-api">Choosing an API</a></li>
     </ul>
   </div>
   
@@ -436,17 +436,17 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 4: Security</h3>
     </a>
     <ul id="part4" class="collapse">
-      <li><a href="/docs/4-security/overview">Overview</a></li>
-      <li><a href="/docs/4-security/tutorial"><strong>Tutorial</strong></a></li>
-      <li><a href="/docs/4-security/authentication">Authentication</a></li>
-      <li><a href="/docs/4-security/authorization">Authorization</a></li>
-      <li><a href="/docs/4-security/user-management">User Management</a></li>
-      <li><a href="/docs/4-security/permissions">Permissions</a></li>
-      <li><a href="/docs/4-security/how-clients-authenticate">Client Authentication</a></li>
-      <li><a href="/docs/4-security/tls">TLS Configuration</a></li>
-      <li><a href="/docs/4-security/security-hardening">Security Hardening</a></li>
-      <li><a href="/docs/4-security/secure-connection-to-mongodb">Secure MongoDB Connection</a></li>
-      <li><a href="/docs/4-security/other-security-plugins">Other Security Plugins</a></li>
+      <li><a href="/docs/security/overview">Overview</a></li>
+      <li><a href="/docs/security/tutorial"><strong>Tutorial</strong></a></li>
+      <li><a href="/docs/security/authentication">Authentication</a></li>
+      <li><a href="/docs/security/authorization">Authorization</a></li>
+      <li><a href="/docs/security/user-management">User Management</a></li>
+      <li><a href="/docs/security/permissions">Permissions</a></li>
+      <li><a href="/docs/security/how-clients-authenticate">Client Authentication</a></li>
+      <li><a href="/docs/security/tls">TLS Configuration</a></li>
+      <li><a href="/docs/security/security-hardening">Security Hardening</a></li>
+      <li><a href="/docs/security/secure-connection-to-mongodb">Secure MongoDB Connection</a></li>
+      <li><a href="/docs/security/other-security-plugins">Other Security Plugins</a></li>
     </ul>
   </div>
   
@@ -455,15 +455,15 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 5: Configuration & Deployment</h3>
     </a>
     <ul id="part5" class="collapse">
-      <li><a href="/docs/5-deployment/configuration">Configuration</a></li>
-      <li><a href="/docs/5-deployment/default-configuration">Default Configuration</a></li>
-      <li><a href="/docs/5-deployment/graalvm">GraalVM Native</a></li>
-      <li><a href="/docs/5-deployment/logging">Logging</a></li>
-      <li><a href="/docs/5-deployment/monitoring">Monitoring</a></li>
-      <li><a href="/docs/5-deployment/auditing">Auditing</a></li>
-      <li><a href="/docs/5-deployment/clustering">Clustering</a></li>
-      <li><a href="/docs/5-deployment/proxy">Proxying Requests</a></li>
-      <li><a href="/docs/5-deployment/static-resources">Static Resources</a></li>
+      <li><a href="/docs/deployment/configuration">Configuration</a></li>
+      <li><a href="/docs/deployment/default-configuration">Default Configuration</a></li>
+      <li><a href="/docs/deployment/graalvm">GraalVM Native</a></li>
+      <li><a href="/docs/deployment/logging">Logging</a></li>
+      <li><a href="/docs/deployment/monitoring">Monitoring</a></li>
+      <li><a href="/docs/deployment/auditing">Auditing</a></li>
+      <li><a href="/docs/deployment/clustering">Clustering</a></li>
+      <li><a href="/docs/deployment/proxy">Proxying Requests</a></li>
+      <li><a href="/docs/deployment/static-resources">Static Resources</a></li>
     </ul>
   </div>
   
@@ -472,15 +472,15 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 6: Framework</h3>
     </a>
     <ul id="part6" class="collapse">
-      <li><a href="/docs/6-framework/overview">Overview</a></li>
-      <li><a href="/docs/6-framework/tutorial"><strong>Tutorial</strong></a></li>
-      <li><a href="/docs/6-framework/services">Services</a></li>
-      <li><a href="/docs/6-framework/interceptors">Interceptors</a></li>
-      <li><a href="/docs/6-framework/providers">Providers</a></li>
-      <li><a href="/docs/6-framework/initializers">Initializers</a></li>
-      <li><a href="/docs/6-framework/core-plugins">Core Plugins</a></li>
-      <li><a href="/docs/6-framework/core-plugins-js">JavaScript Plugins</a></li>
-      <li><a href="/docs/6-framework/deploy">Deploying Plugins</a></li>
+      <li><a href="/docs/framework/overview">Overview</a></li>
+      <li><a href="/docs/framework/tutorial"><strong>Tutorial</strong></a></li>
+      <li><a href="/docs/framework/services">Services</a></li>
+      <li><a href="/docs/framework/interceptors">Interceptors</a></li>
+      <li><a href="/docs/framework/providers">Providers</a></li>
+      <li><a href="/docs/framework/initializers">Initializers</a></li>
+      <li><a href="/docs/framework/core-plugins">Core Plugins</a></li>
+      <li><a href="/docs/framework/core-plugins-js">JavaScript Plugins</a></li>
+      <li><a href="/docs/framework/deploy">Deploying Plugins</a></li>
     </ul>
   </div>
   
@@ -489,11 +489,11 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 7: Security Plugins</h3>
     </a>
     <ul id="part7" class="collapse">
-      <li><a href="/docs/7-security-plugins/overview">Overview</a></li>
-      <li><a href="/docs/7-security-plugins/authentication-mechanisms">Auth Mechanisms</a></li>
-      <li><a href="/docs/7-security-plugins/authenticators">Authenticators</a></li>
-      <li><a href="/docs/7-security-plugins/authorizers">Authorizers</a></li>
-      <li><a href="/docs/7-security-plugins/token-managers">Token Managers</a></li>
+      <li><a href="/docs/framework/overview">Overview</a></li>
+      <li><a href="/docs/framework/authentication-mechanisms">Auth Mechanisms</a></li>
+      <li><a href="/docs/framework/authenticators">Authenticators</a></li>
+      <li><a href="/docs/framework/authorizers">Authorizers</a></li>
+      <li><a href="/docs/framework/token-managers">Token Managers</a></li>
     </ul>
   </div>
   
@@ -502,25 +502,25 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 8: RESTHeart Cloud</h3>
     </a>
     <ul id="part8" class="collapse">
-      <li><a href="/docs/8-cloud/">Overview</a></li>
-      <li><a href="/docs/8-cloud/getting-started">Getting Started</a></li>
-      <li><a href="/docs/8-cloud/root-user-setup">Root User Setup</a></li>
-      <li><a href="/docs/8-cloud/users-and-permissions">Users & Permissions</a></li>
-      <li><a href="/docs/8-cloud/full-stack-example">Full-Stack Example</a></li>
-      <li><a href="/docs/8-cloud/examples">Examples</a></li>
+      <li><a href="/docs/cloud/">Overview</a></li>
+      <li><a href="/docs/cloud/getting-started">Getting Started</a></li>
+      <li><a href="/docs/cloud/root-user-setup">Root User Setup</a></li>
+      <li><a href="/docs/cloud/users-and-permissions">Users & Permissions</a></li>
+      <li><a href="/docs/cloud/full-stack-example">Full-Stack Example</a></li>
+      <li><a href="/docs/cloud/examples">Examples</a></li>
       
       <li class="subsection">Sophia AI</li>
-      <li><a href="/docs/8-cloud/sophia/">Overview</a></li>
-      <li><a href="/docs/8-cloud/sophia/setup">Setup</a></li>
-      <li><a href="/docs/8-cloud/sophia/user-guide">User Guide</a></li>
-      <li><a href="/docs/8-cloud/sophia/administrator-guide">Admin Guide</a></li>
-      <li><a href="/docs/8-cloud/sophia/api-documentation">API Docs</a></li>
+      <li><a href="/docs/cloud/sophia/">Overview</a></li>
+      <li><a href="/docs/cloud/sophia/setup">Setup</a></li>
+      <li><a href="/docs/cloud/sophia/user-guide">User Guide</a></li>
+      <li><a href="/docs/cloud/sophia/administrator-guide">Admin Guide</a></li>
+      <li><a href="/docs/cloud/sophia/api-documentation">API Docs</a></li>
       
       <li class="subsection">Webhooks</li>
-      <li><a href="/docs/8-cloud/webhook/">Overview</a></li>
-      <li><a href="/docs/8-cloud/webhook/getting-started">Getting Started</a></li>
-      <li><a href="/docs/8-cloud/webhook/user-guide">User Guide</a></li>
-      <li><a href="/docs/8-cloud/webhook/tutorials">Tutorials</a></li>
+      <li><a href="/docs/cloud/webhook/">Overview</a></li>
+      <li><a href="/docs/cloud/webhook/getting-started">Getting Started</a></li>
+      <li><a href="/docs/cloud/webhook/user-guide">User Guide</a></li>
+      <li><a href="/docs/cloud/webhook/tutorials">Tutorials</a></li>
     </ul>
   </div>
   
@@ -529,12 +529,12 @@ Prefer to explore on your own? Use the navigation menu to browse by topic:
       <h3>Part 9: Reference</h3>
     </a>
     <ul id="part9" class="collapse">
-      <li><a href="/docs/9-reference/faq">FAQ</a></li>
-      <li><a href="/docs/9-reference/performances">Performance</a></li>
-      <li><a href="/docs/9-reference/upgrade-to-v8">Upgrade to v8</a></li>
-      <li><a href="/docs/9-reference/example-webapps">Example Apps</a></li>
-      <li><a href="/docs/9-reference/blog-posts">Blog Posts</a></li>
-      <li><a href="/docs/9-reference/enterprise-license">Enterprise License</a></li>
+      <li><a href="/docs/reference/faq">FAQ</a></li>
+      <li><a href="/docs/reference/performances">Performance</a></li>
+      <li><a href="/docs/reference/upgrade-to-v8">Upgrade to v8</a></li>
+      <li><a href="/docs/reference/example-webapps">Example Apps</a></li>
+      <li><a href="/docs/reference/blog-posts">Blog Posts</a></li>
+      <li><a href="/docs/reference/enterprise-license">Enterprise License</a></li>
     </ul>
   </div>
 </nav>
@@ -553,8 +553,8 @@ Add to the top of each page in a learning path:
 ****
 **Learning Path: MongoDB API User**
 
-← Previous: link:/docs/1-foundations/security-fundamentals[Security Fundamentals] | 
-Next: link:/docs/2-mongodb-rest/read-docs[Reading Data] →
+← Previous: link:/docs/foundations/security-fundamentals[Security Fundamentals] | 
+Next: link:/docs/mongodb-rest/read-docs[Reading Data] →
 
 You are at step 4 of 11
 ****
@@ -569,9 +569,9 @@ Add to the beginning of each file:
 
 Before reading this page, you should be familiar with:
 
-* link:/docs/1-foundations/introduction[What is RESTHeart]
-* link:/docs/1-foundations/quick-start[Quick Start] - Have RESTHeart running
-* link:/docs/1-foundations/security-fundamentals[Security Fundamentals]
+* link:/docs/foundations/introduction[What is RESTHeart]
+* link:/docs/foundations/quick-start[Quick Start] - Have RESTHeart running
+* link:/docs/foundations/security-fundamentals[Security Fundamentals]
 ```
 
 ### 3. Add "What's Next" Section
@@ -583,11 +583,11 @@ Add to the end of each file:
 
 Now that you understand reading data, you can:
 
-* **Next in learning path:** link:/docs/2-mongodb-rest/write-docs[Writing Data]
+* **Next in learning path:** link:/docs/mongodb-rest/write-docs[Writing Data]
 * **Explore related topics:**
-  - link:/docs/2-mongodb-rest/aggregations[Aggregations]
-  - link:/docs/2-mongodb-rest/json-schema-validation[Schema Validation]
-  - link:/docs/2-mongodb-rest/relationships[Document Relationships]
+  - link:/docs/mongodb-rest/aggregations[Aggregations]
+  - link:/docs/mongodb-rest/json-schema-validation[Schema Validation]
+  - link:/docs/mongodb-rest/relationships[Document Relationships]
 ```
 
 ### 4. Remove YouTube Videos
