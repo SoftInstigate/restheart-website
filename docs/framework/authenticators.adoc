@@ -70,3 +70,168 @@ myAuthenticator:
     number: 10
     string: a string
 ```
+
+=== Attached Request Parameters (v9)
+
+RESTHeart v9 enhances the `MongoRealmAuthenticator` to automatically transfer specified request parameters to account properties after successful authentication.
+
+==== Problem and Solution
+
+Interceptors running at `BEFORE_AUTH` can attach parameters to a request using `request.attachParam(key, value)`. However, these parameters were not automatically carried over to the authenticated account properties, requiring manual handling.
+
+The new `attached-props` configuration option solves this by automatically copying specified attached parameters to the account properties after successful authentication.
+
+==== Configuration
+
+Add the `attached-props` array to your `mongoRealmAuthenticator` configuration:
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+  enabled: true
+  users-db: restheart
+  users-collection: users
+  attached-props:
+    - tenantId
+    - organizationId
+    - host
+----
+
+==== Behaviors
+
+* Only parameters listed in `attached-props` are copied to account properties
+* Missing parameters are silently skipped (no errors)
+* Parameters are transferred after successful authentication
+* Fully backward compatible - existing configurations work without changes
+
+==== Use Cases
+
+**1. Custom Attributes**
+
+Attach organizational metadata or user-specific data that should be accessible throughout the request lifecycle:
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "tenantExtractor",
+    description = "Extracts tenant ID from request",
+    interceptPoint = InterceptPoint.REQUEST_BEFORE_AUTH)
+public class TenantExtractorInterceptor implements WildcardInterceptor {
+    @Override
+    public void handle(Request<?> request, Response<?> response) {
+        // Extract tenant from subdomain, header, or path
+        var tenantId = extractTenantId(request);
+        request.attachParam("tenantId", tenantId);
+    }
+    
+    @Override
+    public boolean resolve(Request<?> request, Response<?> response) {
+        return true;
+    }
+}
+----
+
+**2. Dynamic Authorization**
+
+Use account properties in security predicates without additional database lookups:
+
+[source,yml]
+----
+permissions:
+  - role: user
+    predicate: equals(@user.tenantId, @request.tenantId)
+    mongo:
+      readFilter: |
+        { "tenantId": "@user.tenantId" }
+----
+
+This ensures users can only access data from their own tenant.
+
+**3. Multi-Tenant Applications**
+
+Implement tenant isolation by attaching tenant identifiers:
+
+[source,java]
+----
+// Interceptor extracts tenant from subdomain
+var host = request.getHeader("Host");
+var tenantId = host.split("\\.")[0]; // Extract subdomain
+request.attachParam("tenantId", tenantId);
+----
+
+Configuration:
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+  attached-props:
+    - tenantId
+
+permissions:
+  - role: user
+    predicate: path-prefix('/data')
+    mongo:
+      readFilter: '{ "tenant": "@user.tenantId" }'
+      writeFilter: '{ "tenant": "@user.tenantId" }'
+      mergeRequest:
+        tenant: "@user.tenantId"
+----
+
+This automatically:
+- Filters queries to include only the user's tenant data
+- Prevents writing to other tenants' data
+- Adds the tenant ID to all new documents
+
+==== Complete Example
+
+A complete multi-tenant setup:
+
+**Step 1: Interceptor attaches tenant ID**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "tenantExtractor",
+    interceptPoint = InterceptPoint.REQUEST_BEFORE_AUTH)
+public class TenantExtractorInterceptor implements WildcardInterceptor {
+    @Override
+    public void handle(Request<?> request, Response<?> response) {
+        var subdomain = extractSubdomain(request.getHeader("Host"));
+        request.attachParam("tenantId", subdomain);
+        request.attachParam("organizationId", lookupOrgId(subdomain));
+    }
+}
+----
+
+**Step 2: Configuration transfers parameters**
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+  enabled: true
+  users-db: restheart
+  users-collection: users
+  attached-props:
+    - tenantId
+    - organizationId
+----
+
+**Step 3: Authorization uses account properties**
+
+[source,yml]
+----
+permissions:
+  - role: user
+    predicate: path-prefix('/api/data')
+    mongo:
+      readFilter: '{ "tenantId": "@user.tenantId" }'
+      writeFilter: '{ "tenantId": "@user.tenantId" }'
+      mergeRequest:
+        tenantId: "@user.tenantId"
+        organizationId: "@user.organizationId"
+----
+
+Now every authenticated request automatically:
+1. Extracts tenant/organization from the request
+2. Transfers them to the user's account properties
+3. Enforces tenant isolation in all MongoDB operations

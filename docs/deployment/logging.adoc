@@ -343,6 +343,80 @@ To enable logging from the MongoDB driver, override the configuration option `/l
 $ RHO='/logging/packages -> [ "org.restheart", "com.restheart", "org.mongodb" ]' java -jar restheart.jar
 ----
 
+=== Enhanced Plugin Logging (v9)
+
+RESTHeart v9 introduces comprehensive debug-level logging across all plugin types for improved observability and troubleshooting.
+
+==== Enhanced Logging Coverage
+
+The enhanced logging provides detailed information for:
+
+* **Interceptors** - Pre-auth, post-auth, post-request, async post-request
+* **Services** - Custom service execution and lifecycle
+* **Providers** - Provider initialization and usage
+* **Initializers** - Application startup and initialization
+* **Authentication Mechanisms** - Authentication flow details
+* **Authenticators** - Credential verification processes
+* **Authorizers** - Authorization decision logging
+* **Token Managers** - Token generation and validation
+
+==== Key Features
+
+* **Tree-style visual log grouping** - Hierarchical display for better readability
+* **Tracing IDs** - Request tracking across the entire request lifecycle
+* **TRACE level logging** - Detailed debugging without DEBUG-level verbosity
+* **Fixed alignment** - Improved visual grouping of authentication and authorization logs
+* **Reusable security handlers** - Reduced redundant initialization logs
+
+==== Benefits
+
+This enhancement makes it easier to:
+
+* Debug issues in the request processing pipeline
+* Monitor performance and identify bottlenecks
+* Understand authentication and authorization decisions
+* Troubleshoot interceptor chains
+* Correlate logged exceptions with request context
+* Track requests across distributed systems
+
+==== Enabling Enhanced Logging
+
+To enable detailed plugin logging, set the log level to `DEBUG` or `TRACE`:
+
+[source,yml]
+----
+logging:
+  log-level: DEBUG  # or TRACE for even more detail
+  packages: 
+    - "org.restheart"
+    - "com.restheart"
+----
+
+Or use the `RHO` environment variable:
+
+[source,bash]
+----
+$ RHO='/logging/log-level->DEBUG' java -jar restheart.jar
+----
+
+==== Example Log Output
+
+With enhanced logging enabled, you'll see detailed information about the request processing pipeline:
+
+[source,text]
+----
+DEBUG o.restheart.plugins.PluginsScanner - ┌─ Loading plugins
+DEBUG o.restheart.plugins.PluginsScanner - │  ├─ Interceptors
+DEBUG o.restheart.plugins.PluginsScanner - │  │  ├─ mongoInterceptor (enabled)
+DEBUG o.restheart.plugins.PluginsScanner - │  │  └─ securityInterceptor (enabled)
+DEBUG o.restheart.plugins.PluginsScanner - │  ├─ Services
+DEBUG o.restheart.plugins.PluginsScanner - │  │  ├─ mongoService (enabled)
+DEBUG o.restheart.plugins.PluginsScanner - │  │  └─ graphQLService (enabled)
+DEBUG o.restheart.plugins.PluginsScanner - │  └─ Authenticators
+DEBUG o.restheart.plugins.PluginsScanner - │     └─ mongoRealmAuthenticator (enabled)
+DEBUG o.restheart.plugins.PluginsScanner - └─ Plugins loaded successfully
+----
+
 === Example: log trace headers
 
 Trace headers allow to trace a request context propagation across service boundaries. See for reference link:https://github.com/openzipkin/b3-propagation[b3-propagation]

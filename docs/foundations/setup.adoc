@@ -41,7 +41,56 @@ $ unzip restheart.zip && cd restheart
 
 === Requirements
 
-RESTHeart requires GraalVM 25.
+==== Java 25 LTS (Required)
+
+RESTHeart v9 requires **Java 25 LTS** (Long-Term Support), released on September 16, 2025.
+
+**Supported Java Distributions:**
+
+* **GraalVM 25** (Recommended) - Provides the best performance and supports all plugin types
+* **Oracle JDK 25** - Official Oracle distribution
+* **OpenJDK 25** - Community distribution
+* **Eclipse Temurin 25** - AdoptOpenJDK successor
+
+**Why Java 25?**
+
+Java 25 is a Long-Term Support (LTS) release that provides:
+
+* Enhanced performance improvements
+* Security updates and patches
+* Long-term support lifecycle
+* Virtual thread optimizations
+* Better native image support
+
+**Check Your Java Version:**
+
+[source,bash]
+----
+$ java -version
+----
+
+You should see output similar to:
+
+[source,text]
+----
+openjdk version "25" 2025-09-16
+OpenJDK Runtime Environment (build 25+36)
+OpenJDK 64-Bit Server VM (build 25+36, mixed mode, sharing)
+----
+
+**Installing Java 25:**
+
+* **GraalVM**: Download from link:https://www.graalvm.org/downloads/[graalvm.org/downloads]
+* **Oracle JDK**: Download from link:https://www.oracle.com/java/technologies/downloads/[oracle.com/java/technologies/downloads]
+* **Eclipse Temurin**: Download from link:https://adoptium.net/[adoptium.net]
+
+NOTE: If you're using Docker, the official RESTHeart images already include the correct Java version.
+
+==== MongoDB Requirements
+
+RESTHeart is extensively tested with **MongoDB v5.0, v6.0, and v7.0**.
+
+For full feature support (Change Streams, WebSocket API, Transactions), MongoDB must run as a **replica set**, even for single-node deployments. See the link:#start-mongodb-as-a-replica-set[Start MongoDB as a Replica Set] section for setup instructions.
 
 === Run in standalone mode
 

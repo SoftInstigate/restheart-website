@@ -90,6 +90,95 @@ RESTHeart includes built-in authentication and authorization:
 
 See the link:/docs/security/overview[Security documentation] for details.
 
+=== Error Responses
+
+RESTHeart v9 provides clean, concise error responses when requests fail.
+
+==== Error Response Format
+
+When a request fails, RESTHeart returns a JSON response with:
+
+* `http status code` - The HTTP status code (400, 401, 403, 404, 500, etc.)
+* `http status description` - Human-readable status description
+* `message` - Detailed error message explaining what went wrong
+
+==== Example Error Responses
+
+**Invalid JSON (400 Bad Request):**
+
+[source,http]
+----
+POST /mydb/mycollection HTTP/1.1
+Content-Type: application/json
+
+{ invalid json x1 }
+----
+
+Response:
+
+[source,json]
+----
+{
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Invalid JSON. JSON reader was expecting a value but found 'x1'."
+}
+----
+
+**Unauthorized (401 Unauthorized):**
+
+[source,json]
+----
+{
+  "http status code": 401,
+  "http status description": "Unauthorized",
+  "message": "Unauthorized"
+}
+----
+
+**Forbidden (403 Forbidden):**
+
+[source,json]
+----
+{
+  "http status code": 403,
+  "http status description": "Forbidden",
+  "message": "Forbidden"
+}
+----
+
+**Not Found (404 Not Found):**
+
+[source,json]
+----
+{
+  "http status code": 404,
+  "http status description": "Not Found",
+  "message": "Resource not found"
+}
+----
+
+**Validation Error (400 Bad Request):**
+
+[source,json]
+----
+{
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Request validation failed: field 'email' is required"
+}
+----
+
+==== Improvements in v9
+
+RESTHeart v9 improves error responses by removing redundant technical details that were not useful for API consumers:
+
+**Removed fields:**
+* `exception` - Internal Java exception class name
+* `exception message` - Duplicate of the main message
+
+This makes error responses cleaner and more focused on actionable information for the client.
+
 === Next Steps
 
 * **link:/docs/mongodb-rest/tutorial[Follow the tutorial]** to get hands-on experience
