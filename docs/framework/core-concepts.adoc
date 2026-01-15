@@ -1,0 +1,319 @@
+---
+docs_version: 9
+title: Plugin Core Concepts
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+This page covers the essential concepts you need to understand when developing RESTHeart plugins.
+
+TIP: New to plugins? Start with the link:/docs/framework/overview[Plugin Development Overview] and link:/docs/framework/tutorial[Tutorial] first.
+
+== Project Setup and Dependencies
+
+The only required dependency to develop a plugin is `restheart-commons`.
+
+With maven:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.restheart</groupId>
+    <artifactId>restheart-commons</artifactId>
+    <version>VERSION</version>
+</dependency>
+----
+
+With Gradle:
+
+[source,gradle]
+----
+dependencies {
+    implementation 'org.restheart:restheart-commons:VERSION'
+}
+----
+
+TIP: Use the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton project] for a ready-to-go Maven setup.
+
+== The @RegisterPlugin Annotation
+
+Every plugin must be annotated with `@RegisterPlugin`. This annotation:
+
+- Allows RESTHeart to discover your plugin at startup
+- Defines the plugin's name, description, and behavior
+- Specifies configuration like URIs, security settings, and execution priorities
+
+**Basic example:**
+
+[source,java]
+----
+@RegisterPlugin(name = "foo",
+    description = "just an example service",
+    defaultUri="/foo",      // optional, default /<service-name>
+    secure=false,           // optional, default false
+    enabledByDefault=false) // optional, default true
+public class MyPlugin implements JsonService {
+...
+}
+----
+
+**Annotation Parameters:**
+
+[options="header"]
+|===
+|param |plugin |description |mandatory |default value
+|`name`
+|all
+|the name of the plugin
+|yes
+|*none*
+|`description`
+|all
+|description of the plugin
+|yes
+|*none*
+|`enabledByDefault`
+|all
+|`true` to enable the plugin; can be overridden by the plugin configuration option `enabled`
+|no
+|`true`
+|`defaultURI`
+|service
+|the default URI of the Service; can be overridden by the service configuration option `uri`
+|no
+|/&lt;srv-name&gt;
+|`matchPolicy`
+|service
+|`PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>`
+|no
+|`PREFIX`
+|`secure`
+|service
+|`true` to require successful authentication and authorization to be invoked; can be overridden by the service configuration option `secure`
+|no
+|`false`
+|`dontIntercept`
+|service
+|list of interceptPoints to be executed on requests handled by the service, e.g. `dontIntercept = { InterceptPoint.ANY, InterceptPoint.RESPONSE }`
+|no
+|`{}`
+|`interceptPoint`
+|interceptor
+|the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC`
+|no
+|REQUEST_AFTER_AUTH
+|`initPoint`
+|initializer
+|specify when the initializer is executed: `BEFORE_STARTUP`, `AFTER_STARTUP`
+|no
+|`AFTER_STARTUP`
+|`requiresContent`
+|proxy interceptor
+|Only used by Interceptors of proxied resources (the content is always available to Interceptor of Services) Set it to true to make available the content of the request (if interceptPoint is REQUEST_BEFORE_AUTH or REQUEST_AFTER_AUTH) or of the response (if interceptPoint is RESPONSE or RESPONSE_ASYNC)
+|no
+|`false`
+|`priority`
+|interceptor, initializer
+|the execution priority (less is higher priority)
+|no
+|`10`
+|`blocking`
+|service
+|With blocking = `false` the execution of the service is not dispatched to a working thread and executed by the io-thread, thus avoiding the overhead of the thread handling and switching.
+|no
+|`true`
+|`authorizerType`
+|authorizer
+|`ALLOWER` can authorize a request unless no `VETOER` vetoes it.
+|no
+|ALLOWER
+|===
+
+
+== Configuration
+
+Plugins are configured in `restheart.yml` using the plugin name from `@RegisterPlugin`:
+
+[source,yml]
+----
+ping:
+    enabled: true
+    secure: false
+    uri: /ping
+    msg: 'Ping!'
+----
+
+**Special configuration options** automatically managed by RESTHeart:
+
+- **enabled**: Enable/disable the plugin (overrides `enabledByDefault` in `@RegisterPlugin`)
+- **uri**: Set the service URI (overrides `defaultUri` in `@RegisterPlugin`)
+- **secure**: Require authentication/authorization (`true`) or allow open access (`false`)
+
+WARNING: Services have `secure: false` by default! Always set `secure: true` for production services that need protection.
+
+**Accessing configuration in code:**
+
+[source,java]
+----
+@Inject("conf")
+Map<String, Object> conf;
+
+// Use helper method to get values
+String msg = argValue(conf, "msg");
+----
+
+
+== Dependency Injection
+
+Use `@Inject` to access RESTHeart's built-in objects and services. Available providers:
+
+[cols="2,3,3", options="header"]
+|===
+|Injection |Type |Use For
+
+|`@Inject("conf")`
+|`Map<String, Object>`
+|Plugin's configuration
+
+|`@Inject("rh-config")`
+|`Configuration`
+|RESTHeart's global configuration
+
+|`@Inject("mclient")`
+|`MongoClient`
+|MongoDB database access
+
+|`@Inject("registry")`
+|`PluginsRegistry`
+|Access to other plugins
+
+|`@Inject("acl-registry")`
+|`ACLRegistry`
+|Programmatic permission management
+
+|`@Inject("gql-app-definition-cache")`
+|`LoadingCache<String, GraphQLApp>`
+|GraphQL app definition cache
+|===
+
+**Example:**
+
+[source,java]
+----
+public class MyPlugin implements JsonService {
+    @Inject("mclient")
+    private MongoClient mclient;
+    
+    @Inject("conf")
+    private Map<String, Object> conf;
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Use injected MongoClient
+        var db = mclient.getDatabase("mydb");
+        // Use injected configuration
+        var setting = argValue(conf, "mySetting");
+    }
+}
+----
+
+TIP: See link:/docs/framework/providers[Providers] for how to create your own injectable objects.
+
+== Request and Response Types
+
+Services and Interceptors are **generic classes** that use type parameters to define how they handle request and response data.
+
+RESTHeart provides specialized Request/Response pairs for different data formats:
+
+[cols="2,3,3", options="header"]
+|===
+|Type Pair |Content Format |Best For
+
+|`JsonRequest` / `JsonResponse`
+|JSON objects
+|REST APIs, JSON services
+
+|`BsonRequest` / `BsonResponse`
+|BSON (MongoDB format)
+|MongoDB operations
+
+|`MongoRequest` / `MongoResponse`
+|MongoDB-specific
+|Advanced MongoDB features
+
+|`ByteArrayRequest` / `ByteArrayResponse`
+|Raw bytes
+|Binary data, files
+
+|`StringRequest` / `StringResponse`
+|Plain text
+|Text processing
+
+|`BsonFromCsvRequest`
+|CSV to BSON
+|CSV imports
+|===
+
+**Why this matters:**
+
+- The type you choose determines how request content is parsed and cached
+- Each type provides helper methods for its specific use case (e.g., `MongoRequest.getPageSize()`)
+- Content is parsed once and cached for efficiency
+- Type safety helps prevent errors at compile time
+
+**Example:**
+
+[source,java]
+----
+@RegisterPlugin(name = "myService", defaultUri = "/myapi")
+public class MyService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // req and res are strongly typed for JSON
+        JsonObject content = req.getContent();
+        res.setContent(Json.object().put("status", "ok"));
+    }
+}
+----
+
+TIP: Start with `JsonService` for most REST APIs. See link:/docs/framework/services[Services] for detailed examples of each type.
+
+== How Content Parsing Works
+
+Understanding how RESTHeart handles request content is important for efficient plugin development.
+
+**The parsing lifecycle:**
+
+1. When a request arrives, RESTHeart determines which Service will handle it
+2. The Service creates typed Request and Response objects
+3. On first call to `request.getContent()`, the content is parsed using `parseContent()`
+4. The parsed content is cached in the request object
+5. Subsequent calls to `getContent()` return the cached object (no re-parsing)
+
+**Why this matters:**
+
+- Content is only parsed when you actually need it (lazy evaluation)
+- Multiple plugins can access the same content without overhead
+- You can safely call `getContent()` multiple times
+
+**Custom parsing:**
+
+If you create a custom ServiceRequest, implement the `parseContent()` method:
+
+[source,java]
+----
+public abstract class ServiceRequest<T> {
+    /**
+     * Parses the content from the exchange and converts it into type T.
+     * Called automatically by getContent() on first invocation.
+     */
+    public abstract T parseContent() throws IOException, BadRequestException;
+}
+----
+
+== Next Steps
+
+- **Apply these concepts:** link:/docs/framework/services[Build a Service]
+- **See it in action:** link:/docs/framework/tutorial[Plugin Development Tutorial]
+- **Advanced topics:** link:/docs/framework/providers[Create Custom Providers]
