@@ -1,0 +1,330 @@
+---
+docs_version: 8
+title: MongoDB Mappings in RESTHeart GraphQL
+layout: docs-adoc
+menu: mongodb
+applies_to: both
+---
+
+This guide explains how to map your GraphQL types and queries to MongoDB collections and operations, covering all mapping types and advanced features.
+
+=== Overview
+
+Mappings are defined in the GraphQL app definition and connect your GraphQL schema to MongoDB:
+
+[source,json]
+----
+{
+    "descriptor": { ... },
+    "schema": "...",
+    "mappings": {
+        "TypeName": {
+            "fieldName": {
+                "db": "database_name",
+                "collection": "collection_name",
+                // mapping configuration
+            }
+        }
+    }
+}
+----
+
+=== Mapping Types
+
+==== 1. Field-to-Field Mapping
+
+The simplest mapping type - directly maps GraphQL fields to MongoDB document fields.
+
+[source,json]
+----
+{
+    "mappings": {
+        "Book": {
+            "id": "_id",            // Maps Book.id to document._id
+            "bookTitle": "title",   // Maps Book.bookTitle to document.title
+            "publishYear": "year"   // Maps Book.publishYear to document.year
+        }
+    }
+}
+----
+
+===== Nested Field Mapping
+
+Access nested MongoDB document fields using dot notation:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Book": {
+            "publisherName": "publisher.name",
+            "publisherCity": "publisher.address.city"
+        }
+    }
+}
+----
+
+==== 2. Field-to-Query Mapping
+
+Maps a GraphQL field to a MongoDB query, useful for relationships and filtered data.
+
+[source,json]
+----
+{
+    "mappings": {
+        "Author": {
+            "books": {
+                "db": "library",
+                "collection": "books",
+                "find": {
+                    "authorId": { "$fk": "_id" }
+                },
+                "sort": { "publishedDate": -1 },
+                "limit": 10
+            }
+        }
+    }
+}
+----
+
+===== Query Operators
+
+Common MongoDB query operators are supported:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Query": {
+            "recentBooks": {
+                "db": "library",
+                "collection": "books",
+                "find": {
+                    "publishedDate": {
+                        "$gt": "2023-01-01"
+                    },
+                    "rating": {
+                        "$gte": 4.0
+                    }
+                }
+            }
+        }
+    }
+}
+----
+
+==== 3. Field-to-Aggregation Mapping
+
+Maps a field to a MongoDB aggregation pipeline for complex data transformations.
+
+[source,json]
+----
+{
+    "mappings": {
+        "Author": {
+            "bookStats": {
+                "db": "library",
+                "collection": "books",
+                "stages": [
+                    {
+                        "$match": {
+                            "authorId": { "$fk": "_id" }
+                        }
+                    },
+                    {
+                        "$group": {
+                            "_id": null,
+                            "totalBooks": { "$sum": 1 },
+                            "avgRating": { "$avg": "$rating" }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
+----
+
+=== Special Operators
+
+==== The $fk Operator
+
+Links fields between documents using foreign key relationships:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Book": {
+            "author": {
+                "db": "library",
+                "collection": "authors",
+                "find": {
+                    "_id": { "$fk": "authorId" }
+                }
+            }
+        }
+    }
+}
+----
+
+==== The $arg Operator
+
+Uses GraphQL query arguments in MongoDB queries:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Query": {
+            "searchBooks": {
+                "db": "library",
+                "collection": "books",
+                "find": {
+                    "title": {
+                        "$regex": { "$arg": "searchTerm" },
+                        "$options": "i"
+                    },
+                    "genre": { "$arg": "genre" }
+                },
+                "sort": { "$arg": "sortField" },
+                "limit": { "$arg": "limit" }
+            }
+        }
+    }
+}
+----
+
+=== Advanced Features
+
+==== 1. DataLoader Configuration
+
+Configure batching and caching for related data:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Book": {
+            "author": {
+                "db": "library",
+                "collection": "authors",
+                "find": {
+                    "_id": { "$fk": "authorId" }
+                },
+                "dataLoader": {
+                    "batching": true,
+                    "caching": true,
+                    "maxBatchSize": 100
+                }
+            }
+        }
+    }
+}
+----
+
+==== 2. Conditional Stages
+
+Use optional stages in aggregation pipelines:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Query": {
+            "books": {
+                "db": "library",
+                "collection": "books",
+                "stages": [
+                    {
+                        "$match": {
+                            "$if": "genre",
+                            "genre": { "$arg": "genre" }
+                        }
+                    },
+                    {
+                        "$sort": {
+                            "$if": "sortBy",
+                            "$then": { "$arg": "sortBy" },
+                            "$else": { "title": 1 }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
+----
+
+==== 3. Complex Field Resolution
+
+Combine multiple queries for complex field resolution:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Book": {
+            "relatedBooks": {
+                "db": "library",
+                "collection": "books",
+                "stages": [
+                    {
+                        "$match": {
+                            "genre": { "$fk": "genre" },
+                            "_id": { "$ne": { "$fk": "_id" } }
+                        }
+                    },
+                    {
+                        "$lookup": {
+                            "from": "ratings",
+                            "localField": "_id",
+                            "foreignField": "bookId",
+                            "as": "ratings"
+                        }
+                    },
+                    {
+                        "$addFields": {
+                            "avgRating": { "$avg": "$ratings.score" }
+                        }
+                    },
+                    {
+                        "$sort": { "avgRating": -1 }
+                    },
+                    {
+                        "$limit": 5
+                    }
+                ]
+            }
+        }
+    }
+}
+----
+
+=== Best Practices
+
+1. *Use Appropriate Mapping Types*
+- Field-to-field for simple mappings
+- Field-to-query for relationships
+- Field-to-aggregation for complex transformations
+
+2. *Optimize Performance*
+- Enable DataLoader for related data
+- Use indexes on frequently queried fields
+- Limit result sets appropriately
+
+3. *Handle Errors*
+- Provide default values where appropriate
+- Use conditional stages for optional filters
+- Validate input arguments
+
+4. *Maintain Scalability*
+- Keep aggregation pipelines efficient
+- Use pagination for large result sets
+- Monitor query performance
+
+=== Next Steps
+
+- Learn about link:/docs/mongodb-graphql/resolvers[Custom Resolvers]
+- Explore link:/docs/mongodb-graphql/optimization[Performance Optimization]
+- Check out link:/docs/mongodb-graphql/best-practices[Best Practices]

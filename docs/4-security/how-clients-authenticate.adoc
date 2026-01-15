@@ -1,0 +1,538 @@
+---
+docs_version: 9
+title: How Clients Authenticate
+layout: docs-adoc
+menu: setup
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+=== What You'll Learn
+
+In this guide, you'll learn how to:
+
+. Authenticate using Basic Authentication with username and password
+. Understand how the Authorization header works
+. Use authentication tokens for subsequent requests
+. Manage authentication tokens (retrieve and invalidate)
+. Check user credentials and roles
+. Avoid browser authentication popups
+
+By the end, you'll understand how clients authenticate with RESTHeart and how to implement authentication in your applications.
+
+[NOTE]
+====
+In all examples below:
+
+* `[RESTHEART-URL]` - Replace with your RESTHeart server URL (e.g., `http://localhost:8080`)
+* `[BASIC-AUTH]` - Replace with `username:password` format (e.g., `admin:secret`)
+
+The interactive examples on this page can automatically substitute these values.
+====
+
+++++
+
+{% include get-restheart.adoc %}
+
+=== Introduction
+
+Clients can authenticate passing credentials via the different authentication schemes handled by restheart-security.
+This section shows how clients can authenticate using the simple link:https://en.wikipedia.org/wiki/Basic_access_authentication[basic authentication],
+a standard method for an HTTP user agent to provide a *username* and
+*password* when making a request.
+
+## Some examples
+
+Here's how to authenticate with basic credentials:
+
+
+==== cURL
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http -a [BASIC-AUTH] GET [RESTHEART-URL]/
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Basic Authentication for dummies
+
+Basic Authentication requires the client to send its credentials with
+the **Authorization** request header.
+
+The value of the *Authorization* request header must be:** Basic
+base64(&lt;userid&gt; + ':' + &lt;password&gt;)**
+
+In other words:
+
+1.  userid and password are combined into a string "userid:password".
+    **Note** the colon between userid and password (userid cannot
+    contain the ":" character).
+2.  The resulting string is base 64 encoded
+3.  The string "Basic " (**note** the space) is then put before the
+    encoded string.
+
+=== Authentication Token
+
+==== Modern OAuth 2.0 Token Endpoint (Recommended)
+
+RESTHeart v9 introduces dedicated OAuth 2.0-compatible token endpoints for secure and standards-compliant authentication. This is the recommended approach for new applications.
+
+**Available Endpoints:**
+
+* `POST /token` - Returns JWT token in response body (OAuth 2.0 Resource Owner Password Credentials Grant)
+* `POST /token/cookie` - Sets JWT token as HttpOnly cookie (enhanced security for browser-based apps)
+
+**Benefits:**
+
+* 85% performance improvement over the legacy token injection approach
+* Standards-compliant OAuth 2.0 implementation
+* Reduced attack surface with dedicated endpoints
+* Centralized authentication audit trails
+* No overhead on every authenticated request
+
+===== Basic Authentication Method
+
+Send credentials using HTTP Basic Authentication:
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -u [BASIC-AUTH]
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/token \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/token', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Access token:', data.access_token);
+    console.log('Expires in:', data.expires_in, 'seconds');
+    // Store the token for future requests
+    sessionStorage.setItem('auth_token', data.access_token);
+})
+.catch(error => console.error('Error:', error));
+----
+
+**Response:**
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900
+}
+----
+
+===== OAuth 2.0 Form Data Method
+
+Send credentials using OAuth 2.0 form data (application/x-www-form-urlencoded):
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=password&username=admin&password=secret"
+----
+
+==== HTTPie
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=password \
+  username=admin \
+  password=secret
+----
+
+==== JavaScript
+[source,javascript]
+----
+const formData = new URLSearchParams({
+    grant_type: 'password',
+    username: 'your-username',
+    password: 'your-password'
+});
+
+fetch('[RESTHEART-URL]/token', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Access token:', data.access_token);
+    sessionStorage.setItem('auth_token', data.access_token);
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== Using the Token
+
+Once you have the token, use it as a Bearer token in the Authorization header:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/mycollection \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/mycollection \
+  "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+==== JavaScript
+[source,javascript]
+----
+const token = sessionStorage.getItem('auth_token');
+
+fetch('[RESTHEART-URL]/mycollection', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`
+    }
+})
+.then(response => response.json())
+.then(data => console.log('Data:', data))
+.catch(error => console.error('Error:', error));
+----
+
+===== Cookie-Based Authentication
+
+For browser-based applications, use the `/token/cookie` endpoint to set an HttpOnly cookie (more secure as the token isn't exposed to JavaScript):
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token/cookie \
+  -u [BASIC-AUTH] \
+  -c cookies.txt
+----
+
+==== HTTPie
+[source,bash]
+----
+http --session=./session.json POST [RESTHEART-URL]/token/cookie \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/token/cookie', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    },
+    credentials: 'include'  // Important: include cookies
+})
+.then(response => {
+    if (response.ok) {
+        console.log('Authenticated! Cookie set.');
+        // Subsequent requests will automatically include the cookie
+    }
+})
+.catch(error => console.error('Error:', error));
+
+// Subsequent requests automatically include the cookie
+fetch('[RESTHEART-URL]/mycollection', {
+    method: 'GET',
+    credentials: 'include'  // Important: include cookies
+})
+.then(response => response.json())
+.then(data => console.log('Data:', data))
+.catch(error => console.error('Error:', error));
+----
+
+**Configuration:**
+
+The JWT Token Manager is enabled by default in RESTHeart v9:
+
+[source,yml]
+----
+jwtTokenManager:
+    key: secret  # Change this in production!
+    enabled: true
+    ttl: 15  # Token time-to-live in minutes
+    srv-uri: /tokens
+    issuer: restheart.com
+----
+
+IMPORTANT: Always change the `key` value in production to a strong, random secret.
+
+==== Legacy Token Management (Automatic Injection)
+
+NOTE: This is the legacy token management approach. For new applications, use the OAuth 2.0 `/token` endpoint described above.
+
+RESTHeart can also automatically inject auth tokens into response headers. The default configuration includes the **tokenBasicAuthMechanism** and the **rndTokenManager**.
+
+With those plugins enabled, when a request is successfully authenticated, an auth token is generated by the Token Manager and included in every subsequent responses.
+
+the **tokenBasicAuthMechanism** allows to authenticate the client using  the auth token; the auth token is used as a temporary password in the basic
+authentication scheme. This means that the *Authorization* request
+header can either be calculated from the the Auth-Token itself:
+
+`Authorization: Basic base64(<userid> + ':' + <password>) or Authorization: Basic base64(<userid> + ':' + <auth-token>)`
+
+Auth token information are passed in the following response headers:
+
+
+[source,http]
+----
+Auth-Token: 6a81d622-5e24-4d9e-adc0-e3f7f2d93ac7
+Auth-Token-Location: /tokens/user@si.com
+Auth-Token-Valid-Until: 2015-04-16T13:28:10.749Z
+----
+
+NOTE: the URI in the Auth-Token-Location header: the client can issue
+a GET request to obtain information about token or a DELETE request to
+invalidate it. Of course clients can only request their own tokens
+(otherwise response code will be 403 Forbidden).
+
+==== Token Management Examples
+
+To get information about your auth token:
+
+==== cURL
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/tokens/userid
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/tokens/userid Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/tokens/userid', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Token information:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+To invalidate your auth token:
+
+==== cURL
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X DELETE [RESTHEART-URL]/tokens/userid
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/tokens/userid Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/tokens/userid', {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => {
+    if (response.ok) {
+        console.log('Token invalidated successfully');
+    } else {
+        console.error('Failed to invalidate token:', response.status);
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+TIP: The Authentication Token is a very important feature when you are
+developing a web application. Since every request needs to include the
+credentials, you need to store them either in a cookie or (better) in
+the session storage. The sign-in form can check the credentials using
+the actual password; if it succeeds, the auth token can be stored and
+used.
+
+WARNING: Pay attention to the authentication token in case of multi-node
+deployments (horizontal scalability). In this case, you need to either
+disable it or use a load balancer with the sticky session option or a different Token Manager implementation.
+
+The `rndTokenManager` can be configured as follows (note option `TTL` the auth token Time To Live in minutes):
+
+
+[source,yml]
+----
+rndTokenManager:
+    ttl: 15
+    srv-uri: /tokens
+----
+
+==== Suggested way to check credentials
+
+The default restheart configuration file sets up the useful service **roles**, bound to `/roles/<userid>`
+
+Here's how to check credentials using the roles endpoint:
+
+==== cURL
+
+[source,bash]
+----
+curl -i --user [BASIC-AUTH] -X GET [RESTHEART-URL]/roles/userid
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/roles/userid Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/roles/userid', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('User roles:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+The possible response codes of the request GET `/roles/<userid>`
+are:
+
+-   **401 Unauthorized** missing or wrong credentials
+-   **403 Forbidden** the *userid* in the URL does not match the one in
+    the *Authorization* header
+-   **200 OK** credentials match; the following response document is
+    sent back:
+
+
+[source,json]
+----
+ {
+    "authenticated": true,
+    "roles": [
+        "USER"
+    ]
+}
+----
+
+Of course, if the request succeeds, the client gets back the auth token
+as well.
+
+NOTE: It is easy to check the user credentials from a login form with this
+handler: in case the client gets back 200, they match and the auth token
+can be stored for further request; otherwise passed credentials are
+wrong.
+
+=== How to avoid the basic authentication popup in browsers
+
+With basic authentication, browsers can show a awful login popup window
+and this is not what you usually want.
+
+What happens behind the scene, is that the server sends
+the `WWW-Authenticate` response header that actually leads to it.
+
+You can avoid RESTHeart to actually send this header avoiding the popup
+login window altogether, either specifying
+the `No-Auth-Challenge` request header or using
+the `noauthchallenge` query parameter. In this case, RESTHeart will just
+respond with **401 Unauthorized** in case of missing or wrong
+credentials.
+
+TIP: This feature together with the authentication token, allows you to
+implement a form based authentication experience on top of the simple
+and effective basic authentication mechanism.
+

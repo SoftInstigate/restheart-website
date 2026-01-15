@@ -1,0 +1,346 @@
+---
+docs_version: 9
+title: GraphQL Schema Design for MongoDB
+layout: docs-adoc
+menu: graphql
+applies_to: both
+---
+
+This guide covers best practices and techniques for designing GraphQL schemas that work efficiently with MongoDB through RESTHeart.
+
+=== Schema Basics
+
+Your GraphQL schema defines the structure of your API, including:
+
+* Types and their fields
+* Relationships between types
+* Available queries and mutations
+* Custom scalars and enums
+
+=== Supported GraphQL Types
+
+RESTHeart supports all standard GraphQL types:
+
+[cols="1,2,2"]
+|===
+|Type |Description |Example
+
+|`type`
+|Object type definition
+|`type Book { title: String! }`
+
+|`interface`
+|Shared fields between types
+|`interface Node { id: ID! }`
+
+|`union`
+|Combination of multiple types
+|`union SearchResult = Book \| Author`
+
+|`enum`
+|Fixed set of values
+|`enum Category { FICTION, NONFICTION }`
+
+|`input`
+|Complex input arguments
+|`input BookFilter { genre: String }`
+
+|`scalar`
+|Custom scalar types
+|`scalar DateTime`
+|===
+
+=== MongoDB Data Types
+
+RESTHeart provides special scalar types for MongoDB:
+
+[source,graphql]
+----
+# MongoDB specific scalars
+scalar ObjectId      # MongoDB ObjectId
+scalar BsonDocument # Raw BSON document
+scalar DateTime     # ISODate and Date objects
+scalar Decimal128   # High-precision decimals
+----
+
+=== Example Usage
+
+[source,graphql]
+----
+type Book {
+  _id: ObjectId!
+  title: String!
+  publishedAt: DateTime
+  price: Decimal128
+  metadata: BsonDocument
+}
+----
+
+=== Schema Design Patterns
+
+==== 1. Document References
+
+For MongoDB document references:
+
+[source,graphql]
+----
+type Book {
+  _id: ObjectId!
+  title: String!
+  authorId: ObjectId!
+  author: Author
+}
+
+type Author {
+  _id: ObjectId!
+  name: String!
+  books: [Book]
+}
+----
+
+==== 2. Embedded Documents
+
+For MongoDB embedded documents:
+
+[source,graphql]
+----
+type Address {
+  street: String!
+  city: String!
+  country: String!
+}
+
+type Customer {
+  _id: ObjectId!
+  name: String!
+  # Embedded document
+  address: Address
+  # Array of embedded documents
+  shippingAddresses: [Address]
+}
+----
+
+==== 3. Interfaces for Common Fields
+
+[source,graphql]
+----
+interface Timestamped {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Book implements Timestamped {
+  _id: ObjectId!
+  title: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Author implements Timestamped {
+  _id: ObjectId!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+----
+
+==== 4. Unions for Polymorphic Queries
+
+[source,graphql]
+----
+type Book {
+  _id: ObjectId!
+  title: String!
+  type: String!
+}
+
+type Movie {
+  _id: ObjectId!
+  title: String!
+  duration: Int!
+  type: String!
+}
+
+union MediaItem = Book | Movie
+
+type Query {
+  searchMedia(term: String!): [MediaItem]
+}
+----
+
+=== Query Design
+
+==== 1. Pagination Support
+
+[source,graphql]
+----
+type BookConnection {
+  edges: [BookEdge]
+  pageInfo: PageInfo!
+}
+
+type BookEdge {
+  node: Book!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type Query {
+  books(first: Int, after: String): BookConnection
+}
+----
+
+==== 2. Filtering and Sorting
+
+[source,graphql]
+----
+input BookFilter {
+  title: String
+  genre: String
+  yearPublished: Int
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+input BookSort {
+  field: String!
+  order: SortOrder!
+}
+
+type Query {
+  books(
+    filter: BookFilter
+    sort: BookSort
+    limit: Int
+    skip: Int
+  ): [Book]
+}
+----
+
+=== Best Practices
+
+1. *Use Non-Null Fields Wisely*
+- Mark required fields with `!`
+- Consider optional fields for flexibility
+
+2. *Consistent Naming*
+- Use CamelCase for types
+- Use camelCase for fields
+- Be descriptive but concise
+
+3. *Documentation*
+- Add descriptions to types and fields
+- Document expected behavior
+- Include examples in comments
+
+[source,graphql]
+----
+"""
+Represents a book in the catalog
+"""
+type Book {
+  """
+  MongoDB ObjectId of the book
+  """
+  _id: ObjectId!
+
+  """
+  Title of the book
+  Must not be empty
+  """
+  title: String!
+}
+----
+
+4. *Schema Evolution*
+- Add fields as optional
+- Use interfaces for extensibility
+- Plan for versioning
+
+=== Schema Validation
+
+RESTHeart automatically validates your schema for:
+
+1. *Syntax Errors*
+- Invalid type definitions
+- Incorrect field types
+- Missing required fields
+
+2. *Semantic Errors*
+- Invalid references
+- Type conflicts
+- Circular dependencies
+
+3. *MongoDB Compatibility*
+- Data type mismatches
+- Invalid field names
+- Unsupported operations
+
+=== Common Patterns
+
+==== 1. Soft Deletion
+
+[source,graphql]
+----
+interface SoftDelete {
+  isDeleted: Boolean!
+  deletedAt: DateTime
+}
+
+type Book implements SoftDelete {
+  _id: ObjectId!
+  title: String!
+  isDeleted: Boolean!
+  deletedAt: DateTime
+}
+----
+
+==== 2. Versioning
+
+[source,graphql]
+----
+interface Versioned {
+  version: Int!
+}
+
+type Book implements Versioned {
+  _id: ObjectId!
+  title: String!
+  version: Int!
+  changes: [ChangeLog]
+}
+
+type ChangeLog {
+  version: Int!
+  timestamp: DateTime!
+  changes: [String]
+}
+----
+
+==== 3. Metadata Support
+
+[source,graphql]
+----
+interface Metadata {
+  metadata: BsonDocument
+}
+
+type Book implements Metadata {
+  _id: ObjectId!
+  title: String!
+  metadata: BsonDocument
+}
+----
+
+=== Next Steps
+
+- Learn about link:/docs/mongodb-graphql/mappings[MongoDB Mappings]
+- Explore link:/docs/mongodb-graphql/resolvers[Custom Resolvers]
+- Check out link:/docs/mongodb-graphql/best-practices[Best Practices]

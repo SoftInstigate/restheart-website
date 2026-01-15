@@ -14,14 +14,14 @@ layout: default
                           v{{ page.docs_version }}
                       </button>
                       <div class="dropdown-menu mt-2 me-1 pb-2" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ "/docs/v9" | prepend: site.baseurl }}">
+                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
                               {% if page.docs_version == 9 %}
                               <strong>v9 (current)</strong>
                               {% else %}
                               v9 (current)
                               {% endif %}
                           </a>
-                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
+                        <a class="dropdown-item" href="{{ "/docs/v8" | prepend: site.baseurl }}">
                               {% if page.docs_version == 8 %}
                               <strong>v8</strong>
                               {% else %}
@@ -32,7 +32,7 @@ layout: default
                   </div>
                   <form action="https://www.google.com/search" class="form bd-sidebar__search d-flex flex-grow-1" method="get"
                       name="searchform">
-                      <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 and page.docs_version != 9 %}/v{{ page.docs_version }}{% elsif page.docs_version == 9 %}/v9{% endif %}">
+                      <input name="sitesearch" type="hidden" value="restheart.org/docs{% if page.docs_version and page.docs_version != 8 and page.docs_version != 9 %}/v{{ page.docs_version }}{% elsif page.docs_version == 8 %}/v8{% endif %}">
                       <input autocomplete="on" class="form-control input-sm search bd-sidebar__input" name="q"
                           placeholder="Search docs..." required="required" type="text">
                       <button class="bd-sidebar__submit" type="submit">
@@ -58,8 +58,8 @@ layout: default
           </div>
 
           <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
-              {% if page.docs_version == 9 %}
-                  {% include docs-v9-sidebar.html %}
+              {% if page.docs_version == 8 %}
+                  {% include docs-v8-sidebar.html %}
               {% else %}
                   {% include docs-sidebar.html %}
               {% endif %}

@@ -1,0 +1,254 @@
+---
+docs_version: 9
+title: How to deploy Plugins
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+=== Introduction
+
+This section provides information on how to package and deploy plugins.
+
+NOTE: To quick start a new Java plugin, you can clone the link:https://github.com/SoftInstigate/restheart-plugin-skeleton[plugin skeleton repository]. It contains a basic skeleton for a plugin and an helper script that allows to build, deploy the plugin.
+
+=== Deploying Java Plugins in RESTHeart
+
+Java (and Kotlin, Scala, etc.) plugins must be packaged as JAR files. Deploying a plugin is straightforward: **just copy its JAR file into the `./plugins` directory of RESTHeart**.
+
+**IMPORTANT:** After deploying a JAR plugin, you must restart RESTHeart.
+
+You can also nest your JARs into the `./plugins` directory up to two levels deep. This is particularly useful when developing a custom plugin. In this scenario, your Java project directory structure might look like this:
+
+[source]
+----
+.
+├── LICENSE
+├── README.md
+├── pom.xml
+├── src
+│   ├── main
+│   └── test
+└── target
+    ├── classes
+    ├── lib
+    │   ├── lib1.jar
+    │   └── lib2.jar
+    ├── plugin.jar
+----
+
+In this case, you need to deploy `plugin.jar` along with the dependency libraries `lib1.jar` and `lib2.jar`.
+
+To deploy, you can simply copy the entire `target` directory into the `./plugins` directory. If you are using Docker, you can mount the `target` directory under `/opt/restheart/plugins/custom` with the following command:
+
+[source,bash]
+$ docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart
+
+==== Example
+
+As an example we will build and deploy the simple link:https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service[Greeter Service] example plugin.
+
+Let's clone the RESTHeart repository that includes the `examples` directory and build the `greeter-service` example.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cd restheart/examples/greeter-service
+$ ../mvnw clean package
+----
+
+The built plugin jar file is `target/greeter-service.jar`. Copy it into the RESTHeart plugins directory.
+
+[source,bash]
+$ cp target/greeter-service.jar <RH_HOME>/plugins
+
+Restarting RESTHeart will produce the following log message:
+
+[source,bash]
+----
+$ java -jar restheart.jar
+INFO  org.restheart.Bootstrapper - Starting RESTHeart instance default
+...
+INFO  org.restheart.plugins.PluginsFactory - Found plugin jar file:/Users/uji/development/restheart/core/target/plugins/greeter-service.jar
+...
+INFO  org.restheart.Bootstrapper - URI /greetings bound to service greetings, secured: false, uri match PREFIX
+....
+----
+
+Let's test it (for example, using the link:https://httpie.io[httpie] client):
+
+[source,bash]
+----
+$ http -b :8080/greetings
+{
+    "message": "Hello World!"
+}
+----
+
+==== External dependencies
+
+The link:https://github.com/SoftInstigate/restheart/tree/master/examples/random-string-service[Random String Service] example plugin shows how to add to the classpath an external dependency required by a plugin.
+
+By _external dependency_ we mean a dependency that is not included in restheart, thus it must be added to the classpath for the service to work.
+
+IMPORTANT: *To add an external dependency to the classpath just copy it into the RESTHeart plugins directory*.
+
+IMPORTANT: Starting from v8.1.0, Restheart will no longer scan library jars for plugins. A jar file will be categorized as a library if it resides in a subdirectory of the ./plugins directory that includes "lib", "-lib", or "_lib" in its relative path.
+
+The plugin link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-string-service/pom.xml[pom.xml] file defines the following dependencies:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.restheart</groupId>
+        <artifactId>restheart-commons</artifactId>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.10</version>
+    </dependency>
+</dependencies>
+----
+
+The scope of `restheart-commons` is `provided` since it is provided by the RESTHeart runtime, together with many others.
+
+To get a list of all the dependencies included in the RESTHeart runtime, you can use the following command:
+
+[source,bash]
+----
+$ cd <RH_HOME>/core
+$ ../mvnw dependency:tree -Dscope=compile
+----
+
+On the other side, the scope of `commons-lang3` is `compile` as it is not provided by the RESTHeart runtime. Thus it is an external dependency and it must be copied into the RESTHeart plugins directory.
+
+Let's build the plugin.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cd restheart/examples/random-string-service
+$ ../mvnw clean package
+----
+
+The link:https://github.com/SoftInstigate/restheart/blob/master/examples/random-string-service/pom.xml[pom.xml] uses the `maven-dependency-plugin` to copy the jars of the external dependencies into the directory `target/lib`
+
+To deploy the plugin copy its jar file and the jars of the dependencies into the plugins directory.
+
+[source,bash]
+----
+$ mkdir <RH_HOME>/plugins/lib
+$ cp target/random-string-service.jar target/lib/* <RH_HOME>/plugins/lib
+----
+
+With Docker this is ever more straightforward. Mounting the `target` directory in the container `/opt/restheart/plugins/custom` directory, will deploy it together with the library jar contained in `target/lib`.
+
+[source,bash]
+----
+$ docker run --name restheart --rm -e RHO="/http-listener/host->'0.0.0.0';/mclient/connection-string->'mongodb://host.docker.internal';/helloWorldService/message->'Ciao Mondo!'" -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart -s
+----
+
+=== Speeding Up Plugin Scanning at Startup
+
+If a custom plugin has many dependencies, you may need to copy numerous JAR files into the `./plugins` directory. All JARs are scanned to find plugins (classes annotated with `@RegisterPlugin`), which can slow down the bootstrap process.
+
+To address this, the configuration option `/core/plugins-packages` allows you to limit the scanning to specific packages (and their sub-packages).
+
+```yml
+core:
+  ...
+  # Limit the scanning of classes annotated with @RegisterPlugin
+  # to the specified packages. This can speed up the boot time
+  # for large plugin JARs. It is usually not required.
+  # Use an empty array to not limit scanning.
+  # Always add the package org.restheart to the list.
+  plugins-packages: [ org.restheart, com.acme ]
+```
+
+For example, the following command limits the scanning to `org.restheart` and `com.acme`:
+
+[source,bash]
+----
+$ RHO='/core/plugins-packages->[ "org.restheart", "com.acme" ]' java -jar restheart.jar
+----
+
+By specifying only the necessary packages, you can significantly reduce startup times when dealing with large plugin JARs.
+
+=== JavaScript Plugins
+
+IMPORTANT: JavaScript plugins can be deployed only running link:/docs/graalvm/#run-restheart-with-graalvm[RESTHeart on GraalVM] and on restheart native.
+
+NOTE: Deploying JavaScript plugins does not require restarting RESTHeart, they can be hot-deployed! To update an already deployed JavaScript plugin,  `touch` its root directory.
+
+The JavaScript plugins are packaged in directories containing the JavaScript files and the `package.json` file.
+
+The JavaScript plugin link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/README.md[Credit Card Hider] is an example.
+
+Its link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/package.json[package.json] file declares the Interceptor `cc-hider.js` via the property `rh:interceptors` (Services are declared with `rh:services`):
+
+[source,json]
+----
+{
+  "name": "restheart-demo-cc-hider",
+  "version": "1.0.0",
+  "description": "demo plugins for RESTHeart",
+  "rh:interceptors": [ "cc-hider.js" ]
+}
+----
+
+Let's deploy it.
+
+[source,bash]
+----
+$ git clone --depth 1 git@github.com:SoftInstigate/restheart.git
+$ cp -r restheart/examples/credit-card-hider <RH_HOME>/plugins
+----
+
+RESTHeart log files shows the following message:
+
+[source,bash]
+----
+INFO  o.r.polyglot.PolyglotDeployer - Added interceptor ccHider, description: hides credit card numbers
+----
+
+Refer to the Credit Card Hider link:https://github.com/SoftInstigate/restheart/blob/master/examples/credit-card-hider/README.md[README.md] for more information on how to play with this JavaScript plugin.
+
+NOTE: More JavaScript plugins examples are available in the link:https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin[examples/js-plugin] directory of RESTHeart repository.
+
+=== Deploy Java plugins on RESTHeart Native
+
+RESTHeart native can run JavaScript plugins as previously described.
+
+However *you cannot deploy Java plugins in RESTHeart native by merely copying jars file into the plugins directory* (this will be allowed in the future).
+
+In order to use Java plugins on RESTHeart native you must build them as native image together with RESTHeart.
+
+The repository link:https://github.com/SoftInstigate/restheart-plugin-skeleton[restheart-plugin-skeleton] defines a skeleton project for Java plugins. Its link:https://github.com/SoftInstigate/restheart-plugin-skeleton/blob/master/pom.xml[pom.xml] maven file defines the `native` profile that uses the `native-maven-plugin` to build the native image, defining the required dependencies.
+
+Fork the repository
+
+[source,bash]
+----
+$ git clone git@github.com:SoftInstigate/restheart-plugin-skeleton.git
+$ cd restheart-plugin-skeleton
+----
+
+Make sure you are using GraalVM.
+
+[source,bash]
+----
+$ java -version
+openjdk version "21.0.2" 2024-01-16
+OpenJDK Runtime Environment GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30)
+OpenJDK 64-Bit Server VM GraalVM CE 21.0.2+13.1 (build 21.0.2+13-jvmci-23.1-b30, mixed mode, sharing)
+----
+
+Build it.
+
+[source,bash]
+----
+$ ./mvnw clean package -Pnative
+----

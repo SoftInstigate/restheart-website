@@ -1,0 +1,939 @@
+---
+docs_version: 9
+title: Document Relationships
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+MongoDB is a document database without built-in join operations, but that doesn't mean your data can't have relationships. RESTHeart provides a convenient way to define and navigate relationships between documents, making it easier to model connected data.
+
+=== Introduction to MongoDB Relationships
+
+In MongoDB, documents can reference other documents in several ways:
+
+* *Embedded documents* - nesting related data within a single document
+* *Document references* - storing the ID of a related document as a field value
+* *Array of references* - storing multiple related document IDs in an array
+
+RESTHeart enhances MongoDB's reference approach by allowing you to declare existing relationships in your collections. Once declared, RESTHeart automatically adds hyperlinks to related documents in the representation.
+
+[IMPORTANT]
+====
+Relationship links are only available in the HAL representation format. To see these links, add the query parameters `?rep=HAL&hal=f` to your requests.
+====
+
+=== Defining Relationships
+
+Relationships are defined in the collection metadata using the `rels` property. This is an array of relationship objects that tell RESTHeart how documents in the collection are connected to other documents.
+
+==== Relationship Definition Object
+
+[source,json]
+----
+{
+    "rel": "relationshipName",
+    "type": "RELATIONSHIP_TYPE",
+    "role": "ROLE_TYPE",
+    "target-db": "targetDatabase",
+    "target-coll": "targetCollection",
+    "ref-field": "referenceField"
+}
+----
+
+[cols="1,3,1", options="header"]
+|===
+|Property |Description |Required
+|`rel` |The name of the relationship (used in the `_links` property) |Yes
+|`type` |Relationship type: `ONE_TO_ONE`, `MANY_TO_ONE`, `ONE_TO_MANY`, or `MANY_TO_MANY` |Yes
+|`role` |`OWNING` (reference field is in this document) or `INVERSE` (reference field is in the target document) |Yes
+|`target-db` |Database containing the referenced documents |No (defaults to current database)
+|`target-coll` |Collection containing the referenced documents |Yes
+|`ref-field` |Field containing the reference ID(s) or JSON path expression |Yes
+|===
+
+==== Understanding Relationship Types
+
+* `ONE_TO_ONE` - A document references exactly one other document (e.g., a person and their passport)
+* `MANY_TO_ONE` - Many documents reference the same document (e.g., employees and their department)
+* `ONE_TO_MANY` - A document references many other documents (e.g., a customer and their orders)
+* `MANY_TO_MANY` - Many documents reference many other documents (e.g., students and courses)
+
+==== Understanding Relationship Roles
+
+* `OWNING` - The current document contains the reference field
+* `INVERSE` - The target document contains the reference field
+
+=== Example Relationship Patterns
+
+==== Pattern 1: Document Tree (Parent-Child)
+
+This pattern allows you to create hierarchical data where each document references its parent.
+
+. Create a collection with a parent relationship:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/categories \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "parent", "type": "MANY_TO_ONE", "role": "OWNING", "target-coll": "categories", "ref-field": "parentId"}], "description": "Product categories organized in a tree"}' | \
+http PUT [RESTHEART-URL]/categories \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categories', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'parent',
+      type: 'MANY_TO_ONE',
+      role: 'OWNING',
+      'target-coll': 'categories',
+      'ref-field': 'parentId'
+    }],
+    description: 'Product categories organized in a tree'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create the root category:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/categories/electronics \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Electronics", "description": "Electronic devices and accessories"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Electronics", "description": "Electronic devices and accessories"}' | \
+http PUT [RESTHEART-URL]/categories/electronics \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categories/electronics', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Electronics',
+    description: 'Electronic devices and accessories'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create child categories referencing the parent:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/categories/smartphones \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Smartphones", "description": "Mobile phones with advanced features", "parentId": "electronics"}' | \
+http PUT [RESTHEART-URL]/categories/smartphones \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categories/smartphones', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Smartphones',
+    description: 'Mobile phones with advanced features',
+    parentId: 'electronics'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/categories/laptops \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Laptops", "description": "Portable computers", "parentId": "electronics"}' | \
+http PUT [RESTHEART-URL]/categories/laptops \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categories/laptops', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Laptops',
+    description: 'Portable computers',
+    parentId: 'electronics'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Now when you request a child document with HAL representation:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/categories/smartphones?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/categories/smartphones \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/categories/smartphones?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
++
+You'll get a response with a link to the parent:
++
+[source,json]
+----
+{
+    "_id": "smartphones",
+    "name": "Smartphones",
+    "description": "Mobile phones with advanced features",
+    "parentId": "electronics",
+    "_links": {
+        "self": {
+            "href": "/categories/smartphones"
+        },
+        "parent": {
+            "href": "/categories/electronics"
+        }
+    }
+}
+----
+
+==== Pattern 2: One-to-Many, Owner Side
+
+In this pattern, a document owns references to multiple related documents. For example, a band owning references to its albums.
+
+. Create the albums collection:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Music albums"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"description": "Music albums"}' | \
+http PUT [RESTHEART-URL]/albums \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    description: 'Music albums'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create the bands collection with a relationship to albums:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/bands \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "OWNING", "target-coll": "albums", "ref-field": "albumIds"}], "description": "Music bands and artists"}' | \
+http PUT [RESTHEART-URL]/bands \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'albums',
+      type: 'ONE_TO_MANY',
+      role: 'OWNING',
+      'target-coll': 'albums',
+      'ref-field': 'albumIds'
+    }],
+    description: 'Music bands and artists'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create some albums:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums/album1 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "The Dark Side of the Moon", "year": 1973}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "The Dark Side of the Moon", "year": 1973}' | \
+http PUT [RESTHEART-URL]/albums/album1 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums/album1', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'The Dark Side of the Moon',
+    year: 1973
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums/album2 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Wish You Were Here", "year": 1975}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Wish You Were Here", "year": 1975}' | \
+http PUT [RESTHEART-URL]/albums/album2 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums/album2', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Wish You Were Here',
+    year: 1975
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create a band that references these albums:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/bands/pinkfloyd \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "Pink Floyd", "formed": 1965, "albumIds": ["album1", "album2"]}' | \
+http PUT [RESTHEART-URL]/bands/pinkfloyd \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands/pinkfloyd', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Pink Floyd',
+    formed: 1965,
+    albumIds: ['album1', 'album2']
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. When you request the band document with HAL representation:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/bands/pinkfloyd?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/bands/pinkfloyd \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands/pinkfloyd?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
++
+You'll get a response with a link to query the albums:
++
+[source,json]
+----
+{
+    "_id": "pinkfloyd",
+    "name": "Pink Floyd",
+    "formed": 1965,
+    "albumIds": ["album1", "album2"],
+    "_links": {
+        "self": {
+            "href": "/bands/pinkfloyd"
+        },
+        "albums": {
+            "href": "/albums?filter={'_id':{'$in':['album1','album2']}}"
+        }
+    }
+}
+----
+
+==== Pattern 3: One-to-Many, Inverse Side
+
+In this pattern, multiple documents reference a single document. For example, albums referencing their band.
+
+. Create the bands collection:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/bands \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"rels": [{"rel": "albums", "type": "ONE_TO_MANY", "role": "INVERSE", "target-coll": "albums", "ref-field": "bandId"}], "description": "Music bands and artists"}' | \
+http PUT [RESTHEART-URL]/bands \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    rels: [{
+      rel: 'albums',
+      type: 'ONE_TO_MANY',
+      role: 'INVERSE',
+      'target-coll': 'albums',
+      'ref-field': 'bandId'
+    }],
+    description: 'Music bands and artists'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create the albums collection:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Music albums with band references"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"description": "Music albums with band references"}' | \
+http PUT [RESTHEART-URL]/albums \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    description: 'Music albums with band references'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create a band:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/bands/beatles \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "The Beatles", "formed": 1960}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"name": "The Beatles", "formed": 1960}' | \
+http PUT [RESTHEART-URL]/bands/beatles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands/beatles', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'The Beatles',
+    formed: 1960
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. Create albums that reference the band:
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums/abbey-road \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Abbey Road", "year": 1969, "bandId": "beatles"}' | \
+http PUT [RESTHEART-URL]/albums/abbey-road \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums/abbey-road', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Abbey Road',
+    year: 1969,
+    bandId: 'beatles'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== cURL
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/albums/revolver \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Revolver", "year": 1966, "bandId": "beatles"}'
+----
+
+==== HTTPie
+[source,bash]
+----
+echo '{"title": "Revolver", "year": 1966, "bandId": "beatles"}' | \
+http PUT [RESTHEART-URL]/albums/revolver \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/albums/revolver', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Revolver',
+    year: 1966,
+    bandId: 'beatles'
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+. When you request the band document with HAL representation:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/bands/beatles?rep=HAL&hal=f \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/bands/beatles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  rep==HAL \
+  hal==f
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/bands/beatles?rep=HAL&hal=f', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
++
+You'll get a response with a link to query all the band's albums:
++
+[source,json]
+----
+{
+    "_id": "beatles",
+    "name": "The Beatles",
+    "formed": 1960,
+    "_links": {
+        "self": {
+            "href": "/bands/beatles"
+        },
+        "albums": {
+            "href": "/albums?filter={'bandId':'beatles'}"
+        }
+    }
+}
+----
+
+=== Advanced Relationship Features
+
+==== Reference Fields with JSON Path Expressions
+
+For references stored in nested documents, use a JSON path expression starting with `$`:
+
+[source,json]
+----
+{
+    "rel": "author",
+    "type": "MANY_TO_ONE",
+    "role": "OWNING",
+    "target-coll": "users",
+    "ref-field": "$.metadata.authorId"
+}
+----
+
+This will match a document structure like:
+
+[source,json]
+----
+{
+    "title": "My Article",
+    "content": "...",
+    "metadata": {
+        "authorId": "user123",
+        "publishDate": "2023-05-15"
+    }
+}
+----
+
+==== Cross-Database Relationships
+
+To reference documents in another database, specify the `target-db` property:
+
+[source,json]
+----
+{
+    "rel": "products",
+    "type": "ONE_TO_MANY",
+    "role": "OWNING",
+    "target-db": "inventory",
+    "target-coll": "products",
+    "ref-field": "productIds"
+}
+----
+
+=== Best Practices
+
+. *Choose the right relationship type* - Consider the cardinality of your data relationships carefully
+. *Use descriptive relationship names* - Name relationships in a way that clearly describes their purpose
+. *Keep consistency* - For bidirectional relationships, ensure that both sides are properly defined
+. *Consider performance* - For very large collections, be mindful of the performance impact of relationships
+. *Document your schema* - Keep documentation of your data model including all relationships
+
+=== Limitations
+
+. Relationships are metadata only - they don't enforce referential integrity
+. Links are only available in HAL representation format
+. Following multiple relationship links requires multiple requests

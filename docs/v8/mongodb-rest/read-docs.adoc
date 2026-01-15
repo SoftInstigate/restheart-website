@@ -1,0 +1,925 @@
+---
+docs_version: 8
+title: Reading Documents
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+:page-liquid:
+
+This page demonstrates how to query MongoDB collections through RESTHeart's REST API using the `GET` method.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+{% include running-examples.adoc %}
+
+=== Basic Document Retrieval
+
+To retrieve documents from a collection, send a `GET` request to the collection URI:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/inventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns all documents in the collection, subject to pagination limits.
+
+=== Pagination
+
+RESTHeart always paginates results to prevent performance issues with large collections. By default, only 100 documents are returned per request.
+
+Control pagination with these query parameters:
+
+* `page`: Which page of results to return (starting from 1)
+* `pagesize`: Number of documents per page (1-1000, default is 100)
+
+Example - get the second page with 3 documents per page:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/inventory?page=2&pagesize=3 \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/inventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  page==2 \
+  pagesize==3
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?page=2&pagesize=3', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Filtering Documents
+
+Use the `filter` parameter to specify which documents to return using MongoDB query syntax:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"qty":{"$gt":50}}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"qty\":{\"\$gt\":50}}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"qty":{"$gt":50}}');
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns only documents where the quantity is greater than 50.
+
+==== Complex Filters
+
+Combine multiple conditions using MongoDB operators like `$and`:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"$and":[{"qty":{"$gt":75}},{"status":"D"}]}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"\$and\":[{\"qty\":{\"\$gt\":75}},{\"status\":\"D\"}]}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"$and":[{"qty":{"$gt":75}},{"status":"D"}]}');
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Alternatively, you can use multiple filter parameters:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"qty":{"$gt":75}}' \
+  --data-urlencode 'filter={"status":"D"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"qty\":{\"\$gt\":75}}" \
+  filter=="{\"status\":\"D\"}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Counting Documents
+
+Instead of retrieving documents, you can count them by appending `_size` to the collection URI:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory/_size" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"status":"A"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory/_size" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"status\":\"A\"}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"status":"A"}');
+fetch(`[RESTHEART-URL]/inventory/_size?filter=${filter}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns the count of documents with status "A".
+
+=== Projection (Selecting Fields)
+
+Use the `keys` parameter to specify which fields to include or exclude from the results:
+
+==== Include only specific fields
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "keys={'item':1}"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'item':1}");
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns only the `_id` and `item` fields for each document.
+
+==== Exclude specific fields
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "keys={'item':0}"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':0}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'item':0}");
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns all fields except `item` for each document.
+
+==== Include multiple specific fields
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "keys={'item':1}" \
+  -G --data-urlencode "keys={'qty':1}"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'item':1}" \
+  keys=="{'qty':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?keys={"item":1}&keys={"qty":1}', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns only the `_id`, `item`, and `qty` fields.
+
+=== Sorting Results
+
+Control the order of results with the `sort` parameter:
+
+==== Simple Format
+
+For simple sorting, use `sort=fieldname` for ascending order or `sort=-fieldname` for descending order:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==status
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?sort=status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This sorts documents by status in ascending order.
+
+For descending order:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=-status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==-status
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?sort=-status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Multiple Fields Sorting
+
+Use multiple `sort` parameters to sort by multiple fields:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?sort=status&sort=-qty" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort==status \
+  sort==-qty
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?sort=status&sort=-qty', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This sorts first by status (ascending) and then by quantity (descending).
+
+==== JSON Expression Format
+
+You can also use MongoDB's sort expression format:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'sort={"status":1,"qty":-1}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  sort=="{\"status\":1,\"qty\":-1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const sort = encodeURIComponent('{"status":1,"qty":-1}');
+fetch(`[RESTHEART-URL]/inventory?sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Accessing Nested Properties
+
+Use dot notation to access nested document fields or array elements:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "keys={'size.h':1}" \
+  -G --data-urlencode "sort={'size.uom':1}"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  keys=="{'size.h':1}" \
+  sort=="{'size.uom':1}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const keys = encodeURIComponent("{'size.h':1}");
+const sort = encodeURIComponent("{'size.uom':1}");
+fetch(`[RESTHEART-URL]/inventory?keys=${keys}&sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns only the height field from the size subdocument and sorts by the unit of measure.
+
+=== Using Indexes with Hint
+
+Override MongoDB's default index selection with the `hint` parameter:
+
+==== Create Indexes First
+
+Before using hints, create the indexes:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/item" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys": {"item": 1}}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+echo '{"keys": {"item": 1}}' | \
+http PUT "[RESTHEART-URL]/inventory/_indexes/item" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory/_indexes/item', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys": {"item": 1}})
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/status" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys":{"status": 1}}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+echo '{"keys":{"status": 1}}' | \
+http PUT "[RESTHEART-URL]/inventory/_indexes/status" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory/_indexes/status', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys":{"status": 1}})
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Using Hint
+
+Specify which index to use:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -G --data-urlencode "hint={'item':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'item':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'item':1}");
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Or use the compact string format:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?hint=%2Bitem&hint=-status" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="+item" \
+  hint=="-status"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?hint=%2Bitem&hint=-status', {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+NOTE: When using the `+` sign in URLs, encode it as `%2B` to prevent it being interpreted as a space.
+
+=== Special Query Operations
+
+==== Collection Scan
+
+Force a collection scan instead of using indexes:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -G --data-urlencode "hint={'$natural':1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'%24natural':1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'$natural':1}");
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+For a reverse collection scan:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -G --data-urlencode "hint={'$natural':-1}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  hint=="{'%24natural':-1}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const hint = encodeURIComponent("{'$natural':-1}");
+fetch(`[RESTHEART-URL]/inventory?hint=${hint}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Text Search
+
+If you have a text index, you can perform text searches:
+
+First, create the text index:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X PUT "[RESTHEART-URL]/inventory/_indexes/text" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{"keys": {"item": "text"}}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+echo '{"keys": {"item": "text"}}' | \
+http PUT "[RESTHEART-URL]/inventory/_indexes/text" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory/_indexes/text', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({"keys": {"item": "text"}})
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Write request executed successfully');
+  } else {
+    console.error('Write request failed:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+Then search and sort by relevance score:
+
+===== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"$text":{"$search":"paper"}}' \
+  -G --data-urlencode 'keys={"item":1,"score":{"$meta":"textScore"}}' \
+  -G --data-urlencode 'sort={"score":{"$meta":"textScore"}}'
+----
+
+===== HTTPie
+
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\"\$text\":{\"\$search\":\"paper\"}}" \
+  keys=="{\"item\":1,\"score\":{\"\$meta\":\"textScore\"}}" \
+  sort=="{\"score\":{\"\$meta\":\"textScore\"}}"
+----
+
+===== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent('{"$text":{"$search":"paper"}}');
+const keys = encodeURIComponent('{"item":1,"score":{"$meta":"textScore"}}');
+const sort = encodeURIComponent('{"score":{"$meta":"textScore"}}');
+fetch(`[RESTHEART-URL]/inventory?filter=${filter}&keys=${keys}&sort=${sort}`, {
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----

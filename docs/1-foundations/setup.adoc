@@ -1,0 +1,210 @@
+---
+docs_version: 9
+title: Setup
+layout: docs-adoc
+menu: overview
+applies_to: restheart
+---
+
+TIP: The easiest way to run RESTHeart and MongoDB is with __Docker__. See link:/docs/setup-with-docker[Setup with Docker]
+
+=== Download
+
+Download the ZIP or TAR archive.
+
+++++
+<a class="btn btn-md mb-3" id="zipdl" href="https://github.com/SoftInstigate/restheart/releases/latest/download/restheart.zip">zip</a>
+<a class="btn btn-md mb-3" id="tgzdl" href="https://github.com/SoftInstigate/restheart/releases/latest/download/restheart.tar.gz">tgz</a>
+<script async type="text/javascript">
+// avoid caching download link redirects
+var z = document.getElementById("zipdl");
+var t = document.getElementById("tgzdl");
+
+z.href = `${z.href}?nocache=${Math.random()}`;
+t.href = `${t.href}?nocache=${Math.random()}`;
+</script>
+++++
+
+Un-zip or un-tar
+
+[source,bash]
+----
+# if you downloaded the tar.gz
+$ tar -xzf restheart.tar.gz && cd restheart
+----
+
+[source,bash]
+----
+# if you downloaded the zip
+$ unzip restheart.zip && cd restheart
+----
+
+=== Requirements
+
+RESTHeart only requires Java 21 or GraalVM >= 21.0.2 (v23.1.2 Java 21 based).
+
+=== Run in standalone mode
+
+==== What is Standalone Mode?
+
+Standalone mode runs RESTHeart without MongoDB integration. This means:
+
+**Disabled:**
+- MongoDB REST API
+- MongoDB GraphQL API
+- WebSocket API
+- Change streams
+- All MongoDB-dependent features
+
+**Use standalone mode when:**
+- Developing custom plugins that don't need MongoDB
+- Using RESTHeart as a microservice framework
+- Testing plugin functionality in isolation
+
+For most users working with MongoDB, skip standalone mode and proceed to "Run with MongoDB" below.
+
+Use the option `-s` to run RESTHeart in standalone mode.
+
+[source,bash]
+----
+$ RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret'" java -jar restheart.jar -s
+----
+
+NOTE: the `RHO` environment variable sets the password for the user `admin`.
+
+[source,bash]
+----
+$ http -b http://localhost:8080/ping
+
+Greetings from RESTHeart!
+----
+
+=== Run with MongoDB
+
+RESTHeart's default configuration activates all MongoDB plugins, providing features like the REST, GraphQL, and WebSocket APIs.
+
+==== Why Replica Set?
+
+RESTHeart requires MongoDB to run as a **replica set** (even a single-node replica set) to enable:
+- **Change Streams** - Real-time notifications when data changes
+- **WebSocket API** - Live data subscriptions
+- **Transactions** - Multi-document ACID transactions
+
+A replica set is MongoDB's replication configuration. Don't worry - you can create a "single-node replica set" for development, which doesn't require multiple servers.
+
+NOTE: RESTHeart is extensively tested with MongoDB v5.0, v6.0 and v7.0
+
+==== Start MongoDB as a Replica Set
+
+This command starts MongoDB as a single-node replica set:
+
+[source,bash]
+----
+$ mkdir -p /tmp/db && \
+  mongod --fork --syslog --replSet=foo --dbpath=/tmp/db && \
+  mongosh --quiet --eval 'if (!rs.isMaster().ismaster) rs.initiate();'
+----
+
+**What this does:**
+1. Creates a data directory at `/tmp/db`
+2. Starts MongoDB with replica set name "foo"
+3. Initializes the replica set
+
+**Note:** This stores data in `/tmp/db`, which is temporary. For production, use a permanent location.
+
+==== Start RESTHeart
+
+[source,bash]
+----
+$ java -jar restheart.jar
+----
+
+=== Directory structure
+
+[source,text]
+----
+restheart
+├── COMM-LICENSE.txt
+├── LICENSE.txt
+├── plugins
+│   ├── restheart-graphql.jar
+│   ├── restheart-mongoclient-provider.jar
+│   ├── restheart-mongodb.jar
+│   ├── restheart-polyglot.jar
+│   └── restheart-security.jar
+└── restheart.jar
+----
+
+=== Run as a daemon
+
+To run RESTHeart as a daemon (i.e. fork) add the `--fork` parameter:
+
+[source,bash]
+----
+$ java -jar restheart.jar --fork
+----
+
+To see the logs you first need to enable file logging and set an absolute path to a log file. For example, check that `/usr/local/var/log/restheart.log` is writeable and then rerun it as follows:
+
+The `RHO` environment variable lets you override configuration settings without editing files. The syntax is:
+
+```
+RHO='/path/to/setting->value;/another/setting->value'
+```
+
+Each override uses a path (like `/logging/log-to-file`) and a value (like `true`), separated by `->`. Multiple overrides are separated by semicolons.
+
+Example - enable file logging:
+
+[source,bash]
+----
+$ RHO='/logging/log-to-file->true;/logging/log-file-path->"/usr/local/var/log/restheart.log"' \
+  java -jar restheart.jar --fork
+----
+
+=== CLI parameters
+
+To know the available CLI parameters, run RESTHeart with `--help`:
+
+[source,bash]
+----
+$ java -jar restheart.jar -h
+
+Usage: java -jar restheart.jar [-chstv] [--fork] [-o=RHO_FILE] [CONF_FILE]
+      [CONF_FILE]            Main configuration file
+  -c, --printConfiguration   Print the effective configuration to the standard
+                               error and exit
+      --fork                 Fork the process in background
+  -h, --help                 This help message
+  -o, --rho=RHO_FILE         Configuration overrides file
+  -s, --standalone           Use an alternate configuration that disables all
+                               plugins depending from MongoDb
+  -t, --printConfigurationTemplate
+                             Print the configuration template to the standard
+                               error and exit
+  -v, --version              Print product version to the output stream and exit
+----
+
+=== What's Next?
+
+==== Verify Installation
+
+1. Open link:http://localhost:8080/ping[http://localhost:8080/ping] - you should see "Greetings from RESTHeart!"
+2. Check link:/docs/1-foundations/quick-start#your-first-request[Your First Request] to make an API call
+
+==== Learn Core Concepts
+
+Before diving into features, understand how RESTHeart works:
+- link:/docs/1-foundations/core-concepts[Core Concepts] - Architecture and plugin system
+- link:/docs/1-foundations/security-fundamentals[Security Fundamentals] - Authentication and authorization
+
+==== Start Building
+
+Choose your learning path:
+- **MongoDB User:** link:/docs/2-mongodb-rest/tutorial[REST API Tutorial] or link:/docs/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial]
+- **Plugin Developer:** link:/docs/6-framework/tutorial[Plugin Development Tutorial]
+- **DevOps:** link:/docs/5-deployment/configuration[Configuration Guide]
+
+==== Load Sample Data
+
+link:/docs/2-mongodb-rest/sample-data[Sample Data] provides ready-to-use MongoDB collections for experimenting with the API.

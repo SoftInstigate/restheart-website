@@ -1,0 +1,184 @@
+---
+docs_version: 9
+title: Quick Start
+layout: docs-adoc
+menu: overview
+applies_to: both
+---
+
+== Quick Start
+
+Get RESTHeart running in 5 minutes and make your first API call.
+
+=== Prerequisites
+
+You need one of the following:
+
+* **Docker** (recommended) - link:https://docs.docker.com/get-docker/[Get Docker]
+* **Java 21 or later** - link:https://adoptium.net/[Get Java]
+
+=== Option 1: Docker Compose (Recommended)
+
+The fastest way to run RESTHeart with MongoDB:
+
+[source,bash]
+----
+$ curl https://raw.githubusercontent.com/SoftInstigate/restheart/master/docker-compose.yml --output docker-compose.yml && docker compose up --attach restheart
+----
+
+This starts:
+- RESTHeart on port 8080
+- MongoDB as a replica set
+
+Wait for the message:
+----
+RESTHeart started
+----
+
+=== Option 2: Docker (RESTHeart Only)
+
+Run RESTHeart in standalone mode (without MongoDB):
+
+[source,bash]
+----
+$ docker run -p 8080:8080 -e RHO="/fileRealmAuthenticator/users[userid='admin']/password->'secret';/http-listener/host->'0.0.0.0'" softinstigate/restheart -s
+----
+
+NOTE: Standalone mode runs RESTHeart without MongoDB, which disables all MongoDB-related features (REST API, GraphQL, etc.). This mode is useful when you want to develop and test custom plugins that don't require MongoDB, or when you want to use RESTHeart as a lightweight HTTP server framework.
+
+=== Option 3: JAR File
+
+Download and run the JAR:
+
+[source,bash]
+----
+# Download
+$ curl -L https://github.com/SoftInstigate/restheart/releases/latest/download/restheart.tar.gz | tar -xz && cd restheart
+
+# Run standalone (no MongoDB required)
+$ java -jar restheart.jar -s
+----
+
+For MongoDB integration, see the link:/docs/1-foundations/setup[full setup guide].
+
+== Your First Request
+
+Once RESTHeart is running, test it:
+
+[source,bash]
+----
+$ curl http://localhost:8080/ping
+----
+
+You should see:
+
+[source,bash]
+----
+Greetings from RESTHeart!
+----
+
+== Working with MongoDB (Docker Compose Users)
+
+If you used Docker Compose, RESTHeart is connected to MongoDB. Let's create some data.
+
+=== Step 1: Create a Database and Collection
+
+We'll use HTTP PUT requests to create resources. PUT is idempotent, meaning you can run it multiple times safely.
+
+[source,bash]
+----
+$ curl -u admin:secret -X PUT http://localhost:8080/mydb
+----
+
+This creates a database named `mydb`.
+
+[source,bash]
+----
+$ curl -u admin:secret -X PUT http://localhost:8080/mydb/mycollection
+----
+
+This creates a collection named `mycollection` within `mydb`.
+
+=== Step 2: Insert a Document
+
+[source,bash]
+----
+$ curl -u admin:secret -X POST http://localhost:8080/mydb/mycollection \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com", "age": 30}'
+----
+
+=== Step 3: Get All Documents
+
+[source,bash]
+----
+$ curl -u admin:secret http://localhost:8080/mydb/mycollection
+----
+
+You'll see your document in the response!
+
+=== Step 4: Query Documents
+
+Filter documents using MongoDB query syntax in the `filter` parameter:
+
+[source,bash]
+----
+$ curl -u admin:secret "http://localhost:8080/mydb/mycollection?filter={\"age\":30}"
+----
+
+This returns all documents where `age` equals 30. The filter uses MongoDB's JSON query format. For more complex queries, see the link:/docs/2-mongodb-rest/read-docs[Reading Data Guide].
+
+Congratulations! You've:
+- ✓ Started RESTHeart
+- ✓ Created a database and collection
+- ✓ Inserted and queried data
+- ✓ Used authentication
+
+All without writing a single line of backend code!
+
+== Understanding Authentication
+
+RESTHeart includes a default `admin` user (password: `secret`) for development and testing. This user is stored in MongoDB's `/users` collection when using Docker Compose, or in the configuration file when running standalone.
+
+⚠️ **IMPORTANT:** This is a development credential only. Change this password before deploying to production!
+
+[source,bash]
+----
+$ curl -u admin:secret -X PATCH http://localhost:8080/users/admin \
+  -H "Content-Type: application/json" \
+  -d '{"password": "my-strong-password"}'
+----
+
+Learn more: link:/docs/1-foundations/security-fundamentals[Security Fundamentals]
+
+== What's Next?
+
+You're now ready to explore RESTHeart's capabilities!
+
+=== Follow a Learning Path
+
+Choose the path that matches your goal:
+
+* **link:/docs/#path-1-mongodb-api-user[MongoDB API User]** - Use RESTHeart without coding
+* **link:/docs/#path-2-plugin-developer[Plugin Developer]** - Build custom services
+* **link:/docs/#path-3-devops[DevOps/SRE]** - Deploy to production
+* **link:/docs/#path-4-graphql-developer[GraphQL Developer]** - Build GraphQL APIs
+
+=== Continue Reading Foundations
+
+* link:/docs/1-foundations/core-concepts[Core Concepts] - Understanding RESTHeart
+* link:/docs/1-foundations/security-fundamentals[Security Fundamentals] - How security works
+* link:/docs/1-foundations/setup[Setup Guide] - Detailed installation
+
+=== Jump to Specific Topics
+
+* link:/docs/2-mongodb-rest/tutorial[REST API Tutorial] - Hands-on REST API guide
+* link:/docs/3-graphql-websocket/graphql/tutorial[GraphQL Tutorial] - Build GraphQL APIs
+* link:/docs/6-framework/tutorial[Plugin Tutorial] - Develop custom services
+
+== Need Help?
+
+* **FAQ:** link:/docs/9-reference/faq[Common Questions]
+* **Examples:** link:/docs/9-reference/example-webapps[Sample Applications]
+* **Community:** link:https://github.com/SoftInstigate/restheart/issues[GitHub Issues]
+* **Enterprise Support:** link:/docs/9-reference/enterprise-license[Enterprise License]

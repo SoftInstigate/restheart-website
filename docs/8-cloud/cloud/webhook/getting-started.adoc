@@ -1,0 +1,118 @@
+---
+docs_version: 9
+title: Webhook Plugin - Getting Started
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+liquid: true
+---
+
+== Overview
+
+This guide walks you through creating your first webhook in RESTHeart.
+
+== Prerequisites
+
+{% include get-restheart.adoc %}
+
+You'll also need:
+
+* Administrator permissions on your service
+* A target URL to receive webhooks (use https://httpbin.org/post for testing)
+
+== Enable the Plugin
+
+Log in to RESTHeart Cloud at https://cloud.restheart.com, navigate to your service, click the *Plugins* tab, and enable the *Webhook Plugin*. No additional configuration required.
+
+== Create a Webhook
+
+From the plugin settings, click *Add Webhook* and configure:
+
+*Name*: Something descriptive like "New User Notification"
+
+*Target URL*: Where to send the webhook
+[source]
+----
+https://httpbin.org/post
+----
+
+*Condition*: When to trigger the webhook
+[source]
+----
+path('/users') and method('POST')
+----
+
+*Timeout*: Maximum wait time in milliseconds (default: 5000)
+
+*Headers* (optional): JSON object for authentication
+[source,json]
+----
+{
+  "Authorization": "Bearer your-api-token"
+}
+----
+
+== Understanding Conditions
+
+Conditions use MongoDB-style predicates:
+
+`path('/users')` matches exact paths
+
+`path-prefix('/data')` matches paths starting with /data
+
+`path-template('/users/{id}')` matches parameterized paths
+
+`method('POST')` matches HTTP methods
+
+`response-code(201)` matches response status codes
+
+Combine with `and` / `or`:
+[source]
+----
+path('/orders') and method('POST') and response-code(201)
+----
+
+== Test Your Webhook
+
+Click *Test Webhook* to verify configuration. The system sends a sample request to your target URL and shows the response. HTTPBin echoes back the received data in the response.
+
+Sample test payload:
+[source,json]
+----
+{
+  "service": {"id": "your-service-id"},
+  "timestamp": "2025-11-18T10:30:00Z",
+  "request": {
+    "method": "POST",
+    "path": "/users",
+    "body": {"test": true}
+  },
+  "response": {"statusCode": 201}
+}
+----
+
+== Save and View Logs
+
+Click *Save Configuration*. The webhook is now active and will trigger automatically.
+
+To view execution logs, select your webhook and switch to the *Logs* tab. Each log entry shows the timestamp, status (success/failed/skipped), duration, and complete request/response details.
+
+Use the status filter to view specific log types. Click any entry to see full details including condition evaluation, transformation (if enabled), and the target service response.
+
+== Recording Feature
+
+Need to see actual request data? Click *Start Recording* in the Logs tab. This captures real requests for 60 seconds, helping you build accurate conditions and transformations.
+
+== Troubleshooting
+
+*Webhook never triggers*: Verify your condition matches actual request paths using the recording feature.
+
+*Target returns 401*: Check authentication headers are correct.
+
+*Target returns 400*: The payload format might not match. See User Guide for transformation.
+
+*Timeout errors*: Increase the timeout_ms value or check if the target service is slow.
+
+== Next Steps
+
+See the link:user-guide.html[User Guide] for payload transformation and advanced features, or check out link:tutorials.html[Tutorials] for complete integration examples with Slack and email services.

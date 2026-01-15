@@ -1,0 +1,299 @@
+---
+docs_version: 8
+title: User Management
+layout: docs-adoc
+menu: security
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+:page-liquid:
+
+=== Introduction
+
+This section provides instructions on how to create, update and delete users with the default authenticator link:/docs/security/authentication/#mongo-realm-authenticator[mongoRealAuthenticator].
+
+It also shows how to manage permissions with the default authorizer link:/docs/security/authorization/#mongo-acl-authorizer[mongoAclAuthorizer].
+
+NOTE: The `mongoRealAuthenticator` is configured to utilize the "/users" collection as its default storage location for user documents. Similarly, the `mongoAclAuthorizer` employs the "/acl" collection as its default repository for storing permissions.
+
+=== User document
+
+With the default configuration, a user is represented as follows:
+
+[source,json]
+----
+{
+    "_id": "username",
+    "roles": [ "list", "of", "roles" ],
+    "password": "secret"
+}
+----
+
+TIP: **mongoRealAuthenticator** can be configured to use different properties for the username, roles an password. Check  link:/docs/security/authentication/#mongo-realm-authenticator[mongoRealAuthenticator] for more information.
+
+=== Get existing users
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/users -H "Authorization: Basic [BASIC-AUTH]" \
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/users Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/users', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Retrieved users:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,json]
+----
+[
+  {
+    "_id": "admin",
+    "roles": [
+      "admin"
+    ],
+    "_etag": {
+      "$oid": "5d2edb155883c050065d6a8a"
+    }
+  }
+]
+----
+
+NOTE: The password is always hidden on GET requests.
+
+NOTE: For security reasons, it not possible to use the `filter` query parameter on the password field; the following request is forbidden and will cause an error: `GET /users?filter={"password":{"$regex":"^a.*"}}`
+
+=== Create a user
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/users \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "foo",
+    "roles": [ "user" ],
+    "password": "secret"
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/users \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="foo" \
+  roles:='["user"]' \
+  password="secret"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/users', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "_id": "foo",
+        "roles": [ "user" ],
+        "password": "secret"
+    })
+})
+.then(response => {
+    if (response.ok) {
+        console.log('User created successfully');
+    } else {
+        console.error('Failed to create user:', response.status);
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+NOTE: The password is automatically encrypted by RESTHeart.
+
+=== Update a user
+
+==== cURL
+[source,bash]
+----
+curl -i -X PATCH [RESTHEART-URL]/users/foo \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "password": "betterSecret"
+}'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH [RESTHEART-URL]/users/foo \
+  Content-Type:application/json \
+  password="betterSecret"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/users/foo', {
+    method: 'PATCH',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "password": "betterSecret"
+    })
+})
+.then(response => {
+    if (response.ok) {
+        console.log('User updated successfully');
+    } else {
+        console.error('Failed to update user:', response.status);
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Delete a user
+
+==== cURL
+[source,bash]
+----
+curl -i -X DELETE [RESTHEART-URL]/users/foo -H "Authorization: Basic [BASIC-AUTH]" \
+----
+
+==== HTTPie
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/users/foo Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/users/foo', {
+    method: 'DELETE',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => {
+    if (response.ok) {
+        console.log('User deleted successfully');
+    } else {
+        console.error('Failed to delete user:', response.status);
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Managing Permissions
+
+For detailed information about creating and managing permissions, including advanced permission features like predicates, MongoDB-specific permissions, filters, and complete examples, see link:/docs/security/permissions[Permission Management].
+
+==== Quick Example: Create a Basic Permission
+
+===== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "predicate": "path-prefix[/inventory] and method[GET]",
+  "roles": [ "user" ],
+  "priority": 1
+}'
+----
+
+===== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  predicate="path-prefix[/inventory] and method[GET]" \
+  roles:='["user"]' \
+  priority:=1
+----
+
+===== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "predicate": "path-prefix[/inventory] and method[GET]",
+        "roles": [ "user" ],
+        "priority": 1
+    })
+})
+.then(response => {
+    if (response.ok) {
+        console.log('ACL permission created successfully');
+    } else {
+        console.error('Failed to create ACL permission:', response.status);
+    }
+})
+.catch(error => console.error('Error:', error));
+----
+
+TIP: For comprehensive permission documentation including advanced features like `readFilter`, `writeFilter`, `mergeRequest`, `projectResponse`, predicates, and complete examples, see link:/docs/security/permissions[Permission Management].
+
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=1828s[Managing users with practical examples]

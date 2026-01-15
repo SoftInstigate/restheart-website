@@ -1,0 +1,257 @@
+---
+docs_version: 8
+title: Sophia AI - Administrator Guide
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+== Overview
+
+This guide provides comprehensive information for system administrators managing the Sophia AI service, including knowledge base management, user administration, system monitoring, and maintenance procedures.
+
+== Knowledge Base Management
+
+=== File Upload and Management
+
+==== Supported File Formats
+- *Text Files*: `.txt`, `.md` (Markdown)
+- *Documents*: `.pdf`, `.html`
+- *Encoding*: UTF-8 recommended for all text files
+
+==== Uploading Files
+
+*Using HTTP API:*
+[source,bash]
+----
+# Upload a public file
+FILE="document.txt"
+http -a admin:password --form POST :8080/docs.files?wm=upsert \
+  @${FILE} metadata="{\"filename\": \"${FILE}\", \"tags\": [\"public\"]}"
+
+# Upload a private file with specific tags
+FILE="internal-guide.pdf"
+http -a admin:password --form POST :8080/docs.files?wm=upsert \
+  @${FILE} metadata="{\"filename\": \"${FILE}\", \"tags\": [\"internal\", \"staff\"]}"
+----
+
+==== File Metadata Configuration
+
+*Required Fields:*
+
+- `filename`: Original filename
+- `tags`: Array of access control tags
+
+*Optional Fields:*
+
+- `description`: File description
+- `category`: Content category
+- `author`: Content author
+- `version`: Document version
+- `lastUpdated`: Last update timestamp
+
+*Example Metadata:*
+[source,json]
+----
+{
+  "filename": "user-manual.pdf",
+  "tags": ["public", "documentation"],
+  "description": "Complete user manual for Sophia system",
+  "category": "documentation",
+  "author": "Support Team",
+  "version": "2.1",
+  "lastUpdated": "2024-01-15"
+}
+----
+
+=== Content Tagging and Access Control
+
+==== Tag-Based Access Control
+The system uses tags to control which documents are accessible to different user groups:
+
+*Public Content:*
+[source,json]
+----
+"tags": ["public"]
+----
+
+- Accessible to all users
+- No authentication restrictions
+- Suitable for general information
+
+*Domain-Specific Content:*
+[source,json]
+----
+"tags": ["students", "course-materials"]
+----
+
+- Restricted to specific user domains
+- Requires proper JWT token with matching claims
+- Used for targeted content delivery
+
+*Internal Content:*
+[source,json]
+----
+"tags": ["internal", "staff-only"]
+----
+
+- Restricted to internal staff
+- Highest level of access control
+- Sensitive or proprietary information
+
+==== Managing Access Permissions
+
+*View Current Tags:*
+[source,bash]
+----
+# List all unique tags in the system
+http -a admin:password :8080/textSegments/_aggrs/tags
+----
+
+*Update Document Tags:*
+[source,bash]
+----
+# Update tags for existing document
+echo '{"$set": {"metadata.tags": ["public", "updated"]}}' | \
+  http -a admin:password PATCH :8080/docs.files/DOCUMENT_ID
+----
+
+=== Vector Index Management
+
+==== Creating Vector Indexes (MongoDB Atlas)
+
+*Primary Vector Index:*
+[source,json]
+----
+{
+  "name": "vector_index",
+  "type": "vectorSearch",
+  "fields": [
+    {
+      "numDimensions": 1536,
+      "path": "vector",
+      "similarity": "cosine",
+      "type": "vector"
+    },
+    {
+      "path": "metadata.tags",
+      "type": "filter"
+    }
+  ]
+}
+----
+
+*Additional Metadata Indexes:*
+[source,json]
+----
+{
+  "name": "metadata_index",
+  "type": "search",
+  "fields": [
+    {
+      "path": "metadata.filename",
+      "type": "string"
+    },
+    {
+      "path": "metadata.category",
+      "type": "string"
+    },
+    {
+      "path": "metadata.lastUpdated",
+      "type": "date"
+    }
+  ]
+}
+----
+
+=== Content Processing and Segmentation
+
+==== Text Segmentation Process
+. *Document Parsing*: Extracts text from uploaded files
+. *Text Splitting*: Divides content into manageable segments
+. *Embedding Generation*: Creates vector embeddings using AWS Titan
+. *Metadata Association*: Links segments with document metadata
+. *Index Updates*: Updates vector search indexes
+
+== Prompt Template Management
+
+=== Template Configuration
+
+==== Creating Prompt Templates
+
+*Basic Template Structure:*
+[source,bash]
+----
+# Create new prompt template
+echo 'Your custom prompt template content with <documents-placeholder> and <history-placeholder> and <userprompt>' | \
+  http -a admin:password PUT :8080/promptTemplates/custom Content-Type:"text/plain"
+----
+
+*Template Options:*
+[source,bash]
+----
+# Configure template parameters
+echo '{
+  "options": {
+    "max_tokens_to_sample": 4000,
+    "temperature": 0.3,
+    "top_k": 250,
+    "top_p": 1,
+    "relevantsNumCandidates": 5000,
+    "relevantsLimit": 5,
+    "historyLimit": 3,
+    "userPromptMaxChars": 500
+  }
+}' | http -a admin:password PATCH :8080/promptTemplates/custom
+----
+
+==== Template Placeholders
+
+*Required Placeholders:*
+
+- `<documents-placeholder>`: Replaced with relevant documents from RAG
+- `<history-placeholder>`: Replaced with chat conversation history
+- `<userprompt>`: Replaced with the user's current question
+
+*Example Template:*
+[source,text]
+----
+You are Sophia, an intelligent AI assistant. Use the following context to answer questions accurately and helpfully.
+
+RELEVANT DOCUMENTS:
+<documents-placeholder>
+
+CONVERSATION HISTORY:
+<history-placeholder>
+
+USER QUESTION:
+<userprompt>
+
+Please provide a helpful, accurate response based on the available information. If you cannot find relevant information in the documents, please say so clearly.
+----
+
+==== Managing Multiple Templates
+
+*List All Templates:*
+[source,bash]
+----
+http -a admin:password :8080/promptTemplates?keys='{"_id": 1}'
+----
+
+*View Template Content:*
+[source,bash]
+----
+http -a admin:password :8080/promptTemplates/TEMPLATE_ID
+----
+
+*Update Template:*
+[source,bash]
+----
+cat new-template.txt | http -a admin:password PATCH :8080/promptTemplates/TEMPLATE_ID Content-Type:"text/plain"
+----
+
+*Delete Template:*
+[source,bash]
+----
+http -a admin:password DELETE :8080/promptTemplates/TEMPLATE_ID
+----

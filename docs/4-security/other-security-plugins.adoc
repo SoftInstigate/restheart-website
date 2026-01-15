@@ -1,0 +1,96 @@
+---
+docs_version: 9
+title: Other Security Plugins
+layout: docs-adoc
+menu: security
+applies_to: restheart
+---
+
+=== Introduction
+
+RESTHeart provides some general purpose security plugins that help hardening the security.
+
+=== OriginVetoer
+
+`OriginVetoer` protects from CSRF attacks by forbidding requests whose Origin header is not whitelisted.
+
+It can configured as follows:
+
+[source,yml]
+----
+originVetoer:
+  enabled: true # <---- default is false
+  whitelist:
+    - https://restheart.org
+    - http://localhost
+  # optional list of paths for whose the Origin header
+  # is not checked. values can be absolute paths
+  # or patterns like /{var}/path/to/resource/*
+  # ignore-paths:
+  #   - /{tenant}/bucket.files/{id}/binary
+  #   - /coll/docid
+----
+
+=== filterOperatorsBlacklist
+
+A global blacklist for MongoDb query operators in the `filter` query parameter.
+
+[source,yml]
+----
+filterOperatorsBlacklist:
+  blacklist: [ "$where" ]
+  enabled: true
+----
+
+With this default configuration, the request `GET /coll?filter={"$where": "...."}` is forbidden.
+
+=== Brute Force Attack Guard
+
+bruteForceAttackGuard defends from brute force password cracking attacks
+by returning `429 Too Many Requests` when more than
+`max-failed-attempts` requests with wrong credentials
+are received in last 10 seconds from the same ip
+
+[source,yml]
+----
+bruteForceAttackGuard:
+  enabled: false
+  # max number of failed attempts in 10 seconds sliding window
+  # before returning 429 Too Many Requests
+  max-failed-attempts: 5
+  # if true, the source ip is obtained from X-Forwarded-For header
+  # this requires that header being set by the proxy, dangerous otherwise
+  trust-x-forwarded-for: false
+  # when X-Forwarded-For has multiple values,
+  # take into account the n-th from last element
+  # e.g. with [x.x.x.x, y.y.y.y., z.z.z.z, k.k.k.k]
+  # 0 -> k.k.k.k
+  # 2 -> y.y.y.y
+  x-forwarded-for-value-from-last-element: 0
+----
+
+When RESTHeart is behind a reverse proxy, the header `X-Forwarded-For` should be used in place of the remote ip (which in this case is the reverse proxy's one).
+
+If several tiers of reverse proxies are in place, `x-forwarded-for-value-from-last-element` option allows to select the correct value.
+
+=== Root Role Guard
+
+`rootRoleGuard` forbids accounts handled by `mongoAclAuthorizer` to gain the `root-role` defined by the `mongoAclAuthorizer`.
+
+NOTE: `rootRoleGuard` is enabled by default.
+
+The default authorizer `mongoAclAuthorizer` enables the `root-role: admin` by default.
+
+WARNING: clients with `root-role` can execute any request.
+
+Although a the `root-role` is very useful at testing and developing time, it is a security risk to leave it enabled, this is why the link:/docs/security/security-hardening[security hardening doc page] suggests to disable it by setting the configuration option `mongoAclAuthorizer.root-role: null`.
+
+In any case, an account handled by the `mongoRealAuthenticator` (that handles accounts with roles in a MongoDb collection) should never gain the `root-role` via a MongoService write requests as `PATCH /users/foo {"roles": ["admin"]}`.
+
+The default configuration follows:
+
+[source,yml]
+----
+rootRoleGuard:
+  enabled: true
+----

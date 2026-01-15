@@ -1,0 +1,641 @@
+---
+docs_version: 9
+title: Sophia AI - API Documentation
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+== Overview
+
+The Sophia API provides RESTful endpoints for managing the AI service, including chat operations, document management, prompt templates, and system administration.
+
+== Authentication
+
+=== JWT Authentication
+
+All API requests require a valid JWT token in the Authorization header:
+
+[source,http]
+----
+Authorization: Bearer <jwt-token>
+----
+
+=== Cookie Authentication
+
+For web client integration, authentication can be provided via cookie:
+
+[source,http]
+----
+Cookie: authToken=<jwt-token>
+----
+
+== Chat Operations
+
+=== Create Chat Session
+
+Creates a new chat session with an initial prompt.
+
+*Endpoint:* `POST /chats`
+
+*Parameters:*
+
+- `wm=upsert` - Write mode parameter
+- `chatId` - Unique identifier for the chat session
+- `prompt` - Initial user prompt
+
+*Request:*
+[source,bash]
+----
+curl -X POST "https://sophia-api.restheart.com/chats?wm=upsert" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "chatId": "chat-123",
+    "prompt": "What is RESTHeart?"
+  }'
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_id": {"$oid": "6507f1f462f8b7c123456789"},
+  "chatId": "chat-123",
+  "prompt": "What is RESTHeart?",
+  "status": "waiting",
+  "_etag": {"$oid": "6507f1f462f8b7c123456789"}
+}
+----
+
+=== Subscribe to Chat Updates
+
+Subscribe to real-time chat updates using WebSocket connection.
+
+*Endpoint:* `WS /chats/_streams/subscribe`
+
+*Parameters:*
+
+- `avars={"chatId":"<chat-id>"}` - Chat session to subscribe to
+
+*WebSocket Connection:*
+[source,bash]
+----
+websocat "wss://sophia-api.restheart.com/chats/_streams/subscribe?avars={\"chatId\":\"chat-123\"}" \
+  --header "Authorization: Bearer <jwt-token>"
+----
+
+*Response Stream:*
+[source,json]
+----
+{
+  "fullDocument": {
+    "_id": {"$oid": "6507f1f462f8b7c123456789"}
+  },
+  "updateDescription": {
+    "updatedFields": {
+      "chunks.0": "RESTHeart is a ",
+      "status": "streaming"
+    }
+  }
+}
+----
+
+=== Get Chat History
+
+Retrieve chat session information and history.
+
+*Endpoint:* `GET /chats/{chatId}`
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/chats/chat-123" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_id": {"$oid": "6507f1f462f8b7c123456789"},
+  "chatId": "chat-123",
+  "prompt": "What is RESTHeart?",
+  "chunks": [
+    "RESTHeart is a powerful REST API server for MongoDB...",
+    "It provides instant APIs for your MongoDB databases..."
+  ],
+  "status": "complete",
+  "_etag": {"$oid": "6507f1f462f8b7c123456789"}
+}
+----
+
+== Document Management
+
+=== Upload Document
+
+Upload a document to the knowledge base for RAG processing.
+
+*Endpoint:* `POST /docs.files`
+
+*Parameters:*
+
+- `wm=upsert` - Write mode parameter
+- `metadata` - JSON metadata including filename and tags
+
+*Request:*
+[source,bash]
+----
+curl -X POST "https://sophia-api.restheart.com/docs.files?wm=upsert" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -F "file=@document.pdf" \
+  -F 'metadata={"filename": "document.pdf", "tags": ["public", "documentation"]}'
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_id": {"$oid": "6507f1f462f8b7c123456789"},
+  "filename": "document.pdf",
+  "length": 1048576,
+  "chunkSize": 261120,
+  "uploadDate": {"$date": "2024-01-15T10:30:00.000Z"},
+  "metadata": {
+    "filename": "document.pdf",
+    "tags": ["public", "documentation"]
+  }
+}
+----
+
+=== List Documents
+
+Retrieve list of uploaded documents.
+
+*Endpoint:* `GET /docs.files`
+
+*Parameters:*
+
+- `page=<page-number>` - Pagination parameter
+- `pagesize=<items-per-page>` - Items per page (default: 100)
+- `filter=<mongodb-filter>` - MongoDB filter query
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/docs.files?page=1&pagesize=20" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_embedded": [
+    {
+      "_id": {"$oid": "6507f1f462f8b7c123456789"},
+      "filename": "user-guide.pdf",
+      "length": 2048000,
+      "uploadDate": {"$date": "2024-01-15T10:30:00.000Z"},
+      "metadata": {
+        "filename": "user-guide.pdf",
+        "tags": ["public", "documentation"]
+      }
+    }
+  ],
+  "_size": 1,
+  "_total_pages": 1,
+  "_links": {
+    "self": {"href": "/docs.files"},
+    "first": {"href": "/docs.files?page=1"},
+    "last": {"href": "/docs.files?page=1"}
+  }
+}
+----
+
+=== Delete Document
+
+Remove a document from the knowledge base.
+
+*Endpoint:* `DELETE /docs.files/{documentId}`
+
+*Request:*
+[source,bash]
+----
+curl -X DELETE "https://sophia-api.restheart.com/docs.files/6507f1f462f8b7c123456789" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,http]
+----
+HTTP/1.1 204 No Content
+----
+
+== Text Segments and Vector Search
+
+=== Search Text Segments
+
+Perform semantic search across processed document segments.
+
+*Endpoint:* `GET /textSegments/_aggrs/search`
+
+*Parameters:*
+
+- `prompt=<search-query>` - Search query for semantic matching
+- `avars=<variables>` - Additional variables (tags, filters)
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=MongoDB%20queries" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*With Tags Filter:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=MongoDB%20queries&avars={\"tags\":[\"public\"]}" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+[
+  {
+    "_id": {"$oid": "6507f1f462f8b7c123456789"},
+    "text": "MongoDB queries can be performed using various operators...",
+    "metadata": {
+      "filename": "mongodb-guide.pdf",
+      "tags": ["public", "database"],
+      "page": 15,
+      "chunk_id": 3
+    },
+    "score": 0.8945
+  }
+]
+----
+
+=== List Text Segments
+
+Retrieve processed text segments.
+
+*Endpoint:* `GET /textSegments`
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/textSegments?pagesize=10" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_embedded": [
+    {
+      "_id": {"$oid": "6507f1f462f8b7c123456789"},
+      "text": "RESTHeart provides instant APIs for MongoDB...",
+      "metadata": {
+        "filename": "restheart-docs.md",
+        "tags": ["public"],
+        "chunk_id": 1
+      }
+    }
+  ],
+  "_size": 10,
+  "_total_pages": 45
+}
+----
+
+== Prompt Templates
+
+=== List Prompt Templates
+
+Retrieve available prompt templates.
+
+*Endpoint:* `GET /promptTemplates`
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/promptTemplates?keys={\"_id\":1}" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+[
+  {"_id": "default"},
+  {"_id": "detailed"},
+  {"_id": "concise"},
+  {"_id": "technical"}
+]
+----
+
+=== Get Prompt Template
+
+Retrieve specific prompt template content and options.
+
+*Endpoint:* `GET /promptTemplates/{templateId}`
+
+*Request:*
+[source,bash]
+----
+curl "https://sophia-api.restheart.com/promptTemplates/default" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_id": "default",
+  "template": "You are Sophia, an AI assistant...\n<documents-placeholder>\n<history-placeholder>\n<userprompt>",
+  "options": {
+    "max_tokens_to_sample": 4000,
+    "temperature": 0.3,
+    "top_k": 250,
+    "top_p": 1,
+    "relevantsNumCandidates": 5000,
+    "relevantsLimit": 5,
+    "historyLimit": 3,
+    "userPromptMaxChars": 500
+  }
+}
+----
+
+=== Create/Update Prompt Template
+
+Create a new prompt template or update existing one.
+
+*Endpoint:* `PUT /promptTemplates/{templateId}`
+
+*Content-Type:* `text/plain` for template content
+
+*Request:*
+[source,bash]
+----
+# Upload template content
+echo "Custom template with <documents-placeholder> and <userprompt>" | \
+curl -X PUT "https://sophia-api.restheart.com/promptTemplates/custom" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -H "Content-Type: text/plain" \
+  --data-binary @-
+----
+
+*Update Options:*
+[source,bash]
+----
+curl -X PATCH "https://sophia-api.restheart.com/promptTemplates/custom" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "options": {
+      "max_tokens_to_sample": 3000,
+      "temperature": 0.2,
+      "relevantsLimit": 8
+    }
+  }'
+----
+
+*Response:*
+[source,json]
+----
+{
+  "_id": "custom",
+  "template": "Custom template with <documents-placeholder> and <userprompt>",
+  "options": {
+    "max_tokens_to_sample": 3000,
+    "temperature": 0.2,
+    "relevantsLimit": 8
+  }
+}
+----
+
+=== Delete Prompt Template
+
+Remove a prompt template.
+
+*Endpoint:* `DELETE /promptTemplates/{templateId}`
+
+*Request:*
+[source,bash]
+----
+curl -X DELETE "https://sophia-api.restheart.com/promptTemplates/custom" \
+  -H "Authorization: Bearer <jwt-token>"
+----
+
+== Error Handling
+
+=== HTTP Status Codes
+
+- `200 OK` - Request successful
+- `201 Created` - Resource created successfully
+- `204 No Content` - Request successful, no content returned
+- `400 Bad Request` - Invalid request parameters
+- `401 Unauthorized` - Authentication required
+- `403 Forbidden` - Access denied
+- `404 Not Found` - Resource not found
+- `409 Conflict` - Resource conflict
+- `429 Too Many Requests` - Rate limit exceeded
+- `500 Internal Server Error` - Server error
+
+=== Error Response Format
+
+[source,json]
+----
+{
+  "http_status_code": 400,
+  "http_status_description": "Bad Request",
+  "message": "Invalid request parameters",
+  "exception": "ValidationException",
+  "exception_message": "Missing required field: chatId"
+}
+----
+
+=== Common Error Scenarios
+
+==== Authentication Errors
+[source,json]
+----
+{
+  "http_status_code": 401,
+  "message": "Authentication required",
+  "exception": "SecurityNotAllowedException"
+}
+----
+
+==== Rate Limiting Errors
+[source,json]
+----
+{
+  "http_status_code": 429,
+  "message": "Rate limit exceeded",
+  "exception": "TooManyRequestsException",
+  "retry_after": 60
+}
+----
+
+==== Validation Errors
+[source,json]
+----
+{
+  "http_status_code": 400,
+  "message": "Validation failed",
+  "exception": "ValidationException",
+  "details": {
+    "chatId": "Required field missing",
+    "prompt": "Must be non-empty string"
+  }
+}
+----
+
+== SDK and Client Libraries
+
+=== JavaScript/TypeScript Client
+
+[source,javascript]
+----
+class SophiaClient {
+  constructor(baseUrl, authToken) {
+    this.baseUrl = baseUrl;
+    this.authToken = authToken;
+  }
+
+  async createChat(chatId, prompt) {
+    const response = await fetch(`${this.baseUrl}/chats?wm=upsert`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ chatId, prompt })
+    });
+    return response.json();
+  }
+
+  async subscribeToChat(chatId, onMessage) {
+    const ws = new WebSocket(
+      `${this.baseUrl.replace('http', 'ws')}/chats/_streams/subscribe?avars={"chatId":"${chatId}"}`,
+      [],
+      { headers: { Authorization: `Bearer ${this.authToken}` } }
+    );
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      onMessage(data);
+    };
+  }
+}
+----
+
+=== Python Client Example
+
+[source,python]
+----
+import requests
+import websocket
+import json
+
+class SophiaClient:
+    def __init__(self, base_url, auth_token):
+        self.base_url = base_url
+        self.auth_token = auth_token
+        self.headers = {
+            'Authorization': f'Bearer {auth_token}',
+            'Content-Type': 'application/json'
+        }
+
+    def create_chat(self, chat_id, prompt):
+        response = requests.post(
+            f"{self.base_url}/chats?wm=upsert",
+            headers=self.headers,
+            json={"chatId": chat_id, "prompt": prompt}
+        )
+        return response.json()
+
+    def upload_document(self, file_path, metadata):
+        files = {'file': open(file_path, 'rb')}
+        data = {'metadata': json.dumps(metadata)}
+        response = requests.post(
+            f"{self.base_url}/docs.files?wm=upsert",
+            headers={'Authorization': f'Bearer {self.auth_token}'},
+            files=files,
+            data=data
+        )
+        return response.json()
+----
+
+== Exceeding Rate Limits
+
+When rate limits are exceeded:
+
+[source,json]
+----
+{
+  "http_status_code": 429,
+  "message": "Rate limit exceeded",
+  "retry_after": 60
+}
+----
+
+== WebSocket Events
+
+=== Connection Events
+
+*Connection Established:*
+[source,json]
+----
+{"type": "connected", "session_id": "session-123"}
+----
+
+*Authentication Success:*
+[source,json]
+----
+{"type": "authenticated", "user": "user123"}
+----
+
+*Connection Error:*
+[source,json]
+----
+{"type": "error", "message": "Authentication failed"}
+----
+
+=== Chat Events
+
+*Response Streaming:*
+[source,json]
+----
+{
+  "type": "chat_update",
+  "chat_id": "chat-123",
+  "status": "streaming",
+  "chunk": "This is a partial response..."
+}
+----
+
+*Response Complete:*
+[source,json]
+----
+{
+  "type": "chat_update",
+  "chat_id": "chat-123",
+  "status": "complete",
+  "final_response": "Complete response text..."
+}
+----
+
+*Error Event:*
+[source,json]
+----
+{
+  "type": "chat_error",
+  "chat_id": "chat-123",
+  "error": "Processing failed",
+  "code": "LLM_ERROR"
+}
+----

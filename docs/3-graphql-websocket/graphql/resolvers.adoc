@@ -1,0 +1,82 @@
+---
+docs_version: 9
+title: Type Resolvers in RESTHeart GraphQL
+layout: docs-adoc
+menu: graphql
+applies_to: both
+---
+
+Custom resolvers provide advanced flexibility in how GraphQL fields are resolved in RESTHeart. This guide covers resolver types, implementation patterns, and best practices.
+
+=== Understanding Resolvers
+
+In RESTHeart GraphQL, Type resolvers determine concrete types for interfaces and unions
+
+=== Interface Type Resolvers
+
+Type resolvers for interfaces determine which concrete type a document represents:
+
+[source,json]
+----
+{
+    "mappings": {
+        "Content": {
+            "$typeResolver": {
+                "Article": "field-exists(wordCount)",
+                "Video": "field-exists(duration)",
+                "Podcast": "field-exists(audioUrl)"
+            }
+        }
+    }
+}
+----
+
+=== Union Type Resolvers
+
+Similar to interfaces, but for union types:
+
+[source,json]
+----
+{
+    "mappings": {
+        "SearchResult": {
+            "$typeResolver": {
+                "User": "field-exists(email)",
+                "Product": "field-exists(price)",
+                "Article": "field-exists(content)"
+            }
+        }
+    }
+}
+----
+
+=== Type Resolution Rules
+
+1. *Evaluation Order*
+- Rules are evaluated in order
+- First matching rule determines the type
+- Include a default case when possible
+
+2. *Available Functions*
+- `field-exists(fieldName)`: Checks if a field exists
+- `field-equals(fieldName, value)`: Compares field value
+- `field-type(fieldName, type)`: Checks field data type
+
+[source,json]
+----
+{
+    "mappings": {
+        "Node": {
+            "$typeResolver": {
+                "Document": "field-type(content, string)",
+                "Image": "field-equals(type, 'image')",
+                "Default": "true"
+            }
+        }
+    }
+}
+----
+
+- Explore link:/docs/mongodb-graphql/optimization[Performance Optimization]
+- Learn about link:/docs/mongodb-graphql/best-practices[Best Practices]
+- Check out link:/docs/mongodb-graphql/complex-app-example[Complex App Example]

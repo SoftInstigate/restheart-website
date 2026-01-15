@@ -1,0 +1,689 @@
+---
+docs_version: 8
+title: Managing Binary Files with RESTHeart
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+RESTHeart provides full support for storing and retrieving binary files of any size in MongoDB. This functionality uses MongoDB's **GridFS**, which stores files that exceed the BSON document size limit of 16MB.
+
+TIP: GridFS automatically splits large files into smaller chunks and stores them in separate documents.
+
+=== File Buckets
+
+==== What is a File Bucket?
+
+A file bucket is a special collection designed for storing binary files along with their metadata. In MongoDB terms, it's a GridFS bucket.
+
+IMPORTANT: File bucket names must end with `.files` (e.g., `images.files` is a valid file bucket name)
+
+==== Creating a File Bucket
+
+To store binary files, first create a file bucket:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/mybucket.files \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [RESTHEART-URL]/mybucket.files \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File bucket created successfully');
+  } else {
+    console.error('Failed to create file bucket:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Uploading Files
+
+==== POST - Upload a New File
+
+To upload a file, use a `POST` request with `multipart/form-data` encoding:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/mybucket.files \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -F "file=@/path/to/example.jpg" \
+  -F 'metadata={"author":"SoftInstigate","category":"documentation"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http --form POST [RESTHEART-URL]/mybucket.files \
+  Authorization:"Basic [BASIC-AUTH]" \
+  file@/path/to/example.jpg \
+  metadata='{"author":"SoftInstigate","category":"documentation"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('metadata', JSON.stringify({
+  "author": "SoftInstigate",
+  "category": "documentation"
+}));
+
+fetch('[RESTHEART-URL]/mybucket.files', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: formData
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File uploaded successfully');
+    return response.headers.get('Location');
+  } else {
+    console.error('Failed to upload file:', response.status);
+  }
+})
+.then(location => {
+  if (location) console.log('File location:', location);
+})
+.catch(error => console.error('Error:', error));
+----
+
+The request has two parts:
+* `file`: The binary content of the file
+* `metadata`: A JSON object with custom metadata (optional)
+
+[source,http]
+----
+HTTP/1.1 201 Created
+Location: [RESTHEART-URL]/mybucket.files/60f8a7b9e4b053f542c13ece
+----
+
+The `Location` header contains the URI of the newly created file, with the automatically generated ID.
+
+==== PUT - Upload with a Custom ID
+
+To upload a file with a specific ID, use a `PUT` request:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/mybucket.files/my-custom-id \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -F "file=@/path/to/example.jpg" \
+  -F 'metadata={"author":"SoftInstigate","category":"documentation"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http --form PUT [RESTHEART-URL]/mybucket.files/my-custom-id \
+  Authorization:"Basic [BASIC-AUTH]" \
+  file@/path/to/example.jpg \
+  metadata='{"author":"SoftInstigate","category":"documentation"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('metadata', JSON.stringify({
+  "author": "SoftInstigate",
+  "category": "documentation"
+}));
+
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: formData
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File uploaded successfully with custom ID');
+  } else {
+    console.error('Failed to upload file:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Retrieving Files
+
+==== GET - File Metadata
+
+To retrieve a file's metadata:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/mybucket.files/my-custom-id \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/mybucket.files/my-custom-id \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved file metadata:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "_id": "my-custom-id",
+    "chunkSize": 261120,
+    "filename": "example.jpg",
+    "length": 66273,
+    "metadata": {
+        "_etag": {
+            "$oid": "60f8a7b9e4b053f542c13ecd"
+        },
+        "author": "SoftInstigate",
+        "category": "documentation",
+        "contentType": "image/jpeg"
+    },
+    "uploadDate": {
+        "$date": 1626955705283
+    }
+}
+----
+
+The response includes:
+
+* `_id`: The file identifier
+* `chunkSize`: The size of each chunk in bytes
+* `filename`: The original filename
+* `length`: Total file size in bytes
+* `metadata`: Custom metadata plus system-generated fields
+* `uploadDate`: When the file was uploaded
+
+==== GET - File Binary Content
+
+To retrieve the actual binary file:
+
+[source,http]
+----
+GET [RESTHEART-URL]/mybucket.files/my-custom-id/binary HTTP/1.1
+Authorization: Basic [BASIC-AUTH]
+----
+
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/mybucket.files/my-custom-id/binary \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/mybucket.files/my-custom-id/binary \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id/binary', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.blob())
+.then(blob => {
+  console.log('Retrieved binary file:', blob);
+  // Process the binary data as needed
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 66273
+
+(binary data)
+----
+
+RESTHeart automatically sets the appropriate `Content-Type` header based on the detected file type.
+
+==== Filtering Files by Metadata
+
+You can query files by their metadata just like regular documents:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mybucket.files" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode 'filter={"metadata.author":"SoftInstigate"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/mybucket.files \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=='{\'metadata.author\':"SoftInstigate"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent(JSON.stringify({"metadata.author":"SoftInstigate"}));
+fetch(`[RESTHEART-URL]/mybucket.files?filter=${filter}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Filtered files:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns metadata for all files with the specified author.
+
+=== Updating File Metadata
+
+==== PATCH - Update Specific Metadata Fields
+
+To update specific metadata fields:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PATCH [RESTHEART-URL]/mybucket.files/my-custom-id \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "metadata.category": "images",
+    "metadata.tags": ["example", "documentation"]
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PATCH [RESTHEART-URL]/mybucket.files/my-custom-id \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  metadata.category="images" \
+  metadata.tags:='["example", "documentation"]'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "metadata.category": "images",
+    "metadata.tags": ["example", "documentation"]
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File metadata updated successfully');
+  } else {
+    console.error('Failed to update file metadata:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+IMPORTANT: When updating metadata, use `Content-Type: application/json`, not multipart/form-data.
+
+==== PUT - Replace All Metadata
+
+To completely replace the metadata:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X PUT [RESTHEART-URL]/mybucket.files/my-custom-id \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "metadata": {
+        "author": "New Author",
+        "category": "updated"
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http PUT [RESTHEART-URL]/mybucket.files/my-custom-id \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  metadata:='{
+    "author": "New Author",
+    "category": "updated"
+  }'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "metadata": {
+      "author": "New Author",
+      "category": "updated"
+    }
+  })
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File metadata replaced successfully');
+  } else {
+    console.error('Failed to replace file metadata:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+NOTE: Update operators and aggregation pipelines cannot be used with file metadata updates.
+
+=== Deleting Files
+
+To delete a file and all its chunks:
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X DELETE [RESTHEART-URL]/mybucket.files/my-custom-id \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/mybucket.files/my-custom-id \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => {
+  if (response.ok) {
+    console.log('File deleted successfully');
+  } else {
+    console.error('Failed to delete file:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Important Notes
+
+1. RESTHeart automatically detects and sets the file's content type
+2. File operations don't support write modes - POST is always insert, PUT is always upsert
+3. File metadata can be queried with the same operators as regular documents
+4. File buckets have two underlying collections in MongoDB: `<bucket-name>.files` for metadata and `<bucket-name>.chunks` for content
+5. Binary content is accessed with the `/binary` suffix
+
+=== Examples
+
+==== Example 1: Upload and serve an image
+
+==== cURL
+
+[source,bash]
+----
+# Upload an image
+curl -i -X POST [RESTHEART-URL]/images.files \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -F "file=@/path/to/logo.png" \
+  -F 'metadata={"purpose":"website"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Upload an image
+http --form POST [RESTHEART-URL]/images.files \
+  Authorization:"Basic [BASIC-AUTH]" \
+  file@/path/to/logo.png \
+  metadata='{"purpose":"website"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Upload an image
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('metadata', JSON.stringify({"purpose":"website"}));
+
+fetch('[RESTHEART-URL]/images.files', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: formData
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Image uploaded successfully');
+    return response.headers.get('Location');
+  } else {
+    console.error('Failed to upload image:', response.status);
+  }
+})
+.then(location => {
+  if (location) console.log('Image location:', location);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Access the image in a web page:
+
+[source,html]
+----
+<img src="[RESTHEART-URL]/images.files/60f8a7b9e4b053f542c13ece/binary" alt="Logo">
+----
+
+==== Example 2: Upload a document and track versions
+
+==== cURL
+
+[source,bash]
+----
+# Upload initial version
+curl -i -X PUT [RESTHEART-URL]/documents.files/contract-2023 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -F "file=@/path/to/document.pdf" \
+  -F 'metadata={"version":"1.0","author":"John"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Upload initial version
+http --form PUT [RESTHEART-URL]/documents.files/contract-2023 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  file@/path/to/document.pdf \
+  metadata='{"version":"1.0","author":"John"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Upload initial version
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('metadata', JSON.stringify({
+  "version": "1.0",
+  "author": "John"
+}));
+
+fetch('[RESTHEART-URL]/documents.files/contract-2023', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: formData
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document uploaded successfully');
+  } else {
+    console.error('Failed to upload document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----
+
+Update the file and increment version:
+
+==== cURL
+
+[source,bash]
+----
+# Update the file and increment version
+curl -i -X PUT [RESTHEART-URL]/documents.files/contract-2023 \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -F "file=@/path/to/document_updated.pdf" \
+  -F 'metadata={"version":"1.1","author":"John","updated":"2023-07-15"}'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Update the file and increment version
+http --form PUT [RESTHEART-URL]/documents.files/contract-2023 \
+  Authorization:"Basic [BASIC-AUTH]" \
+  file@/path/to/document_updated.pdf \
+  metadata='{"version":"1.1","author":"John","updated":"2023-07-15"}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Update the file and increment version
+const updatedFormData = new FormData();
+updatedFormData.append('file', updatedFileInput.files[0]);
+updatedFormData.append('metadata', JSON.stringify({
+  "version": "1.1",
+  "author": "John",
+  "updated": "2023-07-15"
+}));
+
+fetch('[RESTHEART-URL]/documents.files/contract-2023', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  },
+  body: updatedFormData
+})
+.then(response => {
+  if (response.ok) {
+    console.log('Document updated successfully');
+  } else {
+    console.error('Failed to update document:', response.status);
+  }
+})
+.catch(error => console.error('Error:', error));
+----

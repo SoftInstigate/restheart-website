@@ -1,0 +1,2204 @@
+---
+docs_version: 8
+title: RESTHeart Cloud Examples and Use Cases
+layout: docs-adoc
+menu: cloud
+liquid: true
+applies_to: cloud
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+Discover how RESTHeart Cloud accelerates development across different industries and application types. Each example shows how you can get from idea to working backend in minutes.
+
+[TIP]
+====
+**New to RESTHeart Cloud?** Start with our link:/docs/cloud/full-stack-example[Full-Stack Web Application Example] - a complete tutorial that shows you how to build both the backend API and a production-ready frontend with Vue.js, React, or Angular. You'll have a working application in under 10 minutes!
+====
+
+=== Web Applications
+
+==== Content Management System
+
+Create a headless CMS for blogs, news sites, or documentation.
+
+===== Content Structure
+
+==== cURL
+
+[source,bash]
+----
+# Create content collections
+curl -i -X PUT [RESTHEART-URL]/articles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/authors -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/media.files -H "Authorization: Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to published articles
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "_id": "allCanGetPublishedArticles",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/articles) and method(GET)",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"status": "published"}
+    }
+  }'
+
+# Create author
+curl -i -X POST [RESTHEART-URL]/authors \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "bio": "Tech writer and developer advocate",
+    "avatar": "https://example.com/avatars/jane.jpg"
+  }'
+
+# Create article
+curl -i -X POST [RESTHEART-URL]/articles \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "Getting Started with RESTHeart Cloud",
+    "slug": "getting-started-restheart-cloud",
+    "content": "RESTHeart Cloud makes backend development incredibly fast...",
+    "excerpt": "Learn how to build APIs in minutes",
+    "author": "jane@example.com",
+    "status": "published",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "tags": ["tutorial", "api", "backend"],
+    "seo": {
+      "metaTitle": "Getting Started with RESTHeart Cloud",
+      "metaDescription": "Complete guide to building APIs with RESTHeart Cloud"
+    }
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Create content collections
+http PUT [RESTHEART-URL]/articles Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/authors Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/media.files Authorization:"Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to published articles
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="allCanGetPublishedArticles" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/articles) and method(GET)" \
+  priority:=100 \
+  mongo:='{
+    "readFilter": {"status": "published"}
+  }'
+
+# Create author
+http POST [RESTHEART-URL]/authors \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  name="Jane Smith" \
+  email="jane@example.com" \
+  bio="Tech writer and developer advocate" \
+  avatar="https://example.com/avatars/jane.jpg"
+
+# Create article
+http POST [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  title="Getting Started with RESTHeart Cloud" \
+  slug="getting-started-restheart-cloud" \
+  content="RESTHeart Cloud makes backend development incredibly fast..." \
+  excerpt="Learn how to build APIs in minutes" \
+  author="jane@example.com" \
+  status="published" \
+  publishedAt="2024-01-15T10:00:00Z" \
+  tags:='["tutorial", "api", "backend"]' \
+  seo:='{
+    "metaTitle": "Getting Started with RESTHeart Cloud",
+    "metaDescription": "Complete guide to building APIs with RESTHeart Cloud"
+  }'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create content collections
+const createContentCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/articles', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Articles collection created successfully');
+    } else {
+      console.error('Failed to create articles collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/authors', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Authors collection created successfully');
+    } else {
+      console.error('Failed to create authors collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/media.files', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Media file bucket created successfully');
+    } else {
+      console.error('Failed to create media collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create permission for unauthenticated read access to published articles
+const createArticlesReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: "allCanGetPublishedArticles",
+      roles: ["$unauthenticated"],
+      predicate: "path(/articles) and method(GET)",
+      mongo: {
+        readFilter: {"status": "published"}
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Articles read permission created successfully');
+    } else {
+      console.error('Failed to create articles read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create author
+const createAuthor = () => {
+  fetch('[RESTHEART-URL]/authors', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Jane Smith",
+      email: "jane@example.com",
+      bio: "Tech writer and developer advocate",
+      avatar: "https://example.com/avatars/jane.jpg"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Author created successfully');
+    } else {
+      console.error('Failed to create author:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create article
+const createArticle = () => {
+  fetch('[RESTHEART-URL]/articles', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: "Getting Started with RESTHeart Cloud",
+      slug: "getting-started-restheart-cloud",
+      content: "RESTHeart Cloud makes backend development incredibly fast...",
+      excerpt: "Learn how to build APIs in minutes",
+      author: "jane@example.com",
+      status: "published",
+      publishedAt: "2024-01-15T10:00:00Z",
+      tags: ["tutorial", "api", "backend"],
+      seo: {
+        metaTitle: "Getting Started with RESTHeart Cloud",
+        metaDescription: "Complete guide to building APIs with RESTHeart Cloud"
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Article created successfully');
+    } else {
+      console.error('Failed to create article:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createContentCollections();
+createArticlesReadPermission();
+createAuthor();
+createArticle();
+----
+
+===== Content Delivery
+
+==== cURL
+
+[source,bash]
+----
+# Get published articles
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'status':'published'}" --data-urlencode "sort={'publishedAt':-1}"
+
+# Get article by slug (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'slug':'getting-started-restheart-cloud'}"
+
+# Search articles (requires $unauthenticated read permission or basic auth)
+curl "[RESTHEART-URL]/articles" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'$text':{'$search':'RESTHeart API'}}"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Get published articles
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'status':'published'}" sort=="{publishedAt:-1}"
+
+# Get article by slug
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'slug':'getting-started-restheart-cloud'}"
+
+# Search articles
+http GET [RESTHEART-URL]/articles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{\$text:{\$search:'RESTHeart API'}}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Get published articles
+const getPublishedArticles = () => {
+  const filter = encodeURIComponent("{'status':'published'}");
+  const sort = encodeURIComponent("{publishedAt:-1}");
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Published articles:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Get article by slug
+const getArticleBySlug = (slug) => {
+  const filter = encodeURIComponent(`{'slug':'${slug}'}`);
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Article:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Search articles
+const searchArticles = (query) => {
+  const filter = encodeURIComponent(`{\$text:{\$search:'${query}'}}`);
+  fetch(`[RESTHEART-URL]/articles?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+getPublishedArticles();
+getArticleBySlug('getting-started-restheart-cloud');
+searchArticles('RESTHeart API');
+----
+
+=== Mobile Applications
+
+==== Social Media App Backend
+
+Build a complete social platform with users, posts, likes, and real-time features.
+
+===== User Profiles and Posts
+
+==== cURL
+
+[source,bash]
+----
+# Create social app collections
+curl -i -X PUT [RESTHEART-URL]/profiles -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/posts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/followers -H "Authorization: Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to posts
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "_id": "allCanGetPosts",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/posts) and method(GET)",
+    "priority": 100
+  }'
+
+# Create user profile
+curl -i -X POST [RESTHEART-URL]/profiles \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "username": "johndoe",
+    "displayName": "John Doe",
+    "email": "john@example.com",
+    "avatar": "https://example.com/avatars/john.jpg",
+    "bio": "Software developer and coffee enthusiast",
+    "location": "San Francisco, CA",
+    "joinedAt": "2024-01-01T00:00:00Z",
+    "stats": {
+      "posts": 0,
+      "followers": 0,
+      "following": 0
+    }
+  }'
+
+# Create a post
+curl -i -X POST [RESTHEART-URL]/posts \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "author": "johndoe",
+    "content": "Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀",
+    "media": [],
+    "hashtags": ["#api", "#development", "#restheart"],
+    "mentions": [],
+    "createdAt": "2024-01-15T14:30:00Z",
+    "likes": 0,
+    "comments": 0,
+    "shares": 0
+  }'
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Create social app collections
+http PUT [RESTHEART-URL]/profiles Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/posts Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/followers Authorization:"Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to posts
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="allCanGetPosts" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/posts) and method(GET)" \
+  priority:=100
+
+# Create user profile
+http POST [RESTHEART-URL]/profiles \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  username="johndoe" \
+  displayName="John Doe" \
+  email="john@example.com" \
+  avatar="https://example.com/avatars/john.jpg" \
+  bio="Software developer and coffee enthusiast" \
+  location="San Francisco, CA" \
+  joinedAt="2024-01-01T00:00:00Z" \
+  stats:='{
+    "posts": 0,
+    "followers": 0,
+    "following": 0
+  }'
+
+# Create a post
+http POST [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  author="johndoe" \
+  content="Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀" \
+  media:='[]' \
+  hashtags:='["#api", "#development", "#restheart"]' \
+  mentions:='[]' \
+  createdAt="2024-01-15T14:30:00Z" \
+  likes:=0 \
+  comments:=0 \
+  shares:=0
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Create social app collections
+const createSocialCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/profiles', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Profiles collection created successfully');
+    } else {
+      console.error('Failed to create profiles collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/posts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Posts collection created successfully');
+    } else {
+      console.error('Failed to create posts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/followers', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Followers collection created successfully');
+    } else {
+      console.error('Failed to create followers collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create permission for unauthenticated read access to posts
+const createPostsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: "allCanGetPosts",
+      roles: ["$unauthenticated"],
+      predicate: "path(/posts) and method(GET)"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Posts read permission created successfully');
+    } else {
+      console.error('Failed to create posts read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create user profile
+const createUserProfile = () => {
+  fetch('[RESTHEART-URL]/profiles', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: "johndoe",
+      displayName: "John Doe",
+      email: "john@example.com",
+      avatar: "https://example.com/avatars/john.jpg",
+      bio: "Software developer and coffee enthusiast",
+      location: "San Francisco, CA",
+      joinedAt: "2024-01-01T00:00:00Z",
+      stats: {
+        posts: 0,
+        followers: 0,
+        following: 0
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('User profile created successfully');
+    } else {
+      console.error('Failed to create user profile:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create a post
+const createPost = () => {
+  fetch('[RESTHEART-URL]/posts', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      author: "johndoe",
+      content: "Just discovered RESTHeart Cloud - amazing for rapid API development! 🚀",
+      media: [],
+      hashtags: ["#api", "#development", "#restheart"],
+      mentions: [],
+      createdAt: "2024-01-15T14:30:00Z",
+      likes: 0,
+      comments: 0,
+      shares: 0
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Post created successfully');
+    } else {
+      console.error('Failed to create post:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createSocialCollections();
+createPostsReadPermission();
+createUserProfile();
+createPost();
+----
+
+===== Social Features
+
+==== cURL
+
+[source,bash]
+----
+# Get user timeline (posts from followed users)
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'author':{'$in':['user1','user2','user3']}}" --data-urlencode "sort={'createdAt':-1}"
+
+# Search posts by hashtag - requires $unauthenticated read permission or basic auth
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'hashtags':{'$in':['#api']}}"
+
+# Get user's posts - requires $unauthenticated read permission or basic auth
+curl "[RESTHEART-URL]/posts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'author':'johndoe'}" --data-urlencode "sort={'createdAt':-1}"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+# Get user timeline (posts from followed users)
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'author':{\$in:['user1','user2','user3']}}" sort=="{createdAt:-1}"
+
+# Search posts by hashtag
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'hashtags':{\$in:['#api']}}"
+
+# Get user's posts
+http GET [RESTHEART-URL]/posts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'author':'johndoe'}" sort=="{createdAt:-1}"
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+// Get user timeline (posts from followed users)
+const getUserTimeline = (followedUsers) => {
+  const filter = encodeURIComponent(`{'author':{\$in:${JSON.stringify(followedUsers)}}}`);
+  const sort = encodeURIComponent("{createdAt:-1}");
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('User timeline:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Search posts by hashtag
+const searchPostsByHashtag = (hashtag) => {
+  const filter = encodeURIComponent(`{'hashtags':{\$in:['${hashtag}']}}`);
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Hashtag search results:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Get user's posts
+const getUserPosts = (username) => {
+  const filter = encodeURIComponent(`{'author':'${username}'}`);
+  const sort = encodeURIComponent("{createdAt:-1}");
+  fetch(`[RESTHEART-URL]/posts?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('User posts:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+getUserTimeline(['user1', 'user2', 'user3']);
+searchPostsByHashtag('#api');
+getUserPosts('johndoe');
+----
+
+==== Fitness Tracking App
+
+Create a comprehensive fitness backend with workouts, progress tracking, and goals.
+
+===== Workout Data
+==== cURL
+[source,bash]
+----
+# Setup fitness collections
+curl -i -X PUT [RESTHEART-URL]/workouts -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/exercises -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/progress -H "Authorization: Basic [BASIC-AUTH]"
+
+# Add exercise definitions
+curl -i -X POST [RESTHEART-URL]/exercises \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "Push-ups",
+    "category": "strength",
+    "muscleGroups": ["chest", "shoulders", "triceps"],
+    "equipment": "bodyweight",
+    "instructions": "Start in plank position, lower body until chest nearly touches floor, push back up",
+    "difficulty": "beginner"
+  }'
+
+# Log workout
+curl -i -X POST [RESTHEART-URL]/workouts \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "userId": "user123",
+    "date": "2024-01-15T07:00:00Z",
+    "duration": 45,
+    "type": "strength",
+    "exercises": [
+      {
+        "name": "Push-ups",
+        "sets": [
+          {"reps": 15, "weight": 0},
+          {"reps": 12, "weight": 0},
+          {"reps": 10, "weight": 0}
+        ]
+      }
+    ],
+    "notes": "Great morning workout, feeling strong!",
+    "caloriesBurned": 200
+  }'
+----
+==== HTTPie
+[source,bash]
+----
+# Setup fitness collections
+http PUT [RESTHEART-URL]/workouts Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/exercises Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/progress Authorization:"Basic [BASIC-AUTH]"
+
+# Add exercise definitions
+http POST [RESTHEART-URL]/exercises \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  name="Push-ups" \
+  category="strength" \
+  muscleGroups:='["chest", "shoulders", "triceps"]' \
+  equipment="bodyweight" \
+  instructions="Start in plank position, lower body until chest nearly touches floor, push back up" \
+  difficulty="beginner"
+
+# Log workout
+http POST [RESTHEART-URL]/workouts \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  userId="user123" \
+  date="2024-01-15T07:00:00Z" \
+  duration:=45 \
+  type="strength" \
+  exercises:='[
+    {
+      "name": "Push-ups",
+      "sets": [
+        {"reps": 15, "weight": 0},
+        {"reps": 12, "weight": 0},
+        {"reps": 10, "weight": 0}
+      ]
+    }
+  ]' \
+  notes="Great morning workout, feeling strong!" \
+  caloriesBurned:=200
+----
+==== JavaScript
+[source,javascript]
+----
+// Setup fitness collections
+const createFitnessCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/workouts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Workouts collection created successfully');
+    } else {
+      console.error('Failed to create workouts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/exercises', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Exercises collection created successfully');
+    } else {
+      console.error('Failed to create exercises collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/progress', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Progress collection created successfully');
+    } else {
+      console.error('Failed to create progress collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Add exercise definitions
+const addExercise = () => {
+  fetch('[RESTHEART-URL]/exercises', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: "Push-ups",
+      category: "strength",
+      muscleGroups: ["chest", "shoulders", "triceps"],
+      equipment: "bodyweight",
+      instructions: "Start in plank position, lower body until chest nearly touches floor, push back up",
+      difficulty: "beginner"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Exercise added successfully');
+    } else {
+      console.error('Failed to add exercise:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Log workout
+const logWorkout = () => {
+  fetch('[RESTHEART-URL]/workouts', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId: "user123",
+      date: "2024-01-15T07:00:00Z",
+      duration: 45,
+      type: "strength",
+      exercises: [
+        {
+          name: "Push-ups",
+          sets: [
+            {reps: 15, weight: 0},
+            {reps: 12, weight: 0},
+            {reps: 10, weight: 0}
+          ]
+        }
+      ],
+      notes: "Great morning workout, feeling strong!",
+      caloriesBurned: 200
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Workout logged successfully');
+    } else {
+      console.error('Failed to log workout:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createFitnessCollections();
+addExercise();
+logWorkout();
+----
+=== IoT and Data Collection
+
+==== Smart Home Monitoring
+
+Collect and analyze data from home sensors and devices.
+
+===== Sensor Data Collection
+==== cURL
+[source,bash]
+----
+# Create IoT collections
+curl -i -X PUT [RESTHEART-URL]/devices -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/readings -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/alerts -H "Authorization: Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to readings
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "_id": "allCanGetReadings",
+    "roles": ["$unauthenticated"],
+    "predicate": "path(/readings) and method(GET)",
+    "priority": 100
+  }'
+
+# Register device
+curl -i -X POST [RESTHEART-URL]/devices \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "deviceId": "temp-sensor-01",
+    "type": "temperature",
+    "location": "living-room",
+    "manufacturer": "SensorTech",
+    "model": "ST-TEMP-100",
+    "installDate": "2024-01-01T00:00:00Z",
+    "status": "active"
+  }'
+
+# Submit sensor reading
+curl -i -X POST [RESTHEART-URL]/readings \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "deviceId": "temp-sensor-01",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "measurements": {
+      "temperature": 22.5,
+      "humidity": 45.2,
+      "batteryLevel": 85
+    },
+    "location": "living-room"
+  }'
+----
+==== HTTPie
+[source,bash]
+----
+# Create IoT collections
+http PUT [RESTHEART-URL]/devices Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/readings Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/alerts Authorization:"Basic [BASIC-AUTH]"
+
+# Create permission for unauthenticated read access to readings
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="allCanGetReadings" \
+  roles:='["$unauthenticated"]' \
+  predicate="path(/readings) and method(GET)" \
+  priority:=100
+
+# Register device
+http POST [RESTHEART-URL]/devices \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  deviceId="temp-sensor-01" \
+  type="temperature" \
+  location="living-room" \
+  manufacturer="SensorTech" \
+  model="ST-TEMP-100" \
+  installDate="2024-01-01T00:00:00Z" \
+  status="active"
+
+# Submit sensor reading
+http POST [RESTHEART-URL]/readings \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  deviceId="temp-sensor-01" \
+  timestamp="2024-01-15T15:30:00Z" \
+  measurements:='{
+    "temperature": 22.5,
+    "humidity": 45.2,
+    "batteryLevel": 85
+  }' \
+  location="living-room"
+----
+==== JavaScript
+[source,javascript]
+----
+// Create IoT collections
+const createIoTCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/devices', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Devices collection created successfully');
+    } else {
+      console.error('Failed to create devices collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/readings', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Readings collection created successfully');
+    } else {
+      console.error('Failed to create readings collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/alerts', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Alerts collection created successfully');
+    } else {
+      console.error('Failed to create alerts collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Create permission for unauthenticated read access to readings
+const createReadingsReadPermission = () => {
+  fetch('[RESTHEART-URL]/acl', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      _id: "allCanGetReadings",
+      roles: ["$unauthenticated"],
+      predicate: "path(/readings) and method(GET)"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Readings read permission created successfully');
+    } else {
+      console.error('Failed to create readings read permission:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Register device
+const registerDevice = () => {
+  fetch('[RESTHEART-URL]/devices', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      deviceId: "temp-sensor-01",
+      type: "temperature",
+      location: "living-room",
+      manufacturer: "SensorTech",
+      model: "ST-TEMP-100",
+      installDate: "2024-01-01T00:00:00Z",
+      status: "active"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Device registered successfully');
+    } else {
+      console.error('Failed to register device:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Submit sensor reading
+const submitReading = () => {
+  fetch('[RESTHEART-URL]/readings', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      deviceId: "temp-sensor-01",
+      timestamp: "2024-01-15T15:30:00Z",
+      measurements: {
+        temperature: 22.5,
+        humidity: 45.2,
+        batteryLevel: 85
+      },
+      location: "living-room"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sensor reading submitted successfully');
+    } else {
+      console.error('Failed to submit sensor reading:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createIoTCollections();
+createReadingsReadPermission();
+registerDevice();
+submitReading();
+----
+===== Data Analysis
+==== cURL
+[source,bash]
+----
+# Get recent readings
+curl -i "[RESTHEART-URL]/readings" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -G --data-urlencode "filter={'timestamp':{'$gte':'2024-01-15T00:00:00Z'}}" --data-urlencode "sort={'timestamp':-1}"
+
+# Average temperature by location
+curl -i -X POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '[
+    {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
+    {"$group": {
+      "_id": "$location",
+      "avgTemp": {"$avg": "$measurements.temperature"},
+      "count": {"$sum": 1}
+    }}
+  ]'
+----
+==== HTTPie
+[source,bash]
+----
+# Get recent readings
+http GET [RESTHEART-URL]/readings \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=="{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}" sort=="{timestamp:-1}"
+
+# Average temperature by location
+echo '[
+  {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
+  {"$group": {
+    "_id": "$location",
+    "avgTemp": {"$avg": "$measurements.temperature"},
+    "count": {"$sum": 1}
+  }}
+]' | http POST [RESTHEART-URL]/readings/_aggrs/avg-temp-by-location \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+==== JavaScript
+[source,javascript]
+----
+// Get recent readings
+const getRecentReadings = () => {
+  const filter = encodeURIComponent("{'timestamp':{\$gte:'2024-01-15T00:00:00Z'}}");
+  const sort = encodeURIComponent("{timestamp:-1}");
+  fetch(`[RESTHEART-URL]/readings?filter=${filter}&sort=${sort}`, {
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Recent readings:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Average temperature by location
+const getAverageTemperatureByLocation = () => {
+  const pipeline = [
+    {"$match": {"timestamp": {"$gte": "2024-01-15T00:00:00Z"}}},
+    {"$group": {
+      "_id": "$location",
+      "avgTemp": {"$avg": "$measurements.temperature"},
+      "count": {"$sum": 1}
+    }}
+  ];
+
+  fetch('[RESTHEART-URL]/readings/_aggrs/avg-temp-by-location', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Average temperature by location:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+getRecentReadings();
+getAverageTemperatureByLocation();
+----
+==== Environmental Monitoring
+
+Track air quality, weather conditions, and environmental data.
+
+===== Environmental Data
+==== cURL
+[source,bash]
+----
+# Environmental monitoring setup
+curl -i -X PUT [RESTHEART-URL]/stations -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/measurements -H "Authorization: Basic [BASIC-AUTH]"
+
+# Register monitoring station
+curl -i -X POST [RESTHEART-URL]/stations \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "stationId": "ENV-NYC-001",
+    "name": "Central Park Station",
+    "location": {
+      "lat": 40.7829,
+      "lng": -73.9654,
+      "address": "Central Park, New York, NY"
+    },
+    "sensors": ["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"],
+    "status": "active"
+  }'
+
+# Submit environmental measurement
+curl -i -X POST [RESTHEART-URL]/measurements \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "stationId": "ENV-NYC-001",
+    "timestamp": "2024-01-15T16:00:00Z",
+    "airQuality": {
+      "pm25": 12.5,
+      "pm10": 18.2,
+      "no2": 25.1,
+      "o3": 45.8,
+      "aqi": 52
+    },
+    "weather": {
+      "temperature": 18.5,
+      "humidity": 62.3,
+      "pressure": 1013.2,
+      "windSpeed": 8.5
+    }
+  }'
+----
+==== HTTPie
+[source,bash]
+----
+# Environmental monitoring setup
+http PUT [RESTHEART-URL]/stations Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/measurements Authorization:"Basic [BASIC-AUTH]"
+
+# Register monitoring station
+http POST [RESTHEART-URL]/stations \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  stationId="ENV-NYC-001" \
+  name="Central Park Station" \
+  location:='{
+    "lat": 40.7829,
+    "lng": -73.9654,
+    "address": "Central Park, New York, NY"
+  }' \
+  sensors:='["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"]' \
+  status="active"
+
+# Submit environmental measurement
+http POST [RESTHEART-URL]/measurements \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  stationId="ENV-NYC-001" \
+  timestamp="2024-01-15T16:00:00Z" \
+  airQuality:='{
+    "pm25": 12.5,
+    "pm10": 18.2,
+    "no2": 25.1,
+    "o3": 45.8,
+    "aqi": 52
+  }' \
+  weather:='{
+    "temperature": 18.5,
+    "humidity": 62.3,
+    "pressure": 1013.2,
+    "windSpeed": 8.5
+  }'
+----
+==== JavaScript
+[source,javascript]
+----
+// Environmental monitoring setup
+const createEnvironmentalCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/stations', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Stations collection created successfully');
+    } else {
+      console.error('Failed to create stations collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/measurements', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Measurements collection created successfully');
+    } else {
+      console.error('Failed to create measurements collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Register monitoring station
+const registerStation = () => {
+  fetch('[RESTHEART-URL]/stations', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      stationId: "ENV-NYC-001",
+      name: "Central Park Station",
+      location: {
+        lat: 40.7829,
+        lng: -73.9654,
+        address: "Central Park, New York, NY"
+      },
+      sensors: ["PM2.5", "PM10", "NO2", "O3", "temperature", "humidity"],
+      status: "active"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Environmental monitoring station registered successfully');
+    } else {
+      console.error('Failed to register monitoring station:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Submit environmental measurement
+const submitMeasurement = () => {
+  fetch('[RESTHEART-URL]/measurements', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      stationId: "ENV-NYC-001",
+      timestamp: "2024-01-15T16:00:00Z",
+      airQuality: {
+        pm25: 12.5,
+        pm10: 18.2,
+        no2: 25.1,
+        o3: 45.8,
+        aqi: 52
+      },
+      weather: {
+        temperature: 18.5,
+        humidity: 62.3,
+        pressure: 1013.2,
+        windSpeed: 8.5
+      }
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Environmental measurement submitted successfully');
+    } else {
+      console.error('Failed to submit environmental measurement:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createEnvironmentalCollections();
+registerStation();
+submitMeasurement();
+----
+=== Analytics and Reporting
+
+==== Business Intelligence Dashboard
+
+Create a comprehensive analytics backend for business metrics.
+
+===== Sales Analytics
+==== cURL
+[source,bash]
+----
+# Business analytics setup
+curl -i -X PUT [RESTHEART-URL]/sales -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/customers -H "Authorization: Basic [BASIC-AUTH]"
+curl -i -X PUT [RESTHEART-URL]/analytics-products -H "Authorization: Basic [BASIC-AUTH]"
+
+# Record sale
+curl -i -X POST [RESTHEART-URL]/sales \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+    "orderId": "ORD-2024-001",
+    "customerId": "CUST-001",
+    "date": "2024-01-15T14:30:00Z",
+    "items": [
+      {
+        "productId": "PROD-001",
+        "name": "Wireless Headphones",
+        "quantity": 1,
+        "unitPrice": 99.99,
+        "category": "electronics"
+      }
+    ],
+    "totalAmount": 99.99,
+    "currency": "USD",
+    "paymentMethod": "credit_card",
+    "salesRep": "john.doe@company.com",
+    "region": "north-america"
+  }'
+----
+==== HTTPie
+[source,bash]
+----
+# Business analytics setup
+http PUT [RESTHEART-URL]/sales Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/customers Authorization:"Basic [BASIC-AUTH]"
+http PUT [RESTHEART-URL]/analytics-products Authorization:"Basic [BASIC-AUTH]"
+
+# Record sale
+http POST [RESTHEART-URL]/sales \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  orderId="ORD-2024-001" \
+  customerId="CUST-001" \
+  date="2024-01-15T14:30:00Z" \
+  items:='[
+    {
+      "productId": "PROD-001",
+      "name": "Wireless Headphones",
+      "quantity": 1,
+      "unitPrice": 99.99,
+      "category": "electronics"
+    }
+  ]' \
+  totalAmount:=99.99 \
+  currency="USD" \
+  paymentMethod="credit_card" \
+  salesRep="john.doe@company.com" \
+  region="north-america"
+----
+==== JavaScript
+[source,javascript]
+----
+// Business analytics setup
+const createAnalyticsCollections = () => {
+  const headers = { 'Authorization': 'Basic [BASIC-AUTH]' };
+
+  fetch('[RESTHEART-URL]/sales', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sales collection created successfully');
+    } else {
+      console.error('Failed to create sales collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/customers', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Customers collection created successfully');
+    } else {
+      console.error('Failed to create customers collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+
+  fetch('[RESTHEART-URL]/analytics-products', { method: 'PUT', headers })
+  .then(response => {
+    if (response.ok) {
+      console.log('Analytics products collection created successfully');
+    } else {
+      console.error('Failed to create analytics products collection:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Record sale
+const recordSale = () => {
+  fetch('[RESTHEART-URL]/sales', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      orderId: "ORD-2024-001",
+      customerId: "CUST-001",
+      date: "2024-01-15T14:30:00Z",
+      items: [
+        {
+          productId: "PROD-001",
+          name: "Wireless Headphones",
+          quantity: 1,
+          unitPrice: 99.99,
+          category: "electronics"
+        }
+      ],
+      totalAmount: 99.99,
+      currency: "USD",
+      paymentMethod: "credit_card",
+      salesRep: "john.doe@company.com",
+      region: "north-america"
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log('Sale recorded successfully');
+    } else {
+      console.error('Failed to record sale:', response.status);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+createAnalyticsCollections();
+recordSale();
+----
+===== Analytics Queries
+==== cURL
+[source,bash]
+----
+# Daily sales aggregation
+curl -i -X POST [RESTHEART-URL]/sales/_aggrs/daily-sales \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '[
+    {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
+    {"$group": {
+      "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+      "totalSales": {"$sum": "$totalAmount"},
+      "orderCount": {"$sum": 1},
+      "avgOrderValue": {"$avg": "$totalAmount"}
+    }},
+    {"$sort": {"_id": 1}}
+  ]'
+
+# Top products by revenue
+curl -i -X POST [RESTHEART-URL]/sales/_aggrs/top-products \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '[
+    {"$unwind": "$items"},
+    {"$group": {
+      "_id": "$items.productId",
+      "productName": {"$first": "$items.name"},
+      "totalRevenue": {"$sum": {"$multiply": ["$items.quantity", "$items.unitPrice"]}},
+      "unitsSold": {"$sum": "$items.quantity"}
+    }},
+    {"$sort": {"totalRevenue": -1}},
+    {"$limit": 10}
+  ]'
+----
+==== HTTPie
+[source,bash]
+----
+# Daily sales aggregation
+echo '[
+  {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
+  {"$group": {
+    "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+    "totalSales": {"$sum": "$totalAmount"},
+    "orderCount": {"$sum": 1},
+    "avgOrderValue": {"$avg": "$totalAmount"}
+  }},
+  {"$sort": {"_id": 1}}
+]' | http POST [RESTHEART-URL]/sales/_aggrs/daily-sales \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+
+# Top products by revenue
+echo '[
+  {"$unwind": "$items"},
+  {"$group": {
+    "_id": "$items.productId",
+    "productName": {"$first": "$items.name"},
+    "totalRevenue": {"$sum": {"$multiply": ["$items.quantity", "$items.unitPrice"]}},
+    "unitsSold": {"$sum": "$items.quantity"}
+  }},
+  {"$sort": {"totalRevenue": -1}},
+  {"$limit": 10}
+]' | http POST [RESTHEART-URL]/sales/_aggrs/top-products \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json
+----
+==== JavaScript
+[source,javascript]
+----
+// Daily sales aggregation
+const getDailySales = () => {
+  const pipeline = [
+    {"$match": {"date": {"$gte": "2024-01-01T00:00:00Z"}}},
+    {"$group": {
+      "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$date"}},
+      "totalSales": {"$sum": "$totalAmount"},
+      "orderCount": {"$sum": 1},
+      "avgOrderValue": {"$avg": "$totalAmount"}
+    }},
+    {"$sort": {"_id": 1}}
+  ];
+
+  fetch('[RESTHEART-URL]/sales/_aggrs/daily-sales', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Daily sales data:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Top products by revenue
+const getTopProducts = () => {
+  const pipeline = [
+    {"$unwind": "$items"},
+    {"$group": {
+      "_id": "$items.productId",
+      "productName": {"$first": "$items.name"},
+      "totalRevenue": {"$sum": {"$multiply": ["$items.quantity", "$items.unitPrice"]}},
+      "unitsSold": {"$sum": "$items.quantity"}
+    }},
+    {"$sort": {"totalRevenue": -1}},
+    {"$limit": 10}
+  ];
+
+  fetch('[RESTHEART-URL]/sales/_aggrs/top-products', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic [BASIC-AUTH]',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pipeline)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Top products data:', data);
+  })
+  .catch(error => console.error('Error:', error));
+};
+
+// Execute
+getDailySales();
+getTopProducts();
+----
+=== Real-Time Applications
+
+==== Live Chat System
+
+Build a real-time messaging platform with presence and typing indicators.
+
+===== Chat Setup
+[source,bash]
+----
+# Chat collections
+curl -i -X PUT https://[instance].restheart.com/rooms -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/messages -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/presence -H "Authorization: Bearer [token]"
+
+# Create chat room
+curl -i -X POST https://[instance].restheart.com/rooms \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "General Discussion",
+    "description": "General chat for all team members",
+    "type": "public",
+    "createdBy": "admin",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "members": ["alice", "bob", "charlie"],
+    "settings": {
+      "allowFileSharing": true,
+      "maxMessageLength": 1000
+    }
+  }'
+
+# Send message
+curl -i -X POST https://[instance].restheart.com/messages \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "roomId": "general-discussion",
+    "sender": "alice",
+    "content": "Hello everyone! 👋",
+    "type": "text",
+    "timestamp": "2024-01-15T15:30:00Z",
+    "edited": false,
+    "reactions": []
+  }'
+----
+
+===== Real-time Features with WebSockets
+[source,bash]
+----
+# Create change stream for real-time messages
+curl -i -X POST https://[instance].restheart.com/_streams/chat-messages \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "uri": "chat-messages",
+    "stages": [
+      {"$match": {"ns.coll": "messages"}},
+      {"$project": {"_id": 1, "operationType": 1, "fullDocument": 1}}
+    ]
+  }'
+
+# WebSocket connection for real-time updates
+# ws://[instance].restheart.com/_streams/chat-messages
+----
+
+==== Live Polling and Voting
+
+Create real-time polls and surveys with live result updates.
+
+===== Polling System
+[source,bash]
+----
+# Polling collections
+curl -i -X PUT https://[instance].restheart.com/questions -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/votes -H "Authorization: Bearer [token]"
+
+# Create poll
+curl -i -X POST https://[instance].restheart.com/questions \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "What is your favorite programming language?",
+    "description": "Help us understand our community preferences",
+    "options": [
+      {"id": "js", "text": "JavaScript", "votes": 0},
+      {"id": "python", "text": "Python", "votes": 0},
+      {"id": "java", "text": "Java", "votes": 0},
+      {"id": "go", "text": "Go", "votes": 0}
+    ],
+    "createdBy": "admin",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "endDate": "2024-01-22T23:59:59Z",
+    "status": "active",
+    "allowMultiple": false
+  }'
+
+# Cast vote
+curl -i -X POST https://[instance].restheart.com/votes \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "pollId": "programming-languages-poll",
+    "userId": "user123",
+    "selectedOption": "python",
+    "timestamp": "2024-01-15T15:45:00Z",
+    "userAgent": "Mozilla/5.0...",
+    "ipAddress": "192.168.1.100"
+  }'
+----
+
+=== Public Data Access
+
+==== Open Data APIs
+
+Create public APIs that don't require authentication, perfect for open datasets, public content, or read-only resources.
+
+===== Setting Up Public Collections
+
+Configure collections to allow access via the `$unauthenticated` role for users who haven't logged in.
+
+[source,bash]
+----
+# Create public collections for open data
+curl -i -X PUT https://[instance].restheart.com/public-datasets -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/announcements -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/documentation -H "Authorization: Bearer [token]"
+
+# Configure public read access permissions
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPublicDatasets",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/public-datasets)",
+        "priority": 100
+      }'
+----
+
+===== Public Content Examples
+
+[source,bash]
+----
+# Add public announcements (admin-only write, public read)
+curl -i -X POST https://[instance].restheart.com/announcements \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "Platform Maintenance Scheduled",
+    "message": "We will be performing routine maintenance on January 20th from 2-4 AM UTC.",
+    "type": "maintenance",
+    "severity": "info",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "expiresAt": "2024-01-21T00:00:00Z",
+    "tags": ["maintenance", "scheduled"]
+  }'
+
+# Add public dataset entry
+curl -i -X POST https://[instance].restheart.com/public-datasets \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "name": "City Weather Stations",
+    "description": "Real-time weather data from municipal weather monitoring stations",
+    "category": "environmental",
+    "format": "JSON",
+    "updateFrequency": "hourly",
+    "license": "Creative Commons Attribution 4.0",
+    "lastUpdated": "2024-01-15T16:00:00Z",
+    "recordCount": 1250,
+    "coverage": {
+      "geographic": "New York City",
+      "temporal": "2020-present"
+    },
+    "contact": "data@city.gov"
+  }'
+----
+
+===== Public API Access (No Authentication Required)
+
+[source,bash]
+----
+# Anyone can access these endpoints without authentication
+
+# Get all public announcements
+curl "https://[instance].restheart.com/announcements"
+
+# Get active announcements
+curl "https://[instance].restheart.com/announcements" -G --data-urlencode "filter={'expiresAt':{'$gte':'2024-01-15T00:00:00Z'}}"
+
+# Browse public datasets
+curl "https://[instance].restheart.com/public-datasets"
+
+# Search datasets by category
+curl "https://[instance].restheart.com/public-datasets" -G --data-urlencode "filter={'category':'environmental'}"
+
+# Get specific dataset information
+curl "https://[instance].restheart.com/public-datasets/city-weather-stations"
+----
+
+==== Public Documentation Portal
+
+Create a knowledge base or documentation system with public read access and controlled write access.
+
+===== Documentation Setup
+
+[source,bash]
+----
+# Create documentation collections
+curl -i -X PUT https://[instance].restheart.com/docs -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/faqs -H "Authorization: Bearer [token]"
+
+# Configure public read access for documentation
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPublishedDocs",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/docs)",
+        "priority": 100,
+        "mongo": {
+          "readFilter": {"status": "published"}
+        }
+      }'
+
+# Configure editor write access for documentation
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "editorsCanManageDocs",
+        "roles": ["editor"],
+        "predicate": "(method(GET) or method(POST) or method(PATCH)) and path-prefix(/docs)",
+        "priority": 100,
+        "mongo": {
+          "mergeRequest": { "author": "@user._id" },
+          "writeFilter": { "author": "@user._id" }
+        }
+      }'
+
+# Add documentation articles
+curl -i -X POST https://[instance].restheart.com/docs \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "Getting Started Guide",
+    "slug": "getting-started",
+    "content": "This comprehensive guide will help you get started with our platform...",
+    "category": "tutorials",
+    "status": "published",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "lastModified": "2024-01-15T10:00:00Z",
+    "author": "docs-team",
+    "tags": ["beginner", "tutorial", "setup"],
+    "version": "1.0"
+  }'
+----
+
+===== Public FAQ System
+
+[source,bash]
+----
+# Configure FAQ collection for public access
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetFaqs",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/faqs)",
+        "priority": 100
+      }'
+
+# Add FAQ entries
+curl -i -X POST https://[instance].restheart.com/faqs \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "question": "How do I reset my password?",
+    "answer": "Click on the Forgot Password link on the login page and follow the instructions sent to your email.",
+    "category": "account",
+    "tags": ["password", "login", "account"],
+    "helpful": 0,
+    "notHelpful": 0,
+    "lastUpdated": "2024-01-15T10:00:00Z"
+  }'
+----
+
+==== Public Event Calendar
+
+Create a public events system where anyone can view upcoming events.
+
+===== Event Calendar Setup
+
+[source,bash]
+----
+# Create events collection
+curl -i -X PUT https://[instance].restheart.com/events -H "Authorization: Bearer [token]"
+
+# Configure public read access for future events only
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPublishedEvents",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/events)",
+        "priority": 100,
+        "mongo": {
+          "readFilter": {
+            "status": "published",
+            "endDate": {"$gte": {"$date": "2024-01-15T00:00:00Z"}}
+          }
+        }
+      }'
+
+# Add public events
+curl -i -X POST https://[instance].restheart.com/events \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "title": "API Workshop: Building with RESTHeart",
+    "description": "Learn how to build powerful APIs using RESTHeart Cloud",
+    "startDate": "2024-01-25T14:00:00Z",
+    "endDate": "2024-01-25T16:00:00Z",
+    "location": {
+      "type": "online",
+      "url": "https://meet.example.com/workshop"
+    },
+    "status": "published",
+    "category": "workshop",
+    "maxAttendees": 50,
+    "currentAttendees": 12,
+    "tags": ["api", "workshop", "development"],
+    "organizer": "Developer Relations Team"
+  }'
+----
+
+===== Public Access Examples
+
+[source,bash]
+----
+# Public users can access these without authentication
+
+# Get upcoming events
+curl "https://[instance].restheart.com/events" -G --data-urlencode "sort={'startDate':1}"
+
+# Filter events by category
+curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'category':'workshop'}"
+
+# Get events for a specific date range
+curl "https://[instance].restheart.com/events" -G --data-urlencode "filter={'startDate':{'$gte':'2024-01-20T00:00:00Z','$lt':'2024-01-27T00:00:00Z'}}"
+----
+
+===== Security Considerations for Public Access
+
+[source,bash]
+----
+# Best practices for public collections:
+
+# 1. Use specific read filters to limit exposed data
+# 2. Never allow write access for $unauthenticated role
+
+# Example: Limit fields exposed to public users
+curl -i -X POST https://[instance].restheart.com/acl \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPublicEventsLimitedFields",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path(/events)",
+        "priority": 100,
+        "mongo": {
+          "readFilter": {"public": true},
+          "projectResponse": {
+            "username": 1,
+            "displayName": 1,
+            "avatar": 1,
+            "joinedAt": 1
+          }
+        }
+      }'
+----
+
+===== Additional Public Collection Permissions
+
+Configure ACL permissions for collections used in the examples above that show unauthenticated GET requests.
+
+[source,bash]
+----
+# Configure public read access for products collection (e-commerce examples)
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetProducts",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/products)",
+        "priority": 100
+      }'
+
+# Configure public read access for articles collection (CMS examples)
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPublishedArticles",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/articles)",
+        "priority": 100,
+        "mongo": {
+          "readFilter": {"status": "published"}
+        }
+      }'
+
+# Configure public read access for posts collection (social media examples)
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetPosts",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/posts)",
+        "priority": 100
+      }'
+
+# Configure public read access for readings collection (IoT examples)
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" -H "Content-Type: application/json" \
+  -d '{
+        "_id": "allCanGetReadings",
+        "roles": ["$unauthenticated"],
+        "predicate": "method(GET) and path-prefix(/readings)",
+        "priority": 100
+      }'
+----
+
+=== Advanced Integration Examples
+
+==== Multi-tenant SaaS Application
+
+Build a SaaS platform with proper tenant isolation and billing.
+
+===== Tenant Management
+[source,bash]
+----
+# SaaS collections
+curl -i -X PUT https://[instance].restheart.com/tenants -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/subscriptions -H "Authorization: Bearer [token]"
+curl -i -X PUT https://[instance].restheart.com/usage -H "Authorization: Bearer [token]"
+
+# Create tenant
+curl -i -X POST https://[instance].restheart.com/tenants \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "tenantId": "acme-corp",
+    "name": "ACME Corporation",
+    "plan": "professional",
+    "status": "active",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "settings": {
+      "maxUsers": 50,
+      "maxStorage": "10GB",
+      "features": ["analytics", "integrations", "priority-support"]
+    },
+    "billing": {
+      "email": "billing@acme.com",
+      "address": "123 Business St, City, State 12345"
+    }
+  }'
+----
+
+===== Usage Tracking
+[source,bash]
+----
+# Track API usage
+curl -i -X POST https://[instance].restheart.com/usage \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "tenantId": "acme-corp",
+    "date": "2024-01-15",
+    "metrics": {
+      "apiCalls": 1250,
+      "storageUsed": "2.5GB",
+      "activeUsers": 23,
+      "dataTransfer": "150MB"
+    },
+    "breakdown": {
+      "endpoints": {
+        "/api/users": 450,
+        "/api/projects": 320,
+        "/api/tasks": 480
+      }
+    }
+  }'
+----
+
+=== Performance and Optimization
+
+==== Caching Strategy
+[source,bash]
+----
+# Enable caching for frequently accessed data
+curl -i -X PUT https://[instance].restheart.com/products \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "cachePolicy": {
+      "enabled": true,
+      "ttl": 300,
+      "invalidateOn": ["POST", "PUT", "PATCH", "DELETE"]
+    }
+  }'
+----
+
+==== Indexing for Performance
+[source,bash]
+----
+# Create indexes for better query performance
+curl -i -X PUT https://[instance].restheart.com/products/_indexes/category-price \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "keys": {"category": 1, "price": -1},
+    "options": {"name": "category_price_idx"}
+  }'
+
+# Text index for search
+curl -i -X PUT https://[instance].restheart.com/products/_indexes/text-search \
+  -H "Authorization: Bearer [token]" -H "Content-Type: application/json" \
+  -d '{
+    "keys": {"name": "text", "description": "text", "tags": "text"},
+    "options": {"name": "product_text_search"}
+  }'
+----
+
+=== Next Steps
+
+These examples demonstrate the power and flexibility of RESTHeart Cloud across different domains. To implement any of these solutions:
+
+1. **Start with the Free tier** to experiment and prototype
+2. **Adapt the data models** to fit your specific requirements
+3. **Implement proper security** with user roles and permissions
+4. **Add real-time features** using WebSocket change streams
+5. **Scale up** to Shared or Dedicated tiers as your application grows
+
+==== Learn More
+
+* link:getting-started[Getting Started Guide] - Build your first API
+* link:users-and-permissions[Users and Permissions] - Advanced authentication and authorization
+* link:security[Security Best Practices] - Production-ready security
+* link:../mongodb-rest/aggregations[Data Aggregations] - Advanced analytics and reporting
+* link:../security/authentication[Authentication Mechanisms] - Configure public access with `$unauthenticated` role
+
+Ready to build your next application? Sign up at https://cloud.restheart.com and get your backend running in minutes! 🚀

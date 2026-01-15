@@ -1,0 +1,170 @@
+---
+docs_version: 8
+title: Get Started with RESTHeart v8
+layout: docs-adoc
+menu: overview
+applies_to: both
+---
+
+RESTHeart is a framework for building cloud-native HTTP microservices. It's designed for the JVM and optimized for GraalVM, using Java Virtual Threads for high-performance concurrent processing.
+
+RESTHeart provides built-in authentication, authorization, and MongoDB APIs. This lets you securely expose data through REST, GraphQL, and WebSockets without additional configuration. The framework is highly extensible through plugins, supports multiple languages (Java, Kotlin, JavaScript, TypeScript), and runs seamlessly on Docker, Kubernetes, and cloud platforms.
+
+RESTHeart's instant startup, declarative security model, and simple architecture help developers build scalable microservices with minimal effort.
+
+==== Speed and Ease
+
+RESTHeart prioritizes speed and simplicity. It's built with high-quality libraries to provide a seamless developer experience.
+
+==== Virtual Threads for Superior Performance
+
+RESTHeart fully embraces virtual threads, the groundbreaking feature introduced in Java 21. Virtual threads deliver remarkable performance and efficiency improvements. This makes RESTHeart faster, more lightweight, and simplifies concurrent code development. Virtual threads provide better resource utilization and reduce the complexity of concurrent programming, keeping RESTHeart at the forefront of high-performance, scalable frameworks.
+
+==== Empower Developers, Streamline Applications
+
+RESTHeart empowers developers with an intuitive framework that includes essential features. This low-code approach provides customizable, ready-to-use APIs out of the box.
+
+==== Plug-and-Play, Extensible APIs
+
+RESTHeart's pre-configured APIs save time and effort by covering a wide range of functionality. You can easily customize these APIs to fit your specific application needs.
+
+++++
+<div class="col-md-8 col-12 mx-auto">
+    <img class="img-responsive" src="/images/modular-and-extensible.png"/>
+    <p class="small text-muted text-center">RESTHeart features set</p>
+</div>
+++++
+
+==== What makes RESTHeart different from other frameworks?
+
+RESTHeart is similar to other HTTP microservice frameworks like _Undertow_ (which RESTHeart uses internally), _Vert.x_, _Quarkus_, _Spring Boot_, and _Node.js_.
+
+However, RESTHeart goes beyond being just a framework. It includes application-level features that let developers build applications without reinventing the wheel.
+
+++++
+<div class="col-md-8 col-12 mx-auto">
+    <img class="mx-auto img-responsive" src="/images/restheart-modular-architecture.png"/>
+    <p class="small text-muted text-center">RESTHeart modular architecture</p>
+</div>
+++++
+
+`restheart-core` is the platform's foundation. This runtime process handles core services, parses configuration, registers plugins, enforces security policies, resolves dependency injections with available `Providers`, routes requests to the correct `Services`, and executes `Interceptors` and `Initializers`.
+
+The RESTHeart installation directory includes a `plugins` folder:
+
+[source,bash]
+----
+plugins
+├── restheart-graphql.jar
+├── restheart-mongoclient-provider.jar
+├── restheart-mongodb.jar
+├── restheart-polyglot.jar
+└── restheart-security.jar
+----
+
+These plugins implement application-level functionality to help you build applications.
+
+For example, the `restheart-mongodb` plugin implements the REST API for MongoDB, and `restheart-security.jar` provides ready-to-use authentication and authorization features.
+
+You can easily deploy custom plugins by adding them to the `plugins` directory. Plugins are JAR files for Java or Kotlin, or directories with `package.json` files for JavaScript.
+
+==== Built for developers
+
+RESTHeart is built by developers for developers. It has evolved through implementing dozens of real-world projects.
+
+- Only four simple yet powerful building blocks: `Services`, `Providers`, `Interceptors`, and `Initializers`.
+- Starts in ~100 milliseconds for smooth, fast code-deploy-test cycles.
+- Each request runs in a dedicated thread, making all code thread-safe, simple to write and maintain, and scalable.
+- Powerful dependency injection via `@Inject` annotation and `Provider` plugin.
+- Polyglot framework supporting *Java*, *Kotlin*, *JavaScript*, and *TypeScript*.
+- Well documented with many examples and tutorials. Check link:https://github.com/SoftInstigate/restheart/tree/master/examples[plugin examples].
+
+Here you have the _Hello World_ example in *Java*:
+
+[source,java]
+----
+@RegisterPlugin(name = "greetings", description = "just another Hello World")
+public class GreeterService implements JsonService {
+    @Override
+    public void handle(JsonRequest request, JsonResponse response) {
+        response.setContent(object().put("message", "Hello World!"));
+    }
+}
+----
+
+And the same in *Javascript*
+
+[source,javascript]
+----
+export const options = { name: "greetings", description: "just another Hello World" }
+
+export function handle(request, response) {
+    response.setContent(JSON.stringify({ msg: 'Hello World' }));
+    response.setContentTypeAsJson();
+}
+----
+
+NOTE: Javascript is executed in a thread-safe, multi-threading concurrency environment. So you don't need to deal with async/await, promises, observable or any other fancy stuff. *Just clean and simple code*.
+
+==== Features
+
+RESTHeart provides developers with the features required by most applications: authentication, authorization and data management:
+
+- Declarative Authentication and Authorization.
+- Instant REST, GraphQL and WebSocket API for MongoDB.
+- SDK to easily develop custom features.
+
+> Most applications just require this. Then you just run a stock RESTHeart. Really, no code!
+
+TIP: Check the link:/docs/try[demo Web Chat application]. It requires *zero* lines of backend code.
+
+==== The perfect MongoDB’s companion
+
+RESTHeart is the best API for MongoDB any compatible database (like link:https://www.ferretdb.io[FerretDB], AWS DocumentDB and Azure CosmosDB).
+
+- It exposes the full database’s capabilities via *REST*, *GraphQL* and *WebSocket* APIs.
+- Developers don’t need to write a single line of backend code to handle data with Mobile Apps, Web Apps or Integration Middleware.
+- The Instant Data API cuts development complexity and costs by up to 90%.
+
+++++
+<div class="col-md-8 col-12 mx-auto">
+    <img class="img-responsive" src="/images/mongodb-supported-features.png"/>
+    <p class="small text-muted text-center">MongoDB features supported by RESTHeart</p>
+</div>
+++++
+
+==== Extreme Performances
+
+*Hundreds of thousands TPS*
+
+RESTHeart parallel architecture provides superior performance.
+link:/docs/performances[Read More]
+
+*Horizontal scaling*
+
+RESTHeart is fully stateless and allows clustering, to reach demanding
+requirements.
+link:/docs/clustering[Read More]
+
+*Even faster on GraalVM*
+
+RESTHeart on GraalVM provides a
+native solution with instant startup time and a smaller memory footprint.
+This is perfect when deploying to Kubernetes clusters,
+where regular Java applications usually consume too many resources.
+
+==== Deploy at rest
+
+RESTHeart is tailored for the JVM, GraalVM, Docker or Kubernetes,
+designed to radically simplify microservices development and deployment.
+
+- Ready-to-run Runtime.
+- Available as a standalone JAR file, native binary or Docker image.
+- Deploy it on Cloud and On-Premises.
+
+==== Open-source and business-friendly licenses
+
+RESTHeart is dual-licensed under the AGPL and a *Business Friendly* Enterprise License.
+
+- Use the free AGPL distribution without feature restrictions.
+- Rely on the Enterprise License for production-grade support and to use RESTHeart in closed-source products or services link:https://restheart.com[Read More].

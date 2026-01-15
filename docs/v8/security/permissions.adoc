@@ -1,0 +1,987 @@
+---
+docs_version: 8
+title: Permission Management
+layout: docs-adoc
+menu: security
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+:page-liquid:
+
+=== Introduction
+
+This section provides comprehensive information about managing permissions in RESTHeart using the ACL (Access Control List) based authorization system.
+
+RESTHeart's pluggable security architecture supports different authorizers. This documentation focuses on **mongoAclAuthorizer** and **fileAclAuthorizer**, which share the same permission format:
+
+- **mongoAclAuthorizer**: Stores permissions as JSON documents in a MongoDB collection (default: `/acl`)
+- **fileAclAuthorizer**: Stores permissions in a YAML configuration file
+
+Both authorizers provide a powerful, declarative ACL-based model for fine-grained access control.
+
+TIP: For an overview of RESTHeart's security architecture, see link:/docs/security/overview[Security Overview] and link:/docs/security/authorization[Authorization].
+
+=== Permission Format
+
+A permission document defines who can access what resources under which conditions. The structure is the same whether stored in MongoDB (JSON) or in a configuration file (YAML).
+
+==== Permission Properties
+
+[options="header"]
+[cols="1,1,3"]
+|===
+|Property |Type |Description
+|**predicate**
+|string
+|A link:https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates[undertow predicate] that defines when the permission applies. If the predicate resolves to `true`, the request is authorized. See <<predicates>> for details.
+|**roles**
+|array of strings
+|The roles that this permission applies to. Use the special role `$unauthenticated` for requests without authentication.
+|**priority**
+|number
+|When multiple permissions match a request, higher priority permissions are evaluated first. Use this to create hierarchical permission rules.
+|**mongo**
+|object or null
+|Optional. For requests to MongoDB REST API, specifies additional MongoDB-specific permissions. See <<mongopermissions>> for details.
+|**_id**
+|string
+|(Optional but recommended) A unique identifier for the permission. Useful for updates and debugging.
+|**description**
+|string or array
+|(Optional) Human-readable description of what the permission does.
+|===
+
+==== Basic Permission Example (JSON)
+
+[source,json]
+----
+{
+  "_id": "userCanReadInventory",
+  "description": "Users can read the inventory collection",
+  "roles": ["user"],
+  "predicate": "path('/inventory') and method(GET)",
+  "priority": 100
+}
+----
+
+==== Basic Permission Example (YAML)
+
+[source,yml]
+----
+- _id: userCanReadInventory
+  description: Users can read the inventory collection
+  roles: [ user ]
+  predicate: path('/inventory') and method(GET)
+  priority: 100
+----
+
+[[predicates]]
+=== Understanding Predicates
+
+Predicates use the link:https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates[undertow predicate language] to define conditions that must be met for a permission to apply.
+
+==== Common Predicate Functions
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Function |Description |Example
+|`path()`
+|Matches exact path
+|`path('/inventory')`
+|`path-prefix()`
+|Matches path prefix
+|`path-prefix('/api')`
+|`path-template()`
+|Matches path with variables
+|`path-template('/{userid}/orders')`
+|`method()`
+|Matches HTTP method
+|`method(GET)` or `method(POST)`
+|`equals()`
+|Compares two values
+|`equals(@user._id, ${userid})`
+|`regex()`
+|Matches path with regex
+|`regex('/.*/orders')`
+|===
+
+==== Combining Predicates
+
+Use `and`, `or`, and `not` to create complex conditions:
+
+[source,text]
+----
+method(GET) and path-prefix('/api')
+(method(GET) or method(POST)) and path('/users')
+path-prefix('/admin') and not method(DELETE)
+----
+
+==== RESTHeart Custom Predicates
+
+RESTHeart extends the undertow predicate language with additional predicates specifically designed for API security:
+
+===== Query Parameter Predicates
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Predicate |Description |Example
+|`qparams-contain`
+|Request must include specified query parameters
+|`qparams-contain(page, pagesize)`
+|`qparams-blacklist`
+|Request must NOT include blacklisted parameters
+|`qparams-blacklist(filter, sort)`
+|`qparams-whitelist`
+|Request must only include whitelisted parameters
+|`qparams-whitelist(page, pagesize, limit)`
+|`qparams-size`
+|Request must have exactly N query parameters
+|`qparams-size(2)`
+|===
+
+===== Request Body Predicates (BSON/JSON)
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Predicate |Description |Example
+|`bson-request-contains`
+|Request body must contain specified properties
+|`bson-request-contains(name, email)`
+|`bson-request-whitelist`
+|Request body can only contain whitelisted properties
+|`bson-request-whitelist(title, status)`
+|`bson-request-blacklist`
+|Request body must NOT contain blacklisted properties
+|`bson-request-blacklist(password, secret)`
+|`bson-request-prop-equals`
+|Property in request must equal a value
+|`bson-request-prop-equals(key=status, value='"draft"')`
+|`bson-request-array-contains`
+|Array property must contain all specified values
+|`bson-request-array-contains(key=tags, values='"public"')`
+|`bson-request-array-is-subset`
+|Array property must be subset of allowed values
+|`bson-request-array-is-subset(key=roles, values={'user','admin'})`
+|===
+
+NOTE: When using BSON predicates with values, use valid JSON/BSON syntax: `"1"` for strings, `1` for numbers, `{"foo":"bar"}` for objects.
+
+===== Other Custom Predicates
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Predicate |Description |Example
+|`in`
+|Check if value is in array
+|`in(value=${tenant}, array=@user.tenants)`
+|===
+
+==== Using Variables in Predicates
+
+Predicates can reference dynamic values using special variables:
+
+[options="header"]
+[cols="2,3"]
+|===
+|Variable |Description
+|`@user`
+|Properties of authenticated user (e.g., `@user._id`, `@user.userid`, `@user.email`)
+|`@request`
+|Request properties (e.g., `@request.remoteIp`)
+|`@mongoPermissions`
+|Current MongoDB permissions object (e.g., `@mongoPermissions.writeFilter`)
+|`@now`
+|Current date and time
+|`@filter`
+|Value of the `filter` query parameter
+|`${variable}`
+|Path template variable (e.g., `${userid}` from path `/{userid}`)
+|===
+
+===== Example: User Can Only Access Their Own Data
+
+[source,json]
+----
+{
+  "_id": "userCanAccessOwnProfile",
+  "roles": ["user"],
+  "predicate": "path-template('/{userid}') and equals(@user._id, ${userid})",
+  "priority": 100
+}
+----
+
+This permission:
+- Matches paths like `/john123`, `/mary456`
+- Extracts the `{userid}` from the path
+- Only authorizes if `${userid}` equals the authenticated user's `_id`
+
+[[mongopermissions]]
+=== MongoDB-Specific Permissions
+
+For requests handled by RESTHeart's MongoDB REST API, you can specify additional fine-grained permissions using the `mongo` object.
+
+==== MongoPermissions Structure
+
+[source,json]
+----
+{
+  "mongo": {
+    "allowManagementRequests": false,
+    "allowBulkPatch": false,
+    "allowBulkDelete": false,
+    "allowWriteMode": false,
+    "readFilter": {"status": "public"},
+    "writeFilter": {"author": "@user._id"},
+    "mergeRequest": {"author": "@user._id", "createdAt": "@now"},
+    "projectResponse": {"password": 0, "secret": 0}
+  }
+}
+----
+
+==== MongoPermissions Properties
+
+[options="header"]
+[cols="2,4"]
+|===
+|Property |Description
+|`allowManagementRequests`
+|Allows database/collection management operations (create/delete databases, collections, indexes, etc.). Default: `false`
+|`allowBulkPatch`
+|Allows bulk PATCH operations (updating multiple documents). Default: `false`
+|`allowBulkDelete`
+|Allows bulk DELETE operations (deleting multiple documents). Default: `false`
+|`allowWriteMode`
+|Allows using the `?wm=insert\|update\|upsert` query parameter. Default: `false`
+|`readFilter`
+|Automatically adds filter conditions to all read operations
+|`writeFilter`
+|Limits write operations to documents matching the filter
+|`mergeRequest`
+|Automatically merges properties into write request bodies
+|`projectResponse`
+|Removes (or includes) specific fields from responses
+|===
+
+IMPORTANT: Even if `allowManagementRequests`, `allowBulkPatch`, `allowBulkDelete`, or `allowWriteMode` is set to `true`, the permission's `predicate` must also resolve to `true` for the request to be authorized.
+
+===== readFilter
+
+The `readFilter` adds a filter condition to all read operations (GET requests) authorized by this permission. This is useful for data partitioning by role.
+
+[source,json]
+----
+{
+  "roles": ["user"],
+  "predicate": "method(GET) and path-prefix('/posts')",
+  "mongo": {
+    "readFilter": {
+      "$or": [
+        {"status": "public"},
+        {"author": "@user._id"}
+      ]
+    }
+  }
+}
+----
+
+Users with the `user` role can only see posts that are either public OR authored by themselves.
+
+===== writeFilter
+
+The `writeFilter` limits write operations (PATCH, PUT, DELETE) to documents matching the specified condition.
+
+[source,json]
+----
+{
+  "roles": ["user"],
+  "predicate": "method(PATCH) and path-prefix('/posts')",
+  "mongo": {
+    "writeFilter": {"author": "@user._id"}
+  }
+}
+----
+
+WARNING: `writeFilter` only restricts updates to existing documents. It cannot prevent creating documents that don't match the filter. Use `mergeRequest` to enforce properties on creation.
+
+===== mergeRequest
+
+The `mergeRequest` automatically merges specified properties into the request body. This ensures certain fields are set server-side and cannot be overridden by clients.
+
+[source,json]
+----
+{
+  "roles": ["user"],
+  "predicate": "method(POST) and path('/posts')",
+  "mongo": {
+    "mergeRequest": {
+      "author": "@user._id",
+      "status": "draft",
+      "createdAt": "@now"
+    }
+  }
+}
+----
+
+When a user creates a post, these properties are automatically added:
+- `author` is set to the user's ID
+- `status` is set to "draft"
+- `createdAt` is set to the current timestamp
+
+TIP: Use `mergeRequest` together with `writeFilter` to ensure data integrity. Set required fields on creation, then restrict updates using the filter.
+
+===== projectResponse
+
+The `projectResponse` removes (or includes) specific fields from API responses. This is useful for hiding sensitive data.
+
+**Negative projection** (hide specific fields):
+[source,json]
+----
+{
+  "roles": ["user"],
+  "predicate": "path-prefix('/users')",
+  "mongo": {
+    "projectResponse": {"password": 0, "secret": 0, "internal.data": 0}
+  }
+}
+----
+
+**Positive projection** (only show specific fields):
+[source,json]
+----
+{
+  "roles": ["public"],
+  "predicate": "path-prefix('/users')",
+  "mongo": {
+    "projectResponse": {"name": 1, "email": 1, "avatar": 1}
+  }
+}
+----
+
+NOTE: You can use dot notation to hide nested properties: `"internal.secret": 0`
+
+=== Permission Priority
+
+When multiple permissions match a request, RESTHeart evaluates them in order of priority (higher numbers first).
+
+[source,json]
+----
+[
+  {
+    "_id": "adminFullAccess",
+    "roles": ["admin"],
+    "predicate": "path-prefix('/')",
+    "priority": 0,
+    "mongo": {
+      "allowManagementRequests": true,
+      "allowBulkPatch": true,
+      "allowBulkDelete": true,
+      "allowWriteMode": true
+    }
+  },
+  {
+    "_id": "userLimitedAccess",
+    "roles": ["user"],
+    "predicate": "path-prefix('/')",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"author": "@user._id"}
+    }
+  }
+]
+----
+
+In this example:
+- `userLimitedAccess` (priority 100) is evaluated before `adminFullAccess` (priority 0)
+- If a user has both roles, the higher priority permission applies first
+
+TIP: Use priority to create exception rules. For example, give high priority to specific restrictions and low priority to general access rules.
+
+=== Complete Permission Examples
+
+==== Example 1: User Can Read Own Documents
+
+[source,json]
+----
+{
+  "_id": "userCanGetOwnCollection",
+  "description": "Users can read their own collection with pagination",
+  "roles": ["user"],
+  "predicate": "method(GET) and path-template('/{userid}') and equals(@user._id, ${userid}) and qparams-contain(page) and qparams-blacklist(filter, sort)",
+  "priority": 100,
+  "mongo": {
+    "readFilter": {
+      "$or": [
+        {"status": "public"},
+        {"author": "@user._id"}
+      ]
+    },
+    "projectResponse": {"log": 0}
+  }
+}
+----
+
+This permission:
+- Allows users to GET their own collection (e.g., `/john123`)
+- Requires the `page` query parameter
+- Blocks `filter` and `sort` query parameters
+- Only returns documents that are public OR authored by the user
+- Hides the `log` field from responses
+
+==== Example 2: User Can Create Documents in Own Collection
+
+[source,json]
+----
+{
+  "_id": "userCanCreateDocumentsInOwnCollection",
+  "description": "Users can create documents in their collection",
+  "roles": ["user"],
+  "predicate": "method(POST) and path-template('/{userid}') and equals(@user._id, ${userid})",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": {
+      "author": "@user._id",
+      "status": "draft",
+      "createdAt": "@now"
+    }
+  }
+}
+----
+
+This permission:
+- Allows users to POST to their own collection
+- Automatically sets `author`, `status`, and `createdAt` fields
+- Prevents users from setting these fields to arbitrary values
+
+==== Example 3: User Can Update Own Documents
+
+[source,json]
+----
+{
+  "_id": "userCanUpdateOwnDocuments",
+  "description": "Users can update their own documents",
+  "roles": ["user"],
+  "predicate": "method(PATCH) and path-template('/{userid}/*') and equals(@user._id, ${userid})",
+  "priority": 100,
+  "mongo": {
+    "writeFilter": {"author": "@user._id"},
+    "mergeRequest": {
+      "modifiedAt": "@now",
+      "modifiedBy": "@user._id"
+    }
+  }
+}
+----
+
+This permission:
+- Allows users to PATCH documents in their collection
+- Only allows updating documents where `author` matches the user's ID
+- Automatically sets `modifiedAt` and `modifiedBy` on updates
+
+==== Example 4: Admin Full Access
+
+[source,json]
+----
+{
+  "_id": "adminCanDoEverything",
+  "description": ["Admin role can do everything"],
+  "roles": ["admin"],
+  "predicate": "path-prefix('/')",
+  "priority": 0,
+  "mongo": {
+    "allowManagementRequests": true,
+    "allowBulkPatch": true,
+    "allowBulkDelete": true,
+    "allowWriteMode": true
+  }
+}
+----
+
+==== Example 5: Public Read-Only Access
+
+[source,json]
+----
+{
+  "_id": "publicCanReadProducts",
+  "description": "Unauthenticated users can read public products",
+  "roles": ["$unauthenticated"],
+  "predicate": "method(GET) and path('/products')",
+  "priority": 100,
+  "mongo": {
+    "readFilter": {"published": true, "visibility": "public"},
+    "projectResponse": {"internalNotes": 0, "cost": 0}
+  }
+}
+----
+
+==== Example 6: JWT-based Multi-tenant Access
+
+[source,yml]
+----
+- _id: jwtTenantAccess
+  roles: [ jwt-user ]
+  predicate: >
+    path-template('/{tenant}/data')
+    and in(value=${tenant}, array=@user.tenants)
+  priority: 100
+  mongo:
+    readFilter: >
+      {"tenantId": "${tenant}"}
+    mergeRequest: >
+      {"tenantId": "${tenant}", "userId": "@user.sub"}
+----
+
+This permission (YAML format):
+- Extracts `{tenant}` from path like `/acme/data`
+- Checks if user's JWT contains `tenant` in their `tenants` array
+- Filters data by `tenantId`
+- Automatically adds `tenantId` and `userId` to write requests
+
+=== Managing Permissions
+
+==== With mongoAclAuthorizer (MongoDB Storage)
+
+===== List All Permissions
+
+====== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+====== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+====== JavaScript
+[source,javascript]
+----
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/acl', {
+  method: 'GET',
+  headers: { 'Authorization': `Basic ${credentials}` }
+})
+.then(response => response.json())
+.then(data => console.log('Permissions:', data));
+----
+
+===== Create a Permission
+
+====== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/acl \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "_id": "userCanReadInventory",
+    "roles": ["user"],
+    "predicate": "method(GET) and path-prefix(\"/inventory\")",
+    "priority": 100
+  }'
+----
+
+====== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/acl \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  _id="userCanReadInventory" \
+  roles:='["user"]' \
+  predicate="method(GET) and path-prefix(\"/inventory\")" \
+  priority:=100
+----
+
+====== JavaScript
+[source,javascript]
+----
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/acl', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Basic ${credentials}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "_id": "userCanReadInventory",
+    "roles": ["user"],
+    "predicate": "method(GET) and path-prefix(\"/inventory\")",
+    "priority": 100
+  })
+})
+.then(response => {
+  if (response.ok) console.log('Permission created');
+});
+----
+
+===== Update a Permission
+
+====== cURL
+[source,bash]
+----
+curl -i -X PATCH [RESTHEART-URL]/acl/userCanReadInventory \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "priority": 200
+  }'
+----
+
+====== HTTPie
+[source,bash]
+----
+http PATCH [RESTHEART-URL]/acl/userCanReadInventory \
+  Authorization:"Basic [BASIC-AUTH]" \
+  Content-Type:application/json \
+  priority:=200
+----
+
+===== Delete a Permission
+
+====== cURL
+[source,bash]
+----
+curl -i -X DELETE [RESTHEART-URL]/acl/userCanReadInventory \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+====== HTTPie
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/acl/userCanReadInventory \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== With fileAclAuthorizer (Configuration File)
+
+You can configure ACL permissions in two ways with fileAclAuthorizer:
+
+===== Option 1: Inline Permissions (in main configuration file)
+
+Define permissions directly in your main RESTHeart configuration file:
+
+[source,yml]
+----
+fileAclAuthorizer:
+  permissions:
+    - _id: adminFullAccess
+      roles: [ admin ]
+      predicate: path-prefix('/')
+      priority: 0
+      mongo:
+        allowManagementRequests: true
+        allowBulkPatch: true
+        allowBulkDelete: true
+
+    - _id: userCanReadInventory
+      roles: [ user ]
+      predicate: method(GET) and path-prefix('/inventory')
+      priority: 100
+
+    - _id: userCanCreateOwnData
+      roles: [ user ]
+      predicate: >
+        method(POST)
+        and path-template('/{userid}')
+        and equals(@user._id, ${userid})
+      priority: 100
+      mongo:
+        mergeRequest: >
+          {"author": "@user._id", "createdAt": "@now"}
+----
+
+===== Option 2: Separate ACL Configuration File
+
+Define permissions in a separate configuration file:
+
+[source,yml]
+----
+fileAclAuthorizer:
+  conf-file: ./acl.yml
+----
+
+Then create `acl.yml`:
+
+[source,yml]
+----
+- _id: adminFullAccess
+  roles: [ admin ]
+  predicate: path-prefix('/')
+  priority: 0
+  mongo:
+    allowManagementRequests: true
+    allowBulkPatch: true
+    allowBulkDelete: true
+
+- _id: userCanReadInventory
+  roles: [ user ]
+  predicate: method(GET) and path-prefix('/inventory')
+  priority: 100
+
+- _id: userCanCreateOwnData
+  roles: [ user ]
+  predicate: >
+    method(POST)
+    and path-template('/{userid}')
+    and equals(@user._id, ${userid})
+  priority: 100
+  mongo:
+    mergeRequest: >
+      {"author": "@user._id", "createdAt": "@now"}
+----
+
+After editing the configuration, restart RESTHeart to apply changes.
+
+=== Configuration
+
+==== mongoAclAuthorizer Configuration
+
+[source,yml]
+----
+mongoAclAuthorizer:
+  acl-db: restheart
+  acl-collection: acl
+  # Users with root-role bypass all ACL checks
+  root-role: admin
+  cache-enabled: true
+  cache-size: 1000
+  cache-ttl: 5000
+  cache-expire-policy: AFTER_WRITE
+----
+
+==== fileAclAuthorizer Configuration
+
+[source,yml]
+----
+fileAclAuthorizer:
+  # Path to ACL configuration file (absolute or relative to restheart config)
+  conf-file: ./acl.yml
+  # Or define permissions inline:
+  permissions:
+    - role: admin
+      predicate: path-prefix('/')
+      priority: 0
+----
+
+=== Best Practices
+
+==== 1. Use Descriptive IDs and Descriptions
+
+[source,json]
+----
+{
+  "_id": "userCanReadOwnPosts",
+  "description": "Users with 'user' role can read posts they authored or public posts",
+  ...
+}
+----
+
+==== 2. Leverage Priority for Exception Handling
+
+Use high priority for specific rules, low priority for general rules:
+
+[source,json]
+----
+[
+  {
+    "_id": "blockSensitiveEndpoint",
+    "roles": ["user"],
+    "predicate": "path('/admin/secrets')",
+    "priority": 1000,
+    "mongo": null
+  },
+  {
+    "_id": "allowGeneralAccess",
+    "roles": ["user"],
+    "predicate": "path-prefix('/admin')",
+    "priority": 100
+  }
+]
+----
+
+==== 3. Combine writeFilter and mergeRequest
+
+Always use both together to ensure data integrity:
+
+[source,json]
+----
+{
+  "mongo": {
+    "writeFilter": {"author": "@user._id"},
+    "mergeRequest": {"author": "@user._id"}
+  }
+}
+----
+
+==== 4. Test Permissions Thoroughly
+
+Start with restrictive permissions and gradually add more access. Test with different user roles and edge cases.
+
+==== 5. Use projectResponse to Hide Sensitive Data
+
+[source,json]
+----
+{
+  "mongo": {
+    "projectResponse": {
+      "password": 0,
+      "ssn": 0,
+      "creditCard": 0
+    }
+  }
+}
+----
+
+==== 6. Whitelist Instead of Blacklist When Possible
+
+Prefer `bson-request-whitelist` and `qparams-whitelist` over blacklists for better security:
+
+[source,text]
+----
+bson-request-whitelist(name, email, age)  // Only these fields allowed
+----
+
+==== 7. Use Path Templates for User-Scoped Resources
+
+[source,text]
+----
+path-template('/{userid}/documents') and equals(@user._id, ${userid})
+----
+
+==== 8. Document Your Permission Strategy
+
+Maintain a clear permission hierarchy and document the roles and their intended access levels.
+
+=== Common Patterns
+
+==== Pattern 1: User-Owned Resources
+
+[source,json]
+----
+{
+  "_id": "userCRUDOwnResources",
+  "roles": ["user"],
+  "predicate": "path-template('/{userid}/*') and equals(@user._id, ${userid})",
+  "priority": 100,
+  "mongo": {
+    "writeFilter": {"author": "@user._id"},
+    "readFilter": {"author": "@user._id"},
+    "mergeRequest": {"author": "@user._id"}
+  }
+}
+----
+
+==== Pattern 2: Public Read, Authenticated Write
+
+[source,json]
+----
+[
+  {
+    "_id": "publicCanRead",
+    "roles": ["$unauthenticated"],
+    "predicate": "method(GET) and path-prefix('/posts')",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"status": "published"}
+    }
+  },
+  {
+    "_id": "userCanWrite",
+    "roles": ["user"],
+    "predicate": "(method(POST) or method(PATCH)) and path-prefix('/posts')",
+    "priority": 100,
+    "mongo": {
+      "mergeRequest": {"author": "@user._id"}
+    }
+  }
+]
+----
+
+==== Pattern 3: Multi-Tenant with JWT
+
+[source,yml]
+----
+- _id: tenantDataAccess
+  roles: [ tenant-user ]
+  predicate: >
+    path-template('/{tenantId}/data')
+    and in(value=${tenantId}, array=@user.tenants)
+  priority: 100
+  mongo:
+    readFilter: >
+      {"tenantId": "${tenantId}"}
+    writeFilter: >
+      {"tenantId": "${tenantId}"}
+    mergeRequest: >
+      {"tenantId": "${tenantId}"}
+----
+
+==== Pattern 4: Time-Based Access
+
+[source,json]
+----
+{
+  "_id": "timeLimitedAccess",
+  "roles": ["premium"],
+  "predicate": "path-prefix('/premium-content')",
+  "priority": 100,
+  "mongo": {
+    "readFilter": {
+      "$or": [
+        {"expiresAt": {"$gt": "@now"}},
+        {"expiresAt": {"$exists": false}}
+      ]
+    }
+  }
+}
+----
+
+=== Troubleshooting
+
+==== Permission Not Applied
+
+1. Check if the `predicate` matches your request
+2. Verify the user has the specified `roles`
+3. Check if a higher priority permission is overriding it
+4. Ensure the collection/file is correctly configured in the authorizer settings
+
+==== writeFilter Not Preventing Creation
+
+`writeFilter` only restricts updates to existing documents. Use `mergeRequest` to enforce fields on creation and `bson-request-whitelist` to limit allowed fields.
+
+==== Variables Not Resolving
+
+Ensure you're using the correct syntax:
+- `@user._id` for user properties
+- `${variable}` for path template variables
+- Quotes around strings: `value='"draft"'`
+
+=== Additional Resources
+
+- link:/docs/security/authorization[Authorization Overview]
+- link:/docs/security/user-management[User Management]
+- link:/docs/security/authentication[Authentication]
+- link:https://undertow.io/undertow-docs/undertow-docs-2.1.0/index.html#textual-representation-of-predicates[Undertow Predicate Language]
+- link:https://github.com/SoftInstigate/restheart/blob/master/examples/example-conf-files/acl.json[Complete ACL Examples (JSON)]
+- link:https://github.com/SoftInstigate/restheart/blob/master/examples/example-conf-files/acl.yml[Complete ACL Examples (YAML)]
+
+TIP: Watch link:https://www.youtube.com/watch?v=QVk0aboHayM&t=1553s[Authorization via file and MongoDB] for a video tutorial on permissions.

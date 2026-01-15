@@ -1,0 +1,792 @@
+---
+docs_version: 9
+title: Representation Format
+menu: mongodb
+layout: docs-adoc
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+The following table shows how RESTHeart represents different resources:
+
+[%header,cols="1,1,1"]
+|===
+|resource|represented as|example
+|root `/`|paginated array of existing db names|`["db1", "db2"]`
+|db `/<db-name>`|paginated array of collection/buckets names that exist in the db|`["collection1", "file.bucket"]`
+|collection `<db-name>/<collection-name>`|paginated array of documents of the collection|`[ {"_id": "doc1, "foo": "bar" }, {"_id": "doc2, "foo": "bar" } ]`
+|document|JSON object|`{"_id": "doc1, "foo": "bar" }`
+|===
+
+=== BSON types
+
+MongoDB uses the https://en.wikipedia.org/wiki/BSON[BSON] data format. BSON's type system is a superset of JSON's. To preserve type information, MongoDB extends JSON with additional type representations.
+
+For example, the `_id` in the following JSON document is an ObjectId:
+
+[source,json]
+----
+{
+  "_id": {
+    "$oid": "5d0b4e325beb2029a8d1bd5e"
+  },
+  "item": "paper"
+  ...
+}
+----
+
+[NOTE]
+====
+The strict mode is used on both request and response resource representation and also on the query parameter `filter`
+====
+
+The following `filter` won't find the document because the `_id` is an ObjectId, not a String:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -G --data-urlencode "filter={'_id':'5d0b4e325beb2029a8d1bd5e'}"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+     "filter=={'_id':'5d0b4e325beb2029a8d1bd5e'}" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?filter={\'_id\':\'5d0b4e325beb2029a8d1bd5e\'}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+Here's the correct request:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory" \
+     -H "Authorization: Basic [BASIC-AUTH]" \
+     -G --data-urlencode "filter={'_id':{'$oid':'5d0b4e325beb2029a8d1bd5e'}}"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+     "filter=={'_id':{'\$oid':'5d0b4e325beb2029a8d1bd5e'}}" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?filter={\'_id\':{\'$oid\':\'5d0b4e325beb2029a8d1bd5e\'}}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved documents:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== JSON Mode
+
+JSON can only directly represent a subset of the types supported by BSON. To preserve type information, RESTHeart adds the following extensions to the JSON format.
+
+The query parameter `jsonMode` allows to specify the JSON Mode
+
+[%header,cols="1,1"]
+|===
+|jsonMode|Description
+|none|Standard RESTHeart representation
+|STRICT|JSON representation with type information for specific cases
+|EXTENDED|Extended JSON representation with full type information
+|RELAXED|Standard relaxed extended JSON representation
+|SHELL|This output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results
+|===
+
+==== Standard RESTHeart representation
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+----
+
+==== Strict representation
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==strict" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=strict', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (strict mode):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": 1568295769260
+    }
+}
+----
+
+==== Extended representation
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==extended" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=extended', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (extended mode):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a4f10af0e1b77a7731d05"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": {
+        "$numberInt": "1"
+    },
+    "b": {
+        "$numberDouble": "1.0"
+    },
+    "big": {
+        "$numberLong": "1568295769260"
+    },
+    "timestamp": {
+        "$date": {
+            "$numberLong": "1568295769260"
+        }
+    }
+}
+----
+
+==== Relaxed representation
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==relaxed" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=relaxed', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document (relaxed mode):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+{
+    "_etag": {
+        "$oid": "5d7a6c61bd8a0d69516bbf55"
+    },
+    "_id": {
+        "$oid": "5d7a4b59cf6eeb5fb1686613"
+    },
+    "a": 1,
+    "b": 1.0,
+    "big": 1568295769260,
+    "timestamp": {
+        "$date": "2019-09-12T13:42:49.26Z"
+    }
+}
+----
+
+==== Shell representation
+
+[TIP]
+====
+SHELL JSON Mode is very useful since it *allows to use the response body directly in the mongoshell!*
+====
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613" \
+     "jsonMode==shell" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/coll/5d7a4b59cf6eeb5fb1686613?jsonMode=shell', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.text())
+.then(data => {
+  console.log('Retrieved document (shell mode):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+Content-Type: application/javascript
+
+{"_id":ObjectId("5d7a4b59cf6eeb5fb1686613"),"_etag":ObjectId("5d7a6d13bd8a0d69516bbf56"),"timestamp":ISODate("2019-09-12T13:42:49.260Z"),"a":1,"b":1.0,"big":NumberLong("1568295769260"),"verybig":NumberLong("5887391606")}
+----
+
+=== Other representation formats
+
+RESTHeart has different options for representing the resources: `STANDARD`, `HAL` and `SHAL` (Simplified HAL).
+
+[WARNING]
+====
+`HAL` and `SHAL` are deprecated in version 6.0 and will likely be removed in a future release.
+====
+
+The default representation can be controlled by the configuration option `default-representation-format`.
+
+[source,properties]
+----
+default-representation-format: STANDARD
+----
+
+The `rep` query parameter can also be used for switching between representations.
+
+==== cURL
+[source,bash]
+----
+# Standard representation
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=s" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+
+# HAL representation
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=hal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+
+# SHAL representation
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=shal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+# Standard representation
+http GET "[RESTHEART-URL]/inventory" \
+     "rep==s" \
+     "Authorization:Basic [BASIC-AUTH]"
+
+# HAL representation
+http GET "[RESTHEART-URL]/inventory" \
+     "rep==hal" \
+     "Authorization:Basic [BASIC-AUTH]"
+
+# SHAL representation
+http GET "[RESTHEART-URL]/inventory" \
+     "rep==shal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+// Standard representation
+fetch('[RESTHEART-URL]/inventory?rep=s', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (standard):', data);
+})
+.catch(error => console.error('Error:', error));
+
+// HAL representation
+fetch('[RESTHEART-URL]/inventory?rep=hal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (HAL):', data);
+})
+.catch(error => console.error('Error:', error));
+
+// SHAL representation
+fetch('[RESTHEART-URL]/inventory?rep=shal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (SHAL):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== HAL
+
+https://stateless.co/hal_specification.html[HAL] is based on 2 simple concepts: **Resources** and **Links**
+
+- **Resources** have state (plain JSON), embedded resources and links
+- **Links** have target (href URI) and relations (aka rel)
+
+==== Example
+
+We'll get the `inventory` collection resource and analyze it.
+A collection represented with `HAL` has its own _properties_, *embedded resources* (in this case, documents) and _link templates_ (for pagination, sorting, etc).
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=hal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+     "rep==hal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?rep=hal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (HAL example):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Location, ETag, X-Powered-By
+Connection: keep-alive
+Content-Encoding: gzip
+Content-Length: 384
+Content-Type: application/hal+json
+Date: Mon, 08 Jul 2019 12:56:14 GMT
+ETag: 5d233840dd860b259a3bad45
+X-Powered-By: restheart.org
+
+{
+   "_id":"inventory",
+   "_etag":{
+      "$oid":"5d233840dd860b259a3bad45"
+   },
+   "metadata_field": "metadata_value",
+   "_returned": 6,
+   "_embedded":{
+      "rh:doc":[
+         {
+            "_id":{
+               "$oid":"5d233aeb93dc53162739e172"
+            },
+            "_etag":{
+               "$oid":"5d233aeb93dc53162739e16d"
+            },
+            "item":"postcard",
+            "qty":45,
+            "size":{
+               "h":10,
+               "w":15.25,
+               "uom":"cm"
+            },
+            "status":"A"
+         },
+        ...
+      ]
+   }
+}
+----
+
+==== Properties
+
+In this case, the collection properties comprise the field *metadata_field*; this
+is user defined.
+
+The other fields are reserved properties (i.e. are managed automatically
+by RESTHeart for you); these always starts with \_:
+
+[%header,cols="1,1"]
+|===
+| Property | Description
+| `_type` | the type of this resource. in this case 'COLLECTION' (only returned on HAL full mode)
+| `_id` | the name of the collection
+| `_etag` | entity tag, used for caching and to avoid ghost writes.
+| `_returned` | the number of the documents embedded in this representation
+|===
+
+==== Documents as embedded resources
+
+Collection's embedded resources are the collection documents,
+recursively represented as HAL documents.
+
+The `_embedded` property looks like:
+
+[source,json]
+----
+{
+    "_embedded": {
+        "rh:doc": [
+            {
+                "_id": {
+                    "$oid": "5d233aeb93dc53162739e172"
+                },
+                "_etag": {
+                    "$oid": "5d233aeb93dc53162739e16d"
+                },
+                "item": "postcard",
+                "qty": 45,
+                "size": {
+                    "h": 10,
+                    "w": 15.25,
+                    "uom": "cm"
+                },
+                "status": "A"
+            },
+            {
+                "_id": {
+                    "$oid": "5d233aeb93dc53162739e171"
+                },
+                "_etag": {
+                    "$oid": "5d233aeb93dc53162739e16d"
+                },
+                "item": "planner",
+                "qty": 75,
+                "size": {
+                    "h": 22.85,
+                    "w": 30,
+                    "uom": "cm"
+                },
+                "status": "D"
+            }
+        ]
+    }
+}
+----
+
+==== Links
+
+[NOTE]
+====
+`_links` are only returned on *hal full mode*. The only exception are with relationships. If a collection defines a relationship, the representation of the documents always include the links to related data.
+====
+
+[%header,cols="1,1"]
+|===
+| Link | Description
+| `self` | link to itself
+| `first` | link to the first page
+| `last` | link to the last page
+| `rh:db` | templated link for db
+| `rh:coll` | templated link for collection
+| `rh:document` | templated link for document
+| `rh:filter` | templated link for filtering
+| `rh:sort` | templated link for sorting
+| `rh:indexes` | link to the collection indexes resource
+| `rh:paging` | templated link for paging
+| `curies` | (compacts URIes) bind links to documentation
+|===
+
+The `_links` property looks like:
+
+[source,json]
+----
+{ "_links": {
+  "self": {
+    "href": "/inventory?hal=f"
+  },
+  "first": {
+    "href": "/inventory?pagesize=100&hal=f"
+  },
+  "next": {
+    "href": "/inventory?page=2&pagesize=100&hal=f"
+  },
+  "rh:coll": {
+    "href": "//{collname}",
+    "templated": true
+  },
+  "rh:document": {
+    "href": "/inventory/{docid}{?id_type}",
+    "templated": true
+  },
+  "rh:indexes": {
+    "href": "/inventory/_indexes"
+  },
+  "rh:filter": {
+    "href": "/inventory{?filter}",
+    "templated": true
+  },
+  "rh:sort": {
+    "href": "/inventory{?sort_by}",
+    "templated": true
+  },
+  "rh:paging": {
+    "href": "/inventory{?page}{&pagesize}",
+    "templated": true
+  }
+}
+----
+
+==== HAL Mode
+
+The query parameter `hal` controls the verbosity of HAL representation.
+Valid values are `hal=c` (for compact) and `hal=f` (for full); the default value
+(if the param is omitted) is compact mode.
+
+When `hal=f` is specified, the representation is more verbose and includes special properties (such as links).
+
+=== Simplified HAL
+
+In the following response the collection /inventory has the properties `_id`, `_etag`, `metadata_field` and two embedded documents and the special property `_returned`
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?rep=shal" \
+     -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/inventory" \
+     "rep==shal" \
+     "Authorization:Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/inventory?rep=shal', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved inventory (SHAL example):', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+
+...
+
+{
+  "_embedded": [
+    {
+      "_id": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b7"
+      },
+      "_etag": {
+        "$oid": "5d0b4dff2ec9ff0d92ddc2b2"
+      },
+      "item": "postcard",
+      "qty": 45,
+      "size": {
+        "h": 10,
+        "w": 15.25,
+        "uom": "cm"
+      },
+      "status": "A"
+    }
+  ],
+  "_id": "inventory",
+  "_etag": {
+    "$oid": "5d1e13dbdde87c62e98a4595"
+  },
+  "metadata_field": "metadata_value",
+  "_returned": 6
+}
+----

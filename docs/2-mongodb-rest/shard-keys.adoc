@@ -1,0 +1,206 @@
+---
+docs_version: 9
+title: Working with Shard Keys
+layout: docs-adoc
+menu: mongodb
+liquid: true
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+In a MongoDB sharded cluster, data is distributed across multiple servers (shards) to support horizontal scaling. The *shard key* is the field (or fields) that determines how MongoDB distributes the documents of a collection across these shards.
+
+[.alert.alert-info]
+****
+The shard key determines how MongoDB partitions data across a cluster and directly impacts performance, scalability, and query efficiency.
+****
+
+=== Accessing Documents in Sharded Collections
+
+When working with sharded collections via RESTHeart, you need to be aware of how the shard key affects document retrieval.
+
+==== When to Specify the Shard Key
+
+When a sharded collection uses:
+
+* A shard key that is different from the `_id` field
+* A compound shard key (consisting of multiple fields)
+
+You *must* include the `shardkey` query parameter in your requests to retrieve individual documents.
+
+==== How to Specify the Shard Key
+
+Add the `shardkey` query parameter to your request, providing a JSON document containing the shard key fields:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
+  -G --data-urlencode 'shardkey={"fieldName":value}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/db/collection/documentId?shardkey={\"fieldName\":value}" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/db/collection/documentId?shardkey={"fieldName":value}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+For compound shard keys, include all fields that make up the key:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/db/collection/documentId" \
+  -G --data-urlencode 'shardkey={"field1":value1,"field2":value2}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/db/collection/documentId?shardkey={\"field1\":value1,\"field2\":value2}" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/db/collection/documentId?shardkey={"field1":value1,"field2":value2}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved document:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Examples
+
+==== Example 1: Simple Shard Key
+
+If a collection is sharded on field `region`:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
+  -G --data-urlencode 'shardkey={"region":"EU"}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\"}" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU"}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved customer:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+==== Example 2: Compound Shard Key
+
+If a collection is sharded on fields `region` and `type`:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa" \
+  -G --data-urlencode 'shardkey={"region":"EU","type":"premium"}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={\"region\":\"EU\",\"type\":\"premium\"}" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/db/customers/5ac9f95563445900062144aa?shardkey={"region":"EU","type":"premium"}', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved customer:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+=== Common Issues
+
+==== Missing Shard Key
+
+If you don't provide the shard key when required, MongoDB might return an error or be unable to locate the document efficiently.
+
+[source,http]
+----
+HTTP/1.1 404 Not Found
+----
+
+==== Incorrect Shard Key Values
+
+Providing incorrect values for the shard key will likely result in document not being found:
+
+[source,http]
+----
+HTTP/1.1 404 Not Found
+----
+
+=== Best Practices
+
+. *Understand your shard key* - Know which fields are used as shard keys in your collections
+. *Include all fields* for compound shard keys
+. *Consider including the shard key in all write operations* to improve performance
+. *Choose appropriate shard keys* when designing your database for optimal data distribution
+
+=== Related Topics
+
+* link:https://docs.mongodb.com/manual/core/sharding-shard-key/[MongoDB Shard Key Documentation]
+* link:/docs/mongodb-rest/write-docs[Write Documents] - For information on using shard keys in write operations
