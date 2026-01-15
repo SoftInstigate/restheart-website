@@ -6,32 +6,66 @@ menu: setup
 applies_to: restheart
 ---
 
-=== Opentracing / zipkin headers support
+=== Distributed Tracing Headers Support
 
-This implements issue link:https://github.com/SoftInstigate/restheart/issues/287[#287]
+RESTHeart supports distributed tracing integration with systems like Zipkin, Jaeger, and other OpenTelemetry-compatible platforms. This feature automatically captures and displays configured tracing headers in request logs, making it easy to correlate requests across distributed systems.
 
-It's a very slim implementation that fits most use-cases. Incoming headers are copied to the response. If there are no headers set, we'll generate some and send them back. The `X-B3-TraceId` will be written to the logs (by default inside of the [%thread] marks).
+This implements issues link:https://github.com/SoftInstigate/restheart/issues/287[#287] and link:https://github.com/SoftInstigate/restheart/issues/587[#587].
 
-This implementation makes it possible to correlate logged exceptions (in case this happens) with the corresponding request log, even when the thread handling the message is re-used shortly after.
+==== How It Works
 
-It handles all headers mentioned in link:https://github.com/openzipkin/b3-propagation[b3-propagation], as well as the uber-trace-id header that is used by Jaeger (see link:https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity[trace-span-identity] to get broader support.
+RESTHeart automatically:
+
+* Captures incoming tracing headers from HTTP requests
+* Displays them in the request logs for easy correlation
+* Echoes all captured headers back in HTTP responses
+* Generates fallback trace IDs when no headers are present
+* Makes headers available in SLF4J MDC for custom logging configurations
+
+This implementation makes it possible to correlate logged exceptions with the corresponding request log, even when the thread handling the message is re-used shortly after. It handles all headers mentioned in link:https://github.com/openzipkin/b3-propagation[b3-propagation], as well as headers used by Jaeger and OpenTelemetry.
 
 ==== Configuration
 
-`/mongo/metrics-gathering-level`: metrics gathering for which level? OFF => no gathering, ROOT => gathering at root level, DATABASE => at db level, COLLECTION => at collection level
-WARNING: use requests-log-level level 2 only for development purposes, it logs user credentials (Authorization and Auth-Token headers).
-
-Example `restheart.yml` fragment:
+To enable tracing headers in your logs, configure the `tracing-headers` option in `restheart.yml`:
 
 [source,yml]
 ----
 logging:
-    requests-log-trace-headers:
-    #  - x-b3-traceid      # vv Zipkin headers, see https://github.com/openzipkin/b3-propagation
-    #  - x-b3-spanid
-    #  - x-b3-parentspanid
-    #  - x-b3-sampled      # ^^
-    #  - uber-trace-id     # jaeger header, see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity
-    #  - traceparent       # vv opencensus.io headers, see https://github.com/w3c/distributed-tracing/blob/master/trace_context/HTTP_HEADER_FORMAT.md
-    #  - tracestate        # ^^
+  tracing-headers:
+    - x-b3-traceid      # Zipkin headers, see https://github.com/openzipkin/b3-propagation
+    - x-b3-spanid
+    - x-b3-parentspanid
+    - x-b3-sampled
+    - uber-trace-id     # Jaeger header, see https://www.jaegertracing.io/docs/client-libraries/#trace-span-identity
+    - traceparent       # OpenCensus/W3C headers, see https://github.com/w3c/distributed-tracing
+    - tracestate
+    - x-request-id      # Custom request ID header
 ----
+
+NOTE: The first configured header found in an incoming request becomes the primary trace ID displayed in logs.
+
+==== Log Output Examples
+
+When tracing headers are present in requests:
+
+[source,text]
+----
+[x-b3-traceid: 7f8a3d2c, x-request-id: abc123] ⚬ GET http://localhost:8080/ping => status=200 elapsed=56ms
+----
+
+When no headers are present (fallback behavior):
+
+[source,text]
+----
+[trace-id: 0001] ⚬ GET http://localhost:8080/ping => status=200 elapsed=56ms
+----
+
+==== Performance
+
+The implementation is optimized for production use with:
+
+* Cached HttpString instances for efficient header lookups
+* Fast paths for requests without tracing headers
+* Minimal memory allocation patterns
+
+WARNING: For development purposes only, use `requests-log-level: 2` cautiously as it logs sensitive information including Authorization and Auth-Token headers.
