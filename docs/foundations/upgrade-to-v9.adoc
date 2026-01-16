@@ -669,34 +669,87 @@ permissions:
 
 ==== Breaking Changes
 
-1. **Map-Reduce Pipelines Removed**
+1. **JWT Configuration Restructuring**
+   - **JWT Now Default**: JWT authentication is now enabled by default (previously RND tokens were default)
+   - **Centralized Configuration**: New `jwtConfigProvider` component consolidates JWT settings (key, algorithm, issuer, audience) into a single source of truth, eliminating duplication across `jwtAuthenticationMechanism` and `jwtTokenManager`
+   - **Secure Key Generation**: JWT key defaults changed from `"secret"` to `null`, enabling automatic secure random key generation
+   - **Cookie Handling Enabled**: `authCookieHandler` and `authCookieSetter` are now enabled by default
+   - **Cookie TTL Unit Change**: Cookie TTL configuration unit changed from seconds (`expires-ttl`) to minutes
+   - **Token Endpoint Change**: Token service URI changed from `/tokens` to `/token`
+   - Action: Review and update JWT configuration if you have custom settings
+   - Action: If you prefer RND tokens, explicitly disable JWT and enable RND in your configuration
+   - Action: Update any references from `/tokens` to `/token` endpoint
+
+2. **Map-Reduce Pipelines Removed**
    - Action: Migrate all map-reduce aggregations to standard aggregation pipelines before upgrading
 
-2. **Docker Image Changes**
+3. **Docker Image Changes**
    - Action: Update Docker references from `softinstigate/restheart` (OpenJDK) to the GraalVM-based image
    - Note: The `latest` tag now points to the GraalVM image
 
-3. **GraphQL App Descriptor Structure**
+4. **GraphQL App Descriptor Structure**
    - Action: Remove `descriptor.name` field from GraphQL app definition documents
    - Action: Ensure `_id` fields are strings if not using custom URIs
 
-4. **Token Authentication Endpoints**
+5. **Token Authentication Endpoints**
    - Action: Update client applications to use `/token` or `/token/cookie` endpoints
    - Action: Remove `?set-auth-cookie` and similar query parameters from API calls
 
 ==== Configuration Updates
 
-**Default JWT Authentication:**
+**JWT Configuration Provider:**
 
-JWT authentication is now enabled by default. If you prefer RND tokens, update your configuration:
+RESTHeart v9 introduces a centralized JWT configuration provider that eliminates duplication. JWT settings are now defined once and shared across all JWT-related components:
 
 [source,yml]
 ----
+jwtConfigProvider:
+  key: null  # null enables secure random key generation
+  algorithm: HS256
+  issuer: restheart
+  audience: restheart
+----
+
+**Default JWT Authentication:**
+
+JWT authentication is now enabled by default with secure defaults. If you prefer RND tokens, update your configuration:
+
+[source,yml]
+----
+# Disable JWT authentication and token manager
+jwtAuthenticationMechanism:
+  enabled: false
+
 jwtTokenManager:
   enabled: false
 
+# Enable RND token manager
 rndTokenManager:
   enabled: true
+----
+
+**Cookie Handling:**
+
+Cookie handlers are now enabled by default. Note the TTL unit has changed from seconds to minutes:
+
+[source,yml]
+----
+authCookieHandler:
+  enabled: true
+
+authCookieSetter:
+  enabled: true
+  ttl: 15  # minutes (previously was expires-ttl in seconds)
+----
+
+**Token Endpoint:**
+
+The token service endpoint has changed from `/tokens` to `/token`:
+
+[source,yml]
+----
+authTokenService:
+  uri: /token  # changed from /tokens
 ----
 
 **Aggregation Security:**
