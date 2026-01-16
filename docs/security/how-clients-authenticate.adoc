@@ -252,6 +252,47 @@ fetch('[RESTHEART-URL]/mycollection', {
 .catch(error => console.error('Error:', error));
 ----
 
+===== Token Renewal
+
+To renew an authentication token before it expires, add the `?renew` query parameter to `GET /token` or `GET /token/cookie` requests:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/token?renew \
+  -u [BASIC-AUTH]
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/token?renew \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const username = 'your-username';
+const password = 'your-password';
+const credentials = btoa(`${username}:${password}`);
+
+fetch('[RESTHEART-URL]/token?renew', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Basic ${credentials}`
+    }
+})
+.then(response => response.json())
+.then(data => {
+    console.log('New access token:', data.access_token);
+    sessionStorage.setItem('auth_token', data.access_token);
+})
+.catch(error => console.error('Error:', error));
+----
+
+NOTE: Generating a new token is a cryptographic operation and can have significant performance overhead. It is the responsibility of the client to renew the token using this query parameter when it is going to expire soon.
+
 ===== Cookie-Based Authentication
 
 For browser-based applications, use the `/token/cookie` endpoint to set an HttpOnly cookie (more secure as the token isn't exposed to JavaScript):
