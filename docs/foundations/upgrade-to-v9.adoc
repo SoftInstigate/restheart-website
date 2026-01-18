@@ -31,6 +31,8 @@ This page summarizes the new features and provides guidance on upgrading from pr
 |Migrated from `AsyncLoadingCache` to `LoadingCache` for improved performance and reduced overhead
 |GraalVM Native Image Support
 |RESTHeart officially listed as framework tested with GraalVM native image
+|Optimize CORS Headers
+|Reduced default CORS headers to minimum required set for improved security, requiring services to explicitly expose additional headers
 |===
 
 ==== MongoService
@@ -272,6 +274,62 @@ RESTHeart is now officially listed on GraalVM's framework compatibility page as 
 - Streamlined plugin development for native builds
 - Unified reachability metadata configuration format
 - Explicit initialization of PluginsClassloader for native image execution
+
+==== CORS Headers Optimization
+
+RESTHeart v9 implements CORS (Cross-Origin Resource Sharing) headers following the principle of least privilege, using minimal defaults that services can extend as needed.
+
+**Default CORS Headers:**
+
+RESTHeart provides secure, minimal defaults for CORS headers:
+
+- **Allow Headers**: `Authorization`, `Content-Type`, `X-Requested-With`, `No-Auth-Challenge`
+- **Expose Headers**: Empty by default - services explicitly declare what they expose
+- **Allow Methods**: `GET`, `PUT`, `POST`, `PATCH`, `DELETE`
+- **Allow Origin**: `*` (any origin)
+- **Allow Credentials**: `true`
+
+**Customizing CORS Behavior:**
+
+Services customize CORS behavior by overriding methods in the `CORSHeaders` interface:
+
+- **`accessControlExposeHeaders()`** - Declares which response headers are exposed to browser clients
+- **`accessControlAllowMethods()`** - Specifies HTTP methods supported by the service
+- **`accessControlAllowHeaders()`** - Lists which request headers are allowed
+- **`accessControlAllowOrigin()`** - Restricts allowed origins (defaults to `*`)
+- **`corsEnabled()`** - Disables CORS entirely for internal APIs
+
+**Example - Service exposing response headers:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "resourceService",
+    description = "Service that creates resources")
+public class ResourceService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        if (req.isPost()) {
+            var id = createResource(req.getContent());
+            res.getHeaders().add(HttpString.tryFromString("Location"), 
+                "/resources/" + id);
+            res.setStatusCode(HttpStatus.SC_CREATED);
+        }
+    }
+
+    @Override
+    public String accessControlExposeHeaders() {
+        // Make Location header accessible to browser clients
+        return "Location, ETag";
+    }
+}
+----
+
+**Key Point:**
+
+Response headers like `Location`, `ETag`, or custom headers are not accessible to browser JavaScript unless explicitly exposed via `accessControlExposeHeaders()`. Services that set such headers must override this method.
+
+See the link:/docs/plugins/cors[CORS Handling documentation] for complete details and examples.
 
 ==== Improve Aggregation Pipeline Security with Stage and Operator Blacklisting
 
@@ -694,6 +752,12 @@ permissions:
 5. **Token Authentication Endpoints**
    - Action: Update client applications to use `/token` or `/token/cookie` endpoints
    - Action: Remove `?set-auth-cookie` and similar query parameters from API calls
+
+6. **CORS Headers Optimization**
+   - **Exposed Headers Changed**: Default `Access-Control-Expose-Headers` is now empty (previously included `Location`, `ETag`, `Auth-Token`, etc.)
+   - Action: Services that set response headers like `Location`, `ETag`, or custom headers must implement the `accessControlExposeHeaders()` method to explicitly expose them
+   - Action: Review browser-based applications that rely on reading response headers and ensure services expose the necessary headers
+   - Note: This is a critical change for services that return `Location` headers (e.g., POST operations that create resources)
 
 ==== Configuration Updates
 

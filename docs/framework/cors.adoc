@@ -1,0 +1,637 @@
+---
+docs_version: 9
+title: CORS Handling
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+RESTHeart provides built-in support for CORS (Cross-Origin Resource Sharing), enabling web applications to safely make requests across different domains.
+
+== What is CORS?
+
+CORS stands for link:https://en.wikipedia.org/wiki/Cross-origin_resource_sharing[Cross-origin resource sharing] and it is a mechanism that allows resources on a web page to be requested from another domain outside the domain from which the resource originated.
+
+For example, consider a web application where static resources (HTML, CSS, and JavaScript) are served from `app.example.com`, while RESTHeart runs on `api.example.com`. Without CORS support, the browser would block JavaScript code from making requests to RESTHeart, forcing both to run on the same domain.
+
+The CORS specification mandates that browsers "preflight" certain requests by sending an HTTP OPTIONS request to verify the server allows the cross-origin request. Upon approval, the browser sends the actual request.
+
+== Default CORS Headers
+
+RESTHeart automatically returns CORS headers for all services, allowing requests from different origins. The default configuration follows the principle of least privilege, providing minimal yet sufficient headers for most use cases.
+
+**Example OPTIONS Request:**
+
+[source,bash]
+----
+OPTIONS /api/resource HTTP/1.1
+Host: api.example.com
+Origin: https://app.example.com
+----
+
+**Default Response:**
+
+[source,bash]
+----
+HTTP/1.1 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, No-Auth-Challenge
+Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers:
+----
+
+**Default Headers Explained:**
+
+- **Access-Control-Allow-Credentials**: Set to `true` to allow credentials (cookies, authorization headers) in cross-origin requests
+- **Access-Control-Allow-Headers**: Specifies which request headers are permitted:
+  - `Authorization` - For authentication tokens
+  - `Content-Type` - For specifying request body format
+  - `X-Requested-With` - Common AJAX header
+  - `No-Auth-Challenge` - RESTHeart-specific header to suppress authentication challenges
+- **Access-Control-Allow-Methods**: HTTP methods that can be used (OPTIONS is handled automatically)
+- **Access-Control-Allow-Origin**: Set to `*` to allow requests from any origin
+- **Access-Control-Expose-Headers**: Empty by default - services must explicitly declare which response headers are exposed to browser clients
+
+=== Understanding Access-Control-Allow-Origin Behavior
+
+RESTHeart's default CORS implementation uses a dynamic approach for `Access-Control-Allow-Origin`:
+
+**Default Service Behavior:**
+
+When a service returns `*` for `accessControlAllowOrigin()` (the default), RESTHeart actually responds with the value of the request's `Origin` header rather than a literal `*`. This means:
+
+- If a request comes from `https://app.example.com`, the response includes `Access-Control-Allow-Origin: https://app.example.com`
+- If a request comes from `http://localhost:3000`, the response includes `Access-Control-Allow-Origin: http://localhost:3000`
+- This effectively allows requests from **any origin** while properly supporting credentials
+
+This approach provides maximum flexibility while maintaining compatibility with credential-based authentication (which doesn't work with a literal `*`).
+
+**Why This Matters:**
+
+The literal `*` wildcard for `Access-Control-Allow-Origin` cannot be used with `Access-Control-Allow-Credentials: true`. By echoing the request's `Origin` header, RESTHeart allows requests from any origin while keeping credential support enabled.
+
+== Restricting Origins with originVetoer
+
+While the default CORS headers allow requests from any origin, you can restrict which origins are permitted using the `originVetoer` authorizer.
+
+IMPORTANT: The `originVetoer` is disabled by default. Enable it in `restheart.yml` to enforce origin restrictions and protect against CSRF attacks.
+
+=== How originVetoer Works
+
+The `originVetoer` authorizer works at the authorization level (after CORS headers are sent) to reject requests from non-whitelisted origins:
+
+1. CORS headers are sent based on the service's `CORSHeaders` implementation (allowing the preflight to succeed)
+2. The `originVetoer` then checks the `Origin` header against a whitelist
+3. If the origin is not whitelisted, the request is rejected with HTTP 403 Forbidden
+
+This two-layer approach ensures:
+- Browsers can complete CORS preflight checks successfully
+- Only whitelisted origins can actually access the API
+- Protection against CSRF attacks
+
+=== Configuration
+
+**Basic Configuration:**
+
+[source,yaml]
+----
+originVetoer:
+  enabled: true
+  whitelist:
+    - https://app.example.com
+    - https://dashboard.example.com
+    - http://localhost:3000
+----
+
+**Advanced Configuration with Patterns:**
+
+[source,yaml]
+----
+originVetoer:
+  enabled: true
+  whitelist:
+    - https://restheart.org
+    - https://restheart.com
+  whitelist-patterns:
+    - https://*.example.com      # Any subdomain of example.com
+    - http://localhost:*          # Any port on localhost
+  ignore-paths:
+    - /public/*                   # Public endpoints (no origin check)
+    - /health                     # Health check endpoint
+----
+
+**Configuration Properties:**
+
+- **`whitelist`**: List of exact origins or prefixes that are allowed
+- **`whitelist-patterns`**: Glob patterns with `*` wildcards for flexible matching (available from RESTHeart 8.5.0+)
+- **`ignore-paths`**: Paths that bypass origin checking (useful for public endpoints)
+
+=== How originVetoer Validates Origins
+
+The validation logic follows this sequence:
+
+1. If the request path matches any `ignore-paths` entry, accept the request without checking the `Origin` header
+2. If neither `whitelist` nor `whitelist-patterns` is defined, accept all origins
+3. If the `Origin` header is missing, reject the request
+4. Check the `Origin` header against `whitelist` entries (exact or prefix match)
+5. If not matched, check against `whitelist-patterns` entries (wildcard match)
+6. If the origin doesn't match any entry, reject the request with HTTP 403
+
+=== Example Use Case
+
+**Scenario:** You have a RESTHeart API at `https://api.example.com` that should only be accessible from your web applications.
+
+**Configuration:**
+
+[source,yaml]
+----
+originVetoer:
+  enabled: true
+  whitelist-patterns:
+    - https://*.example.com       # Allow all example.com subdomains
+    - http://localhost:*          # Allow localhost for development
+  ignore-paths:
+    - /metrics                    # Allow monitoring tools
+    - /health                     # Allow health checks
+----
+
+**Behavior:**
+
+[source,bash]
+----
+# ✓ Allowed - matches whitelist-patterns
+curl -H "Origin: https://app.example.com" https://api.example.com/users
+
+# ✓ Allowed - matches whitelist-patterns
+curl -H "Origin: http://localhost:3000" https://api.example.com/users
+
+# ✓ Allowed - ignore-paths bypass origin check
+curl -H "Origin: https://unauthorized.com" https://api.example.com/health
+
+# ✗ Rejected (403) - origin not whitelisted
+curl -H "Origin: https://malicious.com" https://api.example.com/users
+----
+
+=== Combining with Service CORS Configuration
+
+The `originVetoer` works in conjunction with service-level CORS configuration:
+
+**Service-Level (CORSHeaders interface):**
+- Controls the CORS headers sent in responses
+- Determines which headers are exposed, which methods are allowed, etc.
+- Services can override `accessControlAllowOrigin()` to restrict at the header level
+
+**originVetoer (Authorization-Level):**
+- Enforces origin restrictions across all services
+- Provides centralized security policy
+- Protects against CSRF attacks
+
+**Example - Combining both approaches:**
+
+[source,java]
+----
+// Service restricts origin at header level
+@RegisterPlugin(
+    name = "secureService",
+    description = "Service with strict origin",
+    defaultURI = "/secure")
+public class SecureService implements JsonService {
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        res.setContent(JsonObject.of("data", "secure"));
+    }
+
+    @Override
+    public String accessControlAllowOrigin() {
+        // Only this specific origin at CORS header level
+        return "https://trusted.example.com";
+    }
+}
+----
+
+[source,yaml]
+----
+# Global protection at authorization level
+originVetoer:
+  enabled: true
+  whitelist-patterns:
+    - https://*.example.com
+----
+
+In this setup:
+- The service's CORS headers only allow `https://trusted.example.com`
+- The originVetoer additionally enforces that only `*.example.com` origins can access ANY service
+- This provides defense in depth
+
+For complete originVetoer documentation including security best practices, see the link:/docs/security/security-hardening#originvetoer[Security Hardening documentation].
+
+== Customizing CORS Headers
+
+All Service interfaces extend the `CORSHeaders` interface, allowing fine-grained control over CORS behavior.
+
+=== The CORSHeaders Interface
+
+[source,java]
+----
+public interface CORSHeaders {
+    /**
+     * @return the values of the Access-Control-Expose-Headers
+     */
+    default String accessControlExposeHeaders() {
+        return "";
+    }
+
+    /**
+     * @return the values of the Access-Control-Allow-Credentials
+     */
+    default String accessControlAllowCredentials() {
+        return "true";
+    }
+
+    /**
+     * @return the values of the Access-Control-Allow-Origin
+     */
+    default String accessControlAllowOrigin() {
+        return "*";
+    }
+
+    /**
+     * @return the values of the Access-Control-Allow-Methods
+     */
+    default String accessControlAllowMethods() {
+        return "GET, PUT, POST, PATCH, DELETE";
+    }
+
+    /**
+     * @return the values of the Access-Control-Allow-Headers
+     */
+    default String accessControlAllowHeaders() {
+        return "Authorization, Content-Type, X-Requested-With, No-Auth-Challenge";
+    }
+
+    /**
+     * @return true to enable CORS headers, false to disable them
+     */
+    default boolean corsEnabled() {
+        return true;
+    }
+}
+----
+
+Override these methods in your service implementation to customize CORS behavior.
+
+=== Exposing Response Headers
+
+IMPORTANT: By default, browsers can only access standard response headers like `Content-Type` and `Content-Length`. Custom headers and many standard headers (like `Location`, `ETag`) are hidden unless explicitly exposed via `Access-Control-Expose-Headers`.
+
+Services that set response headers must override `accessControlExposeHeaders()` to make those headers accessible to browser-based clients.
+
+**Example - Service that exposes Location and ETag headers:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "resourceService",
+    description = "Service that creates resources",
+    defaultURI = "/resources")
+public class ResourceService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        if (req.isPost()) {
+            // Create resource
+            var resourceId = UUID.randomUUID().toString();
+            createResource(resourceId, req.getContent());
+            
+            // Set Location header for created resource
+            res.getHeaders().add(HttpString.tryFromString("Location"), 
+                "/resources/" + resourceId);
+            
+            // Set ETag for caching
+            res.getHeaders().add(HttpString.tryFromString("ETag"), 
+                computeETag(resourceId));
+            
+            res.setStatusCode(HttpStatus.SC_CREATED);
+            res.setContent(JsonObject.of("id", resourceId));
+        } else if (req.isGet()) {
+            // Handle GET request
+            // ...
+        }
+    }
+
+    @Override
+    public String accessControlExposeHeaders() {
+        // Explicitly expose Location and ETag to browser clients
+        return "Location, ETag";
+    }
+}
+----
+
+Without overriding `accessControlExposeHeaders()`, JavaScript code would not be able to read the `Location` or `ETag` headers from the response, even though they're present.
+
+**Browser JavaScript Example:**
+
+[source,javascript]
+----
+// Create a new resource
+const response = await fetch('https://api.example.com/resources', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({ name: 'New Resource' })
+});
+
+// Access exposed headers
+const location = response.headers.get('Location');  // Works because of accessControlExposeHeaders()
+const etag = response.headers.get('ETag');          // Works because of accessControlExposeHeaders()
+console.log('Created resource at:', location);
+----
+
+=== Restricting Origins
+
+For enhanced security, restrict which origins can access your service by overriding `accessControlAllowOrigin()`.
+
+**Example - Service restricted to specific origin:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "secureService",
+    description = "Service restricted to specific origin",
+    defaultURI = "/secure")
+public class SecureService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Service logic
+        res.setContent(JsonObject.of("message", "Secure data"));
+    }
+
+    @Override
+    public String accessControlAllowOrigin() {
+        // Only allow requests from specific domain
+        return "https://app.example.com";
+    }
+
+    @Override
+    public String accessControlAllowCredentials() {
+        // Required when using specific origin with credentials
+        return "true";
+    }
+}
+----
+
+NOTE: When using a specific origin (not `*`), you typically want to keep `accessControlAllowCredentials()` as `true` to allow authentication headers and cookies.
+
+=== Customizing Allowed Methods
+
+Restrict which HTTP methods are allowed for your service:
+
+**Example - Read-only service:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "readOnlyService",
+    description = "Read-only service",
+    defaultURI = "/readonly")
+public class ReadOnlyService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        if (req.isGet()) {
+            // Handle GET request
+            res.setContent(JsonObject.of("data", "Read-only data"));
+        } else {
+            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+        }
+    }
+
+    @Override
+    public String accessControlAllowMethods() {
+        // Only allow GET requests
+        return "GET";
+    }
+}
+----
+
+=== Customizing Allowed Headers
+
+Control which request headers are permitted:
+
+**Example - Service requiring custom header:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "customHeaderService",
+    description = "Service with custom header requirement",
+    defaultURI = "/custom")
+public class CustomHeaderService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        var apiKey = req.getHeader("X-API-Key");
+        if (apiKey == null) {
+            res.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            return;
+        }
+        // Process request
+        res.setContent(JsonObject.of("message", "Success"));
+    }
+
+    @Override
+    public String accessControlAllowHeaders() {
+        // Add custom header to allowed list
+        return "Authorization, Content-Type, X-Requested-With, No-Auth-Challenge, X-API-Key";
+    }
+}
+----
+
+=== Disabling CORS
+
+For internal APIs that should only be accessed server-to-server, disable CORS headers entirely:
+
+**Example - Internal service:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "internalService",
+    description = "Internal server-to-server API",
+    defaultURI = "/internal")
+public class InternalService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        // Internal API logic - no browser access needed
+        res.setContent(JsonObject.of("status", "Internal operation complete"));
+    }
+
+    @Override
+    public boolean corsEnabled() {
+        // Disable CORS headers for internal-only APIs
+        return false;
+    }
+}
+----
+
+When `corsEnabled()` returns `false`, RESTHeart will not add any CORS headers to responses, and browsers will block cross-origin requests to this service.
+
+== Common CORS Headers to Expose
+
+Different types of services typically expose different sets of headers:
+
+**RESTful Resource Services:**
+- `Location` - URL of created/moved resources
+- `ETag` - Entity tags for caching and conditional requests
+
+**Pagination Services:**
+- `X-Total-Count` - Total number of items
+- `Link` - Navigation links for pagination
+
+**Authentication Services:**
+- `Auth-Token` - Authentication token
+- `Auth-Token-Valid-Until` - Token expiration time
+- `Auth-Token-Location` - Token endpoint URL
+
+**Example - Paginated collection service:**
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "paginatedService",
+    description = "Service with pagination",
+    defaultURI = "/items")
+public class PaginatedService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        var page = req.getQueryParameterOrDefault("page", 1);
+        var pageSize = req.getQueryParameterOrDefault("pageSize", 20);
+        
+        // Fetch paginated data
+        var items = fetchItems(page, pageSize);
+        var totalCount = getTotalCount();
+        
+        // Set pagination headers
+        res.getHeaders().add(HttpString.tryFromString("X-Total-Count"), 
+            String.valueOf(totalCount));
+        res.getHeaders().add(HttpString.tryFromString("Link"), 
+            buildLinkHeader(page, pageSize, totalCount));
+        
+        res.setContent(JsonArray.of(items));
+    }
+
+    @Override
+    public String accessControlExposeHeaders() {
+        // Expose pagination headers
+        return "X-Total-Count, Link";
+    }
+}
+----
+
+== Handling OPTIONS Requests
+
+RESTHeart automatically handles OPTIONS requests (CORS preflight) for all services. The `Service` interfaces provide a `handleOptions()` method that you can call in your implementation:
+
+[source,java]
+----
+@RegisterPlugin(
+    name = "myService",
+    description = "Example service with OPTIONS handling",
+    defaultURI = "/example")
+public class MyService implements JsonService {
+    
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        switch(req.getMethod()) {
+            case GET -> handleGet(req, res);
+            case POST -> handlePost(req, res);
+            case OPTIONS -> handleOptions(req); // Automatically sets CORS headers
+            default -> res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+        }
+    }
+    
+    private void handleGet(JsonRequest req, JsonResponse res) {
+        res.setContent(JsonObject.of("data", "example"));
+    }
+    
+    private void handlePost(JsonRequest req, JsonResponse res) {
+        // Handle POST
+    }
+}
+----
+
+The `handleOptions(req)` method automatically sets the appropriate CORS headers based on your `CORSHeaders` interface implementations and returns a 200 OK response.
+
+== Testing CORS Configuration
+
+You can test your CORS configuration using curl:
+
+**Test preflight (OPTIONS) request:**
+
+[source,bash]
+----
+curl -X OPTIONS http://localhost:8080/api/resource \
+  -H "Origin: https://app.example.com" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: Content-Type, Authorization" \
+  -v
+----
+
+Look for the `Access-Control-*` headers in the response.
+
+**Test actual request:**
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/api/resource \
+  -H "Origin: https://app.example.com" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer token" \
+  -d '{"name": "Test"}' \
+  -v
+----
+
+Verify that the response includes the appropriate CORS headers and any exposed custom headers.
+
+== Best Practices
+
+1. **Expose only necessary headers** - Only override `accessControlExposeHeaders()` to include headers your client actually needs to read
+2. **Restrict origins in production** - Use specific origins instead of `*` for production services handling sensitive data
+3. **Match methods to implementation** - Only allow HTTP methods your service actually handles
+4. **Disable CORS for internal APIs** - Set `corsEnabled()` to `false` for services that should never be accessed from browsers
+5. **Test with real browsers** - Browser DevTools Network tab shows CORS issues clearly, use it to verify your configuration
+6. **Document exposed headers** - Make it clear to API consumers which response headers are available for reading
+
+== Troubleshooting
+
+**Problem:** JavaScript cannot read response headers
+
+**Solution:** Ensure you've overridden `accessControlExposeHeaders()` to include those headers.
+
+---
+
+**Problem:** Browser shows CORS error despite correct headers
+
+**Solution:** Check that:
+- The OPTIONS preflight request returns 200 OK
+- `Access-Control-Allow-Origin` matches the request origin (or is `*`)
+- `Access-Control-Allow-Headers` includes all headers sent in the request
+- `Access-Control-Allow-Methods` includes the request method
+
+---
+
+**Problem:** Credentials (cookies/auth headers) not sent
+
+**Solution:** Ensure `Access-Control-Allow-Credentials` is `true` and `Access-Control-Allow-Origin` is NOT `*` (must be a specific origin when using credentials).
+
+---
+
+**Problem:** Custom header rejected in preflight
+
+**Solution:** Override `accessControlAllowHeaders()` to include your custom header.
