@@ -1,6 +1,8 @@
 ---
 layout: default
 stars-bounce: true
+title: Complete Backend Development Framework
+excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerplate code with out-of-the-box features including Data APIs (REST, GraphQL, WebSockets), authentication, authorization, security, and extensibility through plugins. Build production-ready backends in minutes.
 ---
 
 <section id="top" class="text-center pt-2 pb-2">
