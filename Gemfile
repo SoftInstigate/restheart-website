@@ -5,6 +5,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gem "jekyll", "~> 4.2"
 gem "jekyll-paginate", "~> 1.1"
 gem "jekyll-sitemap", "~> 1.4"
+gem "jekyll-redirect-from", "~> 0.16"
 gem "webrick", "~> 1.7"
 group :jekyll_plugins do
   gem 'jekyll-asciidoc'
