@@ -1,0 +1,154 @@
+---
+docs_version: 9
+title: Managing Collections & Documents
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The RESTHeart Cloud UI provides two tightly integrated views for working with MongoDB data: the **Collection Browser** and the **Documents Browser**. Together they give you a complete read/write interface over your MongoDB collections without writing a single API call.
+
+== Collection Browser
+
+*Navigation path:* Service → Collections
+
+The Collection Browser is the entry point for inspecting and managing the MongoDB collections inside your RESTHeart service. It lists every collection in the service (or in the selected database for Dedicated plans) and lets you navigate into individual collections to browse their documents.
+
+=== Listing Collections
+
+Collections are fetched via `GET /<db>?rep=STANDARD` and displayed in a searchable, paginated table. Each row shows the collection name, an icon indicating whether it is a regular collection or a GridFS bucket, and action buttons.
+
+On **Dedicated** plans a database selector dropdown appears at the top of the page. Switching databases refreshes the collection list automatically.
+
+=== Creating a Collection
+
+Click **New Collection** and enter a name. You may optionally assign a JSON Schema validator at creation time by selecting one of the schemas stored in `/_schemas`. The UI issues a `PUT /<db>/<collection>` request.
+
+NOTE: JSON Schema documents are managed in the link:schemas[Schemas] section. A schema created there can be assigned to any number of collections.
+
+=== Viewing and Editing Collection Metadata
+
+Each collection row has a **Metadata** action that opens a dialog showing the raw collection metadata (JSON Schema binding, `aggrs`, `streams`, and any other properties). The metadata is fetched via `GET /<db>/<collection>/_meta`.
+
+From this dialog you can:
+
+* **Assign a JSON Schema** — select a schema by its `_id` and bind it as the collection's document validator. The UI issues a `PATCH /<db>/<collection>` with the `jsonSchema` property.
+* Inspect the raw `aggrs` and `streams` arrays managed by the link:aggregations[Aggregations] and link:change-streams[Change Streams] sections.
+
+=== Deleting a Collection
+
+Click **Delete** on a collection row. A confirmation dialog appears before the `DELETE /<db>/<collection>` request is issued. This operation is irreversible — all documents inside the collection are permanently removed.
+
+=== GridFS Bucket Detection
+
+Collections whose name ends with `.files` are automatically identified as GridFS buckets. The UI:
+
+* Displays a file-bucket icon next to the collection name.
+* Labels actions with file-oriented language (e.g. *Files* instead of *Documents*).
+* Provides a direct link to the binary download endpoint (`GET /<collection>/<id>/binary`) from the Documents view.
+
+=== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List collections | `GET /<db>?rep=STANDARD`
+| Create collection | `PUT /<db>/<collection>`
+| Read metadata | `GET /<db>/<collection>/_meta`
+| Patch metadata | `PATCH /<db>/<collection>`
+| Delete collection | `DELETE /<db>/<collection>`
+|===
+
+---
+
+== Documents Browser
+
+*Navigation path:* Service → Collections → _select a collection_
+
+Clicking a collection row in the Collection Browser navigates to the Documents Browser for that collection. Here you can read and write individual MongoDB documents.
+
+=== Listing and Filtering Documents
+
+Documents are fetched in pages via:
+
+[source]
+----
+GET /<db>/<collection>?filter=...&sort=...&page=...&pagesize=...
+----
+
+[cols="1,3"]
+|===
+| Parameter | Description
+
+| `filter`
+| Any MongoDB query expression as a JSON object. For example: `{"status":"active"}` or `{"age":{"$gt":18}}`.
+
+| `sort`
+| Sort expression as a JSON object. For example: `{"createdAt":-1}` sorts by creation date descending.
+
+| `page`
+| 1-based page number.
+
+| `pagesize`
+| Number of documents per page. Configurable in the UI.
+|===
+
+Type a filter or sort expression directly in the search bar and the document list refreshes automatically.
+
+=== Creating a Document
+
+Click **New Document** to open an inline JSON editor. Enter the document body and click **Save**. The UI submits a `POST /<db>/<collection>` request. If you omit `_id`, MongoDB assigns an `ObjectId` automatically.
+
+=== Editing a Document
+
+Each document row has an **Edit** action that expands an inline editor pre-populated with the document's current JSON. Modify the fields you want to change and click **Save**. The UI issues a `PATCH /<db>/<collection>/<id>` request — a partial update that preserves any fields you did not include in the editor.
+
+IMPORTANT: Editing sends only a **PATCH** (partial update). Fields present in the database but not shown in the editor are preserved, not overwritten.
+
+=== Deleting a Document
+
+Click **Delete** on a document row. A confirmation dialog appears before the `DELETE /<db>/<collection>/<id>` request is issued.
+
+=== _id Type Awareness
+
+RESTHeart supports multiple `_id` types. The Documents Browser correctly handles the following types when constructing request URLs:
+
+* `ObjectId` — serialised as `{"$oid":"..."}` in filter expressions.
+* `string` — used as-is.
+* `number` — used as-is.
+* `date` — serialised as `{"$date":"..."}`.
+
+=== JSON Formatting
+
+Every JSON editor panel includes a **Format** button that pretty-prints the current JSON. If the JSON is invalid, an inline error is shown and the save action is blocked until the JSON is corrected.
+
+=== GridFS Files
+
+When the parent collection is a GridFS bucket (name ending in `.files`), the Documents Browser shows file metadata rows with an additional **Download** action. Clicking it follows `GET /<collection>/<id>/binary` to retrieve the binary file content.
+
+=== Breadcrumb Navigation
+
+A breadcrumb at the top of the Documents Browser shows the path _Database → Collection_. Clicking the collection name returns to the Collection Browser.
+
+=== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List / filter / sort | `GET /<db>/<collection>?filter=...&sort=...&page=...&pagesize=...`
+| Create document | `POST /<db>/<collection>`
+| Update document | `PATCH /<db>/<collection>/<id>`
+| Delete document | `DELETE /<db>/<collection>/<id>`
+| Download GridFS file | `GET /<collection>/<id>/binary`
+|===
+
+---
+
+== Related Pages
+
+* link:schemas[JSON Schema Validation] — create schemas and assign them to collections as document validators.
+* link:aggregations[Aggregations] — define server-side pipelines over your collections.
+* link:change-streams[WebSocket Change Streams] — subscribe to real-time change events on a collection.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand the database selector and path differences.

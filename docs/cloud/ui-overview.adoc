@@ -1,0 +1,110 @@
+---
+docs_version: 9
+title: RESTHeart Cloud UI — Overview
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The RESTHeart Cloud management console is a web-based UI that lets you manage every aspect of your RESTHeart service instance — without writing a single API call. Each UI feature maps directly to an underlying RESTHeart REST API capability.
+
+Access the console at https://cloud.restheart.com and navigate to your service to get started.
+
+== Feature Areas
+
+The Cloud UI covers nine integrated feature areas:
+
+[cols="1,3"]
+|===
+| Feature | What you can do
+
+| link:managing-data[**Collections & Documents**]
+| Browse, create, edit, and delete collections and documents. Detect GridFS buckets. Assign JSON Schema validators.
+
+| link:managing-users[**User Management**]
+| Create and manage the users that authenticate against your service via Basic Auth or Token Auth.
+
+| link:managing-permissions[**Permissions (ACL)**]
+| Define role-based access control rules using Undertow predicates and optional MongoDB-level filters.
+
+| link:aggregations[**Aggregations**]
+| Define server-side MongoDB aggregation pipelines, test them inline, and expose them as REST endpoints.
+
+| link:../cloud/webhook/[**Webhooks**]
+| Fire HTTP callbacks or send emails in response to API events. Enable and manage the webhooks plugin.
+
+| link:graphql[**GraphQL**]
+| Create and manage GraphQL application definitions that map MongoDB collections to a GraphQL schema.
+
+| link:schemas[**JSON Schema Validation**]
+| Manage reusable JSON Schema documents and assign them to collections as document validators.
+
+| link:change-streams[**WebSocket Change Streams**]
+| Define and test server-side MongoDB Change Stream endpoints exposed as WebSocket connections.
+
+| link:plans[**Plan Comparison**]
+| Understand the differences between Free/Shared and Dedicated service tiers and how they affect the UI.
+|===
+
+== Service Tiers
+
+The UI adapts its behaviour based on the service tier your instance runs on.
+
+=== Free / Shared
+
+* Single-database services.
+* The UI operates directly on the default database — no database selector is shown.
+* System collections (`users`, `acl`, `gql-apps`) are available at their root paths (e.g. `/users`, `/acl`).
+
+=== Dedicated
+
+* Multi-database services.
+* A **database selector** dropdown appears before any collection-level operation, letting you switch between databases. The collection list, aggregation list, and stream list all refresh automatically when a new database is selected.
+* System collections are scoped under `/restheart/` (e.g. `/restheart/users`, `/restheart/acl`, `/restheart/gql-apps`).
+
+See link:plans[Dedicated vs. Free/Shared Plans] for a complete side-by-side comparison.
+
+== Admin JWT
+
+All management operations performed by the Cloud UI use a short-lived **Admin JWT** token issued by the RESTHeart Cloud control plane.
+
+* The token is injected automatically as `Authorization: Bearer <token>` on every API call the UI makes to your service instance.
+* It is separate from the end-user credentials stored in the `users` collection and has broader administrative permissions.
+* You do **not** need to manage this token yourself — the UI handles its lifecycle, including renewal when it expires.
+
+NOTE: The Admin JWT cannot be used to authenticate WebSocket Change Stream connections. Only regular users registered in the `users` collection can authenticate WebSocket connections. See link:change-streams#authentication[Change Streams — Authentication] for details.
+
+== Common UI Behaviours
+
+These conventions apply consistently across all feature areas.
+
+=== Confirmation Dialogs
+
+Every destructive operation — deleting a collection, document, user, permission, aggregation, stream, webhook, or schema — requires explicit confirmation via a modal dialog before executing. There are no silent deletes.
+
+=== Search and Pagination
+
+All list views implement:
+
+* **Debounced search** — 300 ms delay before firing; works client-side or server-side depending on the feature.
+* **Configurable page size** — choose how many rows to display per page.
+* **Previous / next navigation** — with total page count displayed.
+
+=== JSON Editing
+
+All JSON-capable fields share a consistent editing experience:
+
+* Syntax-aware textarea with a monospace font.
+* A **Format** button that pretty-prints valid JSON and reports an error on invalid input.
+* Inline validation errors surfaced before the save action is allowed.
+
+=== Error Handling
+
+HTTP errors from the RESTHeart API are surfaced as toast notifications. The UI picks the most specific error message available from the response body, falling back through `exception.message.errmsg` → `exception.message` → `message` → a generic fallback string.
+
+== Next Steps
+
+* link:getting-started[Getting Started Guide] — sign up, create a service, and set up your root user.
+* link:managing-data[Managing Collections & Documents] — start browsing your MongoDB data.
+* link:managing-users[Managing Users] — create the users that will access your service.
+* link:managing-permissions[Managing Permissions (ACL)] — control what each role can do.

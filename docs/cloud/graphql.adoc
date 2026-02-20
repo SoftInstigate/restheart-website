@@ -1,0 +1,397 @@
+---
+docs_version: 9
+title: GraphQL Applications
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **GraphQL** section of the RESTHeart Cloud UI lets you create, edit, enable, and manage GraphQL application definitions. Each definition maps MongoDB collections to a GraphQL schema and resolvers — no code deployment required.
+
+*Navigation path:* Service → GraphQL
+
+== How GraphQL Works in RESTHeart
+
+RESTHeart acts as a GraphQL gateway over MongoDB. You define a **GraphQL app** — a JSON document that contains a GraphQL SDL schema and a mappings object — and RESTHeart automatically exposes a fully functional GraphQL endpoint for it.
+
+A single RESTHeart service can host multiple GraphQL apps, each with its own schema and endpoint URI.
+
+=== GraphQL Endpoint Format
+
+[source]
+----
+POST /graphql/<uri>
+Content-Type: application/json
+
+{ "query": "{ orders { _id status total } }" }
+----
+
+Where `<uri>` is the `descriptor.uri` value set in the app definition.
+
+== Where Apps Are Stored
+
+GraphQL app definitions are stored as documents in the `gql-apps` collection:
+
+[cols="1,2"]
+|===
+| Plan | Collection path
+
+| Free / Shared | `/gql-apps`
+| Dedicated | `/restheart/gql-apps`
+|===
+
+The UI abstracts this difference — you always navigate to *Service → GraphQL* regardless of plan.
+
+== GraphQL App Document Structure
+
+A GraphQL app is a JSON document with three top-level objects:
+
+[source,json]
+----
+{
+  "descriptor": {
+    "name": "Shop API",
+    "description": "GraphQL API for the online shop",
+    "enabled": true,
+    "uri": "shop"
+  },
+  "schema": "type Query { orders: [Order] } type Order { _id: String status: String total: Float }",
+  "mappings": {
+    "Query": {
+      "orders": {
+        "db": "mydb",
+        "collection": "orders",
+        "find": {}
+      }
+    }
+  }
+}
+----
+
+=== `descriptor` Object
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `name`
+| Yes
+| Human-readable name for the app. Displayed in the app list.
+
+| `description`
+| No
+| Short description of what the app exposes.
+
+| `enabled`
+| Yes
+| Boolean. When `false`, the app is ignored by the GraphQL engine and its endpoint returns `404`. Use this to safely disable an app without deleting it.
+
+| `uri`
+| Yes
+| Path segment under which the GraphQL endpoint is served. Must be unique across all apps in the service. Example: `"shop"` → endpoint at `/graphql/shop`.
+|===
+
+=== `schema` Field
+
+The `schema` field contains the full **GraphQL SDL (Schema Definition Language)** as a string. It defines the types, queries, mutations, and subscriptions exposed by the app.
+
+Example schema:
+
+[source]
+----
+type Query {
+  orders(status: String): [Order]
+  order(_id: String!): Order
+}
+
+type Order {
+  _id: String
+  customerId: String
+  status: String
+  total: Float
+  items: [OrderItem]
+}
+
+type OrderItem {
+  productId: String
+  quantity: Int
+  price: Float
+}
+----
+
+=== `mappings` Object
+
+The `mappings` object wires the GraphQL types and fields defined in the schema to MongoDB collections and queries. This is the most powerful — and most complex — part of the app definition.
+
+Each key in `mappings` corresponds to a GraphQL type name. Each nested key is a field resolver.
+
+==== Field Resolver Properties
+
+[cols="1,1,3"]
+|===
+| Property | Required | Description
+
+| `db`
+| Yes (for root resolvers)
+| The MongoDB database to query.
+
+| `collection`
+| Yes (for root resolvers)
+| The MongoDB collection to query.
+
+| `find`
+| No
+| MongoDB filter document. Use `$arg` to inject GraphQL arguments.
+
+| `sort`
+| No
+| MongoDB sort document.
+
+| `limit`
+| No
+| Maximum number of documents to return.
+
+| `skip`
+| No
+| Number of documents to skip (for offset pagination).
+
+| `field`
+| No (for relationship resolvers)
+| Maps a GraphQL field to a field from the parent document.
+
+| `ref`
+| No (for relationship resolvers)
+| The field in the referenced collection to match against.
+|===
+
+==== Using `$arg` to Inject GraphQL Arguments
+
+Use the `$arg` operator to pass GraphQL query arguments into MongoDB filter expressions:
+
+[source,json]
+----
+{
+  "mappings": {
+    "Query": {
+      "orders": {
+        "db": "mydb",
+        "collection": "orders",
+        "find": { "status": { "$arg": "status" } }
+      }
+    }
+  }
+}
+----
+
+This allows the GraphQL query `{ orders(status: "pending") { _id total } }` to be translated into `db.orders.find({ status: "pending" })`.
+
+==== Relationship Resolvers
+
+Use the `field` and `ref` properties to resolve relationships between types (similar to a JOIN):
+
+[source,json]
+----
+{
+  "mappings": {
+    "Query": {
+      "orders": {
+        "db": "mydb",
+        "collection": "orders",
+        "find": {}
+      }
+    },
+    "Order": {
+      "customer": {
+        "db": "mydb",
+        "collection": "users",
+        "find": { "_id": { "$fk": "customerId" } }
+      }
+    }
+  }
+}
+----
+
+The `$fk` operator injects the value of a field from the parent document (here, `customerId` from the resolved `Order` document) as the lookup value.
+
+== Listing GraphQL Apps
+
+The app list is fetched via `GET /gql-apps` and displayed in a table. Each row shows the app `name`, `uri`, enabled status, and action buttons.
+
+== Creating a GraphQL App
+
+The creation form provides two editing modes to suit different workflows.
+
+=== Visual Editor
+
+The Visual Editor presents structured form fields for each part of the app definition:
+
+. **Descriptor fields** — fill in `name`, `description`, `uri`, and the `enabled` toggle.
+. **Schema textarea** — enter the GraphQL SDL schema.
+. **Mappings editor** — enter the `mappings` JSON object.
+
+Use the Visual Editor when you are new to the GraphQL app format or want guided field-level validation.
+
+=== JSON Editor
+
+The JSON Editor presents the entire app definition as a single raw JSON textarea. Power users who prefer to edit the full document directly — for example, by pasting a pre-prepared app definition — should use this mode.
+
+Click **Format** to pretty-print the JSON. Switch between modes at any time; the UI syncs the content between them.
+
+=== Saving
+
+Click **Save**. The UI submits `POST /gql-apps` with the complete app document as the body. Required fields are validated before the request is sent.
+
+== Editing a GraphQL App
+
+. Click **Edit** on an app row to open the dual-mode editor pre-populated with the current values.
+. Modify the schema, mappings, or descriptor fields as needed.
+. Click **Save**. The UI issues `PATCH /gql-apps/<id>` with the updated document.
+
+NOTE: Changes to a GraphQL app take effect immediately — the next GraphQL request to the app's endpoint uses the updated schema and mappings. No service restart is required.
+
+== Enabling and Disabling an App
+
+Each app row has an **Enable/Disable** toggle switch. Toggling it updates `descriptor.enabled` via `PATCH /gql-apps/<id>`:
+
+* **Enabled** — the app's endpoint is live and accepts GraphQL queries.
+* **Disabled** — the endpoint returns `404`. Use this to take an app offline for maintenance without deleting it.
+
+== Deleting a GraphQL App
+
+Click **Delete** on an app row. A confirmation dialog appears before the `DELETE /gql-apps/<id>` request is issued.
+
+WARNING: Deleting an app removes its endpoint immediately. Any clients using the endpoint will receive `404` responses.
+
+== Copying the Endpoint URL
+
+Click **Copy URL** on any app row to copy the full GraphQL endpoint URL to the clipboard:
+
+[source]
+----
+https://myservice.restheart.com/graphql/shop
+----
+
+Share this URL with front-end developers or paste it into GraphQL clients like https://www.graphql-voyager.com[GraphQL Voyager] or https://insomnia.rest[Insomnia].
+
+== Querying the GraphQL Endpoint
+
+Send GraphQL queries as `POST` requests with a JSON body:
+
+[source,bash]
+----
+curl -X POST https://myservice.restheart.com/graphql/shop \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)" \
+  -H "Content-Type: application/json" \
+  -d '{ "query": "{ orders { _id status total } }" }'
+----
+
+[source,javascript]
+----
+const response = await fetch("https://myservice.restheart.com/graphql/shop", {
+  method: "POST",
+  headers: {
+    "Authorization": "Basic " + btoa("alice:secret"),
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    query: `
+      query GetOrders($status: String) {
+        orders(status: $status) {
+          _id
+          status
+          total
+        }
+      }
+    `,
+    variables: { status: "pending" }
+  })
+});
+const { data } = await response.json();
+----
+
+== Worked Example: Define → Enable → Query
+
+This end-to-end example creates a GraphQL API over an `orders` collection.
+
+=== Step 1: Create the App
+
+Navigate to *Service → GraphQL* and click **New App**. Use the JSON Editor and paste:
+
+[source,json]
+----
+{
+  "descriptor": {
+    "name": "Orders API",
+    "description": "Read-only GraphQL API for order data",
+    "enabled": true,
+    "uri": "orders-api"
+  },
+  "schema": "type Query { orders(status: String): [Order] order(_id: String!): Order } type Order { _id: String customerId: String status: String total: Float }",
+  "mappings": {
+    "Query": {
+      "orders": {
+        "db": "mydb",
+        "collection": "orders",
+        "find": { "status": { "$arg": "status" } }
+      },
+      "order": {
+        "db": "mydb",
+        "collection": "orders",
+        "find": { "_id": { "$arg": "_id" } }
+      }
+    }
+  }
+}
+----
+
+Click **Save**.
+
+=== Step 2: Verify in the App List
+
+The app appears in the list with status **ENABLED** and URI `orders-api`.
+
+=== Step 3: Run a Query
+
+[source,bash]
+----
+curl -X POST https://myservice.restheart.com/graphql/orders-api \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)" \
+  -H "Content-Type: application/json" \
+  -d '{ "query": "{ orders(status: \"pending\") { _id total } }" }'
+----
+
+Expected response:
+
+[source,json]
+----
+{
+  "data": {
+    "orders": [
+      { "_id": "64abc...", "total": 149.99 },
+      { "_id": "64def...", "total": 79.50 }
+    ]
+  }
+}
+----
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List apps | `GET /gql-apps`
+| Create app | `POST /gql-apps`
+| Update app | `PATCH /gql-apps/<id>`
+| Delete app | `DELETE /gql-apps/<id>`
+| Query GraphQL | `POST /graphql/<uri>`
+|===
+
+On **Dedicated** plans replace `/gql-apps` with `/restheart/gql-apps` for management operations. The `/graphql/<uri>` query endpoint is the same on all plans.
+
+== Related Pages
+
+* link:managing-data[Managing Collections & Documents] — manage the MongoDB collections that GraphQL apps resolve against.
+* link:managing-permissions[Managing Permissions (ACL)] — control which roles can query each GraphQL endpoint.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand collection path differences between plans.
+* link:/docs/graphql/[GraphQL (full reference)] — deep-dive into the RESTHeart GraphQL API, `$arg`, `$fk`, mutations, and advanced mapping patterns.

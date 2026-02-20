@@ -1,0 +1,153 @@
+---
+docs_version: 9
+title: Dedicated vs. Free/Shared Plans
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+RESTHeart Cloud is available in two service tiers: **Free / Shared** and **Dedicated**. Both tiers expose the same RESTHeart feature set, but differ in infrastructure isolation, resource limits, and how the Cloud UI presents certain options — most notably the database selector and the paths of system collections.
+
+This page is the authoritative reference for all plan-related differences visible in the Cloud UI and API.
+
+== At a Glance
+
+[cols="2,3,3"]
+|===
+| Aspect | Free / Shared | Dedicated
+
+| **Infrastructure**
+| Shared multi-tenant infrastructure
+| Isolated, single-tenant dedicated resources
+
+| **Databases**
+| Single default database
+| Multiple databases; user selects from a dropdown
+
+| **Database selector in UI**
+| Not shown
+| Shown on Collections, Aggregations, WebSocket, and any other collection-scoped page
+
+| **Custom domain**
+| Not available
+| Available
+
+| **Plugins**
+| Marketplace plugins only
+| Marketplace plugins + custom plugins
+
+| **Support**
+| Community
+| Priority support with SLA
+
+| **Monitoring**
+| Basic
+| Advanced monitoring, logging, and analytics
+
+| **Intended use**
+| Prototyping, learning, small projects
+| Production applications, enterprise workloads
+|===
+
+== System Collection Paths
+
+Several RESTHeart system collections have different paths depending on the plan. The Cloud UI abstracts this transparently — you always navigate to the same menu item regardless of plan — but the underlying API paths differ. This matters if you call the API directly (e.g. from curl, HTTPie, or application code).
+
+[cols="2,2,2"]
+|===
+| Collection | Free / Shared path | Dedicated path
+
+| Users
+| `/users`
+| `/restheart/users`
+
+| ACL (Permissions)
+| `/acl`
+| `/restheart/acl`
+
+| GraphQL apps
+| `/gql-apps`
+| `/restheart/gql-apps`
+
+| JSON Schemas
+| `/_schemas`
+| `/_schemas` _(same on both plans)_
+
+| Aggregations / Streams
+| Stored in collection metadata at `/<collection>/_meta`
+| Same, scoped to the selected database: `/<db>/<collection>/_meta`
+|===
+
+IMPORTANT: Always use the correct path for your plan when making direct API calls. The Cloud UI handles this automatically, but scripts and application code must be written with the right path.
+
+== The Database Selector (Dedicated Only)
+
+On **Dedicated** plans, every collection-scoped page in the Cloud UI displays a **database selector** dropdown at the top of the page:
+
+* link:managing-data[Collections & Documents] — switches the collection list to the selected database.
+* link:aggregations[Aggregations] — shows aggregations defined within collections of the selected database.
+* link:change-streams[WebSocket Change Streams] — shows streams defined within collections of the selected database.
+
+Switching the selected database refreshes the page content automatically. The selection persists during your session but is not saved across browser sessions.
+
+On **Free / Shared** plans the database selector is hidden and all operations target the single default database.
+
+== Webhooks Plugin
+
+The Webhooks plugin is available on both plan tiers, but plugin management (enable/disable) may be restricted on Free/Shared plans depending on your subscription. Check the Plugins tab in the Cloud dashboard for your service's current plugin status.
+
+== Pricing
+
+For a full feature and pricing comparison between all available tiers (Free, Shared, Dedicated), visit https://cloud.restheart.com/pricing.
+
+== Upgrading
+
+You can upgrade from Free/Shared to Dedicated at any time from the RESTHeart Cloud dashboard. Your data is migrated and your existing API URL continues to work. After upgrading:
+
+* The database selector becomes visible in the UI.
+* System collection paths change from root-level (e.g. `/users`) to scoped (e.g. `/restheart/users`). Update any application code or scripts that reference these paths directly.
+
+== Summary Table: UI Behaviour by Plan
+
+[cols="2,2,2"]
+|===
+| UI Feature | Free / Shared behaviour | Dedicated behaviour
+
+| link:managing-data[Collections & Documents]
+| Lists collections in the single default database
+| Database selector shown; lists collections in the selected database
+
+| link:managing-users[User Management]
+| Reads/writes `/users`
+| Reads/writes `/restheart/users`
+
+| link:managing-permissions[Permissions (ACL)]
+| Reads/writes `/acl`
+| Reads/writes `/restheart/acl`
+
+| link:aggregations[Aggregations]
+| Lists all collections; database selector hidden
+| Database selector shown; collections scoped to selected database
+
+| link:webhook/[Webhooks]
+| Available (plugin must be enabled)
+| Available (plugin must be enabled)
+
+| link:graphql[GraphQL]
+| Reads/writes `/gql-apps`
+| Reads/writes `/restheart/gql-apps`
+
+| link:schemas[JSON Schema Validation]
+| Reads/writes `/_schemas`
+| Reads/writes `/_schemas` _(no difference)_
+
+| link:change-streams[WebSocket Change Streams]
+| Lists all collections; database selector hidden
+| Database selector shown; collections scoped to selected database
+|===
+
+== Related Pages
+
+* link:ui-overview[Cloud UI Overview] — introduction to the management console and common UI behaviours.
+* link:getting-started[Getting Started] — create your first service and set up your root user.
+* https://cloud.restheart.com/pricing[Pricing] — compare all tiers in detail.

@@ -1,0 +1,380 @@
+---
+docs_version: 9
+title: Managing Permissions (ACL)
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Permissions** section of the RESTHeart Cloud UI lets you define, edit, and delete the Access Control List (ACL) rules that govern what authenticated users can do inside your RESTHeart service. Rules are stored in the `acl` collection and evaluated on every incoming request.
+
+*Navigation path:* Service → Permissions
+
+== How the ACL Works
+
+RESTHeart's `mongoAclAuthorizer` evaluates every incoming HTTP request against the ACL documents stored in the `acl` collection. The authorizer:
+
+1. Finds all ACL documents whose `roles` array intersects with the authenticated user's roles.
+2. Among those, finds documents whose `predicate` matches the request (path, method, query string, etc.).
+3. Evaluates them in ascending `priority` order — **lower numbers are evaluated first**.
+4. If any matching rule permits the request, it is allowed; otherwise it is denied.
+
+=== Collection Path by Plan
+
+[cols="1,2"]
+|===
+| Plan | ACL collection path
+
+| Free / Shared | `/acl`
+| Dedicated | `/restheart/acl`
+|===
+
+The UI abstracts this difference — you always navigate to *Service → Permissions* regardless of plan.
+
+== Permission Document Structure
+
+[source,json]
+----
+{
+  "_id": "usersCanReadOrders",
+  "roles": ["user"],
+  "predicate": "path-prefix('/orders') and method('GET')",
+  "priority": 100,
+  "mongo": {
+    "readFilter": { "owner": "@user._id" },
+    "writeFilter": null,
+    "mergeRequest": null,
+    "projectResponse": null
+  }
+}
+----
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `_id`
+| Yes
+| Unique identifier for this permission rule. Choose a descriptive name (e.g. `readersCanGetPosts`).
+
+| `roles`
+| Yes
+| Array of role name strings. The rule applies to any authenticated user who holds at least one of these roles. Roles are defined on user documents in the link:managing-users[Users] section.
+
+| `predicate`
+| Yes
+| An Undertow predicate expression that must evaluate to `true` for the rule to match the incoming request. See <<predicate-language,Predicate Language>> below.
+
+| `priority`
+| Yes
+| Integer evaluation order. Lower values are evaluated first. Use lower numbers for more specific (higher-priority) rules.
+
+| `mongo`
+| No
+| Optional object with MongoDB-level security modifiers. See <<mongo-options,MongoDB Options>> below.
+|===
+
+== Listing Permissions
+
+The ACL list is fetched via `GET /acl?page=...&pagesize=...` and displayed in a paginated, searchable table. Each row shows the `_id`, the `roles`, the `predicate`, the `priority`, and action buttons.
+
+=== Searching and Filtering
+
+Use the **Search** box to apply a MongoDB filter expression, for example:
+
+[source,json]
+----
+{ "roles": "user" }
+----
+
+or
+
+[source,json]
+----
+{ "priority": { "$lt": 50 } }
+----
+
+A **Sort** expression (JSON object) can also be applied, mapping to the `sort` query parameter.
+
+== Creating a Permission
+
+. Click **New Permission**.
+. Fill in the form fields:
+** **ID** (`_id`) — unique name for the rule.
+** **Roles** — one or more role names this rule applies to.
+** **Predicate** — the Undertow predicate expression (see below).
+** **Priority** — integer; lower evaluates first.
+** **MongoDB Options** — optionally configure `readFilter`, `writeFilter`, `mergeRequest`, and `projectResponse`.
+. Click **Save**. The UI submits `POST /acl` with the document body.
+
+== Editing a Permission
+
+. Click **Edit** on a permission row to expand the inline accordion form.
+. All fields except `_id` are editable.
+. Click **Save**. The UI issues `PATCH /acl/<id>` with the updated fields.
+
+== Deleting a Permission
+
+Click **Delete** on a permission row. A confirmation dialog appears before the `DELETE /acl/<id>` request is issued.
+
+WARNING: Deleting a permission rule takes effect immediately. Any users whose access relied solely on that rule will be denied on the next request.
+
+== Predicate Language [[predicate-language]]
+
+The `predicate` field uses the **Undertow predicate expression language**. A predicate is a boolean expression that is evaluated against the incoming HTTP request. The following predicates are available:
+
+=== Path Predicates
+
+[cols="1,2,2"]
+|===
+| Predicate | Description | Example
+
+| `path('/exact/path')`
+| Matches the exact request path.
+| `path('/status')`
+
+| `path-prefix('/prefix')`
+| Matches any path that starts with the given prefix.
+| `path-prefix('/orders')`
+
+| `path-template('/users/{id}')`
+| Matches parameterised paths; captured segments are available as variables.
+| `path-template('/users/{id}/profile')`
+
+| `path-suffix('.json')`
+| Matches paths ending with the given suffix.
+| `path-suffix('.csv')`
+
+| `regex(pattern: '...', value: %R)`
+| Matches the path against a regular expression.
+| `regex(pattern: '^/data/[0-9]+$', value: %R)`
+|===
+
+=== Method Predicates
+
+[cols="1,2"]
+|===
+| Predicate | Example
+
+| `method('GET')`
+| `method('POST')`
+
+| `method('PUT')`
+| `method('DELETE')`
+
+| `method('PATCH')`
+|
+|===
+
+=== Combining Predicates
+
+Use `and`, `or`, and `not` to compose complex rules:
+
+[source]
+----
+path-prefix('/orders') and method('GET')
+----
+
+[source]
+----
+path-prefix('/reports') and (method('GET') or method('POST'))
+----
+
+[source]
+----
+path-prefix('/admin') and not method('GET')
+----
+
+=== Common Predicate Examples
+
+[cols="2,3"]
+|===
+| Goal | Predicate
+
+| Allow GET on any path
+| `method('GET')`
+
+| Allow all methods on `/orders` and sub-paths
+| `path-prefix('/orders')`
+
+| Allow POST only to `/users`
+| `path('/users') and method('POST')`
+
+| Allow GET and PATCH on `/products/{id}`
+| `path-template('/products/{id}') and (method('GET') or method('PATCH'))`
+
+| Allow everything under `/public`
+| `path-prefix('/public')`
+
+| Deny DELETE everywhere (use `not`)
+| `not method('DELETE')`
+|===
+
+TIP: Use the **Predicate helper** tooltip inside the permission form — it shows common predicate patterns inline without leaving the page.
+
+== MongoDB Options [[mongo-options]]
+
+The optional `mongo` object adds MongoDB-level security on top of the predicate match. These modifiers are applied transparently to every request that matches the rule.
+
+=== `readFilter`
+
+A MongoDB filter document appended to every read (`GET`) query. Clients can only see documents that match the filter, regardless of any `filter` parameter they provide.
+
+*Use case — row-level security:*
+
+[source,json]
+----
+{
+  "mongo": {
+    "readFilter": { "owner": "@user._id" }
+  }
+}
+----
+
+The placeholder `@user._id` is replaced at runtime with the authenticated user's `_id`. This ensures each user sees only documents they own.
+
+=== `writeFilter`
+
+A MongoDB filter document applied to every write operation (`PUT`, `PATCH`, `DELETE`). Write operations are silently restricted to documents matching the filter.
+
+*Use case — prevent writing to other users' documents:*
+
+[source,json]
+----
+{
+  "mongo": {
+    "writeFilter": { "owner": "@user._id" }
+  }
+}
+----
+
+=== `mergeRequest`
+
+A document merged into every write request body before it is persisted. Use this to automatically inject server-enforced fields that clients should not be able to forge.
+
+*Use case — auto-stamp ownership on document creation:*
+
+[source,json]
+----
+{
+  "mongo": {
+    "mergeRequest": { "owner": "@user._id" }
+  }
+}
+----
+
+=== `projectResponse`
+
+A MongoDB projection applied to every response document before it is sent to the client. Use this to mask sensitive fields.
+
+*Use case — hide sensitive fields:*
+
+[source,json]
+----
+{
+  "mongo": {
+    "projectResponse": { "passwordHash": 0, "internalNotes": 0 }
+  }
+}
+----
+
+=== Available Variables in `mongo` Fields
+
+[cols="1,3"]
+|===
+| Variable | Value at runtime
+
+| `@user._id`
+| The `_id` of the authenticated user.
+
+| `@user.roles`
+| The `roles` array of the authenticated user.
+|===
+
+== Priority and Evaluation Order
+
+Rules with **lower** priority numbers are evaluated **first**. This is the opposite of what "priority" means in everyday language — think of it as _evaluation order_ rather than _importance_.
+
+[cols="1,3"]
+|===
+| Priority value | Typical use
+
+| `0`
+| Root / super-admin rules that must always win (e.g. `rootCanDoEverything`).
+
+| `1–99`
+| Highly specific rules (exact paths, narrow method sets).
+
+| `100`
+| Standard application rules.
+
+| `1000+`
+| Catch-all or fallback rules.
+|===
+
+TIP: When two rules both match a request, the first one evaluated (lowest priority number) takes precedence. Structure your rules so the most specific rules have the lowest numbers.
+
+== Worked Example: Role-Based Order Access
+
+The following three ACL documents implement a typical order-management permission model:
+
+.Allow admins to do everything on `/orders`
+[source,json]
+----
+{
+  "_id": "adminsFullOrders",
+  "roles": ["admin"],
+  "predicate": "path-prefix('/orders')",
+  "priority": 10
+}
+----
+
+.Allow users to create orders (with auto-stamped owner)
+[source,json]
+----
+{
+  "_id": "usersCreateOrders",
+  "roles": ["user"],
+  "predicate": "path('/orders') and method('POST')",
+  "priority": 100,
+  "mongo": {
+    "mergeRequest": { "owner": "@user._id" }
+  }
+}
+----
+
+.Allow users to read only their own orders
+[source,json]
+----
+{
+  "_id": "usersReadOwnOrders",
+  "roles": ["user"],
+  "predicate": "path-prefix('/orders') and method('GET')",
+  "priority": 100,
+  "mongo": {
+    "readFilter": { "owner": "@user._id" }
+  }
+}
+----
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List permissions | `GET /acl?page=...&pagesize=...&filter=...&sort=...`
+| Create permission | `POST /acl`
+| Update permission | `PATCH /acl/<id>`
+| Delete permission | `DELETE /acl/<id>`
+|===
+
+On **Dedicated** plans replace `/acl` with `/restheart/acl` in all paths above.
+
+== Related Pages
+
+* link:managing-users[Managing Users] — create the users and roles referenced in ACL rules.
+* link:root-user-setup[Root User Setup] — the initial `rootCanDoEverything` permission is created here.
+* link:users-and-permissions[Users and Permissions (API reference)] — API-level permission examples.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand collection path differences between plans.
+* link:/docs/security/permissions[Permission Management (full reference)] — deep-dive into the `mongoAclAuthorizer`, predicate language, and advanced patterns.

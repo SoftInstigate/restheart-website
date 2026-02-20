@@ -1,0 +1,547 @@
+---
+docs_version: 9
+title: Webhooks
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+liquid: true
+---
+
+The **Webhooks** feature lets you fire HTTP callbacks or send emails automatically in response to API events — no code deployment needed. When a request to your RESTHeart service matches a condition you define, the webhook triggers and sends data to any HTTP endpoint or email address.
+
+*Navigation path:* Service → Webhooks
+
+== How It Works
+
+The webhook plugin intercepts every HTTP request and response processed by your RESTHeart service. For each webhook you define, it evaluates the `condition` predicate. When the condition matches, the plugin fires the webhook — either sending an outbound HTTP request or dispatching an email.
+
+=== Plugin Lifecycle
+
+Before you can create webhooks, the plugin must be enabled:
+
+. Navigate to *Service → Webhooks*.
+. If the plugin is not yet active, the page shows an **Enable Webhooks** button. Click it to activate the plugin.
+. A badge at the top of the page always shows whether the plugin is **ENABLED** or **DISABLED**.
+
+NOTE: On some Free/Shared plans, plugin management may be restricted. Check the Plugins tab in the Cloud dashboard for your service's current status.
+
+== Webhook Types
+
+=== HTTP Webhooks
+
+Trigger an outbound HTTP POST request to any publicly accessible URL when the condition matches.
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `name`
+| Yes
+| Human-readable identifier, e.g. "New User Slack Alert".
+
+| `condition`
+| Yes
+| Undertow predicate expression. See <<conditions,Conditions>> below.
+
+| `url`
+| Yes
+| Destination URL. Must be publicly accessible. Use `https://httpbin.org/post` for testing.
+
+| `timeout_ms`
+| No
+| Request timeout in milliseconds. Range: 1000–30000. Default: `5000`.
+
+| `headers`
+| No
+| JSON object of custom headers sent with the outbound request, e.g. for authentication.
+
+| `transform.enabled`
+| No
+| Boolean. When `true`, the outbound body is shaped by the Mustache template below.
+
+| `transform.template`
+| No
+| Mustache template string defining the outbound request body. See <<transformation,Payload Transformation>>.
+|===
+
+=== Email Webhooks
+
+Send an email via a configured mail provider when the condition matches.
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `name`
+| Yes
+| Human-readable identifier.
+
+| `condition`
+| Yes
+| Undertow predicate expression.
+
+| `email.to`
+| Yes
+| Array of recipient email addresses.
+
+| `email.cc`
+| No
+| Array of CC email addresses.
+
+| `email.subject`
+| Yes
+| Email subject line. Supports Mustache variables.
+
+| `email.bodyType`
+| Yes
+| `"json"` — raw JSON payload; `"html"` — HTML template.
+
+| `email.bodyTemplate`
+| Yes
+| Template string for the email body. Supports Mustache variables.
+|===
+
+== Managing Webhooks
+
+=== Listing Webhooks
+
+The webhook list is fetched and displayed in a paginated, searchable table. Each row shows the webhook name, type, condition, enabled status, and action buttons.
+
+=== Creating a Webhook
+
+. Click **New Webhook**.
+. Select the type tab: **HTTP** or **Email**.
+. Fill in the fields for the chosen type.
+. Click **Save**.
+
+=== Editing a Webhook
+
+Click **Edit** on a webhook row to expand the pre-populated accordion form. All fields are editable. Click **Save** when done.
+
+=== Enabling and Disabling Individual Webhooks
+
+Each webhook row has an **Enable/Disable** toggle. Disabling a webhook keeps its configuration intact but prevents it from firing. Useful for temporarily pausing a webhook without deleting it.
+
+=== Deleting a Webhook
+
+Click **Delete** on a webhook row. A confirmation dialog appears before the webhook is permanently removed.
+
+== Conditions [[conditions]]
+
+The `condition` field uses the **Undertow predicate expression language** — the same syntax used in link:managing-permissions[ACL permission rules]. A condition is a boolean expression evaluated against the incoming HTTP request and its response.
+
+=== Path Predicates
+
+[source]
+----
+path('/users')                        # exact path match
+path-prefix('/orders')                # any path starting with /orders
+path-template('/users/{id}')          # parameterised path
+path-suffix('.csv')                   # path ending with .csv
+----
+
+=== Method Predicates
+
+[source]
+----
+method('POST')
+method('PUT') or method('PATCH')
+----
+
+=== Response Code Predicates
+
+[source]
+----
+response-code(201)
+response-code(200) or response-code(201)
+----
+
+=== Combining Predicates
+
+[source]
+----
+path('/users') and method('POST') and response-code(201)
+path-prefix('/orders') and (method('POST') or method('PUT'))
+path-template('/users/{id}') and method('DELETE')
+not method('GET')
+----
+
+=== Common Condition Examples
+
+[cols="2,3"]
+|===
+| Goal | Condition
+
+| Fire when a new user is created
+| `path('/users') and method('POST') and response-code(201)`
+
+| Fire on any write to `/orders`
+| `path-prefix('/orders') and (method('POST') or method('PUT') or method('PATCH'))`
+
+| Fire on any 5xx error
+| `response-code(500) or response-code(503)`
+
+| Fire when a specific resource is deleted
+| `path-template('/products/{id}') and method('DELETE')`
+|===
+
+TIP: Use the **Recording** feature (see <<recording,Recording>>) to capture real request paths before writing your condition — this ensures the predicate matches actual traffic.
+
+== Payload Transformation [[transformation]]
+
+By default, the outbound HTTP request body contains a standard JSON payload describing the event. Enable **transformation** when the target service requires a specific format (e.g. Slack blocks, Mailjet's API schema).
+
+Transformations use https://mustache.github.io[Mustache] templates with `{{variable}}` syntax.
+
+=== Available Variables
+
+[cols="1,3"]
+|===
+| Variable | Description
+
+| `{{service.id}}`
+| Identifier of the RESTHeart Cloud service.
+
+| `{{timestamp}}`
+| ISO 8601 timestamp of the event.
+
+| `{{request.method}}`
+| HTTP method of the triggering request (e.g. `POST`).
+
+| `{{request.path}}`
+| Path of the triggering request (e.g. `/users`).
+
+| `{{request.body.fieldName}}`
+| Any field from the request body. Use dot notation for nested fields.
+
+| `{{request.headers.Header-Name}}`
+| Any header from the incoming request.
+
+| `{{response.statusCode}}`
+| HTTP status code of the response.
+
+| `{{response.body.fieldName}}`
+| Any field from the response body.
+
+| `{{response.headers.Header-Name}}`
+| Any header from the response.
+|===
+
+=== Example: Slack Block Kit
+
+[source,json]
+----
+{
+  "text": "New event on {{service.id}}",
+  "blocks": [{
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*{{request.method}}* on `{{request.path}}`\nStatus: {{response.statusCode}}"
+    }
+  }, {
+    "type": "context",
+    "elements": [{
+      "type": "mrkdwn",
+      "text": "{{timestamp}}"
+    }]
+  }]
+}
+----
+
+=== Example: Mailjet Send API
+
+[source,json]
+----
+{
+  "Messages": [{
+    "From": { "Email": "noreply@yourdomain.com", "Name": "Your App" },
+    "To": [{ "Email": "{{request.body.email}}", "Name": "{{request.body.name}}" }],
+    "Subject": "Welcome!",
+    "HTMLPart": "<h1>Hi {{request.body.name}}!</h1><p>Welcome to our service.</p>"
+  }]
+}
+----
+
+The UI provides a **variable reference panel** — click any variable to insert it at the cursor position — and a set of **example templates** you can load and customise.
+
+== Execution Logs
+
+Select a webhook and switch to the **Logs** tab to view its execution history. Each log entry shows:
+
+* Timestamp
+* Status: `success`, `failed`, or `skipped`
+* Duration in milliseconds
+* Summary of the outbound request and response
+
+Click any entry to expand the full detail view:
+
+[cols="1,3"]
+|===
+| Section | What you see
+
+| Summary
+| Overall status and duration.
+
+| Incoming Request
+| Method, path, headers, and body of the request that triggered the webhook.
+
+| Condition Evaluation
+| Whether the condition matched (and why, if it didn't).
+
+| Transformation
+| Input data and rendered output template (if transformation is enabled).
+
+| Outgoing Request
+| The exact HTTP request sent to the target URL.
+
+| Response
+| Status code, headers, and body received from the target.
+|===
+
+Use the **status filter** dropdown to view only successes, failures, or skipped events. Click **Refresh** to reload the log list. Click **Clear Logs** to delete old entries (logs are also auto-deleted after 30 days).
+
+== Recording [[recording]]
+
+Click **Start Recording** in the Logs tab to capture all incoming requests for 60 seconds, regardless of whether any condition matches. Use this to:
+
+* Inspect the exact field names in real request bodies before writing a transformation template.
+* Verify that your condition predicate matches the actual paths and methods used by your clients.
+
+== Testing
+
+Click **Test Webhook** before saving to verify the configuration. The UI sends a sample request to the target URL and shows the response inline. Use `https://httpbin.org/post` as the target during development — it echoes back the received payload so you can inspect what RESTHeart is sending.
+
+== Tutorials
+
+=== Tutorial 1: Slack Notifications
+
+Send a Slack message whenever a new user registers.
+
+==== Step 1 — Create a Slack Incoming Webhook
+
+. Go to https://api.slack.com/messaging/webhooks.
+. Click **Create New App** → **From scratch**, name the app, and select your workspace.
+. Navigate to **Incoming Webhooks**, toggle it **ON**, and click **Add New Webhook to Workspace**.
+. Select the target channel and copy the webhook URL.
+
+==== Step 2 — Configure in RESTHeart Cloud
+
+Navigate to *Service → Webhooks* and click **New Webhook** (HTTP type):
+
+[cols="1,3"]
+|===
+| Field | Value
+
+| Name | `New User Slack Notification`
+| URL | _(your Slack webhook URL)_
+| Condition | `path('/users') and method('POST') and response-code(201)`
+| Timeout | `5000`
+| Transform | Enabled
+|===
+
+Transformation template:
+
+[source,json]
+----
+{
+  "text": "New User Registered",
+  "blocks": [{
+    "type": "header",
+    "text": { "type": "plain_text", "text": ":tada: New User Registered" }
+  }, {
+    "type": "section",
+    "fields": [
+      { "type": "mrkdwn", "text": "*Name:*\n{{request.body.name}}" },
+      { "type": "mrkdwn", "text": "*Email:*\n{{request.body.email}}" }
+    ]
+  }, {
+    "type": "context",
+    "elements": [{ "type": "mrkdwn", "text": "Service: {{service.id}} | {{timestamp}}" }]
+  }]
+}
+----
+
+Click **Test Webhook** and verify the message appears in Slack.
+
+==== Step 3 — Test with a Real Request
+
+[source,bash]
+----
+curl -X POST "https://your-service.restheart.com/users" \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)" \
+  -H "Content-Type: application/json" \
+  -d '{"_id": "jane", "password": "s3cr3t", "roles": ["user"], "name": "Jane Smith", "email": "jane@example.com"}'
+----
+
+==== More Slack Templates
+
+.Order notification
+[source,json]
+----
+{
+  "text": "New Order",
+  "blocks": [{
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": ":shopping_cart: *Order #{{response.body._id}}*\nCustomer: {{request.body.customerName}}\nTotal: ${{request.body.total}}"
+    }
+  }]
+}
+----
+
+.5xx error alert
+[source,json]
+----
+{
+  "text": "API Error",
+  "blocks": [{
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": ":warning: *{{response.statusCode}}* on `{{request.method}} {{request.path}}`"
+    }
+  }]
+}
+----
+Condition: `response-code(500) or response-code(503)`
+
+---
+
+=== Tutorial 2: Email via Mailjet
+
+Send a welcome email when a user registers.
+
+==== Step 1 — Set Up Mailjet
+
+. Sign up at https://www.mailjet.com.
+. Go to **Account Settings → API Key Management** and copy your API Key and Secret Key.
+. Go to **Sender Addresses** and verify your sending email address.
+. Base64-encode your credentials:
++
+[source,bash]
+----
+echo -n "YOUR_API_KEY:YOUR_SECRET_KEY" | base64
+----
+
+==== Step 2 — Configure in RESTHeart Cloud
+
+[cols="1,3"]
+|===
+| Field | Value
+
+| Name | `Welcome Email via Mailjet`
+| URL | `https://api.mailjet.com/v3.1/send`
+| Condition | `path('/users') and method('POST') and response-code(201)`
+| Timeout | `10000`
+| Headers | `{ "Authorization": "Basic <base64_credentials>", "Content-Type": "application/json" }`
+| Transform | Enabled
+|===
+
+Transformation template:
+
+[source,json]
+----
+{
+  "Messages": [{
+    "From": { "Email": "noreply@yourdomain.com", "Name": "Your App" },
+    "To": [{ "Email": "{{request.body.email}}", "Name": "{{request.body.name}}" }],
+    "Subject": "Welcome to Our Service!",
+    "TextPart": "Hi {{request.body.name}},\n\nWelcome aboard!\n\nBest regards,\nThe Team",
+    "HTMLPart": "<h1>Welcome {{request.body.name}}!</h1><p>We're glad to have you.</p>"
+  }]
+}
+----
+
+==== More Mailjet Templates
+
+.Order confirmation
+[source,json]
+----
+{
+  "Messages": [{
+    "From": { "Email": "orders@yourdomain.com", "Name": "Your Store" },
+    "To": [{ "Email": "{{request.body.customerEmail}}", "Name": "{{request.body.customerName}}" }],
+    "Subject": "Order Confirmation #{{response.body._id}}",
+    "HTMLPart": "<h1>Thank you!</h1><p>Order #{{response.body._id}} — Total: ${{request.body.total}}</p>"
+  }]
+}
+----
+
+---
+
+=== Tutorial 3: Email via SendGrid
+
+[cols="1,3"]
+|===
+| Field | Value
+
+| URL | `https://api.sendgrid.com/v3/mail/send`
+| Headers | `{ "Authorization": "Bearer YOUR_SENDGRID_API_KEY", "Content-Type": "application/json" }`
+|===
+
+Transformation template:
+
+[source,json]
+----
+{
+  "personalizations": [{ "to": [{ "email": "{{request.body.email}}", "name": "{{request.body.name}}" }] }],
+  "from": { "email": "noreply@yourdomain.com", "name": "Your App" },
+  "subject": "Welcome!",
+  "content": [{ "type": "text/html", "value": "<h1>Welcome {{request.body.name}}!</h1>" }]
+}
+----
+
+---
+
+=== Other Targets
+
+* **Discord** — create an Incoming Webhook in channel settings; use a Slack-like blocks payload.
+* **Microsoft Teams** — create an Incoming Webhook connector; use the MessageCard JSON format.
+* **Custom APIs** — study the target API documentation, build a matching transformation template, test with `https://httpbin.org/post` first.
+
+== Best Practices
+
+* Write specific conditions to avoid triggering on every request.
+* Always click **Test Webhook** before saving.
+* Use the **Recording** feature to inspect real request structures before writing transformation templates.
+* Set realistic timeouts — 5–10 seconds covers most external APIs.
+* Use HTTPS target URLs only.
+* Send only the fields the target needs; keep transformation templates focused.
+* Review logs regularly to catch failures early.
+* Multiple webhooks can share the same condition — all matching webhooks fire in parallel, and one failure does not affect the others.
+
+== Troubleshooting
+
+[cols="1,3"]
+|===
+| Symptom | Action
+
+| Webhook never triggers
+| Use Recording to capture actual request paths. Compare them to your condition predicate.
+
+| Status always `skipped`
+| The condition does not match. Check that path, method, and response code align with real traffic.
+
+| Target returns `401`
+| Verify the `headers` field contains the correct authentication credentials for the target API.
+
+| Target returns `400`
+| Open the log entry and inspect the **Transformation** section. Ensure the rendered output matches the target API's expected schema.
+
+| Emails not delivered
+| Verify the sender address is verified in Mailjet/SendGrid. Check spam folders. Review the provider dashboard for delivery status.
+
+| Slack rejects payload
+| Validate the Block Kit JSON at https://app.slack.com/block-kit-builder.
+
+| Timeout errors
+| Increase `timeout_ms` or verify the target service responds promptly.
+|===
+
+== Related Pages
+
+* link:managing-permissions[Managing Permissions (ACL)] — the `condition` predicate language is shared with ACL rules.
+* link:ui-overview[UI Overview] — common UI behaviours (search, pagination, error handling).
+* link:plans[Dedicated vs. Free/Shared Plans] — plugin availability by tier.

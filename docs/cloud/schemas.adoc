@@ -1,0 +1,277 @@
+---
+docs_version: 9
+title: JSON Schema Validation
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Schemas** section of the RESTHeart Cloud UI lets you create, edit, and manage reusable JSON Schema documents. Once defined, a schema can be assigned to any collection as a document validator, enforcing document structure at the database level on every write operation.
+
+*Navigation path:* Service → Schemas
+
+== What is JSON Schema Validation?
+
+JSON Schema is a vocabulary for describing and validating the structure of JSON documents. When you assign a schema to a MongoDB collection, RESTHeart instructs MongoDB to reject any document that does not conform to the schema before persisting it.
+
+This means validation is enforced **server-side**, regardless of which client or API call triggers the write — curl, JavaScript, mobile app, or any other client all get the same guarantee.
+
+RESTHeart Cloud supports **JSON Schema draft-07**.
+
+== Where Schemas Are Stored
+
+Schemas are stored as documents in the `/_schemas` collection. Each schema document contains the JSON Schema definition together with identifying metadata (`_id`, `title`, `description`). This collection is the same on both Free/Shared and Dedicated plans.
+
+== Schema Document Format
+
+[source,json]
+----
+{
+  "_id": "order-schema",
+  "title": "Order",
+  "description": "Validates order documents",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "customerId": { "type": "string" },
+    "total":      { "type": "number", "minimum": 0 },
+    "status":     { "type": "string", "enum": ["pending", "shipped", "delivered"] }
+  },
+  "required": ["customerId", "total"]
+}
+----
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `_id`
+| Yes
+| Unique identifier for the schema. This is the value you select when assigning the schema to a collection. Choose a descriptive, slug-style name (e.g. `order-schema`, `user-profile-v2`).
+
+| `title`
+| Recommended
+| Human-readable name displayed in the schema list and the collection metadata dialog.
+
+| `description`
+| Recommended
+| Short description of what the schema validates. Shown in the schema list.
+
+| `$schema`
+| Recommended
+| Declares the JSON Schema draft. Use `"http://json-schema.org/draft-07/schema#"` for draft-07.
+
+| `type`
+| Typically `"object"`
+| Root type of the validated document.
+
+| `properties`
+| No
+| Object describing each field — its type, constraints, and any nested structure.
+
+| `required`
+| No
+| Array of field names that must be present in every document.
+|===
+
+== Listing Schemas
+
+Schemas are fetched via `GET /_schemas?page=...&pagesize=...` and displayed in a paginated table. Each row shows the `_id`, `title`, and `description`.
+
+=== Searching Schemas
+
+Use the **Search** box to filter the loaded page by `_id`, `title`, or `description` (client-side filter, instant).
+
+=== Pagination
+
+Use **Previous** / **Next** to page through schemas. The page size is configurable via a dropdown in the toolbar.
+
+== Creating a Schema
+
+. Click **New Schema**.
+. Enter the schema `_id` — this is the identifier used when assigning the schema to a collection.
+. Enter the full JSON Schema document in the editor.
+. Click **Format** to pretty-print and validate the JSON before saving.
+. Click **Save**. The UI submits `POST /_schemas` with the schema document as the body.
+
+TIP: Start from the example document above and modify the `properties` and `required` arrays to match your data model. Online tools like https://jsonschema.net[jsonschema.net] can help you generate a draft schema from a sample document.
+
+=== Live Validation
+
+The editor validates the JSON syntax inline. If the JSON is malformed, an error message is shown and the **Save** button is disabled until the issue is corrected.
+
+== Editing a Schema
+
+. Click **Edit** on a schema row to open the editor pre-populated with the current schema document.
+. Modify the schema body as needed.
+. Click **Save**. The UI issues `PATCH /_schemas/<id>` with the updated document.
+
+IMPORTANT: Editing a schema does **not** automatically revalidate existing documents in assigned collections. Only new writes after the change are validated against the updated schema. If you need to revalidate existing data, query the collection and re-save each document, or use a MongoDB aggregation pipeline.
+
+== Deleting a Schema
+
+Click **Delete** on a schema row. A confirmation dialog appears before the `DELETE /_schemas/<id>` request is issued.
+
+WARNING: Deleting a schema that is still assigned to one or more collections does not remove the validator from those collections — the validator reference remains in the collection metadata but the schema document no longer exists. Use the Collection Browser's metadata dialog to remove or replace the validator on each affected collection before deleting the schema.
+
+== Copying a Schema ID
+
+Click the **Copy ID** icon on any schema row to copy the `_id` value to the clipboard. This is useful when you want to reference the schema in a custom API call or when assigning it to a collection via curl/HTTPie.
+
+== Assigning a Schema to a Collection
+
+Schemas are assigned to collections from the **Collection Browser**, not from the Schemas page. The workflow is:
+
+. Navigate to *Service → Collections*.
+. Click **Metadata** on the target collection row.
+. In the metadata dialog, locate the **JSON Schema Validator** field and select a schema by its `_id`.
+. Click **Save**. The UI issues `PATCH /<db>/<collection>` with:
++
+[source,json]
+----
+{
+  "jsonSchema": {
+    "schemaId": "order-schema"
+  }
+}
+----
+
+From this point on, every `POST`, `PUT`, and `PATCH` on the collection is validated against the schema before MongoDB persists it. Invalid documents are rejected with a `400 Bad Request` response and a descriptive validation error.
+
+NOTE: One schema can be assigned to **multiple** collections. Schemas are shared resources — editing a schema affects every collection that references it.
+
+== Understanding Validation Errors
+
+When a document fails validation, RESTHeart returns an HTTP `400 Bad Request` with a JSON body describing the violation. Example:
+
+[source,json]
+----
+{
+  "http status code": 400,
+  "http status description": "Bad Request",
+  "message": "Document validation failed",
+  "exception": {
+    "message": "required key [customerId] not found"
+  }
+}
+----
+
+Surface these errors in your application's UI so users understand what is wrong with their input.
+
+== Worked Example: Create → Assign → Test
+
+=== Step 1: Create the Schema
+
+In the Schemas page, click **New Schema** and enter `_id` = `product-schema` with the following body:
+
+[source,json]
+----
+{
+  "_id": "product-schema",
+  "title": "Product",
+  "description": "Validates product catalogue documents",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name":     { "type": "string", "minLength": 1 },
+    "price":    { "type": "number", "minimum": 0 },
+    "category": { "type": "string", "enum": ["electronics", "clothing", "food"] },
+    "inStock":  { "type": "boolean" }
+  },
+  "required": ["name", "price", "category"]
+}
+----
+
+Click **Save**.
+
+=== Step 2: Assign to a Collection
+
+. Go to *Service → Collections*.
+. Open **Metadata** for the `products` collection.
+. Select `product-schema` in the **JSON Schema Validator** field and click **Save**.
+
+=== Step 3: Test a Valid Write
+
+[source,bash]
+----
+curl -X POST https://myservice.restheart.com/mydb/products \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Laptop", "price": 999.99, "category": "electronics", "inStock": true}'
+----
+
+Expected response: `201 Created`.
+
+=== Step 4: Test an Invalid Write
+
+[source,bash]
+----
+curl -X POST https://myservice.restheart.com/mydb/products \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Laptop", "price": -5, "category": "gadgets"}'
+----
+
+Expected response: `400 Bad Request` — `price` violates `minimum: 0` and `category` violates the `enum` constraint.
+
+== JSON Schema Draft-07 Key Features
+
+[cols="1,3"]
+|===
+| Keyword | Description
+
+| `type`
+| Data type: `"string"`, `"number"`, `"integer"`, `"boolean"`, `"object"`, `"array"`, `"null"`.
+
+| `properties`
+| Defines the expected fields of an object and their schemas.
+
+| `required`
+| Array of field names that must be present.
+
+| `enum`
+| Restricts a field to a fixed set of values.
+
+| `minimum` / `maximum`
+| Numeric range constraints.
+
+| `minLength` / `maxLength`
+| String length constraints.
+
+| `pattern`
+| Regular expression constraint for strings.
+
+| `items`
+| Schema for elements of an array.
+
+| `additionalProperties`
+| When `false`, rejects documents with fields not listed in `properties`.
+
+| `$ref`
+| References another schema by URI (for composing complex schemas).
+
+| `if` / `then` / `else`
+| Conditional schema application.
+|===
+
+For the complete specification, see the https://json-schema.org/specification-links#draft-7[JSON Schema draft-07 specification].
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List schemas | `GET /_schemas?page=...&pagesize=...`
+| Create schema | `POST /_schemas`
+| Update schema | `PATCH /_schemas/<id>`
+| Delete schema | `DELETE /_schemas/<id>`
+| Assign to collection | `PATCH /<db>/<collection>` with `{ "jsonSchema": { "schemaId": "<id>" } }`
+|===
+
+== Related Pages
+
+* link:managing-data[Managing Collections & Documents] — assign schemas to collections from the Collection Browser.
+* link:aggregations[Aggregations] — use aggregation pipelines to query and report on validated data.
+* link:plans[Dedicated vs. Free/Shared Plans] — the `/_schemas` path is the same on all plans.
+* link:/docs/mongodb-rest/json-schema-validation[JSON Schema Validation (full reference)] — deep-dive into RESTHeart's schema enforcement API.

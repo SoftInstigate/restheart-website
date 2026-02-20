@@ -1,0 +1,167 @@
+---
+docs_version: 9
+title: Managing Users
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **User Management** section of the RESTHeart Cloud UI lets you create, search, edit, and delete the users that authenticate against your service via Basic Auth or Token Auth. These users are stored in the RESTHeart `users` collection and are entirely separate from your RESTHeart Cloud account credentials.
+
+*Navigation path:* Service → Users
+
+== How Users Work
+
+Each user document stored in the `users` collection represents an identity that can authenticate against your RESTHeart service. When a client sends a request with `Authorization: Basic <base64(username:password)>`, RESTHeart looks up the user by `_id`, verifies the password hash, and grants the roles defined on that document.
+
+The roles assigned to a user are referenced by the ACL rules defined in the link:managing-permissions[Permissions] section. A user with no matching ACL rules is effectively read-only or denied, depending on your permission configuration.
+
+=== Collection Path by Plan
+
+[cols="1,2"]
+|===
+| Plan | Users collection path
+
+| Free / Shared | `/users`
+| Dedicated | `/restheart/users`
+|===
+
+The UI abstracts this difference — you always navigate to *Service → Users* regardless of plan.
+
+== User Document Structure
+
+[source,json]
+----
+{
+  "_id": "alice",
+  "password": "plaintextOnWrite_hashedByServer",
+  "roles": ["user", "editor"]
+}
+----
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `_id`
+| Yes
+| The username. Used as the document identifier and as the value clients provide in the `Authorization` header. Must be unique.
+
+| `password`
+| Yes (on create)
+| The plaintext password sent by the client. **RESTHeart automatically hashes it with bcrypt before storing it.** On edit, leave this field blank to keep the existing password.
+
+| `roles`
+| Yes
+| Array of role name strings. These roles are matched against the ACL rules in the link:managing-permissions[Permissions] section. You can define any role names you like; the only built-in role with special meaning is `admin` (configured as the root role by default).
+|===
+
+IMPORTANT: **Passwords are never stored in plaintext.** The UI sends the password you type to RESTHeart, which immediately applies bcrypt hashing before persisting the document. You cannot retrieve a stored password — only reset it.
+
+== Listing Users
+
+The user list is fetched via `GET /users?page=...&pagesize=...` and displayed in a paginated, searchable table. Each row shows the `_id`, the assigned roles, and action buttons.
+
+=== Searching and Filtering
+
+Use the **Search** box to filter users by a MongoDB query expression, for example:
+
+[source,json]
+----
+{ "roles": "admin" }
+----
+
+or
+
+[source,json]
+----
+{ "_id": { "$regex": "^alice", "$options": "i" } }
+----
+
+The filter is sent as the `filter` query parameter. A **Sort** expression (JSON object) can also be applied, mapping to the `sort` query parameter.
+
+=== Pagination
+
+Use the **Previous** / **Next** buttons to page through results. The page size is configurable via a dropdown in the toolbar.
+
+== Creating a User
+
+. Click **New User**.
+. Fill in the form:
+** **Username** (`_id`) — the identifier used for authentication.
+** **Password** — the plaintext password; RESTHeart hashes it automatically.
+** **Roles** — add one or more role names. Click **Add Role** to insert additional role fields.
+. Click **Save**. The UI submits `POST /users` with the document body.
+
+TIP: Use descriptive role names that reflect your application's permission model (e.g. `reader`, `writer`, `moderator`, `admin`). These names are referenced in your ACL rules.
+
+=== Show/Hide Password
+
+The password field is masked by default. Click the **eye icon** to toggle visibility while typing.
+
+== Editing a User
+
+. Click **Edit** on a user row to expand the inline accordion form.
+. The form is pre-populated with the current `_id` and `roles`. The password field is **blank** — leave it blank to keep the existing password, or type a new value to reset it.
+. Modify the roles or set a new password, then click **Save**. The UI issues `PATCH /users/<id>` with only the changed fields.
+
+NOTE: The `_id` (username) is read-only after creation. To rename a user, delete the existing document and create a new one.
+
+== Deleting a User
+
+Click **Delete** on a user row. A confirmation dialog appears before the `DELETE /users/<id>` request is issued. Deleting a user immediately revokes all active sessions for that identity.
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List users | `GET /users?page=...&pagesize=...&filter=...&sort=...`
+| Create user | `POST /users`
+| Update user | `PATCH /users/<id>`
+| Delete user | `DELETE /users/<id>`
+|===
+
+On **Dedicated** plans replace `/users` with `/restheart/users` in all paths above.
+
+== Built-in and Custom Roles
+
+RESTHeart Cloud does not enforce a fixed role hierarchy beyond the root role (`admin` by default). You are free to define any roles that fit your application:
+
+[cols="1,3"]
+|===
+| Example role | Typical use
+
+| `admin`
+| Full administrative access. Matches the root ACL rule (`rootCanDoEverything`).
+
+| `user`
+| Standard authenticated user with access scoped by ACL rules.
+
+| `reader`
+| Read-only access to specific collections.
+
+| `writer`
+| Read/write access to specific collections.
+
+| _(any custom name)_
+| Define roles that match your application domain — e.g. `moderator`, `analyst`, `service-account`.
+|===
+
+The roles defined here are the same roles referenced in the `roles` array of your link:managing-permissions[ACL permission rules].
+
+== Security Considerations
+
+* Choose strong, unique passwords for all users.
+* Follow the **principle of least privilege**: assign only the roles a user genuinely needs.
+* Regularly audit the user list and remove accounts that are no longer required.
+* The `admin` role grants full access by default. Limit its assignment to trusted administrators.
+* Passwords are hashed with bcrypt — there is no way to retrieve a stored password. Use the edit form to reset a forgotten password.
+
+== Related Pages
+
+* link:managing-permissions[Managing Permissions (ACL)] — define what each role can do.
+* link:root-user-setup[Root User Setup] — create the initial administrative user using the Temporary Admin JWT.
+* link:users-and-permissions[Users and Permissions (API reference)] — API-level examples for creating and managing users programmatically.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand collection path differences between plans.

@@ -1,0 +1,286 @@
+---
+docs_version: 9
+title: Aggregation Pipelines
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Aggregations** section of the RESTHeart Cloud UI lets you define, test, and manage server-side MongoDB aggregation pipelines. Each pipeline is stored in the collection metadata and exposed as a REST endpoint that clients can call by URI — no arbitrary pipeline execution is allowed.
+
+*Navigation path:* Service → Aggregations
+
+== Why Server-Side Aggregations?
+
+When you expose aggregations server-side, clients call a named endpoint (e.g. `GET /orders/_aggrs/sales-by-region`) instead of posting an arbitrary pipeline. This means:
+
+* **Security** — clients can only run pre-approved, tested pipelines. They cannot craft destructive or resource-intensive queries on the fly.
+* **Consistency** — the pipeline logic lives in one place and is reused by every client.
+* **Simplicity** — clients need no knowledge of MongoDB's aggregation syntax; they just call a URL.
+
+== How Aggregations Are Stored
+
+Aggregation definitions are stored as an `aggrs` array inside a **collection's metadata** (not as separate documents). When you add or remove an aggregation in the UI, RESTHeart issues a `PATCH /<db>/<collection>` request that updates the `aggrs` array in place. No service restart is required.
+
+[source,json]
+----
+{
+  "aggrs": [
+    {
+      "uri": "sales-by-region",
+      "stages": [
+        { "$match": { "status": "completed" } },
+        { "$group": { "_id": "$region", "total": { "$sum": "$amount" } } },
+        { "$sort": { "total": -1 } }
+      ],
+      "allowDiskUse": false
+    }
+  ]
+}
+----
+
+== Aggregation Endpoint Format
+
+Once defined, an aggregation is callable at:
+
+[source]
+----
+GET /<db>/<collection>/_aggrs/<uri>?avars={"key":"value"}&page=1&pagesize=20
+----
+
+[cols="1,3"]
+|===
+| Parameter | Description
+
+| `<uri>`
+| The `uri` value set when the aggregation was created.
+
+| `avars`
+| Optional JSON object of variables injected into the pipeline via the `$var` operator (see <<avars,Pipeline Variables>>).
+
+| `page`
+| 1-based page number for paginated results.
+
+| `pagesize`
+| Number of results per page.
+|===
+
+== Listing Aggregations
+
+The Aggregations page loads all collections and fetches each collection's `/_meta` to discover the `aggrs` array. The result is displayed as a list of collections, each showing the number of aggregations defined on it.
+
+On **Dedicated** plans a database selector dropdown appears at the top of the page. Switching databases refreshes the collection list automatically.
+
+Use the **Search** box to filter the collection list by name (debounced, 300 ms).
+
+== Adding an Aggregation
+
+. Expand the collection you want to add a pipeline to.
+. Click **Add Aggregation**.
+. Fill in the form:
++
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `uri`
+| Yes
+| The path segment used to call the aggregation. Must be unique within the collection. Example: `sales-by-region`.
+
+| `stages`
+| Yes
+| The MongoDB aggregation pipeline as a JSON array. Each element is a pipeline stage object.
+
+| `allowDiskUse`
+| No
+| Boolean toggle. Set to `true` for pipelines that process more than 100 MB of data. Defaults to `false`.
+|===
+
+. Click **Save**. The UI issues `PATCH /<db>/<collection>` with the updated `aggrs` array.
+
+TIP: Use the **Format** button to pretty-print your pipeline JSON before saving. Invalid JSON blocks the save action with an inline error.
+
+== Editing an Aggregation
+
+. Expand the collection and find the aggregation entry.
+. Click **Edit**. The form is pre-populated with the current values.
+. The `uri` is **read-only** after creation — it forms part of the public endpoint URL.
+. Modify the `stages` or `allowDiskUse` flag, then click **Save**.
+
+NOTE: Changing the pipeline stages takes effect immediately without a service restart. In-flight requests to the old endpoint complete normally; subsequent requests use the updated pipeline.
+
+== Deleting an Aggregation
+
+Click **Delete** on an aggregation entry. A confirmation dialog appears before the `aggrs` array is updated to remove the entry.
+
+WARNING: Deleting an aggregation removes the endpoint immediately. Any clients that call the old URL will receive a `404 Not Found` response.
+
+== Executing an Aggregation (Inline Test Runner)
+
+Every aggregation entry has an **Execute** panel that lets you test the pipeline directly from the UI without leaving the page.
+
+=== Basic Execution
+
+Click **Execute** to run the aggregation with default parameters. Results are displayed as formatted JSON below the panel.
+
+=== Pipeline Variables (`avars`) [[avars]]
+
+The `$var` operator lets you inject runtime variables into a pipeline stage. In the execution panel, enter a JSON object in the **avars** field:
+
+[source,json]
+----
+{ "region": "europe", "minAmount": 1000 }
+----
+
+A pipeline stage using these variables might look like:
+
+[source,json]
+----
+{ "$match": { "region": { "$var": "region" }, "amount": { "$gt": { "$var": "minAmount" } } } }
+----
+
+The variables are passed as `?avars={"region":"europe","minAmount":1000}` in the REST call.
+
+=== Pagination
+
+The execution panel also exposes **page** and **pagesize** fields. Use these to page through large result sets during testing.
+
+=== Copy Pagination Stages
+
+Click **Copy Pagination Stages** to copy `$skip` and `$limit` stage templates to the clipboard. Paste them into your pipeline to implement server-side pagination:
+
+[source,json]
+----
+{ "$skip": 0 },
+{ "$limit": 20 }
+----
+
+=== Copy Endpoint URL
+
+Click **Copy URL** to copy the full REST endpoint URL (including `avars`) to the clipboard. Share it with clients or paste it into curl/HTTPie.
+
+== The `allowDiskUse` Flag
+
+MongoDB's aggregation engine limits working memory to **100 MB** per pipeline. If your pipeline processes large datasets (e.g. `$group` over millions of documents), it may fail with an "exceeded memory limit" error.
+
+Setting `allowDiskUse: true` tells MongoDB to spill intermediate results to disk, removing the memory cap. This trades CPU and memory efficiency for the ability to complete the pipeline.
+
+[cols="1,3"]
+|===
+| Value | When to use
+
+| `false` (default)
+| Most pipelines. Aggregations over a bounded, indexed dataset.
+
+| `true`
+| Large group-by or sort operations that exceed 100 MB. Reporting pipelines that run infrequently.
+|===
+
+TIP: Always add indexes that support your `$match` and `$sort` stages before enabling `allowDiskUse`. Proper indexing usually eliminates the need for it.
+
+== Pipeline Variables Reference (`$var` Operator)
+
+The `$var` operator is a RESTHeart extension that replaces itself with the value of a named variable from the `avars` query parameter at execution time. This allows you to write a single parameterised pipeline that serves multiple filtering scenarios.
+
+.Example pipeline stored in metadata
+[source,json]
+----
+{
+  "uri": "orders-by-status",
+  "stages": [
+    { "$match": { "status": { "$var": "status" } } },
+    { "$count": "total" }
+  ],
+  "allowDiskUse": false
+}
+----
+
+.Calling the pipeline with a variable
+[source,bash]
+----
+curl "https://myservice.restheart.com/mydb/orders/_aggrs/orders-by-status?avars=%7B%22status%22%3A%22pending%22%7D"
+----
+
+.JavaScript client example
+[source,javascript]
+----
+const avars = encodeURIComponent(JSON.stringify({ status: "pending" }));
+const response = await fetch(
+  `https://myservice.restheart.com/mydb/orders/_aggrs/orders-by-status?avars=${avars}`
+);
+const data = await response.json();
+----
+
+== Worked Example: Define, Save, and Call an Aggregation
+
+This end-to-end example creates a pipeline that counts orders grouped by status.
+
+=== Step 1: Define the Pipeline in the UI
+
+In the Aggregations page, expand the `orders` collection and click **Add Aggregation**:
+
+* **uri**: `count-by-status`
+* **stages**:
+
+[source,json]
+----
+[
+  { "$group": { "_id": "$status", "count": { "$sum": 1 } } },
+  { "$sort": { "count": -1 } }
+]
+----
+
+* **allowDiskUse**: off
+
+Click **Save**.
+
+=== Step 2: Test in the UI
+
+Click **Execute** on the `count-by-status` entry. The results panel shows something like:
+
+[source,json]
+----
+[
+  { "_id": "completed", "count": 1420 },
+  { "_id": "pending",   "count": 318 },
+  { "_id": "cancelled", "count": 74 }
+]
+----
+
+=== Step 3: Call from a Client
+
+[source,bash]
+----
+# curl
+curl "https://myservice.restheart.com/mydb/orders/_aggrs/count-by-status"
+----
+
+[source,javascript]
+----
+// JavaScript
+const res = await fetch(
+  "https://myservice.restheart.com/mydb/orders/_aggrs/count-by-status",
+  { headers: { "Authorization": "Basic " + btoa("alice:secret") } }
+);
+const counts = await res.json();
+----
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| Read collection metadata | `GET /<db>/<collection>/_meta`
+| Save aggregations | `PATCH /<db>/<collection>` with `{ "aggrs": [...] }`
+| Execute aggregation | `GET /<db>/<collection>/_aggrs/<uri>`
+| Execute with variables | `GET /<db>/<collection>/_aggrs/<uri>?avars={"key":"value"}`
+| Execute with pagination | `GET /<db>/<collection>/_aggrs/<uri>?page=1&pagesize=20`
+|===
+
+== Related Pages
+
+* link:managing-data[Managing Collections & Documents] — create and manage the collections that aggregations run against.
+* link:change-streams[WebSocket Change Streams] — stream real-time change events from collections.
+* link:/docs/mongodb-rest/aggregations[Aggregations (full reference)] — deep-dive into the RESTHeart aggregation API, `$var` operator, and advanced patterns.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand the database selector and path differences.
