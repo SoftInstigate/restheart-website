@@ -42,8 +42,8 @@ body{margin:0}
 a{background:transparent}
 a:focus{outline:thin dotted}
 a:active,a:hover{outline:0}
-h1{font-family: 'Space Mono', sans-serif;font-size:2em;margin:.67em 0}
-h2{font-family: 'Space Mono', sans-serif}
+h1{font-size:2em;margin:.67em 0}
+h2{}
 .doc p,blockquote,dt,td.content,span.alt{font-size:1rem}
 abbr[title]{border-bottom:1px dotted}
 b,strong{font-weight:bold}
@@ -475,4 +475,112 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .bd-content .card-body p {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
+}
+
+/* ── Doc heading hierarchy ───────────────────────────────── */
+
+/* h2 — major section */
+.bd-content h1,
+.bd-content h2,
+.bd-content h3,
+.bd-content h4,
+.bd-content h5,
+.bd-content h6 {
+  font-family: "Open Sans", "DejaVu Sans", sans-serif;
+}
+
+.bd-content h2::before {
+  content: "▸";
+  color: #f8a839;
+  margin-right: 0.35em;
+  font-size: 0.7em;
+  display: inline-block;
+  transform: translateY(-0.15em);
+}
+
+.docs-head h2::before,
+.docs-head h2 span::before {
+  content: none !important;
+}
+
+.bd-content h3::before {
+  content: "▸";
+  color: #f8a839;
+  margin-right: 0.35em;
+  font-size: 0.7em;
+  display: inline-block;
+  transform: translateY(-0.15em);
+}
+
+.bd-content h4::before {
+  content: "▸";
+  color: #f8a839;
+  margin-right: 0.3em;
+  font-size: 0.7em;
+  display: inline-block;
+  transform: translateY(-0.15em);
+}
+
+.bd-content h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.bd-content h2:first-child {
+  margin-top: 0.75rem;
+}
+
+/* h3 — subsection */
+.bd-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 1.75rem;
+  margin-bottom: 0.55rem;
+  line-height: 1.3;
+}
+
+/* h4 — minor heading */
+.bd-content h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8a839;
+  margin-top: 1.4rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+/* h5 — fine-grained: muted orange, medium weight */
+.bd-content h5 {
+  font-size: 0.925rem;
+  font-weight: 500;
+  color: rgba(248, 168, 57, 0.75);
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+/* h6 — label-level: dimmed, italic */
+.bd-content h6 {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #999999;
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.4;
+}
+
+/* Anchor offset for sticky header — keep headings visible on jump */
+.bd-content h2[id],
+.bd-content h3[id],
+.bd-content h4[id],
+.bd-content h5[id],
+.bd-content h6[id] {
+  scroll-margin-top: 5rem;
 }
