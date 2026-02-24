@@ -148,19 +148,11 @@ method('POST')
 method('PUT') or method('PATCH')
 ----
 
-=== Response Code Predicates
-
-[source]
-----
-response-code(201)
-response-code(200) or response-code(201)
-----
-
 === Combining Predicates
 
 [source]
 ----
-path('/users') and method('POST') and response-code(201)
+path('/users') and method('POST')
 path-prefix('/orders') and (method('POST') or method('PUT'))
 path-template('/users/{id}') and method('DELETE')
 not method('GET')
@@ -173,13 +165,10 @@ not method('GET')
 | Goal | Condition
 
 | Fire when a new user is created
-| `path('/users') and method('POST') and response-code(201)`
+| `path('/users') and method('POST')`
 
 | Fire on any write to `/orders`
 | `path-prefix('/orders') and (method('POST') or method('PUT') or method('PATCH'))`
-
-| Fire on any 5xx error
-| `response-code(500) or response-code(503)`
 
 | Fire when a specific resource is deleted
 | `path-template('/products/{id}') and method('DELETE')`
@@ -335,7 +324,7 @@ Navigate to *Service → Webhooks* and click **New Webhook** (HTTP type):
 
 | Name | `New User Slack Notification`
 | URL | _(your Slack webhook URL)_
-| Condition | `path('/users') and method('POST') and response-code(201)`
+| Condition | `path('/users') and method('POST')`
 | Timeout | `5000`
 | Transform | Enabled
 |===
@@ -405,7 +394,7 @@ curl -X POST "https://your-service.restheart.com/users" \
   }]
 }
 ----
-Condition: `response-code(500) or response-code(503)`
+Condition: `method('POST') or method('PUT') or method('PATCH')`
 
 ---
 
@@ -433,7 +422,7 @@ echo -n "YOUR_API_KEY:YOUR_SECRET_KEY" | base64
 
 | Name | `Welcome Email via Mailjet`
 | URL | `https://api.mailjet.com/v3.1/send`
-| Condition | `path('/users') and method('POST') and response-code(201)`
+| Condition | `path('/users') and method('POST')`
 | Timeout | `10000`
 | Headers | `{ "Authorization": "Basic <base64_credentials>", "Content-Type": "application/json" }`
 | Transform | Enabled

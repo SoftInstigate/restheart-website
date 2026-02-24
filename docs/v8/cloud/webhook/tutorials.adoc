@@ -37,7 +37,7 @@ From RESTHeart Cloud → Service → Plugins → Webhook Plugin:
 
 *URL*: Your Slack webhook URL
 
-*Condition*: `path('/users') and method('POST') and response-code(201)`
+*Condition*: `path('/users') and method('POST')`
 
 *Timeout*: `5000`
 
@@ -103,7 +103,7 @@ curl -X POST "https://your-service.cloud.restheart.com/users" \
   }]
 }
 ----
-Condition: `path('/orders') and method('POST') and response-code(201)`
+Condition: `path('/orders') and method('POST')`
 
 *Error Alert*:
 [source,json]
@@ -119,7 +119,7 @@ Condition: `path('/orders') and method('POST') and response-code(201)`
   }]
 }
 ----
-Condition: `response-code(500) or response-code(503)`
+Condition: `method('POST') or method('PUT') or method('PATCH')`
 
 == Tutorial 2: Email via Mailjet
 
@@ -145,7 +145,7 @@ echo -n "YOUR_API_KEY:YOUR_SECRET_KEY" | base64
 
 *URL*: `https://api.mailjet.com/v3.1/send`
 
-*Condition*: `path('/users') and method('POST') and response-code(201)`
+*Condition*: `path('/users') and method('POST')`
 
 *Timeout*: `10000`
 
@@ -204,7 +204,7 @@ curl -X POST "https://your-service.cloud.restheart.com/users" \
   }]
 }
 ----
-Condition: `path('/orders') and method('POST') and response-code(201)`
+Condition: `path('/orders') and method('POST')`
 
 *Password Reset*:
 [source,json]
