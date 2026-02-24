@@ -46,6 +46,9 @@ excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerpl
                 <div class="cta-description mt-4 white">
                     Get instant answers about RESTHeart • No need to read through all the docs!
                 </div>
+                <div class="mt-3">
+                  <a href="/docs/cloud/sophia/mcp" class="white" style="font-size: 0.9rem; opacity: 0.85;">Connect via MCP →</a>
+                </div>
               </div>
             </div>
           </div>
