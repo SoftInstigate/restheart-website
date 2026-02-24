@@ -114,6 +114,76 @@ Edit the Claude Desktop configuration file (`claude_desktop_config.json`):
 
 Add under the `mcpServers` key:
 
+*RESTHeart (on-prem)*
+
+[source,json]
+----
+{
+  "mcpServers": {
+    "sophia": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "env": {}
+    }
+  }
+}
+----
+
+*RESTHeart Cloud*
+
+[source,json]
+----
+{
+  "mcpServers": {
+    "sophia": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "env": {}
+    }
+  }
+}
+----
+
+Restart Claude Desktop. Sophia will appear as a connected tool in the sidebar.
+
+==== Cursor / VS Code
+
+In Cursor or VS Code with MCP support, add to your workspace or global MCP settings:
+
+*RESTHeart (on-prem)*
+
+[source,json]
+----
+{
+  "sophia": {
+    "type": "sse",
+    "url": "https://sophia-api.restheart.com/mcp"
+  }
+}
+----
+
+*RESTHeart Cloud*
+
+[source,json]
+----
+{
+  "sophia": {
+    "type": "sse",
+    "url": "https://sophia-api.restheart.com/mcp",
+    "headers": {
+      "X-Sophia-Tags": "cloud",
+      "X-Sophia-Prompt": "cloud"
+    }
+  }
+}
+----
+
+==== Claude Code (CLI)
+
+Add Sophia to your project's `.mcp.json` or global MCP config:
+
+*RESTHeart (on-prem)*
+
 [source,json]
 ----
 {
@@ -127,33 +197,17 @@ Add under the `mcpServers` key:
 }
 ----
 
-Restart Claude Desktop. Sophia will appear as a connected tool in the sidebar.
-
-==== Cursor / VS Code
-
-In Cursor or VS Code with MCP support, add to your workspace or global MCP settings:
+*RESTHeart Cloud*
 
 [source,json]
 ----
 {
-  "sophia": {
-    "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp"
-  }
-}
-----
-
-==== Claude Code (CLI)
-
-Add Sophia to your project's `.mcp.json` or global MCP config:
-
-[source,json]
-----
-{
-  "sophia": {
-    "command": "npx",
-    "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp"],
-    "env": {}
+  "mcpServers": {
+    "sophia": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "env": {}
+    }
   }
 }
 ----
