@@ -1,0 +1,389 @@
+---
+docs_version: 9
+title: Managing Indexes
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Indexes** section of the RESTHeart Cloud UI lets you list, create, and delete MongoDB indexes on any collection in your service — without writing a single API call. Proper indexes are essential for query performance: they allow MongoDB to satisfy queries by scanning a small index structure rather than every document in the collection.
+
+*Navigation path:* Service → Collections → _select a collection_ → Indexes
+
+== Why Indexes Matter
+
+Without an index, MongoDB must perform a **collection scan** — examining every document to find matches. On large collections this is slow and resource-intensive. An index stores a sorted subset of field values together with pointers to the full documents, so MongoDB can jump directly to the relevant records.
+
+Key benefits:
+
+* **Query speed** — filtered reads (`GET /<db>/<collection>?filter=...`) complete in milliseconds instead of seconds on large collections.
+* **Sort efficiency** — `sort` expressions that match an index field avoid an in-memory sort step.
+* **Uniqueness enforcement** — unique indexes reject duplicate values at the database level, regardless of which client issues the write.
+* **Full-text search** — text indexes let you use MongoDB's `$text` operator for keyword searches across one or more string fields.
+
+NOTE: Every collection automatically has a unique index on `_id`. This index cannot be deleted.
+
+== Index Document Format
+
+When creating an index you supply two objects:
+
+[source,json]
+----
+{
+  "keys": { "<field>": <direction> },
+  "ops":  { "<option>": <value> }
+}
+----
+
+[cols="1,1,3"]
+|===
+| Field | Required | Description
+
+| `keys`
+| Yes
+| A JSON object that maps each indexed field to its sort direction or index type. Use `1` for ascending, `-1` for descending, and `"text"` for a full-text index.
+
+| `ops`
+| No
+| A JSON object of index options (see <<index-options,Index Options>> below).
+|===
+
+=== Keys Examples
+
+[cols="2,3"]
+|===
+| `keys` value | What it creates
+
+| `{ "status": 1 }`
+| Ascending single-field index on `status`.
+
+| `{ "createdAt": -1 }`
+| Descending single-field index on `createdAt` — useful for "newest first" queries.
+
+| `{ "lastName": 1, "firstName": 1 }`
+| Compound index on `lastName` then `firstName`.
+
+| `{ "category": 1, "price": -1 }`
+| Compound index useful for queries that filter by `category` and sort by `price` descending.
+
+| `{ "description": "text" }`
+| Full-text index on the `description` field.
+
+| `{ "name": "text", "tags": "text" }`
+| Full-text index spanning both `name` and `tags`.
+|===
+
+=== Index Options [[index-options]]
+
+[cols="1,1,3"]
+|===
+| Option | Type | Description
+
+| `unique`
+| boolean
+| When `true`, rejects documents that would create a duplicate value on the indexed field(s). Defaults to `false`.
+
+| `sparse`
+| boolean
+| When `true`, the index only includes documents that contain the indexed field. Documents missing the field are excluded from the index (and from queries that use it). Defaults to `false`.
+
+| `name`
+| string
+| A custom name for the index. If omitted, MongoDB generates one from the field names and directions (e.g. `status_1`). Use explicit names to make indexes easier to identify and drop later.
+
+| `expireAfterSeconds`
+| integer
+| Creates a **TTL index** that automatically deletes documents a given number of seconds after the value of the indexed date field. The indexed field must be a BSON Date type.
+
+| `background`
+| boolean
+| Deprecated in MongoDB 4.2+. Indexes are always built in the background on modern MongoDB versions.
+|===
+
+== Listing Indexes
+
+When you navigate to the Indexes view for a collection, the UI issues:
+
+[source]
+----
+GET /<db>/<collection>/_indexes
+----
+
+The response is an array of index descriptors. Each row in the UI shows:
+
+* The index name (the `_id` of the descriptor).
+* The `key` pattern (field names and directions).
+* Any notable options (`unique`, `sparse`, `expireAfterSeconds`).
+* A **Delete** action for all indexes except the system `_id_` index.
+
+=== Dedicated Plan Database Selector
+
+On **Dedicated** plans, a database selector dropdown appears at the top of the Collections page. The indexes view always operates on the collection in the currently selected database.
+
+== Creating an Index
+
+. Navigate to *Service → Collections*.
+. Click the **Indexes** action on the target collection row.
+. Click **New Index**.
+. Enter the index **name** — this becomes the index identifier. Use a slug-style name that reflects the fields (e.g. `status-asc`, `category-price-idx`).
+. Enter the **Keys** JSON object, mapping each field to its direction or type.
+. Optionally enter the **Options** JSON object (`unique`, `sparse`, etc.).
+. Click **Format** to pretty-print and validate both JSON objects before saving.
+. Click **Save**. The UI issues `PUT /<db>/<collection>/_indexes/<name>` with the body:
+
+[source,json]
+----
+{
+  "keys": { ... },
+  "ops":  { ... }
+}
+----
+
+TIP: Index creation on a collection that already contains data may take a few seconds or longer depending on the number of existing documents. The UI shows a loading indicator while MongoDB builds the index.
+
+=== Live JSON Validation
+
+Both the **Keys** and **Options** editors validate JSON syntax inline. If either field contains malformed JSON, an error is shown and the **Save** button is disabled until the issue is corrected.
+
+== Deleting an Index
+
+. In the Indexes view for the collection, find the index row you want to remove.
+. Click **Delete**. A confirmation dialog appears.
+. Confirm the deletion. The UI issues `DELETE /<db>/<collection>/_indexes/<name>`.
+
+WARNING: Index deletion is immediate and irreversible. Any queries or sort operations that relied on the deleted index will fall back to a collection scan until a replacement index is created. Monitor query performance after deleting indexes from collections under active load.
+
+NOTE: The `_id_` index (the default system index on every collection) cannot be deleted. The **Delete** action is not shown for it.
+
+== Indexes Cannot Be Updated
+
+MongoDB does not support modifying an existing index in place. To change an index — for example, to add the `unique` flag or adjust the key pattern — you must:
+
+. **Delete** the existing index.
+. **Create** a new index with the desired definition.
+
+If you attempt to `PUT` an index name that already exists with a different definition, RESTHeart returns `406 Not Acceptable`.
+
+== Common Index Patterns
+
+=== Single-Field Ascending Index
+
+Speeds up equality filters and ascending sorts on a field.
+
+[source,json]
+----
+{
+  "keys": { "status": 1 },
+  "ops":  { "name": "status-asc" }
+}
+----
+
+*Useful for:* `GET /orders?filter={"status":"pending"}`
+
+=== Compound Index
+
+A compound index supports queries that filter or sort on multiple fields. MongoDB uses the index if the query matches a **prefix** of the key pattern.
+
+[source,json]
+----
+{
+  "keys": { "category": 1, "price": -1 },
+  "ops":  { "name": "category-price-idx" }
+}
+----
+
+*Useful for:* `GET /products?filter={"category":"electronics"}&sort={"price":-1}`
+
+=== Unique Index
+
+Enforces uniqueness on a field (other than `_id`) at the database level.
+
+[source,json]
+----
+{
+  "keys": { "email": 1 },
+  "ops":  { "unique": true, "name": "email-unique" }
+}
+----
+
+IMPORTANT: Creating a unique index on a collection that already contains duplicate values will fail with `406 Not Acceptable`. Resolve duplicate values before creating the index.
+
+=== Sparse Unique Index
+
+Useful when the indexed field is optional — documents that omit the field are excluded from uniqueness checking.
+
+[source,json]
+----
+{
+  "keys": { "taxId": 1 },
+  "ops":  { "unique": true, "sparse": true, "name": "taxid-unique-sparse" }
+}
+----
+
+=== TTL Index (Automatic Expiry)
+
+Automatically removes documents a set number of seconds after the value of a Date field. Ideal for sessions, logs, temporary records, and cache entries.
+
+[source,json]
+----
+{
+  "keys": { "expiresAt": 1 },
+  "ops":  { "expireAfterSeconds": 0, "name": "ttl-expires-at" }
+}
+----
+
+With `expireAfterSeconds: 0`, MongoDB deletes documents as soon as `expiresAt` is reached. Set a positive value (e.g. `3600`) to delete documents one hour _after_ the `expiresAt` timestamp.
+
+NOTE: The TTL background task runs approximately once per minute. Documents may remain in the collection for up to 60 seconds past their expiry time.
+
+=== Full-Text Index
+
+Enables keyword search via MongoDB's `$text` operator.
+
+[source,json]
+----
+{
+  "keys": { "title": "text", "body": "text" },
+  "ops":  { "name": "fulltext-title-body" }
+}
+----
+
+*Useful for:* `GET /articles?filter={"$text":{"$search":"restheart cloud"}}`
+
+NOTE: A collection can have **at most one** text index. To index additional fields, delete the existing text index and create a new one that includes all the fields you want.
+
+== Error Responses
+
+[cols="1,3"]
+|===
+| HTTP Status | Meaning
+
+| `201 Created`
+| Index created successfully.
+
+| `406 Not Acceptable`
+| The index definition is invalid — for example, the `unique` flag was specified on a field that already has duplicate values, or the name refers to an existing index with a different definition. The response body contains an `_exceptions` array with details.
+
+| `404 Not Found`
+| The collection or index name does not exist.
+
+| `401 Unauthorized`
+| Missing or invalid credentials.
+|===
+
+=== Example Error: Duplicate Key on Unique Index
+
+[source,json]
+----
+{
+  "http status code": 406,
+  "http status description": "Not Acceptable",
+  "message": "error creating the index",
+  "_exceptions": [
+    {
+      "exception": "com.mongodb.DuplicateKeyException",
+      "exception message": "Write failed with error code 11000 and error message 'E11000 duplicate key error collection: mydb.users index: email-unique dup key: { email: \"alice@example.com\" }'"
+    }
+  ]
+}
+----
+
+== API Reference
+
+[cols="2,3"]
+|===
+| Operation | Endpoint
+
+| List indexes | `GET /<db>/<collection>/_indexes`
+| Create index | `PUT /<db>/<collection>/_indexes/<name>`
+| Delete index | `DELETE /<db>/<collection>/_indexes/<name>`
+|===
+
+The `<name>` segment is the index name you supply in the `ops.name` field, or the name you type in the UI's **Name** field. It must be URL-safe (letters, digits, hyphens, and underscores are safe choices).
+
+== Worked Example: Index a Products Collection
+
+=== Step 1: List Existing Indexes
+
+Navigate to *Service → Collections → products → Indexes*. Initially you will see only the `_id_` system index.
+
+=== Step 2: Create a Compound Index for Category + Price Queries
+
+Click **New Index** and enter:
+
+* **Name**: `category-price-idx`
+* **Keys**:
+
+[source,json]
+----
+{ "category": 1, "price": -1 }
+----
+
+* **Options**: _(leave empty)_
+
+Click **Save**. The index appears in the list immediately after MongoDB finishes building it.
+
+=== Step 3: Create a Unique Index on SKU
+
+Click **New Index** and enter:
+
+* **Name**: `sku-unique`
+* **Keys**:
+
+[source,json]
+----
+{ "sku": 1 }
+----
+
+* **Options**:
+
+[source,json]
+----
+{ "unique": true }
+----
+
+Click **Save**. From this point on, any attempt to insert or update a document with a duplicate `sku` value is rejected with `400 Bad Request`.
+
+=== Step 4: Verify with a Filtered Query
+
+Use the link:managing-data[Documents Browser] to run:
+
+* **Filter**: `{"category": "electronics"}`
+* **Sort**: `{"price": -1}`
+
+The query should now return results instantly, using the `category-price-idx` index.
+
+=== Step 5: Call from a Client
+
+[source,bash]
+----
+curl "https://myservice.restheart.com/mydb/products?filter=%7B%22category%22%3A%22electronics%22%7D&sort=%7B%22price%22%3A-1%7D" \
+  -H "Authorization: Basic $(echo -n alice:secret | base64)"
+----
+
+[source,javascript]
+----
+const filter = encodeURIComponent(JSON.stringify({ category: "electronics" }));
+const sort   = encodeURIComponent(JSON.stringify({ price: -1 }));
+const res = await fetch(
+  `https://myservice.restheart.com/mydb/products?filter=${filter}&sort=${sort}`,
+  { headers: { "Authorization": "Basic " + btoa("alice:secret") } }
+);
+const products = await res.json();
+----
+
+== Performance Tips
+
+* **Index fields used in `filter` and `sort`** — if a query always filters by `status` and sorts by `createdAt`, a compound index `{ "status": 1, "createdAt": -1 }` serves both operations with a single index scan.
+* **Put equality fields first in compound indexes** — fields tested with an equality filter (`{"status": "active"}`) should appear before fields used for range queries or sorting.
+* **Use `sparse` for optional fields** — if a field is only present on a subset of documents, a sparse index is smaller and faster to build than a standard one.
+* **Avoid over-indexing** — every index consumes storage and slows down writes (inserts, updates, deletes must update all indexes). Create indexes that address real query patterns, not every possible query.
+* **Add indexes before enabling `allowDiskUse` on aggregations** — proper indexes on `$match` and `$sort` stages eliminate the need for the `allowDiskUse` flag in most cases. See link:aggregations[Aggregation Pipelines] for details.
+
+== Related Pages
+
+* link:managing-data[Managing Collections & Documents] — browse and query the collections whose indexes you manage here.
+* link:aggregations[Aggregation Pipelines] — add indexes on fields used in `$match` and `$sort` stages to maximise pipeline performance.
+* link:schemas[JSON Schema Validation] — enforce document structure at the database level alongside your indexes.
+* link:plans[Dedicated vs. Free/Shared Plans] — understand the database selector and collection path differences between service tiers.
+* link:/docs/mongodb-rest/indexes[Collection Indexes (full reference)] — low-level API reference for managing indexes directly via RESTHeart's REST API.
