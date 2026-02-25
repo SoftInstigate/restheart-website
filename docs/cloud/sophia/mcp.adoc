@@ -6,115 +6,33 @@ menu: cloud
 applies_to: both
 ---
 
-== Model Context Protocol (MCP) Integration
+== Sophia MCP Server
 
-Sophia exposes a *Model Context Protocol (MCP) server*, allowing any MCP-compatible AI client or agent to query the Sophia knowledge base directly — without building a custom integration.
+Sophia exposes a link:https://modelcontextprotocol.io[Model Context Protocol (MCP)] server, so any MCP-compatible AI client (Claude Desktop, Cursor, VS Code, Claude Code…) can query your knowledge base directly.
 
-This makes it easy to connect tools like Claude Desktop, Cursor, VS Code, and other AI assistants to your Sophia knowledge base.
-
-=== What is MCP?
-
-The link:https://modelcontextprotocol.io[Model Context Protocol] is an open standard that allows AI clients (assistants, agents, IDEs) to connect to external knowledge sources and tools. By exposing an MCP server, Sophia becomes a native knowledge source for any MCP-compatible client.
-
-=== MCP Endpoint
+=== Endpoint
 
 [source]
 ----
 https://sophia-api.restheart.com/mcp
 ----
 
-The endpoint supports both *HTTP (SSE)* and *stdio via `mcp-remote`* transports.
+No authentication required.
 
-=== Configuration
+=== Quick Setup
 
-==== Clients with HTTP/SSE support
+Pick your client, then paste the snippet into your config file.
 
-Clients that natively support HTTP transport (e.g. Claude Desktop ≥ 0.10, some IDE extensions) can connect directly:
-
-*RESTHeart documentation (on-prem):*
-
-[source,json]
-----
-{
-  "sophia": {
-    "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp"
-  }
-}
-----
-
-*RESTHeart Cloud knowledge base:*
-
-[source,json]
-----
-{
-  "sophia": {
-    "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp",
-    "headers": {
-      "X-Sophia-Tags": "cloud",
-      "X-Sophia-Prompt": "cloud"
-    }
-  }
-}
-----
-
-==== Clients without HTTP support (via `mcp-remote`)
-
-For clients that only support `stdio` (e.g. older Claude Desktop versions, many CLI tools), use the link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] bridge. It requires link:https://nodejs.org[Node.js] installed.
-
-*RESTHeart documentation (on-prem):*
-
-[source,json]
-----
-{
-  "sophia": {
-    "command": "npx",
-    "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp"],
-    "env": {}
-  }
-}
-----
-
-*RESTHeart Cloud knowledge base:*
-
-[source,json]
-----
-{
-  "sophia": {
-    "command": "npx",
-    "args": [
-      "mcp-remote",
-      "https://sophia-api.restheart.com/mcp",
-      "--header", "X-Sophia-Tags: cloud",
-      "--header", "X-Sophia-Prompt: cloud"
-    ],
-    "env": {}
-  }
-}
-----
-
-=== Request Headers
-
-[cols="1,1,2", options="header"]
-|===
-| Header | Required | Description
-| `X-Sophia-Tags` | No | Filter knowledge base by tag (e.g. `cloud`). If omitted, searches all documents.
-| `X-Sophia-Prompt` | No | Select a custom prompt template (e.g. `cloud`). If omitted, the default prompt is used.
-|===
-
-=== Client-specific Setup Examples
+NOTE: If your client supports only `stdio` (e.g. older Claude Desktop), use the `mcp-remote` variant — it requires link:https://nodejs.org[Node.js ≥ 18].
 
 ==== Claude Desktop
 
-Edit the Claude Desktop configuration file (`claude_desktop_config.json`):
+Config file location:
 
 * *macOS:* `~/Library/Application Support/Claude/claude_desktop_config.json`
 * *Windows:* `%APPDATA%\Claude\claude_desktop_config.json`
 
-Add under the `mcpServers` key:
-
-*RESTHeart (on-prem)*
+*RESTHeart*
 
 [source,json]
 ----
@@ -122,7 +40,11 @@ Add under the `mcpServers` key:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "args": [
+        "mcp-remote",
+        "https://sophia-api.restheart.com/mcp",
+        "--header", "X-Sophia-Tags: restheart"
+      ],
       "env": {}
     }
   }
@@ -137,27 +59,35 @@ Add under the `mcpServers` key:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "args": [
+        "mcp-remote",
+        "https://sophia-api.restheart.com/mcp",
+        "--header", "X-Sophia-Tags: cloud",
+        "--header", "X-Sophia-Prompt: cloud"
+      ],
       "env": {}
     }
   }
 }
 ----
 
-Restart Claude Desktop. Sophia will appear as a connected tool in the sidebar.
+Restart Claude Desktop. Sophia will appear as a connected tool.
 
 ==== Cursor / VS Code
 
-In Cursor or VS Code with MCP support, add to your workspace or global MCP settings:
+Add to your workspace or global MCP settings:
 
-*RESTHeart (on-prem)*
+*RESTHeart*
 
 [source,json]
 ----
 {
   "sophia": {
     "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp"
+    "url": "https://sophia-api.restheart.com/mcp",
+    "headers": {
+      "X-Sophia-Tags": "restheart"
+    }
   }
 }
 ----
@@ -180,9 +110,9 @@ In Cursor or VS Code with MCP support, add to your workspace or global MCP setti
 
 ==== Claude Code (CLI)
 
-Add Sophia to your project's `.mcp.json` or global MCP config:
+Add to your project's `.mcp.json` or global MCP config:
 
-*RESTHeart (on-prem)*
+*RESTHeart*
 
 [source,json]
 ----
@@ -190,7 +120,11 @@ Add Sophia to your project's `.mcp.json` or global MCP config:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp"],
+      "args": [
+        "mcp-remote",
+        "https://sophia-api.restheart.com/mcp",
+        "--header", "X-Sophia-Tags: restheart"
+      ],
       "env": {}
     }
   }
@@ -205,27 +139,33 @@ Add Sophia to your project's `.mcp.json` or global MCP config:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud" ],
+      "args": [
+        "mcp-remote",
+        "https://sophia-api.restheart.com/mcp",
+        "--header", "X-Sophia-Tags: cloud",
+        "--header", "X-Sophia-Prompt: cloud"
+      ],
       "env": {}
     }
   }
 }
 ----
 
-=== Available MCP Tools
+=== Optional Headers
 
-Once connected, the AI client gains access to these Sophia tools:
+[cols="1,2", options="header"]
+|===
+| Header | Description
+| `X-Sophia-Tags` | Filter documentation by tag: `restheart` for on-prem docs, `cloud` for RESTHeart Cloud docs. Omit to search all documents.
+| `X-Sophia-Prompt` | Select a prompt template tuned for the target product. Omit to use the default.
+|===
+
+=== Available Tools
 
 [cols="1,2", options="header"]
 |===
 | Tool | Description
 | `sophia_search` | Semantic search over the RESTHeart knowledge base. Returns relevant text segments.
-| `sophia_render_prompt` | Builds a fully interpolated prompt including RAG context, ready to be sent to any LLM.
-| `sophia_api` | Returns the complete Sophia REST API reference.
+| `sophia_render_prompt` | Builds a fully interpolated prompt with RAG context, ready to send to any LLM.
+| `sophia_api` | Returns the complete Sophia REST API reference. Requires authentication — reserved for service administrators.
 |===
-
-=== Notes
-
-* No authentication is required for public Sophia instances.
-* `mcp-remote` requires Node.js ≥ 18. Install it from link:https://nodejs.org[nodejs.org].
-* The `npx mcp-remote` command will be downloaded automatically the first time it runs.
