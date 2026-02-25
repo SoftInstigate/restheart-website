@@ -8,31 +8,11 @@ applies_to: both
 
 == Sophia MCP Server
 
-Sophia exposes a link:https://modelcontextprotocol.io[Model Context Protocol (MCP)] server, so any MCP-compatible AI client (Claude Desktop, Cursor, VS Code, Claude Code…) can query your knowledge base directly.
+Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to your RESTHeart knowledge base in minutes.
 
-=== Endpoint
+*Endpoint:* `https://sophia-api.restheart.com/mcp` — no authentication required.
 
-[source]
-----
-https://sophia-api.restheart.com/mcp
-----
-
-No authentication required.
-
-=== Quick Setup
-
-Pick your client, then paste the snippet into your config file.
-
-NOTE: If your client supports only `stdio` (e.g. older Claude Desktop), use the `mcp-remote` variant — it requires link:https://nodejs.org[Node.js ≥ 18].
-
-==== Claude Desktop
-
-Config file location:
-
-* *macOS:* `~/Library/Application Support/Claude/claude_desktop_config.json`
-* *Windows:* `%APPDATA%\Claude\claude_desktop_config.json`
-
-*RESTHeart*
+=== RESTHeart
 
 [source,json]
 ----
@@ -40,18 +20,13 @@ Config file location:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "X-Sophia-Tags: restheart"
-      ],
-      "env": {}
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: restheart"]
     }
   }
 }
 ----
 
-*RESTHeart Cloud*
+=== RESTHeart Cloud
 
 [source,json]
 ----
@@ -59,25 +34,21 @@ Config file location:
   "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "X-Sophia-Tags: cloud",
-        "--header", "X-Sophia-Prompt: cloud"
-      ],
-      "env": {}
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud"]
     }
   }
 }
 ----
 
-Restart Claude Desktop. Sophia will appear as a connected tool.
+The snippets above use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`], a small Node.js bridge that exposes the HTTP endpoint as a local `stdio` process — the format most clients expect. It requires link:https://nodejs.org[Node.js ≥ 18] and is downloaded automatically by `npx` on first run.
 
-==== Cursor / VS Code
+Clients that natively support HTTP/SSE transport (Cursor, VS Code, newer Claude Desktop) can connect directly without `mcp-remote`, using a simpler `type: sse` config — see below.
 
-Add to your workspace or global MCP settings:
+=== Client-specific notes
 
-*RESTHeart*
+*Claude Desktop* — add the snippet above under `mcpServers` in `claude_desktop_config.json` (`~/Library/Application Support/Claude/` on macOS, `%APPDATA%\Claude\` on Windows), then restart.
+
+*Cursor / VS Code* — support HTTP natively; use `"type": "sse"` with a `"headers"` map instead of `command`/`args`:
 
 [source,json]
 ----
@@ -85,80 +56,12 @@ Add to your workspace or global MCP settings:
   "sophia": {
     "type": "sse",
     "url": "https://sophia-api.restheart.com/mcp",
-    "headers": {
-      "X-Sophia-Tags": "restheart"
-    }
+    "headers": { "X-Sophia-Tags": "restheart" }
   }
 }
 ----
 
-*RESTHeart Cloud*
-
-[source,json]
-----
-{
-  "sophia": {
-    "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp",
-    "headers": {
-      "X-Sophia-Tags": "cloud",
-      "X-Sophia-Prompt": "cloud"
-    }
-  }
-}
-----
-
-==== Claude Code (CLI)
-
-Add to your project's `.mcp.json` or global MCP config:
-
-*RESTHeart*
-
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "X-Sophia-Tags: restheart"
-      ],
-      "env": {}
-    }
-  }
-}
-----
-
-*RESTHeart Cloud*
-
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "X-Sophia-Tags: cloud",
-        "--header", "X-Sophia-Prompt: cloud"
-      ],
-      "env": {}
-    }
-  }
-}
-----
-
-=== Optional Headers
-
-[cols="1,2", options="header"]
-|===
-| Header | Description
-| `X-Sophia-Tags` | Filter documentation by tag: `restheart` for on-prem docs, `cloud` for RESTHeart Cloud docs. Omit to search all documents.
-| `X-Sophia-Prompt` | Select a prompt template tuned for the target product. Omit to use the default.
-|===
+*Claude Code* — add to your project's `.mcp.json` or global MCP config.
 
 === Available Tools
 
