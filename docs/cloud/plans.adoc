@@ -44,10 +44,34 @@ This page is the authoritative reference for all plan-related differences visibl
 | Basic
 | Advanced monitoring, logging, and analytics
 
+| **MongoDB**
+| Included and managed by RESTHeart Cloud
+| Required: connect your own MongoDB instance
+
 | **Intended use**
 | Prototyping, learning, small projects
 | Production applications, enterprise workloads
 |===
+
+== MongoDB
+
+The way MongoDB is provided differs fundamentally between plan tiers.
+
+=== Free / Shared — MongoDB Included
+
+On **Free / Shared** plans, MongoDB is **included and fully managed by RESTHeart Cloud**. You do not need to provision, configure, or connect any database. RESTHeart Cloud handles database provisioning, backups, and maintenance automatically. Storage limits apply depending on the tier (see https://cloud.restheart.com/pricing[Pricing]).
+
+=== Dedicated — Bring Your Own MongoDB
+
+IMPORTANT: The **Dedicated** plan does **not** include a managed MongoDB instance. You must supply your own external MongoDB connection before a Dedicated service can be provisioned. RESTHeart Cloud connects to your MongoDB on your behalf; it never hosts the database itself.
+
+Accepted MongoDB providers include:
+
+* **MongoDB Atlas** (recommended) — any cluster tier on AWS, GCP, or Azure
+* **Self-hosted / on-premise** MongoDB — version 6.0 or later
+* Any MongoDB-compatible service that exposes a standard connection string
+
+You provide the connection string when creating or configuring your Dedicated service in the RESTHeart Cloud dashboard. For full instructions, see link:custom-mongodb[Connecting Your MongoDB to RESTHeart Cloud Dedicated].
 
 == System Collection Paths
 
@@ -150,4 +174,5 @@ You can upgrade from Free/Shared to Dedicated at any time from the RESTHeart Clo
 
 * link:ui-overview[Cloud UI Overview] — introduction to the management console and common UI behaviours.
 * link:getting-started[Getting Started] — create your first service and set up your root user.
+* link:custom-mongodb[Connecting Your MongoDB to RESTHeart Cloud Dedicated] — step-by-step guide for supplying a MongoDB connection string on Dedicated plans.
 * https://cloud.restheart.com/pricing[Pricing] — compare all tiers in detail.

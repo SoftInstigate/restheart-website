@@ -1,0 +1,131 @@
+---
+docs_version: 9
+title: Connecting Your MongoDB to RESTHeart Cloud Dedicated
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+IMPORTANT: The **Dedicated** plan does **not** include a managed MongoDB instance. You must supply your own MongoDB before a Dedicated service can be activated. This is a hard requirement, not an optional feature.
+
+On **Free / Shared** plans, MongoDB is included and managed automatically by RESTHeart Cloud — no configuration is needed.
+
+== Overview
+
+When you create a Dedicated service, RESTHeart Cloud acts as a managed API layer in front of your MongoDB. You retain full ownership and control of the database; RESTHeart Cloud never hosts or manages it. This model gives you complete flexibility over your MongoDB tier: cluster size, cloud provider, region, backup policy, and version.
+
+== Prerequisites
+
+Before provisioning a Dedicated service you must have:
+
+* A running MongoDB instance accessible from the internet (or from RESTHeart Cloud's IP range — see <<network-requirements,Network Requirements>> below)
+* A MongoDB connection string in URI format (see <<connection-string,Connection String Format>>)
+* MongoDB version **6.0 or later**
+
+== Supported MongoDB Providers
+
+Any MongoDB-compatible host that exposes a standard connection URI is accepted:
+
+[cols="1,3"]
+|===
+| Provider | Notes
+
+| **MongoDB Atlas**
+| Recommended. Available on AWS, GCP, and Azure. Any cluster tier (M0 free tier included for testing). Ensure the RESTHeart Cloud IPs are whitelisted in Atlas Network Access.
+
+| **Self-hosted / on-premise**
+| Any MongoDB 6.0+ deployment reachable via TLS. Suitable for private-cloud or air-gapped environments with VPN or private peering.
+
+| **Other managed services**
+| Azure Cosmos DB for MongoDB, Amazon DocumentDB (with MongoDB compatibility), and similar services — provided they expose a standard MongoDB connection string and are compatible with the required MongoDB version.
+|===
+
+[[connection-string]]
+== Connection String Format
+
+RESTHeart Cloud expects a standard MongoDB connection URI:
+
+[source]
+----
+mongodb+srv://<username>:<password>@<host>/<database>?retryWrites=true&w=majority
+----
+
+Or, for non-SRV setups:
+
+[source]
+----
+mongodb://<username>:<password>@<host>:<port>/<database>?tls=true&retryWrites=true
+----
+
+Requirements for the connection string:
+
+* The database user must have **readWrite** access on the target database and **read** access on the `admin` database (required for server-level checks).
+* TLS must be enabled (the `tls=true` parameter or `mongodb+srv://` scheme implies this).
+* The password must be URL-encoded if it contains special characters.
+
+TIP: Create a dedicated database user for RESTHeart Cloud with the minimum permissions required. Do not reuse admin credentials.
+
+[[network-requirements]]
+== Network Requirements
+
+RESTHeart Cloud connects to your MongoDB from fixed egress IP addresses. You must whitelist these IPs in your MongoDB provider's network access controls (e.g. MongoDB Atlas → Network Access → IP Access List).
+
+Contact support through the RESTHeart Cloud dashboard to obtain the current list of egress IPs for your region.
+
+Additionally:
+
+* **TLS is mandatory.** Connections without TLS are rejected. MongoDB Atlas enables TLS by default; for self-hosted deployments, configure `net.tls.mode: requireTLS` in `mongod.conf`.
+* **Port 27017** (or the custom port for your deployment) must be open to the RESTHeart Cloud egress IPs.
+
+== Providing the Connection String
+
+During Dedicated service provisioning:
+
+. Open the https://cloud.restheart.com[RESTHeart Cloud dashboard] and click **Create API**.
+. Select the **Dedicated** tier.
+. In the **MongoDB Connection** step, paste your connection string into the provided field.
+. RESTHeart Cloud validates the connection (verifying reachability and credentials) before the service is activated.
+. Once validated, the service is provisioned and your API URL is assigned.
+
+If validation fails, check:
+
+* The connection string syntax
+* Network access / IP whitelist rules
+* Database user credentials and permissions
+* TLS configuration on your MongoDB host
+
+== System Collection Paths on Dedicated
+
+When RESTHeart Cloud connects to your MongoDB on a Dedicated plan, system collections are stored in a dedicated prefix to avoid collisions with your application data:
+
+[cols="2,2"]
+|===
+| Collection | Path on Dedicated plan
+
+| Users
+| `/restheart/users`
+
+| ACL (Permissions)
+| `/restheart/acl`
+
+| GraphQL apps
+| `/restheart/gql-apps`
+
+| JSON Schemas
+| `/_schemas`
+|===
+
+WARNING: Do not use the `restheart` database for your own application collections. It is reserved for RESTHeart Cloud system data.
+
+The Cloud UI handles these paths transparently. If you access the API directly (e.g. via curl or application code), use the paths above. See link:plans[Dedicated vs. Free/Shared Plans] for the full comparison with Free/Shared paths.
+
+== Rotating or Updating the Connection String
+
+If you need to rotate database credentials or point the service to a different MongoDB instance, update the connection string from the Dedicated service settings in the RESTHeart Cloud dashboard. The service will briefly restart to apply the new connection.
+
+== Next Steps
+
+* link:plans[Dedicated vs. Free/Shared Plans] — full side-by-side comparison of plan features and system collection paths.
+* link:getting-started[Getting Started] — provision your first service and create the root user.
+* link:managing-users[User Management] — manage users stored in `/restheart/users` on Dedicated.
+* link:managing-permissions[Permissions (ACL)] — configure RBAC rules in `/restheart/acl` on Dedicated.
