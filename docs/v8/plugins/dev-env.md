@@ -10,7 +10,12 @@ applies_to: restheart
 
 * [Introduction](#introduction)
 * [Plugin Project Skeleton](#plugin-project-skeleton)
-* [HTTP Shell](#http-shell)
+* [Requirements](#requirements)
+* [Quick Start](#quick-start)
+* [Build Systems](#build-systems)
+* [Working with MongoDB](#working-with-mongodb)
+* [Native Image Builds](#native-image-builds)
+* [Configuration with RHO](#configuration-with-rho)
 
 </div>
 <div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
@@ -27,51 +32,162 @@ This page summarizes our findings and provides you with links and tips to setup 
 
 ## Plugin Project Skeleton
 
-You can start developing a plugin by forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton)
+You can start developing a plugin by forking the repository [restheart-plugin-skeleton](https://github.com/SoftInstigate/restheart-plugin-skeleton).
 
-This repository includes a sample service and provides you with the following features:
+{: .bs-callout.bs-callout-info }
+The skeleton targets RESTHeart 9+. For RESTHeart 8.x, use the git tag `8.x`.
+
+## Requirements
+
+- **GraalVM 25 (or Java 25)**: required to compile and run the plugin.
+- **Docker**: used to run RESTHeart and MongoDB.
+
+Install GraalVM via [SDKMAN](https://sdkman.io/):
+
+```bash
+sdk install java 25.0.1-graalce
+sdk use java 25.0.1-graalce
+```
+
+## Quick Start
+
+### Option 1: Use the RESTHeart CLI (Recommended)
+
+The [RESTHeart CLI](https://github.com/SoftInstigate/restheart-cli) (`rh`) is the recommended tool for plugin development. It streamlines the entire development lifecycle — installing RESTHeart, building your plugin, and running it — with a single command.
+
+Install it via npm:
+
+```bash
+npm install -g @softinstigate/rh
+```
+
+Then install RESTHeart and start developing with watch mode (auto-rebuild on code changes):
+
+```bash
+rh install
+rh watch --build -- -s
+```
+
+The `watch` command monitors your source files and automatically rebuilds and restarts RESTHeart whenever you save a change. The `-s` flag runs in standalone mode (no MongoDB required).
+
+To connect to a MongoDB instance, use the `RHO` variable to override the connection string:
+
+```bash
+RHO='/mclient/connection-string->"mongodb://localhost:27017"' rh watch
+```
+
+You can also attach a remote debugger (JDWP) on port `HTTP_PORT + 1000` (default: `9080`):
+
+```bash
+rh watch --debug
+```
+
+See the [RESTHeart CLI Usage Guide](https://github.com/SoftInstigate/restheart-cli/blob/master/usage-guide.md) for the full command reference.
+
+### Option 2: Build and Run with Docker
+
+**Clone the repository:**
+
+```bash
+git clone --depth 1 git@github.com:SoftInstigate/restheart-plugin-skeleton.git
+cd restheart-plugin-skeleton
+```
+
+**Build (choose Maven or Gradle):**
+
+```bash
+# Maven
+./mvnw clean package
+
+# Gradle
+./gradlew clean build
+```
+
+**Run with Docker (standalone mode, no MongoDB):**
+
+```bash
+docker run --pull=always --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart -s
+```
+
+**Test the service:**
+
+```bash
+curl localhost:8080/srv
+{"message":"Hello World!","rnd":"njXZksfKFW"}
+```
+
+## Build Systems
+
+Both Maven and Gradle are fully supported and produce identical outputs:
 
 {: .table }
-|feature|description|
-|-|-|
-|**Easy Execution**|A script allows to automatically download and run RESTHeart with your plugin. `docker compose` can be used to start MongoDB configured as a single instance Replica Set to enable transactions and change streams|
-|**Watch Mode**|You can develop in *Watch Mode* so that the code is automatically rebuilt, and RESTHeart automatically restarted as soon as you change a source or configuration file.|
-|**Notifications**| get notifications on OSX when the *watcher* builds and restarts RESTHeart, so you know when you can try your changes.|
-|**microD profile**|Start RESTHeart without the MongoDB Service. We call this profile *microD*, because it is an effective runtime environment for micro-services.|
-|**Debugging and Hot Code Replace**|RESTHeart runs in development mode, i.e. with the JVM configured for remote debugging. This also allows IDEs to dynamically apply Hot Code Replace, i.e, the code changes are automatically applied (to some extent) to the running service, without the need for rebuilding and restarting.|
-|**Native builds**|The skeleton `pom.xml` includes the native profile to build RESTHeart with the custom plugin as a native binary.|
+| Feature | Maven | Gradle |
+|---------|-------|--------|
+| Build | `./mvnw clean package` | `./gradlew clean build` |
+| Native Image | `./mvnw package -Pnative` | `./gradlew build -Pnative` |
+| Profile Activation | `-Psecurity,mongodb` | `-Psecurity -Pmongodb` |
+| Build Speed | Moderate | Faster (incremental, daemon) |
 
-## HTTP Shell
+## Working with MongoDB
 
-**HTTP Shell** provides developers with a modern alternative to HTTP clients for interacting with RESTHeart.
+To run RESTHeart with MongoDB:
 
-{: .bs-callout.bs-callout-info}
-Download HTTP Shell from [https://github.com/SoftInstigate/http-shell](https://github.com/SoftInstigate/http-shell)
+```bash
+# Start MongoDB replica set
+docker run -d --name mongodb -p 27017:27017 mongo --replSet=rs0
+docker exec mongodb mongosh --quiet --eval "rs.initiate()"
 
-Let's see it as something between a low-level command line interface, like curl or httpie, and a more user friendly GUI client, like Postman.
+# Build the plugin
+./mvnw clean package  # or: ./gradlew clean build
 
-The idea is that tools like curl are very powerful but a bit cumbersome, it is often hard for us to remember the exact syntax for each HTTP verb. HTTP Shell instead is still a command line interface, but with a much straightforward user experience.
+# Run RESTHeart without -s flag to enable MongoDB plugins
+docker run --name restheart --rm -p "8080:8080" -v ./target:/opt/restheart/plugins/custom softinstigate/restheart
+```
 
-> HTTP Shell combines the power of familiar CLIs with visualizations in high-impact areas. HTTP Shell enables you to execute HTTP requests, manipulate complex JSON and YAML data models, integrate disparate tooling, and provides quick access to aggregate views of operational data.
+{: .bs-callout.bs-callout-warning }
+Default credentials are `admin:secret`. This setup is for development/testing only.
 
+## Native Image Builds
 
-![HTTP Shell Image](https://github.com/SoftInstigate/http-shell/raw/master/plugins/plugin-client-default/images/httpshellImage.png){: .img-fluid }
+Native images provide faster startup and lower memory usage. Use the `-Pnative` flag:
 
-### Commands
+```bash
+# Quick build (default)
+./mvnw clean package -Pnative
+# or: ./gradlew clean build -Pnative
+
+# Full optimization (slower build, faster runtime)
+./mvnw clean package -Pnative -Dnative.quickBuild=false
+```
+
+Use profiles to bundle RESTHeart plugins into the native executable:
 
 {: .table }
-| command | description | example
-|---|---|---|
-| `h set auth <id> <password>` | opens a dialog to sets the basic authentication credentials to use in further requests | `> set auth` |
-| `h reset auth` | clear the basic authentication credentials | `> reset auth` |
-| `h set url <base-url>` | sets the *base-url* to be used in further requests | `> set url http://127.0.0.1:8080` |
-| `h get url` | prints the base url | `> get url` |
-| `h get <uri>` | executes the GET request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> get /collection` |
-| `edit <file>` | opens *&lt;file&gt;* for editing with the Monaco Editor | > `edit body.json` |
-| `h post <uri> <file>` | executes the POST request request to URL *&lt;base-url>+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | > `post /collection body.json` |
-| `h put <uri> <file>` | executes the PUT request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> put /collection body.json` |
-| `h patch <uri> <file>` | executes the PATCH request to URL *&lt;base-url&gt;+&lt;uri&gt;*, sending the content of *&lt;file&gt;* as the request body | `> patch /collection body.json` |
-| `h delete <uri>` | executes the DELETE request to URL *&lt;base-url&gt;+&lt;uri&gt;* | `> delete /collection` |
-| `h set header <name> <value>` | sets the header *&lt;name&gt;* to *&lt;value&gt;* | `> set header If-Match 5f7f35efcb800f2502f95cb5` |
-| `h get headers` | prints the current set headers | `> get headers` |
-| `h clear headers` | clears the headers | `> clear headers` |
+| Profile | Description |
+|---------|-------------|
+| `security` | Bundle RESTHeart Security |
+| `mongodb` | Bundle RESTHeart MongoDB |
+| `graphql` | Bundle RESTHeart GraphQL |
+| `metrics` | Bundle RESTHeart Metrics |
+| `all-restheart-plugins` | Bundle all RESTHeart plugins |
+
+Example — native build with Security and MongoDB:
+
+```bash
+./mvnw clean package -Pnative,security,mongodb
+# or: ./gradlew clean build -Pnative -Psecurity -Pmongodb
+```
+
+## Configuration with RHO
+
+Override settings at runtime without rebuilding using the `RHO` environment variable:
+
+```bash
+docker run --name restheart --rm \
+  -e RHO="/http-listener/host->'0.0.0.0';/helloWorldService/message->'Ciao Mondo!'" \
+  -p "8080:8080" \
+  -v ./target:/opt/restheart/plugins/custom \
+  softinstigate/restheart -s
+```
+
+See [RESTHeart Configuration](/docs/configuration#change-the-configuration-in-docker-container) for more details.
