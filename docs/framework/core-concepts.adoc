@@ -158,7 +158,7 @@ WARNING: Services have `secure: false` by default! Always set `secure: true` for
 
 [source,java]
 ----
-@Inject("conf")
+@Inject("config")
 Map<String, Object> conf;
 
 // Use helper method to get values
@@ -174,7 +174,7 @@ Use `@Inject` to access RESTHeart's built-in objects and services. Available pro
 |===
 |Injection |Type |Use For
 
-|`@Inject("conf")`
+|`@Inject("config")`
 |`Map<String, Object>`
 |Plugin's configuration
 
@@ -206,10 +206,10 @@ Use `@Inject` to access RESTHeart's built-in objects and services. Available pro
 public class MyPlugin implements JsonService {
     @Inject("mclient")
     private MongoClient mclient;
-    
-    @Inject("conf")
+
+    @Inject("config")
     private Map<String, Object> conf;
-    
+
     @Override
     public void handle(JsonRequest req, JsonResponse res) {
         // Use injected MongoClient
