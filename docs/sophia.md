@@ -5,10 +5,6 @@ slack: false
 applies_to: both
 ---
 
-<div class="text-center py-1" style="background: rgba(248,168,57,0.1); font-size: 0.9rem;">
-  Use Sophia from your AI client via <a href="/docs/cloud/sophia/mcp"><strong>MCP Server</strong></a>
-</div>
-
 <div class="iframe-parent m-0 p-0">
   <!-- set the --vh property to set the height of the iframe correctly on desktop and mobile screen
        also scrolls to top on viewport resize
@@ -34,5 +30,5 @@ applies_to: both
       };
     }
   </script>
-  <iframe src="https://sophia.restheart.com?scope=[%22restheart%22,%22both%22]" scrolling="yes"></iframe>
+  <iframe src="https://sophia.restheart.com?scope=[%22restheart%22,%22both%22]&mcp-link=https://restheart.org/docs/cloud/sophia/mcp" scrolling="yes"></iframe>
 </div>
