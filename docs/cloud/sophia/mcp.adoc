@@ -21,7 +21,20 @@ Sophia supports multiple *Contexts*, each representing a distinct knowledge base
 | Context | Knowledge base
 | `restheart` | RESTHeart documentation, plugin API, configuration guides
 | `cloud` | RESTHeart Cloud managed service docs
-| `brewmaster` | BrewMaster Pro 3000 user manual (requires authentication)
+| `brewmaster` | This is a demo about a fictional product: the BrewMaster Pro 3000 coffee maker (requires authentication)
+|===
+
+==== Filtering by Tag
+
+Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags` header narrows retrieval to documents that carry *all* of the specified tags (comma-separated). Use `sophia_list_tags` to discover which tags are available in your context.
+
+[cols="1,3", options="header"]
+|===
+| Header value | Effect
+| _(omitted)_ | All documents in the context are searched
+| `restheart` | Only documents tagged `restheart` are searched
+| `cloud` | Only documents tagged `cloud` are searched
+| `restheart,plugin` | Only documents tagged with both `restheart` and `plugin` are searched
 |===
 
 === RESTHeart
@@ -33,6 +46,22 @@ Sophia supports multiple *Contexts*, each representing a distinct knowledge base
     "sophia-restheart": {
       "command": "npx",
       "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Context: restheart"]
+    }
+  }
+}
+----
+
+The `restheart` context covers both RESTHeart and RESTHeart Cloud documentation. To restrict retrieval to RESTHeart-only documents, add the `X-Sophia-Tags` header (see <<_filtering_by_tag>>):
+
+[source,json]
+----
+{
+  "mcpServers": {
+    "sophia-restheart": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp",
+               "--header", "X-Sophia-Context: restheart",
+               "--header", "X-Sophia-Tags: restheart"]
     }
   }
 }
