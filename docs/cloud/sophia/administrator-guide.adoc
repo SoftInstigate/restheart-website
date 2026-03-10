@@ -102,11 +102,8 @@ The system uses tags to control which documents are accessible to different user
 ==== Managing Access Permissions
 
 *View Current Tags:*
-[source,bash]
-----
-# List all unique tags in the system
-http -a admin:password :8080/textSegments/_aggrs/tags
-----
+
+Use the MCP tool `sophia_list_tags` from any connected AI client. Alternatively, the `sophia_list_files` tool shows tags per document.
 
 *Update Document Tags:*
 [source,bash]
@@ -128,7 +125,7 @@ echo '{"$set": {"metadata.tags": ["public", "updated"]}}' | \
   "type": "vectorSearch",
   "fields": [
     {
-      "numDimensions": 1536,
+      "numDimensions": 1024,
       "path": "vector",
       "similarity": "cosine",
       "type": "vector"
@@ -136,10 +133,16 @@ echo '{"$set": {"metadata.tags": ["public", "updated"]}}' | \
     {
       "path": "metadata.tags",
       "type": "filter"
+    },
+    {
+      "path": "metadata.pathPrefixes",
+      "type": "filter"
     }
   ]
 }
 ----
+
+NOTE: `numDimensions` is 1024 when using Amazon Titan Embed Text v2 (the default embedding model). The `metadata.pathPrefixes` filter field enables path-based scoping of vector searches.
 
 *Additional Metadata Indexes:*
 [source,json]
@@ -173,85 +176,77 @@ echo '{"$set": {"metadata.tags": ["public", "updated"]}}' | \
 . *Metadata Association*: Links segments with document metadata
 . *Index Updates*: Updates vector search indexes
 
-== Prompt Template Management
+== Context Management
 
-=== Template Configuration
+A *Context* defines the full behaviour of Sophia for a given knowledge base: the system prompt template, tag filters, RAG options, and the MCP server description shown to AI clients.
 
-==== Creating Prompt Templates
+=== Context Document Structure
 
-*Basic Template Structure:*
-[source,bash]
+[source,json]
 ----
-# Create new prompt template
-echo 'Your custom prompt template content with <documents-placeholder> and <history-placeholder> and <userprompt>' | \
-  http -a admin:password PUT :8080/promptTemplates/custom Content-Type:"text/plain"
-----
-
-*Template Options:*
-[source,bash]
-----
-# Configure template parameters
-echo '{
+{
+  "_id": "restheart",
+  "template": "You are Sophia, AI assistant for RESTHeart...\n\n<documents-placeholder>\n\n<history-placeholder>\n\n<userprompt>",
   "options": {
     "max_tokens_to_sample": 4000,
     "temperature": 0.3,
     "top_k": 250,
-    "top_p": 1,
+    "top_p": 1.0,
     "relevantsNumCandidates": 5000,
     "relevantsLimit": 5,
     "historyLimit": 3,
     "userPromptMaxChars": 500
+  },
+  "tags": ["restheart"],
+  "mcp": {
+    "description": "Sophia knowledge base for RESTHeart — search the official docs, plugin API, configuration guides, and source code."
   }
-}' | http -a admin:password PATCH :8080/promptTemplates/custom
+}
 ----
 
-==== Template Placeholders
+[cols="1,1,3", options="header"]
+|===
+| Field | Required | Description
+| `_id` | ✓ | Context name (e.g. `restheart`, `cloud`). Used in `?context=` and `X-Sophia-Context` header.
+| `template` | ✓ | System prompt. Must contain `<documents-placeholder>`, `<history-placeholder>`, `<userprompt>`.
+| `options` | — | LLM and RAG parameters. Falls back to server defaults if omitted.
+| `tags` | — | Tags automatically ANDed into every vector search — restricts the knowledge base.
+| `mcp.description` | — | Description shown to AI clients in the MCP `tools/list` response.
+|===
 
-*Required Placeholders:*
+=== Template Placeholders
 
-- `<documents-placeholder>`: Replaced with relevant documents from RAG
-- `<history-placeholder>`: Replaced with chat conversation history
-- `<userprompt>`: Replaced with the user's current question
+- `<documents-placeholder>` — replaced with RAG segments relevant to the user's question
+- `<history-placeholder>` — replaced with recent conversation turns
+- `<userprompt>` — replaced with the user's current question
 
-*Example Template:*
-[source,text]
-----
-You are Sophia, an intelligent AI assistant. Use the following context to answer questions accurately and helpfully.
+=== Managing Contexts
 
-RELEVANT DOCUMENTS:
-<documents-placeholder>
-
-CONVERSATION HISTORY:
-<history-placeholder>
-
-USER QUESTION:
-<userprompt>
-
-Please provide a helpful, accurate response based on the available information. If you cannot find relevant information in the documents, please say so clearly.
-----
-
-==== Managing Multiple Templates
-
-*List All Templates:*
+*List all contexts:*
 [source,bash]
 ----
-http -a admin:password :8080/promptTemplates?keys='{"_id": 1}'
+http -a admin:password GET :8080/contexts
 ----
 
-*View Template Content:*
+*Create or replace a context:*
 [source,bash]
 ----
-http -a admin:password :8080/promptTemplates/TEMPLATE_ID
+echo '{
+  "template": "You are Sophia...\n\n<documents-placeholder>\n\n<history-placeholder>\n\n<userprompt>",
+  "tags": ["restheart"],
+  "mcp": { "description": "RESTHeart knowledge base." }
+}' | http -a admin:password PUT :8080/contexts/restheart
 ----
 
-*Update Template:*
+*Update options only:*
 [source,bash]
 ----
-cat new-template.txt | http -a admin:password PATCH :8080/promptTemplates/TEMPLATE_ID Content-Type:"text/plain"
+echo '{"options": {"relevantsLimit": 8, "temperature": 0.2}}' | \
+  http -a admin:password PATCH :8080/contexts/restheart
 ----
 
-*Delete Template:*
+*Delete a context:*
 [source,bash]
 ----
-http -a admin:password DELETE :8080/promptTemplates/TEMPLATE_ID
+http -a admin:password DELETE :8080/contexts/restheart
 ----

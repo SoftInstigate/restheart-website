@@ -60,13 +60,17 @@ The vector index enables semantic search across your documents. Here's the stand
   "name": "vector_index",
   "fields": [
     {
-      "numDimensions": 1536,
+      "numDimensions": 1024,
       "path": "vector",
       "similarity": "cosine",
       "type": "vector"
     },
     {
       "path": "metadata.tags",
+      "type": "filter"
+    },
+    {
+      "path": "metadata.pathPrefixes",
       "type": "filter"
     }
   ]
@@ -77,14 +81,14 @@ The vector index enables semantic search across your documents. Here's the stand
 
 *Vector Field*
 
-- `numDimensions: 1536` (matches Claude embedding dimensions)
-- `similarity: Cosine` similarity for document matching
-- `path: "vector"` field containing document embeddings
+- `numDimensions: 1024` — matches Amazon Titan Embed Text v2 output dimensions
+- `similarity: cosine` — cosine similarity for document matching
+- `path: "vector"` — field containing document embeddings
 
-*Filter Field*
+*Filter Fields*
 
-- `path: "metadata.tags"` for content access control
-- `type: "filter"` enables tag-based document filtering
+- `path: "metadata.tags"` — enables tag-based access control and knowledge base scoping
+- `path: "metadata.pathPrefixes"` — enables path-based filtering (used by `sophia_list_paths` and directory-scoped searches)
 
 ===== Creating the Index
 

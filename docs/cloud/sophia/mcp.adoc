@@ -10,7 +10,19 @@ applies_to: both
 
 Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to your RESTHeart knowledge base in minutes.
 
-*Endpoint:* `https://sophia-api.restheart.com/mcp` — no authentication required.
+*Endpoint:* `https://sophia-api.restheart.com/mcp` — no authentication required for public knowledge bases.
+
+=== Selecting a Context
+
+Sophia supports multiple *Contexts*, each representing a distinct knowledge base with its own prompt template, tag filters, and RAG options. Select the desired context via the `X-Sophia-Context` header.
+
+[cols="1,2", options="header"]
+|===
+| Context | Knowledge base
+| `restheart` | RESTHeart documentation, plugin API, configuration guides
+| `cloud` | RESTHeart Cloud managed service docs
+| `brewmaster` | BrewMaster Pro 3000 user manual (requires authentication)
+|===
 
 === RESTHeart
 
@@ -18,9 +30,9 @@ Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to yo
 ----
 {
   "mcpServers": {
-    "sophia": {
+    "sophia-restheart": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: restheart"]
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Context: restheart"]
     }
   }
 }
@@ -32,9 +44,9 @@ Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to yo
 ----
 {
   "mcpServers": {
-    "sophia": {
+    "sophia-cloud": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Tags: cloud", "--header", "X-Sophia-Prompt: cloud"]
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Context: cloud"]
     }
   }
 }
@@ -53,10 +65,10 @@ Clients that natively support HTTP/SSE transport (Cursor, VS Code, newer Claude 
 [source,json]
 ----
 {
-  "sophia": {
+  "sophia-restheart": {
     "type": "sse",
     "url": "https://sophia-api.restheart.com/mcp",
-    "headers": { "X-Sophia-Tags": "restheart" }
+    "headers": { "X-Sophia-Context": "restheart" }
   }
 }
 ----
@@ -65,10 +77,33 @@ Clients that natively support HTTP/SSE transport (Cursor, VS Code, newer Claude 
 
 === Available Tools
 
-[cols="1,2", options="header"]
+[cols="1,3", options="header"]
 |===
 | Tool | Description
-| `sophia_search` | Semantic search over the RESTHeart knowledge base. Returns relevant text segments.
-| `sophia_render_prompt` | Builds a fully interpolated prompt with RAG context, ready to send to any LLM.
+| `sophia_search` | Semantic search over the knowledge base. Returns relevant text segments with `Source:` filename and `Path:` directory for context expansion.
+| `sophia_get_file` | Retrieves the full content of a document by filename (all chunks merged in order). Use after `sophia_search` to read beyond the matched chunk.
+| `sophia_list_files` | Lists all accessible documents with tags and chunk count. Accepts an optional `path` parameter to filter by directory.
+| `sophia_list_tags` | Lists the tags available in the knowledge base, filtered by the active context and credentials.
+| `sophia_list_paths` | Lists immediate subdirectories under a given path prefix, like `ls`. Without arguments, returns top-level directories.
+| `sophia_render_prompt` | Builds a fully interpolated system prompt with RAG context injected, ready to send to any LLM as a `system` + `user` message pair.
 | `sophia_api` | Returns the complete Sophia REST API reference. Requires authentication — reserved for service administrators.
 |===
+
+=== Recommended Tool-Chaining Workflow
+
+To maximise the context available to an AI agent:
+
+. *`sophia_search`* — find relevant chunks; note the `Source:` filename and `Path:` directory in each result.
+. *`sophia_get_file`* — retrieve the full file from `Source:` (not just the matched chunk).
+. *`sophia_list_files`* with `path=<Path:>` — discover all related files in the same directory.
+. *`sophia_get_file`* — retrieve any relevant sibling files.
+
+To explore the knowledge base structure before searching:
+
+[source]
+----
+sophia_list_paths          → top-level directories
+sophia_list_paths(path=X)  → subdirectories under X
+sophia_list_files(path=X)  → files in directory X
+sophia_list_tags           → available tags
+----
