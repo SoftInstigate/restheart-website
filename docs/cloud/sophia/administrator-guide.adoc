@@ -207,7 +207,7 @@ A *Context* defines the full behaviour of Sophia for a given knowledge base: the
 [cols="1,1,3", options="header"]
 |===
 | Field | Required | Description
-| `_id` | ✓ | Context name (e.g. `restheart`, `cloud`). Used in `?context=` and `X-Sophia-Context` header.
+| `_id` | ✓ | Context name (e.g. `restheart`, `cloud`). Used in the web URL path and `X-Sophia-Context` MCP header.
 | `template` | ✓ | System prompt. Must contain `<documents-placeholder>`, `<history-placeholder>`, `<userprompt>`.
 | `options` | — | LLM and RAG parameters. Falls back to server defaults if omitted.
 | `tags` | — | Tags automatically ANDed into every vector search — restricts the knowledge base.
@@ -250,3 +250,23 @@ echo '{"options": {"relevantsLimit": 8, "temperature": 0.2}}' | \
 ----
 http -a admin:password DELETE :8080/contexts/restheart
 ----
+
+=== Selecting a Context in the Web Interface
+
+The active context is encoded in the URL path of the Sophia web application:
+
+[source]
+----
+https://sophia.restheart.com/                       → default context
+https://sophia.restheart.com/contexts/restheart     → "restheart" context
+https://sophia.restheart.com/contexts/cloud         → "cloud" context
+----
+
+Use these URLs when embedding Sophia in an iframe or linking directly to a specific knowledge base:
+
+[source,html]
+----
+<iframe src="https://sophia.restheart.com/contexts/restheart" ...></iframe>
+----
+
+For MCP clients, the context is selected via the `X-Sophia-Context` request header (see link:/docs/cloud/sophia/mcp[Sophia MCP Server]).
