@@ -30,5 +30,5 @@ applies_to: both
       };
     }
   </script>
-  <iframe src="https://sophia.restheart.com/?scope=%5B%22restheart%22,%22both%22%5D&mcp-link=https:%2F%2Frestheart.org%2Fdocs%2Fcloud%2Fsophia%2Fmcp" scrolling="yes"></iframe>
+  <iframe src="https://sophia.restheart.com/?context=restheart&mcp-link=https:%2F%2Frestheart.org%2Fdocs%2Fcloud%2Fsophia%2Fmcp" scrolling="yes"></iframe>
 </div>
