@@ -8,104 +8,27 @@ applies_to: cloud
 
 === Overview
 
-Sophia is exclusively available as a managed service through *RESTHeart Cloud* in the dedicated tier. As a cloud service, there's no software installation or infrastructure setup required on your end. This guide covers the essential configuration steps needed to set up your knowledge base and optimize Sophia for your organization.
+Sophia is exclusively available as a managed service through *RESTHeart Cloud* in the *dedicated* tier. As a fully managed service, the SoftInstigate team handles the infrastructure setup — you don't need to install or configure any software.
+
+=== Prerequisites
+
+- *MongoDB on Atlas* — for document storage and vector search
+- *An AWS account* — for Bedrock AI model access (Claude and Titan Embed)
 
 === Getting Started
 
-==== 1. RESTHeart Cloud Account
-- Sign up for RESTHeart Cloud
-- Note: Sophia requires a dedicated service. You also need Mongo Atlas and AWS accounts. 
-- Contact link:mailto:support@restheart.com[support@restheart.com] to request a dedicated service with Sophia plugin.
+Contact link:mailto:support@restheart.com[support@restheart.com] to request a dedicated service with the Sophia plugin.
 
-==== 2. AWS Bedrock Access Configuration
-*Required*: Sophia requires AWS Bedrock access to provide AI responses. You must configure this before using the service:
+The SoftInstigate team will guide you through:
 
-===== Step 1: Create AWS IAM Policy
-Create a custom managed policy named `InvokeBedrockModel`:
+. *AWS Bedrock configuration* — creating an IAM user with the required Bedrock and Marketplace permissions and generating access keys
+. *MongoDB Atlas vector index* — setting up the vector search index on the `textSegments` collection for semantic search
+. *Initial context setup* — creating your first context with a prompt template and knowledge base tags
 
-[source,json]
-----
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "InvokeBedrockModel",
-            "Effect": "Allow",
-            "Action": [
-                "bedrock:InvokeModel",
-                "bedrock:InvokeModelWithResponseStream"
-            ],
-            "Resource": "arn:aws:bedrock:*::foundation-model/*"
-        }
-    ]
-}
-----
+=== After Setup
 
-===== Step 2: Create AWS IAM User
-- Create a new IAM user dedicated to Sophia
-- Attach the `InvokeBedrockModel` policy to this user
-- Generate access keys for the user
+Once the service is provisioned, you can:
 
-==== 3. MongoDB Vector Index Configuration
-
-For optimal document search performance, Sophia requires a vector search index on your knowledge base documents. You need to create the vector index on Mongo Atlas.
-
-=====  Vector Index Structure
-
-The vector index enables semantic search across your documents. Here's the standard configuration used by Sophia:
-
-[source,json]
-----
-{
-  "name": "vector_index",
-  "fields": [
-    {
-      "numDimensions": 1024,
-      "path": "vector",
-      "similarity": "cosine",
-      "type": "vector"
-    },
-    {
-      "path": "metadata.tags",
-      "type": "filter"
-    },
-    {
-      "path": "metadata.pathPrefixes",
-      "type": "filter"
-    }
-  ]
-}
-----
-
-===== Index Components
-
-*Vector Field*
-
-- `numDimensions: 1024` — matches Amazon Titan Embed Text v2 output dimensions
-- `similarity: cosine` — cosine similarity for document matching
-- `path: "vector"` — field containing document embeddings
-
-*Filter Fields*
-
-- `path: "metadata.tags"` — enables tag-based access control and knowledge base scoping
-- `path: "metadata.pathPrefixes"` — enables path-based filtering (used by `sophia_list_paths` and directory-scoped searches)
-
-===== Creating the Index
-
-If you need to manually create or update the vector index:
-
-====== Via MongoDB Atlas UI
-1. Navigate to your MongoDB Atlas cluster
-2. Go to "Search" → "Search Indexes"
-3. Click "Create Search Index"
-4. Select "JSON Editor"
-5. Paste the vector index configuration above
-6. Set index name as "vector_index"
-7. Apply to the "textSegments" collection
-
-====== Via MongoDB Compass
-1. Connect to your MongoDB cluster
-2. Navigate to the "textSegments" collection
-3. Go to "Indexes" tab
-4. Click "Create Index"
-5. Use the index configuration provided above
+- Log in to the *Admin Panel* to manage contexts, upload documents, and issue API tokens — see the link:/docs/cloud/sophia/administrator-guide[Administrator Guide]
+- Share the chat URL with your users — see the link:/docs/cloud/sophia/user-guide[User Guide]
+- Connect AI clients via MCP — see link:/docs/cloud/sophia/mcp[Sophia MCP Server]

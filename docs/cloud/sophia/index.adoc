@@ -14,15 +14,21 @@ Sophia is an advanced AI service exclusively available with *RESTHeart Cloud*. B
 
 Sophia leverages Large Language Models with Retrieval-Augmented Generation (RAG) technology to create an intelligent support system for organizations. Instead of users searching through documentation or waiting for human assistance, they can ask questions in natural language and receive immediate, contextual answers drawn from your organization's knowledge base.
 
-The service combines Claude (Anthropic's advanced language model) with sophisticated document processing to understand both the intent behind questions and the content of your documents. When someone asks a question, Sophia searches through your uploaded materials using semantic understanding—not just keyword matching—to find the most relevant information, then crafts a conversational response that directly addresses the query.
+The service combines Claude (Anthropic's advanced language model) with sophisticated document processing to understand both the intent behind questions and the content of your documents. When someone asks a question, Sophia searches through your uploaded materials using semantic understanding — not just keyword matching — to find the most relevant information, then crafts a conversational response that directly addresses the query.
 
 === Core Capabilities
 
-*Knowledge Base Management*: Upload documents in multiple formats including PDFs, text files, HTML, and Markdown. Sophia automatically processes these materials, breaking them into searchable segments and creating vector embeddings that enable intelligent content discovery. Tag-based access controls ensure different user groups see only appropriate information.
+*Knowledge Base Management*: Upload documents in multiple formats including PDFs, text files, HTML, and Markdown. Sophia automatically processes these materials, breaking them into searchable segments and creating vector embeddings that enable intelligent content discovery. The web-based admin panel provides intuitive tools for uploading, browsing, and managing your knowledge base.
+
+*Context-Based Knowledge Segregation*: Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, and RAG configuration. Contexts ensure strict data separation — users in one context can never access documents from another. This makes it easy to serve different audiences (customers, internal staff, partners) from a single Sophia instance.
 
 *AI-Powered Conversations*: Using AWS Bedrock's Claude model, Sophia maintains context throughout conversations, allowing for natural follow-up questions and clarifications. Administrators can customize response behavior and tone through prompt templates, while the system provides real-time streaming responses for immediate feedback.
 
-*Security and Access Control*: Enterprise-grade JWT authentication secures all interactions, while role-based permissions control access to different content areas. All conversations remain private and are never used for model training, ensuring your organizational knowledge stays confidential.
+*Agentic Mode*: For complex questions that require gathering information from multiple sources, Sophia can operate as an autonomous agent. When agentic mode is enabled on a context, Sophia iteratively searches the knowledge base, reads files, and reasons about the results before composing a comprehensive response. Users see the agent's reasoning process in real time.
+
+*Admin Panel*: A full-featured web administration interface lets administrators manage contexts, upload and organize documents, inspect text segments, test semantic search, and issue API tokens — all from the browser.
+
+*Security and Access Control*: Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. Role-based permissions separate admin and user capabilities. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to programmatic access.
 
 *Flexible Integration*: The responsive chat interface works seamlessly across devices and can be embedded into existing websites or used standalone. Multi-language support (English/Italian) and customizable themes allow Sophia to match your organization's brand and user needs.
 
@@ -30,15 +36,9 @@ The service combines Claude (Anthropic's advanced language model) with sophistic
 
 Sophia excels in environments where quick access to organizational knowledge is crucial. Customer support teams can provide instant, accurate responses without human intervention. Educational institutions offer 24/7 student assistance. Enterprise organizations enable employee self-service for policies, procedures, and technical documentation. Any organization with substantial documentation can transform static information into an interactive, intelligent assistant.
 
-=== Value Proposition
-
-The traditional approach to organizational knowledge involves static documents, search functions that often miss the mark, and human resources stretched thin answering repetitive questions. Sophia eliminates these friction points by making your knowledge base conversational and immediately accessible.
-
-Rather than training staff or building complex knowledge management systems, organizations get an AI assistant that understands their specific content and can engage users naturally. The managed cloud service means no infrastructure to maintain, automatic updates, and enterprise-grade reliability without the overhead.
-
 === Technical Foundation
 
-Built on RESTHeart framework with MongoDB for scalable document storage, Sophia uses AWS Bedrock for AI processing and features a modern Angular frontend. The entire system deploys through Docker containers with automatic scaling and comprehensive monitoring. As a managed RESTHeart Cloud service, all infrastructure concerns are handled automatically.
+Built on RESTHeart framework with MongoDB for scalable document storage, Sophia uses AWS Bedrock for AI processing (Claude for conversation, Titan for embeddings) and features a modern Angular frontend. The entire system deploys through Docker containers with automatic scaling and comprehensive monitoring. As a managed RESTHeart Cloud service, all infrastructure concerns are handled automatically.
 
 === Getting Started
 
@@ -46,6 +46,6 @@ Since Sophia is exclusively available through RESTHeart Cloud, getting started i
 
 === MCP Server Integration
 
-Sophia also exposes a *Model Context Protocol (MCP) server*, allowing AI clients and agents such as Claude Desktop, Cursor, and VS Code to connect directly to your Sophia knowledge base.
+Sophia also exposes a *Model Context Protocol (MCP) server*, allowing AI clients and agents such as Claude Desktop, Cursor, and VS Code to connect directly to your Sophia knowledge base. API tokens with context binding provide authenticated access to private knowledge bases.
 
 See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.

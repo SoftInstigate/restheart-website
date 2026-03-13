@@ -8,7 +8,7 @@ applies_to: cloud
 
 === Introduction
 
-Sophia is an advanced AI service developed by SoftInstigate. It leverages Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to provide intelligent support services for organizations and educational institutions.
+Sophia is an advanced AI service developed by SoftInstigate. It leverages Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to provide intelligent support services for organizations and educational institutions. Sophia also supports *Agentic Mode*, where the AI autonomously uses tools to gather information before answering complex questions.
 
 === System Architecture
 
@@ -21,43 +21,60 @@ The system consists of two main components:
 - MongoDB database for data persistence
 - Vector store for embedding storage and semantic search
 - LangChain4j integration for AI/ML operations
+- Agentic loop with tool-use support (search, file retrieval)
 
 ==== Frontend (sophia-web)
 - Angular web application
 - Responsive design with customizable themes
-- Real-time chat interface
+- Real-time chat interface with agentic event streaming
+- Admin panel for managing contexts, knowledge, segments, and API tokens
 - Multi-language support (Italian/English)
 - Embeddable via iframe
 
 === Key Features
 
 ==== AI-Powered Conversations
-Sophia utilizes the Claude model from AWS Bedrock to deliver intelligent, context-aware conversations. The system implements a Retrieval-Augmented Generation (RAG) approach that combines real-time document retrieval with advanced language processing to provide accurate and relevant responses. Administrators can customize prompt templates to tailor the AI's behavior and tone to specific use cases, while the system maintains conversation context through intelligent chat history management.
+Sophia utilizes the Claude model from AWS Bedrock to deliver intelligent, context-aware conversations. The system implements a Retrieval-Augmented Generation (RAG) approach that combines real-time document retrieval with advanced language processing. Administrators can customize prompt templates to tailor the AI's behavior and tone, while the system maintains conversation context through intelligent chat history management.
+
+==== Agentic Mode
+When enabled on a context, Sophia operates as an autonomous agent that iteratively uses tools — searching the knowledge base, reading files, and gathering information — before composing a final response. The agent loop runs up to a configurable number of iterations, and tool execution events can be streamed to the client in real time so users see the reasoning process as it happens.
 
 ==== Knowledge Base Management
-The platform supports comprehensive document management with compatibility for multiple file formats including TXT, MD, PDF, and HTML documents. Documents are automatically processed through vector embeddings to enable sophisticated semantic search capabilities. The system performs intelligent document segmentation and indexing, while implementing tag-based content partitioning that allows administrators to control access to specific information sets based on user roles and permissions.
+The platform supports comprehensive document management with compatibility for TXT, MD, PDF, and HTML files. Documents are automatically processed through vector embeddings using Amazon Titan Embed Text v2 for semantic search. The admin panel provides a web interface for uploading, browsing (flat and tree views), filtering, and deleting documents.
+
+==== Context-Based Knowledge Segregation
+Contexts are the core abstraction for knowledge partitioning. Each context defines a set of tags that act as mandatory filters on every vector search — ensuring that users in one context cannot access documents belonging to another. This provides enterprise-grade data isolation without requiring separate deployments.
 
 ==== Security & Authentication
-Security is implemented through robust JWT-based authentication mechanisms that ensure secure API token validation across all system interactions. The platform provides domain-specific knowledge base access controls, allowing organizations to segment information based on user groups or departments. Comprehensive user session management ensures secure and reliable access while maintaining audit trails for administrative oversight.
+Authentication uses cookie-based sessions for the web interface and JWT bearer tokens for API and MCP access. Role-based access control distinguishes between admin users (who manage contexts, knowledge, and tokens) and regular users (who interact with the chat). API tokens can be bound to specific contexts and tags, ensuring that programmatic access respects the same knowledge segregation boundaries.
+
+==== Admin Panel
+A web-based administration interface provides full management capabilities:
+
+- *Contexts*: Create, edit, and delete contexts with prompt templates, tag filters, RAG options, and agentic mode settings
+- *Knowledge*: Upload, browse, tag, and delete documents with flat and tree views
+- *Segments*: Inspect text segments, test semantic search, and debug retrieval quality
+- *API Tokens*: Issue, revoke, and delete JWT tokens with auto-generated MCP configuration snippets
 
 ==== Real-time Communication
-The system delivers seamless real-time communication through WebSocket-based messaging infrastructure. MongoDB Change Streams provide live updates that ensure users receive immediate responses as they're generated. The platform supports streaming response delivery that allows users to see AI responses as they're being composed, while comprehensive connection status monitoring ensures reliable communication channels.
+WebSocket-based messaging with MongoDB Change Streams provides live updates. Streaming response delivery allows users to see AI responses as they're composed. In agentic mode, tool execution events are streamed in real time, showing tool names, arguments, results, and durations.
 
 === Technical Stack
 
 ==== Backend Technologies
-The backend infrastructure is built on RESTHeart framework running on Java 25, providing a robust and scalable foundation for enterprise applications. The system utilizes MongoDB as its primary database with full Atlas compatibility for cloud deployments. AI and machine learning capabilities are powered by LangChain4j 0.36.2, which integrates seamlessly with AWS Bedrock to access the Claude language model. The application is built and managed using Maven, while security is handled through comprehensive JWT authentication mechanisms.
+The backend is built on RESTHeart framework running on Java 25. MongoDB serves as the primary database with Atlas compatibility for cloud deployments. LangChain4j integrates with AWS Bedrock for Claude LLM access and Amazon Titan for embeddings. Security is handled through JWT authentication with cookie-based session support.
 
 ==== Frontend Technologies
-The user interface is developed using Angular framework with TypeScript for type-safe development and enhanced maintainability. Styling is implemented through SCSS for advanced CSS preprocessing capabilities. The system incorporates ngx-markdown with PrismJS integration for sophisticated text rendering and code highlighting. FontAwesome provides comprehensive iconography throughout the interface, while the entire frontend build process is managed through Angular CLI for streamlined development and deployment workflows.
+The frontend is built with Angular 21 using standalone components and signals for state management. Tailwind CSS v4 provides styling, with spartan-ng UI components. The admin panel uses responsive layouts with mobile support.
 
 === Deployment Architecture
 
 ==== Production Deployment
-Sophia is designed for flexible deployment scenarios, supporting both cloud-native and on-premises installations. The system can be deployed using Docker containers for consistent environments across development, staging, and production. Load balancing capabilities ensure high availability and optimal performance under varying user loads.
-
-==== Scalability Considerations
-The architecture supports horizontal scaling through MongoDB clustering and RESTHeart's stateless design. Vector search capabilities scale with document volume, while the frontend can be served via CDN for global performance optimization.
+Sophia deploys as a managed RESTHeart Cloud service. The system uses Docker containers for consistent environments. As a cloud service, all infrastructure concerns — scaling, monitoring, updates — are handled automatically.
 
 ==== Integration Points
-The system provides multiple integration options including REST API endpoints for backend integration, WebSocket connections for real-time features, and iframe embedding for frontend integration. Authentication can be integrated with existing organizational systems through JWT token validation.
+- REST API endpoints for backend integration
+- WebSocket connections for real-time chat
+- MCP server for AI client integration (Claude Desktop, Cursor, VS Code)
+- iframe embedding for frontend integration
+- JWT tokens for programmatic access

@@ -10,7 +10,22 @@ applies_to: both
 
 Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to your RESTHeart knowledge base in minutes.
 
-*Endpoint:* `https://sophia-api.restheart.com/mcp` — no authentication required for public knowledge bases.
+*Endpoint:* `https://sophia-api.restheart.com/mcp`
+
+=== Public vs Authenticated Access
+
+Sophia MCP supports two access modes:
+
+[cols="1,2,2", options="header"]
+|===
+| Mode | When to use | Headers required
+| *Public* | Knowledge bases with `public` tag | `X-Sophia-Context` only
+| *Authenticated* | Private knowledge bases | `Authorization: Bearer <token>` + `X-Sophia-Context`
+|===
+
+For authenticated access, issue an API token from the admin panel (see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management]). The admin panel can generate ready-to-paste MCP configuration snippets for each token.
+
+image::../../../images/sophia/token-mcp-config.png[MCP config generation, title="Auto-generated MCP configuration from the admin panel"]
 
 === Selecting a Context
 
@@ -21,8 +36,10 @@ Sophia supports multiple *Contexts*, each representing a distinct knowledge base
 | Context | Knowledge base
 | `restheart` | RESTHeart documentation, plugin API, configuration guides
 | `cloud` | RESTHeart Cloud managed service docs
-| `brewmaster` | This is a demo about a fictional product: the BrewMaster Pro 3000 coffee maker (requires authentication)
+| `brewmaster` | Demo context: the BrewMaster Pro 3000 coffee maker (requires authentication)
 |===
+
+NOTE: Available contexts depend on your Sophia instance. Use the admin panel to create and manage contexts.
 
 ==== Filtering by Tag
 
@@ -37,7 +54,9 @@ Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags
 | `restheart,plugin` | Only documents tagged with both `restheart` and `plugin` are searched
 |===
 
-=== RESTHeart
+=== Configuration Examples
+
+==== Claude Desktop (public context)
 
 [source,json]
 ----
@@ -51,7 +70,67 @@ Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags
 }
 ----
 
-The `restheart` context covers both RESTHeart and RESTHeart Cloud documentation. To restrict retrieval to RESTHeart-only documents, add the `X-Sophia-Tags` header (see <<_filtering_by_tag>>):
+==== Claude Desktop (authenticated)
+
+[source,json]
+----
+{
+  "mcpServers": {
+    "sophia": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://sophia-api.restheart.com/mcp",
+        "--header", "Authorization: Bearer <your-token>",
+        "--header", "X-Sophia-Context: restheart"
+      ]
+    }
+  }
+}
+----
+
+Add the snippet under `mcpServers` in `claude_desktop_config.json` (`~/Library/Application Support/Claude/` on macOS, `%APPDATA%\Claude\` on Windows), then restart.
+
+==== Cursor / VS Code (SSE transport)
+
+Cursor and VS Code support HTTP/SSE natively:
+
+[source,json]
+----
+{
+  "sophia-restheart": {
+    "type": "sse",
+    "url": "https://sophia-api.restheart.com/mcp",
+    "headers": {
+      "X-Sophia-Context": "restheart"
+    }
+  }
+}
+----
+
+With authentication:
+
+[source,json]
+----
+{
+  "sophia-restheart": {
+    "type": "sse",
+    "url": "https://sophia-api.restheart.com/mcp",
+    "headers": {
+      "Authorization": "Bearer <your-token>",
+      "X-Sophia-Context": "restheart"
+    }
+  }
+}
+----
+
+==== Claude Code
+
+Add to your project's `.mcp.json` or global MCP config.
+
+==== With tag filtering
+
+To restrict retrieval within a context, add the `X-Sophia-Tags` header:
 
 [source,json]
 ----
@@ -67,42 +146,7 @@ The `restheart` context covers both RESTHeart and RESTHeart Cloud documentation.
 }
 ----
 
-=== RESTHeart Cloud
-
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia-cloud": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Context: cloud"]
-    }
-  }
-}
-----
-
-The snippets above use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`], a small Node.js bridge that exposes the HTTP endpoint as a local `stdio` process — the format most clients expect. It requires link:https://nodejs.org[Node.js ≥ 18] and is downloaded automatically by `npx` on first run.
-
-Clients that natively support HTTP/SSE transport (Cursor, VS Code, newer Claude Desktop) can connect directly without `mcp-remote`, using a simpler `type: sse` config — see below.
-
-=== Client-specific notes
-
-*Claude Desktop* — add the snippet above under `mcpServers` in `claude_desktop_config.json` (`~/Library/Application Support/Claude/` on macOS, `%APPDATA%\Claude\` on Windows), then restart.
-
-*Cursor / VS Code* — support HTTP natively; use `"type": "sse"` with a `"headers"` map instead of `command`/`args`:
-
-[source,json]
-----
-{
-  "sophia-restheart": {
-    "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp",
-    "headers": { "X-Sophia-Context": "restheart" }
-  }
-}
-----
-
-*Claude Code* — add to your project's `.mcp.json` or global MCP config.
+The snippets above use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`], a small Node.js bridge that exposes the HTTP endpoint as a local `stdio` process — the format most clients expect. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
 
 === Available Tools
 
