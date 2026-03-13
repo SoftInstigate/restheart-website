@@ -10,42 +10,56 @@ applies_to: cloud
 
 Sophia is an advanced AI service exclusively available with *RESTHeart Cloud*. Built by SoftInstigate, Sophia transforms your organization's knowledge base into an intelligent, conversational assistant that provides instant, accurate responses to your users' questions.
 
+image::../../../images/sophia/chat-interface.png[Sophia chat interface]
+
 === What is Sophia?
 
 Sophia leverages Large Language Models with Retrieval-Augmented Generation (RAG) technology to create an intelligent support system for organizations. Instead of users searching through documentation or waiting for human assistance, they can ask questions in natural language and receive immediate, contextual answers drawn from your organization's knowledge base.
 
 The service combines Claude (Anthropic's advanced language model) with sophisticated document processing to understand both the intent behind questions and the content of your documents. When someone asks a question, Sophia searches through your uploaded materials using semantic understanding — not just keyword matching — to find the most relevant information, then crafts a conversational response that directly addresses the query.
 
-=== Core Capabilities
+=== Knowledge Base Management
 
-*Knowledge Base Management*: Upload documents in multiple formats including PDFs, text files, HTML, and Markdown. Sophia automatically processes these materials, breaking them into searchable segments and creating vector embeddings that enable intelligent content discovery. The web-based admin panel provides intuitive tools for uploading, browsing, and managing your knowledge base.
+Upload documents in multiple formats including PDFs, text files, HTML, and Markdown. Sophia automatically processes these materials, breaking them into searchable segments and creating vector embeddings that enable intelligent content discovery. The web-based admin panel provides intuitive tools for uploading, browsing, and managing your knowledge base.
 
-*Context-Based Knowledge Segregation*: Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, and RAG configuration. Contexts ensure strict data separation — users in one context can never access documents from another. This makes it easy to serve different audiences (customers, internal staff, partners) from a single Sophia instance.
+image::../../../images/sophia/knowledge-list.png[Knowledge base management]
 
-*AI-Powered Conversations*: Using AWS Bedrock's Claude model, Sophia maintains context throughout conversations, allowing for natural follow-up questions and clarifications. Administrators can customize response behavior and tone through prompt templates, while the system provides real-time streaming responses for immediate feedback.
+=== Contexts and Knowledge Segregation
 
-*Agentic Mode*: For complex questions that require gathering information from multiple sources, Sophia can operate as an autonomous agent. When agentic mode is enabled on a context, Sophia iteratively searches the knowledge base, reads files, and reasons about the results before composing a comprehensive response. Users see the agent's reasoning process in real time.
+Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, and RAG configuration. Contexts ensure strict data separation — users in one context can never access documents from another. This makes it easy to serve different audiences (customers, internal staff, partners) from a single Sophia instance.
 
-*Admin Panel*: A full-featured web administration interface lets administrators manage contexts, upload and organize documents, inspect text segments, test semantic search, and issue API tokens — all from the browser.
+image::../../../images/sophia/context-list.png[Context management]
 
-*Security and Access Control*: Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. Role-based permissions separate admin and user capabilities. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to programmatic access.
+=== Agentic Mode
 
-*Flexible Integration*: The responsive chat interface works seamlessly across devices and can be embedded into existing websites or used standalone. Multi-language support (English/Italian) and customizable themes allow Sophia to match your organization's brand and user needs.
+For complex questions that require gathering information from multiple sources, Sophia can operate as an autonomous agent. When agentic mode is enabled on a context, Sophia iteratively searches the knowledge base, reads files, and reasons about the results before composing a comprehensive response. Users see the agent's reasoning process in real time through tool execution badges.
 
-=== Perfect For
+image::../../../images/sophia/agentic-response.png[Agentic response]
 
-Sophia excels in environments where quick access to organizational knowledge is crucial. Customer support teams can provide instant, accurate responses without human intervention. Educational institutions offer 24/7 student assistance. Enterprise organizations enable employee self-service for policies, procedures, and technical documentation. Any organization with substantial documentation can transform static information into an interactive, intelligent assistant.
+=== Admin Panel
 
-=== Technical Foundation
+A full-featured web administration interface lets administrators manage the entire Sophia instance from the browser: create and configure contexts, upload and organize documents, inspect text segments, test semantic search quality, and issue scoped API tokens for programmatic access.
 
-Built on RESTHeart framework with MongoDB for scalable document storage, Sophia uses AWS Bedrock for AI processing (Claude for conversation, Titan for embeddings) and features a modern Angular frontend. The entire system deploys through Docker containers with automatic scaling and comprehensive monitoring. As a managed RESTHeart Cloud service, all infrastructure concerns are handled automatically.
+image::../../../images/sophia/admin-panel.png[Admin panel]
 
-=== Getting Started
+=== Security and Access Control
 
-Since Sophia is exclusively available through RESTHeart Cloud, getting started involves signing up for the service, configuring AWS Bedrock access for AI functionality, and uploading your organizational documents. The setup process typically takes hours rather than weeks, with your team able to start querying the knowledge base immediately after configuration.
+Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. Role-based permissions separate admin and user capabilities. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path.
+
+image::../../../images/sophia/token-list.png[API tokens]
 
 === MCP Server Integration
 
-Sophia also exposes a *Model Context Protocol (MCP) server*, allowing AI clients and agents such as Claude Desktop, Cursor, and VS Code to connect directly to your Sophia knowledge base. API tokens with context binding provide authenticated access to private knowledge bases.
+Sophia exposes a *Model Context Protocol (MCP) server*, allowing AI clients and agents such as Claude Desktop, Cursor, and VS Code to connect directly to your knowledge base. The admin panel generates ready-to-paste MCP configuration snippets for each API token.
+
+image::../../../images/sophia/token-mcp-config.png[MCP configuration]
 
 See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.
+
+=== Flexible Integration
+
+The responsive chat interface works seamlessly across devices and can be embedded into existing websites via iframe or used standalone. Multi-language support (English/Italian) and customizable themes allow Sophia to match your organization's brand and user needs.
+
+=== Getting Started
+
+Sophia is exclusively available through RESTHeart Cloud in the dedicated tier. See the link:/docs/cloud/sophia/setup[Setup Guide] to get started.

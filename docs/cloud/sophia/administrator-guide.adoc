@@ -10,13 +10,13 @@ applies_to: cloud
 
 This guide covers the Sophia Admin Panel — a web-based interface for managing contexts, knowledge bases, text segments, and API tokens. Access the admin panel at `/admin` after logging in with an account that has the `admin` role.
 
-image::../../../images/sophia/admin-panel.png[Sophia Admin Panel, title="Sophia Admin Panel overview"]
+image::../../../images/sophia/admin-panel.png[Sophia Admin Panel]
 
 == Logging In
 
 Navigate to `/login` and enter your administrator credentials. Sophia uses cookie-based authentication: a successful login sets an HttpOnly `rh_auth` cookie and redirects you to the admin panel.
 
-image::../../../images/sophia/login.png[Login page, title="Sophia login page"]
+image::../../../images/sophia/login.png[Login page]
 
 Non-admin users are redirected to the chat interface. Admin users are redirected to the admin panel.
 
@@ -26,13 +26,13 @@ A *Context* defines the full behaviour of Sophia for a given knowledge domain: t
 
 Navigate to *Admin > Contexts* to manage contexts.
 
-image::../../../images/sophia/context-list.png[Context list, title="Context list view"]
+image::../../../images/sophia/context-list.png[Context list]
 
 === Creating a Context
 
 Click *New Context* and provide a unique ID (e.g. `restheart`, `cloud`). The ID is used in the web URL path (`/contexts/restheart`) and in the `X-Sophia-Context` MCP header.
 
-image::../../../images/sophia/context-edit.png[Context editor, title="Context editor"]
+image::../../../images/sophia/context-edit.png[Context editor]
 
 === Context Fields
 
@@ -76,7 +76,7 @@ The template editor provides a live markdown preview to help you craft the promp
 
 When *Agentic Mode* is enabled on a context, Sophia operates as an autonomous agent that can use tools (search the knowledge base, read files) in a loop before composing a final response. This is useful for complex questions that require gathering information from multiple sources.
 
-image::../../../images/sophia/context-agentic.png[Agentic mode settings, title="Agentic mode configuration in the context editor"]
+image::../../../images/sophia/context-agentic.png[Agentic mode settings]
 
 [cols="1,1,1,3", options="header"]
 |===
@@ -163,7 +163,7 @@ http -a admin:password DELETE :8080/contexts/restheart
 
 Navigate to *Admin > Knowledge* to manage the documents that form Sophia's knowledge base.
 
-image::../../../images/sophia/knowledge-list.png[Knowledge base, title="Knowledge base management"]
+image::../../../images/sophia/knowledge-list.png[Knowledge base]
 
 === Supported File Formats
 
@@ -180,7 +180,7 @@ Click *Upload* to open the upload dialog. You can:
 - Set a *path prefix* that is prepended to filenames (for organizing documents into directories)
 - Apply *tags* to all uploaded documents
 
-image::../../../images/sophia/knowledge-upload.png[Upload dialog, title="Document upload dialog"]
+image::../../../images/sophia/knowledge-upload.png[Upload dialog]
 
 After upload, documents are automatically processed:
 
@@ -198,7 +198,7 @@ The knowledge base supports two viewing modes:
 
 Filter documents by filename, tags, or path prefix.
 
-image::../../../images/sophia/knowledge-tree.png[Tree view, title="Knowledge base tree view"]
+image::../../../images/sophia/knowledge-tree.png[Tree view]
 
 === Tagging Documents
 
@@ -238,7 +238,7 @@ http -a admin:password DELETE :8080/docs.files/DOCUMENT_ID
 
 Navigate to *Admin > Segments* to browse and inspect the text segments generated from uploaded documents.
 
-image::../../../images/sophia/segment-list.png[Segment list, title="Text segments browser"]
+image::../../../images/sophia/segment-list.png[Segment list]
 
 === Browsing Segments
 
@@ -265,7 +265,7 @@ The segment browser includes a *Semantic Search* panel that lets you test RAG re
 . Optionally select a context (to apply that context's tag filters)
 . View matching segments ranked by relevance
 
-image::../../../images/sophia/segment-search.png[Semantic search, title="Semantic search testing panel"]
+image::../../../images/sophia/segment-search.png[Semantic search]
 
 This is useful for debugging retrieval quality and verifying that the right segments are returned for a given question.
 
@@ -273,7 +273,7 @@ This is useful for debugging retrieval quality and verifying that the right segm
 
 Navigate to *Admin > API Tokens* to manage JWT tokens for programmatic access and MCP client configuration.
 
-image::../../../images/sophia/token-list.png[Token list, title="API tokens management"]
+image::../../../images/sophia/token-list.png[Token list]
 
 === Creating a Token
 
@@ -283,7 +283,7 @@ Click *New Token* and configure:
 - *Context* (optional) — bind the token to a specific context
 - *Tags* (optional) — restrict knowledge access to specific tags (pre-populated from the context's tags when a context is selected)
 
-image::../../../images/sophia/token-create.png[Create token, title="Create API token dialog"]
+image::../../../images/sophia/token-create.png[Create token]
 
 The JWT token value is displayed *only once* after creation — copy it immediately.
 
@@ -300,7 +300,7 @@ For each token, the admin panel can generate ready-to-paste MCP configuration sn
 - *Claude Desktop* — uses `npx mcp-remote` with `Authorization` and `X-Sophia-Context` headers
 - *Cursor / VS Code* — uses SSE format with headers object
 
-image::../../../images/sophia/token-mcp-config.png[MCP config, title="Auto-generated MCP configuration"]
+image::../../../images/sophia/token-mcp-config.png[MCP config]
 
 Example generated configuration for Claude Desktop:
 
