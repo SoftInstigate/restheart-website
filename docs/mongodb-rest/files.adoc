@@ -472,6 +472,8 @@ NOTE: Update operators and aggregation pipelines cannot be used with file metada
 
 === Deleting Files
 
+==== DELETE - Single File
+
 To delete a file and all its chunks:
 
 ==== cURL
@@ -509,6 +511,59 @@ fetch('[RESTHEART-URL]/mybucket.files/my-custom-id', {
 })
 .catch(error => console.error('Error:', error));
 ----
+
+==== DELETE - Bulk Delete by Filter
+
+NOTE: Bulk delete for file buckets is available from RESTHeart v9.2.0.
+
+To delete multiple files at once, use the wildcard `*` path with a `filter` query parameter. This atomically removes both the `.files` metadata documents and their associated `.chunks` data for each matching file.
+
+==== cURL
+
+[source,bash]
+----
+curl -i -X DELETE "[RESTHEART-URL]/mybucket.files/*?filter={\"metadata.todelete\":true}" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http DELETE [RESTHEART-URL]/mybucket.files/'*' \
+  Authorization:"Basic [BASIC-AUTH]" \
+  filter=='{"metadata.todelete":true}'
+----
+
+==== JavaScript
+
+[source,javascript]
+----
+const filter = encodeURIComponent(JSON.stringify({"metadata.todelete": true}));
+fetch(`[RESTHEART-URL]/mybucket.files/*?filter=${filter}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(`Deleted ${data.deleted} files`);
+})
+.catch(error => console.error('Error:', error));
+----
+
+[source,http]
+----
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"deleted": 42}
+----
+
+The response returns the count of deleted files. Omitting the `filter` parameter deletes all files in the bucket.
+
+IMPORTANT: The `filter` applies to the `.files` collection, including `metadata.*` sub-fields (e.g., `{"metadata.category":"temp"}`).
 
 === Important Notes
 

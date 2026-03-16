@@ -19,7 +19,8 @@ In this guide, you'll learn how to:
 
 . Authenticate using Basic Authentication with username and password
 . Understand how the Authorization header works
-. Use authentication tokens for subsequent requests
+. Use authentication tokens for subsequent requests (password and client_credentials grant types)
+. Auto-discover server metadata via the RFC 8414 discovery endpoint
 . Manage authentication tokens (retrieve and invalidate)
 . Check user credentials and roles
 . Avoid browser authentication popups
@@ -110,8 +111,9 @@ RESTHeart v9 introduces dedicated OAuth 2.0-compatible token endpoints for secur
 
 **Available Endpoints:**
 
-* `POST /token` - Returns JWT token in response body (OAuth 2.0 Resource Owner Password Credentials Grant)
+* `POST /token` - Returns JWT token in response body (supports `password` and `client_credentials` grant types)
 * `POST /token/cookie` - Sets JWT token as HttpOnly cookie (enhanced security for browser-based apps)
+* `GET /.well-known/oauth-authorization-server` - Returns server metadata for client auto-discovery (RFC 8414)
 
 **Benefits:**
 
@@ -173,9 +175,9 @@ fetch('[RESTHEART-URL]/token', {
 }
 ----
 
-===== OAuth 2.0 Form Data Method
+===== OAuth 2.0 Form Data Method (Resource Owner Password Credentials)
 
-Send credentials using OAuth 2.0 form data (application/x-www-form-urlencoded):
+Send credentials using OAuth 2.0 form data (application/x-www-form-urlencoded) with `grant_type=password` (RFC 6749 §4.3):
 
 ==== cURL
 [source,bash]
@@ -217,6 +219,70 @@ fetch('[RESTHEART-URL]/token', {
 })
 .catch(error => console.error('Error:', error));
 ----
+
+===== Client Credentials Grant
+
+NOTE: `client_credentials` grant type support is available from RESTHeart v9.2.0.
+
+For machine-to-machine or service-account authentication, use `grant_type=client_credentials` (RFC 6749 §4.4).
+Pass `client_id` and `client_secret` in the request body instead of `username` and `password`.
+This is the recommended approach for API gateways, CLI tools, and MCP clients.
+
+==== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&client_id=myapp&client_secret=s3cret"
+----
+
+==== HTTPie
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=client_credentials \
+  client_id=myapp \
+  client_secret=s3cret
+----
+
+==== JavaScript
+[source,javascript]
+----
+const formData = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: 'your-client-id',
+    client_secret: 'your-client-secret'
+});
+
+fetch('[RESTHEART-URL]/token', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Access token:', data.access_token);
+    console.log('Expires in:', data.expires_in, 'seconds');
+})
+.catch(error => console.error('Error:', error));
+----
+
+The response format is identical to the password grant:
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "username": "myapp",
+  "roles": ["service"]
+}
+----
+
+NOTE: `client_id` and `client_secret` are mapped to the user credentials in the configured authenticator (e.g., `mongoRealmAuthenticator`). The client account must exist in the user store just like a regular user account.
 
 ===== Using the Token
 
@@ -359,6 +425,47 @@ jwtTokenManager:
 ----
 
 IMPORTANT: Always change the `key` value in production to a strong, random secret.
+
+===== OAuth 2.0 Authorization Server Metadata Discovery (RFC 8414)
+
+NOTE: The authorization server metadata discovery endpoint is available from RESTHeart v9.2.0.
+
+RESTHeart exposes a standards-compliant metadata discovery endpoint at `GET /.well-known/oauth-authorization-server` (RFC 8414).
+This allows OAuth 2.0 clients to auto-configure themselves without hardcoded URLs.
+
+==== cURL
+[source,bash]
+----
+curl -i [RESTHEART-URL]/.well-known/oauth-authorization-server
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
+----
+
+**Response:**
+
+[source,json]
+----
+{
+  "issuer": "http://localhost:8080",
+  "token_endpoint": "http://localhost:8080/token",
+  "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post"],
+  "grant_types_supported": ["password", "client_credentials"],
+  "response_types_supported": ["token"]
+}
+----
+
+The endpoint is publicly accessible (no authentication required) and the base URL is derived from the request `Host` header by default.
+You can override it with the `base-url` configuration option:
+
+[source,yml]
+----
+oauthAuthorizationServerMetadataService:
+  base-url: https://api.example.com  # optional, falls back to request Host header
+----
 
 ==== Legacy Token Management (Automatic Injection)
 
