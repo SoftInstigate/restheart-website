@@ -1,0 +1,147 @@
+---
+docs_version: 9
+title: SSE API Overview
+layout: docs-adoc
+menu: graphql
+applies_to: both
+---
+
+NOTE: SSE support is available from RESTHeart 9.3 onwards.
+
+Server-Sent Events (SSE) is a W3C standard for pushing real-time updates from a server to a browser or HTTP client over a plain HTTP connection. Unlike WebSockets, SSE is _unidirectional_ — data flows only from server to client — which makes it simpler to implement, firewall-friendly, and natively supported by all modern browsers via the `EventSource` API.
+
+> Server-Sent Events (SSE) is a server push technology enabling a client to receive automatic updates from a server over an HTTP connection.
+
+Ref: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+
+=== Two SSE Use Cases in RESTHeart
+
+RESTHeart supports SSE in two complementary ways:
+
+==== 1. MongoDB Change Streams over SSE
+
+Any MongoDB change stream defined on a collection can be consumed via SSE by sending a request with the `Accept: text/event-stream` header instead of a WebSocket upgrade. No plugin code is required.
+
+[source,bash]
+----
+# Connect to a change stream via SSE
+curl -N \
+  -H 'Accept: text/event-stream' \
+  -H 'Authorization: Basic YWRtaW46c2VjcmV0' \
+  http://localhost:8080/messages/_streams/all
+----
+
+Events arrive as soon as documents are inserted, updated, or deleted in the collection:
+
+[source]
+----
+event:change
+data:{"fullDocument":{"_id":{"$oid":"..."},"message":"Hello!"},"operationType":"insert"}
+
+event:change
+data:{"documentKey":{"_id":{"$oid":"..."}},"operationType":"delete"}
+----
+
+This mode requires MongoDB configured as a Replica Set. See link:/docs/sse/tutorial[Change Streams over SSE Tutorial] for a full walkthrough.
+
+==== 2. Custom SseService Plugins
+
+For use cases that don't involve MongoDB — live dashboards, system metrics, log tailing, IoT feeds — RESTHeart provides the `SseService` plugin interface. Implement it, annotate the class with `@RegisterPlugin`, and the framework wires the SSE endpoint automatically.
+
+[source,java]
+----
+@RegisterPlugin(name = "clockSse", description = "UTC clock feed", defaultURI = "/sse/clock")
+public class ClockSseService implements SseService {
+    @Override
+    public void onConnect(ServerSentEventConnection conn, String lastEventId) {
+        conn.setKeepAliveTime(15_000);
+        Thread.ofVirtual().start(() -> {
+            try {
+                while (conn.isOpen()) {
+                    conn.send(Instant.now().toString(), "tick", null, null);
+                    Thread.sleep(Duration.ofSeconds(1));
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+    }
+}
+----
+
+This mode works in standalone mode (`-s` flag) — no MongoDB connection is required. See link:/docs/sse/custom-service[Custom SseService Plugin] for a complete guide.
+
+=== SSE vs. WebSocket
+
+Both SSE and WebSocket expose MongoDB change streams at the same URL path (`/_streams/<name>`). Choose based on your client requirements:
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Feature |SSE |WebSocket
+|Direction
+|Server → client only
+|Full-duplex (bidirectional)
+|Protocol
+|Plain HTTP/1.1 or HTTP/2
+|HTTP upgrade to `ws://` / `wss://`
+|Browser API
+|`EventSource` (built-in everywhere)
+|`WebSocket` (built-in everywhere)
+|Auto-reconnect
+|Native (`EventSource` reconnects automatically)
+|Must be implemented by the client
+|Resume from last event
+|`Last-Event-ID` header (standard)
+|No built-in resume protocol
+|Firewall / proxy compatibility
+|Excellent — travels over port 80/443 as HTTP
+|May require proxy configuration
+|RESTHeart URL
+|`GET /<db>/<coll>/_streams/<name>` with `Accept: text/event-stream`
+|`GET /<db>/<coll>/_streams/<name>` with `Upgrade: websocket`
+|===
+
+NOTE: Both transports share the same MongoDB cursor via `ChangeStreamWorker`. A single cursor fans out to all WebSocket and SSE clients subscribed to the same stream, regardless of the transport they use.
+
+=== SSE Event Format
+
+Each change event sent over SSE contains two non-blank lines:
+
+[source]
+----
+event:change
+data:<json-payload>
+
+----
+
+The `data` field contains the same JSON structure as a WebSocket change event:
+
+[source,json]
+----
+{
+    "fullDocument": {
+        "_id": { "$oid": "..." },
+        "message": "Hello!",
+        "name": "uji"
+    },
+    "documentKey": {
+        "_id": { "$oid": "..." }
+    },
+    "updateDescription": null,
+    "operationType": "insert"
+}
+----
+
+TIP: The `event:` field value (`change`) allows the browser `EventSource` API to route events with `es.addEventListener('change', handler)` instead of the generic `es.onmessage`.
+
+=== Requirements
+
+* **MongoDB Change Streams over SSE** — MongoDB must be configured as a link:https://docs.mongodb.com/manual/replication/[Replica Set].
+* **Custom SseService plugins** — No MongoDB required; works in standalone mode (`java -jar restheart.jar -s`).
+
+=== Next Steps
+
+* link:/docs/sse/tutorial[Tutorial: MongoDB Change Streams over SSE] — step-by-step guide to streaming MongoDB change events to HTTP clients
+* link:/docs/sse/custom-service[Custom SseService Plugin] — build your own SSE endpoint without MongoDB
+* link:/docs/websocket/[WebSocket API Overview] — the full-duplex alternative for change streams
