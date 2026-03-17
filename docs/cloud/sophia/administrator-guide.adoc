@@ -30,7 +30,7 @@ image::../../../images/sophia/context-list.png[Context list]
 
 === Creating a Context
 
-Click *New Context* and provide a unique ID (e.g. `restheart`, `cloud`). The ID is used in the web URL path (`/contexts/restheart`) and in the `X-Sophia-Context` MCP header.
+Click *New Context* and provide a unique ID (e.g. `restheart`, `cloud`). The ID is used in the web URL path (`/contexts/restheart`) and in the MCP endpoint URL (`/mcp/restheart/`).
 
 image::../../../images/sophia/context-edit.png[Context editor]
 
@@ -125,7 +125,7 @@ Use these URLs when embedding Sophia in an iframe:
 <iframe src="https://sophia.restheart.com/contexts/restheart" ...></iframe>
 ----
 
-For MCP clients, the context is selected via the `X-Sophia-Context` request header (see link:/docs/cloud/sophia/mcp[Sophia MCP Server]).
+For MCP clients, the context is selected via the URL path (see link:/docs/cloud/sophia/mcp[Sophia MCP Server]).
 
 === Managing Contexts via API
 
@@ -297,7 +297,7 @@ The JWT token value is displayed *only once* after creation — copy it immediat
 
 For each token, the admin panel can generate ready-to-paste MCP configuration snippets for:
 
-- *Claude Desktop* — uses `npx mcp-remote` with `Authorization` and `X-Sophia-Context` headers
+- *Claude Desktop* — uses `npx mcp-remote` with `Authorization: Bearer` header
 - *Cursor / VS Code* — uses SSE format with headers object
 
 image::../../../images/sophia/token-mcp-config.png[MCP config]
@@ -312,9 +312,8 @@ Example generated configuration for Claude Desktop:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "Authorization: Bearer <token>",
-        "--header", "X-Sophia-Context: restheart"
+        "https://sophia-api.restheart.com/mcp/restheart/",
+        "--header", "Authorization: Bearer <token>"
       ]
     }
   }

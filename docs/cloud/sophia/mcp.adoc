@@ -10,8 +10,6 @@ applies_to: both
 
 Connect any link:https://modelcontextprotocol.io[MCP-compatible] AI client to your RESTHeart knowledge base in minutes.
 
-*Endpoint:* `https://sophia-api.restheart.com/mcp`
-
 === Public vs Authenticated Access
 
 Sophia MCP supports two access modes:
@@ -19,40 +17,34 @@ Sophia MCP supports two access modes:
 [cols="1,2,2", options="header"]
 |===
 | Mode | When to use | Headers required
-| *Public* | Knowledge bases with `public` tag | `X-Sophia-Context` only
-| *Authenticated* | Private knowledge bases | `Authorization: Bearer <token>` + `X-Sophia-Context`
+| *Public* | Knowledge bases with `public` tag | _(none)_
+| *Authenticated* | Private knowledge bases | `Authorization: Bearer <token>`
 |===
 
 For authenticated access, issue an API token from the admin panel (see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management]). The admin panel can generate ready-to-paste MCP configuration snippets for each token.
+
+The token can be passed either as a standard `Authorization: Bearer <token>` header or as a `?token=<jwt>` query parameter — useful for clients that do not support custom headers:
+
+`https://sophia-api.restheart.com/mcp/restheart/?token=<your-token>`
 
 image::../../../images/sophia/token-mcp-config.png[MCP config generation]
 
 === Selecting a Context
 
-Sophia supports multiple *Contexts*, each representing a distinct knowledge base with its own prompt template, tag filters, and RAG options. Select the desired context via the `X-Sophia-Context` header.
+Sophia supports multiple *Contexts*, each representing a distinct knowledge base with its own prompt template, tag filters, and RAG options. The context is selected via the URL path.
 
-[cols="1,2", options="header"]
+[cols="1,2,2", options="header"]
 |===
-| Context | Knowledge base
-| `restheart` | RESTHeart documentation, plugin API, configuration guides
-| `cloud` | RESTHeart Cloud managed service docs
-| `brewmaster` | Demo context: the BrewMaster Pro 3000 coffee maker (requires authentication)
+| Context | URL | Knowledge base
+| `restheart` | `https://sophia-api.restheart.com/mcp/restheart/` | RESTHeart documentation, plugin API, configuration guides
+| `cloud` | `https://sophia-api.restheart.com/mcp/cloud/` | RESTHeart Cloud managed service docs
 |===
 
 NOTE: Available contexts depend on your Sophia instance. Use the admin panel to create and manage contexts.
 
 ==== Filtering by Tag
 
-Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags` header narrows retrieval to documents that carry *all* of the specified tags (comma-separated). Use `sophia_list_tags` to discover which tags are available in your context.
-
-[cols="1,3", options="header"]
-|===
-| Header value | Effect
-| _(omitted)_ | All documents in the context are searched
-| `restheart` | Only documents tagged `restheart` are searched
-| `cloud` | Only documents tagged `cloud` are searched
-| `restheart,plugin` | Only documents tagged with both `restheart` and `plugin` are searched
-|===
+Within a context, documents are organized by *tags*. Pass the optional `tags` parameter to the `sophia_search` tool to narrow retrieval to documents that carry the specified tags. Use `sophia_list_tags` to discover which tags are available in your context.
 
 === Configuration Examples
 
@@ -64,13 +56,15 @@ Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags
   "mcpServers": {
     "sophia-restheart": {
       "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp", "--header", "X-Sophia-Context: restheart"]
+      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp/restheart/"]
     }
   }
 }
 ----
 
 ==== Claude Desktop (authenticated)
+
+When configuring via `claude_desktop_config.json`, pass the token as a header:
 
 [source,json]
 ----
@@ -80,14 +74,15 @@ Within a context, documents are organized by *tags*. The optional `X-Sophia-Tags
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://sophia-api.restheart.com/mcp",
-        "--header", "Authorization: Bearer <your-token>",
-        "--header", "X-Sophia-Context: restheart"
+        "https://sophia-api.restheart.com/mcp/restheart/",
+        "--header", "Authorization: Bearer <your-token>"
       ]
     }
   }
 }
 ----
+
+When configuring via the Claude Desktop UI, custom headers are not available — use OAuth client credentials instead, which Sophia supports natively.
 
 Add the snippet under `mcpServers` in `claude_desktop_config.json` (`~/Library/Application Support/Claude/` on macOS, `%APPDATA%\Claude\` on Windows), then restart.
 
@@ -100,10 +95,7 @@ Cursor and VS Code support HTTP/SSE natively:
 {
   "sophia-restheart": {
     "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp",
-    "headers": {
-      "X-Sophia-Context": "restheart"
-    }
+    "url": "https://sophia-api.restheart.com/mcp/restheart/"
   }
 }
 ----
@@ -115,10 +107,9 @@ With authentication:
 {
   "sophia-restheart": {
     "type": "sse",
-    "url": "https://sophia-api.restheart.com/mcp",
+    "url": "https://sophia-api.restheart.com/mcp/restheart/",
     "headers": {
-      "Authorization": "Bearer <your-token>",
-      "X-Sophia-Context": "restheart"
+      "Authorization": "Bearer <your-token>"
     }
   }
 }
@@ -127,24 +118,6 @@ With authentication:
 ==== Claude Code
 
 Add to your project's `.mcp.json` or global MCP config.
-
-==== With tag filtering
-
-To restrict retrieval within a context, add the `X-Sophia-Tags` header:
-
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia-restheart": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp",
-               "--header", "X-Sophia-Context: restheart",
-               "--header", "X-Sophia-Tags: restheart"]
-    }
-  }
-}
-----
 
 The snippets above use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`], a small Node.js bridge that exposes the HTTP endpoint as a local `stdio` process — the format most clients expect. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
 
