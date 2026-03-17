@@ -297,8 +297,8 @@ The JWT token value is displayed *only once* after creation — copy it immediat
 
 For each token, the admin panel can generate ready-to-paste MCP configuration snippets for:
 
-- *Claude Desktop* — uses `npx mcp-remote` with `Authorization: Bearer` header
-- *Cursor / VS Code* — uses SSE format with headers object
+- *Claude Desktop* — SSE format with `Authorization: Bearer` header
+- *Cursor / VS Code* — SSE format with headers object
 
 image::../../../images/sophia/token-mcp-config.png[MCP config]
 
@@ -309,12 +309,11 @@ Example generated configuration for Claude Desktop:
 {
   "mcpServers": {
     "sophia": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://sophia-api.restheart.com/mcp/restheart/",
-        "--header", "Authorization: Bearer <token>"
-      ]
+      "type": "sse",
+      "url": "https://sophia-api.restheart.com/mcp/restheart/",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
     }
   }
 }
