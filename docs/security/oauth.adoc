@@ -24,36 +24,46 @@ In all examples below, replace `[RESTHEART-URL]` with your RESTHeart server URL 
 
 **Available endpoints:**
 
-[cols="2,4"]
+[cols="2,1,4"]
 |===
-| Endpoint | Description
+| Endpoint | Enabled by default | Description
 
 | `POST /token`
+| yes
 | Issues a JWT access token. Supports `password`, `client_credentials`, and `authorization_code` grants.
 
 | `POST /token/cookie`
+| yes
 | Issues a JWT and sets it as an HttpOnly cookie (browser apps).
 
 | `GET /token`
+| yes
 | Returns the current token for the authenticated user.
 
 | `DELETE /token`
+| yes
 | Invalidates the current token.
 
 | `GET /authorize`
+| **no**
 | Starts the Authorization Code + PKCE flow — redirects to the configured login page.
 
 | `POST /authorize`
+| **no**
 | Completes the Authorization Code flow — issues the authorization code after successful login.
 
 | `GET /.well-known/oauth-authorization-server`
+| **no**
 | Authorization Server Metadata (RFC 8414) — for automatic client discovery.
 
 | `GET /.well-known/oauth-protected-resource`
+| **no**
 | Protected Resource Metadata (RFC 9728) — advertises the authorization server to MCP clients.
 |===
 
 === Token Endpoint
+
+`authTokenService` is enabled by default and bound to `POST /token`.
 
 ==== Password Grant
 
@@ -250,11 +260,18 @@ http -f POST [RESTHEART-URL]/token \
 
 ==== Configuration
 
-`oauthAuthorizationService` is **disabled by default** because it requires a frontend-specific `login-url`.
-Enable it in your configuration:
+All three OAuth endpoints are **disabled by default** and must be explicitly enabled.
+Enable them together for the full Authorization Code + PKCE flow:
 
 [source,yml]
 ----
+oauthAuthorizationServerMetadataService:
+  enabled: true
+  # Optional: override scheme+host for metadata URLs (needed behind a TLS-terminating proxy)
+  # Falls back to the request Host header when null.
+  base-url: null                    # e.g. https://api.example.com
+  authorize-endpoint-uri: /authorize
+
 oauthAuthorizationService:
   enabled: true
   # URL of the frontend login page (required)
@@ -262,16 +279,21 @@ oauthAuthorizationService:
   # Allowed redirect_uri values — supports * wildcard
   allowed-redirect-uris:
     - https://myapp.example.com/callback
-    - http://localhost:*   # for local development
+    - http://localhost:*             # for local development
+
+oauthProtectedResourceMetadataService:
+  enabled: true
+  # Optional: same as base-url in oauthAuthorizationServerMetadataService
+  base-url: null                    # e.g. https://api.example.com
 ----
 
 IMPORTANT: The `jwtTokenManager` must be enabled (it is by default in RESTHeart v9). The authorization code is signed with the same key as regular JWT tokens, ensuring stateless multi-node operation.
 
 === Authorization Server Metadata (RFC 8414)
 
-NOTE: Available from RESTHeart v9.2.0.
+NOTE: Available from RESTHeart v9.2.0. Disabled by default from v9.2.1.
 
-RESTHeart exposes `GET /.well-known/oauth-authorization-server` per RFC 8414.
+`oauthAuthorizationServerMetadataService` exposes `GET /.well-known/oauth-authorization-server` per RFC 8414.
 OAuth 2.0 clients (API gateways, MCP clients, CLI tools) can use this endpoint to auto-configure without hardcoded URLs.
 
 [source,bash]
@@ -282,9 +304,9 @@ http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
 [source,json]
 ----
 {
-  "issuer": "http://localhost:8080",
-  "authorization_endpoint": "http://localhost:8080/authorize",
-  "token_endpoint": "http://localhost:8080/token",
+  "issuer": "https://api.example.com",
+  "authorization_endpoint": "https://api.example.com/authorize",
+  "token_endpoint": "https://api.example.com/token",
   "response_types_supported": ["code"],
   "grant_types_supported": ["authorization_code", "password", "client_credentials"],
   "code_challenge_methods_supported": ["S256"],
@@ -293,21 +315,27 @@ http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
 ----
 
 The endpoint is publicly accessible (no authentication required).
-The base URL is derived from the request `Host` header by default.
-Override it with the `base-url` configuration option:
+
+When `base-url` is set, all URLs in the response use it as the base.
+When null, the base URL is derived in this order:
+
+. `base-url` configuration value
+. Request `Host` header
 
 [source,yml]
 ----
 oauthAuthorizationServerMetadataService:
-  base-url: https://api.example.com  # optional, falls back to request Host header
+  enabled: true
+  base-url: https://api.example.com   # optional
+  authorize-endpoint-uri: /authorize  # must match oauthAuthorizationService URI
 ----
 
 === Protected Resource Metadata (RFC 9728)
 
-NOTE: Available from RESTHeart v9.2.0.
+NOTE: Available from RESTHeart v9.2.0. Disabled by default from v9.2.1.
 
-RESTHeart exposes `GET /.well-known/oauth-protected-resource` per RFC 9728.
-MCP clients (e.g., Claude Desktop via `mcp-remote`) use this endpoint to discover the authorization server URL.
+`oauthProtectedResourceMetadataService` exposes `GET /.well-known/oauth-protected-resource` per RFC 9728.
+MCP clients (e.g., Claude Desktop via `mcp-remote`) use this endpoint to discover the authorization server URL before starting the OAuth flow.
 
 [source,bash]
 ----
@@ -317,8 +345,8 @@ http GET [RESTHEART-URL]/.well-known/oauth-protected-resource
 [source,json]
 ----
 {
-  "resource": "http://localhost:8080",
-  "authorization_servers": ["http://localhost:8080"]
+  "resource": "https://api.example.com",
+  "authorization_servers": ["https://api.example.com"]
 }
 ----
 
@@ -326,15 +354,24 @@ A resource-specific path can be appended to scope the metadata:
 
 [source,bash]
 ----
-http GET [RESTHEART-URL]/.well-known/oauth-protected-resource/api/v1
+http GET [RESTHEART-URL]/.well-known/oauth-protected-resource/mcp/ade
 ----
 
 [source,json]
 ----
 {
-  "resource": "http://localhost:8080/api/v1",
-  "authorization_servers": ["http://localhost:8080"]
+  "resource": "https://api.example.com/mcp/ade",
+  "authorization_servers": ["https://api.example.com"]
 }
+----
+
+The `base-url` option solves the common reverse-proxy problem where the `Host` header arrives as `http://` while the public URL is `https://`, causing issuer validation failures per RFC 8414 §3.3:
+
+[source,yml]
+----
+oauthProtectedResourceMetadataService:
+  enabled: true
+  base-url: https://api.example.com   # optional, resolves TLS proxy mismatch
 ----
 
 === Token Manager Configuration

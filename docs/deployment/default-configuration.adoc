@@ -268,6 +268,50 @@ jwtTokenManager:
   # - /nested/property # xpath expr for nested properties
 ----
 
+=== OAuth 2.0 / 2.1 Services
+
+All OAuth services are **disabled by default** and must be explicitly enabled.
+See link:/docs/security/oauth[OAuth 2.0 / 2.1] for the full documentation.
+
+[source,yml]
+----
+# OAuth 2.0 token endpoint — password, client_credentials, authorization_code grants
+# See https://restheart.org/docs/security/oauth
+authTokenService:
+  uri: /token
+
+# OAuth 2.0 Authorization Server Metadata (RFC 8414)
+# Endpoint: GET /.well-known/oauth-authorization-server
+# Returns server metadata for automatic client discovery (API gateways, MCP clients, CLI tools).
+oauthAuthorizationServerMetadataService:
+  enabled: false
+  # Optional: override scheme+host for metadata URLs (needed behind a TLS-terminating proxy).
+  # Falls back to the request Host header when null.
+  base-url: null                    # e.g. https://api.example.com
+  # URI of the authorization endpoint — must match oauthAuthorizationService URI.
+  authorize-endpoint-uri: /authorize
+
+# OAuth 2.1 Authorization Code + PKCE endpoint (RFC 7636)
+# GET /authorize  — redirects to login-url
+# POST /authorize — issues authorization code after successful authentication
+# Requires: jwtTokenManager enabled, login-url set, allowed-redirect-uris configured.
+oauthAuthorizationService:
+  enabled: false
+  # URL of the frontend login page (required)
+  login-url: null                   # e.g. https://myapp.example.com/login
+  # Allowed redirect_uri values — supports * wildcard
+  allowed-redirect-uris:
+    - http://localhost:*
+
+# OAuth 2.0 Protected Resource Metadata (RFC 9728)
+# Endpoint: GET /.well-known/oauth-protected-resource[/{resource-path}]
+# Used by MCP clients to discover the authorization server before starting the OAuth flow.
+oauthProtectedResourceMetadataService:
+  enabled: false
+  # Optional: same as base-url in oauthAuthorizationServerMetadataService.
+  base-url: null                    # e.g. https://api.example.com
+----
+
 === Mongo Client Provider
 
 [source,yml]
