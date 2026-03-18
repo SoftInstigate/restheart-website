@@ -189,8 +189,10 @@ Client                  RESTHeart               Frontend login UI
   |-- GET /authorize ------>|                         |
   |   (code_challenge, S256)|                         |
   |<-- 302 to login-url ----|                         |
-  |                         |<-- user authenticates --|
-  |                         |-- 302 callback?code=... ->|
+  |                         |<-- POST /authorize -----|
+  |                         |    username+password    |
+  |                         |--(valid)- 302 callback?code=... ->|
+  |                         |--(invalid)- 302 login?error=... ->|
   |<----------------------------------------------- code ---|
   |-- POST /token ---------->|
   |   (code, code_verifier) |
@@ -221,8 +223,30 @@ RESTHeart responds with `302` to the configured `login-url`, forwarding all OAut
 
 ==== Step 2: User authenticates
 
-The frontend presents the login form.
-On success it POSTs to `POST /authorize` with HTTP Basic Auth:
+The frontend presents the login form and POSTs the credentials to `POST /authorize`.
+The OAuth parameters are forwarded as query string (exactly as received from the `GET /authorize` redirect).
+
+Two credential formats are supported:
+
+**Option A — form body** (recommended for browser login pages):
+
+RESTHeart reads `username` and `password` from the `application/x-www-form-urlencoded` body.
+No `Authorization` header is needed — the browser's native form `POST` works as-is.
+
+[source,bash]
+----
+http --follow=false POST \
+  "[RESTHEART-URL]/authorize?response_type=code&client_id=my-app&\
+redirect_uri=https://myapp.example.com/callback&\
+code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&state=random-state-value" \
+  username=admin \
+  password=secret
+----
+
+On invalid credentials RESTHeart redirects back to `login-url?error=invalid_credentials&<original_query_params>`
+so the login page can show an error without losing the OAuth context.
+
+**Option B — HTTP Basic Auth** (for API clients / programmatic use):
 
 [source,bash]
 ----
@@ -232,7 +256,9 @@ redirect_uri=https://myapp.example.com/callback&\
 code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&state=random-state-value"
 ----
 
-RESTHeart responds with `302` to `redirect_uri?code=<authorization_code>&state=random-state-value`.
+NOTE: If an `Authorization: Basic` header is present it always takes precedence over form body credentials.
+
+**Response (valid credentials):** `302` to `redirect_uri?code=<authorization_code>&state=<state>`.
 
 The authorization code is a short-lived JWT (5-minute TTL) signed with the shared `jwtConfigProvider` key.
 It is stateless — valid across all nodes in a cluster without shared storage.
