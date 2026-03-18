@@ -1,0 +1,353 @@
+---
+docs_version: 9
+title: OAuth 2.0 / 2.1
+layout: docs-adoc
+menu: security
+applies_to: both
+---
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+=== Overview
+
+RESTHeart provides a standards-compliant OAuth 2.0/2.1 token endpoint and authorization server.
+It supports three grant types and the full Authorization Code + PKCE flow for delegated user authentication.
+
+[NOTE]
+====
+In all examples below, replace `[RESTHEART-URL]` with your RESTHeart server URL (e.g., `http://localhost:8080`).
+====
+
+**Available endpoints:**
+
+[cols="2,4"]
+|===
+| Endpoint | Description
+
+| `POST /token`
+| Issues a JWT access token. Supports `password`, `client_credentials`, and `authorization_code` grants.
+
+| `POST /token/cookie`
+| Issues a JWT and sets it as an HttpOnly cookie (browser apps).
+
+| `GET /token`
+| Returns the current token for the authenticated user.
+
+| `DELETE /token`
+| Invalidates the current token.
+
+| `GET /authorize`
+| Starts the Authorization Code + PKCE flow — redirects to the configured login page.
+
+| `POST /authorize`
+| Completes the Authorization Code flow — issues the authorization code after successful login.
+
+| `GET /.well-known/oauth-authorization-server`
+| Authorization Server Metadata (RFC 8414) — for automatic client discovery.
+
+| `GET /.well-known/oauth-protected-resource`
+| Protected Resource Metadata (RFC 9728) — advertises the authorization server to MCP clients.
+|===
+
+=== Token Endpoint
+
+==== Password Grant
+
+Authenticate with username and password using HTTP Basic Auth:
+
+===== cURL
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/token \
+  -u [BASIC-AUTH]
+----
+
+===== HTTPie
+[source,bash]
+----
+http POST [RESTHEART-URL]/token \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+Or using OAuth 2.0 form data (`grant_type=password`, RFC 6749 §4.3):
+
+===== HTTPie
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=password \
+  username=admin \
+  password=secret
+----
+
+**Response:**
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "username": "admin",
+  "roles": ["admin"]
+}
+----
+
+==== Client Credentials Grant
+
+NOTE: Available from RESTHeart v9.2.0.
+
+For machine-to-machine authentication, use `grant_type=client_credentials` (RFC 6749 §4.4).
+The `client_id` and `client_secret` map to user credentials in the configured authenticator.
+
+===== HTTPie
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=client_credentials \
+  client_id=myapp \
+  client_secret=s3cret
+----
+
+==== Using the Token
+
+Once you have the token, use it as a Bearer token:
+
+===== cURL
+[source,bash]
+----
+curl -i -X GET [RESTHEART-URL]/mycollection \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+===== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/mycollection \
+  "Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+----
+
+==== Token Renewal
+
+To renew a token before it expires, add `?renew` to any `GET /token` or `POST /token` request:
+
+===== HTTPie
+[source,bash]
+----
+http GET [RESTHEART-URL]/token?renew \
+  Authorization:"Bearer <current-token>"
+----
+
+NOTE: Token generation is a cryptographic operation with some overhead. The client is responsible for renewing before expiry.
+
+==== Cookie-Based Authentication
+
+For browser applications, use `/token/cookie` to set an HttpOnly cookie (the token is never exposed to JavaScript):
+
+===== HTTPie
+[source,bash]
+----
+http --session=./session.json POST [RESTHEART-URL]/token/cookie \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+Subsequent requests in the same session automatically include the cookie.
+
+=== Authorization Code + PKCE Flow
+
+NOTE: Available from RESTHeart v9.2.1.
+
+The OAuth 2.1 Authorization Code flow with PKCE (RFC 7636) allows a user to authenticate via a frontend login page.
+The access token is issued only after successful authentication — no credentials are passed to the client.
+
+This flow is the recommended approach for:
+
+* Web applications with a frontend login UI
+* MCP clients (e.g., Claude Desktop via `mcp-remote`)
+* CLI tools that open a browser for login
+
+**Flow overview:**
+
+[source]
+----
+Client                  RESTHeart               Frontend login UI
+  |                         |                         |
+  |-- GET /authorize ------>|                         |
+  |   (code_challenge, S256)|                         |
+  |<-- 302 to login-url ----|                         |
+  |                         |<-- user authenticates --|
+  |                         |-- 302 callback?code=... ->|
+  |<----------------------------------------------- code ---|
+  |-- POST /token ---------->|
+  |   (code, code_verifier) |
+  |<-- access_token ---------|
+----
+
+==== Step 1: Start the authorization request
+
+Generate a PKCE pair and redirect the user to `GET /authorize`:
+
+[source,bash]
+----
+# Generate PKCE pair
+CODE_VERIFIER="dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | \
+  openssl base64 | tr '+/' '-_' | tr -d '=')
+
+http --follow=false GET "[RESTHEART-URL]/authorize" \
+  "response_type==code" \
+  "client_id==my-app" \
+  "redirect_uri==https://myapp.example.com/callback" \
+  "code_challenge==${CODE_CHALLENGE}" \
+  "code_challenge_method==S256" \
+  "state==random-state-value"
+----
+
+RESTHeart responds with `302` to the configured `login-url`, forwarding all OAuth parameters as query string.
+
+==== Step 2: User authenticates
+
+The frontend presents the login form.
+On success it POSTs to `POST /authorize` with HTTP Basic Auth:
+
+[source,bash]
+----
+http --follow=false -a admin:secret POST \
+  "[RESTHEART-URL]/authorize?response_type=code&client_id=my-app&\
+redirect_uri=https://myapp.example.com/callback&\
+code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&state=random-state-value"
+----
+
+RESTHeart responds with `302` to `redirect_uri?code=<authorization_code>&state=random-state-value`.
+
+The authorization code is a short-lived JWT (5-minute TTL) signed with the shared `jwtConfigProvider` key.
+It is stateless — valid across all nodes in a cluster without shared storage.
+
+==== Step 3: Exchange the code for an access token
+
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=authorization_code \
+  code="<authorization_code>" \
+  redirect_uri="https://myapp.example.com/callback" \
+  client_id=my-app \
+  code_verifier="${CODE_VERIFIER}"
+----
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 899
+}
+----
+
+==== Configuration
+
+`oauthAuthorizationService` is **disabled by default** because it requires a frontend-specific `login-url`.
+Enable it in your configuration:
+
+[source,yml]
+----
+oauthAuthorizationService:
+  enabled: true
+  # URL of the frontend login page (required)
+  login-url: https://myapp.example.com/login
+  # Allowed redirect_uri values — supports * wildcard
+  allowed-redirect-uris:
+    - https://myapp.example.com/callback
+    - http://localhost:*   # for local development
+----
+
+IMPORTANT: The `jwtTokenManager` must be enabled (it is by default in RESTHeart v9). The authorization code is signed with the same key as regular JWT tokens, ensuring stateless multi-node operation.
+
+=== Authorization Server Metadata (RFC 8414)
+
+NOTE: Available from RESTHeart v9.2.0.
+
+RESTHeart exposes `GET /.well-known/oauth-authorization-server` per RFC 8414.
+OAuth 2.0 clients (API gateways, MCP clients, CLI tools) can use this endpoint to auto-configure without hardcoded URLs.
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
+----
+
+[source,json]
+----
+{
+  "issuer": "http://localhost:8080",
+  "authorization_endpoint": "http://localhost:8080/authorize",
+  "token_endpoint": "http://localhost:8080/token",
+  "response_types_supported": ["code"],
+  "grant_types_supported": ["authorization_code", "password", "client_credentials"],
+  "code_challenge_methods_supported": ["S256"],
+  "token_endpoint_auth_methods_supported": ["none", "client_secret_basic", "client_secret_post"]
+}
+----
+
+The endpoint is publicly accessible (no authentication required).
+The base URL is derived from the request `Host` header by default.
+Override it with the `base-url` configuration option:
+
+[source,yml]
+----
+oauthAuthorizationServerMetadataService:
+  base-url: https://api.example.com  # optional, falls back to request Host header
+----
+
+=== Protected Resource Metadata (RFC 9728)
+
+NOTE: Available from RESTHeart v9.2.0.
+
+RESTHeart exposes `GET /.well-known/oauth-protected-resource` per RFC 9728.
+MCP clients (e.g., Claude Desktop via `mcp-remote`) use this endpoint to discover the authorization server URL.
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/.well-known/oauth-protected-resource
+----
+
+[source,json]
+----
+{
+  "resource": "http://localhost:8080",
+  "authorization_servers": ["http://localhost:8080"]
+}
+----
+
+A resource-specific path can be appended to scope the metadata:
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/.well-known/oauth-protected-resource/api/v1
+----
+
+[source,json]
+----
+{
+  "resource": "http://localhost:8080/api/v1",
+  "authorization_servers": ["http://localhost:8080"]
+}
+----
+
+=== Token Manager Configuration
+
+The JWT Token Manager is enabled by default in RESTHeart v9:
+
+[source,yml]
+----
+jwtTokenManager:
+  key: secret    # Change this in production!
+  enabled: true
+  ttl: 15        # Token time-to-live in minutes
+  issuer: restheart.org
+----
+
+IMPORTANT: Always set a strong, random `key` value in production environments.
