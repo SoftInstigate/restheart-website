@@ -38,15 +38,7 @@ These are fully functional Sophia deployments managed by SoftInstigate. You can 
 
 To connect immediately with Claude Desktop, open *Settings → Connectors → Add custom connector* and paste the URL.
 
-== Public contexts
-
-No authentication required — just the URL.
-
-=== Claude Desktop
-
-Open *Settings → Connectors → Add custom connector* and paste the URL.
-
-=== Clients with native Streamable HTTP support
+== Clients with Streamable HTTP transport
 
 Add this to the MCP settings:
 
@@ -60,7 +52,7 @@ Add this to the MCP settings:
 }
 ----
 
-=== Clients that support stdio only
+== Clients with stdio transport
 
 Some clients (Claude Code, VS Code, Zed) spawn MCP servers as local processes and communicate over stdio. Use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] as a bridge. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
 
@@ -82,9 +74,7 @@ Private contexts require authentication. Sophia supports two approaches.
 
 === Via OAuth (recommended for interactive clients)
 
-Claude Desktop supports OAuth natively. Other clients work in similar way.
-
-Open *Settings → Connectors → Add custom connector*, paste the context URL, and set `OAuth Client ID` to `claude_desktop` in the advanced settings. Sophia login page will open in the browser to complete the flow.
+Claude Desktop supports OAuth natively. Open *Settings → Connectors → Add custom connector*, paste the context URL, and set `OAuth Client ID` to `claude_desktop` in the advanced settings. Sophia login page will open in the browser to complete the flow.
 
 === Via API token
 
@@ -105,7 +95,7 @@ Example configuration snippet:
 }
 ----
 
-For client that supports only the stio transport:
+For clients that support stdio only:
 
 [source,json]
 ----
