@@ -29,71 +29,74 @@ SoftInstigate runs two public Sophia instances as live examples — no account o
 
 [cols="1,2,2", options="header"]
 |===
-| Context | Endpoint | Knowledge base
+| Context | Url | Knowledge base
 | `restheart` | `https://sophia-api.restheart.com/mcp/restheart/` | RESTHeart documentation, plugin API, configuration guides
 | `cloud` | `https://sophia-api.restheart.com/mcp/cloud/` | RESTHeart Cloud managed service docs
 |===
 
-These are fully functional Sophia deployments managed by SoftInstigate. You can use them directly in your AI client or as a reference when setting up your own instance via link:/docs/cloud[RESTHeart Cloud].
+These are fully functional Sophia deployments managed by SoftInstigate. You can use them directly in your AI client.
 
-To connect immediately with Claude Desktop, open *Settings → Connectors → Add custom connector* and paste the URL. Or add this to `claude_desktop_config.json`:
+To connect immediately with Claude Desktop, open *Settings → Connectors → Add custom connector* and paste the URL.
 
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia-restheart": {
-      "type": "sse",
-      "url": "https://sophia-api.restheart.com/mcp/restheart/"
-    }
-  }
-}
-----
+== Public contexts
 
-== Authenticated Access
+No authentication required — just the URL.
 
-Private knowledge bases require an API token. Issue one from the admin panel (see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management]). The admin panel generates ready-to-paste MCP configuration snippets for each token.
+=== Claude Desktop
 
-image::../../../images/sophia/token-mcp-config.png[MCP config generation]
+Open *Settings → Connectors → Add custom connector* and paste the URL.
 
-The token can be passed as an `Authorization: Bearer <token>` header or, for clients that do not support custom headers, as a `?token=<jwt>` query parameter:
+=== Clients with native Streamable HTTP support
 
-`https://<your-sophia>/mcp/<context>/?token=<your-token>`
-
-== Configuration Examples
-
-=== Clients with native HTTP/SSE support
-
-Clients that connect directly over HTTP (Claude Desktop, Cursor) use the context URL with an optional `Authorization` header.
-
-*Claude Desktop* — the easiest way is via the UI: open *Settings → Connectors → Add custom connector* and paste the context URL. For private contexts, Claude Desktop will prompt for OAuth client credentials, which Sophia supports natively.
-
-To configure via `claude_desktop_config.json` (`~/Library/Application Support/Claude/` on macOS, `%APPDATA%\Claude\` on Windows):
-
-[source,json]
-----
-{
-  "mcpServers": {
-    "sophia": {
-      "type": "sse",
-      "url": "https://<your-sophia>/mcp/<context>/",
-      "headers": {
-        "Authorization": "Bearer <your-token>"
-      }
-    }
-  }
-}
-----
-
-Restart Claude Desktop after editing the file.
-
-*Cursor* — add to `.cursor/mcp.json`:
+Add this to the MCP settings:
 
 [source,json]
 ----
 {
   "sophia": {
-    "type": "sse",
+    "type": "http",
+    "url": "https://<your-sophia>/mcp/<context>/"
+  }
+}
+----
+
+=== Clients that support stdio only
+
+Some clients (Claude Code, VS Code, Zed) spawn MCP servers as local processes and communicate over stdio. Use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] as a bridge. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
+
+Example configuration snippet:
+
+[source,json]
+----
+{
+    "sophia": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://<your-sophia>/mcp/<context>/"]
+    }
+}
+----
+
+== Private contexts
+
+Private contexts require authentication. Sophia supports two approaches.
+
+=== Via OAuth (recommended for interactive clients)
+
+Claude Desktop supports OAuth natively. Other clients work in similar way.
+
+Open *Settings → Connectors → Add custom connector*, paste the context URL, and set `OAuth Client ID` to `claude_desktop` in the advanced settings. Sophia login page will open in the browser to complete the flow.
+
+=== Via API token
+
+Issue a token from the admin panel (see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management]). Pass it as an `Authorization: Bearer` header or, for clients that do not support custom headers, as a `?token=<jwt>` query parameter.
+
+Example configuration snippet:
+
+[source,json]
+----
+{
+  "sophia": {
+    "type": "http",
     "url": "https://<your-sophia>/mcp/<context>/",
     "headers": {
       "Authorization": "Bearer <your-token>"
@@ -102,37 +105,18 @@ Restart Claude Desktop after editing the file.
 }
 ----
 
-=== Clients that support stdio only
-
-Some clients (Claude Code, Zed, VS Code) spawn MCP servers as local processes and communicate over stdio. Use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] as a bridge — it connects to the HTTP endpoint and exposes it as a stdio process. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
-
-For authenticated access with stdio clients, pass the token via the `?token=` query parameter since stdio bridges typically do not support injecting headers.
-
-*Claude Code* — add to `.mcp.json` in your project root or to the global MCP config:
+For client that supports only the stio transport:
 
 [source,json]
 ----
 {
-  "mcpServers": {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://<your-sophia>/mcp/<context>/?token=<your-token>"]
+      "args": [
+        "mcp-remote",
+        "https://<your-sophia>/mcp/<context>/",
+        "--header", "Authorization: Bearer <your-token>" ]
     }
-  }
-}
-----
-
-*Zed* — add to `.zed/settings.json`:
-
-[source,json]
-----
-{
-  "context_servers": {
-    "sophia": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://<your-sophia>/mcp/<context>/?token=<your-token>"]
-    }
-  }
 }
 ----
 
@@ -149,22 +133,3 @@ For authenticated access with stdio clients, pass the token via the `?token=` qu
 | `sophia_render_prompt` | Builds a fully interpolated system prompt with RAG context injected, ready to send to any LLM as a `system` + `user` message pair.
 | `sophia_api` | Returns the complete Sophia REST API reference. Requires authentication — reserved for service administrators.
 |===
-
-== Recommended Tool-Chaining Workflow
-
-To maximise the context available to an AI agent:
-
-. *`sophia_search`* — find relevant chunks; note the `Source:` filename and `Path:` directory in each result.
-. *`sophia_get_file`* — retrieve the full file from `Source:` (not just the matched chunk).
-. *`sophia_list_files`* with `path=<Path:>` — discover all related files in the same directory.
-. *`sophia_get_file`* — retrieve any relevant sibling files.
-
-To explore the knowledge base structure before searching:
-
-[source]
-----
-sophia_list_paths          → top-level directories
-sophia_list_paths(path=X)  → subdirectories under X
-sophia_list_files(path=X)  → files in directory X
-sophia_list_tags           → available tags
-----
