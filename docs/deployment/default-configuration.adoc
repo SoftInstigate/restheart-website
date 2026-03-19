@@ -90,19 +90,26 @@ basicAuthMechanism:
   enabled: true
   authenticator: mongoRealmAuthenticator
 
+# JWT Configuration Provider
+# Provides consistent JWT settings (key, algorithm, issuer, audience) across all JWT components
+# See https://restheart.org/docs/security/authentication#jwt-authentication
+jwtConfigProvider:
+  enabled: true
+  key: null        # null = auto-generate secure random key (recommended for single-node)
+                   # For clustered deployments, set the same key on all nodes
+  algorithm: HS256 # Supported: HS256, HS384, HS512
+  issuer: restheart.org
+  audience: null   # null or array of audience strings
+
 # JSON Web Token Authentication
 # See https://restheart.org/docs/security/authentication#jwt-authentication
 jwtAuthenticationMechanism:
-  enabled: false
-  algorithm: HS256
-  key: secret
+  enabled: true
   base64Encoded: false
   usernameClaim: sub
   rolesClaim: roles
   fixedRoles: []
   #  - jwt-role
-  issuer: restheart.org
-  audience: null
 
 # Digest Authentication
 # See https://restheart.org/docs/security/authentication#digest-authentication
@@ -119,7 +126,7 @@ identityAuthMechanism:
   enabled: false
   username: admin
   roles:
-    - admind
+    - admin
     - user
 ----
 
@@ -164,31 +171,38 @@ mongoRealmAuthenticator:
   cache-size: 1_000
   cache-ttl: 60_000 # in milliseconds
   cache-expire-policy: AFTER_WRITE
+  # List of request parameter names to copy into account properties after successful authentication.
+  # Useful for copying metadata attached by interceptors (e.g., tenantId, organizationId).
+  # When omitted or empty, no parameters are copied (default behavior).
+  # attached-props:
+  #   - tenantId
+  #   - organizationId
 
 # Cookie Authentication
 # see: https://restheart.org/docs/security/authentication#cookie-authentication
 
-# Sets auth cookie on successful authentication when '?set-auth-cookie' is present
+# Sets auth cookie on POST /token/cookie (or legacy: when '?set-auth-cookie' is present)
 # Compatible with both rndTokenManager and jwtTokenManager
 authCookieSetter:
-  enabled: false          # Not enabled by default
-  name: rh_auth           # The name of the cookie to be set
-  domain: localhost       # The domain within which the cookie is valid.
-  path: /                 # The cookie path, applicable to the entire domain.
-  http-only: true         # If true enhances security by making the cookie inaccessible to JavaScript.
-  same-site: true         # Restricts the cookie to first-party contexts, preventing CSRF attacks.
-  same-site-mode: strict  # Strictly prevents the cookie from being sent along with cross-site requests.
-  expires-ttl: 86_400     # Defines the duration in seconds for which the cookie is valid (default: 86400 seconds = 1 day). When using jwtTokenManager, this value should match the TTL configured at /jwtTokenManager/ttl.
+  enabled: true # Enabled by default for /token/cookie endpoint
+  name: rh_auth # The name of the cookie to be set
+  domain: localhost # The domain within which the cookie is valid.
+  path: / # The cookie path, applicable to the entire domain.
+  http-only: true # If true enhances security by making the cookie inaccessible to JavaScript.
+  same-site: true # Restricts the cookie to first-party contexts, preventing CSRF attacks.
+  same-site-mode: strict # Strictly prevents the cookie from being sent along with cross-site requests.
+  ttl: 15 # Cookie expiration time in minutes (matches jwtTokenManager/ttl)
+  allow-legacy: false # If true, allows legacy ?set-auth-cookie query parameter on any endpoint (not recommended)
 
 # Creates Authorization header from auth cookie. Compatible with Basic and JWT auth.
 authCookieHandler:
-  enabled: false          # Not enabled by default
+  enabled: true # Enabled by default for cookie-based authentication
 
 # Clears auth cookie on POST /logout, logging out the user
 authCookieRemover:
-  enabled: false          # Not enabled by default
-  secure: false           # If request to clean the cookie should be authenticated
-  defaultUri: /logout     # The endpoint that triggers this service.
+  enabled: true # Enabled by default
+  secure: false # If request to clean the cookie should be authenticated
+  defaultUri: /logout # The endpoint that triggers this service.
 ----
 
 === Authorizers
@@ -246,9 +260,9 @@ fullAuthorizer:
 # Generates and verifies auth tokens. First configured manager is used.
 # Token returned via auth-token header on successful authentication.
 
-# rndTokenService generates auth tokens using a random number generator.
+# rndTokenManager generates auth tokens using a random number generator.
 rndTokenManager:
-  enabled: true
+  enabled: false
   ttl: 15 # in minutes
   srv-uri: /tokens
 
@@ -256,12 +270,10 @@ rndTokenManager:
 # Use this in clustered deployments, since all nodes sharing the key
 # can verify the token independently
 jwtTokenManager:
-  enabled: false
-  key: secret
+  enabled: true
   ttl: 15 # in minutes
-  srv-uri: /tokens
-  issuer: restheart.org
-  audience: null
+  srv-uri: /token
+  # Note: key, algorithm, issuer, audience configured via jwtConfigProvider
   # additional JWT claims from accounts properties
   account-properties-claims:
   # - foo # property name
@@ -453,6 +465,8 @@ graphql:
   # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
   query-time-limit: 0 # in milliseconds
   verbose: false
+  # restrict-mapping-db: when enabled, all mappings must use the same db as the GraphQL app definition
+  restrict-mapping-db: false
 
 # Automatically creates indexes on {"descriptor.uri":1} and {"descriptor.name":1}
 # for GraphQL applications to improve query performance when fetching app definitions
@@ -502,10 +516,6 @@ static-resources:
 
 [source,yml]
 ----
-# Service to GET and DELETE (invalidate) the user auth token generated by the TokenManager
-authTokenService:
-  uri: /tokens
-
 # Simple ping service
 # Must respond with HTTP 200 OK
 # If enable-extended-response is true, returns the following JSON response
@@ -526,8 +536,20 @@ roles:
 
 # A global blacklist for mongodb operators in filter query parameter
 filterOperatorsBlacklist:
-  blacklist: [ "$where" ]
+  blacklist: ["$where"]
   enabled: true
+
+# Aggregation pipeline security settings
+aggregationSecurity:
+  enabled: true
+  # Block dangerous pipeline stages that can access other databases or execute code
+  stageBlacklist: ["$out", "$merge", "$lookup", "$graphLookup", "$unionWith"]
+  # Block dangerous operators within pipeline stages
+  operatorBlacklist: ["$where", "$function", "$accumulator"]
+  # Prevent operations that access different databases than the request URI
+  allowCrossDatabaseOperations: false
+  # Control JavaScript execution in aggregation pipelines
+  allowJavaScriptExecution: false
 
 # bruteForceAttackGuard defends from brute force password cracking attacks
 # by returning `429 Too Many Requests` when more than
@@ -615,6 +637,7 @@ logging:
 metrics:
   enabled: true
   uri: /metrics
+  missing-registry-status-code: 404 # use 404 or 200
 
 requestsMetricsCollector:
   enabled: false
