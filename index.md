@@ -41,7 +41,7 @@ excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerpl
             <div class="col-md-6 d-flex">
               <div class="cta-card">
                 <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">
-                  <span class="cta-emoji">💬</span> Chat with Sophia AI
+                  <span class="cta-emoji">💬</span> Get AI Help
                 </a>
                 <div class="cta-description mt-4 white">
                     Get instant answers about RESTHeart • No need to read through all the docs!

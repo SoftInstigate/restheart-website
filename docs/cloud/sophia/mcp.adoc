@@ -38,6 +38,22 @@ These are fully functional Sophia deployments managed by SoftInstigate. You can 
 
 To connect immediately with Claude Desktop, open *Settings → Connectors → Add custom connector* and paste the URL.
 
+For Claude Code, run:
+
+[source,bash]
+----
+claude mcp add --transport http sophia-restheart https://sophia-api.restheart.com/mcp/restheart
+claude mcp add --transport http sophia-cloud https://sophia-api.restheart.com/mcp/cloud
+----
+
+For private contexts, add the API token via the `--header` flag:
+
+[source,bash]
+----
+claude mcp add --transport http sophia-restheart https://<your-sophia>/mcp/<context>/ \
+  --header "Authorization: Bearer <your-token>"
+----
+
 == Clients with Streamable HTTP transport
 
 Add this to the MCP settings:
@@ -54,7 +70,7 @@ Add this to the MCP settings:
 
 == Clients with stdio transport
 
-Some clients (Claude Code, VS Code, Zed) spawn MCP servers as local processes and communicate over stdio. Use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] as a bridge. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
+Some clients (VS Code, Zed) spawn MCP servers as local processes and communicate over stdio. Use link:https://www.npmjs.com/package/mcp-remote[`mcp-remote`] as a bridge. It requires link:https://nodejs.org[Node.js >= 18] and is downloaded automatically by `npx` on first run.
 
 Example configuration snippet:
 
