@@ -353,8 +353,9 @@ When null, the base URL is derived in this order:
 ----
 oauthAuthorizationServerMetadataService:
   enabled: true
-  base-url: https://api.example.com   # optional
-  authorize-endpoint-uri: /authorize  # must match oauthAuthorizationService URI
+  base-url: https://api.example.com    # optional
+  authorize-endpoint-uri: /authorize   # must match oauthAuthorizationService URI
+  registration-endpoint-uri: /register # optional, enables registration_endpoint in metadata
 ----
 
 === Protected Resource Metadata (RFC 9728)
@@ -399,6 +400,50 @@ The `base-url` option solves the common reverse-proxy problem where the `Host` h
 oauthProtectedResourceMetadataService:
   enabled: true
   base-url: https://api.example.com   # optional, resolves TLS proxy mismatch
+----
+
+=== Dynamic Client Registration (RFC 7591)
+
+NOTE: Available from RESTHeart v9.3.0. Disabled by default.
+
+`oauthClientRegistrationService` exposes `POST /register` per RFC 7591, allowing OAuth clients to self-register without manual admin configuration.
+This is required by tools such as mcp-inspector and MCP SDK clients that perform dynamic registration before starting the authorization flow.
+
+[source,bash]
+----
+http POST [RESTHEART-URL]/register \
+  redirect_uris:='["https://client.example.com/callback"]' \
+  client_name="My MCP Client" \
+  token_endpoint_auth_method=none
+----
+
+[source,json]
+----
+{
+  "client_id": "550e8400-e29b-41d4-a716-446655440000",
+  "client_id_issued_at": 1712345678,
+  "redirect_uris": ["https://client.example.com/callback"],
+  "client_name": "My MCP Client",
+  "token_endpoint_auth_method": "none",
+  "grant_types": ["authorization_code"],
+  "response_types": ["code"]
+}
+----
+
+The endpoint is publicly accessible (no authentication required). The returned `client_id` is a UUID that clients must use in subsequent authorization requests.
+
+NOTE: RESTHeart's authorization service embeds `client_id` directly in the authorization code JWT without database validation. No client storage is required on the server side.
+
+To enable dynamic client registration and advertise it in the AS metadata:
+
+[source,yml]
+----
+oauthClientRegistrationService:
+  enabled: true
+
+oauthAuthorizationServerMetadataService:
+  enabled: true
+  registration-endpoint-uri: /register  # adds registration_endpoint to discovery metadata
 ----
 
 === Token Manager Configuration
