@@ -8,12 +8,12 @@ applies_to: cloud
 
 === Overview
 
-Sophia is exclusively available as a managed service through *RESTHeart Cloud* in the *dedicated* tier. As a fully managed service, the SoftInstigate team handles the infrastructure setup — you don't need to install or configure any software.
+Sophia is exclusively available as a managed service through *RESTHeart Cloud* in the *dedicated* tier. The SoftInstigate team handles the entire infrastructure setup — you don't need to install or configure any software.
 
 === Prerequisites
 
-- *MongoDB on Atlas* — for document storage and vector search
-- *An AWS account* — for Bedrock AI model access (Claude and Titan Embed)
+- *MongoDB Atlas* — for document storage and vector search (Atlas Vector Search index on `textSegments`)
+- *AWS account* — for Bedrock model access (Claude family, Amazon Nova, NVIDIA Nemotron) and Titan Embed v2
 
 === Getting Started
 
@@ -21,14 +21,28 @@ Contact link:mailto:support@restheart.com[support@restheart.com] to request a de
 
 The SoftInstigate team will guide you through:
 
-. *AWS Bedrock configuration* — creating an IAM user with the required Bedrock and Marketplace permissions and generating access keys
-. *MongoDB Atlas vector index* — setting up the vector search index on the `textSegments` collection for semantic search
-. *Initial context setup* — creating your first context with a prompt template and knowledge base tags
+. *AWS Bedrock configuration* — IAM user with the required Bedrock and Marketplace permissions, access keys, and Bedrock Marketplace subscription for the LLMs and Titan Embed v2 you intend to use
+. *MongoDB Atlas vector index* — vector search index on the `textSegments` collection (Titan Embed v2 produces 1024-dimensional embeddings, cosine similarity)
+. *Initial admin account* — your first administrator user, used to log in to the admin panel
+. *Initial context setup* — a starter context with prompt template, tag filters, and a default knowledge base
 
 === After Setup
 
 Once the service is provisioned, you can:
 
-- Log in to the *Admin Panel* to manage contexts, upload documents, and issue API tokens — see the link:/docs/cloud/sophia/administrator-guide[Administrator Guide]
+- Log in to the *Admin Panel* at `/admin` to manage contexts, upload documents, configure agentic and collaborative options, manage users and API tokens, and monitor costs and chat history — see the link:/docs/cloud/sophia/administrator-guide[Administrator Guide]
 - Share the chat URL with your users — see the link:/docs/cloud/sophia/user-guide[User Guide]
 - Connect AI clients via MCP — see link:/docs/cloud/sophia/mcp[Sophia MCP Server]
+
+=== Supported Document Formats
+
+Sophia accepts a wide range of formats out of the box:
+
+- *Plain text & markup*: `.txt`, `.md`, `.html`, `.xml`
+- *Office*: `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.doc`, `.xls`, `.ppt`, `.rtf`
+- *Open document*: `.odt`, `.ods`, `.odp`
+- *Apple iWork*: `.pages`, `.numbers`, `.key`
+- *eBook*: `.epub`
+- *Source code*: `.java`, `.kt`, `.py`, `.js`, `.mjs`, `.ts`, `.go`, `.rs`, `.swift`, `.cs`, `.cpp`, `.cc`, `.c`, `.h`
+
+UTF-8 encoding is recommended for all text-based files.

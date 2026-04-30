@@ -86,15 +86,46 @@ Example configuration snippet:
 
 == Private contexts
 
-Private contexts require authentication. Sophia supports two approaches.
+Private contexts require authentication. A context is private when its `private` field is `true` in the admin panel; access requires a JWT containing the context id in the `contexts` claim. Sophia supports three authentication paths.
 
-=== Via OAuth (recommended for interactive clients)
+=== Via OAuth (recommended for Claude Desktop)
 
-Claude Desktop supports OAuth natively. Open *Settings → Connectors → Add custom connector*, paste the context URL, and set `OAuth Client ID` to `claude_desktop` in the advanced settings. Sophia login page will open in the browser to complete the flow.
+Claude Desktop supports OAuth natively and can re-authenticate transparently when its JWT expires.
 
-=== Via API token
+. In Claude Desktop open *Settings → Connectors → Add custom connector*
+. Paste the context URL (e.g. `https://your-sophia/mcp/support/`)
+. Set *OAuth Client ID* to a value provisioned by your administrator (e.g. `claude_desktop`)
+. Sophia's login page opens in the browser; complete the flow to authorise the connector
 
-Issue a token from the admin panel (see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management]). Pass it as an `Authorization: Bearer` header or, for clients that do not support custom headers, as a `?token=<jwt>` query parameter.
+Sophia exposes the standard OAuth metadata endpoints under `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`. The grant used after the initial user authorisation is `client_credentials`, so subsequent re-authentications are silent.
+
+=== Via API token (recommended for headless clients)
+
+Issue a long-lived API token from the admin panel — see link:/docs/cloud/sophia/administrator-guide#_api_token_management[API Token Management] — and pass it as an `Authorization: Bearer` header. Tokens are revocable.
+
+[source,json]
+----
+{
+  "sophia": {
+    "type": "http",
+    "url": "https://your-sophia/mcp/{context}/",
+    "headers": {
+      "Authorization": "Bearer <your-token>"
+    }
+  }
+}
+----
+
+=== Via `?token=` query parameter (clients without custom headers)
+
+Some clients (notably Claude Mobile and certain web wrappers) cannot attach custom headers. Sophia accepts the JWT as a `?token=<jwt>` query parameter that is internally promoted to `Authorization: Bearer <jwt>`:
+
+[source]
+----
+https://your-sophia/mcp/{context}/?token=<your-token>
+----
+
+This is the same JWT issued by the admin panel — there is no separate token type.
 
 Example configuration snippet:
 
@@ -131,11 +162,13 @@ For clients that support stdio only:
 [cols="1,3", options="header"]
 |===
 | Tool | Description
-| `sophia_search` | Semantic search over the knowledge base. Returns relevant text segments with `Source:` filename and `Path:` directory for context expansion.
-| `sophia_get_file` | Retrieves the full content of a document by filename (all chunks merged in order). Use after `sophia_search` to read beyond the matched chunk.
+| `sophia_search` | Semantic search over the knowledge base. Returns relevant text segments with `Source:` filename and `Path:` directory for context expansion. Supports an optional `compact` flag for source-only previews (~10× cheaper).
+| `sophia_get_file` | Retrieves a paginated page of a document by filename. Use after `sophia_search` to read beyond the matched chunk; pass `page` to navigate.
 | `sophia_list_files` | Lists all accessible documents with tags and chunk count. Accepts an optional `path` parameter to filter by directory.
 | `sophia_list_tags` | Lists the tags available in the knowledge base, filtered by the active context and credentials.
 | `sophia_list_paths` | Lists immediate subdirectories under a given path prefix, like `ls`. Without arguments, returns top-level directories.
 | `sophia_render_prompt` | Builds a fully interpolated system prompt with RAG context injected, ready to send to any LLM as a `system` + `user` message pair.
-| `sophia_api` | Returns the complete Sophia REST API reference. Requires authentication — reserved for service administrators.
+| `sophia_api` | Returns the Sophia REST API reference. Requires authentication — reserved for service administrators.
 |===
+
+NOTE: `render_input` / `render_output` (collaborative artifacts) and the `sophia_context_*` tools (agentic context management) are *not* exposed via MCP — they are internal tools used by Sophia's own agentic loop and post-answer synthetic calls.

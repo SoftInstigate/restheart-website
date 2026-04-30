@@ -8,73 +8,88 @@ applies_to: cloud
 
 === Introduction
 
-Sophia is an advanced AI service developed by SoftInstigate. It leverages Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to provide intelligent support services for organizations and educational institutions. Sophia also supports *Agentic Mode*, where the AI autonomously uses tools to gather information before answering complex questions.
+Sophia is an advanced AI service developed by SoftInstigate. It leverages Large Language Models (LLMs) with Retrieval-Augmented Generation (RAG) to provide intelligent support services for organizations and educational institutions. Sophia supports two operating modes: *Linear* (single-shot RAG) and *Agentic* (autonomous tool-use loop) — and a *Collaborative* extension that lets the model render interactive HTML artifacts directly in the chat.
 
 === System Architecture
 
 The system consists of two main components:
 
 ==== Backend (sophia-restheart)
-- Built on RESTHeart framework
-- Java 25 with Maven build system
-- Integration with AWS Bedrock using Claude model by Anthropic
-- MongoDB database for data persistence
-- Vector store for embedding storage and semantic search
-- LangChain4j integration for AI/ML operations
-- Agentic loop with tool-use support (search, file retrieval)
+- Built on the RESTHeart framework (9.2.x), Java 25 with Maven
+- AWS Bedrock for LLMs (Anthropic Claude family, Amazon Nova, NVIDIA Nemotron) with circuit-breaker-driven model failover
+- Amazon Titan Embed Text v2 for vector embeddings
+- MongoDB Atlas for documents, vector index, chats, and persistent agent context
+- Apache Tika for parsing the wide range of supported document formats
+- Agentic loop with tool-use, prompt caching, search-and-fetch preamble, and per-session context document
+- MCP server (Streamable HTTP) with OAuth `client_credentials` for private contexts
 
 ==== Frontend (sophia-web)
-- Angular web application
-- Responsive design with customizable themes
-- Real-time chat interface with agentic event streaming
-- Admin panel for managing contexts, knowledge, segments, and API tokens
-- Multi-language support (Italian/English)
-- Embeddable via iframe
+- Angular 21 standalone components with signal-based state
+- Tailwind CSS v4 + spartan-ng UI primitives
+- Real-time chat with WebSocket streaming, deck view, and live tool/iteration timeline
+- Embeddable via iframe; multi-language (English/Italian)
+- Admin panel covering contexts, knowledge, segments, users, API tokens, chat viewer, costs, errors, models
 
 === Key Features
 
 ==== AI-Powered Conversations
-Sophia utilizes the Claude model from AWS Bedrock to deliver intelligent, context-aware conversations. The system implements a Retrieval-Augmented Generation (RAG) approach that combines real-time document retrieval with advanced language processing. Administrators can customize prompt templates to tailor the AI's behavior and tone, while the system maintains conversation context through intelligent chat history management.
+Sophia uses Claude (default) from AWS Bedrock to deliver intelligent, context-aware conversations. RAG combines real-time document retrieval with advanced language processing. Administrators customize prompt templates per context, and the system maintains conversation context either via classic history injection or via a persistent agent-context document (see *Agentic Context Management* below).
 
 ==== Agentic Mode
-When enabled on a context, Sophia operates as an autonomous agent that iteratively uses tools — searching the knowledge base, reading files, and gathering information — before composing a final response. The agent loop runs up to a configurable number of iterations, and tool execution events can be streamed to the client in real time so users see the reasoning process as it happens.
+When enabled, Sophia iteratively uses tools — searching the knowledge base, reading files, listing tags or paths — before composing the final response. The loop runs up to `maxAgentIterations` rounds and tool events stream to the client when `streamThinkingEvents` is enabled. Optional features include:
+
+- *Search & Fetch Preamble*: a deterministic search + read step injected as iteration 0 to anchor the model in real knowledge before it decides further calls
+- *Compact Search*: returns only filename / chunk index / 150-word preview from `sophia_search`, ~10× cheaper than the full segment payload
+- *Extended Thinking*: enables Claude's internal chain-of-thought
+- *Prompt Caching*: rolling cache breakpoints on tool definitions and tool results — read at ~10% of write cost
+
+==== Agentic Context Management
+A persistent markdown document keyed by `chatId`, replacing classic history injection. At turn start the saved context is auto-loaded as a synthetic `sophia_context_load` tool result; at turn end a forced synthetic call summarises the turn via `sophia_context_save`, `sophia_context_append`, or `sophia_context_skip`. This frees the main loop from history-token overhead and keeps context coherent across long sessions.
+
+==== Collaborative Mode
+Adds `render_output` (in-iframe HTML artifacts) to the model's tool set during the main loop, and a forced post-answer `render_input` call that constrains the model to attach 2–4 follow-up buttons. Per-context, the description of both tools can be overridden to teach the model domain-specific patterns. A per-message toggle lets the user activate it for individual queries even when the context default is off.
 
 ==== Knowledge Base Management
-The platform supports comprehensive document management with compatibility for TXT, MD, PDF, and HTML files. Documents are automatically processed through vector embeddings using Amazon Titan Embed Text v2 for semantic search. The admin panel provides a web interface for uploading, browsing (flat and tree views), filtering, and deleting documents.
+Documents are uploaded into MongoDB GridFS (`docs.files`). Apache Tika parses prose formats — `.txt`, `.md`, `.html`, `.xml`, `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.rtf`, `.epub`, `.odt`, `.ods`, `.odp`, `.pages`, `.numbers`, `.key` — and code-aware splitters handle source files (`.java`, `.kt`, `.py`, `.js`, `.ts`, `.go`, `.rs`, `.swift`, `.cs`, `.cpp`, `.c`, `.h`). Each file is split into segments, embedded with Titan Embed Text v2, and persisted in `textSegments`. The admin panel lists documents in flat and tree views with filename / tag / path filters; failed indexing surfaces an inline retry button.
 
 ==== Context-Based Knowledge Segregation
-Contexts are the core abstraction for knowledge partitioning. Each context defines a set of tags that act as mandatory filters on every vector search — ensuring that users in one context cannot access documents belonging to another. This provides enterprise-grade data isolation without requiring separate deployments.
+Contexts are the core abstraction for knowledge partitioning. Each context specifies a set of tags that act as mandatory filters on every vector search — users in one context cannot access documents belonging to another. Combined with private-context access control (see below), this provides enterprise-grade data isolation.
 
 ==== Security & Authentication
-Authentication uses cookie-based sessions for the web interface and JWT bearer tokens for API and MCP access. Role-based access control distinguishes between admin users (who manage contexts, knowledge, and tokens) and regular users (who interact with the chat). API tokens can be bound to specific contexts and tags, ensuring that programmatic access respects the same knowledge segregation boundaries.
+Authentication uses cookie-based sessions (`POST /token/cookie`) for the web interface and JWT bearer tokens for API and MCP clients. JWTs carry custom claims (`contexts`, `tags`) used for fine-grained authorization. *Private contexts* require a JWT containing the context id in the `contexts` claim — public contexts are reachable without authentication. API tokens are revocable and verified on every request by a low-priority vetoer.
 
 ==== Admin Panel
 A web-based administration interface provides full management capabilities:
 
-- *Contexts*: Create, edit, and delete contexts with prompt templates, tag filters, RAG options, and agentic mode settings
-- *Knowledge*: Upload, browse, tag, and delete documents with flat and tree views
-- *Segments*: Inspect text segments, test semantic search, and debug retrieval quality
-- *API Tokens*: Issue, revoke, and delete JWT tokens with auto-generated MCP configuration snippets
+- *Contexts*: prompt template, tag filters, RAG/LLM options, agentic and collaborative settings, hint questions, deck view, model id override
+- *Knowledge*: upload, browse (flat/tree), tag inline or in batch (recursive on a directory), retry failed indexing, delete
+- *Segments*: inspect text segments, test semantic search with a context selector, debug retrieval quality
+- *Users*: create/edit/delete user accounts, assign roles and contexts
+- *API Tokens*: issue, revoke, delete; auto-generated MCP configuration snippets for Claude Desktop, Cursor, Claude Code, VS Code
+- *Chats*: browse all chat sessions with iteration breakdowns, token/cost details, copy buttons
+- *Costs*: dashboard of token consumption and dollar cost over time, by context and model, with cache-aware estimates
+- *Errors*: log of failed chat completions for debugging
+- *Models*: pricing table, throttling quotas (TPM/RPM), tool-use score per model
 
 ==== Real-time Communication
-WebSocket-based messaging with MongoDB Change Streams provides live updates. Streaming response delivery allows users to see AI responses as they're composed. In agentic mode, tool execution events are streamed in real time, showing tool names, arguments, results, and durations.
+WebSocket messaging via MongoDB Change Streams pushes updates to the chat client. Streaming response delivery shows tokens as they are produced. In agentic mode, tool execution events are streamed (`tool_start`, `tool_result`, `text_start`, `model_fallback`, `render_step`) with arguments, summaries, and durations. A streaming watchdog and document-recovery routine keep the UI consistent if the WebSocket drops.
 
 === Technical Stack
 
 ==== Backend Technologies
-The backend is built on RESTHeart framework running on Java 25. MongoDB serves as the primary database with Atlas compatibility for cloud deployments. LangChain4j integrates with AWS Bedrock for Claude LLM access and Amazon Titan for embeddings. Security is handled through JWT authentication with cookie-based session support.
+RESTHeart on Java 25, MongoDB Atlas with Atlas Vector Search, LangChain4j integration to AWS Bedrock (Claude / Nova / Nemotron) and Titan Embed v2. Apache Tika for document parsing. Authentication via `mongoRealmAuthenticator` + `jwtTokenManager` with cookie support and OAuth `client_credentials` (for MCP).
 
 ==== Frontend Technologies
-The frontend is built with Angular 21 using standalone components and signals for state management. Tailwind CSS v4 provides styling, with spartan-ng UI components. The admin panel uses responsive layouts with mobile support.
+Angular 21 standalone components, signals, Tailwind CSS v4, spartan-ng. Three.js powers the optional avatar orb and animated face. Reactive Forms drive the admin editors. Charting via lightweight inline SVG.
 
-=== Deployment Architecture
+=== Deployment
 
 ==== Production Deployment
-Sophia deploys as a managed RESTHeart Cloud service. The system uses Docker containers for consistent environments. As a cloud service, all infrastructure concerns — scaling, monitoring, updates — are handled automatically.
+Sophia is delivered as a managed *RESTHeart Cloud — dedicated* service. SoftInstigate handles infrastructure, scaling, monitoring, and updates. As a cloud customer you administer your own instance through the admin panel — see the link:/docs/cloud/sophia/administrator-guide[Administrator Guide].
 
 ==== Integration Points
 - REST API endpoints for backend integration
 - WebSocket connections for real-time chat
-- MCP server for AI client integration (Claude Desktop, Cursor, VS Code)
-- iframe embedding for frontend integration
+- MCP server for AI clients (Claude Desktop, Cursor, Claude Code, VS Code)
+- iframe embedding for the chat UI
 - JWT tokens for programmatic access

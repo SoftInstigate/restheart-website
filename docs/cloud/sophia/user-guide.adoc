@@ -6,7 +6,7 @@ menu: sophia
 applies_to: cloud
 ---
 
-There are three ways to interact with Sophia:
+There are three ways to interact with Sophia.
 
 == Web Chat Interface
 
@@ -14,22 +14,46 @@ The simplest way to use Sophia is through the web chat interface. Navigate to th
 
 image::../../../images/sophia/chat-interface.png[Chat interface]
 
-Sophia streams responses in real time, supports follow-up questions, and formats answers with rich text, code blocks, and links. When *Agentic Mode* is enabled, Sophia autonomously searches and reads multiple documents before answering — you'll see the reasoning process in real time through tool execution badges.
+Sophia streams responses in real time, supports follow-up questions, and formats answers with rich text, code blocks, and links.
+
+=== Hint Questions
+
+When the context defines them, the chat opens with a row of clickable chips — common starting questions chosen by your administrator. Click one to send it as your first prompt; ignore them and type your own at any time.
+
+=== Agentic Mode
+
+When *Agentic Mode* is enabled on the context, Sophia autonomously searches and reads multiple documents before answering. You'll see a real-time timeline of tool executions — each step is a badge with the tool name, arguments, and a result summary; click to expand for the full payload. Total iterations and per-iteration token usage appear at the bottom of the answer.
 
 image::../../../images/sophia/agentic-response.png[Agentic response]
 
-The interface supports multiple languages (English/Italian), customizable themes, and can be embedded into existing websites via iframe.
+=== Collaborative Artifacts
+
+If the context has *Collaborative Mode* on, Sophia can render rich interactive HTML artifacts directly in the chat — diagrams, calculators, mini-dashboards, REST micro-tools — and attach 2–4 follow-up button suggestions after each answer. You can also activate Collaborative Mode for a single message via the per-message toggle even when the context default is off.
+
+image::../../../images/sophia/chat-artifact.png[Interactive artifact in chat]
+
+To share a generated artifact with someone else (read-only, no login required), use the *Share* button on the artifact card — it produces a URL that returns only the artifact, scoped to that single interaction.
+
+=== Deck View
+
+Some contexts use *Deck View* — the chat is presented as a horizontal deck of cards instead of a vertical scroll. Navigate with the arrow buttons or swipe; each card holds prompt above and answer below. Useful for guided tours, lesson decks, and demo flows.
+
+image::../../../images/sophia/chat-deck-view.png[Deck view]
+
+=== Embedding
+
+The chat interface supports multiple languages (English/Italian), customisable themes, and can be embedded into existing websites via iframe. Ask your administrator for the embed URL.
 
 == MCP Server
 
-Connect your favourite AI client directly to your Sophia knowledge base via the *Model Context Protocol (MCP)*. Supported clients include Claude Desktop, Cursor, and VS Code.
+Connect your favourite AI client directly to your Sophia knowledge base via the *Model Context Protocol (MCP)*. Supported clients include Claude Desktop, Cursor, Claude Code, and VS Code.
 
 Your administrator can generate ready-to-paste configuration snippets from the admin panel.
 
-See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.
+See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for full setup instructions, including OAuth and API-token authentication for private contexts.
 
 == REST API
 
 For programmatic access, Sophia exposes a full REST API for chat operations, document management, and semantic search.
 
-See link:/docs/cloud/sophia/api-documentation[API Documentation] for details.
+See link:/docs/cloud/sophia/api-documentation[API Documentation] for endpoint reference and code samples.

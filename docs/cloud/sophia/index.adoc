@@ -28,37 +28,53 @@ image::../../../images/sophia/admin-panel.png[Admin panel]
 
 ==== Knowledge Base Management
 
-Upload documents in multiple formats (PDF, Markdown, HTML, plain text). Sophia automatically processes them into searchable segments with vector embeddings. The admin panel provides intuitive tools for uploading, browsing, and managing your knowledge base.
+Upload documents in many formats — prose (`.txt`, `.md`, `.html`, `.xml`, `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.rtf`, `.epub`, `.odt`, `.ods`, `.odp`, `.pages`, `.numbers`, `.key`) and source code (`.java`, `.kt`, `.py`, `.js`, `.ts`, `.go`, `.rs`, `.swift`, `.cs`, `.cpp`, `.c`, `.h`). Sophia processes them into searchable segments with vector embeddings. The admin panel offers inline and batch tag editing, directory autocomplete on upload, and one-click retry for documents that failed indexing.
 
 image::../../../images/sophia/knowledge-list.png[Knowledge base management]
 
 ==== Contexts and Knowledge Segregation
 
-Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, and RAG configuration. Contexts ensure strict data separation — users in one context can never access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
+Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, RAG configuration, and agentic behaviour. Contexts ensure strict data separation — users in one context cannot access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
 
 image::../../../images/sophia/context-list.png[Context management]
 
 ==== Agentic Mode
 
-For complex questions, Sophia can operate as an autonomous agent. When agentic mode is enabled, Sophia iteratively searches the knowledge base, reads files, and reasons about the results before composing a comprehensive answer. Users see the reasoning process in real time.
+For complex questions, Sophia operates as an autonomous agent: it iteratively calls tools (knowledge search, file retrieval, persistent context save/load), reasons over the results, and composes a comprehensive answer. Users see the reasoning process in real time. Per-context options let you tune the loop: max iterations, search-and-fetch preamble, compact search payloads, agentic context management, prompt caching, and extended thinking.
 
 image::../../../images/sophia/agentic-response.png[Agentic response]
 
+==== Collaborative Mode and Interactive Artifacts
+
+Enable *Collaborative Mode* on a context to let Sophia render rich interactive HTML artifacts directly in the chat — diagrams, calculators, mini-dashboards, REST micro-tools — and to attach 2–4 follow-up buttons after every answer for guided exploration. Both the artifact tool (`render_output`) and the follow-up tool (`render_input`) accept domain-specific descriptions you can override per context.
+
+image::../../../images/sophia/chat-artifact.png[Interactive artifact in chat]
+
+==== Deck View
+
+Switch any context to *Deck View* to replace the linear chat with a horizontal card deck — each interaction becomes a swipeable card with prompt above and answer below. Useful for guided tours, lesson decks, and demo flows.
+
+image::../../../images/sophia/chat-deck-view.png[Deck view]
+
 ==== Security and Access Control
 
-Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path.
+Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path. Private contexts require either an OAuth flow (Claude Desktop) or an API token; public contexts work without authentication.
 
 ==== MCP Server
 
-Sophia exposes a *Model Context Protocol (MCP) server*, allowing AI clients such as Claude Desktop, Cursor, and VS Code to connect directly to your knowledge base. The admin panel generates ready-to-paste configuration snippets.
+Sophia exposes a *Model Context Protocol (MCP) server*, allowing AI clients such as Claude Desktop, Cursor, Claude Code, and VS Code to connect directly to your knowledge base. The admin panel generates ready-to-paste configuration snippets and the server supports OAuth `client_credentials` for transparent re-authentication.
 
 image::../../../images/sophia/token-mcp-config.png[MCP configuration]
 
 See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.
 
+==== Cost Visibility and Model Failover
+
+Track token usage and dollar cost per chat, per context, per model from the *Costs* dashboard. The context editor shows a live estimate of cached prefix size and per-interaction cost based on the chosen model and prompt-caching support. When a Bedrock model is throttled or fails, Sophia automatically falls back to a configurable list of secondary models — the user sees a `model_fallback` event and the answer continues seamlessly.
+
 ==== Flexible Integration
 
-The responsive chat interface works across devices and can be embedded into existing websites via iframe. Multi-language support (English/Italian) and customizable themes let Sophia match your brand.
+The responsive chat interface works across devices and can be embedded into existing websites via iframe. Hint questions can be shown as clickable chips at session start. Multi-language support (English/Italian) and customizable themes let Sophia match your brand.
 
 === Getting Started
 
