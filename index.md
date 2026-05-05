@@ -1,8 +1,8 @@
 ---
 layout: default
 stars-bounce: true
-title: Complete Backend Development Framework
-excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerplate code with out-of-the-box features including Data APIs (REST, GraphQL, WebSockets), authentication, authorization, security, and extensibility through plugins. Build production-ready backends in minutes.
+title: The Agent-Ready Backend for MongoDB
+excerpt: RESTHeart gives AI agents and developers instant, secure access to MongoDB. It ships with a native MCP server that any MCP-compatible client (Claude, Claude Code, Cursor, VS Code) can connect to out of the box, plus full REST, GraphQL, and WebSocket APIs. Built-in authentication and authorization, zero backend boilerplate.
 ---
 
 <section id="top" class="text-center pt-2 pb-2">
@@ -10,20 +10,20 @@ excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerpl
         <img width="120" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
         <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart</h1>
         <h2 class="top-6 text-break mt-3 mx-4" style="font-size: 1.75rem; font-weight: 400; line-height: 1.4; color: var(--primarycolor);">
-            The <strong style="font-weight: 600;">Backend Framework</strong> with MongoDB Data APIs.
+            The <strong style="font-weight: 600;">Agent-Ready Backend</strong> for MongoDB.
         </h2>
         <div class="mt-2 mx-4">
             <p class="text-break white mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Modern development framework.
+                Native MCP server for AI agents (Claude, Claude Code, Cursor, VS Code).
             </p>
             <p class="text-break white mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Ready-to-use MongoDB Data APIs with REST, GraphQL and WebSockets.
+                REST, GraphQL and WebSocket APIs. No backend code required.
             </p>
             <p class="text-break white mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Declarative Security implementation.
+                Built-in security. No backend code required.
             </p>
         </div>
         <div class="hero-cta-container mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
@@ -81,6 +81,38 @@ excerpt: RESTHeart is a comprehensive backend framework that eliminates boilerpl
         </div>
     </div>
 </section> -->
+
+<!-- just to make anchor link go to the right height -->
+<div id="mcp" class="pb-4"></div>
+
+<section id="mcp-content" class="text-center pb-2 mt-5">
+    <div class="container">
+        <h2 class="text-center color-primary font-weight-bold">AI Agents &amp; MCP</h2>
+        <p class="mt-3 mb-4">RESTHeart ships with a native <a href="/docs/cloud/sophia/mcp">Model Context Protocol (MCP)</a> server. Any MCP-compatible AI client connects directly to your MongoDB data — no custom integration code required.</p>
+        <div class="row mt-4">
+            <div class="col-lg-6 offset-lg-3 text-start">
+                <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
+<pre><code>claude mcp add --transport http restheart http://localhost:8080/mcp/</code></pre>
+                <p class="mt-3 mb-1"><strong>Connect with Claude Desktop</strong> (add to <code>claude_desktop_config.json</code>):</p>
+<pre><code>{
+  "mcpServers": {
+    "restheart": {
+      "type": "http",
+      "url": "http://localhost:8080/mcp/"
+    }
+  }
+}</code></pre>
+                <p class="mt-3 mb-1"><strong>Connect with VS Code / Zed</strong> (requires Node.js 18+):</p>
+<pre><code>{
+  "restheart": {
+    "command": "npx",
+    "args": ["mcp-remote", "http://localhost:8080/mcp/"]
+  }
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- just to make anchor link go to the right height -->
 <div id="features" class="pb-4"></div>

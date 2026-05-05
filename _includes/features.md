@@ -1,4 +1,18 @@
 <div class="row mt-4">
+    <article class="mt-4 mt-lg-0 col-12 col-lg-8 offset-lg-2 zoom">
+        <div class="card newsText text-justified h-100">
+            <div class="card-body">
+                <div class="top-4 mb-4"><span class="text-primary">MCP Server</span></div>
+                <p>Native <strong>Model Context Protocol</strong> server. Connect any MCP-compatible AI client (Claude, Claude Code, Cursor, VS Code) directly to your MongoDB data with <strong>one line of config</strong>.</p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="{{ '/docs/cloud/sophia/mcp' | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
