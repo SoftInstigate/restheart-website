@@ -88,27 +88,33 @@ excerpt: RESTHeart gives AI agents and developers instant, secure access to Mong
 <section id="mcp-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center color-primary font-weight-bold">AI Agents &amp; MCP</h2>
-        <p class="mt-3 mb-4">RESTHeart ships with a native <a href="/docs/cloud/sophia/mcp">Model Context Protocol (MCP)</a> server. Any MCP-compatible AI client connects directly to your MongoDB data — no custom integration code required.</p>
+        <p class="mt-3 mb-4">RESTHeart ships with a native <a href="/docs/cloud/sophia/mcp">Model Context Protocol (MCP)</a> server. Any MCP-compatible AI client connects directly to your MongoDB data.</p>
         <div class="row mt-4">
             <div class="col-lg-6 offset-lg-3 text-start">
                 <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
-<pre><code>claude mcp add --transport http restheart http://localhost:8080/mcp/</code></pre>
+{% highlight bash %}
+claude mcp add --transport http restheart http://localhost:8080/mcp/
+{% endhighlight %}
                 <p class="mt-3 mb-1"><strong>Connect with Claude Desktop</strong> (add to <code>claude_desktop_config.json</code>):</p>
-<pre><code>{
+{% highlight javascript %}
+{
   "mcpServers": {
     "restheart": {
       "type": "http",
       "url": "http://localhost:8080/mcp/"
     }
   }
-}</code></pre>
+}
+{% endhighlight %}
                 <p class="mt-3 mb-1"><strong>Connect with VS Code / Zed</strong> (requires Node.js 18+):</p>
-<pre><code>{
+{% highlight javascript %}
+{
   "restheart": {
     "command": "npx",
     "args": ["mcp-remote", "http://localhost:8080/mcp/"]
   }
-}</code></pre>
+}
+{% endhighlight %}
             </div>
         </div>
     </div>
