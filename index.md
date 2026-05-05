@@ -88,33 +88,30 @@ excerpt: RESTHeart gives AI agents and developers instant, secure access to Mong
 <section id="mcp-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center color-primary font-weight-bold">AI Agents &amp; MCP</h2>
-        <p class="mt-3 mb-4">RESTHeart ships with a native <a href="/docs/cloud/sophia/mcp">Model Context Protocol (MCP)</a> server. Any MCP-compatible AI client connects directly to your MongoDB data.</p>
+        <p class="mt-3 mb-4">RESTHeart ships with <a href="/docs/cloud/sophia/mcp">Sophia</a>, a native Model Context Protocol (MCP) server. Connect any MCP-compatible AI client (Claude, Claude Code, Cursor, VS Code) directly.</p>
         <div class="row mt-4">
             <div class="col-lg-6 offset-lg-3 text-start">
                 <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
 {% highlight bash %}
-claude mcp add --transport http restheart http://localhost:8080/mcp/
+claude mcp add --transport http sophia-restheart https://sophia-api.restheart.com/mcp/restheart
+claude mcp add --transport http sophia-cloud https://sophia-api.restheart.com/mcp/cloud
 {% endhighlight %}
-                <p class="mt-3 mb-1"><strong>Connect with Claude Desktop</strong> (add to <code>claude_desktop_config.json</code>):</p>
-{% highlight javascript %}
-{
-  "mcpServers": {
-    "restheart": {
-      "type": "http",
-      "url": "http://localhost:8080/mcp/"
-    }
-  }
-}
-{% endhighlight %}
+                <p class="mt-3 mb-1"><strong>Connect with Claude Desktop:</strong></p>
+                <p class="mb-2">Open <strong>Settings → Connectors → Add custom connector</strong> and paste one of the context URLs:</p>
+                <ul class="text-start mb-0">
+                    <li><code>https://sophia-api.restheart.com/mcp/restheart/</code> — RESTHeart docs</li>
+                    <li><code>https://sophia-api.restheart.com/mcp/cloud/</code> — RESTHeart Cloud docs</li>
+                </ul>
                 <p class="mt-3 mb-1"><strong>Connect with VS Code / Zed</strong> (requires Node.js 18+):</p>
-{% highlight javascript %}
+{% highlight json %}
 {
-  "restheart": {
+  "sophia": {
     "command": "npx",
-    "args": ["mcp-remote", "http://localhost:8080/mcp/"]
+    "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp/restheart/"]
   }
 }
 {% endhighlight %}
+                <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">MCP documentation →</a></p>
             </div>
         </div>
     </div>
