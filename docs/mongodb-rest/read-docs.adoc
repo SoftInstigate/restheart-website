@@ -17,7 +17,7 @@ This page covers everything you need to know about querying MongoDB data through
 * Filtering - Select documents based on criteria
 * Projection - Choose which fields to include
 * Sorting - Order results by any field
-* Counting - Get document counts without retrieving data
+* Counting - Get document counts (exact or estimated) without retrieving data
 * Advanced queries - Text search, indexes, and nested properties
 
 Start with the basics and work your way through, or jump to a specific section using the page navigation.
@@ -274,6 +274,45 @@ fetch(`[RESTHEART-URL]/inventory/_size?filter=${filter}`, {
 ----
 
 This returns the count of documents with status "A".
+
+=== Estimated Counts (Fast Counting on Large Collections)
+
+By default `_size` runs MongoDB's `countDocuments`, which scans every document matching the filter. On very large collections (millions of documents) or with filters on multikey arrays this can be slow or time out.
+
+Adding `count=estimated` opts in to a metadata-based count using `estimatedDocumentCount` (O(1), no I/O on the data files):
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory/_size?count=estimated" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+Sample response:
+
+[source,http]
+----
+HTTP/1.1 200 OK
+X-Count-Strategy: estimated
+Content-Type: application/json
+
+{ "_size": 9876543 }
+----
+
+`estimatedDocumentCount` cannot apply a filter, so when both `count=estimated` and `filter` are provided RESTHeart automatically falls back to the exact `countDocuments`. The `X-Count-Strategy` response header reports which strategy was actually used so callers can detect the fallback.
+
+[cols="2,1,1",options="header"]
+|===
+| Request | Strategy | `X-Count-Strategy`
+
+| `_size` | exact | `exact`
+| `_size?count=estimated` | metadata count | `estimated`
+| `_size?count=estimated&filter={...}` | exact (auto fallback) | `exact`
+| `_size?filter={...}` | exact | `exact`
+|===
+
+`?count=estimated` works on the collection list endpoint as well — `GET /<coll>?count=estimated` returns documents together with the metadata count, useful for paginated UIs that only need an approximate total.
+
+NOTE: The estimated count is read from collection metadata; it can drift slightly from the exact value after unclean shutdowns until the metadata is revalidated. Use it where speed matters more than precision.
 
 === Projection (Selecting Fields)
 
