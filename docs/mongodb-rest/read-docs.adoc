@@ -236,7 +236,23 @@ fetch('[RESTHEART-URL]/inventory?filter={"qty":{"$gt":75}}&filter={"status":"D"}
 
 === Counting Documents
 
-Instead of retrieving documents, you can count them by appending `_size` to the collection URI:
+Use this rule:
+
+- Use `_size` when you only need a count.
+- Use `count` on `GET /<coll>` when you need documents and count metadata in the same response (for example pagination UIs).
+
+[cols="1,2",options="header"]
+|===
+| You need | Use
+
+| only the total number of matching documents
+| `GET /<coll>/_size`
+
+| a page of documents + total size / total pages
+| `GET /<coll>?count&page=...&pagesize=...`
+|===
+
+Count-only request (`_size`):
 
 ==== cURL
 
@@ -275,11 +291,119 @@ fetch(`[RESTHEART-URL]/inventory/_size?filter=${filter}`, {
 
 This returns the count of documents with status "A".
 
+If you also need the documents in the same response, request the collection with `count`:
+
+==== cURL (`docs + count metadata`)
+
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/inventory?count&page=1&pagesize=10" \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+With `count`, RESTHeart includes count metadata (such as `_size` and `_total_pages`) together with the returned documents.
+
+Concrete examples:
+
+==== Example 1: collection GET with `count` (documents + metadata)
+
+Request:
+
+[source,http]
+----
+GET /mydb/people?page=1&pagesize=2&count
+----
+
+Possible response body:
+
+[source,json]
+----
+{
+  "_size": 5,
+  "_total_pages": 3,
+  "_returned": 2,
+  "_embedded": {
+    "rh:doc": [
+      { "_id": "1", "name": "Alice" },
+      { "_id": "2", "name": "Bob" }
+    ]
+  }
+}
+----
+
+Possible response header:
+
+[source,http]
+----
+X-Count-Strategy: exact
+----
+
+==== Example 2: collection GET with `count=estimated` (no filter)
+
+Request:
+
+[source,http]
+----
+GET /mydb/people?page=1&pagesize=2&count=estimated
+----
+
+Possible response body:
+
+[source,json]
+----
+{
+  "_size": 5,
+  "_total_pages": 3,
+  "_returned": 2,
+  "_embedded": {
+    "rh:doc": [
+      { "_id": "1", "name": "Alice" },
+      { "_id": "2", "name": "Bob" }
+    ]
+  }
+}
+----
+
+Possible response header:
+
+[source,http]
+----
+X-Count-Strategy: estimated
+----
+
+==== Example 3: `_size` endpoint (count-only)
+
+Request:
+
+[source,http]
+----
+GET /mydb/people/_size?count=estimated
+----
+
+Possible response body:
+
+[source,json]
+----
+{ "_size": 5 }
+----
+
+Possible response header:
+
+[source,http]
+----
+X-Count-Strategy: estimated
+----
+
 === Estimated Counts (Fast Counting on Large Collections)
 
 By default `_size` runs MongoDB's `countDocuments`, which scans every document matching the filter. On very large collections (millions of documents) or with filters on multikey arrays this can be slow or time out.
 
 Adding `count=estimated` opts in to a metadata-based count using `estimatedDocumentCount` (O(1), no I/O on the data files):
+
+Parsing rules for `count` are:
+
+- `count`, `count=`, `count=true`, or any value other than `estimated` => count is enabled with exact strategy.
+- `count=estimated` => count is enabled with estimated strategy, but only when `filter` is not present.
 
 [source,bash]
 ----
@@ -310,7 +434,15 @@ Content-Type: application/json
 | `_size?filter={...}` | exact | `exact`
 |===
 
-`?count=estimated` works on the collection list endpoint as well — `GET /<coll>?count=estimated` returns documents together with the metadata count, useful for paginated UIs that only need an approximate total.
+`?count=estimated` works on the collection list endpoint as well — `GET /<coll>?count=estimated` returns documents together with the metadata count.
+This remains estimated as long as no `filter` is provided. If `filter` is present, strategy is exact by design.
+In all cases, verify `X-Count-Strategy`; only `estimated` confirms metadata-based counting.
+
+`/collection?count=estimated` and `/collection/_size?count=estimated` do not behave the same way:
+
+- `/collection?count=estimated` returns documents plus count metadata.
+- `/collection/_size?count=estimated` returns only `_size`.
+- If `filter` is present, `count=estimated` falls back to exact counting for correctness.
 
 NOTE: The estimated count is read from collection metadata; it can drift slightly from the exact value after unclean shutdowns until the metadata is revalidated. Use it where speed matters more than precision.
 
