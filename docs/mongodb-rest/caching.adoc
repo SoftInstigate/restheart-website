@@ -105,6 +105,8 @@ link:https://www.mongodb.com/docs/manual/reference/method/cursor.skip/#using-ran
 
 If the request contains the query parameter `?cache`, then the query cursor used to retrieve the `pagesize` documents is cached. This allows to cache up to `batchSize` documents.
 
+`cache` also works without explicitly setting `page` and `pagesize`: RESTHeart applies default values (`page=1`, `pagesize=default-pagesize`).
+
 A subsequent request, on the same collection, and with the very same `filter`, `sort`, `hint`, etc. parameters can reuse the cached cursor, avoiding the need to query MongoDB, and speeding up the request.
 
 `count` is handled separately from the cached page data. If a request uses `?cache&count`, only the document page retrieval can hit the cache; the count is still computed for each request.
