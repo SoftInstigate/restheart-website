@@ -83,8 +83,10 @@ In the examples above:
 - `cache` enables cursor caching (the actual topic of this page).
 
 Use `count` only when the client needs documents and total size together (for example, paginated UIs).
-If you only need the count, prefer `GET /coll/_size`.
-For large collections where an approximate total is acceptable, use `count=estimated` and verify `X-Count-Strategy: estimated`. If `filter` is present, strategy falls back to exact by design (see link:/docs/mongodb-rest/read-docs#estimated-counts-fast-counting-on-large-collections[Estimated Counts]).
+
+NOTE: On the `/_size` endpoint, counting is already implied, so adding `?count` is redundant and behaves like plain `/_size` (exact count).
+
+For count strategy details (including `count=estimated` and automatic fallback with filters), see link:/docs/mongodb-rest/read-docs#estimated-counts-fast-counting-on-large-collections[Estimated Counts].
 
 **Behind the scene, this is implemented via the MongoDB *cursor.skip()*
 method;**

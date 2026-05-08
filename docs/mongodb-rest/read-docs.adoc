@@ -400,10 +400,16 @@ By default `_size` runs MongoDB's `countDocuments`, which scans every document m
 
 Adding `count=estimated` opts in to a metadata-based count using `estimatedDocumentCount` (O(1), no I/O on the data files):
 
-Parsing rules for `count` are:
+[NOTE]
+====
+Using `/_size` already means "count-only request".
 
-- `count`, `count=`, `count=true`, or any value other than `estimated` => count is enabled with exact strategy.
-- `count=estimated` => count is enabled with estimated strategy, but only when `filter` is not present.
+- `/<coll>/_size` and `/<coll>/_size?count` produce the same result (exact count).
+- Adding `count` is redundant on `/_size`.
+- Use `count=estimated` only when you want metadata-based counting (no filter).
+- If `filter` is present with `count=estimated`, RESTHeart automatically falls back to exact counting.
+- The `X-Count-Strategy` response header always reports what was actually used: `estimated` or `exact`.
+====
 
 [source,bash]
 ----
@@ -424,14 +430,27 @@ Content-Type: application/json
 
 `estimatedDocumentCount` cannot apply a filter, so when both `count=estimated` and `filter` are provided RESTHeart automatically falls back to the exact `countDocuments`. The `X-Count-Strategy` response header reports which strategy was actually used so callers can detect the fallback.
 
-[cols="2,1,1",options="header"]
+[cols="2,2,1",options="header"]
 |===
-| Request | Strategy | `X-Count-Strategy`
+|Request
+|Behavior
+|`X-Count-Strategy`
 
-| `_size` | exact | `exact`
-| `_size?count=estimated` | metadata count | `estimated`
-| `_size?count=estimated&filter={...}` | exact (auto fallback) | `exact`
-| `_size?filter={...}` | exact | `exact`
+|`/<coll>/_size`
+|Exact count
+|`exact`
+
+|`/<coll>/_size?count`
+|Same as `/_size` (`count` is redundant)
+|`exact`
+
+|`/<coll>/_size?count=estimated`
+|Metadata-based count (no filter)
+|`estimated`
+
+|`/<coll>/_size?count=estimated&filter={...}`
+|Automatic fallback to exact count
+|`exact`
 |===
 
 `?count=estimated` works on the collection list endpoint as well — `GET /<coll>?count=estimated` returns documents together with the metadata count.
