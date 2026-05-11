@@ -10,6 +10,12 @@ redirect_from:
 
 Interceptors play a crucial role in the RESTHeart framework, allowing developers to observe and modify requests and responses throughout the request lifecycle. This document provides an overview of the Interceptor class, available interceptor interfaces, and usage examples.
 
+=== Request Lifecycle Overview
+
+The diagram below shows where each interceptor point fits in the request pipeline. Green boxes are the points at which interceptors can run; the main request flow (blue) passes through them in order, and the red branch covers requests that fail authentication or authorization.
+
+image::/images/request-lifecycle.svg[RESTHeart request lifecycle — interceptor points along the main request flow and the auth-failure branch,width=100%]
+
 === The Interceptor Class
 
 An `Interceptor` is comprised of a class implementing one of the `Interceptor` interfaces, such as `MongoInterceptor`, and annotated with `@RegisterPlugin`.
