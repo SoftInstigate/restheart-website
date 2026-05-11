@@ -32,21 +32,21 @@ Upload documents in many formats — prose (`.txt`, `.md`, `.html`, `.xml`, `.pd
 
 image::../../../images/sophia/knowledge-list.png[Knowledge base management]
 
-==== Contexts and Knowledge Segregation
+==== Agents and Knowledge Segregation
 
-Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, RAG configuration, and agentic behaviour. Contexts ensure strict data separation — users in one context cannot access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
+Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, RAG configuration, and agentic behaviour. Agents ensure strict data separation — users in one agent cannot access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
 
-image::../../../images/sophia/context-list.png[Context management]
+image::../../../images/sophia/context-list.png[Agent management]
 
 ==== Agentic Mode
 
-For complex questions, Sophia operates as an autonomous agent: it iteratively calls tools (knowledge search, file retrieval, persistent context save/load), reasons over the results, and composes a comprehensive answer. Users see the reasoning process in real time. Per-context options let you tune the loop: max iterations, search-and-fetch preamble, compact search payloads, agentic context management, prompt caching, and extended thinking.
+For complex questions, Sophia operates as an autonomous agent: it iteratively calls tools (knowledge search, file retrieval, persistent context save/load), reasons over the results, and composes a comprehensive answer. Users see the reasoning process in real time. Per-agent options let you tune the loop: max iterations, search-and-fetch preamble, compact search payloads, agentic context management, prompt caching, and extended thinking.
 
 image::../../../images/sophia/agentic-response.png[Agentic response]
 
 ==== Collaborative Mode and Interactive Artifacts
 
-Enable *Collaborative Mode* on a context to let Sophia render rich interactive HTML artifacts directly in the chat — diagrams, calculators, mini-dashboards, REST micro-tools — and to attach 2–4 follow-up buttons after every answer for guided exploration. Both the artifact tool (`show`) and the follow-up tool (`ask`) accept domain-specific descriptions you can override per context.
+Enable *Collaborative Mode* on an agent to let Sophia render rich interactive HTML artifacts directly in the chat — diagrams, calculators, mini-dashboards, REST micro-tools — and to attach 2–4 follow-up buttons after every answer for guided exploration. Both the artifact tool (`show`) and the follow-up tool (`ask`) accept domain-specific descriptions you can override per agent.
 
 image::../../../images/sophia/chat-artifact.png[Interactive artifact in chat]
 
@@ -58,7 +58,7 @@ image::../../../images/sophia/chat-deck-view.png[Deck view]
 
 ==== Security and Access Control
 
-Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path. Private contexts require either an OAuth flow (Claude Desktop) or an API token; public contexts work without authentication.
+Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path. Private agents require either an OAuth flow (Claude Desktop) or an API token; public agents work without authentication.
 
 ==== MCP Server
 
@@ -70,7 +70,7 @@ See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.
 
 ==== Cost Visibility and Model Failover
 
-Track token usage and dollar cost per chat, per context, per model from the *Costs* dashboard. The context editor shows a live estimate of cached prefix size and per-interaction cost based on the chosen model and prompt-caching support. When a Bedrock model is throttled or fails, Sophia automatically falls back to a configurable list of secondary models — the user sees a `model_fallback` event and the answer continues seamlessly.
+Track token usage and dollar cost per chat, per agent, per model from the *Costs* dashboard. The context editor shows a live estimate of cached prefix size and per-interaction cost based on the chosen model and prompt-caching support. When a Bedrock model is throttled or fails, Sophia automatically falls back to a configurable list of secondary models — the user sees a `model_fallback` event and the answer continues seamlessly.
 
 ==== Flexible Integration
 

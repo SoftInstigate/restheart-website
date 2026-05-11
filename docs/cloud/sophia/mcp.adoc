@@ -10,18 +10,18 @@ Every Sophia instance exposes an link:https://modelcontextprotocol.io[MCP-compat
 
 == What the MCP Server Exposes
 
-Sophia organises its knowledge into *Contexts*. Each context defines an isolated knowledge domain with its own:
+Sophia organises its knowledge into *Agents*. Each agent defines an isolated knowledge domain with its own:
 
 - *documents* — files ingested into the knowledge base, tagged for access control
 - *system prompt template* — how the AI frames its answers
 - *RAG options* — how many documents to retrieve and inject into the prompt
 - *MCP description* — the text shown to AI clients when they list available tools
 
-Each context is accessible at its own MCP endpoint: `<base-url>/mcp/<context-id>/`. When an AI client connects to that endpoint, it can use the Sophia tools to search and retrieve content *scoped to that context only*. A client connected to the `restheart` context cannot read documents that belong to the `cloud` context, and vice versa.
+Each agent is accessible at its own MCP endpoint: `<base-url>/mcp/<agent-id>/`. When an AI client connects to that endpoint, it can use the Sophia tools to search and retrieve content *scoped to that agent only*. A client connected to the `restheart` agent cannot read documents that belong to the `cloud` agent, and vice versa.
 
-Within a context, documents are further organised by *tags*. Pass the optional `tags` parameter to `search` to narrow retrieval to documents carrying specific tags. Use `tags` to discover which tags are available.
+Within an agent, documents are further organised by *tags*. Pass the optional `tags` parameter to `search` to narrow retrieval to documents carrying specific tags. Use `tags` to discover which tags are available.
 
-For more on contexts, see the link:/docs/cloud/sophia/administrator-guide#_context_management[Administrator Guide].
+For more on agents, see the link:/docs/cloud/sophia/administrator-guide#_agent_management[Administrator Guide].
 
 == SoftInstigate Public MCP Servers
 
@@ -29,7 +29,7 @@ SoftInstigate runs two public Sophia instances as live examples — no account o
 
 [cols="1,2,2", options="header"]
 |===
-| Context | Url | Knowledge base
+| Agent | Url | Knowledge base
 | `restheart` | `https://sophia-api.restheart.com/mcp/restheart/` | RESTHeart documentation, plugin API, configuration guides
 | `cloud` | `https://sophia-api.restheart.com/mcp/cloud/` | RESTHeart Cloud managed service docs
 |===
@@ -46,11 +46,11 @@ claude mcp add --transport http sophia-restheart https://sophia-api.restheart.co
 claude mcp add --transport http sophia-cloud https://sophia-api.restheart.com/mcp/cloud
 ----
 
-For private contexts, add the API token via the `--header` flag:
+For private agents, add the API token via the `--header` flag:
 
 [source,bash]
 ----
-claude mcp add --transport http sophia-restheart https://<your-sophia>/mcp/<context>/ \
+claude mcp add --transport http sophia-restheart https://<your-sophia>/mcp/<agent>/ \
   --header "Authorization: Bearer <your-token>"
 ----
 
@@ -63,7 +63,7 @@ Add this to the MCP settings:
 {
   "sophia": {
     "type": "http",
-    "url": "https://<your-sophia>/mcp/<context>/"
+    "url": "https://<your-sophia>/mcp/<agent>/"
   }
 }
 ----
@@ -79,21 +79,21 @@ Example configuration snippet:
 {
     "sophia": {
       "command": "npx",
-      "args": ["mcp-remote", "https://<your-sophia>/mcp/<context>/"]
+      "args": ["mcp-remote", "https://<your-sophia>/mcp/<agent>/"]
     }
 }
 ----
 
-== Private contexts
+== Private agents
 
-Private contexts require authentication. A context is private when its `private` field is `true` in the admin panel; access requires a JWT containing the context id in the `contexts` claim. Sophia supports three authentication paths.
+Private agents require authentication. An agent is private when its `private` field is `true` in the admin panel; access requires a JWT containing the agent id in the `agents` claim. Sophia supports three authentication paths.
 
 === Via OAuth (recommended for Claude Desktop)
 
 Claude Desktop supports OAuth natively and can re-authenticate transparently when its JWT expires.
 
 . In Claude Desktop open *Settings → Connectors → Add custom connector*
-. Paste the context URL (e.g. `https://your-sophia/mcp/support/`)
+. Paste the agent URL (e.g. `https://your-sophia/mcp/support/`)
 . Set *OAuth Client ID* to a value provisioned by your administrator (e.g. `claude_desktop`)
 . Sophia's login page opens in the browser; complete the flow to authorise the connector
 
@@ -108,7 +108,7 @@ Issue a long-lived API token from the admin panel — see link:/docs/cloud/sophi
 {
   "sophia": {
     "type": "http",
-    "url": "https://your-sophia/mcp/{context}/",
+    "url": "https://your-sophia/mcp/{agent}/",
     "headers": {
       "Authorization": "Bearer <your-token>"
     }
@@ -122,7 +122,7 @@ Some clients (notably Claude Mobile and certain web wrappers) cannot attach cust
 
 [source]
 ----
-https://your-sophia/mcp/{context}/?token=<your-token>
+https://your-sophia/mcp/{agent}/?token=<your-token>
 ----
 
 This is the same JWT issued by the admin panel — there is no separate token type.
@@ -134,7 +134,7 @@ Example configuration snippet:
 {
   "sophia": {
     "type": "http",
-    "url": "https://<your-sophia>/mcp/<context>/",
+    "url": "https://<your-sophia>/mcp/<agent>/",
     "headers": {
       "Authorization": "Bearer <your-token>"
     }
@@ -151,7 +151,7 @@ For clients that support stdio only:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://<your-sophia>/mcp/<context>/",
+        "https://<your-sophia>/mcp/<agent>/",
         "--header", "Authorization: Bearer <your-token>" ]
     }
 }
@@ -165,10 +165,10 @@ For clients that support stdio only:
 | `search` | Semantic search over the knowledge base. Returns relevant text segments with `Source:` filename and `Path:` directory for context expansion. Supports an optional `compact` flag for source-only previews (~10× cheaper).
 | `get` | Retrieves a paginated page of a document by filename. Use after `search` to read beyond the matched chunk; pass `page` to navigate.
 | `ls` | Lists the contents of a directory in the knowledge base, like the Unix `ls` command. Returns both immediate subdirectories and files at the given path; accepts an optional `path` argument (omit to list the root level).
-| `tags` | Lists the tags available in the knowledge base, filtered by the active context and credentials.
+| `tags` | Lists the tags available in the knowledge base, filtered by the active agent and credentials.
 | `prompt` | Builds a fully interpolated system prompt with RAG context injected, ready to send to any LLM as a `system` + `user` message pair.
 | `api` | Returns the Sophia REST API reference. Requires authentication — reserved for service administrators.
-| `ask` / `show` | Interactive artifacts (forms / visualisations) rendered in an iframe by the client. Exposed only when the context has `collaborative: true` in its options.
+| `ask` / `show` | Interactive artifacts (forms / visualisations) rendered in an iframe by the client. Exposed only when the agent has `collaborative: true` in its options.
 |===
 
 NOTE: The `context_*` tools (session memory used by the agentic loop's context management) are *not* exposed via MCP. They are internal tools called by Sophia's own loop when `agenticContextManagement: true`, where the conversation persists across turns. MCP sessions are typically short-lived per client run, so server-side per-session memory is not useful there — MCP clients manage their own conversation state.

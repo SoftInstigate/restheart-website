@@ -8,7 +8,7 @@ applies_to: cloud
 
 == Overview
 
-The Sophia API provides RESTful endpoints for managing the AI service: chat operations, document management, context configuration, user management, API tokens, and supporting services. The API is built on RESTHeart, so most CRUD operations follow standard MongoDB-REST semantics.
+The Sophia API provides RESTful endpoints for managing the AI service: chat operations, document management, agent configuration, user management, API tokens, and supporting services. The API is built on RESTHeart, so most CRUD operations follow standard MongoDB-REST semantics.
 
 == Authentication
 
@@ -49,18 +49,18 @@ Creates a new chat message with a prompt. Most clients submit chat documents dir
 
 *Query parameters:*
 
-- `context=<context-id>` — context to use (defaults to `default`)
+- `agent=<agent-id>` — context to use (defaults to `default`)
 
 *Request body fields:*
 
 - `chatId` — string, required. Stable identifier for the chat session (multiple turns share the same `chatId`).
 - `prompt` — string, required. The user's message.
-- `collaborative` — boolean, optional. Per-message override that activates Collaborative Mode (`show` + post-answer `ask`) regardless of the context default.
+- `collaborative` — boolean, optional. Per-message override that activates Collaborative Mode (`show` + post-answer `ask`) regardless of the agent default.
 
 *Request:*
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/chats?context=support" \
+curl -X POST "https://sophia-api.restheart.com/chats?agent=support" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -104,7 +104,7 @@ websocat "wss://sophia-api.restheart.com/chats/_streams/subscribe?avars={\"chatI
 
 ==== Agentic Mode Events
 
-When the active context has `agenticMode: true` and `streamThinkingEvents: true`, the stream includes `events[]` entries during the agentic phase:
+When the active agent has `agenticMode: true` and `streamThinkingEvents: true`, the stream includes `events[]` entries during the agentic phase:
 
 [cols="1,3", options="header"]
 |===
@@ -160,23 +160,23 @@ curl "https://sophia-api.restheart.com/chats/{interactionId}?shareToken={random-
 
 The response is restricted to the `steps` field (no auth required). Useful for sharing a generated diagram or calculator with someone outside the workspace.
 
-== Context Management
+== Agent Management
 
-Contexts define the behaviour of Sophia for a specific knowledge domain.
+Agents define the behaviour of Sophia for a specific knowledge domain.
 
-=== List Contexts
+=== List Agents
 
-*Endpoint:* `GET /contexts`
+*Endpoint:* `GET /agents`
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/contexts" \
+curl "https://sophia-api.restheart.com/agents" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
-=== Get Context
+=== Get Agent
 
-*Endpoint:* `GET /contexts/{contextId}`
+*Endpoint:* `GET /agents/{agentId}`
 
 *Response (full schema):*
 [source,json]
@@ -219,13 +219,13 @@ curl "https://sophia-api.restheart.com/contexts" \
 }
 ----
 
-=== Create or Replace Context
+=== Create or Replace Agent
 
-*Endpoint:* `PUT /contexts/{contextId}?wm=upsert`
+*Endpoint:* `PUT /agents/{agentId}?wm=upsert`
 
 [source,bash]
 ----
-curl -X PUT "https://sophia-api.restheart.com/contexts/support?wm=upsert" \
+curl -X PUT "https://sophia-api.restheart.com/agents/support?wm=upsert" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -243,21 +243,21 @@ curl -X PUT "https://sophia-api.restheart.com/contexts/support?wm=upsert" \
   }'
 ----
 
-=== Update Context (Partial)
+=== Update Agent (Partial)
 
-*Endpoint:* `PATCH /contexts/{contextId}`
+*Endpoint:* `PATCH /agents/{agentId}`
 
 [source,bash]
 ----
-curl -X PATCH "https://sophia-api.restheart.com/contexts/support" \
+curl -X PATCH "https://sophia-api.restheart.com/agents/support" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{"options": {"relevantsLimit": 8, "temperature": 0.2}}'
 ----
 
-=== Delete Context
+=== Delete Agent
 
-*Endpoint:* `DELETE /contexts/{contextId}`
+*Endpoint:* `DELETE /agents/{agentId}`
 
 == Document Management
 
@@ -356,11 +356,11 @@ The `vector` field is excluded from the response automatically (large array).
 *Parameters:*
 
 - `prompt=<query>` — the search query (URL-encoded)
-- `context=<context-id>` — applies the context's tag filters
+- `agent=<agent-id>` — applies the agent's tag filters
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=password%20reset&context=support" \
+curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=password%20reset&agent=support" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -450,7 +450,7 @@ echo '{"contexts": ["support", "internal"]}' | \
   http -a admin:password PATCH :8080/users/alice
 ----
 
-A user can change *only their own password* via this endpoint. Role and context modifications require an admin account.
+A user can change *only their own password* via this endpoint. Role and agent modifications require an admin account.
 
 === Delete User
 
@@ -522,7 +522,7 @@ A revoked token is rejected on every subsequent request by a low-priority vetoer
 | `204 No Content` | Request successful, no content
 | `400 Bad Request` | Invalid request parameters
 | `401 Unauthorized` | Authentication required
-| `403 Forbidden` | Access denied (e.g. private context without correct claim)
+| `403 Forbidden` | Access denied (e.g. private agent without correct claim)
 | `404 Not Found` | Resource not found
 | `405 Method Not Allowed` | HTTP method not supported on this path
 | `409 Conflict` | Resource conflict

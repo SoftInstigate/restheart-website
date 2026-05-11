@@ -8,7 +8,7 @@ applies_to: cloud
 
 == Overview
 
-This guide covers the Sophia Admin Panel — the web-based interface where you manage contexts, knowledge bases, text segments, users, API tokens, chat sessions, costs, errors, and models. Access the admin panel at `/admin` after logging in with an administrator account.
+This guide covers the Sophia Admin Panel — the web-based interface where you manage agents, knowledge bases, text segments, users, API tokens, chat sessions, costs, errors, and models. Access the admin panel at `/admin` after logging in with an administrator account.
 
 image::../../../images/sophia/admin-panel.png[Sophia Admin Panel]
 
@@ -20,31 +20,31 @@ image::../../../images/sophia/login.png[Login page]
 
 Non-admin users are redirected to the chat interface; administrators are redirected to the admin panel.
 
-== Context Management
+== Agent Management
 
-A *Context* defines the full behaviour of Sophia for a given knowledge domain: the system prompt template, tag filters, RAG and LLM options, agentic mode settings, collaborative artifacts, hint questions, deck view, and the MCP server description shown to AI clients.
+A *Agent* defines the full behaviour of Sophia for a given knowledge domain: the system prompt template, tag filters, RAG and LLM options, agentic mode settings, collaborative artifacts, hint questions, deck view, and the MCP server description shown to AI clients.
 
-Navigate to *Admin > Contexts* to manage contexts.
+Navigate to *Admin > Agents* to manage agents.
 
-image::../../../images/sophia/context-list.png[Context list]
+image::../../../images/sophia/context-list.png[Agent list]
 
-=== Creating a Context
+=== Creating an Agent
 
-Click *New Context* and provide a unique ID (e.g. `support`, `product-docs`). The ID is used in the web URL path (`/{contextId}`) and in the MCP endpoint URL (`/mcp/{contextId}/`).
+Click *New Agent* and provide a unique ID (e.g. `support`, `product-docs`). The ID is used in the web URL path (`/{agentId}`) and in the MCP endpoint URL (`/mcp/{agentId}/`).
 
-image::../../../images/sophia/context-edit.png[Context editor]
+image::../../../images/sophia/context-edit.png[Agent editor]
 
-=== Context Fields
+=== Agent Fields
 
 [cols="1,1,3", options="header"]
 |===
 | Field | Required | Description
-| `_id` | Yes | Context name. Used in URLs and MCP paths.
+| `_id` | Yes | Agent name. Used in URLs and MCP paths.
 | `template` | Yes | System prompt. Must contain `<documents-placeholder>` (or use agentic context management — see below).
 | `welcome` | No | Custom welcome message shown when a user opens the chat.
 | `hintQuestions` | No | List of suggested questions shown as clickable chips at session start.
 | `tags` | No | Tags ANDed into every vector search — restricts the knowledge base to matching documents.
-| `private` | No | If `true`, requires a JWT containing this context id in the `contexts` claim. Public contexts are reachable without authentication.
+| `private` | No | If `true`, requires a JWT containing this agent id in the `agents` claim. Public agents are reachable without authentication.
 | `options` | No | LLM, RAG, agentic and rendering parameters (see below).
 | `mcp.description` | No | Description shown to AI clients in the MCP `tools/list` response.
 |===
@@ -65,10 +65,10 @@ Provide a newline-separated list of suggested questions. They appear as clickabl
 
 === Tag Filters
 
-Tags are the primary mechanism for knowledge segregation. The context's `tags` are ANDed with every vector search: only documents carrying *all* of the context's tags are retrieved.
+Tags are the primary mechanism for knowledge segregation. The agent's `tags` are ANDed with every vector search: only documents carrying *all* of the agent's tags are retrieved.
 
-- A context with `tags: ["restheart"]` can only access documents tagged `restheart`
-- A context with `tags: ["internal", "hr"]` can only access documents tagged with both
+- An agent with `tags: ["restheart"]` can only access documents tagged `restheart`
+- An agent with `tags: ["internal", "hr"]` can only access documents tagged with both
 - This is a *mandatory* filter — users cannot bypass it
 
 === LLM & RAG Options
@@ -87,11 +87,11 @@ Tags are the primary mechanism for knowledge segregation. The context's `tags` a
 | `modelId` | string | server default | Bedrock inference profile id. Pick from the *Models* table — leave blank to use the server default.
 |===
 
-The context editor exposes these fields directly. The right-hand side shows a model picker with origin (EU/US), pricing per million input/output tokens, and a tool-use score that highlights models suited for agentic workflows.
+The agent editor exposes these fields directly. The right-hand side shows a model picker with origin (EU/US), pricing per million input/output tokens, and a tool-use score that highlights models suited for agentic workflows.
 
 === Agentic Mode
 
-Enable *Agentic Mode* on a context to let Sophia operate as an autonomous agent: it iteratively calls tools (search, file retrieval, list-paths, list-tags) before composing a final answer.
+Enable *Agentic Mode* on an agent to let Sophia operate as an autonomous agent: it iteratively calls tools (search, file retrieval, list-paths, list-tags) before composing a final answer.
 
 image::../../../images/sophia/context-agentic.png[Agentic mode settings]
 
@@ -107,7 +107,7 @@ image::../../../images/sophia/context-agentic.png[Agentic mode settings]
 | `agenticContextManagement` | boolean | `false` | Replace classic history with a persistent context document keyed by `chatId`. See below.
 |===
 
-When a user asks a question in an agentic context, Sophia:
+When a user asks a question in an agent with Agentic Mode, Sophia:
 
 . Optionally runs the *Search & Fetch Preamble* (synthetic iteration 0)
 . Calls tools, inspects results, decides next step
@@ -141,7 +141,7 @@ Enable *Collaborative Mode* (under Agentic settings) to let the model render ric
 
 `ask` is *not* available in the main loop. It is invoked only by the post-answer synthetic call, which constrains the model to attach 2–4 follow-up buttons. The prompt template should *not* instruct the model to call `ask` directly — doing so prevents the synthetic flow.
 
-A per-message toggle in the chat UI lets the end user activate Collaborative Mode for a specific question, even on contexts where it is off by default.
+A per-message toggle in the chat UI lets the end user activate Collaborative Mode for a specific question, even on agents where it is off by default.
 
 image::../../../images/sophia/chat-artifact.png[Interactive artifact rendered in chat]
 
@@ -151,44 +151,44 @@ Set `deckView: true` to replace the linear chat layout with a horizontal deck of
 
 image::../../../images/sophia/chat-deck-view.png[Deck view]
 
-=== Selecting a Context
+=== Selecting an Agent
 
-The active context is encoded in the URL path:
+The active agent is encoded in the URL path:
 
 [source]
 ----
-https://your-sophia-instance/                  → default context
-https://your-sophia-instance/{context-id}      → "{context-id}" context
+https://your-sophia-instance/                  → default agent
+https://your-sophia-instance/{agent-id}      → "{agent-id}" agent
 ----
 
 Use these URLs when embedding Sophia in an iframe:
 
 [source,html]
 ----
-<iframe src="https://your-sophia-instance/{context-id}" ...></iframe>
+<iframe src="https://your-sophia-instance/{agent-id}" ...></iframe>
 ----
 
-For MCP clients, the context is selected via the URL path (see link:/docs/cloud/sophia/mcp[Sophia MCP Server]).
+For MCP clients, the agent is selected via the URL path (see link:/docs/cloud/sophia/mcp[Sophia MCP Server]).
 
-=== Private Contexts
+=== Private Agents
 
 Set `private: true` to require authentication. Access is granted to:
 
-. Sessions whose JWT contains this context's id in the `contexts` claim (cookie auth or `Authorization: Bearer`)
+. Sessions whose JWT contains this agent's id in the `agents` claim (cookie auth or `Authorization: Bearer`)
 . MCP clients using a long-lived API token issued from the *API Tokens* page
 . MCP clients completing the OAuth `client_credentials` flow (Claude Desktop)
 
-Public contexts work without authentication.
+Public agents work without authentication.
 
-=== Managing Contexts via API
+=== Managing Agents via API
 
-*List all contexts:*
+*List all agents:*
 [source,bash]
 ----
-http -a admin:password GET :8080/contexts
+http -a admin:password GET :8080/agents
 ----
 
-*Create or replace a context:*
+*Create or replace an agent:*
 [source,bash]
 ----
 echo '{
@@ -203,20 +203,20 @@ echo '{
     "collaborative": false
   },
   "mcp": { "description": "Customer-facing support assistant." }
-}' | http -a admin:password PUT :8080/contexts/support
+}' | http -a admin:password PUT :8080/agents/support
 ----
 
 *Update options only:*
 [source,bash]
 ----
 echo '{"options": {"relevantsLimit": 8, "temperature": 0.2}}' | \
-  http -a admin:password PATCH :8080/contexts/support
+  http -a admin:password PATCH :8080/agents/support
 ----
 
-*Delete a context:*
+*Delete an agent:*
 [source,bash]
 ----
-http -a admin:password DELETE :8080/contexts/support
+http -a admin:password DELETE :8080/agents/support
 ----
 
 == Knowledge Base Management
@@ -250,7 +250,7 @@ The dialog supports:
 
 - Drag-and-drop or click-to-browse, multiple files at once
 - *Path prefix* — prepended to filenames for organising into directories. Auto-completes against existing directories; if the entered prefix doesn't exist yet, a banner indicates the new directory will be created.
-- *Tags* — free-form, comma-separated. By default the chip "Accessible from public contexts (adds `public` tag)" is on, simulating the most common case; toggle it off to make the upload accessible only to authenticated users matching the context tags.
+- *Tags* — free-form, comma-separated. By default the chip "Accessible from public agents (adds `public` tag)" is on, simulating the most common case; toggle it off to make the upload accessible only to authenticated users matching the agent tags.
 
 After upload, documents are processed automatically:
 
@@ -353,7 +353,7 @@ Two viewing modes (flat / tree). Each row shows source file, segment index, cont
 The *Semantic Search* panel lets you test RAG retrieval directly against the knowledge base:
 
 . Enter a test query
-. Optionally select a context to apply that context's tag filters
+. Optionally select an agent to apply that agent's tag filters
 . View matching segments ranked by score
 
 image::../../../images/sophia/segment-search.png[Semantic search]
@@ -367,7 +367,7 @@ Navigate to *Admin > Users* to manage user accounts. Each account authenticates 
 [cols="1,3", options="header"]
 |===
 | Role | Capability
-| `user` | Default role for end users — can chat against contexts whose id is in the user's `contexts` claim, or any public context.
+| `user` | Default role for end users — can chat against agents whose id is in the user's `agents` claim, or any public agent.
 | `admin` | Manages the admin panel — same surface as your own account.
 |===
 
@@ -376,7 +376,7 @@ Account properties:
 - `_id` — username (immutable after creation)
 - `password` — hashed automatically (bcrypt) on write
 - `roles` — array of roles
-- `contexts` — list of context ids the user is authorized for (relevant for *private contexts*)
+- `contexts` — list of agent ids the user is authorized for (relevant for *private agents*)
 - `tags` — optional knowledge restriction; if set, the user can only retrieve documents carrying at least one of these tags
 
 A user can change their own password but not their roles or contexts. Only administrators can grant/revoke admin role.
@@ -392,7 +392,7 @@ image::../../../images/sophia/token-list.png[Token list]
 Click *New Token* and configure:
 
 - *Username* — identity associated with the token (does not need to match a user account, but is used in audit logs)
-- *Contexts* — the contexts this token can access. For private contexts, the context id MUST be included here.
+- *Agents* — the agents this token can access. For private agents, the agent id MUST be included here.
 - *Tags* — optional further restriction on retrievable documents (pre-populated from the selected contexts' tags)
 
 image::../../../images/sophia/token-create.png[Create token]
@@ -443,7 +443,7 @@ Navigate to *Admin > Chats* to browse all chat sessions in your instance.
 
 image::../../../images/sophia/admin-chats.png[Chat viewer]
 
-The list shows recent sessions across all contexts and users, with filters for date range, context, model, and username.
+The list shows recent sessions across all agents and users, with filters for date range, agent, model, and username.
 
 Selecting a session opens a detail view with:
 
@@ -465,7 +465,7 @@ The dashboard provides:
 
 - Time-series charts of token usage and dollar cost over a selectable date range
 - Stacked breakdown by model (Claude Sonnet, Claude Haiku, Nova, Nemotron, …)
-- Filtering by context and model
+- Filtering by agent and model
 - Fullscreen chart view for presentation/screenshots
 - Average tokens and average iterations per chat session
 
@@ -487,7 +487,7 @@ The table shows for each model:
 - Throttling quota (TPM, RPM)
 - Tool-use score (excellent / good / poor) — a hint about how reliably the model invokes tools in agentic loops
 
-Pick a model id from this table when overriding the default in a context.
+Pick a model id from this table when overriding the default in an agent.
 
 === Model Failover
 

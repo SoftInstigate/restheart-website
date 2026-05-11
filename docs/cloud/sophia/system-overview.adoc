@@ -21,7 +21,7 @@ The system consists of two main components:
 - MongoDB Atlas for documents, vector index, chats, and persistent agent context
 - Apache Tika for parsing the wide range of supported document formats
 - Agentic loop with tool-use, prompt caching, search-and-fetch preamble, and per-session context document
-- MCP server (Streamable HTTP) with OAuth `client_credentials` for private contexts
+- MCP server (Streamable HTTP) with OAuth `client_credentials` for private agents
 
 ==== Frontend (sophia-web)
 - Angular 21 standalone components with signal-based state
@@ -33,7 +33,7 @@ The system consists of two main components:
 === Key Features
 
 ==== AI-Powered Conversations
-Sophia uses Claude (default) from AWS Bedrock to deliver intelligent, context-aware conversations. RAG combines real-time document retrieval with advanced language processing. Administrators customize prompt templates per context, and the system maintains conversation context either via classic history injection or via a persistent agent-context document (see *Agentic Context Management* below).
+Sophia uses Claude (default) from AWS Bedrock to deliver intelligent, context-aware conversations. RAG combines real-time document retrieval with advanced language processing. Administrators customize prompt templates per agent, and the system maintains conversation context either via classic history injection or via a persistent agent-context document (see *Agentic Context Management* below).
 
 ==== Agentic Mode
 When enabled, Sophia iteratively uses tools — searching the knowledge base, reading files, listing tags or paths — before composing the final response. The loop runs up to `maxAgentIterations` rounds and tool events stream to the client when `streamThinkingEvents` is enabled. Optional features include:
@@ -47,27 +47,27 @@ When enabled, Sophia iteratively uses tools — searching the knowledge base, re
 A persistent markdown document keyed by `chatId`, replacing classic history injection. At turn start the saved context is auto-loaded as a synthetic `context_load` tool result; at turn end a forced synthetic call summarises the turn via `context_save`, `context_append`, or `context_skip`. This frees the main loop from history-token overhead and keeps context coherent across long sessions.
 
 ==== Collaborative Mode
-Adds `show` (in-iframe HTML artifacts) to the model's tool set during the main loop, and a forced post-answer `ask` call that constrains the model to attach 2–4 follow-up buttons. Per-context, the description of both tools can be overridden to teach the model domain-specific patterns. A per-message toggle lets the user activate it for individual queries even when the context default is off.
+Adds `show` (in-iframe HTML artifacts) to the model's tool set during the main loop, and a forced post-answer `ask` call that constrains the model to attach 2–4 follow-up buttons. Per-agent, the description of both tools can be overridden to teach the model domain-specific patterns. A per-message toggle lets the user activate it for individual queries even when the agent default is off.
 
 ==== Knowledge Base Management
 Documents are uploaded into MongoDB GridFS (`docs.files`). Apache Tika parses prose formats — `.txt`, `.md`, `.html`, `.xml`, `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.rtf`, `.epub`, `.odt`, `.ods`, `.odp`, `.pages`, `.numbers`, `.key` — and code-aware splitters handle source files (`.java`, `.kt`, `.py`, `.js`, `.ts`, `.go`, `.rs`, `.swift`, `.cs`, `.cpp`, `.c`, `.h`). Each file is split into segments, embedded with Titan Embed Text v2, and persisted in `textSegments`. The admin panel lists documents in flat and tree views with filename / tag / path filters; failed indexing surfaces an inline retry button.
 
-==== Context-Based Knowledge Segregation
-Contexts are the core abstraction for knowledge partitioning. Each context specifies a set of tags that act as mandatory filters on every vector search — users in one context cannot access documents belonging to another. Combined with private-context access control (see below), this provides enterprise-grade data isolation.
+==== Agent-Based Knowledge Segregation
+Agents are the core abstraction for knowledge partitioning. Each agent specifies a set of tags that act as mandatory filters on every vector search — users in one agent cannot access documents belonging to another. Combined with private-agent access control (see below), this provides enterprise-grade data isolation.
 
 ==== Security & Authentication
-Authentication uses cookie-based sessions (`POST /token/cookie`) for the web interface and JWT bearer tokens for API and MCP clients. JWTs carry custom claims (`contexts`, `tags`) used for fine-grained authorization. *Private contexts* require a JWT containing the context id in the `contexts` claim — public contexts are reachable without authentication. API tokens are revocable and verified on every request by a low-priority vetoer.
+Authentication uses cookie-based sessions (`POST /token/cookie`) for the web interface and JWT bearer tokens for API and MCP clients. JWTs carry custom claims (`contexts`, `tags`) used for fine-grained authorization. *Private agents* require a JWT containing the agent id in the `agents` claim — public agents are reachable without authentication. API tokens are revocable and verified on every request by a low-priority vetoer.
 
 ==== Admin Panel
 A web-based administration interface provides full management capabilities:
 
-- *Contexts*: prompt template, tag filters, RAG/LLM options, agentic and collaborative settings, hint questions, deck view, model id override
+- *Agents*: prompt template, tag filters, RAG/LLM options, agentic and collaborative settings, hint questions, deck view, model id override
 - *Knowledge*: upload, browse (flat/tree), tag inline or in batch (recursive on a directory), retry failed indexing, delete
-- *Segments*: inspect text segments, test semantic search with a context selector, debug retrieval quality
+- *Segments*: inspect text segments, test semantic search with a agent selector, debug retrieval quality
 - *Users*: create/edit/delete user accounts, assign roles and contexts
 - *API Tokens*: issue, revoke, delete; auto-generated MCP configuration snippets for Claude Desktop, Cursor, Claude Code, VS Code
 - *Chats*: browse all chat sessions with iteration breakdowns, token/cost details, copy buttons
-- *Costs*: dashboard of token consumption and dollar cost over time, by context and model, with cache-aware estimates
+- *Costs*: dashboard of token consumption and dollar cost over time, by agent and model, with cache-aware estimates
 - *Errors*: log of failed chat completions for debugging
 - *Models*: pricing table, throttling quotas (TPM/RPM), tool-use score per model
 
