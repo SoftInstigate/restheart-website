@@ -39,15 +39,15 @@ Sophia uses Claude (default) from AWS Bedrock to deliver intelligent, context-aw
 When enabled, Sophia iteratively uses tools — searching the knowledge base, reading files, listing tags or paths — before composing the final response. The loop runs up to `maxAgentIterations` rounds and tool events stream to the client when `streamThinkingEvents` is enabled. Optional features include:
 
 - *Search & Fetch Preamble*: a deterministic search + read step injected as iteration 0 to anchor the model in real knowledge before it decides further calls
-- *Compact Search*: returns only filename / chunk index / 150-word preview from `sophia_search`, ~10× cheaper than the full segment payload
+- *Compact Search*: returns only filename / chunk index / 150-word preview from `search`, ~10× cheaper than the full segment payload
 - *Extended Thinking*: enables Claude's internal chain-of-thought
 - *Prompt Caching*: rolling cache breakpoints on tool definitions and tool results — read at ~10% of write cost
 
 ==== Agentic Context Management
-A persistent markdown document keyed by `chatId`, replacing classic history injection. At turn start the saved context is auto-loaded as a synthetic `sophia_context_load` tool result; at turn end a forced synthetic call summarises the turn via `sophia_context_save`, `sophia_context_append`, or `sophia_context_skip`. This frees the main loop from history-token overhead and keeps context coherent across long sessions.
+A persistent markdown document keyed by `chatId`, replacing classic history injection. At turn start the saved context is auto-loaded as a synthetic `context_load` tool result; at turn end a forced synthetic call summarises the turn via `context_save`, `context_append`, or `context_skip`. This frees the main loop from history-token overhead and keeps context coherent across long sessions.
 
 ==== Collaborative Mode
-Adds `render_output` (in-iframe HTML artifacts) to the model's tool set during the main loop, and a forced post-answer `render_input` call that constrains the model to attach 2–4 follow-up buttons. Per-context, the description of both tools can be overridden to teach the model domain-specific patterns. A per-message toggle lets the user activate it for individual queries even when the context default is off.
+Adds `show` (in-iframe HTML artifacts) to the model's tool set during the main loop, and a forced post-answer `ask` call that constrains the model to attach 2–4 follow-up buttons. Per-context, the description of both tools can be overridden to teach the model domain-specific patterns. A per-message toggle lets the user activate it for individual queries even when the context default is off.
 
 ==== Knowledge Base Management
 Documents are uploaded into MongoDB GridFS (`docs.files`). Apache Tika parses prose formats — `.txt`, `.md`, `.html`, `.xml`, `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.rtf`, `.epub`, `.odt`, `.ods`, `.odp`, `.pages`, `.numbers`, `.key` — and code-aware splitters handle source files (`.java`, `.kt`, `.py`, `.js`, `.ts`, `.go`, `.rs`, `.swift`, `.cs`, `.cpp`, `.c`, `.h`). Each file is split into segments, embedded with Titan Embed Text v2, and persisted in `textSegments`. The admin panel lists documents in flat and tree views with filename / tag / path filters; failed indexing surfaces an inline retry button.

@@ -102,7 +102,7 @@ image::../../../images/sophia/context-agentic.png[Agentic mode settings]
 | `maxAgentIterations` | number | `5` | Maximum tool-use rounds (1–20). Higher values cost more and take longer.
 | `streamThinkingEvents` | boolean | `true` | Stream `tool_start` / `tool_result` / `text_start` events to the client in real time.
 | `extendedThinking` | boolean | `false` | Enable Claude's internal chain-of-thought reasoning. Only effective on Claude models.
-| `compactSearch` | boolean | `false` | Make `sophia_search` return source/chunk/preview only. ~10× cheaper than full segments.
+| `compactSearch` | boolean | `false` | Make `search` return source/chunk/preview only. ~10× cheaper than full segments.
 | `searchAndFetchPreamble` | boolean | `false` | Run a deterministic search + read on the top result before the model loop, injected as iteration 0 — typically reduces total iterations from 3–4 to 1.
 | `agenticContextManagement` | boolean | `false` | Replace classic history with a persistent context document keyed by `chatId`. See below.
 |===
@@ -120,10 +120,10 @@ Users see the agentic phase in real time when `streamThinkingEvents` is on — e
 
 When `agenticContextManagement` is enabled, Sophia replaces classic history injection with a *persistent markdown context document* keyed by `chatId`:
 
-- *Start of turn*: if a saved context exists, the system auto-injects it as a synthetic `sophia_context_load` tool result before the main loop. `historyLimit` is ignored.
-- *End of turn*: after the model's text answer, the system runs a separate forced call asking the model to summarise via `sophia_context_save`, `sophia_context_append`, or `sophia_context_skip`. Those tools are not available in the main loop — they are invoked only by the synthetic post-answer step.
+- *Start of turn*: if a saved context exists, the system auto-injects it as a synthetic `context_load` tool result before the main loop. `historyLimit` is ignored.
+- *End of turn*: after the model's text answer, the system runs a separate forced call asking the model to summarise via `context_save`, `context_append`, or `context_skip`. Those tools are not available in the main loop — they are invoked only by the synthetic post-answer step.
 
-This frees the main loop from history-token cost on every turn and keeps long-session coherence. The prompt template should *not* instruct the model to call `sophia_context_*` itself — doing so blocks the synthetic flow.
+This frees the main loop from history-token cost on every turn and keeps long-session coherence. The prompt template should *not* instruct the model to call `context_*` itself — doing so blocks the synthetic flow.
 
 === Collaborative Mode
 
@@ -132,14 +132,14 @@ Enable *Collaborative Mode* (under Agentic settings) to let the model render ric
 [cols="1,1,1,3", options="header"]
 |===
 | Option | Type | Default | Description
-| `collaborative` | boolean | `false` | Add `render_output` to the agentic loop. After the model's text answer, force a `render_input` call with 2–4 follow-up buttons.
-| `renderInputDesc` | string | server default | Override the description of the `render_input` tool. Document domain-specific patterns.
-| `renderOutputDesc` | string | server default | Override the description of the `render_output` tool. Document visual style and content guidelines.
+| `collaborative` | boolean | `false` | Add `show` to the agentic loop. After the model's text answer, force a `ask` call with 2–4 follow-up buttons.
+| `askDesc` | string | server default | Override the description of the `ask` tool. Document domain-specific patterns.
+| `showDesc` | string | server default | Override the description of the `show` tool. Document visual style and content guidelines.
 |===
 
-`render_output` produces HTML in an iframe injected into the chat — diagrams, calculators, mini-dashboards, REST micro-tools. PicoCSS v2 with dark theme is pre-loaded; the model can also use a `<style>` block for custom CSS.
+`show` produces HTML in an iframe injected into the chat — diagrams, calculators, mini-dashboards, REST micro-tools. PicoCSS v2 with dark theme is pre-loaded; the model can also use a `<style>` block for custom CSS.
 
-`render_input` is *not* available in the main loop. It is invoked only by the post-answer synthetic call, which constrains the model to attach 2–4 follow-up buttons. The prompt template should *not* instruct the model to call `render_input` directly — doing so prevents the synthetic flow.
+`ask` is *not* available in the main loop. It is invoked only by the post-answer synthetic call, which constrains the model to attach 2–4 follow-up buttons. The prompt template should *not* instruct the model to call `ask` directly — doing so prevents the synthetic flow.
 
 A per-message toggle in the chat UI lets the end user activate Collaborative Mode for a specific question, even on contexts where it is off by default.
 
