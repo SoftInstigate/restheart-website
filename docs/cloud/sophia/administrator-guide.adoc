@@ -372,7 +372,7 @@ Useful for tuning `relevantsLimit`, debugging missing-document issues, and verif
 
 == User Management
 
-Navigate to *Admin > Users* to manage user accounts. Each account authenticates with a username and password, and carries a list of *roles* and *agents*.
+Navigate to *Admin > Users* to manage user accounts. Sophia uses an *invitation-only* model: administrators do not set passwords — they invite users by email, and users complete activation by choosing their own password and accepting the legal policies.
 
 [cols="1,3", options="header"]
 |===
@@ -385,14 +385,104 @@ Navigate to *Admin > Users* to manage user accounts. Each account authenticates 
 Account properties:
 
 - `_id` — username; must be a valid email address (lowercased). Immutable after creation.
-- `password` — hashed automatically (bcrypt) on write. Strength is enforced server-side by `mongoRealmAuthenticator.enforce-minimum-password-strength` (score ≥ 3 on zxcvbn).
+- `password` — hashed automatically (bcrypt) on write. The user chooses it during activation; administrators never see nor set it. Strength is enforced server-side by `mongoRealmAuthenticator.enforce-minimum-password-strength` (score ≥ 3 on zxcvbn).
 - `roles` — array of roles
 - `agents` — list of agent ids the user is explicitly authorised for. Required for accessing *private* agents; public agents are reachable without listing.
 - `tags` — optional knowledge restriction; if set, the user can only retrieve documents carrying at least one of these tags
 - `tenant` — the tenant the user belongs to (mandatory for `tenant-admin` and `user`; the global `admin` typically has no tenant)
+- `status` — lifecycle marker, one of `invited` / `active` / `disabled`. See link:#user-invitation-flow[User Invitation Flow]. Login is allowed only for `active` users; any other status is rejected by the `LoginStatusVetoer` with `401`.
+- `inviteToken`, `inviteTokenExpiresAt` — opaque random token and its UTC expiry, generated server-side on invitation. Cleared once the user activates.
 - `consents` — record of accepted Terms of Service, Privacy Policy and art. 1341 c.c. clauses. Populated automatically by the legal-acceptance flow. See link:#legal-documents-and-consents[Legal Documents and Consents].
 
 A user can change their own password (from the link:#user-profile-page[Profile] page) but not their roles, tenant or agents. Only an administrator can grant/revoke roles.
+
+[[user-invitation-flow]]
+=== User Invitation Flow
+
+[[invitation-flow]]
+There is *no self-service signup*. The only way for a user to enter the system is to receive an invitation from an administrator.
+
+==== Sending an Invitation
+
+In the *Admin > Users* page, click *Invite User*, then fill in:
+
+- *Email* — used both as the account `_id` and as the destination of the invitation email
+- *Roles* — `user`, `tenant-admin` (and `admin` only when invited by a global admin)
+- *Tenant* — visible only to global admins. A `tenant-admin` automatically assigns invitees to their own tenant (forced server-side via the ACL `mergeRequest`).
+- *Agents* — the agents the user will be authorised for after activation. Private agents are flagged.
+
+Click *Send invitation*. Sophia:
+
+. Persists a new user document with `status: "invited"`, a freshly generated `inviteToken` (crypto-random, ~32 bytes base64url), and an `inviteTokenExpiresAt` set 7 days in the future. No `password` field is written.
+. Fires a `RESPONSE_ASYNC` interceptor (`InviteEmailSender`) that sends a dark-themed HTML email via *AWS SES* (configured under `/ermes` in `conf-prod.yml`).
+. Returns `201 Created` to the admin client.
+
+The invited user appears in the user list with an `invited` badge in amber.
+
+==== The Invitation Email
+
+The activation link in the email has the form:
+
+[source]
+----
+https://<your-sophia-host>/auth/activate?email=<email>&token=<inviteToken>
+----
+
+It is wrapped by AWS SES click-tracking (`awstrack.me`) when click-tracking is on at the SES configuration-set level. The token can only be used once, expires after 7 days, and is cleared from the user document on successful activation.
+
+==== Activation Page
+
+The `/auth/activate` route is *public* (no authentication required). On load it:
+
+. Force-clears any stale `rh_auth` cookie so the activation request cannot be misattributed to a different user already logged into the same browser.
+. Fetches `GET /legal-policies` to render the current Terms and Privacy versions with their canonical URLs.
+. Shows a form with a *new password* + *confirm password* pair and three checkboxes (Terms, Privacy, art. 1341 c.c. clauses).
+
+On submit it sends `PATCH /users/{email}?token=<token>` with the cleartext password. The server-side `InviteActivationInterceptor` (priority 20, running *after* `userPwdHasher`):
+
+. Verifies `token` matches `inviteToken`, has not expired, and the user is still in `invited` status
+. Verifies the accepted versions match the currently configured `legalPolicies.terms.version` and `legalPolicies.privacy.version`
+. Transforms the body into `$set` (password, status `active`, consents) + `$unset` (inviteToken, inviteTokenExpiresAt)
+. On success returns `200`, and the web client immediately calls `POST /token/cookie` to log the user in.
+
+Failure modes are surfaced to the user:
+
+[cols="1,2", options="header"]
+|===
+| Result | UI message
+| `invalid-token` | "This invitation link is no longer valid. Ask your administrator to send a new one."
+| `weak-password` | "Password too weak — please choose a stronger one."
+| `policy-outdated` | "The legal policies have just been updated. Reload the page and try again."
+|===
+
+==== Status Lifecycle
+
+----
+            POST /users (admin)
+            ──────────▶  invited ──────────▶  active
+                                  PATCH /users/{id}?token=...
+                                  (InviteActivationInterceptor)
+
+            PATCH /users/{id}  status=disabled (admin override)
+            ─────────────────────▶ disabled  (login refused)
+----
+
+A `disabled` user can log in *only* after an admin re-sets `status: "active"`. The `LoginStatusVetoer` runs before token issuance and inspects this field.
+
+==== Inviting via the REST API
+
+[source,bash]
+----
+echo '{
+  "_id": "alice@example.com",
+  "roles": ["user"],
+  "agents": ["support"],
+  "tags": [],
+  "tenant": "acme"
+}' | http -a admin:password POST :8080/users
+----
+
+The server fills in `status: "invited"`, generates `inviteToken` / `inviteTokenExpiresAt` (via the ACL `mergeRequest` with the `@rnd(bits)` placeholder), and the `RESPONSE_ASYNC` interceptor sends the email. Do *not* include a `password` field — the `UserPersistInterceptor` rejects POSTs that carry one.
 
 === Multi-tenant Isolation
 
@@ -407,10 +497,10 @@ Every authenticated user (regardless of role) has access to `/profile` — a sin
 - *Account* — email (= `_id`), tenant, roles, status, "member since"
 - *Accessible Agents* (collapsible) — list of agents the user can chat with, badged `public` or `private`
 - *Change Password* (collapsible) — form to change the user's own password; the current password is re-verified before the change is committed (UX hardening against session hijack)
-- *Accepted Policies* — version + date of accepted Terms / Privacy / Cookie policy, with a "re-acceptance required" badge when an outdated version is detected
+- *Accepted Policies* — version + date of accepted Terms / Privacy / Cookie policy, with a "re-acceptance required" badge when an outdated version is detected. A *Refresh* button re-fetches `GET /legal-policies` to detect a server-side bump without reloading the page.
 - *Session* — explicit Logout button (centralized; the avatar dropdown and admin sidebar link to this page rather than logging out directly)
 
-Administrators reach the page from the *Profile* link in the admin sidebar; regular users via the avatar at the top-right of the chat.
+Administrators reach the page from the *Profile* link in the admin sidebar; regular users via the avatar at the top-right of the chat. Both entry points append a `?back=<currentUrl>` query parameter, and the profile page's *← Back* button honours it — returning the user to the exact chat or admin section they came from. The fallback is `/admin` for administrators and `/` (the default agent) for regular users; the back target is ignored if it points to `/profile` itself (to avoid loops) or is not a same-origin path (for security).
 
 == Legal Documents and Consents
 

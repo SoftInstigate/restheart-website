@@ -60,6 +60,10 @@ image::../../../images/sophia/chat-deck-view.png[Deck view]
 
 Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific agents and tags, ensuring knowledge segregation extends to every access path. Private agents require either an OAuth flow (Claude Desktop) or an API token; public agents work without authentication.
 
+==== Invitation-only User Onboarding
+
+Sophia is *invitation-only*: there is no public signup. Administrators add users by email, and Sophia sends a transactional activation message through AWS SES. The recipient picks their own password, accepts the legal policies and is automatically logged in — administrators never see nor handle passwords. A `status` lifecycle (`invited` → `active`, plus `disabled` for revocation) is enforced at login time by a server-side vetoer.
+
 ==== Multi-tenant Isolation
 
 A single Sophia instance can host multiple *tenants* (organisations) without any data leak between them. Each agent, knowledge document, user, chat session and API token is scoped to a tenant via server-side ACL filters. A *tenant-admin* role manages every resource of their own tenant; a global *admin* spans all tenants. Public agents and shared knowledge can be opted into explicitly.
