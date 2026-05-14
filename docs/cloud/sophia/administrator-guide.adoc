@@ -20,6 +20,16 @@ image::../../../images/sophia/login.png[Login page]
 
 Non-admin users are redirected to the chat interface; administrators are redirected to the admin panel.
 
+=== Legal Acceptance Modal
+
+On the first login (and after any major-version bump of the Terms of Service or Privacy Policy) Sophia displays a blocking modal asking the user to accept three things:
+
+. The current *Terms of Service* (link to the external document on restheart.com)
+. The current *Privacy Policy* (link to the external document on restheart.com)
+. The clauses listed in §13.5 of the Terms that, under Italian law (art. 1341 c.c.), require separate written approval
+
+The modal cannot be dismissed without accepting or logging out — any Mongo request issued before acceptance is intercepted server-side and returns `403 AcceptanceRequired`. The acceptance record (version, URL, timestamp, IP address) is persisted on the user document under `consents`; see link:#legal-documents-and-consents[Legal Documents and Consents] below.
+
 == Agent Management
 
 A *Agent* defines the full behaviour of Sophia for a given knowledge domain: the system prompt template, tag filters, RAG and LLM options, agentic mode settings, collaborative artifacts, hint questions, deck view, and the MCP server description shown to AI clients.
@@ -362,24 +372,93 @@ Useful for tuning `relevantsLimit`, debugging missing-document issues, and verif
 
 == User Management
 
-Navigate to *Admin > Users* to manage user accounts. Each account authenticates with a username and password, and carries a list of *roles* and *contexts*.
+Navigate to *Admin > Users* to manage user accounts. Each account authenticates with a username and password, and carries a list of *roles* and *agents*.
 
 [cols="1,3", options="header"]
 |===
 | Role | Capability
 | `user` | Default role for end users — can chat against agents whose id is in the user's `agents` claim, or any public agent.
-| `admin` | Manages the admin panel — same surface as your own account.
+| `tenant-admin` | Manages every resource (agents, knowledge, users, tokens) belonging to their own tenant. Cannot reach other tenants' data. See link:#multi-tenant-isolation[Multi-tenant Isolation].
+| `admin` | Global administrator — manages every tenant and every resource. Required for managing the `tenants` collection.
 |===
 
 Account properties:
 
-- `_id` — username (immutable after creation)
-- `password` — hashed automatically (bcrypt) on write
+- `_id` — username; must be a valid email address (lowercased). Immutable after creation.
+- `password` — hashed automatically (bcrypt) on write. Strength is enforced server-side by `mongoRealmAuthenticator.enforce-minimum-password-strenght` (score ≥ 3 on zxcvbn).
 - `roles` — array of roles
-- `contexts` — list of agent ids the user is authorized for (relevant for *private agents*)
+- `agents` — list of agent ids the user is explicitly authorised for. Required for accessing *private* agents; public agents are reachable without listing.
 - `tags` — optional knowledge restriction; if set, the user can only retrieve documents carrying at least one of these tags
+- `tenant` — the tenant the user belongs to (mandatory for `tenant-admin` and `user`; the global `admin` typically has no tenant)
+- `consents` — record of accepted Terms of Service, Privacy Policy and art. 1341 c.c. clauses. Populated automatically by the legal-acceptance flow. See link:#legal-documents-and-consents[Legal Documents and Consents].
 
-A user can change their own password but not their roles or contexts. Only administrators can grant/revoke admin role.
+A user can change their own password (from the link:#user-profile-page[Profile] page) but not their roles, tenant or agents. Only an administrator can grant/revoke roles.
+
+=== Multi-tenant Isolation
+
+A `tenant-admin` sees only resources whose `tenant` field equals their own. The isolation is enforced via RESTHeart's `mongoAclAuthorizer` (`readFilter` + `writeFilter` + `mergeRequest`) and complemented by server-side interceptors for documents that the backend creates on behalf of the user (chats, segments, MCP sessions, API tokens).
+
+To create a new tenant: open *Admin > Tenants* as a global `admin`, click *New Tenant*, and assign a tenant administrator. The global admin remains responsible for tenant CRUD; tenant-admins cannot manage tenants other than their own.
+
+=== User Profile Page
+
+Every authenticated user (regardless of role) has access to `/profile` — a single self-service page exposing:
+
+- *Account* — email (= `_id`), tenant, roles, status, "member since"
+- *Accessible Agents* (collapsible) — list of agents the user can chat with, badged `public` or `private`
+- *Change Password* (collapsible) — form to change the user's own password; the current password is re-verified before the change is committed (UX hardening against session hijack)
+- *Accepted Policies* — version + date of accepted Terms / Privacy / Cookie policy, with a "re-acceptance required" badge when an outdated version is detected
+- *Session* — explicit Logout button (centralized; the avatar dropdown and admin sidebar link to this page rather than logging out directly)
+
+Administrators reach the page from the *Profile* link in the admin sidebar; regular users via the avatar at the top-right of the chat.
+
+== Legal Documents and Consents
+
+[[legal-documents-and-consents]]
+Sophia's legal documents — Terms of Service, Privacy Policy and Cookie Policy — are hosted externally on `restheart.com` and referenced from Sophia by canonical URLs declared in the backend configuration (`legalPolicies` section). The backend exposes them at `GET /legal-policies`:
+
+[source,json]
+----
+{
+  "terms":   { "version": "1.0", "url": "https://restheart.com/legal/terms/sophia/" },
+  "privacy": { "version": "1.0", "url": "https://restheart.com/legal/privacy-policy/" },
+  "cookies": { "url":     "https://restheart.com/legal/cookie-policy/" }
+}
+----
+
+Only Terms and Privacy carry a version (and trigger re-acceptance on major bumps). The Cookie Policy is informational only and does not require consent: Sophia uses a single essential authentication cookie (`rh_auth`).
+
+=== Acceptance Recording
+
+When a user accepts (at activation or during re-acceptance), Sophia records three nested objects under `users.<_id>.consents`:
+
+[source,json]
+----
+{
+  "consents": {
+    "termsAndConditions":       { "version": "1.0", "url": "...", "acceptedAt": <date>, "ip": "..." },
+    "privacyPolicy":            { "version": "1.0", "url": "...", "acceptedAt": <date>, "ip": "..." },
+    "unfairTermsAndConditions": { "version": "1.0",               "acceptedAt": <date>, "ip": "..." }
+  }
+}
+----
+
+The `unfairTermsAndConditions` entry attests to the explicit approval of art. 1341 c.c. clauses listed in §13.5 of the Terms. The `url` field stores the exact versioned document the user accepted — an immutable audit reference.
+
+=== Acceptance Enforcement
+
+The `AcceptanceCheckInterceptor` runs after authentication on every Mongo request. If `consents.termsAndConditions.version` or `consents.privacyPolicy.version` differs in MAJOR component from the configured `current` versions (or is missing), the interceptor replies with `403` and body `{ "error": "AcceptanceRequired", "policies": ["terms", "privacy"] }`. The web client's HTTP interceptor catches this response and opens the blocking acceptance modal.
+
+API tokens are not exempt — they inherit the consents of the user who issued them. A major-version bump therefore blocks the token until the issuing user re-accepts via the web UI. To rotate an API token under a different user, revoke and re-issue from the API Tokens page.
+
+=== Publishing a New Version
+
+. Edit the markdown source on `restheart.com` (`src/legal/terms/sophia.md` or `src/legal/privacy-policy.md`). For a MAJOR change, publish under a new versioned path (e.g. `src/legal/sophia/2.0/terms.md`) and update the canonical redirect.
+. Run the site build (`npm run build` in the `restheart.com` repo) and deploy.
+. Update Sophia's backend config (`conf-prod.yml` → `legalPolicies.terms.version` and `legalPolicies.terms.url`).
+. Redeploy Sophia. The `AcceptanceCheckInterceptor` immediately starts blocking users with consents on the previous MAJOR — they will see the modal at their next request and re-accept.
+
+MINOR changes do not require config changes nor re-acceptance: the URL is canonical, the content can be amended in place.
 
 == API Token Management
 

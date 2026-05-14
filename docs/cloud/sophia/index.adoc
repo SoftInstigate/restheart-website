@@ -18,9 +18,9 @@ If you're here to learn about RESTHeart or RESTHeart Cloud, Sophia is already wo
 
 === Sophia for Your Organization
 
-Sophia is available as a *managed service* through *RESTHeart Cloud* (dedicated tier) or as an *on-premises deployment* on your own infrastructure. Either way, you get your own Sophia instance, powered by your own knowledge base — with full control over contexts, documents, access, and AI behaviour through the admin panel.
+Sophia is available as a *managed service* through *RESTHeart Cloud* (dedicated tier) or as an *on-premises deployment* on your own infrastructure. Either way, you get your own Sophia instance, powered by your own knowledge base — with full control over agents, documents, access, and AI behaviour through the admin panel.
 
-Upload your documents, configure your contexts, and your users get an intelligent assistant that understands your content. Customer support teams, educational institutions, and enterprise organizations use Sophia to make their knowledge instantly accessible.
+Upload your documents, configure your agents, and your users get an intelligent assistant that understands your content. Customer support teams, educational institutions, and enterprise organizations use Sophia to make their knowledge instantly accessible.
 
 image::../../../images/sophia/admin-panel.png[Admin panel]
 
@@ -34,7 +34,7 @@ image::../../../images/sophia/knowledge-list.png[Knowledge base management]
 
 ==== Agents and Knowledge Segregation
 
-Organize your knowledge into isolated *contexts*, each with its own prompt template, document tags, RAG configuration, and agentic behaviour. Agents ensure strict data separation — users in one agent cannot access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
+Organize your knowledge into isolated *agents*, each with its own prompt template, document tags, RAG configuration, and agentic behaviour. Agents ensure strict data separation — users in one agent cannot access documents from another. Serve different audiences (customers, internal staff, partners) from a single Sophia instance.
 
 image::../../../images/sophia/context-list.png[Agent management]
 
@@ -52,13 +52,21 @@ image::../../../images/sophia/chat-artifact.png[Interactive artifact in chat]
 
 ==== Deck View
 
-Switch any context to *Deck View* to replace the linear chat with a horizontal card deck — each interaction becomes a swipeable card with prompt above and answer below. Useful for guided tours, lesson decks, and demo flows.
+Switch any agent to *Deck View* to replace the linear chat with a horizontal card deck — each interaction becomes a swipeable card with prompt above and answer below. Useful for guided tours, lesson decks, and demo flows.
 
 image::../../../images/sophia/chat-deck-view.png[Deck view]
 
 ==== Security and Access Control
 
-Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific contexts and tags, ensuring knowledge segregation extends to every access path. Private agents require either an OAuth flow (Claude Desktop) or an API token; public agents work without authentication.
+Cookie-based authentication secures the web interface, while JWT tokens provide programmatic access for APIs and MCP clients. API tokens can be scoped to specific agents and tags, ensuring knowledge segregation extends to every access path. Private agents require either an OAuth flow (Claude Desktop) or an API token; public agents work without authentication.
+
+==== Multi-tenant Isolation
+
+A single Sophia instance can host multiple *tenants* (organisations) without any data leak between them. Each agent, knowledge document, user, chat session and API token is scoped to a tenant via server-side ACL filters. A *tenant-admin* role manages every resource of their own tenant; a global *admin* spans all tenants. Public agents and shared knowledge can be opted into explicitly.
+
+==== Compliance and Consent Tracking
+
+Terms of Service, Privacy Policy and Cookie Policy are versioned and hosted externally on `restheart.com`. At first login Sophia presents a blocking modal capturing explicit consent — including the separate approval of art. 1341 c.c. clauses required under Italian law. Consents are recorded on the user document with version, URL, timestamp and IP address as immutable audit evidence. A major-version bump of any policy automatically forces all users to re-accept before continuing.
 
 ==== MCP Server
 
@@ -70,7 +78,7 @@ See link:/docs/cloud/sophia/mcp[Sophia MCP Server] for setup instructions.
 
 ==== Cost Visibility and Model Failover
 
-Track token usage and dollar cost per chat, per agent, per model from the *Costs* dashboard. The context editor shows a live estimate of cached prefix size and per-interaction cost based on the chosen model and prompt-caching support. When a Bedrock model is throttled or fails, Sophia automatically falls back to a configurable list of secondary models — the user sees a `model_fallback` event and the answer continues seamlessly.
+Track token usage and dollar cost per chat, per agent, per model from the *Costs* dashboard. The agent editor shows a live estimate of cached prefix size and per-interaction cost based on the chosen model and prompt-caching support. When a Bedrock model is throttled or fails, Sophia automatically falls back to a configurable list of secondary models — the user sees a `model_fallback` event and the answer continues seamlessly.
 
 ==== Flexible Integration
 
