@@ -18,7 +18,7 @@ The web interface uses cookie-based authentication. Login to obtain an HttpOnly 
 
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/token/cookie" \
+curl -X POST "https://api.bysophia.ai/token/cookie" \
   -H "Authorization: Basic <base64-credentials>"
 ----
 
@@ -60,7 +60,7 @@ Creates a new chat message with a prompt. Most clients submit chat documents dir
 *Request:*
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/chats?agent=support" \
+curl -X POST "https://api.bysophia.ai/chats?agent=support" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -84,7 +84,7 @@ Subscribe to real-time chat updates over WebSocket. The stream pushes incrementa
 
 [source,bash]
 ----
-websocat "wss://sophia-api.restheart.com/chats/_streams/subscribe?avars={\"chatId\":\"chat-123\"}" \
+websocat "wss://api.bysophia.ai/chats/_streams/subscribe?avars={\"chatId\":\"chat-123\"}" \
   --header "Authorization: Bearer <jwt-token>"
 ----
 
@@ -155,7 +155,7 @@ Any interaction (chat document) can expose a read-only shareable link that retur
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/chats/{interactionId}?shareToken={random-token}"
+curl "https://api.bysophia.ai/chats/{interactionId}?shareToken={random-token}"
 ----
 
 The response is restricted to the `steps` field (no auth required). Useful for sharing a generated diagram or calculator with someone outside the workspace.
@@ -170,7 +170,7 @@ Agents define the behaviour of Sophia for a specific knowledge domain.
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/agents" \
+curl "https://api.bysophia.ai/agents" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -225,7 +225,7 @@ curl "https://sophia-api.restheart.com/agents" \
 
 [source,bash]
 ----
-curl -X PUT "https://sophia-api.restheart.com/agents/support?wm=upsert" \
+curl -X PUT "https://api.bysophia.ai/agents/support?wm=upsert" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -249,7 +249,7 @@ curl -X PUT "https://sophia-api.restheart.com/agents/support?wm=upsert" \
 
 [source,bash]
 ----
-curl -X PATCH "https://sophia-api.restheart.com/agents/support" \
+curl -X PATCH "https://api.bysophia.ai/agents/support" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{"options": {"relevantsLimit": 8, "temperature": 0.2}}'
@@ -274,7 +274,7 @@ Documents are stored in MongoDB GridFS as `docs.files` (metadata) and `docs.chun
 
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/docs.files" \
+curl -X POST "https://api.bysophia.ai/docs.files" \
   -H "Authorization: Bearer <jwt-token>" \
   -F "file=@document.pdf" \
   -F 'metadata={"filename":"docs/intro/document.pdf","tags":["public","support"]}'
@@ -293,7 +293,7 @@ curl -X POST "https://sophia-api.restheart.com/docs.files" \
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/docs.files?page=1&pagesize=20" \
+curl "https://api.bysophia.ai/docs.files?page=1&pagesize=20" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -322,7 +322,7 @@ echo '{"tags": ["public", "support", "v2"]}' | \
 
 [source,bash]
 ----
-curl -X DELETE "https://sophia-api.restheart.com/docs.files/6507f1f4..." \
+curl -X DELETE "https://api.bysophia.ai/docs.files/6507f1f4..." \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -343,7 +343,7 @@ http -a admin:password DELETE :8080/docs.files/'*' \
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments?pagesize=10" \
+curl "https://api.bysophia.ai/textSegments?pagesize=10" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -360,7 +360,7 @@ The `vector` field is excluded from the response automatically (large array).
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=password%20reset&agent=support" \
+curl "https://api.bysophia.ai/textSegments/_aggrs/search?prompt=password%20reset&agent=support" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -396,7 +396,7 @@ A custom service that aggregates `docs.files` to expose the directory tree of th
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/listPaths?path=docs/&pagesize=20" \
+curl "https://api.bysophia.ai/listPaths?path=docs/&pagesize=20" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -421,7 +421,7 @@ Standard RESTHeart-style CRUD on the `users` collection. Passwords are hashed au
 
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/users" \
+curl "https://api.bysophia.ai/users" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 

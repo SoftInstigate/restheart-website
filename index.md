@@ -93,21 +93,21 @@ excerpt: RESTHeart gives AI agents and developers instant, secure access to Mong
             <div class="col-lg-6 offset-lg-3 text-start">
                 <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
 {% highlight bash %}
-claude mcp add --transport http sophia-restheart https://sophia-api.restheart.com/mcp/restheart
-claude mcp add --transport http sophia-cloud https://sophia-api.restheart.com/mcp/cloud
+claude mcp add --transport http sophia-restheart https://api.bysophia.ai/mcp/restheart
+claude mcp add --transport http sophia-cloud https://api.bysophia.ai/mcp/cloud
 {% endhighlight %}
                 <p class="mt-3 mb-1"><strong>Connect with Claude Desktop:</strong></p>
                 <p class="mb-2">Open <strong>Settings → Connectors → Add custom connector</strong> and paste one of the context URLs:</p>
                 <ul class="text-start mb-0">
-                    <li><code>https://sophia-api.restheart.com/mcp/restheart/</code> — RESTHeart docs</li>
-                    <li><code>https://sophia-api.restheart.com/mcp/cloud/</code> — RESTHeart Cloud docs</li>
+                    <li><code>https://api.bysophia.ai/mcp/restheart/</code> — RESTHeart docs</li>
+                    <li><code>https://api.bysophia.ai/mcp/cloud/</code> — RESTHeart Cloud docs</li>
                 </ul>
                 <p class="mt-3 mb-1"><strong>Connect with VS Code / Zed</strong> (requires Node.js 18+):</p>
 {% highlight json %}
 {
   "sophia": {
     "command": "npx",
-    "args": ["mcp-remote", "https://sophia-api.restheart.com/mcp/restheart/"]
+    "args": ["mcp-remote", "https://api.bysophia.ai/mcp/restheart/"]
   }
 }
 {% endhighlight %}

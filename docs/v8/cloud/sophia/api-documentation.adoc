@@ -47,7 +47,7 @@ Creates a new chat session with an initial prompt.
 *Request:*
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/chats?wm=upsert" \
+curl -X POST "https://api.bysophia.ai/chats?wm=upsert" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -81,7 +81,7 @@ Subscribe to real-time chat updates using WebSocket connection.
 *WebSocket Connection:*
 [source,bash]
 ----
-websocat "wss://sophia-api.restheart.com/chats/_streams/subscribe?avars={\"chatId\":\"chat-123\"}" \
+websocat "wss://api.bysophia.ai/chats/_streams/subscribe?avars={\"chatId\":\"chat-123\"}" \
   --header "Authorization: Bearer <jwt-token>"
 ----
 
@@ -110,7 +110,7 @@ Retrieve chat session information and history.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/chats/chat-123" \
+curl "https://api.bysophia.ai/chats/chat-123" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -146,7 +146,7 @@ Upload a document to the knowledge base for RAG processing.
 *Request:*
 [source,bash]
 ----
-curl -X POST "https://sophia-api.restheart.com/docs.files?wm=upsert" \
+curl -X POST "https://api.bysophia.ai/docs.files?wm=upsert" \
   -H "Authorization: Bearer <jwt-token>" \
   -F "file=@document.pdf" \
   -F 'metadata={"filename": "document.pdf", "tags": ["public", "documentation"]}'
@@ -183,7 +183,7 @@ Retrieve list of uploaded documents.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/docs.files?page=1&pagesize=20" \
+curl "https://api.bysophia.ai/docs.files?page=1&pagesize=20" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -222,7 +222,7 @@ Remove a document from the knowledge base.
 *Request:*
 [source,bash]
 ----
-curl -X DELETE "https://sophia-api.restheart.com/docs.files/6507f1f462f8b7c123456789" \
+curl -X DELETE "https://api.bysophia.ai/docs.files/6507f1f462f8b7c123456789" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -248,14 +248,14 @@ Perform semantic search across processed document segments.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=MongoDB%20queries" \
+curl "https://api.bysophia.ai/textSegments/_aggrs/search?prompt=MongoDB%20queries" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
 *With Tags Filter:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments/_aggrs/search?prompt=MongoDB%20queries&avars={\"tags\":[\"public\"]}" \
+curl "https://api.bysophia.ai/textSegments/_aggrs/search?prompt=MongoDB%20queries&avars={\"tags\":[\"public\"]}" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -286,7 +286,7 @@ Retrieve processed text segments.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/textSegments?pagesize=10" \
+curl "https://api.bysophia.ai/textSegments?pagesize=10" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -321,7 +321,7 @@ Retrieve available prompt templates.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/promptTemplates?keys={\"_id\":1}" \
+curl "https://api.bysophia.ai/promptTemplates?keys={\"_id\":1}" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -345,7 +345,7 @@ Retrieve specific prompt template content and options.
 *Request:*
 [source,bash]
 ----
-curl "https://sophia-api.restheart.com/promptTemplates/default" \
+curl "https://api.bysophia.ai/promptTemplates/default" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
@@ -381,7 +381,7 @@ Create a new prompt template or update existing one.
 ----
 # Upload template content
 echo "Custom template with <documents-placeholder> and <userprompt>" | \
-curl -X PUT "https://sophia-api.restheart.com/promptTemplates/custom" \
+curl -X PUT "https://api.bysophia.ai/promptTemplates/custom" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: text/plain" \
   --data-binary @-
@@ -390,7 +390,7 @@ curl -X PUT "https://sophia-api.restheart.com/promptTemplates/custom" \
 *Update Options:*
 [source,bash]
 ----
-curl -X PATCH "https://sophia-api.restheart.com/promptTemplates/custom" \
+curl -X PATCH "https://api.bysophia.ai/promptTemplates/custom" \
   -H "Authorization: Bearer <jwt-token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -425,7 +425,7 @@ Remove a prompt template.
 *Request:*
 [source,bash]
 ----
-curl -X DELETE "https://sophia-api.restheart.com/promptTemplates/custom" \
+curl -X DELETE "https://api.bysophia.ai/promptTemplates/custom" \
   -H "Authorization: Bearer <jwt-token>"
 ----
 
