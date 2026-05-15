@@ -30,11 +30,19 @@ All three checkboxes must be ticked before the *Activate my account* button enab
 
 A few details to keep in mind:
 
-- The activation link is *single-use* and expires 7 days after it is sent. If it expires (or you lose the email), ask your administrator for a new invitation.
+- The activation link is *single-use* and expires 7 days after it is sent. If it expires (or you lose the email), ask your administrator to *resend the invitation* — they can do it with one click from the *Admin > Users* page, which rotates the token and emails you a fresh link.
 - Until you complete activation, the account is `invited` and *cannot log in* via the regular login page — only the activation link works.
 - If the link looks broken because of an ad-blocker (it may show `awstrack.me` as a tracking host), disable the blocker for that domain or copy the link and open it directly.
 
 After activation you can change your password and review your accepted policies anytime from the link:#your-profile[Profile] page.
+
+=== Forgot your password?
+
+If you forget your password, click *Forgot your password?* on the login screen. Enter your email and Sophia sends a reset link to your inbox (valid for 1 hour). The page that opens lets you choose a new password — no policy re-acceptance needed.
+
+For privacy reasons the response is intentionally neutral: you'll see "If an account exists, we've sent an email" regardless of whether the email is registered. This prevents attackers from probing the system to discover registered accounts. The same endpoint also rate-limits to one email per minute per address.
+
+If you never completed your initial activation, the same forgot-password flow will instead resend the *invitation* email — Sophia tracks the distinction internally.
 
 == Web Chat Interface
 
@@ -91,13 +99,15 @@ See link:/docs/cloud/sophia/api-documentation[API Documentation] for endpoint re
 
 Once logged in, click the avatar at the top-right of the chat (or the *Profile* link in the admin sidebar) to reach `/profile` — your personal account page. It groups everything you can manage about your own account:
 
-- *Account* — read-only view of your email, tenant, roles and member-since date
+- *Account* — your email (immutable), display name (you can edit it inline by clicking *Edit*), tenant, roles, status, and member-since date. If an administrator has set knowledge tag restrictions on your account, this section also shows them read-only — both the global default and any per-agent overrides — with a short note about how the filter applies to document retrieval.
 - *Accessible Agents* — list of every agent you can chat with, marked `public` or `private`
 - *Change Password* — change your password; you'll be asked to re-enter your current one as a confirmation. The new password is validated by the server (rejected if too weak)
 - *Accepted Policies* — version, date and link of the Terms, Privacy and Cookie documents you accepted. When a newer major version exists, the *Update acceptance* button opens the same modal you saw at activation. A *Refresh* button checks for new versions on the server without reloading the page.
 - *Session* — the *Logout* button. Closing the tab also ends your session when the cookie expires (typically 8 hours)
 
 The *← Back* button at the top-left of the profile page returns you to wherever you came from — the chat agent, the admin section, or any other page in Sophia — so you don't lose your place. If you open `/profile` directly (e.g. via a bookmark), Back falls back to your role's home page.
+
+You can edit your *display name* and your *password* from here. All other fields (roles, tenant, accessible agents, knowledge tags) are managed by an administrator — to change any of them, contact yours.
 
 == Legal Documents
 

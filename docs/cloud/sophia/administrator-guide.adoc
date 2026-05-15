@@ -386,15 +386,21 @@ Account properties:
 
 - `_id` — username; must be a valid email address (lowercased). Immutable after creation.
 - `password` — hashed automatically (bcrypt) on write. The user chooses it during activation; administrators never see nor set it. Strength is enforced server-side by `mongoRealmAuthenticator.enforce-minimum-password-strength` (score ≥ 3 on zxcvbn).
+- `name` — optional display name. Editable by the user themself from the Profile page; visible to administrators in the user list.
+- `notes` — optional internal note (admin-only — never exposed to the user). Useful to track onboarding context, support escalations, etc.
 - `roles` — array of roles
 - `agents` — list of agent ids the user is explicitly authorised for. Required for accessing *private* agents; public agents are reachable without listing.
-- `tags` — optional knowledge restriction; if set, the user can only retrieve documents carrying at least one of these tags
+- `tags` — optional *global* knowledge restriction. When non-empty, applies as the default tag filter to every agent the user accesses (intersected with the agent's own tags). Empty / absent = no per-user filter. See link:#knowledge-tag-restrictions[Knowledge Tag Restrictions].
+- `agentTagRestrictions` — optional per-agent overrides of `tags`. Map of `agentId` → `string[]`; an entry wins over the global `tags` for that agent. Use it to grant different scopes per agent (e.g. `hr` on the HR agent, `sales` on the Sales agent). See link:#knowledge-tag-restrictions[Knowledge Tag Restrictions].
 - `tenant` — the tenant the user belongs to (mandatory for `tenant-admin` and `user`; the global `admin` typically has no tenant)
 - `status` — lifecycle marker, one of `invited` / `active` / `disabled`. See link:#user-invitation-flow[User Invitation Flow]. Login is allowed only for `active` users; any other status is rejected by the `LoginStatusVetoer` with `401`.
-- `inviteToken`, `inviteTokenExpiresAt` — opaque random token and its UTC expiry, generated server-side on invitation. Cleared once the user activates.
+- `inviteToken`, `inviteCreatedAt` — opaque random token and its creation timestamp, generated server-side on invitation. Cleared once the user activates.
+- `passwordResetToken`, `passwordResetCreatedAt` — opaque random token and its creation timestamp, generated when the user requests a password reset. Cleared on successful reset or natural expiry (1 hour).
 - `consents` — record of accepted Terms of Service, Privacy Policy and art. 1341 c.c. clauses. Populated automatically by the legal-acceptance flow. See link:#legal-documents-and-consents[Legal Documents and Consents].
 
-A user can change their own password (from the link:#user-profile-page[Profile] page) but not their roles, tenant or agents. Only an administrator can grant/revoke roles.
+A user can change their own password and display name (from the link:#user-profile-page[Profile] page) but not their roles, tenant, agents, tags or notes. Only an administrator can grant/revoke roles or change access scope.
+
+The `users` collection carries three indexes ensured at boot by the `UserIndexesInitializer`: `inviteToken` (sparse), `passwordResetToken` (sparse), and `status`. The two token indexes are sparse because the fields are `$unset` as soon as the token is consumed.
 
 [[user-invitation-flow]]
 === User Invitation Flow
@@ -407,9 +413,12 @@ There is *no self-service signup*. The only way for a user to enter the system i
 In the *Admin > Users* page, click *Invite User*, then fill in:
 
 - *Email* — used both as the account `_id` and as the destination of the invitation email
+- *Display name* — optional, free-form. Helpful for at-a-glance identification in the user list.
 - *Roles* — `user`, `tenant-admin` (and `admin` only when invited by a global admin)
-- *Tenant* — visible only to global admins. A `tenant-admin` automatically assigns invitees to their own tenant (forced server-side via the ACL `mergeRequest`).
-- *Agents* — the agents the user will be authorised for after activation. Private agents are flagged.
+- *Tenant* — visible only to global admins. A `tenant-admin` automatically assigns invitees to their own tenant (forced server-side via the ACL `mergeRequest`). The field offers autocomplete from the existing tenants and shows an amber banner if you type a tenant that doesn't exist yet — create it from *Admin > Tenants* before the user logs in (the user form does not auto-create tenants).
+- *Accessible agents* — the agents the user will be authorised for after activation. The list is *scoped to the selected tenant* (public agents + agents owned by that tenant) and *hides public agents by default* to keep the picker tight; toggle the *Show public agents* checkbox to include them. Each selected agent reveals an inline *Restrict to tags:* input (see link:#knowledge-tag-restrictions[Knowledge Tag Restrictions]).
+- *Knowledge tag restrictions (global)* — comma-separated. Applies to any agent without its own per-agent override. Leave empty for no per-user filter by default.
+- *Internal notes* — admin-only, never exposed to the user.
 
 Click *Send invitation*. Sophia:
 
@@ -475,14 +484,164 @@ A `disabled` user can log in *only* after an admin re-sets `status: "active"`. T
 ----
 echo '{
   "_id": "alice@example.com",
+  "name": "Alice Wonderland",
   "roles": ["user"],
-  "agents": ["support"],
-  "tags": [],
-  "tenant": "acme"
+  "tenant": "acme",
+  "agents": ["acme-support", "acme-hr"],
+  "tags": ["acme"],
+  "agentTagRestrictions": {
+    "acme-hr": ["hr-internal"]
+  },
+  "notes": "Onboarded via Linear ticket #1234"
 }' | http -a admin:password POST :8080/users
 ----
 
-The server fills in `status: "invited"`, generates `inviteToken` / `inviteTokenExpiresAt` (via the ACL `mergeRequest` with the `@rnd(bits)` placeholder), and the `RESPONSE_ASYNC` interceptor sends the email. Do *not* include a `password` field — the `UserPersistInterceptor` rejects POSTs that carry one.
+The server fills in `status: "invited"`, generates `inviteToken` / `inviteCreatedAt` (via the ACL `mergeRequest` with the `@rnd(bits)` placeholder), and the `RESPONSE_ASYNC` interceptor sends the email. Do *not* include a `password` field — the `UserPersistInterceptor` rejects POSTs that carry one. The interceptor also rejects `agentTagRestrictions` whose keys are not in `agents`.
+
+[[resending-an-invite]]
+==== Resending an Invite
+
+If the user lost the email (or it expired after 7 days), in *Admin > Users* the row of any user still in `invited` status shows a *Resend invite* button. Clicking it:
+
+. Rotates the `inviteToken` to a fresh random value (the previous link becomes invalid immediately — important if the user thinks the original was lost in transit but it was actually delivered).
+. Refreshes `inviteCreatedAt` so the new link has the full 7-day TTL.
+. Sends a fresh invitation email via the same Ermes channel used for the first send.
+
+Tenant scoping is enforced by the `InviteResendService` itself: a `tenant-admin` can only resend invites for users in their own tenant (`403` otherwise). The endpoint is `POST /resend-invite/<email>` — there is no body. A `409 Conflict` is returned if the user is already `active` or `disabled` (re-sending an invite to a fully onboarded user is a no-op the UI surfaces as a toast).
+
+[[password-reset]]
+==== Password Reset
+
+Users who forget their password use the *Forgot your password?* link on `/login`, which leads to `/auth/forgot-password`. They enter their email; the public endpoint `POST /password-reset/<email>` always returns `202 Accepted` regardless of whether the address is registered — this is intentional to prevent account-enumeration attacks. The neutral UI message confirms only "If an account exists, we've sent an email."
+
+Server-side flow (`PasswordResetRequestService`):
+
+. *Rate limit*: at most one reset request per email every 60 seconds. Subsequent requests within the window are silently dropped (still `202` to the caller). The in-memory LRU cap is 10,000 entries.
+. *Account lookup* by `_id`.
+. If the user is `active`: generate a fresh `passwordResetToken` (256 bits of `SecureRandom` entropy, hex-encoded), persist with `passwordResetCreatedAt = now`, send the reset email containing `${baseAppUrl}/auth/reset-password?email=<email>&token=<token>`. The link expires after *1 hour*.
+. If the user is still `invited` (never activated): re-send the *invite* email with a freshly rotated `inviteToken`. From the user's perspective they "forgot their password" because they never set one — this maps cleanly to the activation flow.
+. If the user is `disabled` or doesn't exist: no email sent.
+
+Confirmation flow: clicking the link opens `/auth/reset-password`, the user enters a new password (twice), and the SPA calls `PATCH /users/<email>` with `{password, passwordResetToken}`. The `InviteActivationInterceptor` (shared with the invitation flow) validates the token, persists the new password and clears both `passwordResetToken` / `passwordResetCreatedAt`. The user is auto-logged-in.
+
+There is no policy-acceptance step in the reset flow: the user already accepted the policies at activation and a major-version bump would have already gated them via the in-app modal before they could even sign in.
+
+[[brute-force-protection]]
+==== Brute-force Protection
+
+RESTHeart's `bruteForceAttackGuard` is enabled in both `conf-local.yml` and `conf-prod.yml`. It runs a sliding 10-second window of failed authentication attempts per IP; after 5 failures the same IP receives `429 Too Many Requests` until the window expires. In production we set `trust-x-forwarded-for: true` because Sophia sits behind a reverse proxy (the value used is the rightmost element of the `X-Forwarded-For` header).
+
+The guard protects every credential-based authentication entry point — `POST /token/cookie`, `POST /token`, and the `PATCH /users/<email>?token=...` activation/reset endpoint (any invalid token counts as a failed authentication attempt for this purpose). Legitimate users hit by the limiter need to wait 10 seconds before retrying.
+
+[[knowledge-tag-restrictions]]
+=== Knowledge Tag Restrictions
+
+Tags are the primary mechanism Sophia uses to scope what knowledge an agent can retrieve, and to further narrow what a *specific user* can see *within* that scope. Understanding the three actors and how they combine is essential to grant access correctly.
+
+==== The three sources of tags
+
+[cols="1,3", options="header"]
+|===
+| Source | Role
+| Agent `tags` | The *universe* the agent retrieves from. Every vector search includes `anyTags = agent.tags` (OR filter): a document is eligible only if it carries *at least one* of these tags. Defined on the agent document by an administrator.
+| User `tags` | Optional *global* default restriction. When non-empty, intersected with `agent.tags` for every agent the user accesses. Maps to the `tags` field on the user document and to the JWT claim of the same name.
+| User `agentTagRestrictions[agentId]` | Optional *per-agent* override. When present and non-empty, replaces the global `tags` for that one agent. Maps to `users.<email>.agentTagRestrictions` (object) and to the JWT claim of the same name.
+|===
+
+A fourth source — *Knowledge document tags* — is the data side: every uploaded document carries an array of tags that the retrieval pipeline matches against. The agent + user filters merely *restrict* which documents are eligible.
+
+==== Resolution algorithm
+
+For a single query, Sophia builds the effective `anyTags` filter as follows (identical between the web chat and MCP paths):
+
+. Look up `user.agentTagRestrictions[currentAgent]`:
+.. If present *and non-empty* → use that as the user's restriction (skip step 2).
+.. Otherwise → fall through.
+. Use the global `user.tags` (also possibly empty/absent).
+. If the resolved restriction is empty or absent → no per-user filter. The effective `anyTags` is simply `agent.tags`.
+. Otherwise → intersect `agent.tags` with the restriction. The effective `anyTags` is the result.
+. If the intersection is *empty*, the filter degrades to the sentinel `["__no_match__"]`, which matches no documents. The query returns zero results for this turn — by design.
+
+Unauthenticated users skip steps 1–4 entirely (no user document) and additionally get `mustTags = ["public"]` ANDed into the query so they can only see documents explicitly marked public.
+
+==== Worked example
+
+Given:
+
+[source]
+----
+Agent "hr-agent":      tags = ["hr", "public"]
+Agent "sales-agent":   tags = ["sales", "public"]
+Agent "faq-agent":     tags = ["faq"]
+
+User alice@acme.com:
+  agents               = ["hr-agent", "sales-agent", "faq-agent"]
+  tags                 = ["acme"]
+  agentTagRestrictions = { "sales-agent": ["sales-internal"] }
+----
+
+What Alice sees per agent:
+
+[cols="2,3,3", options="header"]
+|===
+| Chat with… | Effective restriction lookup | Effective `anyTags` (intersection with agent.tags)
+| `hr-agent`    | global `["acme"]` (no override)           | `["acme"]` ∩ `["hr","public"]` = `[]` → *blocks all* (no overlap)
+| `sales-agent` | override `["sales-internal"]`             | `["sales-internal"]` ∩ `["sales","public"]` = `[]` → *blocks all*
+| `faq-agent`   | global `["acme"]` (no override)           | `["acme"]` ∩ `["faq"]` = `[]` → *blocks all*
+|===
+
+This example illustrates the most common pitfall: setting a restrictive global `tags` without realising it must overlap with every agent's tags. To fix it, either:
+
+. Remove the global `["acme"]` (Alice then sees everything within each agent's scope), or
+. Add per-agent overrides for every agent Alice should access, where each override overlaps with the agent's tags. For instance: `{ "hr-agent": ["hr"], "sales-agent": ["sales-internal"], "faq-agent": ["faq"] }`.
+
+A useful pattern is to set the global `tags` to a tenant marker like `["acme"]`, then ensure every agent and every document carries that marker — that way the global filter is a hard tenant boundary and per-agent overrides are added only when a stricter scope is needed.
+
+==== Configuring restrictions from the UI
+
+In *Admin > Users*, both the create and edit forms show:
+
+- *Accessible agents* — each selected agent reveals an inline *Restrict to tags:* input. Leave it empty to inherit the global default; enter a comma-separated list to set a per-agent override.
+- *Global tag restriction (optional, comma-separated)* — the default applied to any agent without its own override.
+
+When you deselect an agent the per-agent override for that agent is dropped automatically. Changing the tenant in the form may drop ineligible agents and their overrides (a toast notifies you).
+
+The Profile page also surfaces the *Knowledge tags* and *Per-agent overrides* read-only for the user themself, so they can understand what scope they're operating under — but only an administrator can change them.
+
+==== Configuring restrictions via the REST API
+
+[source,bash]
+----
+echo '{
+  "tags": ["acme"],
+  "agentTagRestrictions": {
+    "hr-agent":    ["hr"],
+    "sales-agent": ["sales-internal"]
+  }
+}' | http -a admin:password PATCH :8080/users/alice@acme.com
+----
+
+To clear all per-agent overrides while keeping the global default:
+
+[source,bash]
+----
+echo '{"agentTagRestrictions": null}' | http -a admin:password PATCH :8080/users/alice@acme.com
+----
+
+To clear the global default while keeping per-agent overrides:
+
+[source,bash]
+----
+echo '{"tags": []}' | http -a admin:password PATCH :8080/users/alice@acme.com
+----
+
+The `UserPersistInterceptor` rejects `agentTagRestrictions` whose keys are not in the user's `agents` list (HTTP 400) — a restriction for an agent the user can't access is dead config.
+
+==== Propagation to live sessions
+
+`tags` and `agentTagRestrictions` are surfaced as JWT account-properties claims (`account-properties-claims` on `jwtTokenManager` and `jwtAuthenticationMechanism`). A user already logged-in with a cookie continues to use the *claims from the JWT issued at their last login* — changing the user document does not retroactively update their session. The user must log out and back in (or wait for the cookie to expire) to see the new restrictions take effect.
+
+API tokens inherit the snapshot of the issuing user's claims and behave the same way: revoke and re-issue from the *API Tokens* page if you need to push a change.
 
 === Multi-tenant Isolation
 
@@ -490,17 +649,20 @@ A `tenant-admin` sees only resources whose `tenant` field equals their own. The 
 
 To create a new tenant: open *Admin > Tenants* as a global `admin`, click *New Tenant*, and assign a tenant administrator. The global admin remains responsible for tenant CRUD; tenant-admins cannot manage tenants other than their own.
 
+[[user-profile-page]]
 === User Profile Page
 
 Every authenticated user (regardless of role) has access to `/profile` — a single self-service page exposing:
 
-- *Account* — email (= `_id`), tenant, roles, status, "member since"
+- *Account* — email (= `_id`), *display name* (inline-editable; only `password` and `name` are in the user-self PATCH whitelist), tenant, roles, status, "member since". When the user has knowledge tag restrictions, this section additionally shows the global *Knowledge tags* and any *Per-agent overrides* read-only, with a short explanation of the intersection semantics so the user understands the scope they're operating in.
 - *Accessible Agents* (collapsible) — list of agents the user can chat with, badged `public` or `private`
 - *Change Password* (collapsible) — form to change the user's own password; the current password is re-verified before the change is committed (UX hardening against session hijack)
 - *Accepted Policies* — version + date of accepted Terms / Privacy / Cookie policy, with a "re-acceptance required" badge when an outdated version is detected. A *Refresh* button re-fetches `GET /legal-policies` to detect a server-side bump without reloading the page.
 - *Session* — explicit Logout button (centralized; the avatar dropdown and admin sidebar link to this page rather than logging out directly)
 
 Administrators reach the page from the *Profile* link in the admin sidebar; regular users via the avatar at the top-right of the chat. Both entry points append a `?back=<currentUrl>` query parameter, and the profile page's *← Back* button honours it — returning the user to the exact chat or admin section they came from. The fallback is `/admin` for administrators and `/` (the default agent) for regular users; the back target is ignored if it points to `/profile` itself (to avoid loops) or is not a same-origin path (for security).
+
+The user-self PATCH is whitelisted at the ACL layer to `password` and `name` only — every other field (roles, tenant, agents, tags, agentTagRestrictions, notes) remains administrator-only.
 
 == Legal Documents and Consents
 
