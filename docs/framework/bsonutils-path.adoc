@@ -1,0 +1,67 @@
+---
+docs_version: 9
+title: BsonUtils Path API
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+NOTE: Available from RESTHeart v9.4.
+
+`BsonUtils.get(BsonDocument doc, String path)` provides a safe, zero-dependency way to read a value at any depth in a `BsonDocument` using dot-notation or bracket-notation paths.
+
+=== Path Syntax
+
+Both notations can be freely mixed within a single path expression:
+
+[cols="2,3"]
+|===
+|Notation |Example
+
+|Dot notation
+|`order.shipping.address`
+
+|Array index
+|`order.items[0].price`
+
+|Single-quoted key (bracket)
+|`order['shipping-address'].city`
+
+|Mixed
+|`a[0].b['key'].c`
+|===
+
+=== Return Value
+
+The method returns `Optional<BsonValue>`:
+
+* Present — the node exists and is non-null
+* Empty — any segment along the path is missing, null, or out of bounds
+
+[source,java]
+----
+Optional<BsonValue> val = BsonUtils.get(doc, "order.items[0].price");
+val.ifPresent(v -> System.out.println(v.asDouble()));
+----
+
+=== Array Index Access
+
+Integer indices in brackets (`[0]`, `[2]`, etc.) are applied to `BsonArray` nodes. Accessing an index beyond the array length returns `Optional.empty()`.
+
+[source,java]
+----
+// doc = { "tags": ["alpha", "beta", "gamma"] }
+BsonUtils.get(doc, "tags[2]");  // Optional[BsonString("gamma")]
+BsonUtils.get(doc, "tags[9]");  // Optional.empty()
+----
+
+=== Implementation Notes
+
+* **Path-token cache** — parsed path expressions are cached up to a capacity of 1,000 entries. The method is safe to call in hot paths without repeated parsing overhead.
+* **No JXPath dependency** — document-path traversal is handled internally; JXPath is not required for this overload.
+* **Unchanged overload** — `BsonUtils.get(JXPathContext ctx, String path)` is not affected by this change and behaves as before.
+
+=== Related Pages
+
+* link:/docs/framework/overview[Plugin Development Overview] — Introduction to the plugin framework and available utilities
+* link:https://javadoc.io/doc/org.restheart/restheart-commons[restheart-commons Javadoc] — Full `BsonUtils` API reference

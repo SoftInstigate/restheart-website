@@ -1,0 +1,199 @@
+---
+docs_version: 9
+title: Email Templates
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+`restheart-accounts` sends transactional HTML emails for account verification, password reset, and team invitations.
+All templates are HTML files that support multilingual content via `<span lang>` elements and dynamic data via `{{variable}}` placeholders.
+
+=== Template format
+
+Each template is a self-contained HTML file with two mandatory sections:
+
+* The `<title>` element provides the **email subject** (plain text, after variable substitution).
+* The `<body>` element provides the **email body** (HTML, after i18n filtering and variable substitution).
+
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify your {{app-name}} account</title>  <!--1-->
+</head>
+<body>
+  <p>Hello {{first-name}},</p>  <!--2-->
+  <p>Click the link below to activate your account:</p>
+  <p><a href="{{verification-url}}">Verify email address</a></p>
+</body>
+</html>
+----
+<1> The `<title>` text becomes the email subject after variable substitution. Keep it short (< 60 characters) and language-neutral, or write it in the application's primary language.
+<2> Variables in `{{double-braces}}` are replaced at send time.
+
+=== Internationalization (i18n)
+
+==== Rules
+
+Wrap locale-specific text in `<span lang="xx">` elements, where `xx` is a https://www.rfc-editor.org/rfc/rfc5646[BCP 47 language tag] (e.g. `en`, `it`, `fr`).
+When the plugin renders a template it:
+
+. Resolves the target locale (see <<_locale_resolution>> below).
+. Removes all `<span lang>` elements whose `lang` attribute does **not** match the resolved locale.
+. Unwraps (keeps inline) all `<span lang>` elements that **do** match.
+. Text nodes and elements without a `lang` attribute are **always rendered** regardless of locale.
+
+==== Locale resolution
+
+The locale is resolved in the following order:
+
+. The user document's `locale` field, if present.
+. The `default-locale` value from `accountsConfig`.
+. `en` as the ultimate fallback.
+
+If the resolved locale produces no visible text (i.e. all text is wrapped in non-matching `<span lang>` elements), the engine re-runs with `en`.
+If there is still no `en` content, all `<span lang>` elements are rendered without filtering.
+
+==== Full example
+
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify your {{app-name}} account</title>
+</head>
+<body>
+  <p>
+    <span lang="en">Hello {{first-name}},</span>
+    <span lang="it">Ciao {{first-name}},</span>
+    <span lang="fr">Bonjour {{first-name}},</span>
+  </p>
+  <p>
+    <span lang="en">Please click the link below to verify your email address.</span>
+    <span lang="it">Clicca il link qui sotto per verificare il tuo indirizzo email.</span>
+    <span lang="fr">Veuillez cliquer sur le lien ci-dessous pour vérifier votre adresse e-mail.</span>
+  </p>
+  <p>
+    <a href="{{verification-url}}">
+      <span lang="en">Verify email address</span>
+      <span lang="it">Verifica indirizzo email</span>
+      <span lang="fr">Vérifier l'adresse e-mail</span>
+    </a>
+  </p>
+  <!-- No lang wrapper — rendered for every locale -->
+  <p>{{app-name}} · <a href="{{frontend-url}}">{{frontend-url}}</a></p>
+</body>
+</html>
+----
+
+For an Italian user (`locale: it`) this produces:
+
+[source,html]
+----
+<p>Ciao Alice,</p>
+<p>Clicca il link qui sotto per verificare il tuo indirizzo email.</p>
+<p><a href="https://dev.example.com/auth/verify?email=alice@example.com&token=…">Verifica indirizzo email</a></p>
+<p>8x5 · <a href="https://dev.example.com">https://dev.example.com</a></p>
+----
+
+=== Variable substitution
+
+All `{{variable}}` placeholders are replaced with real values before sending.
+Unrecognised variables are replaced with an empty string.
+
+==== Verification template (`verification.html`)
+
+|===
+| Variable               | Description
+
+| `{{app-name}}`         | Application name (from `accountsConfig.app-name`)
+| `{{first-name}}`       | Recipient's first name
+| `{{email}}`            | Recipient's email address
+| `{{frontend-url}}`     | Public-facing frontend URL (from `accountsConfig.frontend-url`)
+| `{{verification-url}}` | One-time email verification link (expires after 7 days)
+|===
+
+==== Password reset template (`password-reset.html`)
+
+|===
+| Variable          | Description
+
+| `{{app-name}}`    | Application name
+| `{{first-name}}`  | Recipient's first name
+| `{{email}}`       | Recipient's email address
+| `{{frontend-url}}`| Public-facing frontend URL
+| `{{reset-url}}`   | One-time password reset link (expires after 1 hour)
+|===
+
+==== Invite template (`invite.html`)
+
+|===
+| Variable           | Description
+
+| `{{app-name}}`     | Application name
+| `{{first-name}}`   | Invited user's first name (empty string for new users)
+| `{{email}}`        | Invited user's email address
+| `{{frontend-url}}` | Public-facing frontend URL
+| `{{invite-url}}`   | One-time activation link (expires after 7 days)
+| `{{inviter-name}}` | Full name of the user who sent the invitation
+| `{{team-name}}`    | Name of the team the user is being invited to join
+|===
+
+=== Configuration
+
+Specify the path to each custom template under `accountsConfig.templates`.
+Paths are resolved relative to the RESTHeart working directory.
+
+[source,yaml]
+----
+accountsConfig:
+  # … other settings …
+  templates:
+    verification:   etc/email-templates/verification.html
+    password-reset: etc/email-templates/password-reset.html
+    invite:         etc/email-templates/invite.html
+----
+
+Any key that is absent or set to an empty string causes the built-in template for that email type to be used.
+
+=== Custom templates
+
+==== Exporting the built-in templates
+
+The built-in templates are bundled inside the plugin JAR under `email-templates/`.
+To use them as a starting point, extract them with:
+
+[source,bash]
+----
+jar xf plugins/restheart-accounts.jar email-templates/
+----
+
+This creates an `email-templates/` directory containing:
+
+* `email-templates/verification.html`
+* `email-templates/password-reset.html`
+* `email-templates/invite.html`
+
+Move the files to the location configured in `accountsConfig.templates`, edit as needed, then restart RESTHeart.
+
+==== Best practices
+
+* Keep HTML simple — many email clients have limited CSS support. Use inline styles.
+* Always include at least an `en` block for every localised section so the fallback mechanism has content to display.
+* Subject lines should remain under 60 characters after variable substitution to prevent truncation on mobile clients.
+* Test templates with both HTML-capable clients (Gmail, Outlook) and plain-text fallback views.
+
+=== Fallback behavior
+
+|===
+| Condition | Result
+
+| `accountsConfig.templates.<key>` not set or empty | Built-in template is used
+| Configured path does not exist at startup | Built-in template is used; a `WARN` message is logged
+| Configured path exists at startup | Custom template is loaded and cached in memory
+|===
+
+NOTE: Template caching occurs at plugin startup. If you modify a template file on disk, restart RESTHeart for the change to take effect.

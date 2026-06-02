@@ -1,0 +1,130 @@
+---
+docs_version: 9
+title: Team Invitations
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+Team invitations allow users with the `owner` or `admin` role to add people to their tenant.
+The invited user receives an email with a one-time activation link; on click they set a password and gain immediate access.
+
+=== Invite a user
+
+`POST /auth/invite` — requires role `owner` or `admin`.
+
+==== Request
+
+[source,http]
+----
+POST /auth/invite
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "email": "bob@example.com",
+  "role":  "member"
+}
+----
+
+`role` must be one of: `member`, `admin`.
+Assigning `owner` via invite is not permitted.
+
+==== Server-side steps
+
+. Authorize the caller (must be `owner` or `admin` of their tenant).
+. Validate `email` format and `role` value.
+. **If the user already belongs to the caller's tenant** → `409 Conflict`.
+. **If the user exists in a different tenant** → create a new `membership` document for the caller's tenant; send a shorter "you've been added" email (no password setup needed).
+. **If the user does not exist** → create a new user document:
++
+[source,json]
+----
+{
+  "email":             "bob@example.com",
+  "status":            "invited",
+  "password":          "<random 256-bit — not usable>",
+  "inviteToken":       "<random 256-bit>",
+  "inviteCreatedAt":   "<ISO timestamp>",
+  "tenant":            "<caller's tenantId>"
+}
+----
+  plus a `membership` document with the requested `role`.
+. Send an activation email:
++
+----
+{baseAppUrl}/auth/activate?email=bob@example.com&token=<inviteToken>
+----
+. Return `201 Created`.
+
+---
+
+=== Activate an invitation
+
+`PATCH /auth/activate` — accessible to `$unauthenticated` (the user has only the token link).
+
+==== Request
+
+[source,http]
+----
+PATCH /auth/activate
+Content-Type: application/json
+
+{
+  "email":       "bob@example.com",
+  "inviteToken": "<token from email>",
+  "password":    "correct-horse-battery",
+  "consents": {
+    "terms":   "1.0",
+    "privacy": "1.0"
+  }
+}
+----
+
+==== Server-side steps
+
+. Validate all fields.
+. Find user by `email`.
+. Compare `inviteToken` using **constant-time comparison**.
+. Check `inviteCreatedAt` + TTL (`inviteTokenTtlDays`, default 7 days).
+. Enforce password strength (zxcvbn score ≥ `minimumPasswordStrength`).
+. Validate consent versions against the configured `legalPolicies` — `409` if versions do not match (policy update required).
+. Clear any existing server session (prevents session fixation).
+. Update the user:
++
+[source,json]
+----
+{
+  "$set":   { "status": "active", "password": "<bcrypt hash>",
+              "consents": { "terms": "1.0", "privacy": "1.0",
+                            "ip": "...", "at": "..." } },
+  "$unset": { "inviteToken": "", "inviteCreatedAt": "" }
+}
+----
+. Issue JWT + refresh cookie → auto-login.
+. Return `200 OK`.
+
+==== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing fields; password too weak; expired token
+| `409` | Consent versions outdated (user must accept current policies)
+|===
+
+---
+
+=== Re-send an invitation
+
+`POST /auth/resend-invite/{email}` — requires role `owner` or `admin`.
+
+Generates a new `inviteToken` (invalidating the previous one) and re-sends the activation email.
+
+[source,http]
+----
+POST /auth/resend-invite/bob@example.com
+Authorization: Bearer <token>
+----
+
+Returns `200 OK` on success. Returns `404` if the user is not found in the caller's tenant or is not in `invited` status.

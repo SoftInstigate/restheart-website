@@ -689,6 +689,28 @@ fetch('[RESTHEART-URL]/inventory/*?filter=' + encodeURIComponent('{"status":"D"}
 
 This deletes all documents with a status of "D".
 
+==== GridFS Bulk Delete
+
+Available from RESTHeart 9.4.
+
+To delete multiple files from a GridFS bucket in a single request, send `DELETE` on the bucket endpoint with a `filter` parameter:
+
+[source,bash]
+----
+curl -i -X DELETE '[RESTHEART-URL]/mybucket.files/*' \
+  -G --data-urlencode 'filter={"metadata.project":"old-project"}' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+RESTHeart collects all matching file IDs first, then deletes each one. Individual failures are logged as warnings but do not abort the operation.
+
+[IMPORTANT]
+====
+Omitting `filter` deletes **all files** in the bucket. Always verify your filter with a `GET` first.
+====
+
+Requires `allowBulkDelete: true` in the ACL permission for the bucket path.
+
 IMPORTANT: Bulk operations require special permissions. The default `admin` user can execute them, but other users need the appropriate permissions.
 
 === Write Modes

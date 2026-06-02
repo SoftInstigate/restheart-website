@@ -1,0 +1,81 @@
+---
+docs_version: 9
+title: User Registration & Email Verification
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+=== Registration flow
+
+`POST /auth/register` is the public signup endpoint. It creates a new user and a new tenant in a single atomic operation.
+
+==== Request
+
+[source,http]
+----
+POST /auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Alice",
+  "lastName":  "Rossi",
+  "teamName":  "Acme",
+  "email":     "alice@acme.com",
+  "password":  "correct-horse-battery"
+}
+----
+
+==== Server-side steps
+
+. Validate all required fields.
+. Enforce password strength via *zxcvbn* (score ≥ `minimumPasswordStrength`, default 3).
+. Check email uniqueness — `409 Conflict` if already registered.
+. Generate a cryptographically random `verificationToken` (256-bit) and `verificationCreatedAt` timestamp.
+. Create the tenant document (`status: active`).
+. Create the user document (`status: pending_verification`) with the verification token.
+. Create a `membership` document linking the user to the tenant as `owner`.
+. Send a verification email containing a one-time link:
++
+----
+{baseAppUrl}/auth/verify?email=alice@acme.com&token=<verificationToken>
+----
+. Return `201 Created`.
+
+==== Response
+
+[source,json]
+----
+{ "message": "Registration successful. Check your email to verify your address." }
+----
+
+==== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing or invalid fields; password too weak
+| `409` | Email already registered
+|===
+
+---
+
+=== Email verification
+
+`GET /auth/verify?email=...&token=...` is sent as a link in the registration email.
+
+==== Server-side steps
+
+. Extract `email` and `token` from the query string.
+. Find the user by email.
+. Compare `token` against `verificationToken` using **constant-time comparison** (timing-attack mitigation).
+. Check that `verificationCreatedAt` is within the TTL (`verificationTokenTtlDays`, default 7 days).
+. Set `status: active` and `$unset verificationToken verificationCreatedAt`.
+. Issue a JWT access token + refresh cookie.
+. Redirect to `{baseAppUrl}/app`.
+
+==== Expired token
+
+If the token has expired, the endpoint returns `400` with a message inviting the user to request a new verification email from the login page.
+
+NOTE: Re-sending a verification email is triggered by `POST /auth/resend-verify` (not yet implemented in v1 — users can contact support or attempt login which will prompt re-verification).

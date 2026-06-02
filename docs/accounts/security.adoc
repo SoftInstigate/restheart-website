@@ -1,0 +1,72 @@
+---
+docs_version: 9
+title: Security
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+This page documents the security design decisions in `restheart-accounts`.
+
+=== Timing-attack mitigation
+
+All token comparisons (invite tokens, verification tokens, password reset tokens, OAuth state) use **constant-time string comparison**. This prevents an attacker from inferring valid token prefixes by measuring response latency.
+
+Standard string equality (`String.equals`) short-circuits on the first mismatch and leaks timing information. `restheart-accounts` uses `MessageDigest.isEqual` on the SHA-256 digests of both values — a standard constant-time technique.
+
+=== Account enumeration prevention
+
+- `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered. The response body is the same in all cases.
+- `POST /auth/register` returns `409 Conflict` for duplicate emails — this is a deliberate trade-off: registration UX requires telling the user the address is taken so they can recover their account.
+
+=== Token design
+
+All tokens (invite, verification, password reset, OAuth state) are:
+
+* Generated with `SecureRandom` (256-bit entropy — equivalent to a UUIDv4 but longer).
+* Single-use: `$unset` from the user document on first successful consumption.
+* Scoped TTLs: invite and verification tokens expire after 7 days; password reset tokens after 1 hour; OAuth state after 600 seconds (MongoDB TTL index).
+
+=== Password policy
+
+Password strength is enforced server-side using the *zxcvbn* algorithm (Dropbox) at the point of:
+
+* Registration (`POST /auth/register`)
+* Invitation activation (`PATCH /auth/activate`)
+* Password reset (`PATCH /auth/reset-password`)
+
+The minimum score is configurable (`minimumPasswordStrength`, default 3 = "Strong").
+Client-side zxcvbn checks are encouraged as UX guidance but are *not* trusted as security controls.
+
+=== Session hygiene
+
+Before issuing a JWT on invitation activation, the server clears any existing session. This prevents a logged-in user from accidentally activating an invitation as a different identity (session fixation variant).
+
+=== Legal consent versioning
+
+`PATCH /auth/activate` validates the submitted consent versions (`terms`, `privacy`) against the configured `legalPolicies` versions. If the policy has been updated since the invitation was sent, the endpoint returns `409` and the user must accept the current version before proceeding.
+
+Accepted consents are persisted with:
+
+* The policy versions accepted.
+* A timestamp.
+* The client IP address.
+
+=== Google OAuth security
+
+* PKCE (RFC 7636, `S256` method) is used on every OAuth initiation. The `code_verifier` is never sent to the browser — it is server-side only.
+* `state` is validated with constant-time comparison on callback.
+* `oauth_codes` documents auto-expire after 600 seconds via a MongoDB TTL index; they are also deleted immediately on use.
+
+=== Brute-force protection
+
+`restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against credential stuffing on the login endpoint (`/token`). The auth endpoints (`/auth/*`) are additionally rate-limited by the same mechanism since they sit behind the same HTTP listener.
+
+Configure `bruteForceAttackGuard` in `restheart.yml`:
+
+[source,yaml]
+----
+/bruteForceAttackGuard/enabled: true
+/bruteForceAttackGuard/max-failed-attempts: 5
+/bruteForceAttackGuard/trust-x-forwarded-for: true  # set false if no reverse proxy
+----

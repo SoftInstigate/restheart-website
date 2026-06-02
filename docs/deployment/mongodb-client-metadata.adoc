@@ -1,0 +1,48 @@
+---
+docs_version: 9
+title: MongoDB Client Metadata
+layout: docs-adoc
+menu: setup
+applies_to: restheart
+---
+
+NOTE: Available from RESTHeart 9.4.
+
+RESTHeart identifies itself during the MongoDB driver handshake by passing `MongoDriverInformation` with the name `RESTHeart` and its version string.
+This follows the https://github.com/mongodb/specifications/blob/master/source/mongodb-handshake/handshake.rst[MongoDB Handshake Specification].
+
+=== What Changes
+
+Previously RESTHeart appeared in MongoDB tooling as a generic Java driver connection.
+From 9.4, it is identified as `RESTHeart/<version>`, making it visible in:
+
+* **MongoDB Atlas** — connection monitoring dashboards and the Atlas Query Profiler.
+* **Server logs** — connections show the originating client name and version.
+* **`$currentOp`** — the `clientMetadata` field reflects the RESTHeart driver info.
+
+Example `$currentOp` output:
+
+[source,json]
+----
+{
+  "clientMetadata": {
+    "driver": {
+      "name": "mongo-java-driver|RESTHeart",
+      "version": "5.x.x|9.4.0"
+    },
+    "platform": "Java/..."
+  }
+}
+----
+
+=== Configuration
+
+No configuration is required. The metadata is injected automatically at startup when the MongoDB client is initialised.
+
+=== Why It Matters
+
+In deployments with multiple services sharing a MongoDB cluster, client metadata lets you:
+
+* Distinguish RESTHeart traffic from other applications in Atlas monitoring.
+* Correlate slow operations in the Query Profiler back to RESTHeart.
+* Audit which service version is connected to a given cluster.

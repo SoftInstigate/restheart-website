@@ -1,0 +1,287 @@
+---
+docs_version: 9
+title: Configuration
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+All `restheart-accounts` settings live in `restheart.yml` across three top-level keys: `accountsConfig`, `oauthConfig`, and `ermes`.
+Every section is independent; omitting a section disables the corresponding feature.
+
+=== Full configuration reference
+
+==== accountsConfig
+
+[source,yaml]
+----
+accountsConfig:
+  # MongoDB database where users, teams and oauth_codes are stored.
+  # Must match mongoRealmAuthenticator.users-db in restheart.yml.
+  db: 8x5
+
+  # Application display name — used in email subjects and bodies.
+  app-name: "My App"
+
+  # Secret key used to sign JWT access tokens.
+  # MUST be identical to jwtConfigProvider.key and jwtAuthenticationMechanism.key.
+  jwt-key: your-secret
+
+  # Value placed in the JWT "iss" (issuer) claim.
+  jwt-issuer: example.com
+
+  # JWT access token time-to-live in minutes.
+  jwt-ttl: 15
+
+  # Domain used for the JWT authentication cookie (Set-Cookie: Domain=...).
+  cookie-domain: dev.example.com
+
+  # Public URL of the frontend — used to build links in transactional emails.
+  frontend-url: https://dev.example.com
+
+  # URL the browser is redirected to after a successful auto-login
+  # (email verification, invitation activation, password reset, OAuth callback).
+  frontend-app-url: https://dev.example.com/app
+
+  # Legal policy versions. Activation and registration validate the submitted
+  # consent versions against these values; bump when T&C or Privacy Policy changes.
+  terms-version: "1.0"
+  privacy-version: "1.0"
+
+  # Default BCP 47 locale for email templates (used when the user document
+  # has no "locale" field). Falls back to "en" if omitted.
+  default-locale: en
+
+  # Paths to custom email template HTML files (relative to the RESTHeart
+  # working directory). Omit any key to use the built-in template.
+  # See: Email Templates guide.
+  templates:
+    verification:   etc/email-templates/verification.html
+    password-reset: etc/email-templates/password-reset.html
+    invite:         etc/email-templates/invite.html
+----
+
+==== oauthConfig
+
+Omit this section entirely to disable OAuth 2.0 social login.
+
+[source,yaml]
+----
+oauthConfig:
+  # Master switch. Set to false to disable all OAuth endpoints while keeping
+  # the configuration in place.
+  enabled: true
+
+  # Base URL of the RESTHeart API instance. Each provider's callback URL is
+  # constructed as: {api-base-url}/auth/oauth/callback/{provider}
+  api-base-url: https://api.example.com
+
+  # Browser is redirected here after a successful login.
+  frontend-success-url: https://app.example.com/app
+
+  # Browser is redirected here when the OAuth flow fails (e.g. user denied
+  # consent, invalid state).
+  frontend-error-url: https://app.example.com/login?error=oauth_error
+
+  providers:
+    google:
+      enabled: true
+      client-id:     "123….apps.googleusercontent.com"
+      client-secret: "GOCSPX-…"
+      scope:         "openid email profile"   # optional — default for google
+
+    github:
+      enabled: true
+      client-id:     "Iv1.…"
+      client-secret: "…"
+      scope:         "user:email"             # optional — default for github
+
+    # Custom provider — requires a matching OAuthProvider plugin in plugins/
+    # myapp:
+    #   enabled: true
+    #   client-id: "…"
+    #   client-secret: "…"
+    #   scope: "read:profile"
+----
+
+==== ermes
+
+Ermes is the SMTP email sender bundled with `restheart-accounts`.
+Omit this section to disable transactional email (registration and invitation flows will not work).
+
+[source,yaml]
+----
+ermes:
+  enabled: true
+  # Display name used in the email "From" header.
+  app-name: "My App"
+  # From email address.
+  sender-email: noreply@example.com
+  # SMTP connection settings.
+  smtp-hostname: email-smtp.eu-central-1.amazonaws.com
+  smtp-port: 465            # 465 = SMTPS (implicit TLS); 587 = STARTTLS
+  smtp-username: AKIAxxxxxxxx
+  smtp-password: secret
+----
+
+=== JWT token integration
+
+The JWT access tokens issued by `restheart-accounts` (after login, verification, activation and password reset) are verified by RESTHeart's own `jwtAuthenticationMechanism`.
+For the tokens to be accepted, **all three keys must be identical**:
+
+[source,yaml]
+----
+# restheart.yml — three separate sections, one shared secret
+jwtConfigProvider:
+  key: your-secret          # same value
+
+jwtAuthenticationMechanism:
+  key: your-secret          # same value
+
+accountsConfig:
+  jwt-key: your-secret      # same value
+----
+
+If the keys differ, tokens issued by `restheart-accounts` will be rejected with `401 Unauthorized` on subsequent API requests.
+
+=== Multi-tenancy with AuthDbResolver and TenantConfigInterceptor
+
+To serve multiple tenants from a single `restheart-accounts` deployment, configure two interceptors at `REQUEST_BEFORE_EXCHANGE_INIT`:
+
+* **`AuthDbResolver`** — maps the incoming hostname to `override-users-db` and `override-cookie-domain`.
+* **`TenantConfigInterceptor`** — reads a `confs/{srvId}.accounts` document from MongoDB and attaches per-tenant app name, frontend URLs, email templates, and OAuth credentials.
+
+Neither interceptor is bundled with `restheart-accounts`; implement them in your deployment layer.
+`restheart-accounts` automatically detects and uses all override attributes when present.
+
+.Override attribute reference
+|===
+| Attribute | Source | Overrides
+
+| `override-users-db` | `AuthDbResolver` | `accountsConfig.db`
+| `override-cookie-domain` | `AuthDbResolver` | `accountsConfig.cookie-domain`
+| `override-accounts-app-name` | `TenantConfigInterceptor` | `accountsConfig.app-name`
+| `override-accounts-frontend-url` | `TenantConfigInterceptor` | `accountsConfig.frontend-url`
+| `override-accounts-frontend-app-url` | `TenantConfigInterceptor` | `accountsConfig.frontend-app-url`
+| `override-accounts-tmpl-verification` | `TenantConfigInterceptor` | email template (inline HTML)
+| `override-accounts-tmpl-password-reset` | `TenantConfigInterceptor` | email template (inline HTML)
+| `override-accounts-tmpl-invite` | `TenantConfigInterceptor` | email template (inline HTML)
+| `override-accounts-oauth-google-client-id` | `TenantConfigInterceptor` | `oauthConfig.providers.google.client-id`
+| `override-accounts-oauth-google-client-secret` | `TenantConfigInterceptor` | `oauthConfig.providers.google.client-secret`
+
+|===
+
+==== `confs/{srvId}.accounts` document schema
+
+The `TenantConfigInterceptor` reads an `accounts` sub-document from the existing service-configuration document (e.g. `cloud.confs` for free/shared nodes, `restheart.confs` for dedicated nodes).
+All fields are optional; absent fields fall back to the node-level static configuration.
+
+[source,json]
+----
+{
+  "_id": "ea820b",
+  "accounts": {
+    "app-name":         "Customer App",
+    "frontend-url":     "https://app.customer.com",
+    "frontend-app-url": "https://app.customer.com/app",
+    "templates": {
+      "verification":   "<html>…full HTML string…</html>",
+      "password-reset": "<html>…</html>",
+      "invite":         "<html>…</html>"
+    },
+    "oauth": {
+      "google": {
+        "enabled":       true,
+        "client-id":     "123….apps.googleusercontent.com",
+        "client-secret": "GOCSPX-…"
+      }
+    }
+  }
+}
+----
+
+Inline HTML templates stored in MongoDB follow the same format as file-based templates (subject in `<title>`, i18n via `<span lang>`, `{{variable}}` placeholders).
+See xref:email-templates.adoc[Email Templates] for the full format reference.
+
+[TIP]
+====
+`AuthDbResolver` and `TenantConfigInterceptor` are both disabled by default.
+Enable them only on deployments that need multi-tenancy.
+In single-tenant deployments the plugin uses the static `accountsConfig` values exclusively.
+====
+
+=== Secrets management (RHO)
+
+Avoid hardcoding secrets in `restheart.yml`.
+Use RESTHeart's built-in environment variable substitution to inject sensitive values at runtime:
+
+[source,yaml]
+----
+accountsConfig:
+  jwt-key: $(JWT_SECRET_KEY)
+
+oauthConfig:
+  providers:
+    google:
+      client-secret: $(GOOGLE_CLIENT_SECRET)
+    github:
+      client-secret: $(GITHUB_CLIENT_SECRET)
+
+ermes:
+  smtp-password: $(SMTP_PASSWORD)
+----
+
+Set the corresponding environment variables before starting RESTHeart.
+
+=== ACL requirements
+
+Add the following rules to your ACL (file-based or MongoDB-based).
+Public endpoints must be reachable by unauthenticated requests; invite management endpoints are restricted to `owner` and `admin` roles.
+
+[source,yaml]
+----
+# All /auth/* endpoints — unauthenticated access allowed
+- roles: [$unauthenticated]
+  predicate: path-prefix('/auth') and (method(POST) or method(GET) or method(PATCH))
+  priority: 100
+
+# Override: invite and resend-invite require owner or admin
+- roles: [owner, admin]
+  predicate: path('/auth/invite') and method(POST)
+  priority: 10
+
+- roles: [owner, admin]
+  predicate: path('/auth/resend-invite') and method(POST)
+  priority: 10
+----
+
+NOTE: `POST /auth/forgot-password` and `GET /auth/verify` must remain publicly accessible.
+Restricting them will silently break the email flows.
+
+=== Minimal configuration (email + password only)
+
+The smallest working setup — no OAuth social login, no custom templates:
+
+[source,yaml]
+----
+accountsConfig:
+  db: myapp
+  app-name: "My App"
+  jwt-key: $(JWT_SECRET_KEY)
+  jwt-issuer: myapp.example.com
+  jwt-ttl: 15
+  cookie-domain: example.com
+  frontend-url: https://example.com
+  frontend-app-url: https://example.com/app
+  terms-version: "1.0"
+  privacy-version: "1.0"
+
+ermes:
+  enabled: true
+  app-name: "My App"
+  sender-email: noreply@example.com
+  smtp-hostname: email-smtp.eu-central-1.amazonaws.com
+  smtp-port: 465
+  smtp-username: $(SMTP_USERNAME)
+  smtp-password: $(SMTP_PASSWORD)
+----

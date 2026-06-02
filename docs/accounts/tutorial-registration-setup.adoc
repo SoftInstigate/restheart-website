@@ -1,0 +1,598 @@
+---
+docs_version: 9
+title: "Tutorial: User Registration End-to-End"
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+This tutorial walks you through configuring a complete user registration system for your web app — from SMTP email delivery to Google social login — using `restheart-accounts`.
+
+By the end you will have:
+
+* Email + password registration with email verification
+* Password reset via email
+* Team invitations
+* "Sign in with Google" social login
+
+---
+
+== Prerequisites
+
+* RESTHeart ≥ 9.3.0 running with `mongoRealmAuthenticator` and `jwtTokenManager` enabled
+* MongoDB reachable from RESTHeart
+* `restheart-accounts.jar` (and its `lib/`) copied to RESTHeart's `plugins/` directory
+* A domain with HTTPS (e.g. `api.example.com` for the backend, `app.example.com` for the frontend)
+
+---
+
+== Part 1 — SMTP email delivery
+
+Email is used for three flows: email verification, password reset, and team invitations.
+`restheart-accounts` uses the **Ermes** SMTP wrapper included in the plugin.
+
+=== Option A: Amazon SES (recommended for production)
+
+. In the AWS Console → *SES* → *Verified identities*, verify your sending domain or address.
+. In *SES* → *SMTP settings*, click **Create SMTP credentials**.
+  AWS creates an IAM user and generates an SMTP username and password.
+  Note them down — the password is shown only once.
+. Make sure your account is out of the SES sandbox (request production access) or
+  pre-verify every recipient address during development.
+
+[source,yaml]
+----
+ermes:
+  enabled: true
+  app-name: "My App"
+  sender-email: noreply@example.com
+  smtp-hostname: email-smtp.eu-west-1.amazonaws.com   # <1>
+  smtp-port: 465
+  smtp-username: AKID...                              # <2>
+  smtp-password: secret                               # <3>
+----
+<1> Hostname from the SES SMTP settings page. Use the region closest to your server.
+<2> SMTP username generated in the previous step.
+<3> SMTP password. Store it in AWS Secrets Manager, not in the YAML file.
+
+=== Option B: SendGrid
+
+. Create a free SendGrid account at https://sendgrid.com.
+. *Settings* → *API Keys* → **Create API Key** (Full Access or restricted to Mail Send).
+. Copy the generated key.
+
+[source,yaml]
+----
+ermes:
+  enabled: true
+  app-name: "My App"
+  sender-email: noreply@example.com
+  smtp-hostname: smtp.sendgrid.net
+  smtp-port: 465
+  smtp-username: apikey                  # <1>
+  smtp-password: SG.xxxx...             # <2>
+----
+<1> Always the literal string `apikey`.
+<2> The API key you generated.
+
+=== Option C: Gmail / Google Workspace (development only)
+
+TIP: Use Gmail only for local development. It has strict limits and is not suitable for
+transactional email in production.
+
+. Enable 2-Factor Authentication on your Google account.
+. Go to https://myaccount.google.com/apppasswords and generate an App Password
+  for "Mail / Other device".
+
+[source,yaml]
+----
+ermes:
+  enabled: true
+  app-name: "My App"
+  sender-email: yourname@gmail.com
+  smtp-hostname: smtp.gmail.com
+  smtp-port: 465
+  smtp-username: yourname@gmail.com
+  smtp-password: xxxx xxxx xxxx xxxx    # the 16-char app password
+----
+
+=== Keeping secrets out of your config file
+
+Never commit SMTP credentials to version control.
+Use RESTHeart's `RHO` environment variable to inject them at startup:
+
+[source,bash]
+----
+export RHO="/ermes/smtp-password->'${SMTP_PASSWORD}'"
+java -jar restheart.jar -o etc/conf.yml
+----
+
+Or with Docker / ECS: store the value in AWS Secrets Manager and inject it via the
+`secrets` section of your task definition (see the 8x5 deployment guide for a concrete
+example).
+
+---
+
+== Part 2 — Configure `restheart-accounts`
+
+Add the `accountsConfig` block to your `restheart.yml` (or an override file):
+
+[source,yaml]
+----
+accountsConfig:
+  # MongoDB database that stores users and teams.
+  # Must match /mongoRealmAuthenticator/users-db
+  db: myapp                                   # <1>
+
+  app-name: "My App"                          # <2>
+
+  # JWT secret — must match /jwtConfigProvider/key
+  jwt-key: change-me-use-a-long-random-string # <3>
+  jwt-issuer: myapp.example.com
+  jwt-ttl: 15                                 # access token TTL in minutes
+
+  cookie-domain: .example.com                 # <4>
+  frontend-url: https://app.example.com       # used in email links
+  frontend-app-url: https://app.example.com/app # redirect after auto-login
+
+  terms-version: "1.0"                        # <5>
+  privacy-version: "1.0"
+
+  default-locale: en                          # en | it | ...
+
+  # Optional: path to custom HTML email templates.
+  # Omit a key to use the built-in template for that email type.
+  templates:
+    verification:   etc/email-templates/verification.html
+    password-reset: etc/email-templates/password-reset.html
+    invite:         etc/email-templates/invite.html
+----
+<1> The same value configured in `mongoRealmAuthenticator/users-db`.
+<2> Appears in email subjects and bodies as `{{appName}}`.
+<3> A strong random secret — at least 32 characters.
+    Must be identical to the value used by `jwtConfigProvider` and `jwtAuthenticationMechanism`.
+<4> Leading dot to share the cookie across subdomains (e.g. `api.` and `app.`).
+<5> Bump these when your Terms of Service or Privacy Policy changes.
+    Users who registered under an older version will be prompted to re-accept.
+
+=== Matching JWT configuration
+
+`restheart-accounts` issues its own JWTs (after email verification, password reset,
+OAuth login and invitation activation). These tokens must be verifiable by RESTHeart's
+standard `jwtAuthenticationMechanism`. Ensure these three values are identical:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  key: change-me-use-a-long-random-string   # <-- same
+  issuer: myapp.example.com                 # <-- same
+
+jwtAuthenticationMechanism:
+  enabled: true
+  algorithm: HS256
+  key: change-me-use-a-long-random-string   # <-- same
+  issuer: myapp.example.com                 # <-- same
+  usernameClaim: sub
+  rolesClaim: roles
+
+accountsConfig:
+  jwt-key: change-me-use-a-long-random-string   # <-- same
+  jwt-issuer: myapp.example.com                 # <-- same
+----
+
+=== ACL rules
+
+Add these rules to your `fileAclAuthorizer` or MongoDB ACL so the auth endpoints are
+publicly accessible:
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  enabled: true
+  permissions:
+    # Public: all /auth/* endpoints are unauthenticated by default
+    - role: $unauthenticated
+      predicate: path-prefix('/auth') and (method('POST') or method('GET') or method('PATCH'))
+      priority: 100
+
+    # Authenticated users can also call all /auth/* endpoints (e.g. resend-invite)
+    - role: user
+      predicate: path-prefix('/auth') and (method('POST') or method('GET') or method('PATCH'))
+      priority: 100
+
+    # Only owners and admins can invite team members
+    - role: owner
+      predicate: path('/auth/invite') and method('POST')
+      priority: 0
+    - role: admin
+      predicate: path('/auth/invite') and method('POST')
+      priority: 0
+    - role: owner
+      predicate: path('/auth/resend-invite') and method('POST')
+      priority: 0
+    - role: admin
+      predicate: path('/auth/resend-invite') and method('POST')
+      priority: 0
+
+    # Regular users can read and write their own data
+    - role: user
+      predicate: path-prefix('/')
+      priority: 10
+      mongo:
+        readFilter: '{"tenant": "@user.tenant"}'
+        writeFilter: '{"tenant": "@user.tenant"}'
+        mergeRequest:
+          tenant: "@user.tenant"
+----
+
+---
+
+== Part 3 — Email templates (optional)
+
+The plugin ships with minimal built-in templates. To customise them with your branding:
+
+=== Export the built-in templates
+
+[source,bash]
+----
+# Extract the built-in templates from the plugin JAR
+jar xf plugins/restheart-accounts.jar email-templates/
+mv email-templates etc/email-templates
+----
+
+=== Customise the HTML
+
+Edit the extracted files. Each template supports:
+
+* `{{variable}}` placeholders — replaced at render time
+* `<span lang="en">...</span>` — shown only when the locale matches; falls back to `en`
+
+.Common variables available in all templates
+|===
+| Variable | Description
+
+| `{{appName}}`   | value of `accountsConfig.app-name`
+| `{{firstName}}` | recipient's first name
+| `{{year}}`      | current year (e.g. `2025`)
+|===
+
+.Template-specific variables
+|===
+| Template | Additional variables
+
+| `verification.html`  | `{{verificationLink}}`
+| `password-reset.html`| `{{resetLink}}`
+| `invite.html`        | `{{inviterName}}`, `{{teamName}}`, `{{activationLink}}`
+|===
+
+=== Point the config to your templates
+
+[source,yaml]
+----
+accountsConfig:
+  templates:
+    verification:   etc/email-templates/verification.html
+    password-reset: etc/email-templates/password-reset.html
+    invite:         etc/email-templates/invite.html
+----
+
+Paths are relative to RESTHeart's working directory.
+If a file is not found, the plugin logs a warning and falls back to the built-in template.
+
+---
+
+== Part 4 — Google OAuth social login
+
+=== Step 1: Create a Google Cloud project
+
+. Go to https://console.cloud.google.com and create a new project (or use an existing one).
+. In the left menu, go to *APIs & Services* → *OAuth consent screen*.
+. Choose **External**, fill in the app name, support email, and developer contact email.
+. Add the scope `openid`, `email`, and `profile`.
+. In *Test users* add your email during development; publish the app for production.
+
+=== Step 2: Create OAuth 2.0 credentials
+
+. Go to *APIs & Services* → *Credentials* → **+ Create Credentials** → *OAuth client ID*.
+. Application type: **Web application**.
+. Name: something descriptive (e.g. `My App – OAuth`).
+. Under **Authorized redirect URIs**, add:
++
+----
+https://api.example.com/auth/oauth/callback/google
+----
++
+IMPORTANT: This URI must match exactly what you configure in `oauthConfig.api-base-url`.
+If you are testing locally, also add `http://localhost:8080/auth/oauth/callback/google`.
+
+. Click **Create**. Copy the *Client ID* and *Client Secret*.
+
+=== Step 3: Configure `oauthConfig`
+
+[source,yaml]
+----
+oauthConfig:
+  enabled: true
+
+  # Base URL of this RESTHeart instance.
+  # The callback URL sent to Google will be:
+  #   {api-base-url}/auth/oauth/callback/google
+  api-base-url: https://api.example.com         # <1>
+
+  # Where to redirect the browser after a successful Google login.
+  frontend-success-url: https://app.example.com/app
+
+  # Where to redirect on error (token in ?reason= query param).
+  frontend-error-url: https://app.example.com/login?error=oauth_error
+
+  google:
+    enabled: true
+    client-id: "123456789-abc.apps.googleusercontent.com"  # <2>
+    client-secret: "GOCSPX-..."                            # <3>
+    scope: "openid email profile"
+----
+<1> Must match the domain registered in the Google Cloud Console.
+<2> Client ID from *APIs & Services* → *Credentials*.
+<3> Client Secret — store in Secrets Manager, not in the YAML file.
+
+=== Step 4: Add the "Sign in with Google" button to your frontend
+
+In your Angular (or any SPA) login page, add a link to the authorization endpoint:
+
+[source,html]
+----
+<a href="https://api.example.com/auth/oauth/authorize/google"
+   class="btn-google">
+  Sign in with Google
+</a>
+----
+
+The full flow is:
+
+[source]
+----
+1. Browser clicks the link
+2. GET /auth/oauth/authorize/google  →  302 to Google consent screen
+3. User approves  →  Google redirects back to /auth/oauth/callback/google?code=...
+4. RESTHeart exchanges code, fetches profile, upserts user
+5. Sets rh_auth cookie (JWT)  →  302 to frontend-success-url
+----
+
+New Google users are created with `status: "active"` (Google already verified the email)
+and a default team is created automatically.
+Existing users are logged in directly; their display name and avatar are refreshed from
+the latest Google profile on every login.
+
+---
+
+== Part 5 — Frontend integration
+
+=== Reading the JWT
+
+After login (email verification, password reset, Google OAuth), `restheart-accounts`
+sets an `rh_auth` cookie:
+
+[source]
+----
+Set-Cookie: rh_auth=Bearer_<jwt>; Domain=.example.com; Path=/; HttpOnly; SameSite=Strict
+----
+
+The cookie is `HttpOnly` — JavaScript cannot read it.
+RESTHeart's `authCookieHandler` automatically reads it and constructs the
+`Authorization: Bearer <jwt>` header for every subsequent request.
+
+Enable `authCookieHandler` in your config:
+
+[source,yaml]
+----
+authCookieSetter:
+  enabled: true
+  secure: true        # false only in local dev (HTTP)
+  name: rh_auth
+  domain: .example.com
+  http-only: true
+  same-site: true
+  same-site-mode: strict
+
+authCookieHandler:
+  enabled: true
+
+authCookieRemover:
+  enabled: true
+  uri: /logout
+----
+
+=== Registration flow (email + password)
+
+[source,javascript]
+----
+// 1. Register
+await fetch('https://api.example.com/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    firstName: 'Alice',
+    lastName:  'Rossi',
+    teamName:  'Acme',
+    email:     'alice@acme.com',
+    password:  'correct-horse-battery'
+  })
+});
+// → 201. The user receives a verification email.
+
+// 2. After the user clicks the link in the email:
+//    GET /auth/verify?email=alice@acme.com&token=<token>
+//    → 302 to frontend-app-url with rh_auth cookie set.
+//    Angular Router picks up the redirect and the user is logged in.
+----
+
+=== Password reset flow
+
+[source,javascript]
+----
+// 1. User forgets password
+await fetch('https://api.example.com/auth/forgot-password', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: 'alice@acme.com' })
+});
+// → Always 202 (no enumeration).
+
+// 2. User receives email, clicks link → Angular router shows a "set new password" form.
+//    The link contains: /auth/reset-password?email=...&token=...
+//    Extract email and token from the URL, then:
+
+await fetch('https://api.example.com/auth/reset-password', {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email:    'alice@acme.com',
+    token:    '<token from URL>',
+    password: 'new-strong-password'
+  })
+});
+// → 200 with rh_auth cookie set (auto-login).
+----
+
+=== Team invitation flow
+
+[source,javascript]
+----
+// Owner/admin invites a new team member
+await fetch('https://api.example.com/auth/invite', {
+  method: 'POST',
+  credentials: 'include',            // send the rh_auth cookie
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: 'bob@acme.com', role: 'user' })
+});
+// → 201. Bob receives an invitation email.
+
+// Bob clicks the link → Angular shows an "activate account" form.
+// The link contains: /auth/activate?email=bob@acme.com&token=...
+
+await fetch('https://api.example.com/auth/activate', {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email:    'bob@acme.com',
+    token:    '<token from URL>',
+    password: 'my-new-password',
+    consents: { terms: true, privacy: true }
+  })
+});
+// → 200 with rh_auth cookie set (auto-login).
+----
+
+---
+
+== Part 6 — Full `restheart.yml` example
+
+A minimal, working configuration for a single-tenant app:
+
+[source,yaml]
+----
+# --- Core authentication ---
+mongoRealmAuthenticator:
+  enabled: true
+  users-db: myapp
+  users-collection: users
+  bcrypt-hashed-password: true
+  bcrypt-complexity: 12
+  create-user: false
+
+jwtConfigProvider:
+  enabled: true
+  key: "your-strong-random-secret-at-least-32-chars"
+  issuer: myapp.example.com
+  algorithm: HS256
+
+jwtAuthenticationMechanism:
+  enabled: true
+  algorithm: HS256
+  key: "your-strong-random-secret-at-least-32-chars"
+  issuer: myapp.example.com
+  usernameClaim: sub
+  rolesClaim: roles
+
+tokenBasicAuthMechanism:
+  enabled: true
+
+jwtTokenManager:
+  enabled: true
+  ttl: 15
+  srv-uri: /token
+
+authCookieSetter:
+  enabled: true
+  secure: true
+  name: rh_auth
+  domain: .example.com
+  http-only: true
+  same-site: true
+  same-site-mode: strict
+
+authCookieHandler:
+  enabled: true
+
+authCookieRemover:
+  enabled: true
+  uri: /logout
+
+# --- restheart-accounts ---
+accountsConfig:
+  db: myapp
+  app-name: "My App"
+  jwt-key: "your-strong-random-secret-at-least-32-chars"
+  jwt-issuer: myapp.example.com
+  jwt-ttl: 15
+  cookie-domain: .example.com
+  frontend-url: https://app.example.com
+  frontend-app-url: https://app.example.com/app
+  terms-version: "1.0"
+  privacy-version: "1.0"
+  default-locale: en
+  templates:
+    verification:   etc/email-templates/verification.html
+    password-reset: etc/email-templates/password-reset.html
+    invite:         etc/email-templates/invite.html
+
+oauthConfig:
+  enabled: true
+  api-base-url: https://api.example.com
+  frontend-success-url: https://app.example.com/app
+  frontend-error-url: https://app.example.com/login?error=oauth_error
+  google:
+    enabled: true
+    client-id: "123456789-abc.apps.googleusercontent.com"
+    client-secret: "GOCSPX-..."
+
+ermes:
+  enabled: true
+  app-name: "My App"
+  sender-email: noreply@example.com
+  smtp-hostname: email-smtp.eu-west-1.amazonaws.com
+  smtp-port: 465
+  smtp-username: AKID...
+  smtp-password: secret
+
+# --- MongoDB ---
+mclient:
+  connection-string: "mongodb+srv://user:pass@cluster.mongodb.net/myapp"
+----
+
+---
+
+== Checklist
+
+[%interactive]
+* [ ] SMTP credentials configured and tested — send a test email
+* [ ] Google Cloud OAuth consent screen configured and published
+* [ ] Google OAuth redirect URI added: `https://api.example.com/auth/oauth/callback/google`
+* [ ] `accountsConfig.jwt-key` matches `jwtConfigProvider.key` and `jwtAuthenticationMechanism.key`
+* [ ] `accountsConfig.cookie-domain` has the leading dot: `.example.com`
+* [ ] `authCookieSetter.secure: true` in production (HTTPS only)
+* [ ] SMTP password and Google client secret stored in Secrets Manager (not in YAML)
+* [ ] ACL rules allow `$unauthenticated` access to `path-prefix('/auth')`
+* [ ] `mongoRealmAuthenticator.users-db` matches `accountsConfig.db`
+* [ ] `mongoRealmAuthenticator.bcrypt-hashed-password: true`
+* [ ] Custom email templates uploaded to the server (or built-in templates customised)

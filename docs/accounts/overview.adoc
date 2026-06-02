@@ -1,0 +1,126 @@
+---
+docs_version: 9
+title: restheart-accounts
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+[NOTE]
+====
+`restheart-accounts` is available starting from *RESTHeart v9.4*.
+====
+
+`restheart-accounts` is a RESTHeart plugin that adds application-level account management to any RESTHeart deployment.
+It covers the full user lifecycle — registration, email verification, team invitations, password reset, and Google OAuth social login — as a set of configurable HTTP endpoints backed by the existing MongoDB user collection (`mongoRealmAuthenticator`).
+
+The plugin is designed to be a first-class RESTHeart module: all features are opt-in, configured exclusively via `restheart.yml`, and produce standard JWT tokens that integrate transparently with the existing RESTHeart security pipeline.
+
+=== Endpoints
+
+|===
+| Method  | URI                            | Auth          | Description
+
+| `POST`  | `/auth/register`               | public        | Signup with email + password; creates user and team
+| `GET`   | `/auth/verify`                 | public        | Verify email via token link; auto-login
+| `POST`  | `/auth/forgot-password`        | public        | Request password reset link (always 202)
+| `PATCH` | `/auth/reset-password`         | public        | Apply reset token; auto-login
+| `POST`  | `/auth/invite`                 | owner / admin | Invite a user to the caller's team
+| `PATCH` | `/auth/activate`               | public        | Accept invitation, set password; auto-login
+| `POST`  | `/auth/resend-invite`          | owner / admin | Re-send an expired invitation (email in request body)
+| `GET`   | `/auth/oauth/authorize/{provider}` | public        | Redirect browser to the OAuth provider's consent screen
+| `GET`   | `/auth/oauth/callback/{provider}`  | public        | OAuth callback: exchange code, upsert user, set JWT cookie
+|===
+
+=== Installation
+
+. Build the plugin JAR:
++
+[source,bash]
+----
+mvn package -DskipTests
+----
+
+. Copy `target/restheart-accounts.jar` and `target/lib/*.jar` to RESTHeart's `plugins/` directory.
+
+. Add the plugin configuration to `restheart.yml` (see xref:configuration.adoc[Configuration]).
+
+. Start RESTHeart.
+The `accountsInitializer` runs automatically at startup and ensures the required MongoDB collections and indexes are in place.
+
+=== Multi-tenancy
+
+`restheart-accounts` supports multi-tenant deployments without any custom code in the plugin itself.
+All services check for request attributes injected by an upstream interceptor (such as `AuthDbResolver` or `TenantConfigInterceptor`) and use them in place of the static configuration values.
+
+.Full list of override request attributes
+|===
+| Request attribute | Overrides | Effect
+
+| `override-users-db`
+| `accountsConfig.db`
+| Users and teams are read from and written to this database
+
+| `override-cookie-domain`
+| `accountsConfig.cookie-domain`
+| The JWT authentication cookie is scoped to this domain
+
+| `override-accounts-app-name`
+| `accountsConfig.app-name`
+| Application name used in email subjects and bodies
+
+| `override-accounts-frontend-url`
+| `accountsConfig.frontend-url`
+| Base URL used in transactional email links
+
+| `override-accounts-frontend-app-url`
+| `accountsConfig.frontend-app-url`
+| Redirect target after successful auto-login
+
+| `override-accounts-tmpl-verification`
+| file path / built-in template
+| Inline HTML string for the email-verification template (stored in MongoDB)
+
+| `override-accounts-tmpl-password-reset`
+| file path / built-in template
+| Inline HTML string for the password-reset template
+
+| `override-accounts-tmpl-invite`
+| file path / built-in template
+| Inline HTML string for the invitation template
+
+| `override-accounts-oauth-google-client-id`
+| `oauthConfig.providers.google.client-id`
+| Per-tenant Google OAuth client ID
+
+| `override-accounts-oauth-google-client-secret`
+| `oauthConfig.providers.google.client-secret`
+| Per-tenant Google OAuth client secret
+
+|===
+
+When an attribute is absent the plugin falls back to the corresponding static value in `accountsConfig` / `oauthConfig`.
+
+A typical multi-tenant setup (e.g. restheart-cloud) has two interceptors running at `REQUEST_BEFORE_EXCHANGE_INIT`:
+
+* `AuthDbResolver` — maps the incoming hostname to the correct `override-users-db` and `override-cookie-domain`.
+* `TenantConfigInterceptor` — reads the `confs/{srvId}.accounts` MongoDB document and attaches the remaining override attributes (`app-name`, `frontend-url`, per-tenant templates, per-tenant OAuth credentials).
+
+Neither interceptor is part of `restheart-accounts`; they belong to the deployment layer (e.g. `restheart-cloud-server`).
+No configuration changes to the plugin are needed per tenant.
+
+=== OAuth & MCP
+
+`restheart-accounts` implements **social login** via the `/auth/oauth/*` endpoints, with built-in support for **Google** and **GitHub** and a Java SPI for registering custom providers.
+The plugin exchanges the OAuth authorization code (using ScribeJava) for user information, creates or updates the user document in MongoDB, and issues a RESTHeart JWT cookie — no custom OAuth logic required in the client.
+
+This is **distinct** from RESTHeart's built-in **OAuth 2.1 authorization server**, which is part of RESTHeart core and exposes standard endpoints (`/authorize`, `/token`, `/introspect`, etc.) intended for tool and client authentication — primarily for MCP (Model Context Protocol) integrations.
+The two systems serve different purposes and operate completely independently.
+
+See xref:google-oauth.adoc[OAuth 2.0 Social Login] for setup instructions for all providers, including the custom provider SPI.
+
+=== Dependencies
+
+* RESTHeart ≥ 9.3 with `mongoRealmAuthenticator` and `jwtTokenManager` enabled.
+* An SMTP provider configured via the `ermes` section (required for all email-based flows).
+* OAuth provider credentials (optional — required only for the providers enabled under `oauthConfig.providers`).
