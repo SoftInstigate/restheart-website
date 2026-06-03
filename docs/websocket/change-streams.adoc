@@ -9,6 +9,8 @@ redirect_from:
   - /docs/mongodb-websocket/change-streams
 ---
 
+NOTE: Change streams can be consumed via **WebSocket** or **SSE**. This page covers the stream definition format. For the SSE transport see xref:/docs/sse/[SSE API Overview].
+
 === The "streams" collection metadata
 
 In RESTHeart, not only documents but also databases and collections have
@@ -67,3 +69,74 @@ the properties keys as follows:
 
 - the `$` prefix is "underscore escaped", e.g. `$exists` is stored as `_$exists`
 - if the dot notation has to be used in a key name, dots are replaced with `::` e.g. `SD.prop` is stored as `SD::prop`
+
+=== Per-client filtering: `notify_when`
+
+Available from RESTHeart 9.4.
+
+`notify_when` is an optional field in a stream definition that filters which connected clients receive each change event, without requiring a separate MongoDB cursor per client.
+
+[source,json]
+----
+{
+  "streams": [{
+    "uri": "by-tenant",
+    "stages": [
+      { "_$match": { "operationType": { "_$in": ["insert", "update"] } } }
+    ],
+    "notify_when": {
+      "fullDocument::tenantId": { "$var": "tid" }
+    }
+  }]
+}
+----
+
+The client passes its variable value as a query parameter when connecting:
+
+[source,bash]
+----
+# SSE — only receives events where fullDocument.tenantId == "acme"
+curl -N \
+  -H 'Accept: text/event-stream' \
+  -H 'Authorization: Basic YWRtaW46c2VjcmV0' \
+  'http://localhost:8080/mydb/mycoll/_streams/by-tenant?tid=acme'
+----
+
+==== Field path notation
+
+The `notify_when` key uses `::` to separate the top-level change event field from the dotted path within it:
+
+[source]
+----
+"fullDocument::tenantId"       # fullDocument.tenantId
+"fullDocument::org.department" # fullDocument.org.department (nested)
+"documentKey::_id"             # documentKey._id
+----
+
+==== Supported predicates
+
+[options="header"]
+[cols="1,3,2"]
+|===
+|Form |Description |Example
+|**Scalar equality**
+|Field value (string) equals the bound variable
+|`{ "fullDocument::tenantId": { "$var": "tid" } }`
+
+|**Array membership**
+|Bound variable value is contained in a string array field
+|`{ "fullDocument::recipients": { "$var": "userId" } }`
+|===
+
+==== Design notes
+
+* `stages` are sent to MongoDB and applied once on the shared cursor. Use them for fixed-value conditions (e.g. `operationType`, `fullDocument.status`).
+* `notify_when` is evaluated server-side per event × per connected client. Use it for conditions that depend on per-client variables.
+* If `notify_when` is absent, all clients receive all events (broadcast — existing behaviour).
+* If a client connects *without* the required query parameter, it receives all events (pass-through).
+
+==== `Last-Event-ID` limitation
+
+When `notify_when` is defined, `Last-Event-ID` is ignored on reconnect and a warning is logged. The shared cursor cannot be rewound for a single client; reconnecting clients should recover missed events via the REST API.
+
+See link:/docs/sse/[SSE API Overview] for details on the SSE transport and event format.

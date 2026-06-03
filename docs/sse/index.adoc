@@ -22,6 +22,8 @@ RESTHeart supports SSE in two complementary ways:
 
 Any MongoDB change stream defined on a collection can be consumed via SSE by sending a request with the `Accept: text/event-stream` header instead of a WebSocket upgrade. No plugin code is required.
 
+Change stream definitions (the `streams` metadata, aggregation stages, and the `notify_when` per-client filter) are managed on the collection — see link:/docs/websocket/change-streams[Change Streams].
+
 [source,bash]
 ----
 # Connect to a change stream via SSE
@@ -106,14 +108,17 @@ NOTE: Both transports share the same MongoDB cursor via `ChangeStreamWorker`. A 
 
 === SSE Event Format
 
-Each change event sent over SSE contains two non-blank lines:
+Each change event sent over SSE contains three non-blank lines:
 
 [source]
 ----
+id:<resume-token-json>
 event:change
 data:<json-payload>
 
 ----
+
+The `id` field is the MongoDB resume token serialised as JSON. Browsers and SSE clients automatically send it back as `Last-Event-ID` on reconnect, allowing RESTHeart to resume the stream from the correct position (when `notify_when` is not defined — see xref:/docs/websocket/change-streams#_per_client_filtering_notify_when[notify_when]).
 
 The `data` field contains the same JSON structure as a WebSocket change event:
 
