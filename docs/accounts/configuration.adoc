@@ -23,14 +23,8 @@ accountsConfig:
   # Application display name — used in email subjects and bodies.
   app-name: "My App"
 
-  # Secret key used to sign JWT access tokens.
-  # MUST be identical to jwtConfigProvider.key and jwtAuthenticationMechanism.key.
-  jwt-key: your-secret
-
-  # Value placed in the JWT "iss" (issuer) claim.
-  jwt-issuer: example.com
-
   # JWT access token time-to-live in minutes.
+  # The key and issuer are sourced automatically from jwtConfigProvider.
   jwt-ttl: 15
 
   # Domain used for the JWT authentication cookie (Set-Cookie: Domain=...).
@@ -126,23 +120,26 @@ ermes:
 
 === JWT token integration
 
-The JWT access tokens issued by `restheart-accounts` (after login, verification, activation and password reset) are verified by RESTHeart's own `jwtAuthenticationMechanism`.
-For the tokens to be accepted, **all three keys must be identical**:
+The JWT access tokens issued by `restheart-accounts` (after login, verification, activation, password reset, and OAuth callback) are verified by RESTHeart's own `jwtAuthenticationMechanism`.
+
+Since RESTHeart v9.5, `restheart-accounts` reads the JWT signing key and issuer **directly from `jwtConfigProvider`** — there is no separate `jwt-key` or `jwt-issuer` in `accountsConfig`.
+This eliminates the previous misconfiguration risk where the two keys could diverge, causing `401 Unauthorized` errors on auto-login flows.
+
+The only JWT-related setting remaining in `accountsConfig` is `jwt-ttl`, which controls how long the auto-login tokens last (independently from the main `jwtTokenManager` TTL):
 
 [source,yaml]
 ----
-# restheart.yml — three separate sections, one shared secret
+# restheart.yml — single source of truth for the JWT key
 jwtConfigProvider:
-  key: your-secret          # same value
-
-jwtAuthenticationMechanism:
-  key: your-secret          # same value
+  key: your-secret   # used by jwtTokenManager, jwtAuthenticationMechanism
+                     # AND restheart-accounts (automatically)
+  issuer: example.com
 
 accountsConfig:
-  jwt-key: your-secret      # same value
+  jwt-ttl: 15        # auto-login token TTL in minutes (accounts-specific)
 ----
 
-If the keys differ, tokens issued by `restheart-accounts` will be rejected with `401 Unauthorized` on subsequent API requests.
+NOTE: If `jwt-key` or `jwt-issuer` are still present in your `accountsConfig` block (from a pre-9.5 configuration), RESTHeart will log a warning and ignore them.
 
 === Multi-tenancy with AuthDbResolver and TenantConfigInterceptor
 
@@ -212,14 +209,11 @@ In single-tenant deployments the plugin uses the static `accountsConfig` values 
 
 === Secrets management (RHO)
 
-Avoid hardcoding secrets in `restheart.yml`.
+Avoid hardcoding secrets in `restheart.yml`. The JWT key belongs to `jwtConfigProvider` (not `accountsConfig`) and is already documented in the JWT configuration section.
 Use RESTHeart's built-in environment variable substitution to inject sensitive values at runtime:
 
 [source,yaml]
 ----
-accountsConfig:
-  jwt-key: $(JWT_SECRET_KEY)
-
 oauthConfig:
   providers:
     google:
@@ -301,8 +295,6 @@ The smallest working setup — no OAuth social login, no custom templates:
 accountsConfig:
   db: myapp
   app-name: "My App"
-  jwt-key: $(JWT_SECRET_KEY)
-  jwt-issuer: myapp.example.com
   jwt-ttl: 15
   cookie-domain: example.com
   frontend-url: https://example.com
@@ -319,3 +311,5 @@ ermes:
   smtp-username: $(SMTP_USERNAME)
   smtp-password: $(SMTP_PASSWORD)
 ----
+
+NOTE: The JWT key and issuer are inherited from `jwtConfigProvider` and do not need to appear in `accountsConfig`.

@@ -280,6 +280,66 @@ jwtTokenManager:
   # - /nested/property # xpath expr for nested properties
 ----
 
+=== restheart-accounts
+
+Application-level account management (registration, email verification, invitations, password reset, OAuth social login).
+See xref:/docs/accounts/overview.adoc[restheart-accounts overview] and xref:/docs/accounts/configuration.adoc[configuration reference].
+
+NOTE: JWT key and issuer are **not** configured here — they are sourced automatically from `jwtConfigProvider`.
+
+[source,yml]
+----
+# restheart-accounts plugin — user registration, email verification, OAuth social login
+# See https://restheart.org/docs/accounts/configuration
+accountsConfig:
+  # MongoDB database where users and teams are stored.
+  # Must match mongoRealmAuthenticator.users-db.
+  db: restheart
+  app-name: "My App"
+  # JWT TTL in minutes. Key and issuer come from jwtConfigProvider.
+  jwt-ttl: 15
+  cookie-domain: localhost
+  cookie-name: rh_auth
+  frontend-url: http://localhost:4200
+  frontend-app-url: http://localhost:4200/app
+  terms-version: "1.0"
+  privacy-version: "1.0"
+  default-locale: en
+  # templates:                               # null = use built-in
+  #   verification:   etc/email-templates/verification.html
+  #   password-reset: etc/email-templates/password-reset.html
+  #   invite:         etc/email-templates/invite.html
+
+# OAuth 2.0 social login (Google, GitHub, custom providers)
+# Omit entirely to disable social login.
+oauthConfig:
+  enabled: false
+  api-base-url: http://localhost:8080
+  frontend-success-url: http://localhost:4200/app
+  frontend-error-url: http://localhost:4200/login?error=oauth_error
+  providers:
+    google:
+      enabled: false
+      client-id: null
+      client-secret: null
+      scope: "openid email profile"
+    # github:
+    #   enabled: false
+    #   client-id: null
+    #   client-secret: null
+    #   scope: "user:email"
+
+# Ermes SMTP email sender (required for registration, invitations, password reset)
+ermes:
+  enabled: false
+  appName: "My App"
+  senderEmail: noreply@example.com
+  smtpHostname: localhost
+  smtpPort: 465
+  smtpUsername: null
+  smtpPassword: null
+----
+
 === OAuth 2.0 / 2.1 Services
 
 All OAuth services are **disabled by default** and must be explicitly enabled.
