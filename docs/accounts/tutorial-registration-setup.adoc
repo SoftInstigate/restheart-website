@@ -182,24 +182,15 @@ accountsConfig:
 
 === ACL rules
 
-Add these rules to your `fileAclAuthorizer` or MongoDB ACL so the auth endpoints are
-publicly accessible:
+Each `restheart-accounts` service registers its own ACL allow rule automatically on startup via the `ACLRegistry`. No manual ACL entry is needed for the public auth endpoints. If a service is disabled, its path is not opened.
+
+Add rules only for the protected endpoints (invite management) and your application's own paths:
 
 [source,yaml]
 ----
 fileAclAuthorizer:
   enabled: true
   permissions:
-    # Public: all /auth/* endpoints are unauthenticated by default
-    - role: $unauthenticated
-      predicate: path-prefix('/auth') and (method('POST') or method('GET') or method('PATCH'))
-      priority: 100
-
-    # Authenticated users can also call all /auth/* endpoints (e.g. resend-invite)
-    - role: user
-      predicate: path-prefix('/auth') and (method('POST') or method('GET') or method('PATCH'))
-      priority: 100
-
     # Only owners and admins can invite team members
     - role: owner
       predicate: path('/auth/invite') and method('POST')
@@ -592,7 +583,7 @@ mclient:
 * [ ] `accountsConfig.cookie-domain` has the leading dot: `.example.com`
 * [ ] `authCookieSetter.secure: true` in production (HTTPS only)
 * [ ] SMTP password and Google client secret stored in Secrets Manager (not in YAML)
-* [ ] ACL rules allow `$unauthenticated` access to `path-prefix('/auth')`
+* [ ] ACL rules for invite management endpoints (`owner`/`admin` roles) — public endpoints are handled automatically by each service
 * [ ] `mongoRealmAuthenticator.users-db` matches `accountsConfig.db`
 * [ ] `mongoRealmAuthenticator.bcrypt-hashed-password: true`
 * [ ] Custom email templates uploaded to the server (or built-in templates customised)

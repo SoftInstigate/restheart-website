@@ -60,7 +60,34 @@ Accepted consents are persisted with:
 
 === Brute-force protection
 
-`restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against credential stuffing on the login endpoint (`/token`). The auth endpoints (`/auth/*`) are additionally rate-limited by the same mechanism since they sit behind the same HTTP listener.
+`restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against token-guessing and credential stuffing.
+
+==== Login endpoint
+
+Failed login attempts on `POST /token` are counted automatically by the standard auth pipeline and trigger the guard.
+
+==== Token-verification endpoints
+
+Failed token checks on the following endpoints return **401 Unauthorized** and are counted into the same `AUTH` metric registry via the built-in `tokenFailedAuthInterceptor`:
+
+[options="header",cols="2,1,3"]
+|===
+|Endpoint |Method |Counted when
+
+|`/auth/activate`
+|`PATCH`
+|Invalid or expired invite token
+
+|`/auth/reset-password`
+|`PATCH`
+|Invalid or expired reset token
+
+|`/auth/verify`
+|`GET`
+|Redirect to `error=invalid_token` or `error=token_expired`
+|===
+
+Structural errors (missing fields, malformed JSON) still return `400 Bad Request` and are not counted — only genuine token-guess failures feed the guard.
 
 Configure `bruteForceAttackGuard` in `restheart.yml`:
 

@@ -235,17 +235,54 @@ Set the corresponding environment variables before starting RESTHeart.
 
 === ACL requirements
 
-Add the following rules to your ACL (file-based or MongoDB-based).
-Public endpoints must be reachable by unauthenticated requests; invite management endpoints are restricted to `owner` and `admin` roles.
+Each public-facing service registers its own ACL allow rule automatically on startup via the `ACLRegistry`. No manual ACL entry is needed for these paths. If a service is disabled, its path is not opened.
+
+[options="header",cols="2,1,3"]
+|===
+|Path |Method |Registered by
+
+|`/auth/register`
+|`POST`
+|`registerService`
+
+|`/auth/verify`
+|`GET`
+|`emailVerificationService`
+
+|`/auth/forgot-password`
+|`POST`
+|`forgotPasswordService`
+
+|`/auth/reset-password`
+|`PATCH`
+|`resetPasswordService`
+
+|`/auth/activate`
+|`PATCH`
+|`activateService`
+
+|`/auth/invite`
+|`POST`
+|`inviteService`
+
+|`/auth/resend-invite`
+|`POST`
+|`resendInviteService`
+
+|`/auth/oauth/authorize/{provider}`
+|`GET`
+|`oauthInitiator`
+
+|`/auth/oauth/callback/{provider}`
+|`GET`
+|`oauthCallback`
+|===
+
+The invite management endpoints are *not* public. Add the following rules to your ACL (file-based or MongoDB-based) to restrict them to `owner` and `admin` roles:
 
 [source,yaml]
 ----
-# All /auth/* endpoints — unauthenticated access allowed
-- roles: [$unauthenticated]
-  predicate: path-prefix('/auth') and (method(POST) or method(GET) or method(PATCH))
-  priority: 100
-
-# Override: invite and resend-invite require owner or admin
+# invite and resend-invite require owner or admin
 - roles: [owner, admin]
   predicate: path('/auth/invite') and method(POST)
   priority: 10
@@ -254,9 +291,6 @@ Public endpoints must be reachable by unauthenticated requests; invite managemen
   predicate: path('/auth/resend-invite') and method(POST)
   priority: 10
 ----
-
-NOTE: `POST /auth/forgot-password` and `GET /auth/verify` must remain publicly accessible.
-Restricting them will silently break the email flows.
 
 === Minimal configuration (email + password only)
 
