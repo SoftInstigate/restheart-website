@@ -1,0 +1,125 @@
+---
+docs_version: 9
+title: Multi-tenancy
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+A user can belong to multiple tenants simultaneously, each with a different role.
+The active tenant and its corresponding role are encoded in the JWT; switching tenants reissues the JWT without requiring a new login.
+
+=== Data model
+
+Each user document stores a `tenants` array alongside the legacy scalar `tenant` field:
+
+[source,json]
+----
+{
+  "_id":     "alice@example.com",
+  "roles":   ["owner"],            // role in the *active* tenant (read by mongoRealmAuthenticator)
+  "tenant":  "abc123",             // active tenant ID (JWT claim)
+  "tenants": [
+    { "id": "abc123", "role": "owner" },
+    { "id": "def456", "role": "user"  }
+  ]
+}
+----
+
+`roles` is always kept in sync with the role for the active `tenant`.
+`tenants` is the authoritative list of all memberships.
+
+=== Adding a user to a second team
+
+Inviting an existing user to a different team adds a new entry to their `tenants` array without requiring account reactivation (the user is already active):
+
+[source,http]
+----
+POST /auth/invite
+Authorization: Bearer <owner-or-admin-token>
+Content-Type: application/json
+
+{ "email": "alice@example.com", "role": "user" }
+----
+
+* If the user already belongs to the caller's team → `409 Conflict`.
+* If the user is new → standard invite flow (see xref:team-invitations.adoc[Team Invitations]).
+* If the user is active in another team → membership added immediately; notification email sent; `201 Created`.
+
+=== List tenant memberships
+
+`GET /auth/tenants` — requires authentication.
+
+Returns all teams the current user belongs to. The entry whose `active` field is `true` matches the tenant encoded in the current JWT.
+
+[source,http]
+----
+GET /auth/tenants
+Authorization: Bearer <token>
+----
+
+[source,json]
+----
+[
+  { "id": "abc123", "name": "Acme Corp",  "role": "owner", "active": true  },
+  { "id": "def456", "name": "Other Corp", "role": "user",  "active": false }
+]
+----
+
+=== Switch active tenant
+
+`POST /auth/switch-tenant` — requires authentication.
+
+Verifies that the user belongs to the requested tenant, issues a new JWT with the correct role for that tenant, and updates the auth cookie.
+The browser (or client) does not need to re-enter credentials.
+
+[source,http]
+----
+POST /auth/switch-tenant
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{ "tenantId": "def456" }
+----
+
+On success (`200 OK`):
+
+* The response body confirms the new active tenant and role.
+* The `Set-Cookie` header carries the new JWT.
+
+[source,json]
+----
+{ "tenant": "def456", "role": "user" }
+----
+
+==== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing or blank `tenantId`
+| `401` | Not authenticated
+| `403` | User does not belong to the requested tenant, or account not active
+| `404` | User document not found
+|===
+
+=== Typical frontend flow
+
+[source,typescript]
+----
+// 1. Load tenant list on app init
+authService.getTenants()  // GET /auth/tenants
+  .subscribe(tenants => this.tenants.set(tenants));
+
+// 2. User picks a different team
+authService.switchTenant(tenantId)  // POST /auth/switch-tenant
+  .pipe(switchMap(() => authService.checkSession()))
+  .subscribe(() => router.navigate(['/time']));
+----
+
+After `switchTenant`, call `checkSession()` (`GET /token`) so the app state reflects the new tenant and role.
+
+=== ACL considerations
+
+No manual ACL entries are needed for `/auth/tenants` or `/auth/switch-tenant`.
+Both endpoints register their own allow rules via `ACLRegistry` at startup.

@@ -35,7 +35,7 @@ Assigning `owner` via invite is not permitted.
 . Authorize the caller (must be `owner` or `admin` of their tenant).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
-. **If the user exists in a different tenant** → create a new `membership` document for the caller's tenant; send a shorter "you've been added" email (no password setup needed).
+. **If the user exists in a different tenant** → add a new `{ id, role }` entry to the user's `tenants` array (`$addToSet`); send a notification email; return `201 Created`. No password setup required — the user is already active. See xref:multi-tenancy.adoc[Multi-tenancy] for details.
 . **If the user does not exist** → create a new user document:
 +
 [source,json]
