@@ -78,6 +78,54 @@ oauthConfig:
 NOTE: Store all `client-secret` values as environment variables.
 See xref:configuration.adoc#_secrets_management_rho[Secrets management (RHO)].
 
+=== Invite-flow integration
+
+Invited users (those with `status: "invited"`) can complete registration via OAuth
+without setting a password. The frontend passes invite context as query parameters
+on the authorize redirect:
+
+[source]
+----
+GET /auth/oauth/authorize/google
+    ?pendingInviteToken=abc123
+    &consentsAccepted=true
+----
+
+[cols="1,3",options="header"]
+|===
+| Parameter | Description
+
+| `pendingInviteToken`
+| The invite token from the activation email
+
+| `consentsAccepted`
+| `"true"` if the user already accepted T&C / Privacy Policy before the OAuth redirect
+|===
+
+The parameters are stored in the CSRF state token (persisted in MongoDB `oauth_codes` collection, TTL 10 min) and retrieved on callback.
+If `consentsAccepted=true`, the callback builds a `ConsentRecord` and passes it to
+`MembershipProvider.activateViaOAuth()`. See xref:membership-providers.adoc#_oauth_activation_for_invited_users[OAuth activation for invited users].
+
+=== Security notes
+
+* A cryptographically random `state` parameter (256-bit entropy) is generated for every authorization request and stored in the `oauth_codes` MongoDB collection with a TTL index of 600 seconds.
+* The collection's TTL index ensures automatic cleanup. An additional application-level guard rejects tokens older than 10 minutes even if the MongoDB TTL task has not yet fired (fires every ~60 s).
+* State tokens are consumed atomically via `findOneAndDelete` — they cannot be replayed even under concurrent load or in a multi-instance deployment.
+* On callback, the `code` field is looked up and the document is always deleted before provider-name and TTL checks, preventing replay probing via different provider names.
+* Token exchange is performed entirely server-side by the `OAuthProvider` implementation; `client_secret` values are never exposed to the browser.
+
+==== State token format and per-tenant routing
+
+The `state` string encodes the MongoDB database to use for both storing and retrieving the token:
+
+----
+state = base64url(dbName) + "." + base64url(32-random-bytes)
+----
+
+The `.` separator is safe because it is not part of the base64url alphabet.
+When a per-tenant database override (`override-users-db`) is active, the state is stored in that tenant's `oauth_codes` collection instead of the default database.
+The callback decodes the database name from the state itself, so cross-instance routing works without any shared in-memory state.
+
 === Google
 
 ==== Google Cloud Console setup
@@ -179,17 +227,18 @@ The provider is free to use any HTTP library or OAuth library internally.
 import org.bson.BsonDocument;
 import org.bson.BsonNull;
 import org.bson.BsonString;
-import org.restheart.accounts.oauth.OAuthService;
 import org.restheart.plugins.Initializer;
 import org.restheart.plugins.Inject;
 import org.restheart.plugins.RegisterPlugin;
 import org.restheart.plugins.accounts.OAuthProvider;
+import org.restheart.plugins.accounts.OAuthProviderRegistry;
 
 @RegisterPlugin(name = "myappOAuthProvider", description = "MyApp OAuth provider")
 public class MyAppOAuthProvider implements OAuthProvider, Initializer {
 
+    // Inject OAuthProviderRegistry (not OAuthService) — available in restheart-commons only
     @Inject("oauthService")
-    private OAuthService oauthService;
+    private OAuthProviderRegistry oauthService;
 
     @Override
     public void init() {
@@ -285,13 +334,6 @@ oauthConfig:
 ----
 
 The provider is auto-discovered at startup via `@RegisterPlugin`.
-
-=== Security notes
-
-* A cryptographically random `state` parameter (256-bit entropy) is generated for every authorization request and stored in the `oauth_codes` MongoDB collection with a 10-minute TTL.
-* On callback, `state` is validated with **constant-time comparison** to prevent timing attacks.
-* The `oauth_codes` document is deleted immediately after a successful state validation — it cannot be replayed.
-* Token exchange is performed entirely server-side by ScribeJava; `client_secret` values are never exposed to the browser.
 
 See also: xref:security.adoc[Security].
 

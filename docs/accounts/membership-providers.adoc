@@ -79,6 +79,74 @@ accountsConfig:
   membership-endpoints-enabled: false   # /orgs-mgmt/* handles invitations
 ----
 
+=== OAuth activation for invited users
+
+When an invited user (one with `status: "invited"`) authenticates via OAuth, the callback invokes
+`MembershipProvider.activateViaOAuth()` instead of issuing a JWT that would be blocked by the ACL.
+
+The `DefaultMembershipProvider` implementation activates the user immediately:
+it sets `status` to `"active"`, clears the `inviteToken` field, and returns the user's pre-assigned membership for JWT issuance.
+
+Custom providers can override this behaviour (or disable it by returning `Optional.empty()`).
+
+==== Carrying invite context through the OAuth redirect
+
+The OAuth initiation endpoint accepts two optional query parameters that are stored
+in the CSRF state token (TTL 10 min) and retrieved on callback:
+
+[cols="1,3",options="header"]
+|===
+| Parameter | Description
+
+| `pendingInviteToken`
+| The invite token from the activation email — passed as-is for audit purposes
+
+| `consentsAccepted`
+| `"true"` when the user has already accepted T&C / Privacy Policy on the frontend before the OAuth redirect
+|===
+
+[source]
+----
+GET /auth/oauth/authorize/google
+    ?pendingInviteToken=abc123
+    &consentsAccepted=true
+----
+
+When `consentsAccepted=true` is present, the callback builds a `ConsentRecord` from
+`accountsConfig.terms-version` / `privacy-version` and the client IP, then passes it
+to `activateViaOAuth(userId, consents)`.
+
+Both parameters are stored in the `oauth_codes` MongoDB collection alongside the CSRF state
+(TTL 10 min, persisted across pod restarts).
+
+=== `activateViaOAuth` method reference
+
+[source,java]
+----
+// package org.restheart.plugins.accounts  (in restheart-commons)
+
+/**
+ * Called when an OAuth-authenticated user has status "invited".
+ * Return a non-empty Optional to activate the user and issue a JWT.
+ * Return Optional.empty() to fall back to the default behaviour
+ * (JWT with status:"invited" — blocked by ACL rules).
+ */
+default Optional<Membership> activateViaOAuth(String userId, ConsentRecord consents) {
+    return Optional.empty(); // deny by default (preserves 9.4.1 behaviour)
+}
+----
+
+The `ConsentRecord` value object:
+
+[source,java]
+----
+// package org.restheart.plugins.accounts  (in restheart-commons)
+public record ConsentRecord(String termsVersion, String privacyVersion,
+                             String ip, Instant acceptedAt) {}
+----
+
+`consents` is `null` when `consentsAccepted=true` was not present in the OAuth state.
+
 === Writing a custom provider
 
 ==== 1. Implement `MembershipProvider`
@@ -156,7 +224,8 @@ public class OrgMembershipProvider implements MembershipProvider {
 ----
 package com.example;
 
-import org.restheart.accounts.AccountsService;
+import org.restheart.plugins.accounts.MembershipProvider;
+import org.restheart.plugins.accounts.MembershipProviderRegistry;
 import org.restheart.plugins.Initializer;
 import org.restheart.plugins.Inject;
 import org.restheart.plugins.RegisterPlugin;
@@ -164,8 +233,9 @@ import org.restheart.plugins.RegisterPlugin;
 @RegisterPlugin(name = "orgMembershipProvider", description = "Custom org membership provider")
 public class OrgMembershipInitializer implements Initializer {
 
+    // Inject MembershipProviderRegistry (not AccountsService) — available in restheart-commons only
     @Inject("accountsService")
-    private AccountsService accountsService;
+    private MembershipProviderRegistry accountsService;
 
     @Override
     public void init() {
