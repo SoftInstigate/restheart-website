@@ -9,6 +9,12 @@ applies_to: restheart
 A user can belong to multiple tenants simultaneously, each with a different role.
 The active tenant and its corresponding role are encoded in the JWT; switching tenants reissues the JWT without requiring a new login.
 
+[NOTE]
+====
+The membership model — field names, role vocabulary, storage collection — can be customised via the xref:membership-providers.adoc[`MembershipProvider` SPI] (9.4.1+).
+This page describes the built-in default behaviour.
+====
+
 === Data model
 
 Each user document stores a `tenants` array alongside the legacy scalar `tenant` field:
@@ -21,7 +27,7 @@ Each user document stores a `tenants` array alongside the legacy scalar `tenant`
   "tenant":  "abc123",             // active tenant ID (JWT claim)
   "tenants": [
     { "id": "abc123", "role": "owner" },
-    { "id": "def456", "role": "user"  }
+    { "id": "def456", "role": "member"  }
   ]
 }
 ----
@@ -39,7 +45,7 @@ POST /auth/invite
 Authorization: Bearer <owner-or-admin-token>
 Content-Type: application/json
 
-{ "email": "alice@example.com", "role": "user" }
+{ "email": "alice@example.com", "role": "member" }
 ----
 
 * If the user already belongs to the caller's team → `409 Conflict`.
@@ -61,8 +67,8 @@ Authorization: Bearer <token>
 [source,json]
 ----
 [
-  { "id": "abc123", "name": "Acme Corp",  "role": "owner", "active": true  },
-  { "id": "def456", "name": "Other Corp", "role": "user",  "active": false }
+  { "id": "abc123", "name": "Acme Corp",  "role": "owner",  "active": true  },
+  { "id": "def456", "name": "Other Corp", "role": "member", "active": false }
 ]
 ----
 
@@ -123,3 +129,6 @@ After `switchTenant`, call `checkSession()` (`GET /token`) so the app state refl
 
 No manual ACL entries are needed for `/auth/tenants` or `/auth/switch-tenant`.
 Both endpoints register their own allow rules via `ACLRegistry` at startup.
+They are disabled when `accountsConfig.membership-endpoints-enabled: false`.
+
+See xref:membership-providers.adoc[Custom Membership Providers] to replace the built-in storage strategy.

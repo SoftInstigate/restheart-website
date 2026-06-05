@@ -1,0 +1,301 @@
+---
+docs_version: 9
+title: Custom Membership Providers
+layout: docs-adoc
+menu: accounts
+applies_to: restheart
+---
+
+[NOTE]
+====
+The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.1*.
+====
+
+By default, `restheart-accounts` stores team membership directly on the user document using the `tenant` / `tenants` schema.
+For applications that already have a domain-specific membership model — different field names, a separate collection, additional metadata such as `joinedAt`, billing references, or a different role vocabulary — the *`MembershipProvider` SPI* lets you plug in your own storage strategy without forking the plugin.
+
+=== How it works
+
+Every membership read/write inside `restheart-accounts` is routed through a single `MembershipProvider` instance.
+The built-in `DefaultMembershipProvider` is used automatically; custom implementations replace it at startup via `AccountsService`.
+
+[cols="2,3",options="header"]
+|===
+| SPI method | Called by
+
+| `createInitialTeam(userId, teamName)`
+| `POST /auth/register`, OAuth new-user path
+
+| `isMember(userId, tenantId)`
+| `POST /auth/invite` — duplicate-membership guard
+
+| `addMember(userId, tenantId, role)`
+| `POST /auth/invite` — new and existing users
+
+| `activeMembership(userId)`
+| JWT issuance after login, verification, activation, OAuth callback
+
+| `listMemberships(userId)`
+| `GET /auth/tenants`
+
+| `setActiveMembership(userId, tenantId)`
+| `POST /auth/switch-tenant`
+|===
+
+=== Configuration
+
+Three new keys are available under `accountsConfig` (all optional; defaults preserve 9.4 behaviour):
+
+[source,yaml]
+----
+accountsConfig:
+  # JWT claim name used to carry the active tenant identifier.
+  # Default: "tenant". Change to e.g. "org" if your domain uses organisations.
+  tenant-claim-name: tenant
+
+  # Role name assigned to regular (non-admin) team members.
+  # Default: "member". Set to "user" if your existing ACL rules use that label.
+  member-role-name: member
+
+  # Set to false to disable the built-in membership management endpoints:
+  #   POST  /auth/invite
+  #   POST  /auth/resend-invite
+  #   GET   /auth/tenants
+  #   POST  /auth/switch-tenant
+  # Useful when your custom provider exposes its own equivalent endpoints.
+  # Default: true
+  membership-endpoints-enabled: true
+----
+
+==== RESTHeart Cloud example
+
+[source,yaml]
+----
+accountsConfig:
+  db: myapp
+  tenant-claim-name: org          # JWT carries "org" instead of "tenant"
+  member-role-name: user          # keep existing ACL rules
+  membership-endpoints-enabled: false   # /orgs-mgmt/* handles invitations
+----
+
+=== Writing a custom provider
+
+==== 1. Implement `MembershipProvider`
+
+[source,java]
+----
+package com.example;
+
+import org.restheart.accounts.spi.Membership;
+import org.restheart.accounts.spi.MembershipProvider;
+import org.restheart.accounts.spi.TenantRef;
+
+import java.util.List;
+import java.util.Optional;
+
+public class OrgMembershipProvider implements MembershipProvider {
+
+    // Receive your own DB client, config, etc. via constructor (from the Initializer below)
+
+    @Override
+    public TenantRef createInitialTeam(String userId, String orgName) {
+        // Create the org document, add userId as owner, update the user document
+        var orgId = myOrgCollection.insertOrg(orgName, userId);
+        myUserCollection.setActiveOrg(userId, orgId);
+        return new TenantRef(orgId, orgName);
+    }
+
+    @Override
+    public boolean isMember(String userId, String orgId) {
+        return myOrgCollection.hasMember(orgId, userId);
+    }
+
+    @Override
+    public void addMember(String userId, String orgId, String role) {
+        myOrgCollection.addMember(orgId, userId, role);
+        // Set orgId as active if the user has no active org yet
+        myUserCollection.setActiveOrgIfAbsent(userId, orgId);
+    }
+
+    @Override
+    public Optional<Membership> activeMembership(String userId) {
+        var user = myUserCollection.find(userId);
+        if (user == null || user.org() == null) return Optional.empty();
+        var org  = myOrgCollection.find(user.org());
+        var role = org.memberRole(userId);
+        return Optional.of(new Membership(user.org(), org.name(), role, true));
+    }
+
+    @Override
+    public List<Membership> listMemberships(String userId) {
+        var user      = myUserCollection.find(userId);
+        if (user == null) return List.of();
+        var activeOrg = user.org();
+        return user.orgs().stream()
+                .map(orgId -> {
+                    var org  = myOrgCollection.find(orgId);
+                    var role = org.memberRole(userId);
+                    return new Membership(orgId, org.name(), role, orgId.equals(activeOrg));
+                })
+                .toList();
+    }
+
+    @Override
+    public void setActiveMembership(String userId, String orgId) {
+        if (!isMember(userId, orgId))
+            throw new IllegalArgumentException("User is not a member of org " + orgId);
+        myUserCollection.setActiveOrg(userId, orgId);
+    }
+}
+----
+
+==== 2. Register via an `Initializer`
+
+[source,java]
+----
+package com.example;
+
+import org.restheart.accounts.AccountsService;
+import org.restheart.plugins.Initializer;
+import org.restheart.plugins.Inject;
+import org.restheart.plugins.RegisterPlugin;
+
+@RegisterPlugin(name = "orgMembershipProvider", description = "Custom org membership provider")
+public class OrgMembershipInitializer implements Initializer {
+
+    @Inject("accountsService")
+    private AccountsService accountsService;
+
+    @Override
+    public void init() {
+        accountsService.registerMembershipProvider(new OrgMembershipProvider(/* ... */));
+    }
+}
+----
+
+Place the compiled JAR in RESTHeart's `plugins/` directory alongside `restheart-accounts.jar`.
+The provider is activated before the server starts accepting requests.
+
+Key rules:
+
+* The class implementing `MembershipProvider` does **not** need to be a RESTHeart plugin itself — it is a plain Java class instantiated by the `Initializer`.
+* The `Initializer` (the `@RegisterPlugin` class) must inject `AccountsService` and call `registerMembershipProvider(this)` inside `init()`.
+* Only one custom provider can be active at a time; the last call to `registerMembershipProvider` wins.
+
+=== SPI reference
+
+[source,java]
+----
+public interface MembershipProvider {
+
+    /**
+     * Creates an initial team for a newly registered user and assigns them
+     * the owner role. Called during /auth/register and the OAuth new-user path.
+     *
+     * The user document already exists when this is called.
+     * The returned TenantRef is embedded as the JWT tenant claim.
+     */
+    TenantRef createInitialTeam(String userId, String teamName);
+
+    /**
+     * Returns true if the user is already a member of the given tenant.
+     * Used by /auth/invite to prevent duplicate memberships.
+     */
+    boolean isMember(String userId, String tenantId);
+
+    /**
+     * Adds a user to a tenant with the specified role (idempotent).
+     * If the user has no active tenant yet, this should also set it.
+     */
+    void addMember(String userId, String tenantId, String role);
+
+    /**
+     * Returns the user's currently active membership, or empty if none.
+     * Consumed by every JWT issuance path.
+     */
+    Optional<Membership> activeMembership(String userId);
+
+    /**
+     * Returns all memberships for the user.
+     * Used by GET /auth/tenants.
+     */
+    List<Membership> listMemberships(String userId);
+
+    /**
+     * Sets the given tenant as the user's active membership.
+     * Used by POST /auth/switch-tenant.
+     * Must throw IllegalArgumentException if the user is not a member.
+     */
+    void setActiveMembership(String userId, String tenantId);
+}
+
+public record TenantRef(String id, String displayName) {}
+
+public record Membership(String tenantId, String displayName, String role, boolean active) {}
+----
+
+=== Built-in default provider
+
+`DefaultMembershipProvider` preserves the 9.4 `tenant` / `tenants` schema.
+No configuration changes are needed for existing deployments.
+
+[source,json]
+----
+// users collection — schema managed by DefaultMembershipProvider
+{
+  "_id":     "alice@example.com",
+  "tenant":  "abc123",           // active tenant ID
+  "tenants": [
+    { "id": "abc123", "role": "owner" },
+    { "id": "def456", "role": "member" }
+  ]
+}
+
+// teams collection — created by createInitialTeam / addMember
+{
+  "_id":       ObjectId("…"),
+  "name":      "Acme Corp",
+  "createdBy": "alice@example.com",
+  "createdAt": ISODate("…"),
+  "members":   [{ "userId": "alice@example.com", "role": "owner", "joinedAt": ISODate("…") }]
+}
+----
+
+[cols="2,4",options="header"]
+|===
+| Operation | MongoDB effect
+
+| `createInitialTeam`
+| Inserts a `teams` document; `$set tenant`, `$addToSet tenants` on the user
+
+| `isMember`
+| Reads `tenant` + `tenants` on the user document
+
+| `addMember`
+| `$addToSet tenants`; sets `tenant` via `$set` only if the field is absent
+
+| `activeMembership`
+| Reads the `tenant` field; resolves team name from the `teams` collection
+
+| `listMemberships`
+| Reads the `tenants` array; resolves team names from the `teams` collection
+
+| `setActiveMembership`
+| `$set tenant` on the user document
+|===
+
+=== Backward compatibility
+
+A 9.4 deployment upgraded to 9.4.1 with no configuration changes behaves identically:
+
+* `DefaultMembershipProvider` is used automatically.
+* `tenant-claim-name` defaults to `"tenant"` — JWT payload is unchanged.
+* `member-role-name` defaults to `"member"` — role names for new invitees use `"member"`.
+* `membership-endpoints-enabled` defaults to `true` — all endpoints remain active.
+
+[NOTE]
+====
+If your existing ACL rules match the role `"user"` for invited team members, add `member-role-name: user` to your `accountsConfig` after upgrading.
+====
+
+See also: xref:google-oauth.adoc#_custom_providers[OAuth custom providers] for the equivalent SPI for OAuth 2.0 providers.

@@ -25,17 +25,24 @@ The plugin is designed to be a first-class RESTHeart module: all features are op
 | `GET`   | `/auth/verify`                 | public        | Verify email via token link; auto-login
 | `POST`  | `/auth/forgot-password`        | public        | Request password reset link (always 202)
 | `PATCH` | `/auth/reset-password`         | public        | Apply reset token; auto-login
-| `POST`  | `/auth/invite`                 | owner / admin | Invite a user to the caller's team
+| `POST`  | `/auth/invite`                 | owner / admin | Invite a user to the caller's team †
 | `PATCH` | `/auth/activate`               | public        | Accept invitation, set password; auto-login
-| `POST`  | `/auth/resend-invite`          | owner / admin | Re-send an expired invitation (email in request body)
+| `POST`  | `/auth/resend-invite`          | owner / admin | Re-send an expired invitation (email in request body) †
+| `GET`   | `/auth/tenants`                | authenticated | List the caller's team memberships †
+| `POST`  | `/auth/switch-tenant`          | authenticated | Switch active team; reissues JWT cookie †
 | `GET`   | `/auth/oauth/authorize/{provider}` | public        | Redirect browser to the OAuth provider's consent screen
 | `GET`   | `/auth/oauth/callback/{provider}`  | public        | OAuth callback: exchange code, upsert user, set JWT cookie
 |===
+
+† Disabled when `accountsConfig.membership-endpoints-enabled: false`.
+See xref:membership-providers.adoc[Custom Membership Providers] for details.
 
 === Multi-tenancy
 
 `restheart-accounts` supports multi-tenant deployments without any custom code in the plugin itself.
 All services check for request attributes injected by an upstream interceptor (such as `AuthDbResolver` or `TenantConfigInterceptor`) and use them in place of the static configuration values.
+
+See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanism and xref:membership-providers.adoc[Custom Membership Providers] for replacing the built-in team/tenant storage model.
 
 .Full list of override request attributes
 |===
