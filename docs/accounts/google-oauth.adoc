@@ -153,11 +153,38 @@ Narrowing the scope may cause email resolution to fail and the login flow to ret
 === Custom providers
 
 Any Java plugin can register an additional OAuth provider via the `OAuthProvider` SPI.
+The `OAuthProvider` interface is defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 
 ==== Interface contract
 
 [source,java]
 ----
+// package org.restheart.plugins.accounts  (in restheart-commons)
+public interface OAuthProvider {
+    String getProviderName();
+    String getAuthorizationUrl(String clientId, String clientSecret,
+                               String callbackUrl, String scope, String state);
+    BsonDocument fetchUserProfile(String clientId, String clientSecret,
+                                  String callbackUrl, String scope, String code) throws Exception;
+}
+----
+
+Each provider receives the OAuth credentials and redirect URI on every call — no internal service object is shared with the framework.
+The provider is free to use any HTTP library or OAuth library internally.
+
+==== Example implementation
+
+[source,java]
+----
+import org.bson.BsonDocument;
+import org.bson.BsonNull;
+import org.bson.BsonString;
+import org.restheart.accounts.oauth.OAuthService;
+import org.restheart.plugins.Initializer;
+import org.restheart.plugins.Inject;
+import org.restheart.plugins.RegisterPlugin;
+import org.restheart.plugins.accounts.OAuthProvider;
+
 @RegisterPlugin(name = "myappOAuthProvider", description = "MyApp OAuth provider")
 public class MyAppOAuthProvider implements OAuthProvider, Initializer {
 
@@ -166,7 +193,6 @@ public class MyAppOAuthProvider implements OAuthProvider, Initializer {
 
     @Override
     public void init() {
-        // Register this provider with the OAuth service at startup.
         oauthService.registerProvider(this);
     }
 
@@ -179,33 +205,44 @@ public class MyAppOAuthProvider implements OAuthProvider, Initializer {
     public String getProviderName() { return "myapp"; }
 
     /**
-     * Build the ScribeJava OAuth20Service for this provider.
-     * Use any ScribeJava OAuth20Api subclass or a custom implementation.
+     * Build and return the provider's authorization URL.
+     * Include the state parameter verbatim — it is required for CSRF protection.
      */
     @Override
-    public OAuth20Service buildService(String clientId, String secret,
-                                       String callbackUrl, String scope) {
-        return new ServiceBuilder(clientId)
-                .apiSecret(secret)
-                .callback(callbackUrl)
-                .defaultScope(scope)
-                .build(MyAppApi.instance());
+    public String getAuthorizationUrl(String clientId, String clientSecret,
+                                      String callbackUrl, String scope, String state) {
+        // Use any OAuth library or build the URL manually.
+        // Example with ScribeJava:
+        //   return new ServiceBuilder(clientId)
+        //           .apiSecret(clientSecret).callback(callbackUrl).defaultScope(scope)
+        //           .build(MyAppApi.instance()).getAuthorizationUrl(state);
+        return "https://myapp.example.com/oauth/authorize"
+                + "?client_id=" + clientId
+                + "&redirect_uri=" + callbackUrl
+                + "&scope=" + scope
+                + "&state=" + state;
     }
 
     /**
-     * Fetch the user profile using the access token.
-     * Return a BsonDocument with: email, name, providerId, avatarUrl.
+     * Exchange the authorization code for an access token, then fetch the user
+     * profile. Return a BsonDocument with: email, name, providerId, avatarUrl.
      */
     @Override
-    public BsonDocument fetchUserProfile(OAuth20Service service, String accessToken)
+    public BsonDocument fetchUserProfile(String clientId, String clientSecret,
+                                         String callbackUrl, String scope, String code)
             throws Exception {
-        // Call your provider's user-info endpoint and map the response fields.
+        // 1. Exchange code for access token (use any HTTP client).
+        var token = exchangeCodeForToken(clientId, clientSecret, callbackUrl, code);
+
+        // 2. Fetch user profile and map to BsonDocument.
         return new BsonDocument()
-                .append("email",      new BsonString("user@example.com"))
-                .append("name",       new BsonString("Display Name"))
-                .append("providerId", new BsonString("12345"))
+                .append("email",      new BsonString(fetchEmail(token)))
+                .append("name",       new BsonString(fetchName(token)))
+                .append("providerId", new BsonString(fetchProviderId(token)))
                 .append("avatarUrl",  BsonNull.VALUE);
     }
+
+    // private helper methods ...
 }
 ----
 
@@ -214,7 +251,8 @@ Key rules:
 * Implement both `OAuthProvider` **and** `Initializer`.
 * Inject `oauthService` with `@Inject("oauthService")` and call `registerProvider(this)` inside `init()`.
 * `getProviderName()` **must** return the exact key used in the `oauthConfig.providers` map.
-* `buildService()` can use any https://github.com/scribejava/scribejava[ScribeJava] `OAuth20Api` subclass.
+* `getAuthorizationUrl()` must include the `state` parameter unchanged in the returned URL.
+* `fetchUserProfile()` is responsible for both the token exchange *and* the profile fetch.
 * `fetchUserProfile()` must return a `BsonDocument` with the following fields:
 
 |===

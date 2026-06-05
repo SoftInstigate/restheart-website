@@ -9,6 +9,7 @@ applies_to: restheart
 [NOTE]
 ====
 The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.1*.
+The interface and its types (`Membership`, `TenantRef`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 ====
 
 By default, `restheart-accounts` stores team membership directly on the user document using the `tenant` / `tenants` schema.
@@ -86,9 +87,9 @@ accountsConfig:
 ----
 package com.example;
 
-import org.restheart.accounts.spi.Membership;
-import org.restheart.accounts.spi.MembershipProvider;
-import org.restheart.accounts.spi.TenantRef;
+import org.restheart.plugins.accounts.Membership;
+import org.restheart.plugins.accounts.MembershipProvider;
+import org.restheart.plugins.accounts.TenantRef;
 
 import java.util.List;
 import java.util.Optional;
@@ -186,6 +187,8 @@ Key rules:
 
 [source,java]
 ----
+// package org.restheart.plugins.accounts  (in restheart-commons)
+
 public interface MembershipProvider {
 
     /**
