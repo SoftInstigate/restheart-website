@@ -17,23 +17,25 @@ This page describes the built-in default behaviour.
 
 === Data model
 
-Each user document stores a `tenants` array alongside the legacy scalar `tenant` field:
+Each user document stores a `tenants` array alongside the scalar `tenant` field.
+The `DefaultMembershipProvider` stores tenant identifiers as MongoDB `ObjectId` values:
 
 [source,json]
 ----
 {
   "_id":     "alice@example.com",
-  "roles":   ["owner"],            // role in the *active* tenant (read by mongoRealmAuthenticator)
-  "tenant":  "abc123",             // active tenant ID (JWT claim)
+  "roles":   ["owner"],                                       // role in the *active* tenant
+  "tenant":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },        // active tenant ID (JWT claim)
   "tenants": [
-    { "id": "abc123", "role": "owner" },
-    { "id": "def456", "role": "member"  }
+    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },
+    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
   ]
 }
 ----
 
 `roles` is always kept in sync with the role for the active `tenant`.
 `tenants` is the authoritative list of all memberships.
+Custom providers can use a different identifier type — see xref:membership-providers.adoc[Custom Membership Providers].
 
 === Adding a user to a second team
 
