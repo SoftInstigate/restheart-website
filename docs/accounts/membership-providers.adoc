@@ -49,25 +49,12 @@ All SPI methods that receive or return a tenant identifier use `org.bson.BsonVal
 This means the identifier is stored and passed around in its *native MongoDB type* — typically `BsonObjectId`, but the SPI does not impose any constraint.
 A custom provider is free to use `BsonInt32`, `BsonString`, or any other type its data model requires.
 
-==== Converting between `BsonValue` and `String`
+At HTTP boundaries (request bodies, response bodies), tenant IDs are serialized as *MongoDB extended JSON*:
 
-Two `default` methods on `MembershipProvider` handle the conversion at HTTP boundaries
-(URL parameters, request bodies, response bodies):
+* An ObjectId tenant appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/tenants` and `POST /auth/switch-tenant` responses.
+* Clients must send the same format in the `POST /auth/switch-tenant` request body.
 
-[source,java]
-----
-// Parses a raw URL/query-param string into the provider's native BsonValue type.
-// Default: tries ObjectId hex, falls back to BsonString.
-// Override when your tenantId type is not an ObjectId.
-default BsonValue parseTenantId(String raw) { … }
-
-// Converts a BsonValue tenantId to its canonical string representation
-// (for URLs, response bodies, log messages). Inverse of parseTenantId.
-default String tenantIdToString(BsonValue tenantId) { … }
-----
-
-These are called automatically by the built-in endpoints (`/auth/switch-tenant`, etc.).
-Custom providers only need to override them when the default ObjectId / String logic does not match their data model.
+This is handled automatically by `BsonUtils.parse` (input) and `BsonUtils.toJson` (output) — no custom conversion helpers are needed in providers.
 
 === Configuration
 
@@ -187,7 +174,6 @@ package com.example;
 
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
-import org.bson.types.ObjectId;
 import org.restheart.plugins.accounts.Membership;
 import org.restheart.plugins.accounts.MembershipProvider;
 import org.restheart.plugins.accounts.TenantRef;
@@ -251,14 +237,6 @@ public class OrgMembershipProvider implements MembershipProvider {
         myUserCollection.setActiveOrg(userId, orgId);
     }
 
-    /**
-     * Override because our tenant IDs are always ObjectIds.
-     * The framework calls this when parsing the tenantId from a URL parameter.
-     */
-    @Override
-    public BsonValue parseTenantId(String raw) {
-        return new BsonObjectId(new ObjectId(raw));
-    }
 }
 ----
 
@@ -342,21 +320,6 @@ public interface MembershipProvider {
      * Must throw IllegalArgumentException if the user is not a member.
      */
     void setActiveMembership(String userId, BsonValue tenantId);
-
-    /**
-     * Parses a tenant identifier received as a raw string (URL param,
-     * query string, request body) into its native BsonValue type.
-     *
-     * The default implementation tries to parse as an ObjectId hex string,
-     * falling back to BsonString. Override when your tenant IDs are not ObjectIds.
-     */
-    default BsonValue parseTenantId(String raw) { … }
-
-    /**
-     * Converts a BsonValue tenantId to its canonical string representation
-     * (for URLs, response bodies, log messages). Inverse of parseTenantId.
-     */
-    default String tenantIdToString(BsonValue tenantId) { … }
 
     /**
      * Called when an OAuth-authenticated user has status "invited".

@@ -69,10 +69,14 @@ Authorization: Bearer <token>
 [source,json]
 ----
 [
-  { "id": "abc123", "name": "Acme Corp",  "role": "owner",  "active": true  },
-  { "id": "def456", "name": "Other Corp", "role": "member", "active": false }
+  { "id": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e1"}, "name": "Acme Corp",  "role": "owner",  "active": true  },
+  { "id": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "name": "Other Corp", "role": "member", "active": false }
 ]
 ----
+
+The `id` field is serialized as MongoDB extended JSON, preserving the native BSON type.
+For ObjectId tenant identifiers (the default) it is `{"$oid": "..."}`.
+Custom providers that use string or integer tenant IDs will produce a plain JSON string or number.
 
 === Switch active tenant
 
@@ -87,8 +91,10 @@ POST /auth/switch-tenant
 Authorization: Bearer <token>
 Content-Type: application/json
 
-{ "tenantId": "def456" }
+{ "tenantId": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"} }
 ----
+
+The `tenantId` value must be in MongoDB extended JSON format, matching the `id` field returned by `GET /auth/tenants`.
 
 On success (`200 OK`):
 
@@ -97,7 +103,7 @@ On success (`200 OK`):
 
 [source,json]
 ----
-{ "tenant": "def456", "role": "user" }
+{ "tenant": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "user" }
 ----
 
 ==== Error responses
