@@ -70,6 +70,14 @@ accountsConfig:
   #   GET  /auth/tenants, POST /auth/switch-tenant
   # Default: true
   membership-endpoints-enabled: true
+
+  # Additional JWT claims propagated from request attached-parameters to tokens
+  # issued by accounts endpoints (verify, activate, reset-password, switch-tenant, OAuth).
+  # Mirrors jwtTokenManager.account-properties-claims: use the same list so that
+  # all token-issuance paths produce identical JWTs.
+  # authDb is always included automatically (no need to list it here).
+  account-properties-claims:
+  # - srvNode  # example: attached-param set by SrvNodeEnricher in multi-tenant deployments
 ----
 
 ==== oauthConfig
@@ -157,6 +165,39 @@ accountsConfig:
 ----
 
 NOTE: If `jwt-key` or `jwt-issuer` are still present in your `accountsConfig` block (from a pre-9.5 configuration), RESTHeart will log a warning and ignore them.
+
+=== Propagating attached-parameters as JWT claims
+
+By default the tokens issued by accounts endpoints (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-tenant`, OAuth callbacks) include:
+
+* `sub` — the user's email
+* `roles` — the user's roles
+* `authDb` — the MongoDB authentication database (always included automatically; used by `JwtAuthDbVerifier` in multi-tenant deployments)
+* `tenant` / `status` (or whichever explicit claims each flow adds)
+
+In multi-tenant or custom deployments, interceptors such as `SrvNodeEnricher` attach additional parameters to the request _before_ it reaches the service.
+To propagate those parameters as JWT claims — so that the resulting token matches what `POST /token` would issue — list them in `account-properties-claims`:
+
+[source,yaml]
+----
+accountsConfig:
+  # Must mirror jwtTokenManager.account-properties-claims so all issuance paths
+  # produce identical JWTs.
+  account-properties-claims:
+    - srvNode   # set by SrvNodeEnricher; required by JwtAuthDbVerifier
+----
+
+[source,yaml]
+----
+jwtTokenManager:
+  account-properties-claims:
+    - srvNode   # keep in sync with accountsConfig.account-properties-claims
+----
+
+`authDb` is **always** included automatically from the effective `override-users-db` value and never needs to appear in the list.
+
+TIP: Keep `accountsConfig.account-properties-claims` and `jwtTokenManager.account-properties-claims` identical.
+Any discrepancy means `/token` and accounts endpoints will issue JWTs with different claims, which can cause subtle authentication failures.
 
 === Multi-tenancy with AuthDbResolver and TenantConfigInterceptor
 
