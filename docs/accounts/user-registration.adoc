@@ -32,17 +32,14 @@ Content-Type: application/json
 . Enforce password strength via *zxcvbn* (score ≥ `minimumPasswordStrength`, default 3).
 . Check email uniqueness — `409 Conflict` if already registered.
 . Generate a cryptographically random `verificationToken` (256-bit) and `verificationCreatedAt` timestamp.
-. Create the tenant document (`status: active`).
-. Create the user document (`status: pending_verification`) with the verification token.
+. Create the user document with `roles: ["$unauthenticated"]` and the verification token.
 . Create a `membership` document linking the user to the tenant as `owner`.
 . Send a verification email containing a one-time link:
-
-
++
 [source,bash]
 ----
 {baseAppUrl}/auth/verify?email=alice@acme.com&token=<verificationToken>
 ----
-
 . Return `201 Created`.
 
 ==== Response
@@ -73,9 +70,11 @@ Content-Type: application/json
 . Find the user by email.
 . Compare `token` against `verificationToken` using **constant-time comparison** (timing-attack mitigation).
 . Check that `verificationCreatedAt` is within the TTL (`verificationTokenTtlDays`, default 7 days).
-. Set `status: active` and `$unset verificationToken verificationCreatedAt`.
+. Assign the system ACL role from `accountsConfig.default-role` (default: `user`) —
+  this replaces the `$unauthenticated` role assigned at registration.
+  `$unset` verificationToken and verificationCreatedAt.
 . Issue a JWT access token + refresh cookie.
-. Redirect to `{baseAppUrl}/app`.
+. Redirect to `{frontendAppUrl}`.
 
 ==== Expired token
 

@@ -156,15 +156,15 @@ Replace the hostname with your actual `oauthConfig.api-base-url`.
 
 *New user* (no matching `email` in the `users` collection):
 
-. A new user document is created with `status: "active"`.
+. A new user document is created with `roles: ["user"]` (the configured `default-role`).
 Google has already verified the email address, so no separate email verification step is needed.
-. A team is created automatically and the user is assigned the `owner` role.
+. A team is created automatically and the user is assigned the `owner` membership role.
 . A JWT cookie is set and the browser is redirected to `frontend-success-url`.
 
 *Existing user* (email matches an existing document):
 
-. The user's profile fields (`firstName`, `lastName`, `googleId`) are updated from Google's response if they have changed.
-. The user's `status` is *not* changed — a user who was previously suspended or pending remains in that state and is not granted access.
+. The user's profile fields (`profile.name`, `profile.surname`) are updated from Google's response if they have changed.
+. The user's system `roles` are *not* changed — a user who was previously unverified (`$unauthenticated`) remains blocked.
 . A JWT cookie is set and the browser is redirected to `frontend-success-url`.
 
 NOTE: If the user was registered with email + password, adding Google login does not remove the password.

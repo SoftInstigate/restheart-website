@@ -242,8 +242,9 @@ Edit the extracted files. Each template supports:
 |===
 | Variable | Description
 
-| `{{appName}}`   | value of `accountsConfig.app-name`
-| `{{firstName}}` | recipient's first name
+| `{{app-name}}`   | value of `accountsConfig.app-name`
+| `{{first-name}}` | recipient's first name (from `profile.name`)
+| `{{frontend-url}}` | public-facing frontend URL
 | `{{year}}`      | current year (e.g. `2025`)
 |===
 
@@ -251,8 +252,8 @@ Edit the extracted files. Each template supports:
 |===
 | Template | Additional variables
 
-| `verification.html`  | `{{verificationLink}}`
-| `password-reset.html`| `{{resetLink}}`
+| `verification.html`  | `{{verification-url}}`
+| `password-reset.html`| `{{reset-url}}`
 | `invite.html`        | `{{inviterName}}`, `{{teamName}}`, `{{activationLink}}`
 |===
 
@@ -349,7 +350,7 @@ The full flow is:
 5. Sets rh_auth cookie (JWT)  →  302 to frontend-success-url
 ----
 
-New Google users are created with `status: "active"` (Google already verified the email)
+New Google users are created with `roles: ["user"]` (the configured `default-role`; Google already verified the email)
 and a default team is created automatically.
 Existing users are logged in directly; their display name and avatar are refreshed from
 the latest Google profile on every login.

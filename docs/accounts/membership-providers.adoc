@@ -94,11 +94,11 @@ accountsConfig:
 
 === OAuth activation for invited users
 
-When an invited user (one with `status: "invited"`) authenticates via OAuth, the callback invokes
+When an invited user (one with `roles: ["$unauthenticated"]`) authenticates via OAuth, the callback invokes
 `MembershipProvider.activateViaOAuth()` instead of issuing a JWT that would be blocked by the ACL.
 
 The `DefaultMembershipProvider` implementation activates the user immediately:
-it sets `status` to `"active"`, clears the `inviteToken` field, and returns the user's pre-assigned membership for JWT issuance.
+it assigns the system ACL role from `accountsConfig.default-role`, clears the `inviteToken` field, and returns the user's pre-assigned membership for JWT issuance.
 
 Custom providers can override this behaviour (or disable it by returning `Optional.empty()`).
 

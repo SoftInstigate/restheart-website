@@ -24,14 +24,16 @@ The `DefaultMembershipProvider` stores tenant identifiers as MongoDB `ObjectId` 
 ----
 {
   "_id":     "alice@example.com",
-  "roles":   ["owner"],                                       // role in the *active* tenant
+  "roles":   ["user"],                                        // system ACL role (from default-role)
   "tenant":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },        // active tenant ID (JWT claim)
   "tenants": [
-    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },
+    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },  // membership role
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
   ]
 }
 ----
+NOTE: `roles` contains the *system ACL role* (e.g. `user`), not the membership role.
+The membership role (`owner`/`admin`/`member`) is per-tenant and stored in the `tenants` array.
 
 `roles` is always kept in sync with the role for the active `tenant`.
 `tenants` is the authoritative list of all memberships.

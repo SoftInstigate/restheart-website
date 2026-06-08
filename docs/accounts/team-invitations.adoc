@@ -39,6 +39,7 @@ Assigning `owner` via invite is not permitted.
 . **If the user does not exist** → create a new user document and delegate membership setup to the `MembershipProvider` (which adds the `tenant` / `tenants` fields when using the default provider).
 . Send an activation email:
 +
+[source,http]
 ----
 {baseAppUrl}/auth/activate?email=bob@example.com&token=<inviteToken>
 ----
@@ -82,12 +83,14 @@ Content-Type: application/json
 [source,json]
 ----
 {
-  "$set":   { "status": "active", "password": "<bcrypt hash>",
+  "$set":   { "roles": ["<default-role>"], "password": "<bcrypt hash>",
               "consents": { "terms": "1.0", "privacy": "1.0",
                             "ip": "...", "at": "..." } },
   "$unset": { "inviteToken": "", "inviteCreatedAt": "" }
 }
 ----
+<1> The system ACL role comes from `accountsConfig.default-role` (default: `user`).
+    Unverified users have `roles: ["$unauthenticated"]` — only public endpoints are accessible.
 . Issue JWT + refresh cookie → auto-login.
 . Return `200 OK`.
 

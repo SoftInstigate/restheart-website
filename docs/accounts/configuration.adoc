@@ -65,6 +65,17 @@ accountsConfig:
   # Default: "member". Set to "user" if existing ACL rules use that label.
   member-role-name: member
 
+  # System ACL role assigned to users after email verification or OAuth login.
+  # New unverified users get roles: ["$unauthenticated"] — they can only access
+  # public endpoints until verification assigns the real role.
+  # Default: "user". Override per-tenant via override-accounts-default-role.
+  default-role: user
+
+  # Team role assigned to the user who creates a new team.
+  # Stored in user.tenants[].role and team.members[].role.
+  # Default: "owner". Override per-tenant via override-accounts-ownership-role.
+  ownership-role: owner
+
   # Set to false to disable the built-in membership management endpoints:
   #   POST /auth/invite, POST /auth/resend-invite,
   #   GET  /auth/tenants, POST /auth/switch-tenant
