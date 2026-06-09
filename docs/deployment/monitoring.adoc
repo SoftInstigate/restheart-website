@@ -1,40 +1,162 @@
 ---
 docs_version: 9
-title: Monitoring
+title: Monitoring & Metrics
 layout: docs-adoc
 menu: setup
 applies_to: restheart
 redirect_from:
   - /docs/monitoring
+  - /docs/metrics
 ---
-=== Introduction
 
-RESTHeart provides comprehensive monitoring capabilities through Prometheus-compatible metrics. This allows you to track application performance, identify bottlenecks, and integrate with popular monitoring stacks like Prometheus and Grafana.
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
 
-==== What You'll Learn
+* [Architecture](#architecture)
+* [Configuration](#configuration)
+* [Metrics UI](#metrics-ui)
+* [Tutorial](#tutorial)
+* [Prometheus Endpoint](#prometheus-endpoint)
+* [Handling Missing Registries](#handling-missing-metrics-registries)
+* [Metric Labels](#metric-labels)
+* [Custom Metrics](#custom-metrics-restheart-v9)
+* [Disabling Metrics](#disabling-metrics)
+* [See Also](#see-also)
 
-. How to enable metrics collection in RESTHeart
-. Understanding HTTP request metrics (count, duration, rate)
-. Monitoring JVM metrics (memory, garbage collection)
-. Configuring metric collection with include/exclude patterns
-. Using path templates for tenant-specific metrics
-. Querying metrics in Prometheus format
-. Best practices for production monitoring
+</div>
 
-By the end of this guide, you'll have RESTHeart metrics configured and ready for monitoring dashboards.
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
+{% include docs-head.html %}
 
+== Architecture
 
-RESTHeart enables tracking of various key performance indicators (KPIs) for HTTP requests and the JVM. These metrics can be accessed through an API in Prometheus format, allowing you to query and visualize graphs using Prometheus.
+RESTHeart includes a built-in metrics system that collects HTTP request data and optionally JVM metrics, exposes them in Prometheus format via a REST endpoint, and provides a real-time browser dashboard (v9.5.0+).
 
-The following HTTP requests metrics are collected by RESTHeart:
+```
+┌──────────────┐    Prometheus     ┌──────────────────┐     HTML/JS     ┌─────────────────┐
+│  RESTHeart   │─── text format ──▶│  GET /metrics    │◀────────────────│  /metrics-ui    │
+│  (interceptor│    on demand      │  (MetricsService)│    Chart.js     │  (embedded SPA) │
+│   collects)  │                   └──────────────────┘                 └─────────────────┘
+└──────────────┘
+```
 
-- http_requests_count (Count of HTTP requests)
-- http_requests_duration (Duration of HTTP requests)
-- http_requests_rate (Rate of HTTP requests)
+The metrics module has four components:
+
+[cols="2,3,5"]
+|===
+|**Component**|**Type**|**Description**
+
+|**RequestsMetricsCollector**
+|Interceptor (`REQUEST_BEFORE_AUTH`)
+|Records timing and count for every HTTP request, grouped by method + status code + path template
+
+|**JvmMetricsCollector**
+|Initializer
+|Optionally registers JVM memory and GC metrics (disabled by default)
+
+|**MetricsService**
+|Service (`GET /metrics`)
+|Serves aggregated metrics in Prometheus exposition format
+
+|**Metrics UI**
+|Embedded static page (v9.5.0+)
+|Self-contained dashboard at `/metrics-ui` that visualizes metrics in real time
+|===
+
+== Configuration
+
+Metrics configuration is in `restheart.yml` (or overridden via the `RHO` environment variable).
+
+=== Metrics Service
+
+[source,yml]
+----
+metrics:
+  enabled: true                          # enable/disable the metrics service
+  uri: /metrics                          # endpoint path
+  missing-registry-status-code: 404      # HTTP status when no registries exist (404 or 200)
+----
+
+=== Request Metrics Collector
+
+[source,yml]
+----
+requestsMetricsCollector:
+  enabled: true
+  include: ["/*"]                        # path patterns to track
+  exclude: ["/metrics", "/metrics/*"]    # path patterns to skip (avoids feedback loop)
+----
+
+Metrics will be gathered for requests that match the path templates specified in the `include` criteria and do not match those listed in the `exclude` criteria.
+
+Note that when using the variable `{tenant}` in the include path templates, the metrics will be tagged with `path_template_param_tenant=<value>`. This tagging does not apply when using wildcards in path templates.
+
+=== JVM Metrics Collector
+
+[source,yml]
+----
+jvmMetricsCollector:
+  enabled: false   # set to true to expose JVM memory and GC metrics
+----
 
 Additionally, RESTHeart captures JVM metrics such as memory usage and garbage collector data.
 
-## Tutorial
+=== Metrics UI (Static Resources)
+
+NOTE: The embedded Metrics UI dashboard is available starting from RESTHeart v9.5.0.
+
+The dashboard is served as an embedded static resource:
+
+[source,yml]
+----
+static-resources:
+  - what: static/metrics
+    where: /metrics-ui
+    welcome-file: restheart-metrics.html
+    embedded: true
+----
+
+No additional configuration is needed — the UI is built into the `restheart-metrics` JAR.
+
+== Metrics UI
+
+NOTE: The Metrics UI is available starting from RESTHeart v9.5.0.
+
+Open `/metrics-ui` in a browser while RESTHeart is running. The dashboard connects to the RESTHeart server and displays real-time metrics.
+
+=== Connection
+
+. Enter the RESTHeart server URL (e.g. `http://localhost:8080`) in the *server* field
+. Provide authentication credentials (default: `admin` / `secret`)
+. Click *connect*
+
+The dashboard auto-discovers available metric registries by calling `GET /metrics`.
+
+=== Dashboard Panels
+
+[cols="2,5"]
+|===
+|**Panel**|**Description**
+
+|**KPI Row**
+|Total requests (since startup), request rate (1-min and 5-min rolling), latency percentiles (p50, p95, p99)
+
+|**Request Rate Chart**
+|Time-series line chart of requests/sec per method+status combination
+
+|**Request Count Chart**
+|Bar chart of cumulative request counts per method+status
+
+|**Latency Panels**
+|Distribution bars showing p50, p75, p95, p98, p99, p999 latency in milliseconds
+|===
+
+=== Features
+
+- **Auto-refresh**: Configurable interval (5s, 10s, 15s, 30s, 1m). Enabled by default at 30s.
+- **Filter chips**: Click to toggle visibility of specific method+status combinations. Preferences are persisted in `localStorage` per host.
+- **Dark theme**: Optimized for monitoring screens and low-light environments.
+
+== Tutorial
 
 Run RESTHeart with metrics enabled and specify a configuration:
 
@@ -63,11 +185,7 @@ jvmMetricsCollector:
   enabled: true
 ----
 
-Metrics will be gathered for requests that match the path templates specified in the `include` criteria and do not match those listed in the `exclude` criteria.
-
-Note that when using the variable `{tenant}` in the include path templates, the metrics will be tagged with `path_template_param_tenant=<value>`. This tagging does not apply when using wildcards in path templates.
-
-Now, make a few requests to /acme/ping using [httpie](https://httpie.io/).
+Now, make a few requests to /acme/ping using httpie:
 
 [source,bash]
 ----
@@ -127,9 +245,47 @@ response_status_code="200",
 path_template_param_tenant="acme"
 ----
 
-## Use prometheus to display metrics
+== Prometheus Endpoint
 
-Define the following prometheus configuration file `prometheus.yml`
+The `/metrics` endpoint returns metrics in Prometheus exposition format. You can scrape it with Prometheus or any compatible tool.
+
+=== List Registries
+
+[source,bash]
+----
+$ curl -u admin:secret http://localhost:8080/metrics
+----
+
+Returns a JSON array of available registries:
+
+[source,json]
+----
+["/requests"]
+----
+
+If `jvmMetricsCollector` is enabled, you'll also see `/jvm`.
+
+=== Get Registry Metrics
+
+[source,bash]
+----
+$ curl -u admin:secret http://localhost:8080/metrics/requests
+----
+
+Returns Prometheus text format:
+
+----
+# HELP requests_total Total number of HTTP requests
+# TYPE requests_total counter
+requests_total{response_status_code="200",request_method="GET",path_template="/{db}/{coll}"} 142
+# HELP requests_rate_1m Request rate (1-minute moving average)
+# TYPE requests_rate_1m gauge
+requests_rate_1m{response_status_code="200",request_method="GET",path_template="/{db}/{coll}"} 2.35
+----
+
+=== Prometheus Scrape Config
+
+Define the following prometheus configuration file `prometheus.yml`:
 
 [source,yml]
 ----
@@ -138,20 +294,22 @@ global:
   evaluation_interval: 5s
 
 scrape_configs:
-  - job_name: 'restheart http /{tenant}/*'
-    static_configs:
-    - targets: ['host.docker.internal:8080']
-    metrics_path: '/metrics/{tenant}/*'
+  - job_name: 'restheart'
+    metrics_path: '/metrics/requests'
     basic_auth:
-      username: admin
-      password: secret
-  - job_name: 'restheart jvm'
+      username: 'admin'
+      password: 'secret'
     static_configs:
-    - targets: ['host.docker.internal:8080']
+      - targets: ['localhost:8080']
+
+  # If you also want JVM metrics:
+  - job_name: 'restheart jvm'
     metrics_path: '/metrics/jvm'
     basic_auth:
-      username: admin
-      password: secret
+      username: 'admin'
+      password: 'secret'
+    static_configs:
+      - targets: ['localhost:8080']
 ----
 
 Run prometheus with:
@@ -167,7 +325,7 @@ Open `localhost:9090` with your browser and check the metrics:
 
 image::https://github.com/SoftInstigate/restheart/assets/6876503/154b3e6c-bc42-4751-af2d-7e2928746fa4[restheart metrics shown in prometheus]
 
-### Handling Missing Metrics Registries
+== Handling Missing Metrics Registries
 
 > added in RESTHeart v. 8.9.0
 
@@ -178,27 +336,61 @@ However, some monitoring tools (such as Prometheus) expect a 200 OK response fro
 To enable Prometheus compatibility, starting from RESTHeart v 8.9.0 you can add the following to your configuration:
 
 [source,yml]
+----
 metrics:
-enabled: true
-uri: /metrics
-missing-registry-status-code: 200 # Return 200 OK with empty body for missing registries
+  enabled: true
+  uri: /metrics
+  missing-registry-status-code: 200   # Return 200 OK with empty body for missing registries
+----
 
-**Note**: if `missing-registry-status-code` is not set, RESTHeart will return 404 by default.
+NOTE: If `missing-registry-status-code` is not set, RESTHeart will return 404 by default.
 
 Summary of behaviors:
 
- - `missing-registry-status-code: 404` (default): Returns 404 for missing registries (legacy clients)
- - `missing-registry-status-code: 200`: Returns 200 OK with empty body (Prometheus-friendly)
+- `missing-registry-status-code: 404` (default): Returns 404 for missing registries (legacy clients)
+- `missing-registry-status-code: 200`: Returns 200 OK with empty body (Prometheus-friendly)
 
-## Add custom metrics labels from a Service
+== Metric Labels
+
+HTTP request metrics include the following labels:
+
+[cols="2,3,3"]
+|===
+|**Label**|**Description**|**Example**
+
+|`request_method`
+|HTTP method
+|`GET`, `POST`, `PUT`, `DELETE`
+
+|`response_status_code`
+|HTTP status code
+|`200`, `404`, `500`
+
+|`path_template`
+|Matched path template
+|`/{db}/{coll}`, `/{db}/{coll}/{id}`
+|===
+
+=== Custom Labels
 
 The `org.restheart.metrics.Metrics.attachMetricLabels(Request<?> request, List<MetricLabel> labels)` method provides the capability to include custom labels in the metrics that are being collected.
 
 For example, the `GraphQLService` utilizes this method to include the `query` label in the metrics, which corresponds to the name of the executed GraphQL query.
 
+Plugins can also attach custom labels using the `Metrics` API:
+
+[source,java]
+----
+Metrics.addMetricLabel(request, "tenant", "acme-corp");
+----
+
+These labels will appear in the `/metrics` output and in the Metrics UI filter panel.
+
 == Custom Metrics (RESTHeart v9)
 
 RESTHeart v9 introduces a programmatic API for registering and collecting custom application-specific metrics. This allows you to track business metrics, performance indicators, and domain-specific measurements alongside the built-in HTTP and JVM metrics.
+
+Custom metrics are automatically exposed alongside built-in metrics at `/metrics` in Prometheus format.
 
 === Supported Metric Types
 
@@ -417,7 +609,7 @@ public class BusinessMetricsInitializer implements Initializer {
 }
 ----
 
-**Using the metrics:**
+Using the metrics:
 
 [source,java]
 ----
@@ -499,47 +691,33 @@ checkout_duration_seconds_sum 1234.567
 checkout_duration_seconds_count 789.0
 ----
 
-=== Configuration
+== Disabling Metrics
 
-Configure the metrics endpoint in `restheart.yml`:
+To disable the metrics system entirely:
 
 [source,yml]
 ----
 metrics:
-  enabled: true
-  uri: /metrics
-  missing-registry-status-code: 200  # Prometheus-friendly
+  enabled: false
+
+requestsMetricsCollector:
+  enabled: false
+
+jvmMetricsCollector:
+  enabled: false
 ----
 
-=== Best Practices
+Or via the `RHO` environment variable:
 
-1. **Register at startup** - Always register metrics in an Initializer, not during request handling
-2. **Use descriptive names** - Follow Prometheus naming conventions: `subsystem_metric_unit`
-3. **Add helpful descriptions** - Make metrics self-documenting
-4. **Choose appropriate types**:
-   - Use Counters for things that only increase
-   - Use Gauges for values that fluctuate
-   - Use Histograms/Summaries for distributions
-5. **Label carefully** - Labels create new time series; avoid high-cardinality labels
-6. **Monitor costs** - Each unique label combination creates a separate metric
-
-=== Retrieving Existing Metrics
-
-You can also retrieve and manipulate existing metrics programmatically:
-
-[source,java]
+[source,bash]
 ----
-// Get an existing counter
-Counter counter = Metrics.getCounter("http_requests_total");
-if (counter != null) {
-    counter.inc();
-}
-
-// Get an existing gauge
-Gauge gauge = Metrics.getGauge("cache_size");
-if (gauge != null) {
-    gauge.set(newSize);
-}
+$ RHO='/metrics/enabled->false;/requestsMetricsCollector/enabled->false'
 ----
 
-This allows multiple plugins to update the same metrics without re-registering them.
+== See Also
+
+- link:https://restheart.org/docs/static-resources[Static Resources^] — How RESTHeart serves static files
+- link:https://github.com/SoftInstigate/restheart/tree/master/examples/custom-metrics-example[Custom Metrics Example^] — Full working plugin with custom metrics
+- link:https://prometheus.io/docs/introduction/overview/[Prometheus Documentation^] — Setting up Prometheus scraping
+
+</div>
