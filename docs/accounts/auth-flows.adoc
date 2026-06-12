@@ -1,0 +1,267 @@
+---
+docs_version: 9
+title: Authentication Flows
+layout: docs-adoc
+menu: accounts
+applies_to: both
+---
+
+This page documents all authentication and membership flows in restheart-accounts.
+Each flow lists the API endpoints, backend logic, SPI interactions, and the expected frontend behavior.
+
+== 1. Registration (new user)
+
+`POST /auth/register` — public.
+
+*Request body:*
+
+[source,json]
+----
+{
+  "firstName": "Alice",
+  "lastName":  "Rossi",
+  "teamName":  "Acme",
+  "email":     "alice@acme.com",
+  "password":  "correct-horse-battery",
+  "consents":  { "termsAndConditionsAndPrivacyPolicy": true, "unfairTermsAndConditions": true }
+}
+----
+
+*Flow:*
+
+1. Validate required fields and password strength (zxcvbn score >= 3).
+2. Check email uniqueness — `409 Conflict` if already registered.
+3. `MembershipProvider.createInitialTeam(userId, teamName)` — creates team/tenant.
+4. Create user with `roles: ["$unauthenticated"]` and verification token.
+5. Send verification email.
+6. Return `201 Created`.
+
+*Consents:* `POST /auth/register` does not persist user consents.
+Use a response interceptor on the deployment layer to read the `consents` object from the request body and persist it on the user document.
+See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a reference implementation.
+
+*Frontend route:* `/auth/signup`
+
+== 2. Email Verification
+
+`GET /auth/verify?email=...&token=...` — public.
+
+*Flow:*
+
+1. User clicks link in email.
+2. Frontend route `/auth/verify` redirects browser to backend endpoint.
+3. Backend verifies token, sets `roles: ["user"]`, issues JWT cookie.
+4. `302` redirect to `frontend-app-url`.
+5. Frontend detects authentication, shows success screen.
+
+*Frontend route:* `/auth/verify`
+
+== 3. Sign In
+
+`POST /token/cookie` (Basic Auth) + `GET /users/me`
+
+*Flow:*
+
+1. Frontend sends Basic Auth credentials.
+2. Backend sets JWT cookie.
+3. Frontend calls `GET /users/me` to load user profile.
+
+Social login (Google/GitHub) is also available via OAuth buttons.
+
+*Frontend route:* `/auth/login`
+
+== 4. Password Reset
+
+=== 4a. Request reset link
+
+`POST /auth/forgot-password` — public. Always returns `202` (no email enumeration).
+
+*Request body:*
+
+[source,json]
+----
+{ "email": "alice@acme.com" }
+----
+
+*Frontend route:* `/auth/forgot-pwd`
+
+=== 4b. Apply new password
+
+`PATCH /auth/reset-password` — public.
+
+*Request body:*
+
+[source,json]
+----
+{
+  "email":   "alice@acme.com",
+  "token":   "<token from email>",
+  "password": "new-secure-password"
+}
+----
+
+Auto-login on success (JWT cookie set by the plugin).
+
+*Frontend route:* `/auth/reset-password?email=...&token=...`
+
+== 5. Invite New User (no existing account)
+
+`POST /auth/invite` — requires `owner` or `admin` role.
+
+*Request body:*
+
+[source,json]
+----
+{ "email": "bob@example.com", "role": "member" }
+----
+
+*Flow:*
+
+1. Check if user exists.
+2. If user does not exist: create user with `roles: ["$unauthenticated"]`, generate invite token, add membership via `MembershipProvider.addMember()`.
+3. Send invite email with link to `{frontend-url}/auth/activate?email=...&token=...`.
+
+*MembershipProvider SPI:* `addMember(userId, tenantId, role)` — adds user to team.
+
+=== 5a. Accept invitation — set password
+
+`PATCH /auth/activate` — public.
+
+*Request body:*
+
+[source,json]
+----
+{
+  "email":    "bob@example.com",
+  "token":    "<token from email>",
+  "password": "correct-horse-battery"
+}
+----
+
+*Flow:*
+
+1. Verify invite token.
+2. Set password, assign `roles: ["user"]`.
+3. Auto-login (JWT cookie).
+
+Consents are not managed by this endpoint.
+Use a response interceptor to persist consents from the request body (see `AccountsConsentsSaver`).
+
+*Frontend route:* `/auth/activate?email=...&token=...`
+
+=== 5b. Accept invitation — via OAuth
+
+The activation page (`/auth/activate`) shows OAuth buttons (Google/GitHub) with the `pendingInviteToken` passed as a query parameter to the OAuth authorize URL.
+
+*OAuth URL:* `{api-base-url}/auth/oauth/authorize/{provider}?pendingInviteToken=...`
+
+*Flow:*
+
+1. User clicks "Sign in with Google/GitHub".
+2. OAuth callback detects `$unauthenticated` user.
+3. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
+4. JWT cookie set, redirect to `frontend-app-url`.
+
+If the OAuth email does not match the invited email, the callback redirects to `{frontend-error-url}?reason=...`.
+
+== 6. Invite Existing User (has account)
+
+`POST /auth/invite` — same endpoint as above, different behavior for existing users.
+
+*Flow:*
+
+1. User already exists — do NOT add membership immediately.
+2. Store `inviteToken`, `inviteOrgId`, `inviteRole` on the user document.
+3. Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
+
+=== 6a. Accept invitation — existing user
+
+`POST /auth/accept-invite` — requires authentication.
+
+*Request body:*
+
+[source,json]
+----
+{ "token": "<token from email>" }
+----
+
+*Flow:*
+
+1. Find user by authenticated email.
+2. Verify invite token matches and is not expired (7 days).
+3. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
+4. Clear invite fields (`inviteToken`, `inviteCreatedAt`, `inviteOrgId`, `inviteRole`).
+5. Return `200 OK`.
+
+*Frontend route:* `/invitations/accept?token=...`
+
+If user is not logged in, `AuthGuard` redirects to `/auth/login?returnUrl=/invitations/accept?token=...`.
+
+== 7. OAuth Login
+
+`GET /auth/oauth/authorize/{provider}` → `GET /auth/oauth/callback/{provider}`
+
+*Flow:*
+
+1. Frontend builds authorize URL with optional `pendingInviteToken`, `returnUrl`, `consentsAccepted`.
+2. Backend stores CSRF state token, redirects to provider.
+3. Provider redirects back with authorization code.
+4. Backend exchanges code for user profile, finds or creates user.
+5. If user is `$unauthenticated` (invited): activate via `MembershipProvider.activateViaOAuth()`.
+6. Issue JWT cookie, redirect to `frontend-app-url`.
+
+If there was a `pendingInviteToken` but the user is not `$unauthenticated` (email mismatch), redirect to `{frontend-error-url}?reason=...`.
+
+== 8. Switch Tenant
+
+`POST /auth/switch-tenant` — requires authentication.
+
+*Request body:*
+
+[source,json]
+----
+{ "tenantId": "<tenant-id>" }
+----
+
+Calls `MembershipProvider.setActiveMembership(userId, tenantId)` and reissues JWT.
+
+== 9. List Tenants
+
+`GET /auth/tenants` — requires authentication.
+
+Returns all teams the user belongs to via `MembershipProvider.listMemberships(userId)`.
+
+== MembershipProvider SPI Reference
+
+[cols="2,2,3"]
+|===
+|Method | Called by | Cloud implementation
+
+| `createInitialTeam(userId, teamName)`
+| `/auth/register`, OAuth new user
+| Creates org in `orgs` collection, adds user as owner
+
+| `isMember(userId, tenantId)`
+| `/auth/invite` duplicate check
+| Checks `orgs` array on user document
+
+| `addMember(userId, tenantId, role)`
+| `/auth/invite`, `/auth/accept-invite`
+| Adds orgId to user's `orgs` array, sets role
+
+| `activeMembership(userId)`
+| JWT issuance, `/auth/tenants`
+| Reads `org` field, loads org name and role
+
+| `listMemberships(userId)`
+| `GET /auth/tenants`
+| Iterates `orgs` array, loads each org
+
+| `setActiveMembership(userId, tenantId)`
+| `POST /auth/switch-tenant`
+| Sets `org` field on user document
+
+| `activateViaOAuth(userId, consents)`
+| OAuth callback for invited users
+| Assigns `roles: ["user"]`, stores consents
+|===

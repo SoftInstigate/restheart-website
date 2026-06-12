@@ -7,13 +7,13 @@ applies_to: both
 ---
 
 Team invitations allow users with the `owner` or `admin` role to add people to their tenant.
-The invited user receives an email with a one-time activation link; on click they set a password and gain immediate access.
+The behavior differs depending on whether the invited user already has an account.
 
-=== Invite a user
+== Invite a user
 
 `POST /auth/invite` — requires role `owner` or `admin`.
 
-==== Request
+=== Request
 
 [source,http]
 ----
@@ -28,30 +28,34 @@ Content-Type: application/json
 ----
 
 `role` must be one of: the configured `member-role-name` (default `"member"`) or `"admin"`.
-Assigning `owner` via invite is not permitted.
 
-==== Server-side steps
+=== Server-side steps
 
 . Authorize the caller (must be `owner` or `admin` of their tenant).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
-. **If the user exists in a different tenant** → add a new `{ id, role }` entry to the user's `tenants` array (`$addToSet`); send a notification email; return `201 Created`. No password setup required — the user is already active. See xref:multi-tenancy.adoc[Multi-tenancy] for details.
-. **If the user does not exist** → create a new user document and delegate membership setup to the `MembershipProvider` (which adds the `tenant` / `tenants` fields when using the default provider).
-. Send an activation email:
-+
-[source,http]
-----
-{baseAppUrl}/auth/activate?email=bob@example.com&token=<inviteToken>
-----
+. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, add membership via `MembershipProvider.addMember()`, send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
+. **If the user exists but is NOT in this tenant** → store `inviteToken`, `inviteOrgId`, `inviteRole` on the user document (do NOT add membership yet). Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
 . Return `201 Created`.
 
----
+=== Email links
 
-=== Activate an invitation
+[cols="1,1"]
+|===
+| User type | Email link
 
-`PATCH /auth/activate` — accessible to `$unauthenticated` (the user has only the token link).
+| New user (no account)
+| `{frontend-url}/auth/activate?email=...&token=...`
 
-==== Request
+| Existing user
+| `{frontend-url}/invitations/accept?token=...`
+|===
+
+== Activate an invitation (new user)
+
+`PATCH /auth/activate` — public (the user has only the token link).
+
+=== Request
 
 [source,http]
 ----
@@ -63,56 +67,100 @@ Content-Type: application/json
   "token":    "<token from email>",
   "password": "correct-horse-battery"
 }
-}
 ----
 
-==== Server-side steps
+=== Server-side steps
 
-. Validate all fields.
 . Find user by `email`.
-. Compare `inviteToken` using **constant-time comparison**.
-. Note: consents are not managed by this endpoint — they should be persisted by an interceptor in the deployment layer.
-. Check `inviteCreatedAt` + TTL (`inviteTokenTtlDays`, default 7 days).
-. Enforce password strength (zxcvbn score ≥ `minimumPasswordStrength`).
-. Validate consent versions against the configured `legalPolicies` — `409` if versions do not match (policy update required).
-. Clear any existing server session (prevents session fixation).
-. Update the user:
-+
-[source,json]
-----
-{
-  "$set":   { "roles": ["<default-role>"], "password": "<bcrypt hash>",
-              "consents": { "terms": "1.0", "privacy": "1.0",
-                            "ip": "...", "at": "..." } },
-  "$unset": { "inviteToken": "", "inviteCreatedAt": "" }
-}
-----
-<1> The system ACL role comes from `accountsConfig.default-role` (default: `user`).
-    Unverified users have `roles: ["$unauthenticated"]` — only public endpoints are accessible.
+. Compare `inviteToken` using *constant-time comparison*.
+. Check `inviteCreatedAt` + TTL (7 days).
+. Enforce password strength.
+. Set password, assign `roles: ["user"]`.
+. `$unset` invite token and creation timestamp.
 . Issue JWT + refresh cookie → auto-login.
 . Return `200 OK`.
 
-==== Error responses
+[NOTE]
+====
+Consents are not managed by this endpoint.
+Use a response interceptor on the deployment layer to persist consents from the request body.
+See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a reference implementation.
+====
+
+=== Error responses
 
 |===
 | Status | Reason
 
-| `400` | Missing fields; password too weak; expired token
-| `409` | Consent versions outdated (user must accept current policies)
+| `400` | Missing fields; password too weak
+| `401` | Invalid or expired invite token
 |===
 
----
+== Accept an invitation (existing user)
 
-=== Re-send an invitation
+`POST /auth/accept-invite` — requires authentication.
 
-`POST /auth/resend-invite/{email}` — requires role `owner` or `admin`.
-
-Generates a new `inviteToken` (invalidating the previous one) and re-sends the activation email.
+=== Request
 
 [source,http]
 ----
-POST /auth/resend-invite/bob@example.com
+POST /auth/accept-invite
 Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "token": "<token from email>"
+}
 ----
 
-Returns `200 OK` on success. Returns `404` if the user is not found in the caller's tenant or is not in `invited` status.
+=== Server-side steps
+
+. Find user by authenticated email.
+. Verify invite token matches and is not expired (7 days).
+. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
+. Clear invite fields (`inviteToken`, `inviteCreatedAt`, `inviteOrgId`, `inviteRole`).
+. Return `200 OK`.
+
+=== Frontend flow
+
+. User clicks link in email → `/invitations/accept?token=...`
+. If not logged in → `AuthGuard` redirects to `/auth/login?returnUrl=/invitations/accept?token=...`
+. After login → component calls `POST /auth/accept-invite { token }`
+. On success → redirect to dashboard
+
+== Accept via OAuth (new user)
+
+The activation page (`/auth/activate`) shows OAuth buttons with the `pendingInviteToken` passed to the OAuth authorize URL.
+
+=== OAuth URL
+
+[source]
+----
+{api-base-url}/auth/oauth/authorize/{provider}?pendingInviteToken=...
+----
+
+=== Flow
+
+. User clicks "Sign in with Google/GitHub" on the activation page.
+. OAuth callback detects `$unauthenticated` user.
+. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
+. JWT cookie set, redirect to `frontend-app-url`.
+
+[NOTE]
+====
+If the OAuth email does not match the invited email, the callback redirects to `{frontend-error-url}?reason=The+email+used+for+social+login+does+not+match+the+invited+email`.
+====
+
+== Re-send an invitation
+
+`POST /auth/resend-invite` — requires role `owner` or `admin`.
+
+*Request body:*
+
+[source,json]
+----
+{ "email": "bob@example.com" }
+----
+
+Generates a new `inviteToken` (invalidating the previous one) and re-sends the invitation email.
+Returns `200 OK` on success.
