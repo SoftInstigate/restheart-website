@@ -59,13 +59,10 @@ PATCH /auth/activate
 Content-Type: application/json
 
 {
-  "email":       "bob@example.com",
-  "inviteToken": "<token from email>",
-  "password":    "correct-horse-battery",
-  "consents": {
-    "terms":   "1.0",
-    "privacy": "1.0"
-  }
+  "email":    "bob@example.com",
+  "token":    "<token from email>",
+  "password": "correct-horse-battery"
+}
 }
 ----
 
@@ -74,6 +71,7 @@ Content-Type: application/json
 . Validate all fields.
 . Find user by `email`.
 . Compare `inviteToken` using **constant-time comparison**.
+. Note: consents are not managed by this endpoint — they should be persisted by an interceptor in the deployment layer.
 . Check `inviteCreatedAt` + TTL (`inviteTokenTtlDays`, default 7 days).
 . Enforce password strength (zxcvbn score ≥ `minimumPasswordStrength`).
 . Validate consent versions against the configured `legalPolicies` — `409` if versions do not match (policy update required).
