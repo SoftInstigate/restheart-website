@@ -7,6 +7,17 @@ applies_to: both
 ---
 
 Team invitations allow users with the `owner` or `admin` role to add people to their tenant.
+
+[IMPORTANT]
+====
+The invite endpoint requires the JWT to contain the active tenant claim. Ensure the following configuration:
+
+* `accountsConfig.tenant-claim-name: tenant` (or your custom claim name)
+* `jwtTokenManager.account-properties-claims: [tenant]`
+* `accountsConfig.account-properties-claims: [tenant]`
+
+Without these, the service cannot determine the caller's team role and returns `403 Forbidden`.
+====
 The behavior differs depending on whether the invited user already has an account.
 
 == Invite a user
@@ -35,8 +46,28 @@ Content-Type: application/json
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
 . **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, add membership via `MembershipProvider.addMember()`, send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
-. **If the user exists but is NOT in this tenant** → store `inviteToken`, `inviteOrgId`, `inviteRole` on the user document (do NOT add membership yet). Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
+. **If the user exists but is NOT in this tenant** → create an invitation document in the `auth_invitations` collection with `{ email, token, orgId, role, createdAt, expiresAt }`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
 . Return `201 Created`.
+
+[NOTE]
+====
+Invitations for existing users are stored in the `auth_invitations` collection (same database as `users` and `acl`), not on the user document. This allows multiple pending invitations per user across different teams.
+
+The `auth_invitations` document schema:
+
+[source,json]
+----
+{
+  "_id": {"$oid": "..."},
+  "email": "user@example.com",
+  "token": "64-char hex",
+  "orgId": {"$oid": "..."},
+  "role": "member",
+  "createdAt": {"$date": 1234567890},
+  "expiresAt": {"$date": 1234567890}
+}
+----
+====
 
 === Email links
 

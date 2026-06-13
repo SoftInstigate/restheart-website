@@ -171,8 +171,13 @@ If the OAuth email does not match the invited email, the callback redirects to `
 *Flow:*
 
 1. User already exists — do NOT add membership immediately.
-2. Store `inviteToken`, `inviteOrgId`, `inviteRole` on the user document.
+2. Create an invitation document in the `auth_invitations` collection with `{ email, token, orgId, role, createdAt, expiresAt }`.
 3. Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
+
+[NOTE]
+====
+The `auth_invitations` collection lives in the same database as `users` and `acl` (resolved via `RequestOverrides.db()`). This allows multiple pending invitations per user across different teams, instead of overwriting a single set of fields on the user document.
+====
 
 === 6a. Accept invitation — existing user
 
@@ -187,10 +192,10 @@ If the OAuth email does not match the invited email, the callback redirects to `
 
 *Flow:*
 
-1. Find user by authenticated email.
-2. Verify invite token matches and is not expired (7 days).
+1. Find invitation by token in `auth_invitations` collection (must not be expired).
+2. Verify the invitation email matches the authenticated user.
 3. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
-4. Clear invite fields (`inviteToken`, `inviteCreatedAt`, `inviteOrgId`, `inviteRole`).
+4. Delete the invitation document from `auth_invitations`.
 5. Return `200 OK`.
 
 *Frontend route:* `/invitations/accept?token=...`
