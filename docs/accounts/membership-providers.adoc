@@ -41,6 +41,12 @@ The built-in `DefaultMembershipProvider` is used automatically; custom implement
 
 | `setActiveMembership(userId, tenantId)`
 | `POST /auth/switch-tenant`
+
+| `removeMember(userId, tenantId)`
+| `DELETE /auth/remove-member`
+
+| `updateMemberRole(userId, tenantId, newRole)`
+| `PATCH /auth/member-role`
 |===
 
 === Tenant ID types
@@ -322,6 +328,29 @@ public interface MembershipProvider {
     void setActiveMembership(String userId, BsonValue tenantId);
 
     /**
+     * Removes a user from the given tenant.
+     * Called by DELETE /auth/remove-member.
+     * Must remove the entry from both the user-side and the team-side store.
+     * If the tenant was the user's active tenant, the active-tenant field must be cleared.
+     * No-op if the user is not a member.
+     * Default: throws UnsupportedOperationException.
+     */
+    default void removeMember(String userId, BsonValue tenantId) {
+        throw new UnsupportedOperationException("removeMember not implemented by this provider");
+    }
+
+    /**
+     * Updates the org-level role of a member within the given tenant.
+     * Called by PATCH /auth/member-role.
+     * Must update the role on both the user-side and the team-side store.
+     * No-op if the user is not a member.
+     * Default: throws UnsupportedOperationException.
+     */
+    default void updateMemberRole(String userId, BsonValue tenantId, String newRole) {
+        throw new UnsupportedOperationException("updateMemberRole not implemented by this provider");
+    }
+
+    /**
      * Called when an OAuth-authenticated user has status "invited".
      * Return Optional.empty() to deny (default, preserves 9.4.1 behaviour).
      */
@@ -384,6 +413,12 @@ public record Membership(BsonValue tenantId, String displayName, String role, bo
 
 | `setActiveMembership`
 | `$set tenant` on the user document with the native `BsonValue`
+
+| `removeMember`
+| `$pull` from `user.tenants[]` and `team.members[]`; if the removed tenant was active, `$unset tenant` on the user
+
+| `updateMemberRole`
+| Positional `$set tenants.$.role` on the user; positional `$set members.$.role` on the team
 |===
 
 === Backward compatibility

@@ -195,3 +195,77 @@ If the OAuth email does not match the invited email, the callback redirects to `
 
 Generates a new `inviteToken` (invalidating the previous one) and re-sends the invitation email.
 Returns `200 OK` on success.
+
+== Remove a member
+
+`DELETE /auth/remove-member` — requires role `owner` or `admin`.
+
+=== Request
+
+[source,http]
+----
+DELETE /auth/remove-member
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "email": "bob@example.com"
+}
+----
+
+=== Server-side steps
+
+. Authorize the caller (must be `owner` or `admin` of their active tenant).
+. Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
+. Prevent the owner from removing themselves (`400 Bad Request`).
+. Call `MembershipProvider.removeMember(email, tenantId)`.
+. Return `200 OK`.
+
+=== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing `email` field; or owner trying to remove themselves
+| `403` | Caller does not have `owner` or `admin` role
+| `404` | Target user is not a member of the caller's tenant
+|===
+
+== Update a member's role
+
+`PATCH /auth/member-role` — requires role `owner` or `admin`.
+
+=== Request
+
+[source,http]
+----
+PATCH /auth/member-role
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "email": "bob@example.com",
+  "role":  "admin"
+}
+----
+
+`role` must be one of: the configured `member-role-name` (default `"member"`) or `"admin"`.
+Promoting a member to the ownership role (e.g. `"owner"`) is not supported via this endpoint.
+
+=== Server-side steps
+
+. Authorize the caller (must be `owner` or `admin` of their active tenant).
+. Validate `role` — `400 Bad Request` if not `memberRoleName` or `"admin"`.
+. Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
+. Call `MembershipProvider.updateMemberRole(email, tenantId, newRole)`.
+. Return `200 OK`.
+
+=== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing fields; or `role` not in `[memberRoleName, "admin"]`
+| `403` | Caller does not have `owner` or `admin` role
+| `404` | Target user is not a member of the caller's tenant
+|===

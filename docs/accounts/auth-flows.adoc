@@ -236,6 +236,51 @@ Calls `MembershipProvider.setActiveMembership(userId, tenantId)` and reissues JW
 
 Returns all teams the user belongs to via `MembershipProvider.listMemberships(userId)`.
 
+== 10. Remove a Member
+
+`DELETE /auth/remove-member` — requires `owner` or `admin` role.
+
+*Request body:*
+
+[source,json]
+----
+{ "email": "bob@example.com" }
+----
+
+*Flow:*
+
+1. Verify caller is `owner` or `admin` of their active tenant.
+2. Check target is a member of that tenant — `404` otherwise.
+3. Prevent owner from removing themselves — `400`.
+4. `MembershipProvider.removeMember(userId, tenantId)` — removes membership on both user and team side; clears active tenant if it was the removed one.
+5. Return `200 OK`.
+
+*MembershipProvider SPI:* `removeMember(userId, tenantId)`
+
+== 11. Update a Member's Role
+
+`PATCH /auth/member-role` — requires `owner` or `admin` role.
+
+*Request body:*
+
+[source,json]
+----
+{ "email": "bob@example.com", "role": "admin" }
+----
+
+`role` must be the configured `member-role-name` (default `"member"`) or `"admin"`.
+Ownership transfer is not supported via this endpoint.
+
+*Flow:*
+
+1. Verify caller is `owner` or `admin` of their active tenant.
+2. Validate role value — `400` if not `memberRoleName` or `"admin"`.
+3. Check target is a member of that tenant — `404` otherwise.
+4. `MembershipProvider.updateMemberRole(userId, tenantId, newRole)` — updates role on both user and team side.
+5. Return `200 OK`.
+
+*MembershipProvider SPI:* `updateMemberRole(userId, tenantId, newRole)`
+
 == MembershipProvider SPI Reference
 
 [cols="2,2,3"]
@@ -265,6 +310,14 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 | `setActiveMembership(userId, tenantId)`
 | `POST /auth/switch-tenant`
 | Sets `org` field on user document
+
+| `removeMember(userId, tenantId)`
+| `DELETE /auth/remove-member`
+| `$pull` from user's `orgs` array and org's `members` array; unsets `org` if it was active
+
+| `updateMemberRole(userId, tenantId, newRole)`
+| `PATCH /auth/member-role`
+| Positional `$set` on role in user's `orgs` array and org's `members` array
 
 | `activateViaOAuth(userId, consents)`
 | OAuth callback for invited users
