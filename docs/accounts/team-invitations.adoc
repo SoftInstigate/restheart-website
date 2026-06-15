@@ -6,7 +6,7 @@ menu: accounts
 applies_to: both
 ---
 
-Team invitations allow users with the `owner` or `admin` role to add people to their tenant.
+Team invitations allow users with the `owner` role to add people to their tenant.
 
 [IMPORTANT]
 ====
@@ -22,7 +22,7 @@ The behavior differs depending on whether the invited user already has an accoun
 
 == Invite a user
 
-`POST /auth/invite` — requires role `owner` or `admin`.
+`POST /auth/invite` — requires role `owner`.
 
 === Request
 
@@ -38,11 +38,13 @@ Content-Type: application/json
 }
 ----
 
-`role` must be one of: the configured `member-role-name` (default `"member"`) or `"admin"`.
+`role` must be one of: the configured `member-role-name` (default `"member"`) or the configured `ownership-role` (default `"owner"`).
+
+IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should NEVER be used as a team/membership role. Using `admin` as a membership role grants the user unrestricted access to the entire system.
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` or `admin` of their tenant).
+. Authorize the caller (must be `owner` of their tenant).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
 . **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, add membership via `MembershipProvider.addMember()`, send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
@@ -155,7 +157,7 @@ Content-Type: application/json
 === Frontend flow
 
 . User clicks link in email → `/invitations/accept?token=...`
-. If not logged in → `AuthGuard` redirects to `/auth/login?returnUrl=/invitations/accept?token=...`
+. If not logged in → component shows "Sign in to accept" with a login button that preserves the return URL
 . After login → component calls `POST /auth/accept-invite { token }`
 . On success → redirect to dashboard
 
@@ -184,7 +186,7 @@ If the OAuth email does not match the invited email, the callback redirects to `
 
 == Re-send an invitation
 
-`POST /auth/resend-invite` — requires role `owner` or `admin`.
+`POST /auth/resend-invite` — requires role `owner`.
 
 *Request body:*
 
@@ -198,7 +200,7 @@ Returns `200 OK` on success.
 
 == Remove a member
 
-`DELETE /auth/remove-member` — requires role `owner` or `admin`.
+`DELETE /auth/remove-member` — requires role `owner`.
 
 === Request
 
@@ -215,7 +217,7 @@ Content-Type: application/json
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` or `admin` of their active tenant).
+. Authorize the caller (must be `owner` of their active tenant).
 . Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
 . Prevent the owner from removing themselves (`400 Bad Request`).
 . Call `MembershipProvider.removeMember(email, tenantId)`.
@@ -227,13 +229,13 @@ Content-Type: application/json
 | Status | Reason
 
 | `400` | Missing `email` field; or owner trying to remove themselves
-| `403` | Caller does not have `owner` or `admin` role
+| `403` | Caller does not have `owner` role
 | `404` | Target user is not a member of the caller's tenant
 |===
 
 == Update a member's role
 
-`PATCH /auth/member-role` — requires role `owner` or `admin`.
+`PATCH /auth/member-role` — requires role `owner`.
 
 === Request
 
@@ -245,17 +247,18 @@ Content-Type: application/json
 
 {
   "email": "bob@example.com",
-  "role":  "admin"
+  "role":  "member"
 }
 ----
 
-`role` must be one of: the configured `member-role-name` (default `"member"`) or `"admin"`.
-Promoting a member to the ownership role (e.g. `"owner"`) is not supported via this endpoint.
+`role` must be one of: the configured `member-role-name` (default `"member"`) or the configured `ownership-role` (default `"owner"`).
+
+IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as a team role via this endpoint.
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` or `admin` of their active tenant).
-. Validate `role` — `400 Bad Request` if not `memberRoleName` or `"admin"`.
+. Authorize the caller (must be `owner` of their active tenant).
+. Validate `role` — `400 Bad Request` if not `memberRoleName` or `ownershipRole`.
 . Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
 . Call `MembershipProvider.updateMemberRole(email, tenantId, newRole)`.
 . Return `200 OK`.
@@ -265,7 +268,7 @@ Promoting a member to the ownership role (e.g. `"owner"`) is not supported via t
 |===
 | Status | Reason
 
-| `400` | Missing fields; or `role` not in `[memberRoleName, "admin"]`
-| `403` | Caller does not have `owner` or `admin` role
+| `400` | Missing fields; or `role` not in `[memberRoleName, ownershipRole]`
+| `403` | Caller does not have `owner` role
 | `404` | Target user is not a member of the caller's tenant
 |===

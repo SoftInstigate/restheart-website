@@ -106,7 +106,7 @@ Auto-login on success (JWT cookie set by the plugin).
 
 == 5. Invite New User (no existing account)
 
-`POST /auth/invite` — requires `owner` or `admin` role.
+`POST /auth/invite` — requires `owner` role.
 
 *Request body:*
 
@@ -238,7 +238,7 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 
 == 10. Remove a Member
 
-`DELETE /auth/remove-member` — requires `owner` or `admin` role.
+`DELETE /auth/remove-member` — requires `owner` role.
 
 *Request body:*
 
@@ -249,7 +249,7 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 
 *Flow:*
 
-1. Verify caller is `owner` or `admin` of their active tenant.
+1. Verify caller is `owner` of their active tenant.
 2. Check target is a member of that tenant — `404` otherwise.
 3. Prevent owner from removing themselves — `400`.
 4. `MembershipProvider.removeMember(userId, tenantId)` — removes membership on both user and team side; clears active tenant if it was the removed one.
@@ -259,22 +259,22 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 
 == 11. Update a Member's Role
 
-`PATCH /auth/member-role` — requires `owner` or `admin` role.
+`PATCH /auth/member-role` — requires `owner` role.
 
 *Request body:*
 
 [source,json]
 ----
-{ "email": "bob@example.com", "role": "admin" }
+{ "email": "bob@example.com", "role": "member" }
 ----
 
-`role` must be the configured `member-role-name` (default `"member"`) or `"admin"`.
+`role` must be the configured `member-role-name` (default `"member"`) or `ownershipRole`.
 Ownership transfer is not supported via this endpoint.
 
 *Flow:*
 
-1. Verify caller is `owner` or `admin` of their active tenant.
-2. Validate role value — `400` if not `memberRoleName` or `"admin"`.
+1. Verify caller is `owner` of their active tenant.
+2. Validate role value — `400` if not `memberRoleName` or `ownershipRole`.
 3. Check target is a member of that tenant — `404` otherwise.
 4. `MembershipProvider.updateMemberRole(userId, tenantId, newRole)` — updates role on both user and team side.
 5. Return `200 OK`.

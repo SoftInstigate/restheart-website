@@ -351,16 +351,16 @@ Each public-facing service registers its own ACL allow rule automatically on sta
 
 ^†^ Disabled when `membership-endpoints-enabled: false`.
 
-The invite management endpoints are *not* public. Add the following rules to your ACL (file-based or MongoDB-based) to restrict them to `owner` and `admin` roles:
+The invite management endpoints are *not* public. Add the following rules to your ACL (file-based or MongoDB-based) to restrict them to `owner` role:
 
 [source,yaml]
 ----
 # invite and resend-invite require owner or admin
-- roles: [owner, admin]
+- roles: [owner]
   predicate: path('/auth/invite') and method(POST)
   priority: 10
 
-- roles: [owner, admin]
+- roles: [owner]
   predicate: path('/auth/resend-invite') and method(POST)
   priority: 10
 ----

@@ -191,7 +191,7 @@ Add rules only for the protected endpoints (invite management) and your applicat
 fileAclAuthorizer:
   enabled: true
   permissions:
-    # Only owners and admins can invite team members
+    # Only owners can invite team members
     - role: owner
       predicate: path('/auth/invite') and method('POST')
       priority: 0
@@ -450,7 +450,7 @@ await fetch('https://api.example.com/auth/reset-password', {
 
 [source,javascript]
 ----
-// Owner/admin invites a new team member
+// Owner invites a new team member
 await fetch('https://api.example.com/auth/invite', {
   method: 'POST',
   credentials: 'include',            // send the rh_auth cookie
@@ -584,7 +584,7 @@ mclient:
 * [ ] `accountsConfig.cookie-domain` has the leading dot: `.example.com`
 * [ ] `authCookieSetter.secure: true` in production (HTTPS only)
 * [ ] SMTP password and Google client secret stored in Secrets Manager (not in YAML)
-* [ ] ACL rules for invite management endpoints (`owner`/`admin` roles) — public endpoints are handled automatically by each service
+* [ ] ACL rules for invite management endpoints (`owner` role) — public endpoints are handled automatically by each service
 * [ ] `mongoRealmAuthenticator.users-db` matches `accountsConfig.db`
 * [ ] `mongoRealmAuthenticator.bcrypt-hashed-password: true`
 * [ ] Custom email templates uploaded to the server (or built-in templates customised)
