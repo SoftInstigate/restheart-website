@@ -6,6 +6,33 @@ menu: accounts
 applies_to: both
 ---
 
+=== Flow Overview
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+  participant E as Email
+
+  C->>R: POST /auth/register
+  Note over R: validate fields, zxcvbn score ≥ 3
+  R->>M: check email uniqueness
+  R->>M: create user (roles: $unauthenticated + verify token)
+  M-->>R: OK
+  R->>E: verification email
+  R-->>C: 201 Created
+
+  Note over C,E: user clicks link in email
+
+  C->>R: GET /auth/verify?email=…&token=…
+  R->>M: constant-time token compare + TTL check
+  R->>M: set roles → user, unset verify token
+  M-->>R: OK
+  R-->>C: 302 + JWT cookie → frontend app URL
+----
+
 === Registration flow
 
 `POST /auth/register` is the public signup endpoint. It creates a new user and a new tenant in a single atomic operation.

@@ -75,3 +75,34 @@ layout: default
       </div>
   </div>
 </div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+  (async () => {
+    const blocks = document.querySelectorAll('code.language-mermaid, code[data-lang="mermaid"]');
+    const pending = [];
+    for (const code of blocks) {
+      const loading = Object.assign(document.createElement('div'), {
+        className: 'mermaid-loading',
+        textContent: 'Loading diagram'
+      });
+      code.closest('.listingblock').replaceWith(loading);
+      pending.push({ loading, source: code.textContent });
+    }
+    for (const { loading, source } of pending) {
+      const id = 'mmd-' + Math.random().toString(36).slice(2, 9);
+      try {
+        const { svg } = await mermaid.render(id, source);
+        const div = Object.assign(document.createElement('div'), {
+          className: 'mermaid-diagram',
+          innerHTML: svg
+        });
+        loading.replaceWith(div);
+      } catch (e) {
+        console.error('Mermaid render error:', e);
+        loading.remove();
+      }
+    }
+  })();
+</script>

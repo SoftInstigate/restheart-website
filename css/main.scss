@@ -15,6 +15,69 @@
 // Then @import statements
 @import "asciidoctor.css";
 
+// Override asciidoctor.css light background for literal blocks — keep the
+// same dark style used by all other <pre> elements on the site.
+// white-space: pre and word-break: normal prevent layout.scss's
+// word-break: break-all from breaking ASCII diagram lines mid-character.
+// overflow-x: auto gives horizontal scroll on mobile instead of wrapping.
+// Override asciidoctor.css light background for literal blocks and unhighlighted
+// listing blocks (---- without [source,lang]). The direct-child combinator
+// > .content > pre avoids matching Rouge-highlighted blocks (.highlight > pre).
+.literalblock pre,
+.literalblock pre[class],
+.listingblock > .content > pre {
+  background-color: #212121;
+  color: #cccccc;
+  border: 2px solid rgb(70, 130, 180);
+  white-space: pre;
+  overflow-x: auto;
+  word-break: normal;
+  word-wrap: normal;
+}
+
+.mermaid-diagram {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  text-align: center;
+
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+// Hide raw mermaid source before JS replaces it — avoids flash of code
+.listingblock:has(code.language-mermaid),
+.listingblock:has(code[data-lang="mermaid"]) {
+  display: none;
+}
+
+.mermaid-loading {
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #aaaaaa;
+  font-size: 0.9rem;
+  font-style: italic;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #444;
+    border-top-color: #aaaaaa;
+    border-radius: 50%;
+    animation: mermaid-spin 0.8s linear infinite;
+  }
+}
+
+@keyframes mermaid-spin {
+  to { transform: rotate(360deg); }
+}
+
 html {
   scroll-behavior: smooth;
   --app-height: 100%;

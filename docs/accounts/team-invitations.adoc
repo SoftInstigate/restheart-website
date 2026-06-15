@@ -20,6 +20,24 @@ Without these, the service cannot determine the caller's team role and returns `
 ====
 The behavior differs depending on whether the invited user already has an account.
 
+[source,mermaid]
+----
+flowchart TD
+  A[POST /auth/invite\nrequires owner role] --> B{User exists?}
+  B -- No --> C[Create user\nroles: $unauthenticated]
+  C --> D[MembershipProvider.addMember\nuserId, tenantId, role]
+  D --> E[Email: /auth/activate\n?email=…&token=…]
+  E --> F[PATCH /auth/activate\nemail + token + password]
+  F --> G[Set password, roles → user\nAuto-login JWT cookie]
+
+  B -- Yes, not in tenant --> H[Create invitation\nin auth_invitations\nTTL 7 days]
+  H --> I[Email: /invitations/accept\n?token=…]
+  I --> J[POST /auth/accept-invite\ntoken — auth required]
+  J --> K[MembershipProvider.addMember\nDelete invitation doc\n200 OK]
+
+  B -- Yes, already member --> L[409 Conflict]
+----
+
 == Invite a user
 
 `POST /auth/invite` — requires role `owner`.

@@ -17,20 +17,28 @@ See <<_mcp_authentication>> for details.
 
 === Flow
 
-[source]
+[source,mermaid]
 ----
-Browser  → GET /auth/oauth/authorize/{provider}
-         restheart-accounts generates state, stores in oauth_codes (TTL 10 min)
-         → 302 to provider consent screen
+sequenceDiagram
+  participant B as Browser
+  participant R as RESTHeart
+  participant P as OAuth Provider
+  participant M as MongoDB
 
-Provider → GET /auth/oauth/callback/{provider}?code=…&state=…
-         restheart-accounts:
-           validates state (constant-time comparison)
-           exchanges code for access token (server-side, via ScribeJava)
-           fetches user profile from provider
-           upserts user in MongoDB
-           issues JWT cookie
-           → 302 to frontend-success-url
+  B->>R: GET /auth/oauth/authorize/google
+  Note over R: generate CSRF state, store in oauth_codes (TTL 10 min)
+  R-->>B: 302 → provider consent screen
+  B->>P: user consent
+  P-->>B: 302 → /auth/oauth/callback?code=…&state=…
+  B->>R: GET /auth/oauth/callback/google
+  Note over R: validate state (constant-time, findOneAndDelete)
+  R->>P: exchange code for access token
+  P-->>R: access token
+  R->>P: fetch user profile
+  P-->>R: user profile
+  R->>M: upsert user document
+  Note over R: issue JWT cookie
+  R-->>B: 302 + JWT cookie → frontend-url
 ----
 
 === Configuration

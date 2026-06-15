@@ -27,6 +27,24 @@ Each flow lists the API endpoints, backend logic, SPI interactions, and the expe
 }
 ----
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+  participant E as Email
+
+  C->>R: POST /auth/register
+  Note over R: validate fields, zxcvbn score ≥ 3
+  R->>M: check email uniqueness
+  R->>M: createInitialTeam(userId, teamName)
+  R->>M: create user (roles: $unauthenticated + verify token)
+  M-->>R: OK
+  R->>E: verification email
+  R-->>C: 201 Created
+----
+
 *Flow:*
 
 1. Validate required fields and password strength (zxcvbn score >= 3).
@@ -46,6 +64,22 @@ See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a re
 
 `GET /auth/verify?email=...&token=...` — public.
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  Note over C: clicks link in email
+  C->>R: GET /auth/verify?email=…&token=…
+  R->>M: find user, compare token (constant-time)
+  Note over R,M: TTL check (default 7 days)
+  R->>M: set roles: user, unset verify token
+  M-->>R: OK
+  R-->>C: 302 redirect + JWT cookie → frontend-app-url
+----
+
 *Flow:*
 
 1. User clicks link in email.
@@ -59,6 +93,23 @@ See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a re
 == 3. Sign In
 
 `POST /token/cookie` (Basic Auth) + `GET /users/me`
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: POST /token/cookie (Basic Auth)
+  R->>M: verify credentials
+  M-->>R: OK
+  R-->>C: JWT cookie
+  C->>R: GET /users/me
+  R->>M: load user profile
+  M-->>R: user document
+  R-->>C: user document
+----
 
 *Flow:*
 
@@ -104,6 +155,32 @@ Auto-login on success (JWT cookie set by the plugin).
 
 *Frontend route:* `/auth/reset-password?email=...&token=...`
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+  participant E as Email
+
+  Note over C,E: Step 1 — Request reset link
+  C->>R: POST /auth/forgot-password {email}
+  R->>M: lookup user (result not revealed)
+  alt user found and verified
+    R->>M: generate + store reset token (TTL 1h)
+    R->>E: password reset email
+  end
+  R-->>C: 202 Accepted (always)
+
+  Note over C,M: Step 2 — Apply new password
+  C->>R: PATCH /auth/reset-password {email, token, password}
+  Note over R: constant-time token compare + TTL check
+  Note over R: zxcvbn password strength check
+  R->>M: hash + save password, unset reset token
+  M-->>R: OK
+  R-->>C: 200 OK
+----
+
 == 5. Invite New User (no existing account)
 
 `POST /auth/invite` — requires `owner` role.
@@ -113,6 +190,23 @@ Auto-login on success (JWT cookie set by the plugin).
 [source,json]
 ----
 { "email": "bob@example.com", "role": "member" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+  participant E as Email
+
+  O->>R: POST /auth/invite {email, role}
+  R->>M: check if user exists
+  M-->>R: not found
+  R->>M: create user (roles: $unauthenticated + invite token)
+  R->>M: MembershipProvider.addMember(userId, tenantId, role)
+  R->>E: activation email → /auth/activate?email=…&token=…
+  R-->>O: 201 Created
 ----
 
 *Flow:*
@@ -138,6 +232,22 @@ Auto-login on success (JWT cookie set by the plugin).
 }
 ----
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  Note over C: clicks link in email
+  C->>R: PATCH /auth/activate {email, token, password}
+  R->>M: find user, verify token (constant-time + TTL)
+  Note over R: zxcvbn password strength check
+  R->>M: set password, roles → user, unset invite token
+  M-->>R: OK
+  R-->>C: 200 OK + JWT cookie (auto-login)
+----
+
 *Flow:*
 
 1. Verify invite token.
@@ -155,6 +265,24 @@ The activation page (`/auth/activate`) shows OAuth buttons (Google/GitHub) with 
 
 *OAuth URL:* `{api-base-url}/auth/oauth/authorize/{provider}?pendingInviteToken=...`
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant P as OAuth Provider
+
+  Note over C: on /auth/activate page — clicks Sign in with Google
+  C->>R: GET /auth/oauth/authorize/google?pendingInviteToken=…
+  R-->>C: 302 → provider consent screen
+  C->>P: consent
+  P-->>C: 302 → /auth/oauth/callback?code=…&state=…
+  C->>R: GET /auth/oauth/callback/google
+  Note over R: validate state, exchange code for profile
+  Note over R: user is $unauthenticated → activateViaOAuth()
+  R-->>C: 302 + JWT cookie → frontend-app-url
+----
+
 *Flow:*
 
 1. User clicks "Sign in with Google/GitHub".
@@ -167,6 +295,24 @@ If the OAuth email does not match the invited email, the callback redirects to `
 == 6. Invite Existing User (has account)
 
 `POST /auth/invite` — same endpoint as above, different behavior for existing users.
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+  participant E as Email
+
+  O->>R: POST /auth/invite {email, role}
+  R->>M: check if user exists
+  M-->>R: found
+  R->>M: isMember(userId, tenantId)?
+  M-->>R: not a member
+  R->>M: create invitation in auth_invitations (TTL 7 days)
+  R->>E: invite email → /invitations/accept?token=…
+  R-->>O: 201 Created
+----
 
 *Flow:*
 
@@ -190,6 +336,23 @@ The `auth_invitations` collection lives in the same database as `users` and `acl
 { "token": "<token from email>" }
 ----
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  Note over C: already logged in — clicks link in email
+  C->>R: POST /auth/accept-invite {token}
+  R->>M: find invitation by token in auth_invitations
+  Note over R: verify not expired, match authenticated email
+  R->>M: MembershipProvider.addMember(userId, orgId, role)
+  R->>M: delete invitation document
+  M-->>R: OK
+  R-->>C: 200 OK
+----
+
 *Flow:*
 
 1. Find invitation by token in `auth_invitations` collection (must not be expired).
@@ -205,6 +368,30 @@ If user is not logged in, `AuthGuard` redirects to `/auth/login?returnUrl=/invit
 == 7. OAuth Login
 
 `GET /auth/oauth/authorize/{provider}` → `GET /auth/oauth/callback/{provider}`
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant B as Browser
+  participant R as RESTHeart
+  participant P as OAuth Provider
+  participant M as MongoDB
+
+  B->>R: GET /auth/oauth/authorize/google
+  Note over R: generate CSRF state, store in oauth_codes (TTL 10 min)
+  R-->>B: 302 → provider consent screen
+  B->>P: consent
+  P-->>B: 302 → /auth/oauth/callback?code=…&state=…
+  B->>R: GET /auth/oauth/callback/google
+  Note over R: validate state (constant-time, findOneAndDelete)
+  R->>P: exchange code for access token
+  P-->>R: access token
+  R->>P: fetch user profile
+  P-->>R: profile
+  R->>M: upsert user document
+  Note over R: issue JWT cookie
+  R-->>B: 302 + JWT cookie → frontend-url
+----
 
 *Flow:*
 
@@ -228,11 +415,39 @@ If there was a `pendingInviteToken` but the user is not `$unauthenticated` (emai
 { "tenantId": "<tenant-id>" }
 ----
 
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: POST /auth/switch-tenant {tenantId}
+  R->>M: verify membership in tenantId
+  R->>M: MembershipProvider.setActiveMembership(userId, tenantId)
+  M-->>R: OK
+  Note over R: reissue JWT with new tenant claim
+  R-->>C: new JWT cookie
+----
+
 Calls `MembershipProvider.setActiveMembership(userId, tenantId)` and reissues JWT.
 
 == 9. List Tenants
 
 `GET /auth/tenants` — requires authentication.
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: GET /auth/tenants
+  R->>M: MembershipProvider.listMemberships(userId)
+  M-->>R: memberships
+  R-->>C: tenant list
+----
 
 Returns all teams the user belongs to via `MembershipProvider.listMemberships(userId)`.
 
@@ -245,6 +460,22 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 [source,json]
 ----
 { "email": "bob@example.com" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  O->>R: DELETE /auth/remove-member {email}
+  R->>M: verify caller is owner of active tenant
+  R->>M: verify target is a member (404 otherwise)
+  Note over R: reject if owner tries to remove themselves (400)
+  R->>M: MembershipProvider.removeMember(userId, tenantId)
+  M-->>R: OK
+  R-->>O: 200 OK
 ----
 
 *Flow:*
@@ -266,6 +497,22 @@ Returns all teams the user belongs to via `MembershipProvider.listMemberships(us
 [source,json]
 ----
 { "email": "bob@example.com", "role": "member" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  O->>R: PATCH /auth/member-role {email, role}
+  R->>M: verify caller is owner of active tenant
+  Note over R: validate role (must be memberRoleName or ownershipRole)
+  R->>M: verify target is a member (404 otherwise)
+  R->>M: MembershipProvider.updateMemberRole(userId, tenantId, newRole)
+  M-->>R: OK
+  R-->>O: 200 OK
 ----
 
 `role` must be the configured `member-role-name` (default `"member"`) or `ownershipRole`.

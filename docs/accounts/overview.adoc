@@ -16,6 +16,33 @@ It covers the full user lifecycle — registration, email verification, team inv
 
 The plugin is designed to be a first-class RESTHeart module: all features are opt-in, configured exclusively via `restheart.yml`, and produce standard JWT tokens that integrate transparently with the existing RESTHeart security pipeline.
 
+[source,mermaid]
+----
+flowchart LR
+  subgraph Clients
+    B[Browser / Mobile]
+  end
+
+  subgraph RA[restheart-accounts]
+    direction TB
+    EP["Endpoints\n/auth/register  /auth/verify\n/auth/forgot-password  /auth/reset-password\n/auth/invite  /auth/activate\n/auth/tenants  /auth/switch-tenant\n/auth/oauth/authorize  /auth/oauth/callback"]
+    MPS[MembershipProvider SPI]
+    EP --> MPS
+  end
+
+  subgraph Storage
+    M[(MongoDB\nusers · acl\nauth_invitations\noauth_codes)]
+    E[Email\nSMTP / Ermes]
+  end
+
+  P[OAuth Provider\nGoogle · GitHub]
+
+  B -- HTTP + JWT --> RA
+  RA --> M
+  RA --> E
+  RA -- OAuth flow --> P
+----
+
 === Endpoints
 
 |===
