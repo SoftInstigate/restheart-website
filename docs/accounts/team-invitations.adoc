@@ -24,16 +24,19 @@ The behavior differs depending on whether the invited user already has an accoun
 ----
 flowchart TD
   A[POST /auth/invite\nrequires owner role] --> B{User exists?}
-  B -- No --> C[Create user\nroles: $unauthenticated]
-  C --> D[MembershipProvider.addMember\nuserId, tenantId, role]
-  D --> E[Email: /auth/activate\n?email=…&token=…]
-  E --> F[PATCH /auth/activate\nemail + token + password]
-  F --> G[Set password, roles → user\nAuto-login JWT cookie]
+  B -- No --> C[Create user roles: $unauthenticated\nMembershipProvider.addMember\nCreate auth_invitations doc isNewUser=true]
+  C --> E[Email: /auth/activate\n?email=…&token=…]
+  E --> F1[PATCH /auth/activate\nemail + token + password]
+  E --> F2[OAuth authorize\n?pendingInviteToken=…\nactivateViaOAuth]
+  F1 --> G[Set password, roles → user\nDelete auth_invitations\nAuto-login JWT cookie]
+  F2 --> G
 
-  B -- Yes, not in tenant --> H[Create invitation\nin auth_invitations\nTTL 7 days]
-  H --> I[Email: /invitations/accept\n?token=…]
-  I --> J[POST /auth/accept-invite\ntoken — auth required]
-  J --> K[MembershipProvider.addMember\nDelete invitation doc\n200 OK]
+  B -- Yes, not in tenant --> H[Create auth_invitations doc\nisNewUser=false TTL 7 days]
+  H --> I[Email: /invitations/accept\n?email=…&token=…]
+  I --> J1[POST /auth/accept-invite\ntoken — auth required]
+  I --> J2[OAuth authorize\n?pendingInviteToken=…]
+  J1 --> K[MembershipProvider.addMember\nDelete auth_invitations\n200 OK]
+  J2 --> K
 
   B -- Yes, already member --> L[409 Conflict]
 ----
@@ -65,24 +68,25 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 . Authorize the caller (must be `owner` of their tenant).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
-. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, add membership via `MembershipProvider.addMember()`, send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
-. **If the user exists but is NOT in this tenant** → create an invitation document in the `auth_invitations` collection with `{ email, token, orgId, role, createdAt, expiresAt }`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
+. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, call `MembershipProvider.addMember()` immediately (sets `user.tenant` for JWT issuance at activation time). Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
+. **If the user exists but is NOT in this tenant** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 . Return `201 Created`.
 
 [NOTE]
 ====
-Invitations for existing users are stored in the `auth_invitations` collection (same database as `users` and `acl`), not on the user document. This allows multiple pending invitations per user across different teams.
+All invitation tokens — for both new and existing users — are stored exclusively in the `auth_invitations` collection (same database as `users` and `acl`). No `inviteToken` or `inviteCreatedAt` fields are written to user documents.
 
 The `auth_invitations` document schema:
 
 [source,json]
 ----
 {
-  "_id": {"$oid": "..."},
-  "email": "user@example.com",
-  "token": "64-char hex",
-  "orgId": {"$oid": "..."},
-  "role": "member",
+  "_id":       {"$oid": "..."},
+  "email":     "user@example.com",
+  "token":     "64-char hex",
+  "orgId":     {"$oid": "..."},
+  "role":      "member",
+  "isNewUser": true,
   "createdAt": {"$date": 1234567890},
   "expiresAt": {"$date": 1234567890}
 }
@@ -99,7 +103,42 @@ The `auth_invitations` document schema:
 | `{frontend-url}/auth/activate?email=...&token=...`
 
 | Existing user
-| `{frontend-url}/invitations/accept?token=...`
+| `{frontend-url}/invitations/accept?email=...&token=...`
+|===
+
+== Read invitation metadata
+
+`GET /auth/invitation?email=...&token=...` — public.
+
+The frontend calls this on page load to determine which UI to show and to display the org name and role.
+
+Both parameters are required. The `(email, token)` pair is known only to the invitee (delivered via private email link), so this endpoint cannot be used for enumeration.
+
+=== Response `200 OK`
+
+[source,json]
+----
+{
+  "email":     "bob@example.com",
+  "orgName":   "Acme Corp",
+  "role":      "member",
+  "isNewUser": true,
+  "expiresAt": "2026-06-24T10:00:00Z"
+}
+----
+
+=== Frontend behavior
+
+* `isNewUser: true` → show "Set your password" form + OAuth buttons → `PATCH /auth/activate`
+* `isNewUser: false` → show "Log in to accept" form + OAuth buttons → login then `POST /auth/accept-invite`
+
+=== Error responses
+
+|===
+| Status | Reason
+
+| `400` | Missing `email` or `token` parameter
+| `404` | No valid (non-expired) invitation found for that `(email, token)` pair
 |===
 
 == Activate an invitation (new user)
@@ -122,13 +161,13 @@ Content-Type: application/json
 
 === Server-side steps
 
-. Find user by `email`.
-. Compare `inviteToken` using *constant-time comparison*.
-. Check `inviteCreatedAt` + TTL (7 days).
+. Find invitation by `(email, token)` in `auth_invitations` (not on user document).
+. Verify `isNewUser: true` — `400` otherwise (wrong endpoint).
+. Check expiry (TTL 7 days).
 . Enforce password strength.
 . Set password, assign `roles: ["user"]`.
-. `$unset` invite token and creation timestamp.
-. Issue JWT + refresh cookie → auto-login.
+. Delete invitation from `auth_invitations` (one-shot).
+. Issue JWT + cookie → auto-login (tenant already set by `addMember()` at invite time).
 . Return `200 OK`.
 
 [NOTE]
@@ -143,7 +182,7 @@ See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a re
 |===
 | Status | Reason
 
-| `400` | Missing fields; password too weak
+| `400` | Missing fields; password too weak; `isNewUser=false` (wrong endpoint)
 | `401` | Invalid or expired invite token
 |===
 
@@ -166,22 +205,24 @@ Content-Type: application/json
 
 === Server-side steps
 
-. Find user by authenticated email.
-. Verify invite token matches and is not expired (7 days).
+. Find invitation by `token` in `auth_invitations`.
+. Verify `isNewUser: false` — `400` otherwise (wrong endpoint).
+. Verify invitation email matches the authenticated user.
 . `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
-. Clear invite fields (`inviteToken`, `inviteCreatedAt`, `inviteOrgId`, `inviteRole`).
+. Delete invitation from `auth_invitations`.
 . Return `200 OK`.
 
 === Frontend flow
 
-. User clicks link in email → `/invitations/accept?token=...`
-. If not logged in → component shows "Sign in to accept" with a login button that preserves the return URL
-. After login → component calls `POST /auth/accept-invite { token }`
-. On success → redirect to dashboard
+. User clicks link in email → `/invitations/accept?email=...&token=...`
+. Frontend calls `GET /auth/invitation?email=...&token=...` to get org name and role.
+. If not logged in → shows "Log in to accept" with OAuth buttons + login form.
+. After login → calls `POST /auth/accept-invite { token }`.
+. On success → redirect to dashboard.
 
-== Accept via OAuth (new user)
+== Accept via OAuth
 
-The activation page (`/auth/activate`) shows OAuth buttons with the `pendingInviteToken` passed to the OAuth authorize URL.
+Both new and existing invited users can accept via OAuth. The `pendingInviteToken` is passed as a query parameter to the OAuth authorize URL.
 
 === OAuth URL
 
@@ -190,17 +231,18 @@ The activation page (`/auth/activate`) shows OAuth buttons with the `pendingInvi
 {api-base-url}/auth/oauth/authorize/{provider}?pendingInviteToken=...
 ----
 
-=== Flow
+=== New user (roles: $unauthenticated)
 
-. User clicks "Sign in with Google/GitHub" on the activation page.
 . OAuth callback detects `$unauthenticated` user.
 . `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
 . JWT cookie set, redirect to `frontend-app-url`.
 
-[NOTE]
-====
-If the OAuth email does not match the invited email, the callback redirects to `{frontend-error-url}?reason=The+email+used+for+social+login+does+not+match+the+invited+email`.
-====
+=== Existing user
+
+. OAuth callback detects user is NOT `$unauthenticated` and `pendingInviteToken` is present.
+. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`.
+. `MembershipProvider.addMember(userId, orgId, role)`.
+. Delete invitation. Issue JWT. Redirect to `frontend-app-url`.
 
 == Re-send an invitation
 
@@ -213,8 +255,8 @@ If the OAuth email does not match the invited email, the callback redirects to `
 { "email": "bob@example.com" }
 ----
 
-Generates a new `inviteToken` (invalidating the previous one) and re-sends the invitation email.
-Returns `200 OK` on success.
+Generates a new token (invalidating the previous one) by updating the `auth_invitations` document, and re-sends the invitation email. Works for both new and existing user invitations.
+Returns `200 OK` on success. Returns `404` if no pending invitation is found for that user in the caller's team.
 
 == Remove a member
 

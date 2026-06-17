@@ -203,8 +203,9 @@ sequenceDiagram
   O->>R: POST /auth/invite {email, role}
   R->>M: check if user exists
   M-->>R: not found
-  R->>M: create user (roles: $unauthenticated + invite token)
+  R->>M: create user (roles: $unauthenticated, no password)
   R->>M: MembershipProvider.addMember(userId, tenantId, role)
+  R->>M: create auth_invitations doc (isNewUser: true, TTL 7d)
   R->>E: activation email → /auth/activate?email=…&token=…
   R-->>O: 201 Created
 ----
@@ -212,12 +213,37 @@ sequenceDiagram
 *Flow:*
 
 1. Check if user exists.
-2. If user does not exist: create user with `roles: ["$unauthenticated"]`, generate invite token, add membership via `MembershipProvider.addMember()`.
-3. Send invite email with link to `{frontend-url}/auth/activate?email=...&token=...`.
+2. User does not exist: create user with `roles: ["$unauthenticated"]` (no `inviteToken` on user document).
+3. Call `MembershipProvider.addMember()` immediately so `user.tenant` is set (required for JWT issuance on activation).
+4. Create invitation document in `auth_invitations` with `isNewUser: true`.
+5. Send invite email with link to `{frontend-url}/auth/activate?email=...&token=...`.
 
 *MembershipProvider SPI:* `addMember(userId, tenantId, role)` — adds user to team.
 
-=== 5a. Accept invitation — set password
+=== 5a. Read invitation metadata
+
+`GET /auth/invitation?email=...&token=...` — public.
+
+The frontend calls this endpoint on page load to determine which UI to render (set-password form vs. log-in form) and to display the org name and role.
+
+Both `email` and `token` parameters are required. The pair is known only to the invitee (delivered via private email link), so this endpoint cannot be used for enumeration.
+
+*Response `200 OK`:*
+
+[source,json]
+----
+{
+  "email":     "bob@example.com",
+  "orgName":   "Acme Corp",
+  "role":      "member",
+  "isNewUser": true,
+  "expiresAt": "2026-06-24T10:00:00Z"
+}
+----
+
+*Error responses:* `400` (missing params) · `404` (invalid or expired token)
+
+=== 5b. Accept invitation — set password
 
 `PATCH /auth/activate` — public.
 
@@ -239,27 +265,33 @@ sequenceDiagram
   participant R as RESTHeart
   participant M as MongoDB
 
-  Note over C: clicks link in email
+  Note over C: clicks link in email → /auth/activate
   C->>R: PATCH /auth/activate {email, token, password}
-  R->>M: find user, verify token (constant-time + TTL)
+  R->>M: find invitation by (email, token) in auth_invitations
+  Note over R: verify isNewUser=true, TTL check
   Note over R: zxcvbn password strength check
-  R->>M: set password, roles → user, unset invite token
+  R->>M: set password, roles → user
+  R->>M: delete invitation from auth_invitations
   M-->>R: OK
   R-->>C: 200 OK + JWT cookie (auto-login)
 ----
 
 *Flow:*
 
-1. Verify invite token.
-2. Set password, assign `roles: ["user"]`.
-3. Auto-login (JWT cookie).
+1. Find invitation by `(email, token)` in `auth_invitations` (not on user document).
+2. Verify `isNewUser: true` — returns `400` otherwise (wrong endpoint).
+3. Check expiry.
+4. Set password, assign `roles: ["user"]`.
+5. Delete invitation from `auth_invitations` (one-shot token).
+6. Issue JWT with active tenant (set at invite time via `addMember()`).
+7. Return `200 OK` + JWT cookie (auto-login).
 
 Consents are not managed by this endpoint.
 Use a response interceptor to persist consents from the request body (see `AccountsConsentsSaver`).
 
 *Frontend route:* `/auth/activate?email=...&token=...`
 
-=== 5b. Accept invitation — via OAuth
+=== 5c. Accept invitation — via OAuth
 
 The activation page (`/auth/activate`) shows OAuth buttons (Google/GitHub) with the `pendingInviteToken` passed as a query parameter to the OAuth authorize URL.
 
@@ -280,6 +312,7 @@ sequenceDiagram
   C->>R: GET /auth/oauth/callback/google
   Note over R: validate state, exchange code for profile
   Note over R: user is $unauthenticated → activateViaOAuth()
+  R->>P: delete auth_invitations doc
   R-->>C: 302 + JWT cookie → frontend-app-url
 ----
 
@@ -289,8 +322,6 @@ sequenceDiagram
 2. OAuth callback detects `$unauthenticated` user.
 3. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
 4. JWT cookie set, redirect to `frontend-app-url`.
-
-If the OAuth email does not match the invited email, the callback redirects to `{frontend-error-url}?reason=...`.
 
 == 6. Invite Existing User (has account)
 
@@ -309,23 +340,39 @@ sequenceDiagram
   M-->>R: found
   R->>M: isMember(userId, tenantId)?
   M-->>R: not a member
-  R->>M: create invitation in auth_invitations (TTL 7 days)
-  R->>E: invite email → /invitations/accept?token=…
+  R->>M: create auth_invitations doc (isNewUser: false, TTL 7 days)
+  R->>E: invite email → /invitations/accept?email=…&token=…
   R-->>O: 201 Created
 ----
 
 *Flow:*
 
 1. User already exists — do NOT add membership immediately.
-2. Create an invitation document in the `auth_invitations` collection with `{ email, token, orgId, role, createdAt, expiresAt }`.
-3. Send invite email with link to `{frontend-url}/invitations/accept?token=...`.
+2. Create an invitation document in `auth_invitations` with `isNewUser: false`.
+3. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 
 [NOTE]
 ====
-The `auth_invitations` collection lives in the same database as `users` and `acl` (resolved via `RequestOverrides.db()`). This allows multiple pending invitations per user across different teams, instead of overwriting a single set of fields on the user document.
+All invitation tokens — for both new and existing users — are stored exclusively in the `auth_invitations` collection (same database as `users` and `acl`). No invite fields (`inviteToken`, `inviteCreatedAt`) are written to user documents. This allows multiple pending invitations per user across different teams.
+
+The `auth_invitations` document schema:
+
+[source,json]
+----
+{
+  "_id":       {"$oid": "..."},
+  "email":     "user@example.com",
+  "token":     "64-char hex",
+  "orgId":     {"$oid": "..."},
+  "role":      "member",
+  "isNewUser": false,
+  "createdAt": {"$date": 1234567890},
+  "expiresAt": {"$date": 1234567890}
+}
+----
 ====
 
-=== 6a. Accept invitation — existing user
+=== 6a. Accept invitation — log in then accept
 
 `POST /auth/accept-invite` — requires authentication.
 
@@ -343,10 +390,13 @@ sequenceDiagram
   participant R as RESTHeart
   participant M as MongoDB
 
-  Note over C: already logged in — clicks link in email
+  Note over C: clicks link → /invitations/accept?email=…&token=…
+  Note over C: not logged in → redirected to /auth/login
+  C->>R: POST /token/cookie (login)
+  R-->>C: JWT cookie
   C->>R: POST /auth/accept-invite {token}
   R->>M: find invitation by token in auth_invitations
-  Note over R: verify not expired, match authenticated email
+  Note over R: verify isNewUser=false, not expired, email matches caller
   R->>M: MembershipProvider.addMember(userId, orgId, role)
   R->>M: delete invitation document
   M-->>R: OK
@@ -355,15 +405,49 @@ sequenceDiagram
 
 *Flow:*
 
-1. Find invitation by token in `auth_invitations` collection (must not be expired).
-2. Verify the invitation email matches the authenticated user.
-3. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
-4. Delete the invitation document from `auth_invitations`.
-5. Return `200 OK`.
+1. Find invitation by token in `auth_invitations` (must not be expired).
+2. Verify `isNewUser: false` — returns `400` otherwise (wrong endpoint).
+3. Verify the invitation email matches the authenticated user.
+4. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
+5. Delete the invitation document from `auth_invitations`.
+6. Return `200 OK`.
 
-*Frontend route:* `/invitations/accept?token=...`
+*Frontend route:* `/invitations/accept?email=...&token=...`
 
-If user is not logged in, `AuthGuard` redirects to `/auth/login?returnUrl=/invitations/accept?token=...`.
+If user is not logged in, `AuthGuard` redirects to `/auth/login?returnUrl=/invitations/accept?email=...&token=...`.
+
+=== 6b. Accept invitation — via OAuth
+
+Existing users can also accept an invitation by logging in via OAuth with the `pendingInviteToken`.
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant P as OAuth Provider
+  participant M as MongoDB
+
+  Note over C: on /invitations/accept page — clicks Sign in with Google
+  C->>R: GET /auth/oauth/authorize/google?pendingInviteToken=…
+  R-->>C: 302 → provider consent screen
+  C->>P: consent
+  P-->>C: 302 → /auth/oauth/callback?code=…&state=…
+  C->>R: GET /auth/oauth/callback/google
+  Note over R: user is NOT $unauthenticated + pendingInviteToken present
+  R->>M: find invitation by (email, token) in auth_invitations
+  R->>M: MembershipProvider.addMember(userId, orgId, role)
+  R->>M: delete invitation document
+  R-->>C: 302 + JWT cookie → frontend-app-url
+----
+
+*Flow:*
+
+1. User clicks "Sign in with Google/GitHub" on the `/invitations/accept` page.
+2. OAuth callback detects the user is NOT `$unauthenticated` and a `pendingInviteToken` is present.
+3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`.
+4. `MembershipProvider.addMember(userId, orgId, role)`.
+5. Delete invitation. Issue JWT cookie. Redirect to `frontend-app-url`.
 
 == 7. OAuth Login
 
@@ -399,10 +483,9 @@ sequenceDiagram
 2. Backend stores CSRF state token, redirects to provider.
 3. Provider redirects back with authorization code.
 4. Backend exchanges code for user profile, finds or creates user.
-5. If user is `$unauthenticated` (invited): activate via `MembershipProvider.activateViaOAuth()`.
-6. Issue JWT cookie, redirect to `frontend-app-url`.
-
-If there was a `pendingInviteToken` but the user is not `$unauthenticated` (email mismatch), redirect to `{frontend-error-url}?reason=...`.
+5. If user is `$unauthenticated` (new invited user): activate via `MembershipProvider.activateViaOAuth()`.
+6. If user is NOT `$unauthenticated` and `pendingInviteToken` is present (existing invited user): accept invitation via `auth_invitations`, call `addMember()`.
+7. Issue JWT cookie, redirect to `frontend-app-url`.
 
 == 8. Switch Tenant
 
@@ -543,7 +626,7 @@ Ownership transfer is not supported via this endpoint.
 | Checks `orgs` array on user document
 
 | `addMember(userId, tenantId, role)`
-| `/auth/invite`, `/auth/accept-invite`
+| `/auth/invite` (new user, immediately), `/auth/accept-invite`, OAuth existing user
 | Adds orgId to user's `orgs` array, sets role
 
 | `activeMembership(userId)`
