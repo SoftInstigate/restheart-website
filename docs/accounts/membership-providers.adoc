@@ -31,7 +31,7 @@ The built-in `DefaultMembershipProvider` is used automatically; custom implement
 | `POST /auth/invite` — duplicate-membership guard
 
 | `addMember(userId, tenantId, role)`
-| `POST /auth/invite` — new and existing users
+| `PATCH /auth/activate` (new users), `POST /auth/accept-invite` (existing users), OAuth callback (both paths)
 
 | `activeMembership(userId)`
 | JWT issuance after login, verification, activation, OAuth callback
@@ -40,7 +40,7 @@ The built-in `DefaultMembershipProvider` is used automatically; custom implement
 | `GET /auth/tenants`
 
 | `setActiveMembership(userId, tenantId)`
-| `POST /auth/switch-tenant`
+| `POST /auth/switch-tenant`, `POST /auth/accept-invite` (switches active org on acceptance)
 
 | `removeMember(userId, tenantId)`
 | `DELETE /auth/remove-member`
@@ -103,8 +103,8 @@ accountsConfig:
 When an invited user (one with `roles: ["$unauthenticated"]`) authenticates via OAuth, the callback invokes
 `MembershipProvider.activateViaOAuth()` instead of issuing a JWT that would be blocked by the ACL.
 
-The `DefaultMembershipProvider` implementation activates the user immediately:
-it assigns the system ACL role from `accountsConfig.default-role`, clears the `inviteToken` field, and returns the user's pre-assigned membership for JWT issuance.
+Before `activateViaOAuth()` is called, the OAuth callback resolves the pending invitation from `auth_invitations` using the `pendingInviteToken` stored in the CSRF state, and calls `addMember(userId, orgId, role)` to set the user's tenant.
+The `DefaultMembershipProvider` implementation of `activateViaOAuth` then assigns the system ACL role from `accountsConfig.default-role`, clears the `inviteToken` field, and returns the user's membership for JWT issuance.
 
 Custom providers can override this behaviour (or disable it by returning `Optional.empty()`).
 

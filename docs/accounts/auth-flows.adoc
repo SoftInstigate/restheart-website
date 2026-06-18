@@ -203,8 +203,9 @@ sequenceDiagram
   O->>R: POST /auth/invite {email, role}
   R->>M: check if user exists
   M-->>R: not found
+  R->>M: check auth_invitations for pending invite (same email+org)
+  M-->>R: none found
   R->>M: create user (roles: $unauthenticated, no password)
-  R->>M: MembershipProvider.addMember(userId, tenantId, role)
   R->>M: create auth_invitations doc (isNewUser: true, TTL 7d)
   R->>E: activation email → /auth/activate?email=…&token=…
   R-->>O: 201 Created
@@ -213,12 +214,12 @@ sequenceDiagram
 *Flow:*
 
 1. Check if user exists.
-2. User does not exist: create user with `roles: ["$unauthenticated"]` (no `inviteToken` on user document).
-3. Call `MembershipProvider.addMember()` immediately so `user.tenant` is set (required for JWT issuance on activation).
+2. Check `auth_invitations` for a pending invite for the same email+org — returns `409` if one exists.
+3. User does not exist: create user with `roles: ["$unauthenticated"]` (no `inviteToken` on user document).
 4. Create invitation document in `auth_invitations` with `isNewUser: true`.
 5. Send invite email with link to `{frontend-url}/auth/activate?email=...&token=...`.
 
-*MembershipProvider SPI:* `addMember(userId, tenantId, role)` — adds user to team.
+NOTE: Membership is *not* added at invite time. `MembershipProvider.addMember()` is called only when the user accepts the invitation (via password activation or OAuth), keeping the user unassociated until they explicitly accept.
 
 === 5a. Read invitation metadata
 
@@ -271,6 +272,7 @@ sequenceDiagram
   Note over R: verify isNewUser=true, TTL check
   Note over R: zxcvbn password strength check
   R->>M: set password, roles → user
+  R->>M: MembershipProvider.addMember(userId, orgId, role)
   R->>M: delete invitation from auth_invitations
   M-->>R: OK
   R-->>C: 200 OK + JWT cookie (auto-login)
@@ -282,9 +284,10 @@ sequenceDiagram
 2. Verify `isNewUser: true` — returns `400` otherwise (wrong endpoint).
 3. Check expiry.
 4. Set password, assign `roles: ["user"]`.
-5. Delete invitation from `auth_invitations` (one-shot token).
-6. Issue JWT with active tenant (set at invite time via `addMember()`).
-7. Return `200 OK` + JWT cookie (auto-login).
+5. `MembershipProvider.addMember(userId, orgId, role)` — adds user to the org and sets active tenant.
+6. Delete invitation from `auth_invitations` (one-shot token).
+7. Issue JWT with the newly set active tenant.
+8. Return `200 OK` + JWT cookie (auto-login).
 
 Consents are not managed by this endpoint.
 Use a response interceptor to persist consents from the request body (see `AccountsConsentsSaver`).
@@ -303,6 +306,7 @@ sequenceDiagram
   participant C as Client
   participant R as RESTHeart
   participant P as OAuth Provider
+  participant M as MongoDB
 
   Note over C: on /auth/activate page — clicks Sign in with Google
   C->>R: GET /auth/oauth/authorize/google?pendingInviteToken=…
@@ -311,17 +315,21 @@ sequenceDiagram
   P-->>C: 302 → /auth/oauth/callback?code=…&state=…
   C->>R: GET /auth/oauth/callback/google
   Note over R: validate state, exchange code for profile
-  Note over R: user is $unauthenticated → activateViaOAuth()
-  R->>P: delete auth_invitations doc
+  Note over R: user is $unauthenticated + pendingInviteToken present
+  R->>M: find invitation by (email, pendingInviteToken) in auth_invitations
+  R->>M: MembershipProvider.addMember(userId, orgId, role)
+  Note over R: activateViaOAuth() — assigns roles:[user], stores consents
+  R->>M: delete auth_invitations doc
   R-->>C: 302 + JWT cookie → frontend-app-url
 ----
 
 *Flow:*
 
 1. User clicks "Sign in with Google/GitHub".
-2. OAuth callback detects `$unauthenticated` user.
-3. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
-4. JWT cookie set, redirect to `frontend-app-url`.
+2. OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
+3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`, call `MembershipProvider.addMember(userId, orgId, role)` to set tenant.
+4. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
+5. Delete invitation from `auth_invitations`. Issue JWT cookie, redirect to `frontend-app-url`.
 
 == 6. Invite Existing User (has account)
 
@@ -398,6 +406,7 @@ sequenceDiagram
   R->>M: find invitation by token in auth_invitations
   Note over R: verify isNewUser=false, not expired, email matches caller
   R->>M: MembershipProvider.addMember(userId, orgId, role)
+  R->>M: MembershipProvider.setActiveMembership(userId, orgId)
   R->>M: delete invitation document
   M-->>R: OK
   R-->>C: 200 OK
@@ -409,8 +418,11 @@ sequenceDiagram
 2. Verify `isNewUser: false` — returns `400` otherwise (wrong endpoint).
 3. Verify the invitation email matches the authenticated user.
 4. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
-5. Delete the invitation document from `auth_invitations`.
-6. Return `200 OK`.
+5. `MembershipProvider.setActiveMembership(userId, orgId)` — switches the user's active org to the newly joined one.
+6. Delete the invitation document from `auth_invitations`.
+7. Return `200 OK`.
+
+NOTE: The active org is switched to the accepted team so that the next login (or explicit tenant switch) places the user in the new context.
 
 *Frontend route:* `/invitations/accept?email=...&token=...`
 

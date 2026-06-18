@@ -24,18 +24,20 @@ The behavior differs depending on whether the invited user already has an accoun
 ----
 flowchart TD
   A[POST /auth/invite\nrequires owner role] --> B{User exists?}
-  B -- No --> C[Create user roles: $unauthenticated\nMembershipProvider.addMember\nCreate auth_invitations doc isNewUser=true]
-  C --> E[Email: /auth/activate\n?email=…&token=…]
+  B -- No --> C[Check pending invitation\nin auth_invitations]
+  C -- Pending exists --> L2[409 Conflict]
+  C -- None --> D[Create user roles: $unauthenticated\nCreate auth_invitations doc isNewUser=true]
+  D --> E[Email: /auth/activate\n?email=…&token=…]
   E --> F1[PATCH /auth/activate\nemail + token + password]
-  E --> F2[OAuth authorize\n?pendingInviteToken=…\nactivateViaOAuth]
-  F1 --> G[Set password, roles → user\nDelete auth_invitations\nAuto-login JWT cookie]
-  F2 --> G
+  E --> F2[OAuth authorize\n?pendingInviteToken=…]
+  F1 --> G[Set password\nMembershipProvider.addMember\nroles → user\nDelete auth_invitations\nAuto-login JWT cookie]
+  F2 --> G2[addMember from invite\nactivateViaOAuth\nDelete auth_invitations\nJWT cookie]
 
   B -- Yes, not in tenant --> H[Create auth_invitations doc\nisNewUser=false TTL 7 days]
   H --> I[Email: /invitations/accept\n?email=…&token=…]
   I --> J1[POST /auth/accept-invite\ntoken — auth required]
   I --> J2[OAuth authorize\n?pendingInviteToken=…]
-  J1 --> K[MembershipProvider.addMember\nDelete auth_invitations\n200 OK]
+  J1 --> K[MembershipProvider.addMember\nsetActiveMembership\nDelete auth_invitations\n200 OK]
   J2 --> K
 
   B -- Yes, already member --> L[409 Conflict]
@@ -68,7 +70,8 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 . Authorize the caller (must be `owner` of their tenant).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's tenant** → `409 Conflict`.
-. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`, call `MembershipProvider.addMember()` immediately (sets `user.tenant` for JWT issuance at activation time). Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`.
+. **If a pending invitation already exists** for the same email+org in `auth_invitations` → `409 Conflict`.
+. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. Membership is NOT added yet — it is deferred until the user activates.
 . **If the user exists but is NOT in this tenant** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 . Return `201 Created`.
 
@@ -166,8 +169,9 @@ Content-Type: application/json
 . Check expiry (TTL 7 days).
 . Enforce password strength.
 . Set password, assign `roles: ["user"]`.
+. `MembershipProvider.addMember(userId, orgId, role)` — adds user to the org and sets active tenant (reads `orgId` and `role` from the invitation document).
 . Delete invitation from `auth_invitations` (one-shot).
-. Issue JWT + cookie → auto-login (tenant already set by `addMember()` at invite time).
+. Issue JWT + cookie → auto-login.
 . Return `200 OK`.
 
 [NOTE]
@@ -209,6 +213,7 @@ Content-Type: application/json
 . Verify `isNewUser: false` — `400` otherwise (wrong endpoint).
 . Verify invitation email matches the authenticated user.
 . `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
+. `MembershipProvider.setActiveMembership(userId, orgId)` — switches the user's active org to the newly joined one.
 . Delete invitation from `auth_invitations`.
 . Return `200 OK`.
 
@@ -233,9 +238,10 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 
 === New user (roles: $unauthenticated)
 
-. OAuth callback detects `$unauthenticated` user.
+. OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
+. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`; call `MembershipProvider.addMember(userId, orgId, role)` to set tenant.
 . `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
-. JWT cookie set, redirect to `frontend-app-url`.
+. Delete invitation from `auth_invitations`. JWT cookie set, redirect to `frontend-app-url`.
 
 === Existing user
 
