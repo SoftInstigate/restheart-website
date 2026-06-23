@@ -87,13 +87,7 @@ Content-Type: application/json
 
 [NOTE]
 ====
-*Consents management*: `POST /auth/register` does not persist user consents (terms & conditions, privacy policy). If your application requires consent tracking — for example to comply with GDPR or Italian transparency requirements — use a **response interceptor** on your deployment layer that:
-
-1. Intercepts successful `POST /auth/register` responses (status `201`).
-2. Reads the `consents` object from the request body.
-3. Persists it in the user document (e.g. as `consents.terms` and `consents.privacy` with version, timestamp, IP, and accepted flag).
-
-The same interceptor pattern applies to `PATCH /auth/activate` for invited users. See the `restheart-cloud` deployment for a reference implementation (`AccountsConsentsSaver`).
+*Consents management*: User consent tracking is not handled by the Accounts plugin. See link:/docs/accounts/consents-management[Consents Management] for details.
 ====
 
 ---

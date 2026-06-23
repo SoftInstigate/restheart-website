@@ -1,0 +1,95 @@
+= Consents Management
+:page-layout: docs-adoc
+:page-description: How to track user consents (terms & conditions, privacy policy) in your RESTHeart Accounts deployment
+:page-menu: accounts
+:page-applies_to: restheart
+
+== Overview
+
+The Accounts plugin does not persist user consents (terms & conditions, privacy policy acceptance) out of the box.
+
+If your application requires consent tracking — for example to comply with GDPR or local transparency requirements — you need to implement persistence yourself using a **response interceptor**.
+
+[NOTE]
+====
+The OAuth flow does transport a `consentsAccepted` flag through the OAuth state and passes a `ConsentRecord` to `MembershipProvider.activateViaOAuth()`. A custom `MembershipProvider` can use this to persist consents for OAuth-activated users.
+See xref:membership-providers.adoc#_oauth_activation_for_invited_users[OAuth activation for invited users] for the SPI contract.
+====
+
+== Implementing consent persistence
+
+Use a response interceptor that:
+
+1. Intercepts successful `POST /auth/register` responses (status `201`).
+2. Reads the `consents` object from the request body.
+3. Persists it on the user document.
+
+[source,java]
+----
+@RegisterPlugin(name = "consentsSaver",
+    description = "Persists user consents on registration",
+    interceptPoint = InterceptPoint.RESPONSE)
+public class ConsentsSaver implements JsonInterceptor {
+
+    @Inject("mclient")
+    private MongoClient mclient;
+
+    @Override
+    public void handle(JsonRequest request, JsonResponse response) {
+        if (!"/auth/register".equals(request.getPath())
+                || response.getStatusCode() != 201) {
+            return;
+        }
+
+        var consents = request.getContent().get("consents");
+        if (consents == null || !consents.isJsonObject()) {
+            return;
+        }
+
+        var email = request.getContent().get("email").getAsString();
+        var users = mclient.getDatabase("restheart")
+                .getCollection("users");
+
+        users.updateOne(
+            Filters.eq("email", email),
+            Updates.set("consents", Document.parse(
+                consents.toString())));
+    }
+}
+----
+
+[NOTE]
+====
+The same pattern applies to `PATCH /auth/activate` for invited users. Intercept the response, read consents from the request body, and persist them.
+====
+
+== Consent schema
+
+There is no enforced schema for the `consents` field. A common approach:
+
+[source,json]
+----
+{
+  "consents": {
+    "terms": { "accepted": true, "version": "1.0", "at": "2024-01-15T10:30:00Z", "ip": "203.0.113.42" },
+    "privacy": { "accepted": true, "version": "1.0", "at": "2024-01-15T10:30:00Z", "ip": "203.0.113.42" }
+  }
+}
+----
+
+== OAuth flow
+
+When a user authenticates via OAuth, the frontend can signal that the user accepted consents before the redirect by passing `consentsAccepted=true` as a query parameter to `GET /auth/oauth/authorize/{provider}`.
+
+This flag is stored in the OAuth state token and retrieved on callback. The default `MembershipProvider` implementation ignores it, but a custom implementation can use it to persist consents.
+
+See xref:membership-providers.adoc[Membership Providers] for the `activateViaOAuth(userId, consents)` SPI contract and xref:google-oauth.adoc[OAuth Social Login] for the full flow.
+
+== Validating consent versions
+
+If you need to enforce that users accept the latest version of your terms, implement a **request interceptor** that:
+
+1. Runs before authentication on `PATCH /auth/activate`.
+2. Reads the submitted consent versions from the request body.
+3. Compares them against your configured policy versions.
+4. Returns `409 Conflict` if the versions are outdated.

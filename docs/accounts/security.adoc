@@ -43,15 +43,7 @@ Client-side zxcvbn checks are encouraged as UX guidance but are *not* trusted as
 Before issuing a JWT on invitation activation, the server clears any existing session. This prevents a logged-in user from accidentally activating an invitation as a different identity (session fixation variant).
 
 === Legal consent versioning
-
-`PATCH /auth/activate` validates the submitted consent versions (`terms`, `privacy`) against the configured `legalPolicies` versions. If the policy has been updated since the invitation was sent, the endpoint returns `409` and the user must accept the current version before proceeding.
-
-Accepted consents are persisted with:
-
-* The policy versions accepted.
-* A timestamp.
-* The client IP address.
-
+Consent tracking (terms & conditions, privacy policy versions) is not handled by the Accounts plugin. See link:/docs/accounts/consents-management[Consents Management] for guidance on implementing custom consent tracking.
 === Google OAuth security
 
 * PKCE (RFC 7636, `S256` method) is used on every OAuth initiation. The `code_verifier` is never sent to the browser — it is server-side only.

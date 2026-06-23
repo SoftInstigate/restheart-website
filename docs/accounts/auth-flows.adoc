@@ -23,7 +23,6 @@ Each flow lists the API endpoints, backend logic, SPI interactions, and the expe
   "teamName":  "Acme",
   "email":     "alice@acme.com",
   "password":  "correct-horse-battery",
-  "consents":  { "termsAndConditionsAndPrivacyPolicy": true, "unfairTermsAndConditions": true }
 }
 ----
 
@@ -54,10 +53,7 @@ sequenceDiagram
 5. Send verification email.
 6. Return `201 Created`.
 
-*Consents:* `POST /auth/register` does not persist user consents.
-Use a response interceptor on the deployment layer to read the `consents` object from the request body and persist it on the user document.
-See the `AccountsConsentsSaver` interceptor in `restheart-cloud-server` for a reference implementation.
-
+*Consents:* User consent tracking (e.g. terms & conditions, privacy policy) is not handled by the Accounts plugin. See link:/docs/accounts/consents-management[Consents Management] for guidance on implementing consent persistence via a response interceptor.
 *Frontend route:* `/auth/signup`
 
 == 2. Email Verification
@@ -288,9 +284,7 @@ sequenceDiagram
 6. Delete invitation from `auth_invitations` (one-shot token).
 7. Issue JWT with the newly set active tenant.
 8. Return `200 OK` + JWT cookie (auto-login).
-
-Consents are not managed by this endpoint.
-Use a response interceptor to persist consents from the request body (see `AccountsConsentsSaver`).
+Consents are not managed by this endpoint. See link:/docs/accounts/consents-management[Consents Management] for details.
 
 *Frontend route:* `/auth/activate?email=...&token=...`
 
