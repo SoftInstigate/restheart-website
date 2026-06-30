@@ -70,7 +70,7 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 . Authorize the caller (must be `owner` of their team).
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's team** → `409 Conflict`.
-. **If a pending invitation already exists** for the same email+org in `auth_invitations` → `409 Conflict`.
+. **If a pending invitation already exists** for the same email+team in `auth_invitations` → `409 Conflict`.
 . **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. Membership is NOT added yet — it is deferred until the user activates.
 . **If the user exists but is NOT in this team** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 . Return `201 Created`.
@@ -113,7 +113,7 @@ The `auth_invitations` document schema:
 
 `GET /auth/invitation?email=...&token=...` — public.
 
-The frontend calls this on page load to determine which UI to show and to display the org name and role.
+The frontend calls this on page load to determine which UI to show and to display the team name and role.
 
 Both parameters are required. The `(email, token)` pair is known only to the invitee (delivered via private email link), so this endpoint cannot be used for enumeration.
 
@@ -217,7 +217,7 @@ Content-Type: application/json
 === Frontend flow
 
 . User clicks link in email → `/invitations/accept?email=...&token=...`
-. Frontend calls `GET /auth/invitation?email=...&token=...` to get org name and role.
+. Frontend calls `GET /auth/invitation?email=...&token=...` to get team name and role.
 . If not logged in → shows "Log in to accept" with OAuth buttons + login form.
 . After login → calls `POST /auth/accept-invite { token }`.
 . On success → redirect to dashboard.
