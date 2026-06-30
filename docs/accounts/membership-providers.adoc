@@ -9,7 +9,7 @@ applies_to: both
 [NOTE]
 ====
 The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.1*.
-The interface and its types (`Membership`, `TenantRef`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
+The interface and its types (`Membership`, `TeamRef`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 ====
 
 By default, `restheart-accounts` stores team membership directly on the user document using the `team` / `teams` schema.
@@ -182,7 +182,7 @@ import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.restheart.plugins.accounts.Membership;
 import org.restheart.plugins.accounts.MembershipProvider;
-import org.restheart.plugins.accounts.TenantRef;
+import org.restheart.plugins.accounts.TeamRef;
 
 import java.util.List;
 import java.util.Optional;
@@ -192,12 +192,12 @@ public class OrgMembershipProvider implements MembershipProvider {
     // Receive your own DB client, config, etc. via constructor (from the Initializer below)
 
     @Override
-    public TenantRef createInitialTeam(String userId, String orgName) {
+    public TeamRef createInitialTeam(String userId, String orgName) {
         // Create the org document; _id is a MongoDB ObjectId
         var orgId = new BsonObjectId();
         myOrgCollection.insertOrg(orgId, orgName, userId);
         myUserCollection.setActiveOrg(userId, orgId);
-        return new TenantRef(orgId, orgName);   // BsonObjectId, not String
+        return new TeamRef(orgId, orgName);   // BsonObjectId, not String
     }
 
     @Override
@@ -294,7 +294,7 @@ public interface MembershipProvider {
      * The user document already exists when this is called.
      * The returned TeamRef is embedded as the JWT team claim.
      */
-    TenantRef createInitialTeam(String userId, String teamName);
+    TeamRef createInitialTeam(String userId, String teamName);
 
     /**
      * Returns true if the user is already a member of the given team.
@@ -360,7 +360,7 @@ public interface MembershipProvider {
 }
 
 // Tenant reference returned by createInitialTeam — id is the native BsonValue
-public record TenantRef(BsonValue id, String displayName) {}
+public record TeamRef(BsonValue id, String displayName) {}
 
 // Snapshot of a single membership — teamId is the native BsonValue
 public record Membership(BsonValue teamId, String displayName, String role, boolean active) {}

@@ -87,7 +87,7 @@ The `auth_invitations` document schema:
   "_id":       {"$oid": "..."},
   "email":     "user@example.com",
   "token":     "64-char hex",
-  "orgId":     {"$oid": "..."},
+  "teamId":     {"$oid": "..."},
   "role":      "member",
   "isNewUser": true,
   "createdAt": {"$date": 1234567890},
@@ -123,7 +123,7 @@ Both parameters are required. The `(email, token)` pair is known only to the inv
 ----
 {
   "email":     "bob@example.com",
-  "orgName":   "Acme Corp",
+  "teamName":   "Acme Corp",
   "role":      "member",
   "isNewUser": true,
   "expiresAt": "2026-06-24T10:00:00Z"
@@ -210,7 +210,7 @@ Content-Type: application/json
 . Verify `isNewUser: false` — `400` otherwise (wrong endpoint).
 . Verify invitation email matches the authenticated user.
 . `MembershipProvider.addMember(userId, teamId, role)` — adds user to team.
-. `MembershipProvider.setActiveMembership(userId, orgId)` — switches the user's active org to the newly joined one.
+. `MembershipProvider.setActiveMembership(userId, teamId)` — switches the user's active team to the newly joined one.
 . Delete invitation from `auth_invitations`.
 . Return `200 OK`.
 
