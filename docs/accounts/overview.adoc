@@ -25,7 +25,7 @@ flowchart LR
 
   subgraph RA[restheart-accounts]
     direction TB
-    EP["Endpoints\n/auth/register  /auth/verify\n/auth/forgot-password  /auth/reset-password\n/auth/invite  /auth/activate\n/auth/tenants  /auth/switch-tenant\n/auth/oauth/authorize  /auth/oauth/callback"]
+    EP["Endpoints\n/auth/register  /auth/verify\n/auth/forgot-password  /auth/reset-password\n/auth/invite  /auth/activate\n/auth/teams  /auth/switch-team\n/auth/oauth/authorize  /auth/oauth/callback"]
     MPS[MembershipProvider SPI]
     EP --> MPS
   end
@@ -55,8 +55,8 @@ flowchart LR
 | `POST`  | `/auth/invite`                 | owner / admin | Invite a user to the caller's team †
 | `PATCH` | `/auth/activate`               | public        | Accept invitation, set password; auto-login
 | `POST`  | `/auth/resend-invite`          | owner / admin | Re-send an expired invitation (email in request body) †
-| `GET`   | `/auth/tenants`                | authenticated | List the caller's team memberships †
-| `POST`  | `/auth/switch-tenant`          | authenticated | Switch active team; reissues JWT cookie †
+| `GET`   | `/auth/teams`                | authenticated | List the caller's team memberships †
+| `POST`  | `/auth/switch-team`          | authenticated | Switch active team; reissues JWT cookie †
 | `GET`   | `/auth/oauth/authorize/{provider}` | public        | Redirect browser to the OAuth provider's consent screen
 | `GET`   | `/auth/oauth/callback/{provider}`  | public        | OAuth callback: exchange code, upsert user, set JWT cookie
 |===
@@ -66,10 +66,10 @@ See xref:membership-providers.adoc[Custom Membership Providers] for details.
 
 === Multi-tenancy
 
-`restheart-accounts` supports multi-tenant deployments without any custom code in the plugin itself.
-All services check for request attributes injected by an upstream interceptor (such as `AuthDbResolver` or `TenantConfigInterceptor`) and use them in place of the static configuration values.
+`restheart-accounts` supports multi-team deployments without any custom code in the plugin itself.
+All services check for request attributes injected by an upstream interceptor (such as `AuthDbResolver` or `TeamConfigInterceptor`) and use them in place of the static configuration values.
 
-See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanism and xref:membership-providers.adoc[Custom Membership Providers] for replacing the built-in team/tenant storage model.
+See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanism and xref:membership-providers.adoc[Custom Membership Providers] for replacing the built-in team storage model.
 
 .Full list of override request attributes
 |===
@@ -109,23 +109,23 @@ See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanis
 
 | `override-accounts-oauth-google-client-id`
 | `oauthConfig.providers.google.client-id`
-| Per-tenant Google OAuth client ID
+| Per-team Google OAuth client ID
 
 | `override-accounts-oauth-google-client-secret`
 | `oauthConfig.providers.google.client-secret`
-| Per-tenant Google OAuth client secret
+| Per-team Google OAuth client secret
 
 |===
 
 When an attribute is absent the plugin falls back to the corresponding static value in `accountsConfig` / `oauthConfig`.
 
-A typical multi-tenant setup (e.g. restheart-cloud) has two interceptors running at `REQUEST_BEFORE_EXCHANGE_INIT`:
+A typical multi-team setup (e.g. restheart-cloud) has two interceptors running at `REQUEST_BEFORE_EXCHANGE_INIT`:
 
 * `AuthDbResolver` — maps the incoming hostname to the correct `override-users-db` and `override-cookie-domain`.
-* `TenantConfigInterceptor` — reads the `confs/{srvId}.accounts` MongoDB document and attaches the remaining override attributes (`app-name`, `frontend-url`, per-tenant templates, per-tenant OAuth credentials).
+* `TeamConfigInterceptor` — reads the `confs/{srvId}.accounts` MongoDB document and attaches the remaining override attributes (`app-name`, `frontend-url`, per-team templates, per-team OAuth credentials).
 
 Neither interceptor is part of `restheart-accounts`; they belong to the deployment layer (e.g. `restheart-cloud-server`).
-No configuration changes to the plugin are needed per tenant.
+No configuration changes to the plugin are needed per team.
 
 === OAuth & MCP
 

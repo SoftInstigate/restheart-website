@@ -35,7 +35,7 @@ sequenceDiagram
 
 === Registration flow
 
-`POST /auth/register` is the public signup endpoint. It creates a new user and a new tenant in a single atomic operation.
+`POST /auth/register` is the public signup endpoint. It creates a new user and a new team in a single atomic operation.
 
 ==== Request
 
@@ -60,7 +60,7 @@ Content-Type: application/json
 . Check email uniqueness — `409 Conflict` if already registered.
 . Generate a cryptographically random `verificationToken` (256-bit) and `verificationCreatedAt` timestamp.
 . Create the user document with `roles: ["$unauthenticated"]` and the verification token.
-. Create a `membership` document linking the user to the tenant as `owner`.
+. Create a `membership` document linking the user to the team as `owner`.
 . Send a verification email containing a one-time link:
 +
 [source,bash]

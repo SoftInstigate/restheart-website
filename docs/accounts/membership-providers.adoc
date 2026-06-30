@@ -12,7 +12,7 @@ The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.
 The interface and its types (`Membership`, `TenantRef`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 ====
 
-By default, `restheart-accounts` stores team membership directly on the user document using the `tenant` / `tenants` schema.
+By default, `restheart-accounts` stores team membership directly on the user document using the `team` / `teams` schema.
 For applications that already have a domain-specific membership model — different field names, a separate collection, additional metadata such as `joinedAt`, billing references, or a different role vocabulary — the *`MembershipProvider` SPI* lets you plug in your own storage strategy without forking the plugin.
 
 === How it works
@@ -27,38 +27,38 @@ The built-in `DefaultMembershipProvider` is used automatically; custom implement
 | `createInitialTeam(userId, teamName)`
 | `POST /auth/register`, OAuth new-user path
 
-| `isMember(userId, tenantId)`
+| `isMember(userId, teamId)`
 | `POST /auth/invite` — duplicate-membership guard
 
-| `addMember(userId, tenantId, role)`
+| `addMember(userId, teamId, role)`
 | `PATCH /auth/activate` (new users), `POST /auth/accept-invite` (existing users), OAuth callback (both paths)
 
 | `activeMembership(userId)`
 | JWT issuance after login, verification, activation, OAuth callback
 
 | `listMemberships(userId)`
-| `GET /auth/tenants`
+| `GET /auth/teams`
 
-| `setActiveMembership(userId, tenantId)`
-| `POST /auth/switch-tenant`, `POST /auth/accept-invite` (switches active org on acceptance)
+| `setActiveMembership(userId, teamId)`
+| `POST /auth/switch-team`, `POST /auth/accept-invite` (switches active org on acceptance)
 
-| `removeMember(userId, tenantId)`
+| `removeMember(userId, teamId)`
 | `DELETE /auth/remove-member`
 
-| `updateMemberRole(userId, tenantId, newRole)`
+| `updateMemberRole(userId, teamId, newRole)`
 | `PATCH /auth/member-role`
 |===
 
 === Tenant ID types
 
-All SPI methods that receive or return a tenant identifier use `org.bson.BsonValue` rather than `String`.
+All SPI methods that receive or return a team identifier use `org.bson.BsonValue` rather than `String`.
 This means the identifier is stored and passed around in its *native MongoDB type* — typically `BsonObjectId`, but the SPI does not impose any constraint.
 A custom provider is free to use `BsonInt32`, `BsonString`, or any other type its data model requires.
 
-At HTTP boundaries (request bodies, response bodies), tenant IDs are serialized as *MongoDB extended JSON*:
+At HTTP boundaries (request bodies, response bodies), team IDs are serialized as *MongoDB extended JSON*:
 
-* An ObjectId tenant appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/tenants` and `POST /auth/switch-tenant` responses.
-* Clients must send the same format in the `POST /auth/switch-tenant` request body.
+* An ObjectId team appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/teams` and `POST /auth/switch-team` responses.
+* Clients must send the same format in the `POST /auth/switch-team` request body.
 
 This is handled automatically by `BsonUtils.parse` (input) and `BsonUtils.toJson` (output) — no custom conversion helpers are needed in providers.
 
@@ -69,9 +69,9 @@ Three keys are available under `accountsConfig` (all optional; defaults preserve
 [source,yaml]
 ----
 accountsConfig:
-  # JWT claim name used to carry the active tenant identifier.
-  # Default: "tenant". Change to e.g. "org" if your domain uses organisations.
-  tenant-claim-name: tenant
+  # JWT claim name used to carry the active team identifier.
+  # Default: "team" if your domain uses organisations.
+  team-claim-name: team
 
   # Role name assigned to regular (non-admin) team members.
   # Default: "member". Set to "user" if your existing ACL rules use that label.
@@ -80,8 +80,8 @@ accountsConfig:
   # Set to false to disable the built-in membership management endpoints:
   #   POST  /auth/invite
   #   POST  /auth/resend-invite
-  #   GET   /auth/tenants
-  #   POST  /auth/switch-tenant
+  #   GET   /auth/teams
+  #   POST  /auth/switch-team
   # Useful when your custom provider exposes its own equivalent endpoints.
   # Default: true
   membership-endpoints-enabled: true
@@ -93,7 +93,7 @@ accountsConfig:
 ----
 accountsConfig:
   db: myapp
-  tenant-claim-name: org          # JWT carries "org" instead of "tenant"
+  team-claim-name: org          # JWT carries "org" instead of "team"
   member-role-name: user          # keep existing ACL rules
   membership-endpoints-enabled: false   # /orgs-mgmt/* handles invitations
 ----
@@ -103,7 +103,7 @@ accountsConfig:
 When an invited user (one with `roles: ["$unauthenticated"]`) authenticates via OAuth, the callback invokes
 `MembershipProvider.activateViaOAuth()` instead of issuing a JWT that would be blocked by the ACL.
 
-Before `activateViaOAuth()` is called, the OAuth callback resolves the pending invitation from `auth_invitations` using the `pendingInviteToken` stored in the CSRF state, and calls `addMember(userId, orgId, role)` to set the user's tenant.
+Before `activateViaOAuth()` is called, the OAuth callback resolves the pending invitation from `auth_invitations` using the `pendingInviteToken` stored in the CSRF state, and calls `addMember(userId, teamId, role) to set the user's team.
 The `DefaultMembershipProvider` implementation of `activateViaOAuth` then assigns the system ACL role from `accountsConfig.default-role`, clears the `inviteToken` field, and returns the user's membership for JWT issuance.
 
 Custom providers can override this behaviour (or disable it by returning `Optional.empty()`).
@@ -292,21 +292,21 @@ public interface MembershipProvider {
      * the owner role. Called during /auth/register and the OAuth new-user path.
      *
      * The user document already exists when this is called.
-     * The returned TenantRef is embedded as the JWT tenant claim.
+     * The returned TeamRef is embedded as the JWT team claim.
      */
     TenantRef createInitialTeam(String userId, String teamName);
 
     /**
-     * Returns true if the user is already a member of the given tenant.
+     * Returns true if the user is already a member of the given team.
      * Used by /auth/invite to prevent duplicate memberships.
      */
-    boolean isMember(String userId, BsonValue tenantId);
+    boolean isMember(String userId, BsonValue teamId);
 
     /**
-     * Adds a user to a tenant with the specified role (idempotent).
-     * If the user has no active tenant yet, this should also set it.
+     * Adds a user to a team with the specified role (idempotent).
+     * If the user has no active team yet, this should also set it.
      */
-    void addMember(String userId, BsonValue tenantId, String role);
+    void addMember(String userId, BsonValue teamId, String role);
 
     /**
      * Returns the user's currently active membership, or empty if none.
@@ -316,37 +316,37 @@ public interface MembershipProvider {
 
     /**
      * Returns all memberships for the user.
-     * Used by GET /auth/tenants.
+     * Used by GET /auth/teams.
      */
     List<Membership> listMemberships(String userId);
 
     /**
-     * Sets the given tenant as the user's active membership.
-     * Used by POST /auth/switch-tenant.
+     * Sets the given team as the user's active membership.
+     * Used by POST /auth/switch-team.
      * Must throw IllegalArgumentException if the user is not a member.
      */
-    void setActiveMembership(String userId, BsonValue tenantId);
+    void setActiveMembership(String userId, BsonValue teamId);
 
     /**
-     * Removes a user from the given tenant.
+     * Removes a user from the given team.
      * Called by DELETE /auth/remove-member.
      * Must remove the entry from both the user-side and the team-side store.
-     * If the tenant was the user's active tenant, the active-tenant field must be cleared.
+     * If the team was the user's active team, the active-team field must be cleared.
      * No-op if the user is not a member.
      * Default: throws UnsupportedOperationException.
      */
-    default void removeMember(String userId, BsonValue tenantId) {
+    default void removeMember(String userId, BsonValue teamId) {
         throw new UnsupportedOperationException("removeMember not implemented by this provider");
     }
 
     /**
-     * Updates the org-level role of a member within the given tenant.
+     * Updates the org-level role of a member within the given team.
      * Called by PATCH /auth/member-role.
      * Must update the role on both the user-side and the team-side store.
      * No-op if the user is not a member.
      * Default: throws UnsupportedOperationException.
      */
-    default void updateMemberRole(String userId, BsonValue tenantId, String newRole) {
+    default void updateMemberRole(String userId, BsonValue teamId, String newRole) {
         throw new UnsupportedOperationException("updateMemberRole not implemented by this provider");
     }
 
@@ -362,21 +362,21 @@ public interface MembershipProvider {
 // Tenant reference returned by createInitialTeam — id is the native BsonValue
 public record TenantRef(BsonValue id, String displayName) {}
 
-// Snapshot of a single membership — tenantId is the native BsonValue
-public record Membership(BsonValue tenantId, String displayName, String role, boolean active) {}
+// Snapshot of a single membership — teamId is the native BsonValue
+public record Membership(BsonValue teamId, String displayName, String role, boolean active) {}
 ----
 
 === Built-in default provider
 
-`DefaultMembershipProvider` preserves the `tenant` / `tenants` schema and stores tenant identifiers as MongoDB `ObjectId` values.
+`DefaultMembershipProvider` preserves the `team` / `teams` schema and stores team identifiers as MongoDB `ObjectId` values.
 
 [source,json]
 ----
 // users collection — schema managed by DefaultMembershipProvider
 {
   "_id":     "alice@example.com",
-  "tenant":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },   // active tenant (ObjectId)
-  "tenants": [
+  "team":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },   // active team (ObjectId)
+  "teams": [
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
   ]
@@ -397,28 +397,28 @@ public record Membership(BsonValue tenantId, String displayName, String role, bo
 | Operation | MongoDB effect
 
 | `createInitialTeam`
-| Inserts a `teams` document with `ObjectId` `_id`; `$set tenant` (ObjectId), `$addToSet tenants` on the user
+| Inserts a `teams` document with `ObjectId` `_id`; `$set team` (ObjectId), `$addToSet teams` on the user
 
 | `isMember`
-| Reads `tenant` + `tenants` on the user document; compares by native `BsonValue.equals()`
+| Reads `team` + `teams` on the user document; compares by native `BsonValue.equals()`
 
 | `addMember`
-| `$addToSet tenants`; sets `tenant` via `$set` only if the field is absent
+| `$addToSet teams`; sets `team` via `$set` only if the field is absent
 
 | `activeMembership`
-| Reads the `tenant` field as-is (`BsonValue`); resolves team name from the `teams` collection
+| Reads the `team` field as-is (`BsonValue`); resolves team name from the `teams` collection
 
 | `listMemberships`
-| Reads the `tenants` array as-is; resolves team names from the `teams` collection
+| Reads the `teams` array as-is; resolves team names from the `teams` collection
 
 | `setActiveMembership`
-| `$set tenant` on the user document with the native `BsonValue`
+| `$set team` on the user document with the native `BsonValue`
 
 | `removeMember`
-| `$pull` from `user.tenants[]` and `team.members[]`; if the removed tenant was active, `$unset tenant` on the user
+| `$pull` from `user.teams[]` and `team.members[]`; if the removed team was active, `$unset team` on the user
 
 | `updateMemberRole`
-| Positional `$set tenants.$.role` on the user; positional `$set members.$.role` on the team
+| Positional `$set teams.$.role` on the user; positional `$set members.$.role` on the team
 |===
 
 === Backward compatibility
@@ -426,13 +426,13 @@ public record Membership(BsonValue tenantId, String displayName, String role, bo
 A 9.4 deployment upgraded to 9.4.1 with no configuration changes behaves identically:
 
 * `DefaultMembershipProvider` is used automatically.
-* `tenant-claim-name` defaults to `"tenant"` — JWT payload is unchanged.
+* `team-claim-name` defaults to `"team"` — JWT payload is unchanged.
 * `member-role-name` defaults to `"member"` — role names for new invitees use `"member"`.
 * `membership-endpoints-enabled` defaults to `true` — all endpoints remain active.
 
 [NOTE]
 ====
-If your existing user documents store `tenant` / `tenants.id` as plain hex strings (the 9.4 format), they continue to work: `activeMembership` and `listMemberships` read the stored value as-is via `BsonValue`, so a stored `BsonString("64a1…")` is returned without conversion.
+If your existing user documents store `team` / `teams.id` as plain hex strings (the 9.4 format), they continue to work: `activeMembership` and `listMemberships` read the stored value as-is via `BsonValue`, so a stored `BsonString("64a1…")` is returned without conversion.
 New team memberships created after the upgrade will be stored as `ObjectId`.
 ====
 

@@ -1,0 +1,167 @@
+---
+docs_version: 9
+title: Upgrade from 9.4 to 9.5
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.5 introduces a breaking change in the `restheart-accounts` module: all user-facing terminology for multi-team management has been unified from "tenant" to "team".
+
+This page provides a migration guide for deployments using `restheart-accounts`.
+
+== What changed
+
+=== REST API endpoints
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`GET /auth/tenants`
+|`GET /auth/teams`
+
+|`POST /auth/switch-tenant`
+|`POST /auth/switch-team`
+|===
+
+Request and response field names changed accordingly:
+
+* Request body: `tenantId` → `teamId`
+* Response / JWT claim: `tenant` → `team` (configurable via `team-claim-name`)
+
+=== MongoDB document fields
+
+*Users collection* (`users`):
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`user.tenant`
+|`user.team`
+
+|`user.tenants[]`
+|`user.teams[]`
+|===
+
+*Invitations collection* (`auth_invitations`):
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`invitation.orgId`
+|`invitation.teamId`
+|===
+
+The `teams` collection is unchanged.
+
+=== Configuration (`restheart-default-config.yml`)
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`tenant-claim-name: tenant`
+|`team-claim-name: team`
+
+|`getTenantsService`
+|`getTeamsService`
+
+|`switchTenantService`
+|`switchTeamService`
+|===
+
+=== SPI changes (custom `MembershipProvider` implementations)
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`TenantRef` (record)
+|`TeamRef`
+
+|`Membership.tenantId()`
+|`Membership.teamId()`
+|===
+
+The `MembershipProvider` interface method signatures are unchanged.
+
+=== Plugin class renames
+
+[cols="1,1"]
+|===
+|9.4 |9.5
+
+|`SwitchTenantService`
+|`SwitchTeamService`
+
+|`GetTenantsService`
+|`GetTeamsService`
+|===
+
+== Migration steps
+
+=== 1. Migrate MongoDB data
+
+Run the following commands against your database *before* upgrading RESTHeart:
+
+[source,javascript]
+----
+// Migrate user documents
+db.users.updateMany({}, [
+  { $set: { team: "$tenant", teams: "$tenants" } },
+  { $unset: ["tenant", "tenants"] }
+]);
+
+// Migrate invitation documents
+db.auth_invitations.updateMany({}, [
+  { $set: { teamId: "$orgId" } },
+  { $unset: ["orgId"] }
+]);
+----
+
+TIP: Test the migration on a staging database first. The `updateMany` with aggregation pipeline is idempotent — running it twice is safe (the second run matches zero documents).
+
+=== 2. Update RESTHeart configuration
+
+In `restheart.yml`, rename:
+
+[source,yaml]
+----
+# Before (9.4)
+accountsConfig:
+  tenant-claim-name: tenant
+  # ...
+getTenantsService:
+  enabled: true
+switchTenantService:
+  enabled: true
+
+# After (9.5)
+accountsConfig:
+  team-claim-name: team
+  # ...
+getTeamsService:
+  enabled: true
+switchTeamService:
+  enabled: true
+----
+
+=== 3. Update front-end and API clients
+
+If your front-end or API clients reference:
+
+* The `tenant` JWT claim → change to `team` (or whatever you set in `team-claim-name`)
+* `GET /auth/tenants` → `GET /auth/teams`
+* `POST /auth/switch-tenant` → `POST /auth/switch-team`
+* Request body `{ "tenantId": ... }` → `{ "teamId": ... }`
+
+=== 4. Update custom plugins
+
+If you have custom `@RegisterPlugin` interceptors or services that read `user.tenant` or `user.tenants`, update them to `user.team` / `user.teams`.
+
+If you implement a custom `MembershipProvider`:
+
+* Replace `TenantRef` with `TeamRef`
+* Replace `Membership.tenantId()` with `Membership.teamId()`

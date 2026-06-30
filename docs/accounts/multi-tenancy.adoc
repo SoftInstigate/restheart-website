@@ -6,8 +6,8 @@ menu: accounts
 applies_to: both
 ---
 
-A user can belong to multiple tenants simultaneously, each with a different role.
-The active tenant and its corresponding role are encoded in the JWT; switching tenants reissues the JWT without requiring a new login.
+A user can belong to multiple teams simultaneously, each with a different role.
+The active team and its corresponding role are encoded in the JWT; switching teams reissues the JWT without requiring a new login.
 
 [NOTE]
 ====
@@ -17,31 +17,31 @@ This page describes the built-in default behaviour.
 
 === Data model
 
-Each user document stores a `tenants` array alongside the scalar `tenant` field.
-The `DefaultMembershipProvider` stores tenant identifiers as MongoDB `ObjectId` values:
+Each user document stores a `teams` array alongside the scalar `team` field.
+The `DefaultMembershipProvider` stores team identifiers as MongoDB `ObjectId` values:
 
 [source,json]
 ----
 {
   "_id":     "alice@example.com",
   "roles":   ["user"],                                        // system ACL role (from default-role)
-  "tenant":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },        // active tenant ID (JWT claim)
-  "tenants": [
+  "team":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },        // active team ID (JWT claim)
+  "teams": [
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },  // membership role
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
   ]
 }
 ----
 NOTE: `roles` contains the *system ACL role* (e.g. `user`), not the membership role.
-The membership role (`owner`/`member`) is per-tenant and stored in the `tenants` array.
+The membership role (`owner`/`member`) is per-team and stored in the `teams` array.
 
-`roles` is always kept in sync with the role for the active `tenant`.
-`tenants` is the authoritative list of all memberships.
+`roles` is always kept in sync with the role for the active `team`.
+`teams` is the authoritative list of all memberships.
 Custom providers can use a different identifier type — see xref:membership-providers.adoc[Custom Membership Providers].
 
 === Adding a user to a second team
 
-Inviting an existing user to a different team adds a new entry to their `tenants` array without requiring account reactivation (the user is already active):
+Inviting an existing user to a different team adds a new entry to their `teams` array without requiring account reactivation (the user is already active):
 
 [source,http]
 ----
@@ -56,15 +56,15 @@ Content-Type: application/json
 * If the user is new → standard invite flow (see xref:team-invitations.adoc[Team Invitations]).
 * If the user is active in another team → invitation sent; membership added when the user accepts; `201 Created`.
 
-=== List tenant memberships
+=== List team memberships
 
-`GET /auth/tenants` — requires authentication.
+`GET /auth/teams` — requires authentication.
 
-Returns all teams the current user belongs to. The entry whose `active` field is `true` matches the tenant encoded in the current JWT.
+Returns all teams the current user belongs to. The entry whose `active` field is `true` matches the team encoded in the current JWT.
 
 [source,http]
 ----
-GET /auth/tenants
+GET /auth/teams
 Authorization: Bearer <token>
 ----
 
@@ -77,35 +77,35 @@ Authorization: Bearer <token>
 ----
 
 The `id` field is serialized as MongoDB extended JSON, preserving the native BSON type.
-For ObjectId tenant identifiers (the default) it is `{"$oid": "..."}`.
-Custom providers that use string or integer tenant IDs will produce a plain JSON string or number.
+For ObjectId team identifiers (the default) it is `{"$oid": "..."}`.
+Custom providers that use string or integer team IDs will produce a plain JSON string or number.
 
-=== Switch active tenant
+=== Switch active team
 
-`POST /auth/switch-tenant` — requires authentication.
+`POST /auth/switch-team` — requires authentication.
 
-Verifies that the user belongs to the requested tenant, issues a new JWT with the correct role for that tenant, and updates the auth cookie.
+Verifies that the user belongs to the requested team, issues a new JWT with the correct role for that team, and updates the auth cookie.
 The browser (or client) does not need to re-enter credentials.
 
 [source,http]
 ----
-POST /auth/switch-tenant
+POST /auth/switch-team
 Authorization: Bearer <token>
 Content-Type: application/json
 
-{ "tenantId": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"} }
+{ "teamId": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"} }
 ----
 
-The `tenantId` value must be in MongoDB extended JSON format, matching the `id` field returned by `GET /auth/tenants`.
+The `teamId` value must be in MongoDB extended JSON format, matching the `id` field returned by `GET /auth/teams`.
 
 On success (`200 OK`):
 
-* The response body confirms the new active tenant and role.
+* The response body confirms the new active team and role.
 * The `Set-Cookie` header carries the new JWT.
 
 [source,json]
 ----
-{ "tenant": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "user" }
+{ "team": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "user" }
 ----
 
 ==== Error responses
@@ -113,9 +113,9 @@ On success (`200 OK`):
 |===
 | Status | Reason
 
-| `400` | Missing or blank `tenantId`
+| `400` | Missing or blank `teamId`
 | `401` | Not authenticated
-| `403` | User does not belong to the requested tenant, or account not active
+| `403` | User does not belong to the requested team, or account not active
 | `404` | User document not found
 |===
 
@@ -123,21 +123,21 @@ On success (`200 OK`):
 
 [source,typescript]
 ----
-// 1. Load tenant list on app init
-authService.getTenants()  // GET /auth/tenants
-  .subscribe(tenants => this.tenants.set(tenants));
+// 1. Load team list on app init
+authService.getTeams()  // GET /auth/teams
+  .subscribe(teams => this.teams.set(teams));
 
 // 2. User picks a different team
-authService.switchTenant(tenantId)  // POST /auth/switch-tenant
+authService.switchTeam(teamId)  // POST /auth/switch-team
   .pipe(switchMap(() => authService.checkSession()))
   .subscribe(() => router.navigate(['/time']));
 ----
 
-After `switchTenant`, call `checkSession()` (`GET /token`) so the app state reflects the new tenant and role.
+After `switchTeam`, call `checkSession()` (`GET /token`) so the app state reflects the new team and role.
 
 === ACL considerations
 
-No manual ACL entries are needed for `/auth/tenants` or `/auth/switch-tenant`.
+No manual ACL entries are needed for `/auth/teams` or `/auth/switch-team`.
 Both endpoints register their own allow rules via `ACLRegistry` at startup.
 They are disabled when `accountsConfig.membership-endpoints-enabled: false`.
 

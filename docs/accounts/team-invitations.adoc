@@ -6,15 +6,15 @@ menu: accounts
 applies_to: both
 ---
 
-Team invitations allow users with the `owner` role to add people to their tenant.
+Team invitations allow users with the `owner` role to add people to their team.
 
 [IMPORTANT]
 ====
-The invite endpoint requires the JWT to contain the active tenant claim. Ensure the following configuration:
+The invite endpoint requires the JWT to contain the active team claim. Ensure the following configuration:
 
-* `accountsConfig.tenant-claim-name: tenant` (or your custom claim name)
-* `jwtTokenManager.account-properties-claims: [tenant]`
-* `accountsConfig.account-properties-claims: [tenant]`
+* `accountsConfig.team-claim-name: team` (or your custom claim name)
+* `jwtTokenManager.account-properties-claims: [team]`
+* `accountsConfig.account-properties-claims: [team]`
 
 Without these, the service cannot determine the caller's team role and returns `403 Forbidden`.
 ====
@@ -33,7 +33,7 @@ flowchart TD
   F1 --> G[Set password\nMembershipProvider.addMember\nroles → user\nDelete auth_invitations\nAuto-login JWT cookie]
   F2 --> G2[addMember from invite\nactivateViaOAuth\nDelete auth_invitations\nJWT cookie]
 
-  B -- Yes, not in tenant --> H[Create auth_invitations doc\nisNewUser=false TTL 7 days]
+  B -- Yes, not in team --> H[Create auth_invitations doc\nisNewUser=false TTL 7 days]
   H --> I[Email: /invitations/accept\n?email=…&token=…]
   I --> J1[POST /auth/accept-invite\ntoken — auth required]
   I --> J2[OAuth authorize\n?pendingInviteToken=…]
@@ -67,12 +67,12 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` of their tenant).
+. Authorize the caller (must be `owner` of their team).
 . Validate `email` format and `role` value.
-. **If the user already belongs to the caller's tenant** → `409 Conflict`.
+. **If the user already belongs to the caller's team** → `409 Conflict`.
 . **If a pending invitation already exists** for the same email+org in `auth_invitations` → `409 Conflict`.
 . **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. Membership is NOT added yet — it is deferred until the user activates.
-. **If the user exists but is NOT in this tenant** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
+. **If the user exists but is NOT in this team** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 . Return `201 Created`.
 
 [NOTE]
@@ -169,7 +169,7 @@ Content-Type: application/json
 . Check expiry (TTL 7 days).
 . Enforce password strength.
 . Set password, assign `roles: ["user"]`.
-. `MembershipProvider.addMember(userId, orgId, role)` — adds user to the org and sets active tenant (reads `orgId` and `role` from the invitation document).
+. `MembershipProvider.addMember(userId, teamId, role)` — adds user to the team and sets active team (reads `teamId` and `role` from the invitation document).
 . Delete invitation from `auth_invitations` (one-shot).
 . Issue JWT + cookie → auto-login.
 . Return `200 OK`.
@@ -209,7 +209,7 @@ Content-Type: application/json
 . Find invitation by `token` in `auth_invitations`.
 . Verify `isNewUser: false` — `400` otherwise (wrong endpoint).
 . Verify invitation email matches the authenticated user.
-. `MembershipProvider.addMember(userId, orgId, role)` — adds user to team.
+. `MembershipProvider.addMember(userId, teamId, role)` — adds user to team.
 . `MembershipProvider.setActiveMembership(userId, orgId)` — switches the user's active org to the newly joined one.
 . Delete invitation from `auth_invitations`.
 . Return `200 OK`.
@@ -236,7 +236,7 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 === New user (roles: $unauthenticated)
 
 . OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
-. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`; call `MembershipProvider.addMember(userId, orgId, role)` to set tenant.
+. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`; call `MembershipProvider.addMember(userId, teamId, role)` to set team.
 . `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
 . Delete invitation from `auth_invitations`. JWT cookie set, redirect to `frontend-app-url`.
 
@@ -244,7 +244,7 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 
 . OAuth callback detects user is NOT `$unauthenticated` and `pendingInviteToken` is present.
 . Find invitation by `(email, pendingInviteToken)` in `auth_invitations`.
-. `MembershipProvider.addMember(userId, orgId, role)`.
+. `MembershipProvider.addMember(userId, teamId, role)`.
 . Delete invitation. Issue JWT. Redirect to `frontend-app-url`.
 
 == Re-send an invitation
@@ -280,10 +280,10 @@ Content-Type: application/json
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` of their active tenant).
-. Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
+. Authorize the caller (must be `owner` of their active team).
+. Verify the target user is a member of the caller's team — `404 Not Found` otherwise.
 . Prevent the owner from removing themselves (`400 Bad Request`).
-. Call `MembershipProvider.removeMember(email, tenantId)`.
+. Call `MembershipProvider.removeMember(email, teamId)`.
 . Return `200 OK`.
 
 === Error responses
@@ -293,7 +293,7 @@ Content-Type: application/json
 
 | `400` | Missing `email` field; or owner trying to remove themselves
 | `403` | Caller does not have `owner` role
-| `404` | Target user is not a member of the caller's tenant
+| `404` | Target user is not a member of the caller's team
 |===
 
 == Update a member's role
@@ -320,10 +320,10 @@ IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as
 
 === Server-side steps
 
-. Authorize the caller (must be `owner` of their active tenant).
+. Authorize the caller (must be `owner` of their active team).
 . Validate `role` — `400 Bad Request` if not `memberRoleName` or `ownershipRole`.
-. Verify the target user is a member of the caller's tenant — `404 Not Found` otherwise.
-. Call `MembershipProvider.updateMemberRole(email, tenantId, newRole)`.
+. Verify the target user is a member of the caller's team — `404 Not Found` otherwise.
+. Call `MembershipProvider.updateMemberRole(email, teamId, newRole)`.
 . Return `200 OK`.
 
 === Error responses
@@ -333,5 +333,5 @@ IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as
 
 | `400` | Missing fields; or `role` not in `[memberRoleName, ownershipRole]`
 | `403` | Caller does not have `owner` role
-| `404` | Target user is not a member of the caller's tenant
+| `404` | Target user is not a member of the caller's team
 |===

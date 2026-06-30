@@ -122,7 +122,7 @@ If `consentsAccepted=true`, the callback builds a `ConsentRecord` and passes it 
 * On callback, the `code` field is looked up and the document is always deleted before provider-name and TTL checks, preventing replay probing via different provider names.
 * Token exchange is performed entirely server-side by the `OAuthProvider` implementation; `client_secret` values are never exposed to the browser.
 
-==== State token format and per-tenant routing
+==== State token format and per-team routing
 
 The `state` string encodes the MongoDB database to use for both storing and retrieving the token:
 
@@ -131,7 +131,7 @@ state = base64url(dbName) + "." + base64url(32-random-bytes)
 ----
 
 The `.` separator is safe because it is not part of the base64url alphabet.
-When a per-tenant database override (`override-users-db`) is active, the state is stored in that tenant's `oauth_codes` collection instead of the default database.
+When a per-team database override (`override-users-db`) is active, the state is stored in that team's `oauth_codes` collection instead of the default database.
 The callback decodes the database name from the state itself, so cross-instance routing works without any shared in-memory state.
 
 === Google

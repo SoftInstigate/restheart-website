@@ -210,10 +210,10 @@ fileAclAuthorizer:
       predicate: path-prefix('/')
       priority: 10
       mongo:
-        readFilter: '{"tenant": "@user.tenant"}'
-        writeFilter: '{"tenant": "@user.tenant"}'
+        readFilter: '{"team": "@user.team"}'
+        writeFilter: '{"team": "@user.team"}'
         mergeRequest:
-          tenant: "@user.tenant"
+          team: "@user.team"
 ----
 
 ---
@@ -478,7 +478,7 @@ await fetch('https://api.example.com/auth/activate', {
 
 == Part 6 — Full `restheart.yml` example
 
-A minimal, working configuration for a single-tenant app:
+A minimal, working configuration for a single-team app:
 
 [source,yaml]
 ----

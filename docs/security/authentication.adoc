@@ -309,6 +309,26 @@ mongoRealmAuthenticator:
     # 3 Strong      （guesses < 10^10）
     # 4 Very strong （guesses >= 10^10）
     minimum-password-strength: 3
+
+===== Overriding the Authentication Database
+
+In multi-team deployments where each team has its own MongoDB database, you can override the database used by `mongoRealmAuthenticator` on a per-request basis.
+
+Attach the `override-users-db` parameter to the request (typically via an interceptor at `REQUEST_BEFORE_AUTH`):
+
+[source,java]
+----
+// In an interceptor at REQUEST_BEFORE_AUTH
+req.setAttachedParam("override-users-db", "team_acme_db");
+----
+
+When `override-users-db` is present, `mongoRealmAuthenticator` authenticates the user against that database instead of the configured `users-db`.
+When absent, the static `users-db` value is used.
+
+This is the same mechanism used by `restheart-accounts` for multi-team deployments.
+The `authDb` claim is automatically included in JWTs issued by accounts endpoints so that `JwtAuthDbVerifier` can route subsequent requests to the correct database.
+
+See also: xref:../accounts/configuration.adoc#_multi_tenancy_with_authdbresolver_and_teamconfiginterceptor[Multi-tenancy with AuthDbResolver and TeamConfigInterceptor].
 ----
 
 ==== File Realm Authenticator
