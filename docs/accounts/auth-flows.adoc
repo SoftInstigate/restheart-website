@@ -316,7 +316,7 @@ sequenceDiagram
   R->>M: MembershipProvider.addMember(userId, teamId, role)
   Note over R: activateViaOAuth() — assigns roles:[user], stores consents
   R->>M: delete auth_invitations doc
-  R-->>C: 302 + JWT cookie → frontend-app-url
+  R-->>C: 302 + JWT cookie + #access_token= fragment → frontend-app-url
 ----
 
 *Flow:*
@@ -325,7 +325,7 @@ sequenceDiagram
 2. OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
 3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`, call `MembershipProvider.addMember(userId, teamId, role)` to set team.
 4. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
-5. Delete invitation from `auth_invitations`. Issue JWT cookie, redirect to `frontend-app-url`.
+5. Delete invitation from `auth_invitations`. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment (`#access_token=...`, since 9.5 — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]).
 
 == 6. Invite Existing User (has account)
 
@@ -446,7 +446,7 @@ sequenceDiagram
   R->>M: find invitation by (email, token) in auth_invitations
   R->>M: MembershipProvider.addMember(userId, teamId, role)
   R->>M: delete invitation document
-  R-->>C: 302 + JWT cookie → frontend-app-url
+  R-->>C: 302 + JWT cookie + #access_token= fragment → frontend-app-url
 ----
 
 *Flow:*
@@ -455,7 +455,7 @@ sequenceDiagram
 2. OAuth callback detects the user is NOT `$unauthenticated` and a `pendingInviteToken` is present.
 3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`.
 4. `MembershipProvider.addMember(userId, teamId, role)`.
-5. Delete invitation. Issue JWT cookie. Redirect to `frontend-app-url`.
+5. Delete invitation. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment (`#access_token=...`, since 9.5).
 
 == 7. OAuth Login
 
@@ -481,8 +481,8 @@ sequenceDiagram
   R->>P: fetch user profile
   P-->>R: profile
   R->>M: upsert user document
-  Note over R: issue JWT cookie
-  R-->>B: 302 + JWT cookie → frontend-url
+  Note over R: issue JWT
+  R-->>B: 302 + JWT cookie + #access_token= fragment → frontend-url
 ----
 
 *Flow:*
@@ -493,7 +493,9 @@ sequenceDiagram
 4. Backend exchanges code for user profile, finds or creates user.
 5. If user is `$unauthenticated` (new invited user): activate via `MembershipProvider.activateViaOAuth()`.
 6. If user is NOT `$unauthenticated` and `pendingInviteToken` is present (existing invited user): accept invitation via `auth_invitations`, call `addMember()`.
-7. Issue JWT cookie, redirect to `frontend-app-url`.
+7. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment.
+
+NOTE: Since RESTHeart 9.5, `OAuthCallback` hands the token back two ways on the same redirect: the `rh_auth` HttpOnly cookie (unchanged, for same-site frontends) **and** a `#access_token=...` URL fragment (for frontends using in-memory Bearer-token session handling, which can't rely on a cross-origin cookie — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]). The frontend reads `location.hash` on landing and clears it via `history.replaceState`.
 
 == 8. Switch Team
 
