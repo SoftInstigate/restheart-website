@@ -31,6 +31,31 @@ originVetoer:
   #   - /coll/docid
 ----
 
+==== Per-request whitelist override (since 9.5)
+
+In multi-tenant deployments, one RESTHeart instance may serve many independent
+services, each with its own frontend origin(s) — a single static `whitelist`
+can't express "allow `https://acme.example.com` for service A,
+`https://foo.dev` for service B."
+
+A plugin (typically an interceptor running at `REQUEST_BEFORE_AUTH`, before
+`OriginVetoer`'s check) can attach a request param that replaces the static
+whitelist for that request only:
+
+[source,java]
+----
+request.attachParam("override-origin-whitelist", List.of("https://acme.example.com"));
+----
+
+* If `override-origin-whitelist` is **not attached**: `OriginVetoer` behaves
+  exactly as with static configuration — no behavior change for
+  single-tenant deployments.
+* If **attached**: it fully replaces the static `whitelist` for that request
+  (exact-match only — `whitelist-patterns` is not consulted when an override
+  is present).
+* If attached as an **empty list**: the request is denied (fail closed) —
+  this is different from not attaching the param at all.
+
 === filterOperatorsBlacklist
 
 A global blacklist for MongoDb query operators in the `filter` query parameter.
