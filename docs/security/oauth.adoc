@@ -41,6 +41,10 @@ In all examples below, replace `[RESTHEART-URL]` with your RESTHeart server URL 
 | yes
 | Returns the current token for the authenticated user.
 
+| `GET /token/redirect`
+| yes
+| _Since RESTHeart 9.5._ Returns the token in the body **and** redirects to a configured URL with the token appended as a URL fragment (`#access_token=...`).
+
 | `DELETE /token`
 | yes
 | Invalidates the current token.
@@ -167,6 +171,57 @@ http --session=./session.json POST [RESTHEART-URL]/token/cookie \
 ----
 
 Subsequent requests in the same session automatically include the cookie.
+
+==== Redirect-Based Authentication
+
+NOTE: Available from RESTHeart 9.5.
+
+Some flows have to end in a real browser navigation instead of an AJAX/fetch call — for example, handing a session token to a single-page app after an OAuth-provider round trip, where there is no JSON response for the frontend's JavaScript to read. `GET /token/redirect` covers this case: it returns the token in the response body (same shape as `GET /token`, for callers that don't follow the redirect) **and** issues an HTTP redirect to a configured URL with the token appended as a URL fragment:
+
+NOTE: Despite living in this OAuth-focused document, `GET /token/redirect` is not OAuth-specific — it's a general endpoint of `AuthTokenService` (like `/token` and `/token/cookie`), usable by any flow that authenticates via a real browser navigation rather than a `fetch()` call. An OAuth-provider callback is the canonical example, but the same mechanism applies just as well to an email-verification link, a signed "magic link," or any other flow where the client can't read a JSON response body directly.
+
+===== HTTPie
+[source,bash]
+----
+http --follow=false GET [RESTHEART-URL]/token/redirect \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+**Response:**
+
+[source,http]
+----
+HTTP/1.1 307 Temporary Redirect
+Location: https://app.example.com/callback#access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&token_type=Bearer&expires_in=899
+----
+
+The token is carried as a URL *fragment* (`#access_token=...`), not a query parameter, deliberately: a fragment is never sent to any server — not on the redirect response itself, not on any subsequent request the browser makes to that URL, not in the `Referer` header. A query parameter, by contrast, travels with every future navigation from that URL and routinely ends up in server access logs, reverse-proxy logs, and analytics — a real leak vector for a bearer token. This mirrors OAuth 2.0's own long-established Implicit Flow convention (`#access_token=...`).
+
+The frontend reads `location.hash`, extracts the token, and should clear the fragment (e.g. via `history.replaceState`) so it doesn't linger in browser history.
+
+===== Configuring the redirect target
+
+The redirect target is **never a request parameter** — accepting a caller-supplied redirect target here would be an open-redirect vector combined with a token leak (an attacker could craft a link to `.../token/redirect?redirect=https://evil.com` and, if a victim with a valid session clicked it, their token would end up in a redirect to the attacker's site). It comes from configuration only:
+
+[source,yml]
+----
+authTokenService:
+  uri: /token
+  redirect-url: https://app.example.com/callback
+----
+
+For multi-tenant deployments where different requests should redirect to different frontends (e.g. one RESTHeart instance serving many independent services, each with its own frontend URL), a plugin can attach a per-request override that takes precedence over the static config:
+
+[source,java]
+----
+request.attachParam("override-redirect-url", "https://tenant-a.example.com/callback");
+----
+
+If neither the static config nor the override is set, `GET /token/redirect` returns `400 Bad Request` rather than falling back to something guessable.
+
+=== Choosing How to Deliver the Token
+
+Which of `/token`, `/token/cookie`, or `/token/redirect` to use is a sign-in *process* decision, not an OAuth-specific one — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token] in "How Clients Authenticate" for the full comparison (pros/cons, when to use each, and the synergy with `originVetoer`).
 
 === Authorization Code + PKCE Flow
 

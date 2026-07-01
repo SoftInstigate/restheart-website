@@ -117,6 +117,8 @@ Social login (Google/GitHub) is also available via OAuth buttons.
 
 *Frontend route:* `/auth/login`
 
+NOTE: `POST /token/cookie` is one of three ways RESTHeart can hand a token to a client. It's the right choice when the frontend and RESTHeart share a registrable domain, as shown above — for a cross-origin SPA, `POST /token` (token in the response body) is the usual alternative, since `/token/cookie`'s `HttpOnly` cookie doesn't travel reliably cross-origin (Safari blocks third-party cookies outright regardless of `SameSite`). See link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token] for the full comparison, decision guide, and a sequence diagram for each of the three flows (cookie, token-in-body, and `GET /token/redirect`, 9.5+).
+
 == 4. Password Reset
 
 === 4a. Request reset link

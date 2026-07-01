@@ -103,11 +103,102 @@ In other words:
 
 === Authentication Token
 
-RESTHeart v9 provides a standards-compliant OAuth 2.0/2.1 token endpoint.
-See the link:/docs/security/oauth[OAuth 2.0 / 2.1] page for full documentation on:
+RESTHeart v9 provides a standards-compliant OAuth 2.0/2.1 token endpoint. Once a client has authenticated (Basic Auth, an OAuth grant, or a delegated provider login), it needs a token back to use for subsequent requests — RESTHeart offers three ways to hand that token over, and picking the right one is the core decision in designing a sign-in flow.
+
+==== Choosing How to Deliver the Token
+
+RESTHeart offers three ways to hand a token to a client, each with a different security trade-off. There's no universally "best" option — pick based on your architecture.
+
+**Quick decision guide:**
+
+. **Frontend and backend share a registrable domain** (same-site — e.g. `app.example.com` calling `api.example.com`)? +
+  → Use `POST /token/cookie`. It's the simplest option: the browser attaches the cookie automatically, the token is never exposed to JavaScript, and none of the cross-origin caveats below apply.
+. **Otherwise (cross-origin frontend), does the sign-in step end in a real browser navigation rather than a `fetch()` call** (OAuth-provider callback, email-verification link, magic link)? +
+  → Use `GET /token/redirect` (since 9.5). There's no JSON response for your JavaScript to read in this case, so the token has to travel via the redirect itself.
+. **Otherwise (cross-origin, and your own JavaScript makes the request)** — login forms, token refresh, any SPA that can't rely on a same-site cookie: +
+  → Use `POST`/`GET /token` and hold the token in memory (not `localStorage`). This is the general default for cross-origin SPAs, and the only option that works reliably in Safari, where third-party cookies are blocked outright regardless of `SameSite`.
+
+[cols="2,3,3,3"]
+|===
+| | Pros | Cons | Use it when
+
+| **Token in body** (`POST`/`GET /token`)
+| Works identically in every browser, no cross-origin restrictions of any kind; simplest to reason about; no ambient credential means near-zero CSRF risk (a forged cross-site request can't include a token it doesn't know)
+| The token is JavaScript-accessible wherever the client stores it (memory, localStorage, ...) — if the page has an XSS vulnerability, the token can be read and exfiltrated. Mitigate with short TTLs and in-memory-only storage (never `localStorage`)
+| The frontend itself initiates the request (`fetch()`/XHR) — login forms, token refresh, any cross-origin SPA that can't rely on a same-site cookie
+
+| **HttpOnly cookie** (`POST /token/cookie`)
+| Never readable by JavaScript at all — immune to XSS token *theft* (though an XSS can still ride the ambient cookie to perform actions as the user)
+| Doesn't work reliably cross-origin: `SameSite=Strict`/`Lax` block it for cross-site fetch/XHR outright, and even `SameSite=None` isn't honored uniformly — Safari's ITP has blocked third-party cookies by default since 13.1 (2019), independent of `SameSite`. Best suited to same-site deployments (frontend and API share a registrable domain)
+| Frontend and API share a registrable domain (true same-site), and you want the session to survive without any client-side token handling at all
+
+| **Redirect + fragment** (`GET /token/redirect`, since 9.5)
+| Works in every browser like the body option (no cookie involved at all); purpose-built for flows that must end in a real navigation (OAuth callbacks, etc.)
+| Same XSS-exposure profile as the body option, plus the token is briefly visible in the URL/browser history until the frontend clears the fragment
+| The authentication step itself ends in a server-side redirect, not a `fetch()` — there's no JSON response for the frontend to read (OAuth provider callbacks are the canonical case)
+|===
+
+===== The three flows
+
+**Token in body** — the client makes the request directly and reads the token from the JSON response:
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+
+  C->>R: POST /token (Basic Auth)
+  R-->>C: 200, JSON body { token, ... }
+  Note over C: hold token in memory
+  C->>R: GET /resource (Authorization: Bearer <token>)
+  R-->>C: 200
+----
+
+**HttpOnly cookie** — the browser handles the cookie automatically on same-site requests, no client-side token handling at all:
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+
+  C->>R: POST /token/cookie (Basic Auth)
+  R-->>C: 200, Set-Cookie: <JWT> (HttpOnly)
+  C->>R: GET /resource (cookie sent automatically)
+  R-->>C: 200
+----
+
+**Redirect + fragment** — used when authentication itself ends in a real browser navigation rather than a `fetch()` call (e.g. after an OAuth-provider round trip):
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Browser
+  participant R as RESTHeart
+
+  Note over C,R: some flow ending in a real navigation, e.g. OAuth callback
+  C->>R: GET /token/redirect (already authenticated)
+  R-->>C: 307, Location: https://app.example.com/callback#access_token=...
+  Note over C: frontend JS reads location.hash,<br/>stores token, clears the fragment
+  C->>R: GET /resource (Authorization: Bearer <token>)
+  R-->>C: 200
+----
+
+===== Synergy with originVetoer
+
+link:/docs/security/other-security-plugins#originvetoer[`originVetoer`] rejects requests whose `Origin` header isn't allowlisted — the standard CSRF defense for cookie-based sessions, since a browser attaches a cookie automatically regardless of which site triggered the request.
+
+* **Cookie-based auth** genuinely needs `originVetoer` (or equivalent Origin validation): without it, any website could trigger state-changing requests using a victim's ambient session cookie.
+* **Token-in-body and redirect+fragment** don't rely on cookies, so `originVetoer` isn't strictly required for CSRF purposes with those — a forged request from another site simply has no token to send. But precisely *because* there's no cookie in play, there's no cross-origin trade-off to protect (no `SameSite` relaxation, no legitimate cross-site cookie flow that a strict whitelist could break) — this makes `originVetoer` a genuinely low-cost opportunity here: whitelisting the exact origin(s) allowed to call `/token` and `/token/redirect` restricts *who can even attempt to obtain a token in the first place* (e.g. blocking credential-stuffing or brute-force attempts issued from arbitrary/unauthorized origins), on top of whatever's already true for authenticated requests.
+
+`originVetoer` itself supports a per-request whitelist override since RESTHeart 9.5 (`override-origin-whitelist`, see link:/docs/security/other-security-plugins#originvetoer[Other Security Plugins]) — the same multi-tenant use case `/token/redirect`'s `override-redirect-url` addresses: one RESTHeart instance serving many services, each needing its own allowed origin(s)/redirect target.
+
+The link:/docs/security/oauth[OAuth 2.0 / 2.1] page has the complete API reference for each endpoint:
 
 * `POST /token` — password, client_credentials, and authorization_code grants
 * `POST /token/cookie` — HttpOnly cookie for browser applications
+* `GET /token/redirect` (since 9.5) — redirect-based handoff for browser-navigation flows
 * Authorization Code + PKCE flow (OAuth 2.1, RFC 7636)
 * Authorization Server Metadata discovery (RFC 8414)
 * Protected Resource Metadata (RFC 9728)
