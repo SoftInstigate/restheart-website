@@ -1,0 +1,172 @@
+---
+docs_version: 9
+title: Signup Management
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Sign-up, OAuth & Invitations** plugin lets you customise the full authentication experience for your service users — registration, email verification, password reset, OAuth social login, and team invitations.
+
+All settings are per-service and override the node-level defaults at runtime.
+
+*Navigation path:* Service → Sign-up
+
+TIP: For the full technical documentation of the underlying `restheart-accounts` plugin, see the link:/docs/accounts/overview[Accounts section]. This page covers only how to manage these features from the RESTHeart Cloud UI.
+
+== Enabling the Plugin
+
+. Navigate to *Service → Sign-up* in the Cloud UI.
+. If the plugin is not installed, click **Enable Sign-up Configuration**.
+. The page switches to the configuration form.
+
+Once enabled, the page header shows **ENABLED**. You can **Disable** or **Uninstall** the plugin from the header buttons at any time.
+
+== Registration Settings
+
+These fields control how your application identity appears in transactional emails and where users are redirected after authentication.
+
+[cols="1,3"]
+|===
+| Field | Description
+
+| **App Name** (required)
+| Display name shown in email subject lines and the login page (e.g. `My App`).
+
+| **Frontend URL**
+| Base URL of your public-facing website — used to build links inside transactional emails (e.g. `https://app.example.com`).
+
+| **Frontend App URL**
+| Authenticated-area URL — users are redirected here after a successful auto-login via email verification, password reset, invitation activation, or OAuth callback (e.g. `https://app.example.com/dashboard`).
+|===
+
+WARNING: If `Frontend App URL` is not set, users may land on the wrong page after clicking email links or completing OAuth login.
+
+== Features
+
+The Features section lets you enable or disable individual authentication flows. When a feature is disabled, its endpoints return `403 Forbidden` to unauthenticated users.
+
+[cols="1,3"]
+|===
+| Feature | Endpoints affected
+
+| **Registration & Verification**
+| `POST /auth/register`, `GET /auth/verify`, `PATCH /auth/activate`
+
+| **Password Reset**
+| `POST /auth/forgot-password`, `PATCH /auth/reset-password`
+
+| **Team Invitations**
+| `POST /auth/invite`, `GET /auth/teams`, `POST /auth/switch-team`
+
+| **OAuth Social Login**
+| `GET /auth/oauth/authorize/{provider}`, `GET /auth/oauth/callback/{provider}`
+|===
+
+Use the toggle switches to turn each feature on or off. Changes take effect after clicking **Save**.
+
+== Email Templates
+
+You can provide custom HTML templates for three transactional emails:
+
+* **Verification Email** — sent when a new user registers.
+* **Password Reset Email** — sent when a user requests a password reset.
+* **Invite Email** — sent when a team owner invites a new member.
+
+For each template you can either paste custom HTML directly into the text area, or leave it blank to keep the built-in default.
+
+The **Preview** button renders your HTML in a new tab so you can verify the layout before saving. The **Fill default** button loads the built-in template as a starting point for customisation.
+
+TIP: For the complete template format reference — including available `{{variables}}`, i18n with `<span lang>`, and best practices — see the link:/docs/accounts/email-templates[Email Templates] documentation.
+
+=== Available Variables
+
+Each template supports a set of `{{variable}}` placeholders that are replaced at send time:
+
+[cols="1,3"]
+|===
+| Variable | Description
+
+| `{{app-name}}`
+| The App Name configured above
+
+| `{{first-name}}`
+| Recipient's first name
+
+| `{{email}}`
+| Recipient's email address
+
+| `{{frontend-url}}`
+| The Frontend URL configured above
+
+| `{{verification-url}}`
+| One-time email verification link (verification template)
+
+| `{{reset-url}}`
+| One-time password reset link (password-reset template)
+
+| `{{invite-url}}`
+| One-time activation link (invite template)
+
+| `{{inviter-name}}`
+| Full name of the user who sent the invitation
+
+| `{{team-name}}`
+| Name of the team the user is being invited to join
+
+| `{{role}}`
+| Invited role (e.g. `user`)
+
+| `{{year}}`
+| Current year
+|===
+
+== OAuth — Google Social Login
+
+You can connect your own Google OAuth credentials so your users can sign in with their Google account.
+
+=== Obtaining Google OAuth Credentials
+
+. Open https://console.cloud.google.com/[Google Cloud Console] and select (or create) your project.
+
+. Navigate to **APIs & Services → OAuth consent screen** and complete the configuration (app name, support email, authorised domains).
+
+. Navigate to **APIs & Services → Credentials**.
+
+. Click **Create Credentials → OAuth 2.0 Client ID**.
+
+. Set *Application type* to **Web application**.
+
+. Under **Authorised redirect URIs**, add:
++
+----
+https://<your-service-url>/auth/oauth/callback/google
+----
++
+Replace `<your-service-url>` with the URL of your RESTHeart Cloud service (visible in the Cloud dashboard).
+
+. Click **Create**. Copy the **Client ID** and **Client Secret**.
+
+
+=== Configuring in the Cloud UI
+
+. In the *OAuth* section of the Sign-up page, toggle **Google OAuth** on.
+. Paste the **Client ID** and **Client Secret** obtained above.
+. Click **Save**.
+
+TIP: Store secrets securely. The Cloud UI transmits credentials over HTTPS and stores them encrypted. For the full technical flow, see link:/docs/accounts/google-oauth[OAuth Social Login] in the Accounts documentation.
+
+== Saving Changes
+
+Click **Save** to apply all configuration changes at once. The Save button is disabled when there are no pending changes.
+
+TIP: Configuration changes may take up to 60 seconds to propagate to all service nodes.
+
+== Related Pages
+
+* link:/docs/accounts/overview[restheart-accounts Overview] — full technical documentation of the underlying plugin.
+* link:/docs/accounts/auth-flows[Authentication Flows] — sequence diagrams for every auth flow.
+* link:/docs/accounts/email-templates[Email Templates] — template format, i18n, and variable reference.
+* link:/docs/accounts/google-oauth[OAuth Social Login] — detailed OAuth setup and security notes.
+* link:/docs/accounts/configuration[Configuration] — full `accountsConfig` reference for self-hosted deployments.
+* link:managing-users[Managing Users] — manage API users from the Cloud UI.

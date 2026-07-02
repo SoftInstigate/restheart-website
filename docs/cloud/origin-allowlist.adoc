@@ -1,0 +1,72 @@
+---
+docs_version: 9
+title: Origin Allowlist
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Origin Allowlist** plugin restricts which websites can call your RESTHeart API. When enabled, every request must carry an `Origin` header whose value is in the allowlist — otherwise the request is rejected with `403 Forbidden`.
+
+This protects your API against CSRF from other sites.
+
+*Navigation path:* Service → Origin Allowlist
+
+== How It Works
+
+When the plugin is enabled, every incoming HTTP request is validated against the allowlist:
+
+* **`Origin` header present and matches an allowlist entry** — the request proceeds normally.
+* **`Origin` header present but not in the allowlist** — the request is rejected with `403 Forbidden`.
+* **No `Origin` header** — the request is rejected with `403 Forbidden`.
+
+With the plugin enabled and the allowlist *empty*, **every** request is rejected. Add at least one origin before enabling the plugin in production.
+
+TIP: An origin is the protocol + hostname + optional port — e.g. `https://app.example.com` or `http://localhost:4200`. Do not include a trailing slash or path.
+
+== Enabling the Plugin
+
+. Navigate to *Service → Origin Allowlist* in the Cloud UI.
+. If the plugin is not installed, click **Enable Origin Allowlist**. The UI installs and activates the plugin.
+. The page switches to the configuration form where you can add origins.
+
+== Adding Origins
+
+. Type an origin in the text field (e.g. `https://app.example.com`).
+. Press *Enter* or click the **+** button. The origin appears as a badge below the input field.
+. Repeat for every origin your frontend is served from — production domain, staging domain, `http://localhost:4200` for local development, etc.
+
+New origins are highlighted with a badge so you can easily spot pending changes.
+
+== Removing Origins
+
+Click the **✕** icon on any origin badge to remove it from the list.
+
+NOTE: Changes are not sent to the server until you click **Save**.
+
+== Saving Changes
+
+Click **Save** to send the updated allowlist to the service. The Save button is disabled when there are no pending changes.
+
+TIP: Configuration changes may take up to 60 seconds to propagate to all service nodes.
+
+== Disabling and Uninstalling
+
+* **Disable** — temporarily turns off origin checking. The service accepts requests regardless of the `Origin` header. Click **Enable** to re-activate.
+* **Uninstall** — removes the plugin entirely. You can re-install the plugin later.
+
+Both actions are available in the header bar when the plugin is in the corresponding state.
+
+== Best Practices
+
+* Add your production domain *and* any staging or preview environments.
+* Include `http://localhost:<port>` entries for local development — remove them before going to production.
+* If you use multiple subdomains (e.g. `app.example.com` and `admin.example.com`), add each one separately.
+* After enabling the allowlist, test from each expected origin to confirm access, and from an unlisted origin to confirm rejection.
+* Server-side integrations that do not send an `Origin` header will be blocked when the plugin is active. Consider whether your architecture requires this before enabling.
+
+== Related Pages
+
+* link:managing-permissions[Managing Permissions (ACL)] — role-based access control at the API level.
+* link:managing-users[Managing Users] — manage the users that authenticate against your service.
+* link:ui-overview[UI Overview] — all Cloud UI feature areas at a glance.
