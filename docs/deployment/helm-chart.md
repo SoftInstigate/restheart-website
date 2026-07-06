@@ -1,10 +1,21 @@
 ---
-layout: docs
+docs_version: 9
 title: Helm Chart
-position: 11
+layout: docs
+menu: setup
+applies_to: restheart
 ---
 
-# Helm Chart
+<div markdown="1" class="d-none d-xl-block col-xl-2 order-last bd-toc">
+
+* [Quick Start](#quick-start)
+* [Features](#features)
+* [Documentation](#documentation)
+
+</div>
+
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
+{% include docs-head.html %}
 
 RESTHeart provides a Helm chart for Kubernetes deployment. The chart deploys RESTHeart as a Deployment with configurable replicas, probes, security contexts, autoscaling, ingress, network policies, and more.
 
@@ -49,3 +60,5 @@ Full documentation is maintained in the repository:
 - **[Chart README](https://github.com/SoftInstigate/restheart/blob/master/chart/README.md)** — Installation, configuration reference, and examples
 - **[RESTHeart Configuration Reference](https://github.com/SoftInstigate/restheart/blob/master/chart/RESTHEART-CONFIG.md)** — All `restHeartConfiguration` options
 - **[Helm Chart Guide](https://github.com/SoftInstigate/restheart/blob/master/docs/helm-chart.md)** — Architecture, features, testing, and publishing
+
+</div>
