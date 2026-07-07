@@ -1,22 +1,8 @@
 <div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-12 col-lg-8 offset-lg-2 zoom">
-        <div class="card newsText text-justified h-100">
-            <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">MCP Server</span></div>
-                <p>Native <strong>Model Context Protocol</strong> server. Connect any MCP-compatible AI client (Claude, Claude Code, Cursor, VS Code) directly to your MongoDB data with <strong>one line of config</strong>.</p>
-            </div>
-            <div class="d-flex w-100 justify-content-center">
-                <a class="btn btn-sm" href="{{ '/docs/cloud/sophia/mcp' | prepend: site.baseurl }}">Read More</a>
-            </div>
-        </div>
-    </article>
-</div>
-
-<div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">MongoDB's best friend</span></div>
+                <h3 class="feature-title mb-3"><span class="text-primary">MongoDB's best friend</span></h3>
                 <p>RESTHeart unlocks all the features of MongoDB via <strong>REST</strong>, <strong>GraphQL</strong> and <strong>WebSocket</strong> APIs. </p>
                 <p class="mt-1">
                     Also supports Mongo Atlas, FerretDB, AWS DocumentDB, and Azure Cosmos DB
@@ -30,24 +16,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">Container friendly</span></div>
-                <p>
-                    RESTHeart is available as a <strong>Docker image</strong> and tailored for the <strong>GraalVM</strong> to build lightweight native images with instant startup time, low memory footprint.
-                </p>
-                <a class="mt-2" href="https://hub.docker.com/r/softinstigate/restheart">
-                        <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
-                            src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
-                    </a>
-            </div>
-            <div class="d-flex w-100 justify-content-center">
-                <a class="btn btn-sm" href="{{ '/docs/setup-with-docker' | prepend: site.baseurl }}">Read More</a>
-            </div>
-        </div>
-    </article>
-    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
-            <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">Declarative Access Control</span></div>
+                <h3 class="feature-title mb-3"><span class="text-primary">Declarative Access Control</span></h3>
                 <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
                 </p>
             </div>
@@ -56,31 +25,24 @@
             </div>
         </div>
     </article>
-</div>
-
-<div class="row mt-4">
-    <article class="mt-4 mt-lg-0 col-12 col-lg-8 offset-lg-2 zoom">
-        <div class="card newsText text-justified h-100">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary"> Development Framework</span></div>
-                <div>
-                    <p>
-                     Unlock the Power of Microservices with Ease: discover our innovative development framework that simplifies the creation of microservices in Java, Kotlin, JavaScript, or TypeScript. Our framework provides a set of simple yet robust building blocks: Service, Provider, Interceptor, and Initializer.
-                    </p>
-                </div>
+                <h3 class="feature-title mb-3"><span class="text-primary">User Accounts</span></h3>
+                <p>The <strong>restheart-accounts</strong> plugin covers the full user lifecycle: registration, email verification, password reset, team invitations and Google social login — all <strong>configurable, no code</strong>.</p>
             </div>
             <div class="d-flex w-100 justify-content-center">
-                <a class="btn btn-sm" href="{{ '/docs/plugins/overview/' | prepend: site.baseurl }}">Read More</a>
+                <a class="btn btn-sm" href="{{ '/docs/accounts/overview' | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>
 </div>
 
-<div class="row my-4">
+<div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">REST Data API</span></div>
+                <h3 class="feature-title mb-3"><span class="text-primary">REST Data API</span></h3>
                 <p>
                 Read, write and search JSON documents with HTTP requests <strong>without coding</strong>; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
                 </p>
@@ -93,7 +55,7 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">GraphQL Data API</span></div>
+                <h3 class="feature-title mb-3"><span class="text-primary">GraphQL Data API</span></h3>
                 <p>
                     The GraphQL plugin works side by side with the REST plugin to get an unified API to build modern applications. GraphQL applications are configured through an API <strong>without coding</strong>.
                 </p>
@@ -106,13 +68,48 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText text-justified h-100 w-100">
             <div class="card-body">
-                <div class="top-4 mb-4"><span class="text-primary">WebSocket Data API</span></div>
+                <h3 class="feature-title mb-3"><span class="text-primary">WebSocket Data API</span></h3>
                 <p>
                 The WebSocket API notifies clients of data changes in real time and supports thousands of connected clients. Data streams are configured through an API <strong>without coding</strong>.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
                 <a class="btn btn-sm" href="{{ '/docs/mongodb-websocket/' | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div class="row my-4">
+    <article class="mt-4 mt-lg-0 col-lg-6 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h3 class="feature-title mb-3"><span class="text-primary">Development Framework</span></h3>
+                <p>
+                    Build microservices in Java, Kotlin, JavaScript or TypeScript with a set of simple yet robust building blocks: <strong>Service</strong>, <strong>Provider</strong>, <strong>Interceptor</strong>, and <strong>Initializer</strong>.
+                </p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="{{ '/docs/plugins/overview/' | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-6 zoom">
+        <div class="card newsText text-justified h-100 w-100">
+            <div class="card-body">
+                <h3 class="feature-title mb-3"><span class="text-primary">Container friendly</span></h3>
+                <p>
+                    RESTHeart is available as a <strong>Docker image</strong> and tailored for the <strong>GraalVM</strong> to build lightweight native images with instant startup time, low memory footprint.
+                </p>
+                <div class="text-center">
+                    <a class="mt-2" href="https://hub.docker.com/r/softinstigate/restheart">
+                        <img height="27" class="align-top rounded sm-2 mt-2 xs-2 img-responsive" alt="Docker Pulls"
+                            src="https://img.shields.io/docker/pulls/softinstigate/restheart.svg?style=for-the-badge">
+                    </a>
+                </div>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="{{ '/docs/setup-with-docker' | prepend: site.baseurl }}">Read More</a>
             </div>
         </div>
     </article>

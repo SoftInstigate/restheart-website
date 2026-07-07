@@ -1,64 +1,76 @@
 ---
 layout: default
 stars-bounce: true
-title: The Agent-Ready Backend for MongoDB
-excerpt: RESTHeart gives AI agents and developers instant, secure access to MongoDB. It ships with a native MCP server that any MCP-compatible client (Claude, Claude Code, Cursor, VS Code) can connect to out of the box, plus full REST, GraphQL, and WebSocket APIs. Built-in authentication and authorization, zero backend boilerplate.
+title: The Open Source Backend for MongoDB
+excerpt: RESTHeart is the open source backend for MongoDB. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed RESTHeart Cloud service. Plus Sophia, the AI assistant with a native MCP server.
 ---
 
-<section id="top" class="text-center pt-2 pb-2">
-    <div class="mt-0 mb-4">
-        <img width="120" class="bg-whites p-3 rounded" src="/images/restheart logo.svg">
-        <h1 class="my-1 top-1 text-break"><strong>REST</strong>Heart</h1>
-        <h2 class="top-6 text-break mt-3 mx-4" style="font-size: 1.75rem; font-weight: 400; line-height: 1.4; color: var(--primarycolor);">
-            The <strong style="font-weight: 600;">Agent-Ready Backend</strong> for MongoDB.
-        </h2>
-        <div class="mt-2 mx-4">
-            <p class="text-break white mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Native MCP server for AI agents (Claude, Claude Code, Cursor, VS Code).
-            </p>
-            <p class="text-break white mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                REST, GraphQL and WebSocket APIs. No backend code required.
-            </p>
-            <p class="text-break white mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Built-in security. No backend code required.
-            </p>
-        </div>
-        <div class="hero-cta-container mx-2 py-5 px-5" style="border-radius: 15px; background-color: rgba(248, 168, 57, 0.05);">
-          <div class="row gx-4 mx-4 align-items-stretch">
-            <div class="col-md-6 mb-5 mb-md-0 d-flex">
-              <div class="cta-card">
-                <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">
-                  <span class="cta-emoji">🚀</span> Try RESTHeart Cloud
-                </a>
-                <div class="cta-description mt-4 white">
-                    Start building instantly • Scale to production when ready • No Installation Required!
+<section id="top" class="pt-4 pb-2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-copy">
+                <div class="hero-brand">
+                    <img width="80" class="bg-whites p-2 rounded" src="/images/restheart logo.svg" alt="RESTHeart logo">
+                    <h1 class="my-0 ml-3 top-1 text-break"><strong>REST</strong>Heart</h1>
                 </div>
-              </div>
+                <h2 class="text-break mt-3" style="font-size: 1.6rem; font-weight: 400; line-height: 1.4; color: var(--primarycolor);">
+                    The <strong style="font-weight: 600;">Open Source Backend</strong> for MongoDB.
+                </h2>
+                <div class="hero-checklist mt-3">
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Instant REST, GraphQL and WebSocket APIs. No backend code.
+                    </p>
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Built-in authentication and authorization. Declarative, zero boilerplate.
+                    </p>
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Need custom logic? Extend it in Java, Kotlin, JavaScript or TypeScript.
+                    </p>
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Plus <a href="#mcp">Sophia</a>, the AI assistant: chat with the docs or vibe code via MCP.
+                    </p>
+                </div>
+                <div class="hero-buttons mt-4">
+                    <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">
+                        <span class="cta-emoji">🚀</span> Try RESTHeart Cloud
+                    </a>
+                    <a href="/docs/setup" class="btn btn-o-white btn-lg">
+                        <span class="cta-emoji">⬇️</span> Run it Free
+                    </a>
+                </div>
+                <p class="white mt-3 mb-0" style="font-size: 0.9rem; opacity: 0.8;">Fully managed, no installation required • Or run it yourself — free and open source</p>
             </div>
-            <div class="col-md-6 d-flex">
-              <div class="cta-card">
-                <a href="/docs/sophia" class="btn btn-primary font-weight-bold btn-lg text-black">
-                  <span class="cta-emoji">💬</span> Get AI Help
-                </a>
-                <div class="cta-description mt-4 white">
-                    Get instant answers about RESTHeart • No need to read through all the docs!
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="hero-terminal">
+                    <p class="white mb-1"><strong>Run RESTHeart with MongoDB:</strong></p>
+{% highlight bash %}
+curl -O https://raw.githubusercontent.com/\
+SoftInstigate/restheart/master/docker-compose.yml
+docker compose up
+{% endhighlight %}
+                    <p class="white mt-3 mb-1"><strong>Your MongoDB, instantly an API:</strong></p>
+{% highlight bash %}
+# read, write and query documents — no backend code
+curl -X POST localhost:8080/inventory \
+  -d '{"item":"card", "qty":15}'
+curl localhost:8080/inventory
+{% endhighlight %}
+                    <p class="mt-2 mb-0"><a href="/docs/setup">More ways to run it →</a></p>
                 </div>
-                <div class="mt-3">
-                  <a href="/docs/cloud/sophia/mcp" class="white" style="font-size: 0.9rem; opacity: 0.85;">Connect via MCP →</a>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-        <h3 class="font-weight-bold highlightcolor mt-3">Get Started</h3>
-        <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
-        <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
-        <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
-        <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
-        <p class="white mt-3" style="font-size: 0.95rem; opacity: 0.85;">Setup instructions included in each tutorial</p>
+        <div class="text-center mt-5">
+            <h3 class="font-weight-bold highlightcolor mb-1">Get Started</h3>
+            <a href="/docs/mongodb-rest/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB REST API Tutorial</a>
+            <a href="/docs/mongodb-graphql/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">MongoDB GraphQL API Tutorial</a>
+            <a href="/docs/plugins/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Framework Tutorial</a>
+            <a href="/docs/security/tutorial" class="btn btn-o-white ml-1 mt-2 my-0 btn-md">Auth Tutorial</a>
+            <p class="white mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.8;">Setup instructions included in each tutorial</p>
+        </div>
     </div>
 </section>
 
@@ -83,12 +95,24 @@ excerpt: RESTHeart gives AI agents and developers instant, secure access to Mong
 </section> -->
 
 <!-- just to make anchor link go to the right height -->
+<div id="features" class="pb-4"></div>
+
+<section id="features-content" class="text-center pb-2 mt-5">
+    <div class="container">
+        <h2 class="text-center color-primary font-weight-bold">RESTHeart Features</h2>
+        {% include features.md %}
+    </div>
+</section>
+
+<!-- just to make anchor link go to the right height -->
 <div id="mcp" class="pb-4"></div>
 
 <section id="mcp-content" class="text-center pb-2 mt-5">
     <div class="container">
-        <h2 class="text-center color-primary font-weight-bold">AI Agents &amp; MCP</h2>
-        <p class="mt-3 mb-4">RESTHeart ships with <a href="/docs/cloud/sophia/mcp">Sophia</a>, a native Model Context Protocol (MCP) server. Connect any MCP-compatible AI client (Claude, Claude Code, Cursor, VS Code) directly.</p>
+        <h2 class="text-center color-primary font-weight-bold">Vibe Coding with RESTHeart</h2>
+        <p class="mt-3 mb-2">RESTHeart comes with <strong>Sophia</strong>, its AI assistant. Two ways to use it:</p>
+        <p class="mb-1"><strong>💬 Just ask</strong> — <a href="/docs/sophia">chat with Sophia</a> in your browser and get instant answers about RESTHeart. No setup needed.</p>
+        <p class="mb-4"><strong>⚡ Vibe code in your editor</strong> — connect your AI coding tool (Claude Code, Cursor, VS Code) to <code>https://api.bysophia.ai/mcp/restheart</code> and it gets the whole RESTHeart documentation: it answers questions, writes working code and configures your backend for you.</p>
         <div class="row mt-4">
             <div class="col-lg-6 offset-lg-3 text-start">
                 <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
@@ -114,16 +138,6 @@ claude mcp add --transport http sophia-cloud https://api.bysophia.ai/mcp/cloud
                 <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">MCP documentation →</a></p>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- just to make anchor link go to the right height -->
-<div id="features" class="pb-4"></div>
-
-<section id="features-content" class="text-center pb-2 mt-5">
-    <div class="container">
-        <h2 class="text-center color-primary font-weight-bold">RESTHeart Features</h2>
-        {% include features.md %}
     </div>
 </section>
 
