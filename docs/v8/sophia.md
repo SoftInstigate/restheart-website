@@ -30,5 +30,5 @@ applies_to: both
       };
     }
   </script>
-  <iframe src="https://bysophia.ai/contexts/restheart" scrolling="yes"></iframe>
+  <iframe src="https://bysophia.ai/restheart?lang=en" scrolling="yes"></iframe>
 </div>

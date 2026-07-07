@@ -125,6 +125,6 @@ applies_to: both
       };
     }
   </script>
-  <iframe src="https://bysophia.ai/contexts/restheart?mcp-link=https:%2F%2Frestheart.org%2Fdocs%2Fcloud%2Fsophia%2Fmcp%23softinstigate-public-mcp-servers" scrolling="yes"></iframe>
+  <iframe src="https://bysophia.ai/restheart?mcp-link=https:%2F%2Frestheart.org%2Fdocs%2Fcloud%2Fsophia%2Fmcp%23softinstigate-public-mcp-servers&lang=en" scrolling="yes"></iframe>
 </div>
 </div>
