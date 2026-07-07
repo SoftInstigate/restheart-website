@@ -110,32 +110,25 @@ curl localhost:8080/inventory
 <section id="mcp-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center color-primary font-weight-bold">Vibe Coding with RESTHeart</h2>
-        <p class="mt-3 mb-2">RESTHeart comes with <strong>Sophia</strong>, its AI assistant. Two ways to use it:</p>
-        <p class="mb-1"><strong>💬 Just ask</strong> — <a href="/docs/sophia">chat with Sophia</a> in your browser and get instant answers about RESTHeart. No setup needed.</p>
-        <p class="mb-4"><strong>⚡ Vibe code in your editor</strong> — connect your AI coding tool (Claude Code, Cursor, VS Code) to <code>https://api.bysophia.ai/mcp/restheart</code> and it gets the whole RESTHeart documentation: it answers questions, writes working code and configures your backend for you.</p>
+        <p class="mt-3 mb-4">RESTHeart comes with <strong>Sophia</strong>, its AI assistant. Two ways to use it:</p>
         <div class="row mt-4">
-            <div class="col-lg-6 offset-lg-3 text-start">
-                <p class="mb-1"><strong>Connect with Claude Code:</strong></p>
+            <div class="col-lg-5 offset-lg-1 mb-4 mb-lg-0 d-flex">
+                <div class="hero-terminal w-100 d-flex flex-column justify-content-center text-center">
+                    <h3 class="feature-title mb-2">💬 Just ask</h3>
+                    <p class="mb-3">Chat with Sophia in your browser and get instant answers about RESTHeart. No setup needed.</p>
+                    <p class="mb-0"><a href="/docs/sophia" class="btn btn-o-white">Chat with Sophia</a></p>
+                </div>
+            </div>
+            <div class="col-lg-5 d-flex">
+                <div class="hero-terminal w-100">
+                    <h3 class="feature-title mb-2">⚡ Vibe code in your editor</h3>
+                    <p class="mb-2">Connect Claude Code, Cursor or VS Code to the RESTHeart MCP server: your AI answers questions, writes working code and configures your backend.</p>
 {% highlight bash %}
-claude mcp add --transport http sophia-restheart https://api.bysophia.ai/mcp/restheart
-claude mcp add --transport http sophia-cloud https://api.bysophia.ai/mcp/cloud
+claude mcp add --transport http sophia-restheart \
+  https://api.bysophia.ai/mcp/restheart
 {% endhighlight %}
-                <p class="mt-3 mb-1"><strong>Connect with Claude Desktop:</strong></p>
-                <p class="mb-2">Open <strong>Settings → Connectors → Add custom connector</strong> and paste one of the context URLs:</p>
-                <ul class="text-start mb-0">
-                    <li><code>https://api.bysophia.ai/mcp/restheart/</code> — RESTHeart docs</li>
-                    <li><code>https://api.bysophia.ai/mcp/cloud/</code> — RESTHeart Cloud docs</li>
-                </ul>
-                <p class="mt-3 mb-1"><strong>Connect with VS Code / Zed</strong> (requires Node.js 18+):</p>
-{% highlight json %}
-{
-  "sophia": {
-    "command": "npx",
-    "args": ["mcp-remote", "https://api.bysophia.ai/mcp/restheart/"]
-  }
-}
-{% endhighlight %}
-                <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">MCP documentation →</a></p>
+                    <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">Setup for Claude Desktop, VS Code, Zed and more →</a></p>
+                </div>
             </div>
         </div>
     </div>

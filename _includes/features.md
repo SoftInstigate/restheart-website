@@ -1,6 +1,6 @@
 <div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">MongoDB's best friend</span></h3>
                 <p>RESTHeart unlocks all the features of MongoDB via <strong>REST</strong>, <strong>GraphQL</strong> and <strong>WebSocket</strong> APIs. </p>
@@ -14,7 +14,7 @@
         </div>
     </article>
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Declarative Access Control</span></h3>
                 <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
@@ -26,7 +26,7 @@
         </div>
     </article>
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">User Accounts</span></h3>
                 <p>The <strong>restheart-accounts</strong> plugin covers the full user lifecycle: registration, email verification, password reset, team invitations and Google social login — all <strong>configurable, no code</strong>.</p>
@@ -40,7 +40,7 @@
 
 <div class="row mt-4">
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">REST Data API</span></h3>
                 <p>
@@ -53,7 +53,7 @@
         </div>
     </article>
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">GraphQL Data API</span></h3>
                 <p>
@@ -66,7 +66,7 @@
         </div>
     </article>
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">WebSocket Data API</span></h3>
                 <p>
@@ -82,7 +82,7 @@
 
 <div class="row my-4">
     <article class="mt-4 mt-lg-0 col-lg-6 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Development Framework</span></h3>
                 <p>
@@ -95,7 +95,7 @@
         </div>
     </article>
     <article class="mt-4 mt-lg-0 col-lg-6 zoom">
-        <div class="card newsText text-justified h-100 w-100">
+        <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Container friendly</span></h3>
                 <p>
