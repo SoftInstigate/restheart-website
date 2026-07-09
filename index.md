@@ -54,10 +54,19 @@ docker compose up
 {% endhighlight %}
                     <p class="white mt-3 mb-1"><strong>Your MongoDB, instantly an API:</strong></p>
 {% highlight bash %}
-# read, write and query documents — no backend code
+# create a collection (needs authentication)
+curl -X PUT localhost:8080/inventory \
+  -u admin:secret
+
+# write a document
 curl -X POST localhost:8080/inventory \
+  -u admin:secret \
+  -H 'Content-Type: application/json' \
   -d '{"item":"card", "qty":15}'
-curl localhost:8080/inventory
+
+# read documents with a filter
+curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
+  -u admin:secret
 {% endhighlight %}
                     <p class="mt-2 mb-0"><a href="/docs/setup">More ways to run it →</a></p>
                 </div>
