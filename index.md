@@ -116,7 +116,7 @@ curl localhost:8080/inventory
                 <div class="hero-terminal w-100 d-flex flex-column justify-content-center text-center">
                     <h3 class="feature-title mb-2">💬 Just ask</h3>
                     <p class="mb-3">Chat with Sophia in your browser and get instant answers about RESTHeart. No setup needed.</p>
-                    <p class="mb-0"><a href="/docs/sophia" class="btn btn-o-white">Chat with Sophia</a></p>
+                    <p class="mb-0">Sophia is available via the chat button on every page.</p>
                 </div>
             </div>
             <div class="col-lg-5 d-flex">
