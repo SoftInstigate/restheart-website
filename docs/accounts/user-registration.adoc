@@ -98,15 +98,39 @@ Content-Type: application/json
 
 ==== Server-side steps
 
-. Extract `email` and `token` from the query string.
+. Extract `email`, `token` and the optional `delivery` parameter from the query string.
 . Find the user by email.
 . Compare `token` against `verificationToken` using **constant-time comparison** (timing-attack mitigation).
 . Check that `verificationCreatedAt` is within the TTL (`verificationTokenTtlDays`, default 7 days).
 . Assign the system ACL role from `accountsConfig.default-role` (default: `user`) —
   this replaces the `$unauthenticated` role assigned at registration.
   `$unset` verificationToken and verificationCreatedAt.
-. Issue a JWT access token + refresh cookie.
+. Issue a JWT and deliver it according to `delivery` (see below).
 . Redirect to `{frontendAppUrl}`.
+
+==== Token delivery: cookie vs URL fragment
+
+The optional `delivery` query parameter selects how the JWT is handed to the frontend:
+
+[cols="1,3"]
+|===
+| `delivery` | Behavior
+
+| `cookie` (or omitted)
+| Default. Sets the auth cookie and redirects to `{frontendAppUrl}`. For same-origin setups where cookie authentication works.
+
+| `fragment`
+| Redirects to `{frontendAppUrl}` with the JWT appended as a URL fragment: `#access_token=...&token_type=Bearer&expires_in=...`. For cross-origin SPAs using Bearer token authentication, where browsers block third-party cookies (Safari blocks them entirely; Chrome and Firefox block them with `SameSite=strict`).
+|===
+
+[source]
+----
+GET /auth/verify?email=...&token=...                     → cookie (default)
+GET /auth/verify?email=...&token=...&delivery=cookie     → cookie
+GET /auth/verify?email=...&token=...&delivery=fragment   → URL fragment
+----
+
+With `delivery=fragment` no cookie is set. The fragment uses the same mechanism as `GET /token/redirect` and the OAuth callback: since a URL fragment is never sent to any server, the token does not leak into access logs or the `Referer` header. The frontend reads it from `window.location.hash` and stores it (e.g. in `localStorage`) for use in the `Authorization: Bearer` header.
 
 ==== Expired token
 

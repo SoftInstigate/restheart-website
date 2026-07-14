@@ -58,7 +58,7 @@ sequenceDiagram
 
 == 2. Email Verification
 
-`GET /auth/verify?email=...&token=...` — public.
+`GET /auth/verify?email=...&token=...&delivery=cookie|fragment` — public.
 
 [source,mermaid]
 ----
@@ -73,16 +73,27 @@ sequenceDiagram
   Note over R,M: TTL check (default 7 days)
   R->>M: set roles: user, unset verify token
   M-->>R: OK
-  R-->>C: 302 redirect + JWT cookie → frontend-app-url
+  alt delivery=cookie (default)
+    R-->>C: 302 redirect + JWT cookie → frontend-app-url
+  else delivery=fragment
+    R-->>C: 302 redirect → frontend-app-url#access_token=…
+  end
 ----
 
 *Flow:*
 
 1. User clicks link in email.
 2. Frontend route `/auth/verify` redirects browser to backend endpoint.
-3. Backend verifies token, sets `roles: ["user"]`, issues JWT cookie.
-4. `302` redirect to `frontend-app-url`.
-5. Frontend detects authentication, shows success screen.
+3. Backend verifies token, sets `roles: ["user"]`, issues a JWT.
+4. `302` redirect to `frontend-app-url`; the JWT is delivered according to the
+   `delivery` query parameter:
+   * `delivery=cookie` (or omitted, default) — sets the JWT cookie. For same-origin setups.
+   * `delivery=fragment` — appends the JWT as a URL fragment
+     (`#access_token=...&token_type=Bearer&expires_in=...`), same mechanism as
+     `GET /token/redirect` and the OAuth callback. For cross-origin SPAs using
+     Bearer token auth, where browsers block third-party cookies. No cookie is set.
+5. Frontend detects authentication (cookie, or token read from `window.location.hash`),
+   shows success screen.
 
 *Frontend route:* `/auth/verify`
 
