@@ -160,7 +160,10 @@ NOTE: `POST /token/cookie` is one of three ways RESTHeart can hand a token to a 
 }
 ----
 
-Auto-login on success (JWT cookie set by the plugin).
+Auto-login on success. The `delivery` query parameter selects how the fresh JWT is handed back:
+
+* `delivery=cookie` (or omitted, default) — sets the `rh_auth` HttpOnly JWT cookie. For same-origin setups.
+* `delivery=body` (since 9.6.0) — returns the token in the JSON response body (`access_token`, `token_type`, `expires_in`) and in the `Auth-Token` header, and sets *no* cookie. For cross-origin SPAs using Bearer-token auth, so no second `POST /token` (re-sending the password) is needed.
 
 *Frontend route:* `/auth/reset-password?email=...&token=...`
 
@@ -187,7 +190,7 @@ sequenceDiagram
   Note over R: zxcvbn password strength check
   R->>M: hash + save password, unset reset token
   M-->>R: OK
-  R-->>C: 200 OK
+  R-->>C: 200 OK (JWT via cookie or body, per delivery)
 ----
 
 == 5. Invite New User (no existing account)
@@ -284,7 +287,7 @@ sequenceDiagram
   R->>M: MembershipProvider.addMember(userId, teamId, role)
   R->>M: delete invitation from auth_invitations
   M-->>R: OK
-  R-->>C: 200 OK + JWT cookie (auto-login)
+  R-->>C: 200 OK (JWT via cookie or body, per delivery)
 ----
 
 *Flow:*
@@ -296,8 +299,13 @@ sequenceDiagram
 5. `MembershipProvider.addMember(userId, teamId, role)` — adds user to the team and sets active team.
 6. Delete invitation from `auth_invitations` (one-shot token).
 7. Issue JWT with the newly set active team.
-8. Return `200 OK` + JWT cookie (auto-login).
+8. Return `200 OK`; the fresh JWT is delivered per the `delivery` query parameter (auto-login).
 Consents are not managed by this endpoint. See link:/docs/accounts/consents-management[Consents Management] for details.
+
+Auto-login delivery — same `delivery` selector as `/auth/reset-password`:
+
+* `delivery=cookie` (or omitted, default) — sets the `rh_auth` HttpOnly JWT cookie. For same-origin setups.
+* `delivery=body` (since 9.6.0) — returns the token in the JSON response body (`access_token`, `token_type`, `expires_in`) and in the `Auth-Token` header, and sets *no* cookie. For cross-origin SPAs using Bearer-token auth.
 
 *Frontend route:* `/auth/activate?email=...&token=...`
 
@@ -531,10 +539,11 @@ sequenceDiagram
   R->>M: MembershipProvider.setActiveMembership(userId, teamId)
   M-->>R: OK
   Note over R: reissue JWT with new team claim
-  R-->>C: new JWT cookie
+  R-->>C: 200 OK (JWT via cookie or body, per delivery)
 ----
 
-Calls `MembershipProvider.setActiveMembership(userId, teamId)` and reissues JWT.
+Calls `MembershipProvider.setActiveMembership(userId, teamId)` and reissues the JWT.
+The reissued token is delivered per the `delivery` query parameter — `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0; returns `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie). The response body also carries the new active `team` and `role`.
 
 == 9. List Teams
 
