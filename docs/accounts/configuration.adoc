@@ -30,6 +30,10 @@ accountsConfig:
   # Domain used for the JWT authentication cookie (Set-Cookie: Domain=...).
   cookie-domain: dev.example.com
 
+  # Whether the auth cookie carries the Secure attribute (HTTPS only). Since 9.6.0.
+  # Default true; set false only for local HTTP development.
+  cookie-secure: true
+
   # Public URL of the frontend — used to build links in transactional emails.
   frontend-url: https://dev.example.com
 
@@ -226,6 +230,7 @@ Neither interceptor is bundled with `restheart-accounts`; implement them in your
 
 | `override-users-db` | `AuthDbResolver` | `accountsConfig.db`
 | `override-cookie-domain` | `AuthDbResolver` | `accountsConfig.cookie-domain`
+| `override-cookie-secure` | `AuthDbResolver` | `accountsConfig.cookie-secure` (since 9.6.0)
 | `override-accounts-app-name` | `TeamConfigInterceptor` | `accountsConfig.app-name`
 | `override-accounts-frontend-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-url`
 | `override-accounts-frontend-app-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-app-url`

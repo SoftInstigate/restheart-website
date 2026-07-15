@@ -138,6 +138,8 @@ RESTHeart offers three ways to hand a token to a client, each with a different s
 | The authentication step itself ends in a server-side redirect, not a `fetch()` — there's no JSON response for the frontend to read (OAuth provider callbacks are the canonical case)
 |===
 
+NOTE: The `restheart-accounts` auto-login endpoints (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-team`, and the OAuth callback) expose the same choice through a `delivery` query parameter — `cookie`, `body` (since 9.6.0), or `fragment` — mapping onto the three mechanisms above. See link:/docs/accounts/auth-flows[Authentication Flows].
+
 ===== The three flows
 
 **Token in body** — the client makes the request directly and reads the token from the JSON response:

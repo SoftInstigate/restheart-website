@@ -171,7 +171,7 @@ Content-Type: application/json
 . Set password, assign `roles: ["user"]`.
 . `MembershipProvider.addMember(userId, teamId, role)` — adds user to the team and sets active team (reads `teamId` and `role` from the invitation document).
 . Delete invitation from `auth_invitations` (one-shot).
-. Issue JWT + cookie → auto-login.
+. Issue JWT → auto-login. The token is delivered per the optional `delivery` query parameter: `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0, returns `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie — for cross-origin SPAs using Bearer auth).
 . Return `200 OK`.
 
 [NOTE]
