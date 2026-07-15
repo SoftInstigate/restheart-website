@@ -29,7 +29,7 @@ By the end you will have:
 == Part 1 — SMTP email delivery
 
 Email is used for three flows: email verification, password reset, and team invitations.
-`restheart-accounts` uses the **Ermes** SMTP wrapper included in the plugin.
+`restheart-accounts` uses the **emails** module for SMTP delivery, injected via the `EmailSender` interface (`restheart-commons`).
 
 === Option A: Amazon SES (recommended for production)
 
@@ -42,7 +42,7 @@ Email is used for three flows: email verification, password reset, and team invi
 
 [source,yaml]
 ----
-ermes:
+emails:
   enabled: true
   app-name: "My App"
   sender-email: noreply@example.com
@@ -63,7 +63,7 @@ ermes:
 
 [source,yaml]
 ----
-ermes:
+emails:
   enabled: true
   app-name: "My App"
   sender-email: noreply@example.com
@@ -86,7 +86,7 @@ transactional email in production.
 
 [source,yaml]
 ----
-ermes:
+emails:
   enabled: true
   app-name: "My App"
   sender-email: yourname@gmail.com
@@ -103,7 +103,7 @@ Use RESTHeart's `RHO` environment variable to inject them at startup:
 
 [source,bash]
 ----
-export RHO="/ermes/smtp-password->'${SMTP_PASSWORD}'"
+export RHO="/emails/smtp-password->'${SMTP_PASSWORD}'"
 java -jar restheart.jar -o etc/conf.yml
 ----
 
@@ -557,7 +557,7 @@ oauthConfig:
     client-id: "123456789-abc.apps.googleusercontent.com"
     client-secret: "GOCSPX-..."
 
-ermes:
+emails:
   enabled: true
   app-name: "My App"
   sender-email: noreply@example.com

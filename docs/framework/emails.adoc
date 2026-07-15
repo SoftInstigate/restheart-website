@@ -1,0 +1,131 @@
+---
+docs_version: 9
+title: Emails Plugin
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+
+The **emails** plugin (`restheart-emails` module) provides SMTP email sending capabilities to any RESTHeart plugin. It wraps the link:https://github.com/SoftInstigate/ermes-mail[ermes-mail] library and exposes a simple `EmailSender` interface via dependency injection.
+
+TIP: Available since *version 9.6.0*.
+
+The plugin is used by `restheart-accounts` for transactional emails (registration verification, team invitations, password reset) and can be used by any custom plugin that needs to send emails.
+
+NOTE: The `restheart-emails` module is bundled with RESTHeart. No separate installation is required — just enable and configure it below.
+
+=== Configuration
+
+The `emails` block in `restheart.yml` configures the SMTP connection. The plugin is *disabled by default* — set `enabled: true` to activate it.
+
+[source,yaml]
+----
+emails:
+  enabled: true
+  # Display name used in the email "From" header.
+  app-name: "My App"
+  # From email address.
+  sender-email: noreply@example.com
+  # SMTP connection settings.
+  smtp-hostname: email-smtp.eu-central-1.amazonaws.com
+  smtp-port: 465            # 465 = SMTPS (implicit TLS); 587 = STARTTLS
+  smtp-username: AKIAxxxxxxxx
+  smtp-password: secret
+  # Optional: explicit SSL port (defaults to 465).
+  # ssl-port: 465
+----
+
+When `enabled` is `false` or the configuration block is absent, the plugin is inert: `sendEmail()` logs a warning and returns without sending. This ensures services continue to operate even when SMTP is not configured.
+
+=== Usage in plugins
+
+Inject the `EmailSender` provider using `@Inject("emails")`:
+
+[source,java]
+----
+@RegisterPlugin(name = "myPlugin", description = "...")
+public class MyPlugin implements JsonService {
+
+    @Inject("emails")
+    private EmailSender emails;
+
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) {
+        if (emails.isEnabled()) {
+            // Simple send — uses static YAML config
+            emails.sendEmail(
+                "user@example.com",
+                "John",
+                "Welcome!",
+                "<h1>Hello John</h1><p>Welcome to our app.</p>"
+            );
+
+            // Send with per-request SMTP overrides
+            emails.sendEmail(
+                req,
+                "user@example.com",
+                "John",
+                "Welcome!",
+                "<h1>Hello John</h1><p>Welcome to our app.</p>"
+            );
+        }
+    }
+}
+----
+
+The `EmailSender` interface is defined in `restheart-commons` (`org.restheart.emails.EmailSender`), so your plugin only needs `restheart-commons` as a compile-time dependency — no dependency on `restheart-emails` or `ermes-mail` is required.
+
+==== Interface
+
+[source,java]
+----
+public interface EmailSender {
+    // Uses static YAML configuration
+    void sendEmail(String to, String recipientName, String subject, String htmlBody);
+
+    // Reads per-request SMTP overrides from attached parameters
+    void sendEmail(Request<?> request, String to, String recipientName, String subject, String htmlBody);
+
+    boolean isEnabled();
+}
+----
+
+=== Per-request SMTP overrides
+
+In multi-tenant deployments, SMTP settings can be overridden per request by attaching parameters to the request via `request.attachParam()`. The `SmtpEmailSender` reads these attached parameters before falling back to the static YAML configuration.
+
+The following attached parameters are supported:
+
+[options="header",cols="2,3"]
+|===
+| Attached parameter | Description
+
+| `override-emails-sender-email`
+| Override the "From" email address
+
+| `override-emails-sender-name`
+| Override the "From" display name
+
+| `override-emails-smtp-hostname`
+| Override the SMTP hostname
+
+| `override-emails-smtp-port`
+| Override the SMTP port
+
+| `override-emails-smtp-username`
+| Override the SMTP username
+
+| `override-emails-smtp-password`
+| Override the SMTP password
+|===
+
+If at least one override parameter is present, an ad-hoc SMTP connection is created using the overridden values. Parameters not specified fall back to the static YAML configuration. If no override parameters are present, the static configuration is used as-is.
+
+Example from an interceptor:
+
+[source,java]
+----
+req.attachParam("override-emails-sender-email", "noreply@tenant-a.com");
+req.attachParam("override-emails-smtp-hostname", "smtp.tenant-a.com");
+emails.sendEmail(req, "user@tenant-a.com", "User", "Subject", "<p>Body</p>");
+----

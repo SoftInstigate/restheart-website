@@ -423,7 +423,7 @@ In the *Admin > Users* page, click *Invite User*, then fill in:
 Click *Send invitation*. Sophia:
 
 . Persists a new user document with `status: "invited"`, a freshly generated `inviteToken` (crypto-random, ~32 bytes base64url), and an `inviteTokenExpiresAt` set 7 days in the future. No `password` field is written.
-. Fires a `RESPONSE_ASYNC` interceptor (`InviteEmailSender`) that sends a dark-themed HTML email via *AWS SES* (configured under `/ermes` in `conf-prod.yml`).
+. Fires a `RESPONSE_ASYNC` interceptor (`InviteEmailSender`) that sends a dark-themed HTML email via *AWS SES* (configured under `/emails` in `conf-prod.yml`).
 . Returns `201 Created` to the admin client.
 
 The invited user appears in the user list with an `invited` badge in amber.
@@ -505,7 +505,7 @@ If the user lost the email (or it expired after 7 days), in *Admin > Users* the 
 
 . Rotates the `inviteToken` to a fresh random value (the previous link becomes invalid immediately — important if the user thinks the original was lost in transit but it was actually delivered).
 . Refreshes `inviteCreatedAt` so the new link has the full 7-day TTL.
-. Sends a fresh invitation email via the same Ermes channel used for the first send.
+. Sends a fresh invitation email via the same emails channel used for the first send.
 
 Tenant scoping is enforced by the `InviteResendService` itself: a `tenant-admin` can only resend invites for users in their own tenant (`403` otherwise). The endpoint is `POST /resend-invite/<email>` — there is no body. A `409 Conflict` is returned if the user is already `active` or `disabled` (re-sending an invite to a fully onboarded user is a no-op the UI surfaces as a toast).
 

@@ -6,7 +6,7 @@ menu: accounts
 applies_to: restheart
 ---
 
-All `restheart-accounts` settings live in `restheart.yml` across three top-level keys: `accountsConfig`, `oauthConfig`, and `ermes`.
+All `restheart-accounts` settings live in `restheart.yml` across three top-level keys: `accountsConfig`, `oauthConfig`, and `emails`.
 Every section is independent; omitting a section disables the corresponding feature.
 
 === Full configuration reference
@@ -138,14 +138,15 @@ oauthConfig:
     #   scope: "read:profile"
 ----
 
-==== ermes
+==== emails
 
-Ermes is the SMTP email sender bundled with `restheart-accounts`.
-Omit this section to disable transactional email (registration and invitation flows will not work).
+The emails plugin (from the `restheart-emails` module) provides SMTP email sending for transactional emails (registration verification, team invitations, password reset).
+
+See the link:/docs/framework/emails[Emails Plugin] documentation for full configuration reference and usage.
 
 [source,yaml]
 ----
-ermes:
+emails:
   enabled: true
   # Display name used in the email "From" header.
   app-name: "My App"
@@ -295,7 +296,7 @@ oauthConfig:
     github:
       client-secret: $(GITHUB_CLIENT_SECRET)
 
-ermes:
+emails:
   smtp-password: $(SMTP_PASSWORD)
 ----
 
@@ -386,7 +387,7 @@ accountsConfig:
   terms-version: "1.0"
   privacy-version: "1.0"
 
-ermes:
+emails:
   enabled: true
   app-name: "My App"
   sender-email: noreply@example.com
