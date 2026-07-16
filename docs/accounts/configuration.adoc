@@ -45,8 +45,11 @@ accountsConfig:
   # (email verification, invitation activation, password reset, OAuth callback).
   frontend-app-url: https://dev.example.com/app
 
-  # Legal policy versions. These values are recorded as metadata when consents are
-  # persisted by the deployment layer. See Consents Management.
+  # Legal policy versions. Required only when using OAuth with consentsAccepted=true.
+  # The OAuth callback reads these values to build the ConsentRecord passed to
+  # MembershipProvider.activateViaOAuth(), so the deployment layer knows which
+  # version the user accepted. Omit if you do not track consent versions via OAuth.
+  # See: Consents Management.
   terms-version: "1.0"
   privacy-version: "1.0"
 
@@ -406,8 +409,6 @@ accountsConfig:
   cookie-domain: example.com
   frontend-url: https://example.com
   frontend-app-url: https://example.com/app
-  terms-version: "1.0"
-  privacy-version: "1.0"
 
 emails:
   enabled: true
