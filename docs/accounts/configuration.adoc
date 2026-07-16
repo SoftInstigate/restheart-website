@@ -34,6 +34,10 @@ accountsConfig:
   # Default true; set false only for local HTTP development.
   cookie-secure: true
 
+  # Name of the JWT authentication cookie.
+  # Default: "rh_auth".
+  cookie-name: rh_auth
+
   # Public URL of the frontend — used to build links in transactional emails.
   frontend-url: https://dev.example.com
 
@@ -41,8 +45,8 @@ accountsConfig:
   # (email verification, invitation activation, password reset, OAuth callback).
   frontend-app-url: https://dev.example.com/app
 
-  # Legal policy versions. Activation and registration validate the submitted
-  # consent versions against these values; bump when T&C or Privacy Policy changes.
+  # Legal policy versions. These values are recorded as metadata when consents are
+  # persisted by the deployment layer. See Consents Management.
   terms-version: "1.0"
   privacy-version: "1.0"
 
@@ -232,6 +236,8 @@ Neither interceptor is bundled with `restheart-accounts`; implement them in your
 | `override-users-db` | `AuthDbResolver` | `accountsConfig.db`
 | `override-cookie-domain` | `AuthDbResolver` | `accountsConfig.cookie-domain`
 | `override-cookie-secure` | `AuthDbResolver` | `accountsConfig.cookie-secure` (since 9.6.0)
+| `override-accounts-default-role` | `TeamConfigInterceptor` | `accountsConfig.default-role`
+| `override-accounts-ownership-role` | `TeamConfigInterceptor` | `accountsConfig.ownership-role`
 | `override-accounts-app-name` | `TeamConfigInterceptor` | `accountsConfig.app-name`
 | `override-accounts-frontend-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-url`
 | `override-accounts-frontend-app-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-app-url`
@@ -353,6 +359,22 @@ Each public-facing service registers its own ACL allow rule automatically on sta
 |`/auth/oauth/callback/{provider}`
 |`GET`
 |`oauthCallback`
+
+|`/auth/remove-member` ^†^
+|`POST`
+|`removeMemberService`
+
+|`/auth/accept-invite` ^†^
+|`POST`
+|`acceptInviteService`
+
+|`/auth/member-role` ^†^
+|`PATCH`
+|`updateMemberRoleService`
+
+|`/auth/invitation` ^†^
+|`GET`
+|`invitationInfoService`
 |===
 
 ^†^ Disabled when `membership-endpoints-enabled: false`.
