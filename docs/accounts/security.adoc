@@ -50,6 +50,29 @@ Consent tracking (terms & conditions, privacy policy versions) is not handled by
 * `state` is validated with constant-time comparison on callback.
 * `oauth_codes` documents auto-expire after 600 seconds via a MongoDB TTL index; they are also deleted immediately on use.
 
+=== `/users` self-service write restriction
+
+CAUTION: Since RESTHeart 9.6.0.
+
+When `accountsInitializer` is enabled, it unconditionally restricts what the generic MongoDB REST resource at `/users` can be used for, regardless of any ACL the application defines:
+
+* `PUT` and `POST` to `/users` are always rejected. Creating or fully replacing a user document must go through a dedicated `restheart-accounts` endpoint (`/auth/register`, `/auth/verify`, `/auth/activate`, `/auth/accept-invite`, the OAuth callback, ...), never the generic REST resource.
+* `PATCH` to `/users` is only permitted if every field it touches is under `profile.*`. This is checked regardless of how the field is expressed — a full-document key, dot notation (`profile.name`), or a MongoDB update operator (`$set`, `$push`, `$addToSet`, ...) — so `{"$set": {"teams.0.role": "owner"}}` is rejected exactly like `{"teams": [...]}`.
+
+**Why**: an ACL commonly grants an authenticated user permission to `PATCH` their own `/users/{email}` document, so they can self-edit their profile (name, avatar, ...). Without this restriction, that same permission would let the user rewrite *any* field on their own document — including `roles`, `team`/`teams`, or a directly-set `password` — which is a privilege-escalation path (e.g. promoting themselves to `owner` in a team, or joining a team they were never invited to). This restriction closes that path unconditionally, for every application built on `restheart-accounts`, independent of how permissive its own ACL is.
+
+This does not affect any `restheart-accounts` endpoint itself: every service that legitimately needs to set `roles`, `team`/`teams`, tokens, or a hashed password writes to MongoDB directly via the driver, not through the REST resource — so none of those flows are subject to this restriction.
+
+If your application has its own reason to let certain accounts write more than `profile.*` to `/users` via the generic REST resource (for example, an internal admin console that manages `roles`/`teams` directly), configure `users-unrestricted-roles` in `accountsConfig`:
+
+[source,yaml]
+----
+accountsConfig:
+  users-unrestricted-roles: [admin]
+----
+
+Accounts with any of the listed roles bypass this restriction entirely — both the `PUT`/`POST` block and the `profile.*` limit on `PATCH`. Leave it unset (the default) to apply the restriction to every caller, with no exceptions.
+
 === Brute-force protection
 
 `restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against token-guessing and credential stuffing.
