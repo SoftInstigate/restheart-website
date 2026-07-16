@@ -73,6 +73,8 @@ accountsConfig:
 
 Accounts with any of the listed roles bypass this restriction entirely — both the `PUT`/`POST` block and the `profile.*` limit on `PATCH`. Leave it unset (the default) to apply the restriction to every caller, with no exceptions.
 
+In a multi-tenant deployment, `users-unrestricted-roles` can also be overridden per team via `override-accounts-users-unrestricted-roles` — see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy] for the full override mechanism.
+
 === Brute-force protection
 
 `restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against token-guessing and credential stuffing.
