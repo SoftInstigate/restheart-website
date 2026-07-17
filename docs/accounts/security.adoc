@@ -75,6 +75,8 @@ Accounts with any of the listed roles bypass this restriction entirely — both 
 
 In a multi-tenant deployment, `users-unrestricted-roles` can also be overridden per team via `override-accounts-users-unrestricted-roles` — see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy] for the full override mechanism.
 
+`accountsInitializer` is enabled at the node level, independent of whether a given tenant has actually opted into `restheart-accounts` (e.g. RESTHeart Cloud enables it once per service node, but Sign-up Management is an opt-in feature per service). A tenant that never enabled it never opted into these opinions on `/users` either — so a deployment-layer interceptor running before authentication (e.g. `TeamConfigInterceptor`, at `REQUEST_BEFORE_EXCHANGE_INIT`) can attach `override-accounts-signup-mgmt-enabled: false` to skip the restriction entirely for that tenant, for every caller. This must be set before authentication: the veto is evaluated as part of authorization, which runs before any `REQUEST_AFTER_AUTH` interceptor gets a chance to run.
+
 === Brute-force protection
 
 `restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against token-guessing and credential stuffing.
