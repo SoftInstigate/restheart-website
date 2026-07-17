@@ -136,6 +136,8 @@ NOTE: `POST /token/cookie` is one of three ways RESTHeart can hand a token to a 
 
 `POST /auth/forgot-password` — public. Always returns `202` (no email enumeration).
 
+If the account has **not** completed email verification yet (still `$unauthenticated`), there is no password to reset: instead, a new `emailVerificationToken` is generated and the activation email is re-sent — the account owner's only self-service way to recover a lost or expired verification link (registration itself rejects the email as already taken). See link:/docs/accounts/password-reset[Password Reset] for details.
+
 *Request body:*
 
 [source,json]
@@ -181,6 +183,9 @@ sequenceDiagram
   alt user found and verified
     R->>M: generate + store reset token (TTL 1h)
     R->>E: password reset email
+  else user found but not yet verified
+    R->>M: generate + store new emailVerificationToken
+    R->>E: verification email (re-sent)
   end
   R-->>C: 202 Accepted (always)
 

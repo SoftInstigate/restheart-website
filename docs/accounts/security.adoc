@@ -16,7 +16,7 @@ Standard string equality (`String.equals`) short-circuits on the first mismatch 
 
 === Account enumeration prevention
 
-- `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered. The response body is the same in all cases.
+- `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered, verified, or unverified. The response body is the same in all cases — internally it sends either a password-reset email or a re-sent verification email depending on the account's state, but the caller can't tell which.
 - `POST /auth/register` returns `409 Conflict` for duplicate emails — this is a deliberate trade-off: registration UX requires telling the user the address is taken so they can recover their account.
 
 === Token design
