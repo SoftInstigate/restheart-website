@@ -8,7 +8,7 @@ applies_to: both
 
 [NOTE]
 ====
-`restheart-accounts` is available starting from *RESTHeart v9.4*.
+`restheart-accounts` is available starting from *RESTHeart v9.4*, but always use the **latest RESTHeart version**: the plugin has received substantial additions and security fixes since its introduction (see xref:security.adoc[Security] for the `/users` write restriction added in 9.6.0, among others). *v9.4* and *v9.5* should be considered deprecated for practical purposes.
 ====
 
 `restheart-accounts` is a RESTHeart plugin that adds application-level account management to any RESTHeart deployment.
@@ -63,6 +63,29 @@ flowchart LR
 
 † Disabled when `accountsConfig.membership-endpoints-enabled: false`.
 See xref:membership-providers.adoc[Custom Membership Providers] for details.
+
+=== `/users` Access
+
+CAUTION: Since RESTHeart 9.6.0.
+
+Once `accountsInitializer` is enabled, management of the `users` collection passes to `restheart-accounts`: the generic MongoDB REST resource at `/users` is restricted to self-service `profile.*` edits, regardless of what ACL the application defines.
+
+* `PUT` and `POST` are always rejected — creating or fully replacing a user document must go through a `restheart-accounts` endpoint (`/auth/register`, `/auth/verify`, `/auth/activate`, `/auth/accept-invite`, the OAuth callback, ...), never the generic REST resource.
+* `PATCH` is only permitted if every field it touches is under `profile.*`. This is enforced regardless of how the field is expressed — dot notation (`profile.name`) or a MongoDB update operator (`$set`, `$push`, `$addToSet`, ...) — so `{"$set": {"teams.0.role": "owner"}}` is rejected exactly like `{"teams": [...]}`.
+
+This closes a privilege-escalation path: an ACL commonly grants an authenticated user permission to `PATCH` their own `/users/{email}` document for profile self-editing (name, avatar, ...). Without this restriction, that same permission would let the user rewrite *any* field on their own document — `roles`, `team`/`teams`, or a directly-set `password` — e.g. promoting themselves to `owner` of a team. The restriction is enforced unconditionally, for every application built on `restheart-accounts`, independent of how permissive its own ACL is — and it doesn't affect `restheart-accounts` itself, since every endpoint that legitimately needs to set `roles`/`teams`/`password`/tokens writes to MongoDB directly via the driver, not through the REST resource.
+
+**Exceptions** are configured via `accountsConfig.users-unrestricted-roles` — a list of roles exempt from the restriction (both the `PUT`/`POST` block and the `profile.*` limit on `PATCH`), useful for an internal admin console that manages `roles`/`teams` directly:
+
+[source,yaml]
+----
+accountsConfig:
+  users-unrestricted-roles: [admin]
+----
+
+Leave it unset (the default) to apply the restriction to every caller, with no exceptions. In multi-tenant deployments this can also be overridden per team — see `override-accounts-users-unrestricted-roles` in the table below.
+
+See xref:security.adoc#users-self-service-write-restriction[Accounts / Security] for the full technical explanation.
 
 === Multi-tenancy
 
