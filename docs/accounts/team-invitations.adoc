@@ -261,6 +261,38 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 Generates a new token (invalidating the previous one) by updating the `auth_invitations` document, and re-sends the invitation email. Works for both new and existing user invitations.
 Returns `200 OK` on success. Returns `404` if no pending invitation is found for that user in the caller's team.
 
+== List team members
+
+`GET /auth/team/members` — requires authentication.
+
+Returns the caller's active team's member list — email, name, role, and `joinedAt` — denormalized against each member's `profile`. There is no caller-supplied team filter: always the caller's own active team, so a regular member can see the roster too (not just `owner`).
+
+=== Request
+
+[source,http]
+----
+GET /auth/team/members
+Authorization: Bearer <token>
+----
+
+=== Response `200 OK`
+
+[source,json]
+----
+[
+  { "email": "alice@acme.com", "name": "Alice Rossi", "role": "owner",  "joinedAt": "2026-01-01T00:00:00Z" },
+  { "email": "bob@acme.com",   "name": "Bob Smith",   "role": "member", "joinedAt": "2026-01-02T00:00:00Z" }
+]
+----
+
+=== Server-side steps
+
+. Read the caller's active team via `MembershipProvider.activeMembership(userId)` — `403 Forbidden` if the caller has no active team.
+. Call `MembershipProvider.listTeamMembers(teamId)`.
+. Return `200 OK`.
+
+Disabled when `accountsConfig.membership-endpoints-enabled: false`.
+
 == Remove a member
 
 `DELETE /auth/remove-member` — requires role `owner`.
@@ -335,3 +367,10 @@ IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as
 | `403` | Caller does not have `owner` role
 | `404` | Target user is not a member of the caller's team
 |===
+
+== See also
+
+Team *lifecycle* management (create an additional team, rename/edit, delete) is
+a separate concern from membership — see xref:auth-flows.adoc[Authentication Flows]
+sections *10. Create an Additional Team*, *14. Update a Team*, and
+*15. Delete a Team*.

@@ -9,7 +9,8 @@ applies_to: both
 [NOTE]
 ====
 The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.1*.
-The interface and its types (`Membership`, `TeamRef`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
+`listTeamMembers`, `createTeam`, `updateTeam`, and `deleteTeam` (and the `TeamMember` record) were added in *9.6.0*.
+The interface and its types (`Membership`, `TeamRef`, `TeamMember`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 ====
 
 By default, `restheart-accounts` stores team membership directly on the user document using the `team` / `teams` schema.
@@ -47,6 +48,18 @@ The built-in `DefaultMembershipProvider` is used automatically; custom implement
 
 | `updateMemberRole(userId, teamId, newRole)`
 | `PATCH /auth/member-role`
+
+| `listTeamMembers(teamId)`
+| `GET /auth/team/members`
+
+| `createTeam(userId, teamName)`
+| `POST /auth/teams`
+
+| `updateTeam(teamId, name, description)`
+| `PATCH /auth/team`
+
+| `deleteTeam(userId, teamId)`
+| `DELETE /auth/team`
 |===
 
 === Tenant ID types
@@ -78,10 +91,12 @@ accountsConfig:
   member-role-name: member
 
   # Set to false to disable the built-in membership management endpoints:
-  #   POST  /auth/invite
-  #   POST  /auth/resend-invite
-  #   GET   /auth/teams
-  #   POST  /auth/switch-team
+  #   POST   /auth/invite
+  #   POST   /auth/resend-invite
+  #   GET    /auth/teams          POST   /auth/teams
+  #   POST   /auth/switch-team
+  #   GET    /auth/team/members
+  #   PATCH  /auth/team           DELETE /auth/team
   # Useful when your custom provider exposes its own equivalent endpoints.
   # Default: true
   membership-endpoints-enabled: true
@@ -357,13 +372,61 @@ public interface MembershipProvider {
     default Optional<Membership> activateViaOAuth(String userId, ConsentRecord consents) {
         return Optional.empty();
     }
+
+    /**
+     * Returns the members of the given team with display information denormalized
+     * from each member's user document. Called by GET /auth/team/members.
+     * Default: throws UnsupportedOperationException.
+     */
+    default List<TeamMember> listTeamMembers(BsonValue teamId) {
+        throw new UnsupportedOperationException("listTeamMembers not implemented by this provider");
+    }
+
+    /**
+     * Creates an additional team for an already-registered user, assigns them
+     * the owner role, and sets it as their newly active membership. Unlike
+     * createInitialTeam, this may be called any number of times for the same
+     * user. Called by POST /auth/teams.
+     * Default: throws UnsupportedOperationException.
+     */
+    default TeamRef createTeam(String userId, String teamName) {
+        throw new UnsupportedOperationException("createTeam not implemented by this provider");
+    }
+
+    /**
+     * Updates a team's own fields (name and/or description, partial update —
+     * either parameter may be null to leave that field unchanged).
+     * Called by PATCH /auth/team.
+     * Default: throws UnsupportedOperationException.
+     */
+    default void updateTeam(BsonValue teamId, String name, String description) {
+        throw new UnsupportedOperationException("updateTeam not implemented by this provider");
+    }
+
+    /**
+     * Deletes a team, but only if it has no other members — implementations
+     * must enforce this atomically, server-side (a client-side pre-check is a
+     * race condition against a concurrent invite acceptance). On success, also
+     * clears the caller's own membership entry and active-team pointer.
+     * Called by DELETE /auth/team.
+     * Returns false (does not throw) if the team still has other members, or
+     * no longer exists.
+     * Default: throws UnsupportedOperationException.
+     */
+    default boolean deleteTeam(String userId, BsonValue teamId) {
+        throw new UnsupportedOperationException("deleteTeam not implemented by this provider");
+    }
 }
 
-// Tenant reference returned by createInitialTeam — id is the native BsonValue
+// Tenant reference returned by createInitialTeam/createTeam — id is the native BsonValue
 public record TeamRef(BsonValue id, String displayName) {}
 
 // Snapshot of a single membership — teamId is the native BsonValue
 public record Membership(BsonValue teamId, String displayName, String role, boolean active) {}
+
+// A team member with display info denormalized from their user document,
+// returned by listTeamMembers — email is the member's identifier
+public record TeamMember(String email, String name, String role, Instant joinedAt) {}
 ----
 
 === Built-in default provider
@@ -419,6 +482,18 @@ public record Membership(BsonValue teamId, String displayName, String role, bool
 
 | `updateMemberRole`
 | Positional `$set teams.$.role` on the user; positional `$set members.$.role` on the team
+
+| `listTeamMembers`
+| Reads `team.members[]`; batch-fetches (`$in`) the corresponding `users` documents to denormalize display names from `profile.name` / `profile.surname`
+
+| `createTeam`
+| Same as `createInitialTeam`, but unconditionally `$set team` (vs. only-if-absent) so the new team becomes active immediately
+
+| `updateTeam`
+| Partial `$set` of `name` / `description` on the `teams` document
+
+| `deleteTeam`
+| Atomic `findOneAndDelete` on the `teams` document guarded by `$expr: {$size: "$members"} <= 1`; on success, `$pull` from `user.teams[]` and `$unset team` if it was active
 |===
 
 === Backward compatibility

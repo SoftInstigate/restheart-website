@@ -569,7 +569,76 @@ sequenceDiagram
 
 Returns all teams the user belongs to via `MembershipProvider.listMemberships(userId)`.
 
-== 10. Remove a Member
+== 10. Create an Additional Team
+
+`POST /auth/teams` — requires authentication. Same URI as *9. List Teams*, distinguished by HTTP method (`GET` vs `POST`).
+
+Lets an already-registered user spin up an additional workspace — e.g. "New Workspace" the way Slack/Notion let you — the same way `createInitialTeam` does during signup, except this can be called any number of times.
+
+*Request body:*
+
+[source,json]
+----
+{ "teamName": "New Workspace" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: POST /auth/teams {teamName}
+  R->>M: MembershipProvider.createTeam(userId, teamName)
+  Note over R,M: adds caller as owner, sets team as newly active
+  M-->>R: OK
+  Note over R: reissue JWT with new team claim
+  R-->>C: 201 Created (JWT via cookie or body, per delivery)
+----
+
+*Flow:*
+
+1. Validate `teamName` — `400` if missing or blank.
+2. `MembershipProvider.createTeam(userId, teamName)` — creates the team, adds the caller as owner, and sets it as the newly active membership (unlike `createInitialTeam`, which only activates a team if the user has none yet).
+3. Reissue the JWT with the new team claim, delivered per the `delivery` query parameter (same `cookie` / `body` selector as *8. Switch Team*).
+4. Return `201 Created` with `{ "id": ..., "name": ..., "role": "owner" }`.
+
+*MembershipProvider SPI:* `createTeam(userId, teamName)`
+
+== 11. List Team Members
+
+`GET /auth/team/members` — requires authentication.
+
+Returns the caller's active team's member list (name, email, role, joinedAt), denormalized against each member's `profile`. There is no caller-supplied team filter — always the caller's own active team, avoiding the need for separate authorization logic for "can I see team X's roster."
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: GET /auth/team/members
+  R->>M: MembershipProvider.listTeamMembers(teamId)
+  Note over R,M: reads team.members[], batch-fetches users for display names
+  M-->>R: members
+  R-->>C: member list
+----
+
+*Response `200 OK`:*
+
+[source,json]
+----
+[
+  { "email": "alice@acme.com", "name": "Alice Rossi", "role": "owner",  "joinedAt": "2026-01-01T00:00:00Z" },
+  { "email": "bob@acme.com",   "name": "Bob Smith",   "role": "member", "joinedAt": "2026-01-02T00:00:00Z" }
+]
+----
+
+*MembershipProvider SPI:* `listTeamMembers(teamId)`
+
+== 12. Remove a Member
 
 `DELETE /auth/remove-member` — requires `owner` role.
 
@@ -606,7 +675,7 @@ sequenceDiagram
 
 *MembershipProvider SPI:* `removeMember(userId, teamId)`
 
-== 11. Update a Member's Role
+== 13. Update a Member's Role
 
 `PATCH /auth/member-role` — requires `owner` role.
 
@@ -645,6 +714,136 @@ Ownership transfer is not supported via this endpoint.
 5. Return `200 OK`.
 
 *MembershipProvider SPI:* `updateMemberRole(userId, teamId, newRole)`
+
+== 14. Update a Team
+
+`PATCH /auth/team` — requires `owner` role. Same URI as *15. Delete a Team*, distinguished by HTTP method (`PATCH` vs `DELETE`).
+
+*Request body* (partial updates allowed):
+
+[source,json]
+----
+{ "name": "Acme Corp", "description": "Our team workspace" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  O->>R: PATCH /auth/team {name?, description?}
+  R->>M: verify caller is owner of active team
+  R->>M: MembershipProvider.updateTeam(teamId, name, description)
+  M-->>R: OK
+  R-->>O: 200 OK
+----
+
+*Flow:*
+
+1. Verify caller is `owner` of their active team — `403` otherwise.
+2. Validate body — `400` if neither `name` nor `description` is present, or if `name` is blank.
+3. `MembershipProvider.updateTeam(teamId, name, description)` — partial `$set`; a `null` parameter leaves that field unchanged.
+4. Return `200 OK`.
+
+*MembershipProvider SPI:* `updateTeam(teamId, name, description)`
+
+== 15. Delete a Team
+
+`DELETE /auth/team` — requires `owner` role.
+
+Deletes the caller's active team, but only if it has no other members. The "no other members" invariant is enforced atomically, server-side: a client-side pre-check (list members, see only the caller, then delete) would be a race condition against a concurrent invite acceptance.
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant O as Owner
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  O->>R: DELETE /auth/team
+  R->>M: verify caller is owner of active team
+  R->>M: MembershipProvider.deleteTeam(userId, teamId)
+  Note over R,M: atomic findOneAndDelete guarded by members.size <= 1
+  alt team was empty
+    M-->>R: deleted; caller's membership/active-team pointer cleared
+    R-->>O: 200 OK
+  else team still has other members
+    M-->>R: not deleted
+    R-->>O: 409 Conflict
+  end
+----
+
+*Flow:*
+
+1. Verify caller is `owner` of their active team — `403` otherwise.
+2. `MembershipProvider.deleteTeam(userId, teamId)` — atomically deletes the team only if it has at most one member; returns `false` (does not throw) otherwise.
+3. If deletion failed because the team still has other members, return `409 Conflict`. If it failed because the team no longer exists (already deleted by a concurrent/duplicate request), return `404 Not Found`.
+4. On success, the caller's own membership entry and active-team pointer are cleared — they are left with no active team and must create or be invited into a new one.
+5. Return `200 OK`.
+
+*MembershipProvider SPI:* `deleteTeam(userId, teamId)`
+
+== 16. Update Profile
+
+`PATCH /auth/profile` — requires authentication.
+
+Self-service update of the caller's own `profile.name` / `profile.surname` fields, exposed to clients as `firstName` / `lastName` (matching `/auth/register`'s request body). This dedicated endpoint self-registers its own ACL allow rule at startup — same pattern as every other `restheart-accounts` endpoint — instead of relying on generic `PATCH /users/{email}` plus a tenant-configured ACL allow rule, which isn't guaranteed to exist (see the `/users` Access section on the xref:overview.adoc[overview page]).
+
+*Request body* (partial updates allowed):
+
+[source,json]
+----
+{ "firstName": "Alice", "lastName": "Rossi" }
+----
+
+*Flow:*
+
+1. Validate body — `400` if neither `firstName` nor `lastName` is present, or if either is blank.
+2. `$set profile.name` / `profile.surname` on the caller's own user document (writes directly via the MongoDB driver, not through the generic REST resource).
+3. Return `200 OK`.
+
+*Frontend route:* `/account` (settings page)
+
+== 17. Change Password
+
+`PATCH /auth/change-password` — requires authentication.
+
+Lets a logged-in user change their password in-session, given their current password — unlike `PATCH /auth/reset-password`, which is the public, unauthenticated "forgot password" flow (emailed one-shot token). Before this endpoint, a logged-in user could only change their password by calling `/auth/forgot-password` on themselves and completing the email round-trip.
+
+*Request body:*
+
+[source,json]
+----
+{ "currentPassword": "correct-horse-battery", "newPassword": "new-secure-password" }
+----
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant C as Client
+  participant R as RESTHeart
+  participant M as MongoDB
+
+  C->>R: PATCH /auth/change-password {currentPassword, newPassword}
+  R->>M: find user, bcrypt-verify currentPassword
+  Note over R: minimum length check on newPassword
+  R->>M: hash + save newPassword
+  M-->>R: OK
+  R-->>C: 200 OK
+----
+
+*Flow:*
+
+1. Verify `currentPassword` against the stored bcrypt hash — `401` if it doesn't match.
+2. Enforce minimum password length on `newPassword` — `400` otherwise.
+3. Hash and save the new password.
+4. Return `200 OK`.
+
+NOTE: Does not invalidate other active sessions/JWTs — out of scope for JWT-based auth unless a token-versioning/blacklist mechanism is added separately.
+
+*Frontend route:* `/account` (settings page)
 
 == MembershipProvider SPI Reference
 
@@ -687,4 +886,20 @@ Ownership transfer is not supported via this endpoint.
 | `activateViaOAuth(userId, consents)`
 | OAuth callback for invited users
 | Assigns `roles: ["user"]`, stores consents
+
+| `listTeamMembers(teamId)`
+| `GET /auth/team/members`
+| Reads org's `members` array, batch-fetches user profiles to denormalize display names
+
+| `createTeam(userId, teamName)`
+| `POST /auth/teams`
+| Creates org in `orgs` collection, adds user as owner, unconditionally switches active org
+
+| `updateTeam(teamId, name, description)`
+| `PATCH /auth/team`
+| Partial `$set` of name/description on the org document
+
+| `deleteTeam(userId, teamId)`
+| `DELETE /auth/team`
+| Atomic conditional delete of the org document, guarded by member-count; clears user's org membership on success
 |===

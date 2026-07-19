@@ -89,7 +89,8 @@ accountsConfig:
 
   # Set to false to disable the built-in membership management endpoints:
   #   POST /auth/invite, POST /auth/resend-invite,
-  #   GET  /auth/teams, POST /auth/switch-team
+  #   GET  /auth/teams, POST /auth/teams, POST /auth/switch-team,
+  #   GET  /auth/team/members, PATCH /auth/team, DELETE /auth/team
   # Default: true
   membership-endpoints-enabled: true
 
@@ -351,7 +352,7 @@ Each public-facing service registers its own ACL allow rule automatically on sta
 |`resendInviteService`
 
 |`/auth/teams` ^†^
-|`GET`
+|`GET`, `POST`
 |`getTeamsService`
 
 |`/auth/switch-team` ^†^
@@ -367,7 +368,7 @@ Each public-facing service registers its own ACL allow rule automatically on sta
 |`oauthCallback`
 
 |`/auth/remove-member` ^†^
-|`POST`
+|`DELETE`
 |`removeMemberService`
 
 |`/auth/accept-invite` ^†^
@@ -381,6 +382,22 @@ Each public-facing service registers its own ACL allow rule automatically on sta
 |`/auth/invitation` ^†^
 |`GET`
 |`invitationInfoService`
+
+|`/auth/team/members` ^†^
+|`GET`
+|`listTeamMembersService`
+
+|`/auth/team` ^†^
+|`PATCH`, `DELETE`
+|`teamService`
+
+|`/auth/profile`
+|`PATCH`
+|`updateProfileService`
+
+|`/auth/change-password`
+|`PATCH`
+|`changePasswordService`
 |===
 
 ^†^ Disabled when `membership-endpoints-enabled: false`.
