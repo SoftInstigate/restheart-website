@@ -25,7 +25,7 @@ flowchart LR
 
   subgraph RA[restheart-accounts]
     direction TB
-    EP["Endpoints\n/auth/register  /auth/verify\n/auth/forgot-password  /auth/reset-password\n/auth/invite  /auth/activate\n/auth/teams  /auth/team  /auth/team/members  /auth/switch-team\n/auth/profile  /auth/change-password\n/auth/oauth/authorize  /auth/oauth/callback"]
+    EP["Endpoints\n/auth/register  /auth/verify\n/auth/forgot-password  /auth/reset-password\n/auth/invite  /auth/invitations  /auth/activate\n/auth/teams  /auth/team  /auth/team/members  /auth/switch-team\n/auth/profile  /auth/change-password\n/auth/oauth/authorize  /auth/oauth/callback"]
     MPS[MembershipProvider SPI]
     EP --> MPS
   end
@@ -55,7 +55,8 @@ flowchart LR
 | `POST`  | `/auth/invite`                 | owner / admin | Invite a user to the caller's team †
 | `PATCH` | `/auth/activate`               | public        | Accept invitation, set password; auto-login
 | `POST`  | `/auth/resend-invite`          | owner / admin | Re-send an expired invitation (email in request body) †
-| `GET`   | `/auth/teams`                | authenticated | List the caller's team memberships †
+| `GET`   | `/auth/invitations`            | owner / admin | List pending (non-expired) invitations for the caller's active team †
+| `GET`   | `/auth/teams`                | authenticated | List the caller's team memberships (includes `description` when non-null) †
 | `POST`  | `/auth/teams`                | authenticated | Create an additional team for the caller; becomes the newly active team, reissues JWT cookie †
 | `GET`   | `/auth/team/members`         | authenticated | List the caller's active team's members (name, email, role, joinedAt) †
 | `PATCH` | `/auth/team`                 | owner         | Rename/edit the caller's active team (name, description) †

@@ -261,6 +261,39 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 Generates a new token (invalidating the previous one) by updating the `auth_invitations` document, and re-sends the invitation email. Works for both new and existing user invitations.
 Returns `200 OK` on success. Returns `404` if no pending invitation is found for that user in the caller's team.
 
+== List pending invitations
+
+`GET /auth/invitations` — requires authentication (owner/admin only).
+
+Returns all pending (non-expired) invitations for the caller's active team. The `token` field is intentionally excluded from the response (sensitive — one-shot secret).
+
+=== Request
+
+[source,http]
+----
+GET /auth/invitations
+Authorization: Bearer <token>
+----
+
+=== Response `200 OK`
+
+[source,json]
+----
+[
+  { "email": "bob@example.com",   "role": "member", "isNewUser": true,  "createdAt": "2026-01-01T00:00:00Z", "expiresAt": "2026-01-08T00:00:00Z" },
+  { "email": "carol@example.com", "role": "member", "isNewUser": false, "createdAt": "2026-01-02T00:00:00Z", "expiresAt": "2026-01-09T00:00:00Z" }
+]
+----
+
+=== Server-side steps
+
+1. Read the caller's active team via `MembershipProvider.activeMembership(userId)`.
+2. Query `auth_invitations` for all non-expired documents matching the active `teamId`.
+3. Exclude the `token` field from the response projection.
+4. Return `200 OK`.
+
+Disabled when `accountsConfig.membership-endpoints-enabled: false`.
+
 == List team members
 
 `GET /auth/team/members` — requires authentication.

@@ -569,6 +569,17 @@ sequenceDiagram
 
 Returns all teams the user belongs to via `MembershipProvider.listMemberships(userId)`.
 
+.Response example
+[source,json]
+----
+[
+  { "id": { "$oid": "64a1b2c3..." }, "name": "Acme Corp", "description": "Main workspace", "role": "owner",  "active": true },
+  { "id": { "$oid": "74b2c3d4..." }, "name": "Side Gig",  "role": "member", "active": false }
+]
+----
+
+The `description` field is included when the team document has a non-null `description`. Omitted otherwise.
+
 == 10. Create an Additional Team
 
 `POST /auth/teams` — requires authentication. Same URI as *9. List Teams*, distinguished by HTTP method (`GET` vs `POST`).
