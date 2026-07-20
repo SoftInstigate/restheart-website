@@ -7,6 +7,15 @@ applies_to: both
 ---
 
 A user can belong to multiple teams simultaneously, each with a different role.
+
+[TIP]
+====
+*9.6.0 breaking change:* the `team` JWT claim and the `POST /auth/switch-team` response changed from a scalar id to `{ _id, role }`. 
+ACL filters using `@user.team` as the team id must migrate to `@user.team._id`. 
+`@user.team.role` is now available for predicate-based gating (e.g. `equals[@user.team.role, "owner"]`). 
+Clients reading the `team` claim must adapt: `team._id` replaces `team`.
+====
+
 The active team and its corresponding role are encoded in the JWT; switching teams reissues the JWT without requiring a new login.
 
 [NOTE]
@@ -25,7 +34,7 @@ The `DefaultMembershipProvider` stores team identifiers as MongoDB `ObjectId` va
 {
   "_id":     "alice@example.com",
   "roles":   ["user"],                                        // system ACL role (from default-role)
-  "team":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },        // active team ID (JWT claim)
+  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner" },  // active team { _id, role } (JWT claim)
   "teams": [
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },  // membership role
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
@@ -105,7 +114,7 @@ On success (`200 OK`):
 
 [source,json]
 ----
-{ "team": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "user" }
+{ "team": { "_id": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "owner" }
 ----
 
 ==== Error responses

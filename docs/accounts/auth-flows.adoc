@@ -543,7 +543,7 @@ sequenceDiagram
   R->>M: verify membership in teamId
   R->>M: MembershipProvider.setActiveMembership(userId, teamId)
   M-->>R: OK
-  Note over R: reissue JWT with new team claim
+  Note over R: reissue JWT with team = {_id, role}
   R-->>C: 200 OK (JWT via cookie or body, per delivery)
 ----
 
@@ -593,7 +593,7 @@ sequenceDiagram
   R->>M: MembershipProvider.createTeam(userId, teamName)
   Note over R,M: adds caller as owner, sets team as newly active
   M-->>R: OK
-  Note over R: reissue JWT with new team claim
+  Note over R: reissue JWT with team = {_id, role}
   R-->>C: 201 Created (JWT via cookie or body, per delivery)
 ----
 

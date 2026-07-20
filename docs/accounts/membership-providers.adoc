@@ -70,7 +70,8 @@ A custom provider is free to use `BsonInt32`, `BsonString`, or any other type it
 
 At HTTP boundaries (request bodies, response bodies), team IDs are serialized as *MongoDB extended JSON*:
 
-* An ObjectId team appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/teams` and `POST /auth/switch-team` responses.
+* An ObjectId team appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/teams` response items.
+* The `POST /auth/switch-team` response and the `team` JWT claim carry the active team as `{ _id, role }` — e.g. `{ "_id": {"$oid": "..."}, "role": "owner" }`.
 * Clients must send the same format in the `POST /auth/switch-team` request body.
 
 This is handled automatically by `BsonUtils.parse` (input) and `BsonUtils.toJson` (output) — no custom conversion helpers are needed in providers.
@@ -475,7 +476,7 @@ public record TeamMember(String email, String name, String role, Instant joinedA
 | Reads the `teams` array as-is; resolves team names from the `teams` collection
 
 | `setActiveMembership`
-| `$set team` on the user document with the native `BsonValue`
+| `$set team` on the user document with `{ _id: <BsonValue>, role: <String> }`
 
 | `removeMember`
 | `$pull` from `user.teams[]` and `team.members[]`; if the removed team was active, `$unset team` on the user
