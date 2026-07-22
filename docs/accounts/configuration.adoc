@@ -229,6 +229,7 @@ To serve multiple teams from a single `restheart-accounts` deployment, configure
 
 * **`AuthDbResolver`** — maps the incoming hostname to `override-users-db` and `override-cookie-domain`.
 * **`TeamConfigInterceptor`** — reads a `confs/{srvId}.accounts` document from MongoDB and attaches per-team app name, frontend URLs, email templates, and OAuth credentials.
+Since 9.6.0 the OAuth override surface covers all of `oauthConfig`, not just provider credentials — see xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides] for the OAuth-specific details, in particular `override-accounts-oauth-api-base-url`, which a multi-tenant deployment should derive from the request's own hostname rather than store, since every team is served on a different one.
 
 Neither interceptor is bundled with `restheart-accounts`; implement them in your deployment layer.
 `restheart-accounts` automatically detects and uses all override attributes when present.
@@ -248,13 +249,21 @@ Neither interceptor is bundled with `restheart-accounts`; implement them in your
 | `override-accounts-tmpl-verification` | `TeamConfigInterceptor` | email template (inline HTML)
 | `override-accounts-tmpl-password-reset` | `TeamConfigInterceptor` | email template (inline HTML)
 | `override-accounts-tmpl-invite` | `TeamConfigInterceptor` | email template (inline HTML)
-| `override-accounts-oauth-google-client-id` | `TeamConfigInterceptor` | `oauthConfig.providers.google.client-id`
-| `override-accounts-oauth-google-client-secret` | `TeamConfigInterceptor` | `oauthConfig.providers.google.client-secret`
+| `override-accounts-oauth-api-base-url` | `TeamConfigInterceptor` | `oauthConfig.api-base-url` (since 9.6.0)
+| `override-accounts-oauth-frontend-success-url` | `TeamConfigInterceptor` | `oauthConfig.frontend-success-url` (since 9.6.0)
+| `override-accounts-oauth-frontend-error-url` | `TeamConfigInterceptor` | `oauthConfig.frontend-error-url` (since 9.6.0)
+| `override-accounts-oauth-{provider}-enabled` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.enabled` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-client-id` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.client-id` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-client-secret` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.client-secret` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-scope` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.scope` (since 9.6.0)
 | `override-accounts-users-unrestricted-roles` | `TeamConfigInterceptor` | `accountsConfig.users-unrestricted-roles` (since 9.6.0)
+| `override-accounts-signup-mgmt-enabled` | `TeamConfigInterceptor` | whether Sign-up Management is enabled for this team (since 9.6.0)
 
 |===
 
-NOTE: `override-accounts-users-unrestricted-roles` controls the link:/docs/accounts/security#users-self-service-write-restriction[`/users` self-service write restriction] on a per-team basis — see that section for the full explanation of what it exempts and why.
+NOTE: `override-accounts-users-unrestricted-roles` and `override-accounts-signup-mgmt-enabled` both control the link:/docs/accounts/security#users-self-service-write-restriction[`/users` self-service write restriction] on a per-team basis — the former exempts specific roles, the latter turns the restriction off entirely for a team that never opted into Sign-up Management. See that section for the full explanation of what each one does and why.
+
+NOTE: `{provider}` is any provider name registered with `OAuthService` — a built-in one (`google`, `github`) or a custom `OAuthProvider` plugin. The override key format is the same regardless of provider; see xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides] for the full OAuth override reference, including `scope` semantics and why `api-base-url` should be derived per-request rather than stored.
 
 ==== `confs/{srvId}.accounts` document schema
 
@@ -278,7 +287,8 @@ All fields are optional; absent fields fall back to the node-level static config
       "google": {
         "enabled":       true,
         "client-id":     "123….apps.googleusercontent.com",
-        "client-secret": "GOCSPX-…"
+        "client-secret": "GOCSPX-…",
+        "scope":         "openid email profile"
       }
     }
   }
@@ -287,6 +297,10 @@ All fields are optional; absent fields fall back to the node-level static config
 
 Inline HTML templates stored in MongoDB follow the same format as file-based templates (subject in `<title>`, i18n via `<span lang>`, `{{variable}}` placeholders).
 See xref:email-templates.adoc[Email Templates] for the full format reference.
+
+NOTE: `oauth.{provider}` accepts any provider name (`google`, `github`, or a custom `OAuthProvider` plugin), with the same `enabled` / `client-id` / `client-secret` / `scope` shape.
+
+IMPORTANT: `oauthConfig.api-base-url` and the `frontend-success-url` / `frontend-error-url` pair are deliberately **not** part of this document. On a multi-tenant node every team is served on a different hostname, so `TeamConfigInterceptor` should derive `override-accounts-oauth-api-base-url` from the incoming request (scheme + host) rather than read it from a stored value — a stored value could not be correct for more than one team. The frontend URLs are typically derived from the team's own `frontend-app-url` (already in this document) instead of stored separately, unless a team needs a distinct post-OAuth destination. See xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides].
 
 [TIP]
 ====

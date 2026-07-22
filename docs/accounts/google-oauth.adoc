@@ -134,6 +134,41 @@ The `.` separator is safe because it is not part of the base64url alphabet.
 When a per-team database override (`override-users-db`) is active, the state is stored in that team's `oauth_codes` collection instead of the default database.
 The callback decodes the database name from the state itself, so cross-instance routing works without any shared in-memory state.
 
+=== Multi-tenant / per-team overrides
+
+On a multi-tenant node — where a single `restheart-accounts` deployment serves many teams, each on its own hostname — every `oauthConfig` parameter can be overridden per request via `override-accounts-oauth-*`.
+See xref:configuration.adoc#_multi_tenancy_with_authdbresolver_and_teamconfiginterceptor[Multi-tenancy with AuthDbResolver and TeamConfigInterceptor] for how the override mechanism works and the full attribute table; this section covers what's specific to OAuth.
+
+[cols="1,3", options="header"]
+|===
+| Attribute | Meaning
+
+| `override-accounts-oauth-api-base-url`
+| Base URL this node is reachable at for *this* request, used to build the `redirect_uri` sent to the provider: `{override}/auth/oauth/callback/{provider}`.
+
+| `override-accounts-oauth-frontend-success-url`
+| Where the browser lands after a successful login, for this team.
+
+| `override-accounts-oauth-frontend-error-url`
+| Where the browser lands after a failed login, for this team.
+
+| `override-accounts-oauth-{provider}-enabled` +
+`override-accounts-oauth-{provider}-client-id` +
+`override-accounts-oauth-{provider}-client-secret` +
+`override-accounts-oauth-{provider}-scope`
+| Per-team credentials/scope for a given provider (`google`, `github`, or a custom one — `{provider}` is whatever `getProviderName()` returns). Requires both `client-id` and `client-secret` to be set; a partial override (e.g. only `enabled`) is treated as "not overridden" and falls back to the static `oauthConfig.providers.{provider}` entry.
+|===
+
+Both the authorize call (`GET /auth/oauth/authorize/{provider}`) and the callback (`GET /auth/oauth/callback/{provider}`) resolve these overrides independently, from the request that hits them — not from the OAuth `state`.
+A deployment-layer interceptor (e.g. `TeamConfigInterceptor`) must therefore be able to re-derive the same overrides on *both* legs, typically from the hostname, since both legs are served on the same team's hostname.
+
+[IMPORTANT]
+====
+Because `redirect_uri` is derived from `override-accounts-oauth-api-base-url`, **each team must register its own callback URL** with the provider — the callback URL shown in <<_google_cloud_console_setup>> / <<_github_oauth_app_setup>> below is per-team, not a single value shared across the whole deployment.
+====
+
+`scope`, when not itself overridden, falls back to the provider's static scope from `oauthConfig.providers.{provider}.scope`; if that provider has no static entry at all (a node whose credentials are managed entirely per-team, with no static `providers` block), it falls back to the provider's well-known default — `openid email profile` for `google`, `user:email` for `github`.
+
 === Google
 
 ==== Google Cloud Console setup
