@@ -187,6 +187,7 @@ originVetoer:
   whitelist-patterns:
     - https://*.mydomain.com
     - http://localhost:*
+  allow-missing-origin: true
   ignore-paths:
     - /public/*
 ----
@@ -232,11 +233,26 @@ ignore-paths:
   - /health
 ----
 
+* `allow-missing-origin` +
+(Optional, default: `true` since 9.6) When `true`, requests with no `Origin` header (i.e. non-browser clients such as curl, CLIs, backend integrations) are allowed through. Browser requests are still validated against the whitelist.
++
+[NOTE]
+====
+Setting this to `true` does *not* open a CSRF hole: browsers always send `Origin` on the requests that matter for CSRF (cross-site non-GET, and any CORS-preflighted request). It does mean the vetoer no longer acts as a blanket "browser-only" gate.
+====
++
+Set to `false` to restore pre-9.6 behavior (missing `Origin` is always denied):
++
+[source,yaml]
+----
+allow-missing-origin: false
+----
+
 === How It Works
 
 . If the request path matches any `ignore-paths` entry, the request is accepted without checking the `Origin` header.
 . If neither `whitelist` nor `whitelist-patterns` is defined, all origins are accepted.
-. If the `Origin` header is missing, the request is rejected.
+. If the `Origin` header is missing, the request is allowed if `allow-missing-origin` is `true` (the default since 9.6), otherwise rejected.
 . The `Origin` header is checked against the `whitelist` (exact/prefix match).
 . If not matched, the `Origin` header is checked against the `whitelist-patterns` (wildcard match).
 . If the origin does not match any entry, the request is rejected.
@@ -253,6 +269,7 @@ originVetoer:
   whitelist-patterns:
     - https://*.mydomain.com
     - http://localhost:*
+  allow-missing-origin: true
   ignore-paths:
     - /public/*
 ----

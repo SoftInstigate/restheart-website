@@ -23,6 +23,10 @@ originVetoer:
   whitelist:
     - https://restheart.org
     - http://localhost
+  # when true, requests with no Origin header (non-browser clients) are allowed;
+  # browser requests are still validated against the whitelist.
+  # Since 9.6 the default changed to true; set to false to restore pre-9.6 behavior.
+  allow-missing-origin: true
   # optional list of paths for whose the Origin header
   # is not checked. values can be absolute paths
   # or patterns like /{var}/path/to/resource/*
@@ -55,6 +59,24 @@ request.attachParam("override-origin-whitelist", List.of("https://acme.example.c
   is present).
 * If attached as an **empty list**: the request is denied (fail closed) —
   this is different from not attaching the param at all.
+
+==== Per-request allow-missing-origin override (since 9.6)
+
+The `allow-missing-origin` setting can also be overridden per request, allowing
+multi-tenant deployments to control whether non-browser clients are allowed on
+a per-service basis:
+
+[source,java]
+----
+request.attachParam("override-origin-allow-missing", true);
+----
+
+* If `override-origin-allow-missing` is **not attached**: the static
+  `allow-missing-origin` config value is used.
+* If attached as `true`: requests without an `Origin` header are allowed for
+  this request, even if the static config is `false`.
+* If attached as `false`: requests without an `Origin` header are denied for
+  this request, even if the static config is `true`.
 
 === filterOperatorsBlacklist
 

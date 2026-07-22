@@ -1,0 +1,76 @@
+---
+docs_version: 9
+title: Upgrade from 9.5 to 9.6
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.6 changes the default behavior of `originVetoer` for requests with no `Origin` header.
+
+This page explains the change and how to restore the previous behavior if needed.
+
+== What changed
+
+=== originVetoer: `allow-missing-origin` default changed to `true`
+
+In RESTHeart 9.5, when `originVetoer` was active (a whitelist or patterns were configured), a request with no `Origin` header was always denied. This was the correct default for browser-only APIs, but it prevented non-browser clients (curl, CLIs, backend integrations, cron jobs) from calling the API even when they were legitimate.
+
+Starting from 9.6, the new `allow-missing-origin` configuration option defaults to `true`, meaning requests without an `Origin` header are allowed through. Browser requests (which always include `Origin`) are still validated against the whitelist as before.
+
+[cols="1,1"]
+|===
+|9.5 |9.6
+
+|Missing `Origin` header → denied
+|Missing `Origin` header → allowed (default)
+
+|No `allow-missing-origin` option
+|`allow-missing-origin: true` (default)
+|===
+
+=== Why this is safe
+
+Browsers always send the `Origin` header on the requests that matter for CSRF protection:
+
+* Cross-site `POST`, `PUT`, `DELETE` requests
+* Any CORS-preflighted request
+
+Setting `allow-missing-origin: true` does *not* open a CSRF vulnerability. It simply means the vetoer no longer acts as a blanket "browser-only" gate.
+
+== Migration steps
+
+=== If you want to keep the 9.5 behavior
+
+Add `allow-missing-origin: false` to your `originVetoer` configuration in `restheart.yml`:
+
+[source,yaml]
+----
+originVetoer:
+  enabled: true
+  whitelist:
+    - https://your-frontend.example.com
+  allow-missing-origin: false  # restores 9.5 behavior: missing Origin is denied
+----
+
+=== If you accept the new default (recommended)
+
+No changes required. Non-browser clients will now be able to call your API without an `Origin` header, while browser requests continue to be validated against the whitelist.
+
+=== Per-request override (multi-tenant deployments)
+
+For multi-tenant deployments, the `allow-missing-origin` setting can be overridden per request using an interceptor:
+
+[source,java]
+----
+// Allow non-browser clients for this specific request
+request.attachParam("override-origin-allow-missing", true);
+
+// Or deny non-browser clients even when the static config allows them
+request.attachParam("override-origin-allow-missing", false);
+----
+
+This is consistent with the existing `override-origin-whitelist` mechanism introduced in 9.5.
+
+== Configuration reference
+
+See xref:/docs/security/security-hardening#originvetoer[Security Hardening: originVetoer] for the full configuration documentation.
