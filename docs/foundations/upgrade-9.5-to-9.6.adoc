@@ -5,11 +5,48 @@ layout: docs-adoc
 menu: overview
 ---
 
-RESTHeart 9.6 changes the default behavior of `originVetoer` for requests with no `Origin` header.
+RESTHeart 9.6 changes the default behavior of `originVetoer` for requests with no `Origin` header, and fixes a gap where VETOER authorizers were not enforced on `secure = false` services.
 
-This page explains the change and how to restore the previous behavior if needed.
+This page explains the changes and how to restore previous behavior if needed.
 
 == What changed
+
+=== VETOER authorizers now enforced on `secure = false` services
+
+In RESTHeart 9.5, services declared with `secure = false` (the default for many endpoints, including all `restheart-accounts` authentication endpoints) skipped *all* authorizer checks — not just authentication. This meant `originVetoer` and any other VETOER authorizer never ran on those endpoints.
+
+Starting from 9.6, VETOER authorizers are always evaluated, even on `secure = false` services. The `FullAuthorizer` (which allows all requests) is still used as the ALLOWER, so authentication remains optional, but deny rules are now enforced.
+
+[cols="1,1"]
+|===
+|9.5 |9.6
+
+|`secure = false` → only `FullAuthorizer` runs
+|`secure = false` → `FullAuthorizer` + all VETOERs run
+
+|`originVetoer` skipped on unauthenticated endpoints
+|`originVetoer` enforced on all endpoints
+|===
+
+This affects the following `restheart-accounts` endpoints (all `secure = false` by design):
+
+* `POST /auth/register`
+* `GET  /auth/verify`
+* `POST /auth/forgot-password`
+* `PATCH /auth/reset-password`
+* `PATCH /auth/activate`
+* `POST /auth/invite`
+* `POST /auth/resend-invite`
+* `GET  /auth/oauth/authorize/{provider}`
+* `GET  /auth/oauth/callback/{provider}`
+
+=== Why this matters
+
+A deployment that configured `originVetoer` in 9.5 was protected on data APIs but left registration, password reset and OAuth entry points open to any origin. This was a security gap, not a feature. The fix ensures the origin check applies consistently.
+
+=== Impact on third-party plugins
+
+If you have custom VETOER authorizers registered via `@RegisterPlugin(authorizerType = Authorizer.TYPE.VETOER)`, they will now also run on `secure = false` services. Make sure your veto predicates handle requests to unrelated services gracefully (e.g. by short-circuiting on path or request type). Existing built-in vetoes (`GetRoleService`, `AccountsInitializer`) already do this.
 
 === originVetoer: `allow-missing-origin` default changed to `true`
 
