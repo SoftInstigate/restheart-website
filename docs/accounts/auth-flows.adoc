@@ -838,7 +838,12 @@ sequenceDiagram
   participant M as MongoDB
 
   C->>R: PATCH /auth/change-password {currentPassword, newPassword}
-  R->>M: find user, bcrypt-verify currentPassword
+  R->>M: find user
+  alt account has a password
+    Note over R: bcrypt-verify currentPassword — 401 if it doesn't match
+  else account has no password yet (e.g. OAuth-only)
+    Note over R: currentPassword not checked
+  end
   Note over R: minimum length check on newPassword
   R->>M: hash + save newPassword
   M-->>R: OK
@@ -847,10 +852,21 @@ sequenceDiagram
 
 *Flow:*
 
-1. Verify `currentPassword` against the stored bcrypt hash — `401` if it doesn't match.
-2. Enforce minimum password length on `newPassword` — `400` otherwise.
-3. Hash and save the new password.
-4. Return `200 OK`.
+1. Look up the caller's own user document — always the authenticated principal, never an arbitrary user (this endpoint requires authentication and never takes a target user in the request).
+2. If the account already has a password, verify `currentPassword` against the stored bcrypt hash — `401` if it doesn't match.
+3. If the account has no password yet, skip that check — see "OAuth-only accounts" below.
+4. Enforce minimum password length on `newPassword` — `400` otherwise.
+5. Hash and save the new password.
+6. Return `200 OK`.
+
+[IMPORTANT]
+====
+*OAuth-only accounts.* A user who signed up via `/auth/oauth/authorize/{provider}` (see xref:google-oauth.adoc[OAuth 2.0 Social Login]) has no password at all — `restheart-accounts` stores an empty, not `null`, `password` field for those accounts. `currentPassword` is still accepted in the request body for API-shape consistency, but it is only *verified* when the account actually has a password to check it against. This lets the same endpoint double as "set your first password" for OAuth-only accounts, with no current one to confirm, while every account that does have a password still needs the correct one.
+
+This is safe without any extra guard because the check above (step 1) already scopes the whole request to the caller's own document — there is no `currentPassword` belonging to *someone else* that could be bypassed this way.
+
+A frontend should not assume every account has a password: the user document carries a `socialAuths` array (one entry per linked OAuth provider — `provider`, `providerId`, `linkedAt`) alongside `password`, populated on OAuth signup and preserved through `GET /users/me`. If `socialAuths` is non-empty, hint that the current-password field may be left blank rather than presenting it as always-required — the account may never have had one.
+====
 
 NOTE: Does not invalidate other active sessions/JWTs — out of scope for JWT-based auth unless a token-versioning/blacklist mechanism is added separately.
 
