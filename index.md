@@ -83,6 +83,77 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
     </div>
 </section>
 
+<!-- Starter Apps for RESTHeart Cloud -->
+<section id="starter-apps-content" class="text-center pb-2 mt-5">
+    <div class="container">
+        <h2 class="text-center highlightcolor font-weight-bold">Your App, 2 Minutes, Every Framework</h2>
+        <p class="mt-2 mb-4">Works with <a href="https://cloud.restheart.com" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> — backend and frontend with full user management, ready to start your logic</p>
+
+        <!-- Core Libraries -->
+        <h3 class="font-weight-bold mb-3" style="font-size: 1.1rem;">Core Libraries</h3>
+        <div class="row mb-5">
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3">
+                    <p class="white mb-2"><strong>React / Next.js</strong></p>
+{% highlight bash %}
+npm install @restheart-cloud/kit-react
+{% endhighlight %}
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3">
+                    <p class="white mb-2"><strong>Angular</strong></p>
+{% highlight bash %}
+npm install @restheart-cloud/kit-ng
+{% endhighlight %}
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3">
+                    <p class="white mb-2"><strong>Vue / Nuxt</strong></p>
+{% highlight bash %}
+npm install @restheart-cloud/kit-vue
+{% endhighlight %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Starter Apps -->
+        <h3 class="font-weight-bold mb-1" style="font-size: 1.1rem;">Starter Apps</h3>
+        <p class="mb-3" style="opacity: 0.7; font-size: 0.9rem;">Start from our ready-made apps — auth, teams, and data APIs already wired up</p>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3">
+                    <p class="white mb-2"><strong>Angular</strong> <span class="badge badge-success">Available</span></p>
+                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Signals, route guards, HTTP interceptor. Complete multi-tenant app.</p>
+{% highlight bash %}
+git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
+{% endhighlight %}
+                    <p class="mt-2 mb-0"><a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank">View on GitHub →</a></p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3">
+                    <p class="white mb-2"><strong>React / Next.js</strong> <span class="badge badge-success">Available</span></p>
+                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Context, hooks, guard components. Plus Next.js SSR support.</p>
+{% highlight bash %}
+git clone https://github.com/SoftInstigate/restheart-cloud-starter-react.git
+{% endhighlight %}
+                    <p class="mt-2 mb-0"><a href="https://github.com/SoftInstigate/restheart-cloud-starter-react" target="_blank">View on GitHub →</a></p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="hero-terminal text-left p-3" style="opacity: 0.6;">
+                    <p class="white mb-2"><strong>Vue / Nuxt</strong> <span class="badge badge-warning">Coming soon</span></p>
+                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Composables, navigation guards. Nuxt SSR support on the same pattern.</p>
+                    <p class="mb-0" style="font-size: 0.85rem;">In development</p>
+                </div>
+            </div>
+        </div>
+        <p class="mt-3"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps">Read about the Kit and Starter Apps →</a></p>
+    </div>
+</section>
+
 <!-- <section id="article-at-aws-blog" class="call-to-action black-background">
     <div class="container-fluid">
         <div class="row">
