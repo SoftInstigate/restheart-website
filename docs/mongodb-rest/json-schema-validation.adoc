@@ -620,6 +620,74 @@ Apply different validation rules based on document properties:
 }
 ----
 
+=== Using the JSON Schema Provider in Plugins
+
+.Available from v9.7.0
+NOTE: Starting from RESTHeart v9.7.0, the JSON Schema store is exposed as a `Provider` (`json-schemas`), making it accessible to any plugin — not just the MongoService pipeline.
+
+Previously, the schema store was only reachable from within the MongoService pipeline via `JsonSchemaCacheSingleton`. Any plugin that needed to validate a document against a stored schema had no supported way to access it.
+
+The `json-schemas` Provider exposes the `JsonSchemas` interface (defined in `restheart-commons`):
+
+[source,java]
+----
+public interface JsonSchemas {
+    void validate(BsonDocument doc, String schemaStoreDb, BsonValue schemaId)
+        throws SchemaValidationException, JsonSchemaNotFoundException;
+
+    String get(String schemaStoreDb, BsonValue schemaId)
+        throws JsonSchemaNotFoundException;
+}
+----
+
+==== Injecting the Provider
+
+Any plugin can inject the `json-schemas` Provider:
+
+[source,java]
+----
+@RegisterPlugin(name = "myPlugin", description = "...")
+public class MyPlugin implements Service<JsonRequest, JsonResponse> {
+
+    @Inject("json-schemas")
+    private JsonSchemas jsonSchemas;
+
+    @Override
+    public void handle(JsonRequest request, JsonResponse response) {
+        var doc = request.getContent().asDocument();
+
+        try {
+            jsonSchemas.validate(doc, "mydb", new BsonString("my-schema"));
+        } catch (SchemaValidationException e) {
+            response.setInError(400, "Validation failed: " + e.getViolations());
+        } catch (JsonSchemaNotFoundException e) {
+            response.setInError(500, "Schema not found");
+        }
+    }
+}
+----
+
+==== Getting the Raw Schema
+
+The `get()` method returns the raw JSON schema as a string, which is useful when you need the schema for purposes other than validation (e.g., generating documentation or client-side validation):
+
+[source,java]
+----
+try {
+    String schemaJson = jsonSchemas.get("mydb", new BsonString("my-schema"));
+    // parse schemaJson as needed
+} catch (JsonSchemaNotFoundException e) {
+    // handle missing schema
+}
+----
+
+==== Key Benefits
+
+* *Platform capability*: The schema store is a platform feature, not a MongoService internal
+* *Single cached source*: One well-known, cached way to resolve schemas instead of every plugin re-implementing loading and caching
+* *No dependency on restheart-mongodb*: The `JsonSchemas` interface lives in `restheart-commons`, so consumers depend only on commons
+* *Validation library isolation*: The everit validation library does not cross the module boundary
+
 === Limitations
 
 The jsonSchema validator has some limitations to be aware of:
