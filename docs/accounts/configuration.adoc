@@ -18,7 +18,11 @@ Every section is independent; omitting a section disables the corresponding feat
 accountsConfig:
   # MongoDB database where users, teams and oauth_codes are stored.
   # Must match mongoRealmAuthenticator.users-db in restheart.yml.
-  db: 8x5
+  db: restheart
+
+  # MongoDB collection name for users. Default: "users".
+  # Since 9.7.0.
+  users-collection: users
 
   # Application display name — used in email subjects and bodies.
   app-name: "My App"
@@ -239,6 +243,7 @@ Neither interceptor is bundled with `restheart-accounts`; implement them in your
 | Attribute | Source | Overrides
 
 | `override-users-db` | `AuthDbResolver` | `accountsConfig.db`
+| `override-accounts-users-collection` | `TeamConfigInterceptor` | `accountsConfig.users-collection` (since 9.7.0)
 | `override-cookie-domain` | `AuthDbResolver` | `accountsConfig.cookie-domain`
 | `override-cookie-secure` | `AuthDbResolver` | `accountsConfig.cookie-secure` (since 9.6.0)
 | `override-accounts-default-role` | `TeamConfigInterceptor` | `accountsConfig.default-role`

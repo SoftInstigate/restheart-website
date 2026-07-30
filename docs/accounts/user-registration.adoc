@@ -60,6 +60,7 @@ Content-Type: application/json
 . Check email uniqueness — `409 Conflict` if already registered.
 . Generate a cryptographically random `verificationToken` (256-bit) and `verificationCreatedAt` timestamp.
 . Create the user document with `roles: ["$unauthenticated"]` and the verification token.
+. Validate the user document against the collection's JSON Schema (if configured — see below).
 . Create a `membership` document linking the user to the team as `owner`.
 . Send a verification email containing a one-time link:
 +
@@ -81,9 +82,94 @@ Content-Type: application/json
 |===
 | Status | Reason
 
-| `400` | Missing or invalid fields; password too weak
+| `400` | Missing or invalid fields; password too weak; document violates collection JSON Schema
 | `409` | Email already registered
+| `500` | A JSON Schema is configured on the users collection but cannot be applied
 |===
+
+=== JSON Schema validation on registration
+
+.Available from v9.7.0
+NOTE: Starting from RESTHeart v9.7.0, the registration endpoint validates the user document against the collection's JSON Schema (if configured).
+
+If the `users` collection has a `jsonSchema` metadata configured (via the `_properties` collection), the registration endpoint validates the user document against that schema before inserting it. This ensures that invariants declared on the users collection — for example that a `consents` field is always present — are enforced even for documents created through the registration endpoint, which bypasses the MongoService pipeline.
+
+==== How it works
+
+. The user document is built from the request body (see the mapping table below).
+. The collection properties are read from `_properties._properties.{usersCollection}` in the effective database. The collection name comes from `accountsConfig/users-collection`, which must match `mongoRealmAuthenticator/users-collection`.
+. If a `jsonSchema` metadata is present, the document is validated against the referenced schema, resolved through the `json-schemas` provider.
+. On validation failure, the endpoint returns `400` with the list of violations, and no user is created.
+. If no schema is configured, validation is skipped (opt-in).
+
+===== Validation fails closed
+
+Once the `jsonSchema` metadata is on the collection, it is honoured or the request fails. If the schema cannot be applied — it is missing from the schema store, the metadata is malformed, or `restheart-mongodb` is not deployed so the `json-schemas` provider is unavailable — the endpoint returns `500` and *no user is created*.
+
+A typo in `schemaId` therefore surfaces as an error rather than silently disabling the invariant the schema was written to enforce.
+
+==== What the schema sees
+
+The document is validated *as it is inserted*, which is not its final shape. `createInitialTeam` runs right after the insert and adds `teams` and `team` to the user document. Consequently:
+
+* a schema with `required: ["team"]` always fails, even though the stored document does end up with the field;
+* a schema with `additionalProperties: false` passes validation but does not describe the document a moment later.
+
+Schemas meant for the registration path should declare `teams` and `team` as optional.
+
+Fields of the request body that are not in the mapping table are dropped before the document is built, so the schema never sees them and cannot reject them — with or without `additionalProperties: false`. Body-level rejection is not part of this feature.
+
+Violation messages are returned as-is, in the schema's vocabulary. A body that omits `firstName` produces `#/profile/name: required key [name] not found`, not a message mentioning `firstName`.
+
+==== Request body to user document mapping
+
+[cols="1,1"]
+|===
+| Request body field | User document field
+
+| `firstName`
+| `profile.name`
+
+| `lastName`
+| `profile.surname`
+
+| `email`
+| `_id`
+
+| `password`
+| `password` (hashed)
+
+| `teamName`
+| not stored on the user document — a team document is created by `createInitialTeam`
+|===
+
+[NOTE]
+====
+The schema validates the *stored* document, not the request body. A schema that requires `profile.name` will reject a registration missing `firstName`, because the stored field is `profile.name`.
+====
+
+==== Example
+
+[source,bash]
+----
+# Create a schema that requires a 'consents' field
+http POST :8080/_schemas Authorization:"Basic ..." \
+  _id=user-with-consents \
+  '$schema'="http://json-schema.org/draft-07/schema#" \
+  type=object \
+  required:='["consents"]' \
+  properties:='{"consents":{"type":"object"}}'
+
+# Apply schema to users collection
+http PATCH :8080/users Authorization:"Basic ..." \
+  jsonSchema:='{"schemaId":"user-with-consents"}'
+
+# Registration now fails — user doc has no 'consents' field
+http POST :8080/auth/register Authorization:"Basic ..." \
+  firstName=Alice lastName=Smith teamName=Acme \
+  email=alice@example.com password=Password123!
+# → 400 Bad Request: User document violates schema: required key [consents] not found
+----
 
 [NOTE]
 ====
