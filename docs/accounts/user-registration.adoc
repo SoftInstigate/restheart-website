@@ -97,7 +97,7 @@ If the `users` collection has a `jsonSchema` metadata configured (via the `_prop
 ==== How it works
 
 . The user document is built from the request body (see the mapping table below).
-. The collection properties are read from `_properties._properties.{usersCollection}` in the effective database. The collection name comes from `accountsConfig/users-collection`, which must match `mongoRealmAuthenticator/users-collection`.
+. The collection properties are read from `_properties._properties.{usersCollection}` in the effective database. Both the database and the collection are sourced from `mongoRealmAuthenticator` (`users-db` and `users-collection`).
 . If a `jsonSchema` metadata is present, the document is validated against the referenced schema, resolved through the `json-schemas` provider.
 . On validation failure, the endpoint returns `400` with the list of violations, and no user is created.
 . If no schema is configured, validation is skipped (opt-in).
