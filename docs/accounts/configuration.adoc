@@ -224,6 +224,8 @@ jwtTokenManager:
 TIP: Keep `accountsConfig.account-properties-claims` and `jwtTokenManager.account-properties-claims` identical.
 Any discrepancy means `/token` and accounts endpoints will issue JWTs with different claims, which can cause subtle authentication failures.
 
+Since 9.7.0, `account-properties-claims` can also be overridden per team via `override-accounts-account-properties-claims` (see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy]) — useful when different tenants want different token payloads (e.g. one wants `consents` for ACL predicates, another wants a plan identifier, another neither). Whichever list is in effect, a fixed denylist is enforced at token issuance and cannot be bypassed by the override — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist].
+
 === Multi-tenancy with AuthDbResolver and TeamConfigInterceptor
 
 To serve multiple teams from a single `restheart-accounts` deployment, configure two interceptors at `REQUEST_BEFORE_EXCHANGE_INIT`:
@@ -259,6 +261,9 @@ Neither interceptor is bundled with `restheart-accounts`; implement them in your
 | `override-accounts-oauth-{provider}-scope` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.scope` (since 9.6.0)
 | `override-accounts-users-unrestricted-roles` | `TeamConfigInterceptor` | `accountsConfig.users-unrestricted-roles` (since 9.6.0)
 | `override-accounts-signup-mgmt-enabled` | `TeamConfigInterceptor` | whether Sign-up Management is enabled for this team (since 9.6.0)
+| `override-accounts-terms-version` | `TeamConfigInterceptor` | `accountsConfig.terms-version` (since 9.7.0)
+| `override-accounts-privacy-version` | `TeamConfigInterceptor` | `accountsConfig.privacy-version` (since 9.7.0)
+| `override-accounts-account-properties-claims` | `TeamConfigInterceptor` | `accountsConfig.account-properties-claims` (since 9.7.0) — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist] for what a tenant cannot override
 
 |===
 
@@ -279,6 +284,9 @@ All fields are optional; absent fields fall back to the node-level static config
     "app-name":         "Customer App",
     "frontend-url":     "https://app.customer.com",
     "frontend-app-url": "https://app.customer.com/app",
+    "terms-version":    "2.0",
+    "privacy-version":  "2.0",
+    "account-properties-claims": ["consents", "plan"],
     "templates": {
       "verification":   "<html>…full HTML string…</html>",
       "password-reset": "<html>…</html>",

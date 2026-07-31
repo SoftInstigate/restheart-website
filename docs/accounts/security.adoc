@@ -77,6 +77,22 @@ In a multi-tenant deployment, `users-unrestricted-roles` can also be overridden 
 
 `accountsInitializer` is enabled at the node level, independent of whether a given tenant has actually opted into `restheart-accounts` (e.g. RESTHeart Cloud enables it once per service node, but Sign-up Management is an opt-in feature per service). A tenant that never enabled it never opted into these opinions on `/users` either — so a deployment-layer interceptor running before authentication (e.g. `TeamConfigInterceptor`, at `REQUEST_BEFORE_EXCHANGE_INIT`) can attach `override-accounts-signup-mgmt-enabled: false` to skip the restriction entirely for that tenant, for every caller. This must be set before authentication: the veto is evaluated as part of authorization, which runs before any `REQUEST_AFTER_AUTH` interceptor gets a chance to run.
 
+=== JWT claims denylist
+
+CAUTION: Since RESTHeart 9.7.0.
+
+`accountsConfig.account-properties-claims` (and, in a multi-tenant deployment, its per-team override `override-accounts-account-properties-claims`) selects which fields of the user document are copied into the JWT issued by accounts endpoints (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-team`, `GET`/`POST /auth/teams`, the OAuth callback).
+
+A JWT payload is base64, not encrypted — the client reads every claim it carries. Listing a sensitive field here would ship it to the browser on every request. This matters more once the list is a per-tenant override: a tenant now holds a lever that used to belong only to the node operator.
+
+`JwtHelper` enforces a fixed denylist at token issuance, regardless of whether the list came from static configuration or from the per-tenant override:
+
+* the configured password property — its name is read from `mongoRealmAuthenticator/prop-password` (default `"password"`), not hardcoded, so a deployment that renames it is still covered
+* `emailVerificationToken`, `emailVerificationCreatedAt`
+* `passwordResetToken`, `passwordResetCreatedAt`
+
+These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds regardless of which layer wrote the list — static YAML, a `TeamConfigInterceptor` override, or a future custom source.
+
 === Brute-force protection
 
 `restheart-accounts` relies on RESTHeart's built-in `bruteForceAttackGuard` (sliding-window rate limiter per IP) for protection against token-guessing and credential stuffing.

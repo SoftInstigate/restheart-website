@@ -16,6 +16,11 @@ The OAuth flow does transport a `consentsAccepted` flag through the OAuth state 
 See xref:membership-providers.adoc#_oauth_activation_for_invited_users[OAuth activation for invited users] for the SPI contract.
 ====
 
+[NOTE]
+====
+`ConsentRecord.termsVersion()` / `privacyVersion()` carry the *effective* `accountsConfig.terms-version` / `accountsConfig.privacy-version` for the tenant that issued the request — since 9.7.0 these can differ per team via `override-accounts-terms-version` / `override-accounts-privacy-version` (see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy]). A `MembershipProvider` implementing a richer consent model — an arbitrary list of versioned documents rather than these two fixed ones — should resolve versions on its own rather than trust these two fields as authoritative.
+====
+
 == Implementing consent persistence
 
 Use a response interceptor that:
