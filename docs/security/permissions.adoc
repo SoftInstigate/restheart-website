@@ -217,6 +217,68 @@ Predicates can reference dynamic values using special variables:
 |Path template variable (e.g., `${userid}` from path `/{userid}`)
 |===
 
+All of the above work identically in the `predicate` string, and in the `readFilter`/`mergeRequest` permission properties — one namespace, one place to look.
+
+==== Adding a custom variable: the `VarResolver` SPI
+
+CAUTION: Since RESTHeart 9.7.0.
+
+The variables in the table above aren't special-cased by the framework — each is a `VarResolver`, registered at startup. A plugin can register its own the same way, making a new `@`-prefixed variable (e.g. `@subscription`) usable everywhere the built-ins are: `predicate` strings, `readFilter`, and `mergeRequest`.
+
+[source,java]
+----
+public class SubscriptionVarResolver implements VarResolver {
+    @Override
+    public String name() {
+        return "subscription"; // matches @subscription, @subscription.plan, ...
+    }
+
+    @Override
+    public BsonValue resolve(Request<?> request, String var) {
+        var account = request.getAuthenticatedAccount();
+        if (!(account instanceof MongoRealmAccount mra)) {
+            return null; // unresolved — see failure semantics below
+        }
+
+        var plan = lookUpPlan(mra.properties().getString("_id").getValue());
+
+        // "var" is the full expression, e.g. "@subscription.plan" — parse whatever
+        // suffix your variable supports; here only the bare form is implemented.
+        return "@subscription".equals(var) ? plan.asBson() : null;
+    }
+}
+
+@RegisterPlugin(name = "subscriptionVarResolverRegistrar", description = "registers @subscription")
+public class SubscriptionVarResolverRegistrar implements Initializer {
+    @Inject("acl-vars-registry")
+    private AclVarsRegistry vars;
+
+    @Override
+    public void init() {
+        vars.register(new SubscriptionVarResolver());
+    }
+}
+----
+
+Then use it exactly like a built-in:
+
+[source,json]
+----
+{
+  "predicate": "path('/reports') and equals(@subscription.plan, 'enterprise')"
+}
+----
+
+**Registration.** Built-in resolvers register first, at class-loading time, so they always win a name collision — registering an already-taken name (e.g. `user`) fails at startup with a clear `ConfigurationException` instead of silently being ignored.
+
+**Failure semantics.** Returning `null` (or throwing) from `resolve()` is treated as "unresolved": in a `readFilter`/`mergeRequest` document the value becomes MongoDB `null`; in a `predicate` string the expression is replaced with an unguessable random token, so any comparison against it fails. A broken resolver denies access, it never widens it.
+
+**The resolver contract:**
+
+* *No secrets in the returned value* — a registered variable also flows into `readFilter`, hence into MongoDB queries.
+* *Deterministic and request-scoped* — `resolve()` must be a pure function of the request and the authenticated identity, taking no input from whoever writes the predicate being evaluated.
+* *The cache belongs to the resolver* — the framework memoizes one call per distinct full expression per request (e.g. `@subscription.plan` computed once even if three permissions all reference it), but if your resolver does one expensive lookup behind several sub-properties (`@subscription.plan`, `@subscription.status`), caching that lookup across those calls is your own responsibility. Set `cacheable()` to `false` for a non-deterministic variable (mirroring how the built-in `@rnd` opts out — every occurrence must yield an independent value).
+
 ===== Example: User Can Only Access Their Own Data
 
 [source,json]
