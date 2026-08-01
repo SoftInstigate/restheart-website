@@ -77,21 +77,78 @@ In a multi-tenant deployment, `users-unrestricted-roles` can also be overridden 
 
 `accountsInitializer` is enabled at the node level, independent of whether a given tenant has actually opted into `restheart-accounts` (e.g. RESTHeart Cloud enables it once per service node, but Sign-up Management is an opt-in feature per service). A tenant that never enabled it never opted into these opinions on `/users` either — so a deployment-layer interceptor running before authentication (e.g. `TeamConfigInterceptor`, at `REQUEST_BEFORE_EXCHANGE_INIT`) can attach `override-accounts-signup-mgmt-enabled: false` to skip the restriction entirely for that tenant, for every caller. This must be set before authentication: the veto is evaluated as part of authorization, which runs before any `REQUEST_AFTER_AUTH` interceptor gets a chance to run.
 
-=== JWT claims denylist
+=== JWT claims
 
 CAUTION: Since RESTHeart 9.7.0.
 
-`accountsConfig.account-properties-claims` (and, in a multi-tenant deployment, its per-team override `override-accounts-account-properties-claims`) selects which fields of the user document are copied into the JWT issued by accounts endpoints (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-team`, `GET`/`POST /auth/teams`, the OAuth callback).
+`account-properties-claims` selects which fields of the user document are copied into the JWTs RESTHeart issues. In a multi-tenant deployment it can be overridden per tenant with the `override-accounts-account-properties-claims` request parameter, attached before authentication by a deployment-layer interceptor such as `TeamConfigInterceptor`.
 
-A JWT payload is base64, not encrypted — the client reads every claim it carries. Listing a sensitive field here would ship it to the browser on every request. This matters more once the list is a per-tenant override: a tenant now holds a lever that used to belong only to the node operator.
+==== One issuance logic
 
-`JwtHelper` enforces a fixed denylist at token issuance, regardless of whether the list came from static configuration or from the per-tenant override:
+A JWT issued by RESTHeart is one thing regardless of *when* it is issued: at login on `/token`, by an accounts endpoint (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-team`, `GET`/`POST /auth/teams`, the OAuth callback), or as an OAuth authorization code on `/authorize`. All of them go through `JwtIssuer`, which owns claim selection, the denylist, the nested-path syntax and the claim type mapping. The issuance moments differ; the resulting token does not.
+
+Configure the claim list once, next to the signing key it belongs with:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  key: <signing key>
+  algorithm: HS256
+  issuer: my-deployment.example.com
+  account-properties-claims:
+    - profile
+    - plan
+----
+
+NOTE: The per-plugin settings `jwtTokenManager/account-properties-claims` and `accountsConfig/account-properties-claims` are deprecated. They still win when set, so existing deployments keep working, but they let the two issuers drift apart — exactly what `jwtConfigProvider` exists to prevent, as it already does for `key` and `issuer`.
+
+==== Nested paths
+
+A claim name may address a nested field with `/`. The nesting is rebuilt in the token:
+
+[source,yaml]
+----
+account-properties-claims:
+  - consents/tos/version    # -> { "consents": { "tos": { "version": "…" } } }
+----
+
+Note the separator is `/`, not `.`.
+
+==== Required claims
+
+Some claims are infrastructure the deployment cannot work without. On a multi-tenant node, for instance, a claim naming the node that issued the token is verified on every later request — a tenant able to drop it from its own claim list would lock itself out, since every token issued afterwards would be rejected.
+
+`required-account-properties-claims` lists the claims that are always copied into the token, whatever the effective list says:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  required-account-properties-claims:
+    - srvNode
+----
+
+A per-tenant override can add to this set but never remove from it.
+
+==== Denylist
+
+A JWT payload is base64, not encrypted — the client reads every claim it carries. Listing a sensitive field would ship it to the browser on every request. This matters more once the list is a per-tenant override: a tenant then holds a lever that used to belong only to the node operator.
+
+`JwtIssuer` enforces a fixed denylist at token issuance, on every issuance path and regardless of whether the list came from static configuration, a per-tenant override, or the required-claims set:
 
 * the configured password property — its name is read from `mongoRealmAuthenticator/prop-password` (default `"password"`), not hardcoded, so a deployment that renames it is still covered
 * `emailVerificationToken`, `emailVerificationCreatedAt`
 * `passwordResetToken`, `passwordResetCreatedAt`
 
-These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds regardless of which layer wrote the list — static YAML, a `TeamConfigInterceptor` override, or a future custom source.
+These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds regardless of which layer wrote the list — static YAML, a `TeamConfigInterceptor` override, or a future custom source. The denylist wins over the required-claims set: a credential cannot be made mandatory.
+
+==== Claims reflect the authenticated account
+
+Claims are read from the properties of the account that authenticated the request, not from a fresh database read. What that means depends on how the caller authenticated:
+
+* with credentials (Basic Auth against `mongoRealmAuthenticator`), the properties are the user document, so a field added to the document appears in the next token
+* with an existing JWT, the properties are that token's own claims — a field that was not in it cannot appear in a token derived from it, not even with `GET /token?renew=true`
+
+So after adding a claim to the list, or after writing a new field to a user document, an existing token must be replaced by one issued from credentials for the change to show up.
 
 === Brute-force protection
 
