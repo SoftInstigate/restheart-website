@@ -352,3 +352,284 @@ iframe {
 .imageblock {
   margin-bottom: 0.5em;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Documentation reading ergonomics
+//
+// Scoped to `.doc`, the wrapper used only by the docs-adoc and docs layouts, so
+// none of this touches the marketing pages. It sits after the asciidoctor.css
+// @import above because that is what it overrides — a @use'd partial would be
+// emitted before it and lose on equal specificity.
+// ─────────────────────────────────────────────────────────────────────────────
+
+.doc {
+  // Measure. The content column is col-xl-8 of a container-fluid, so on a wide
+  // display a paragraph runs well past 120 characters — roughly double what the
+  // eye tracks comfortably, and the main reason these pages are tiring.
+  //
+  // The cap goes on the text-bearing elements, not on the column, so code blocks,
+  // tables and images keep the whole width — those need the space, and the wider
+  // they are the fewer of them wrap. Prose is then centred in the column, so the
+  // narrow text sits inside the wide blocks instead of hanging off their left
+  // edge with a ragged gap on the right.
+  .bd-content {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    ul,
+    ol,
+    dl,
+    blockquote,
+    .admonitionblock {
+      max-width: 46rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    // asciidoctor puts the markers outside the box (list-style-position: outside) and makes room
+    // for them with margin-left: 1.5em. Centring replaces that margin with auto, which is 0 as
+    // soon as the column is narrower than the cap — on a phone the bullets then render outside
+    // the list box and off the left edge of the screen. Reserving the room as padding instead
+    // keeps the markers inside the element, whatever the margin is doing.
+    ul,
+    ol {
+      padding-left: 1.5em;
+    }
+
+    // Nested lists and list-item paragraphs keep their parent's indentation
+    // rather than re-centring: auto margins here would pull them back towards
+    // the middle of the column and break the relationship with the item they
+    // belong to. 1.25em is asciidoctor's own nesting indent.
+    li ul,
+    li ol {
+      margin-left: 1.25em;
+      margin-right: 0;
+      max-width: none;
+    }
+
+    li p {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: none;
+    }
+  }
+
+  // Contrast. Pure white on pure black is the maximum the display can produce;
+  // at paragraph length it haloes and blurs. Body text drops to ~85% white while
+  // headings stay at full white, which also buys back some hierarchy.
+  .bd-content {
+    color: #dadada;
+
+    p,
+    li,
+    dd,
+    td {
+      color: #dadada;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #ffffff;
+    }
+  }
+
+  // Vertical rhythm. asciidoctor sets 1.6 on paragraphs and a fixed 1.4rem on
+  // lists, which is tight for 18px text on a dark background.
+  .bd-content {
+    p {
+      line-height: 1.7;
+    }
+
+    ul,
+    ol,
+    dl {
+      line-height: 1.7;
+    }
+
+    li + li {
+      margin-top: 0.4em;
+    }
+
+    li > p {
+      margin-bottom: 0.5em;
+    }
+  }
+
+  // Section separation. More space above a heading than below it groups it with
+  // the text it introduces; the hairline gives long pages a scannable skeleton.
+  .bd-content {
+    h2 {
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    h3 {
+      margin-top: 2.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h4,
+    h5,
+    h6 {
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    // The first heading of the page needs neither the rule nor the space
+    .sect1:first-of-type > h2 {
+      margin-top: 1rem;
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
+
+  // Anchors. The header is fixed and the sticky columns start at 4rem, so a link
+  // to a heading would otherwise land with that heading hidden underneath it.
+  .bd-content [id] {
+    scroll-margin-top: 4.5rem;
+  }
+
+  // Inline code. Orange on black with no plate is loud, and these pages are full
+  // of it — a tinted background separates it from prose at lower saturation.
+  .bd-content *:not(pre) > code {
+    background-color: rgba(248, 168, 57, 0.1);
+    color: #f0b661;
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+  }
+
+  // Links. Underlines are already on; this keeps them clear of descenders.
+  .bd-content a {
+    text-underline-offset: 0.15em;
+  }
+
+  // Tables. The asciidoctor default header is near-white with black text, which
+  // on a black page reads as a glare bar across the table.
+  .bd-content table {
+    border-color: rgba(255, 255, 255, 0.15);
+
+    thead,
+    tfoot {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    thead tr th,
+    tfoot tr th,
+    thead tr td,
+    tfoot tr td {
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    tr th,
+    tr td {
+      padding: 0.7em 0.85em;
+      line-height: 1.6;
+    }
+  }
+
+  // Admonitions. A tinted panel with a coloured edge makes NOTE/TIP/WARNING
+  // recognisable before they are read, instead of blending into the prose.
+  .bd-content .admonitionblock {
+    margin: 1.5rem 0;
+
+    > table {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 6px;
+      border-left: 4px solid variables.$color-primary;
+
+      td.icon {
+        width: 5.5rem;
+        padding: 0.9rem 0 0.9rem 1rem;
+        vertical-align: top;
+
+        .title {
+          color: variables.$color-primary;
+          font-size: 0.8rem;
+          letter-spacing: 0.04em;
+        }
+      }
+
+      td.content {
+        padding: 0.9rem 1.25rem;
+        border-left: 0;
+      }
+    }
+
+    &.note > table {
+      border-left-color: #5aa9e6;
+
+      td.icon .title {
+        color: #5aa9e6;
+      }
+    }
+
+    &.warning > table,
+    &.caution > table {
+      border-left-color: #e6a15a;
+
+      td.icon .title {
+        color: #e6a15a;
+      }
+    }
+
+    &.important > table {
+      border-left-color: #e66a5a;
+
+      td.icon .title {
+        color: #e66a5a;
+      }
+    }
+  }
+
+  // Code blocks get a little more breathing room inside the frame.
+  .bd-content {
+    .listingblock,
+    .literalblock {
+      margin-bottom: 1.5rem;
+    }
+
+    .listingblock > .content > pre,
+    .literalblock pre {
+      padding: 1rem 1.1rem;
+    }
+  }
+
+  // The sidebar and TOC dividers are declared with a black border on a black
+  // page, so the three columns run into each other.
+  .bd-toc {
+    border-left-color: rgba(255, 255, 255, 0.1);
+
+    ul {
+      line-height: 1.5;
+    }
+
+    li {
+      margin-bottom: 0.15em;
+    }
+
+    a {
+      color: #c4c4c4;
+
+      &:hover {
+        color: variables.$color-primary;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    .bd-sidebar {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}

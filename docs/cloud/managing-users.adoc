@@ -111,6 +111,31 @@ NOTE: The `_id` (username) is read-only after creation. To rename a user, delete
 
 Click **Delete** on a user row. A confirmation dialog appears before the `DELETE /users/<id>` request is issued. Deleting a user immediately revokes all active sessions for that identity.
 
+[#jwt-claims]
+== JWT Claims
+
+A JWT issued by your service carries, besides the identity and the roles, whichever fields of the user document you choose to expose as **claims**. Anything not in that list is invisible to code reading the token — including link:managing-permissions[ACL permissions] and link:guards[Guards] conditions, for a user authenticating with a token rather than with a password.
+
+*Navigation path:* Service → Users → the wrench button → **JWT Claims**
+
+. Type a field name and press *Enter*, or click **+**.
+. Nested fields use `/` as the separator: `consents/tos/version` selects that nested value and rebuilds the nesting inside the token.
+. Click **Save Claims**.
+
+The changes apply to **newly issued** tokens. Users already signed in keep their current claims until they obtain a new one.
+
+=== What You Cannot Expose
+
+A JWT payload is base64, *not* encrypted: any client holding the token can read every claim in it. Credentials are therefore refused at issuance whatever the list says — the password field and the one-shot verification and password-reset tokens. The dialog flags them as you type, but the server is what enforces it.
+
+=== Claims That Are Always There
+
+RESTHeart Cloud adds a few claims of its own to every token — among them the one identifying the node that issued it, which is checked on every subsequent request. They are not removable: a service able to drop them would lock itself out.
+
+=== Choosing What to Expose
+
+Add a field when something needs to read it *without* a database lookup — a permission, a guard condition, or your frontend. Every claim makes the token larger and is sent with every request, so a list that mirrors the whole user document is the wrong shape.
+
 == API Reference
 
 [cols="2,3"]
@@ -164,6 +189,7 @@ The roles defined here are the same roles referenced in the `roles` array of you
 == Related Pages
 
 * link:managing-permissions[Managing Permissions (ACL)] — define what each role can do.
+* link:guards[Guards] — block or redirect requests based on conditions over the user and their team.
 * link:root-user-setup[Root User Setup] — create the initial administrative user using the Temporary Admin JWT.
 * link:users-and-permissions[Users and Permissions (API reference)] — API-level examples for creating and managing users programmatically.
 * link:plans[Dedicated vs. Free/Shared Plans] — understand collection path differences between plans.

@@ -382,6 +382,8 @@ jwtTokenManager:
 
 The query parameter `renew` forces the token to be renewed. Add it to `GET /token` or `GET /token/cookie` requests (e.g., `GET /token?renew`).
 
+The renewed token is built from the account read again from the users collection, so it also picks up changes made to the user document since the current token was issued — see <<Claims reflect the authenticated account>>.
+
 Generating a new token is a cryptographic operation and can have a significant performance overhead.
 It is the responsibility of the client to renew the token using this query parameter when it is going to expire soon.
 
@@ -452,12 +454,16 @@ These are one-shot credentials or the password hash, never eligible to become a 
 
 ==== Claims reflect the authenticated account
 
-Claims are read from the properties of the account that authenticated the request, not from a fresh database read. What that means depends on how the caller authenticated:
+Claims are read from the properties of the account that authenticated the request. What that means depends on how the caller authenticated:
 
 * with credentials (Basic Auth against `mongoRealmAuthenticator`), the properties are the user document, so a field added to the document appears in the next token
-* with an existing JWT, the properties are that token's own claims — a field that was not in it cannot appear in a token derived from it, not even with `GET /token?renew=true`
+* with an existing JWT, the properties are that token's own claims — a field that was not in it cannot appear in a token derived from it
 
-So after adding a claim to the list, or after writing a new field to a user document, an existing token must be replaced by one issued from credentials for the change to show up.
+Renewal is the exception, and the way to pick up a change without asking the user for their password again. On `GET /token?renew` the account is re-read from the users collection, so the renewed token carries the current document — new claims included, and current roles.
+
+When the user cannot be re-read, the token is renewed from its own claims as before: a later expiry, the same data. This is the normal outcome when the token was issued by another node, or by a realm with no users collection behind it, and it is why renewal never fails for lack of a local user. The re-read is also skipped when the token's `authDb` names a realm other than the one the request resolves to — the same principal name in two realms is two different people.
+
+CAUTION: Since RESTHeart 9.7.0. Before it, `?renew` extended the expiry without re-reading, so a token could not pick up a change to its own user document at all.
 
 === Avoid browsers to open the login popup window
 

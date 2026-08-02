@@ -1,0 +1,252 @@
+---
+docs_version: 9
+title: Guards
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+The **Guards** plugin lets you block or redirect requests that fail rules you write yourself — users who have not accepted the current terms, a lapsed subscription, a feature that is not in the customer's plan.
+
+Permissions answer "may this role touch this resource?". Guards answer a different question: "is this particular user, right now, in a state where the application should serve them at all?" That state lives in your data, changes over time, and has nothing to do with roles — which is why it does not belong in an ACL rule.
+
+*Navigation path:* Service → Guards
+
+== How It Works
+
+Every request is evaluated against your rules **in order**. The first rule whose condition matches performs its action and the evaluation stops. If no rule matches, the request proceeds exactly as it would without the plugin.
+
+Each rule has:
+
+[cols="1,3"]
+|===
+| Field | Meaning
+
+| `id`
+| A short identifier, unique within the service.
+
+| `name`
+| A description for your own benefit. Not used at runtime.
+
+| `condition`
+| A predicate expression. When it matches, the action is performed.
+
+| `action`
+| `block` or `redirect`.
+
+| `status_code`
+| The response status. Defaults to `403` for `block`, `302` for `redirect`.
+
+| `message`
+| The error message returned by `block`.
+
+| `location`
+| The URL `redirect` sends the client to. Required for `redirect`.
+
+| `on_error`
+| What to do when the condition cannot be evaluated: `allow` (the default) or `deny`.
+|===
+
+=== Guards Restrict, They Never Widen
+
+Authorization runs *before* guards. A request your ACL rules deny never reaches the rules at all, so a guard can only narrow access — it can never grant something a permission refused.
+
+The reverse is worth noting too: a request that is unauthenticated *on purpose*, such as sign-up, is permitted by the ACL and therefore does reach the guards. That is what makes a rule like "registration is closed" possible.
+
+=== The Service Administrator Is Never Guarded
+
+Rules are never applied to requests authenticated as the service administrator. This is deliberate and it is what makes the plugin safe to experiment with: a rule that blocks everything still leaves the Cloud UI working, so you can always go back and fix it.
+
+== Writing Conditions
+
+Conditions use the RESTHeart predicate language — the same one used by link:managing-permissions[ACL permissions]. The variables available are:
+
+[cols="1,3"]
+|===
+| Variable | Value
+
+| `@user`
+| The authenticated account. `@user.email`, `@user.consents.tos.version`, and so on.
+
+| `@team`
+| The document of the user's currently active team, from the `teams` collection.
+
+| `@team.role`
+| The role *this user* has in that team — `owner`, `member`, or whatever your application uses.
+
+| `@request`
+| Request metadata, including `@request.body` for the request payload.
+|===
+
+A few examples:
+
+[source]
+----
+not path-prefix('/auth') and not equals(@user.consents.tos.version, '2026-07-01')
+----
+
+[source]
+----
+method(POST) and not equals(@team.plan, 'pro')
+----
+
+[source]
+----
+path-prefix('/admin') and not equals(@team.role, 'owner')
+----
+
+TIP: The **Guards** page validates every condition against the server's predicate parser before saving. A condition that does not parse cannot be saved.
+
+=== `@user` Only Sees What Is in the Token
+
+For users authenticating with a JWT, `@user` is the token's claims — not the user document. A condition on `@user.consents` will simply never match unless `consents` is one of the claims your service issues.
+
+Configure the claim list in *Service → Users → JWT Claims* (see link:managing-users[Managing Users]). The Guards page warns you inline when a condition names a field that is not in the configured list.
+
+Users authenticating with username and password are not affected — for them `@user` is the full user document.
+
+== Enabling the Plugin
+
+. Navigate to *Service → Guards* in the Cloud UI.
+. Click **Enable Guards**. The UI installs and activates the plugin.
+. The page switches to the rules editor.
+
+With the plugin enabled and no rules configured, nothing changes: every request proceeds as before.
+
+== Adding and Editing Rules
+
+. Click **Add Rule**. A new rule opens in the editor.
+. Fill in the id, the condition and the action, plus the message or the location depending on the action.
+. Click **Done** to collapse the rule, then **Save** to send the rules to the service.
+
+Use the arrows on each rule to change its position. Order is significant: the first matching rule decides.
+
+NOTE: Changes are not sent to the server until you click **Save**.
+
+TIP: Configuration changes may take up to 60 seconds to propagate to all service nodes.
+
+== Locking Users Out
+
+A rule matches requests, and the requests users need in order to *get back in* are requests like any other. A condition that also matches signing in, accepting the terms, or the OAuth callback leaves users with no way through — the application appears broken and nothing in the logs says "misconfigured rule".
+
+Exclude those paths in the condition itself:
+
+[source]
+----
+not path-prefix('/auth') and not path('/consents') and <your actual condition>
+----
+
+There is no separate allowlist field: the exclusions are part of the condition, so what you read is what is evaluated.
+
+Test a rule on a non-production service before enabling it on the one your users depend on.
+
+== When a Condition Cannot Be Evaluated
+
+If a condition fails to evaluate at runtime — a variable that does not resolve, an unexpected data shape — the rule's `on_error` decides.
+
+The default is `allow`: the request goes through and the failure is logged. This is deliberate. An application locked out by a broken rule is an incident; a rule that fails open is a problem you can see and fix.
+
+Set `on_error` to `deny` when the rule is a genuine security control and letting a request through would be worse than blocking a legitimate one.
+
+== Example: Gating on Consents
+
+Three pieces, in the order you configure them.
+
+=== 1. Require the field
+
+Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) making `consents` mandatory, so a user document cannot exist without it. This applies to sign-ups through `/auth/register` too.
+
+[source,json]
+----
+{
+  "_id": "user-consents-schema",
+  "title": "User with consents",
+  "description": "Every user must carry the version of the terms they accepted",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "_id":      { "type": "string" },
+    "_etag":    { "type": "object" },
+    "password": { "type": "string" },
+    "roles":    { "type": "array", "items": { "type": "string" } },
+    "consents": {
+      "type": "object",
+      "properties": {
+        "tos": {
+          "type": "object",
+          "properties": {
+            "version":    { "type": "string" },
+            "acceptedAt": { "type": "string" }
+          },
+          "required": ["version"]
+        }
+      },
+      "required": ["tos"]
+    }
+  },
+  "required": ["_id", "password", "roles", "consents"]
+}
+----
+
+IMPORTANT: Declare `_etag` and leave it out of `required`. RESTHeart adds `_etag` to every document it writes, so a schema that forbids extra properties without declaring it rejects RESTHeart's own writes; and it is absent on the very first insert, so requiring it rejects document creation. The same applies to any other field the platform adds — with `additionalProperties` left at its default (permissive) you only need to declare what you constrain.
+
+=== 2. Expose it as a claim
+
+Add `consents/tos/version` to the JWT claims in *Service → Users → JWT Claims* (see link:managing-users#jwt-claims[Managing Users]), so the condition also holds for users authenticating with a token.
+
+=== 3. Write the rule
+
+
+[source,json]
+----
+{
+  "id": "consents-gate",
+  "name": "Block users who have not accepted the current ToS",
+  "condition": "not path-prefix('/auth') and not path('/consents') and not equals(@user.consents.tos.version, '2026-07-01')",
+  "action": "block",
+  "status_code": 451,
+  "message": "You must accept the current Terms of Service",
+  "on_error": "allow"
+}
+----
+
+=== 4. Get the user a token that reflects the acceptance
+
+A JWT is a snapshot taken at issuance. After a user accepts, the token they are holding still says they have not, and the rule keeps blocking them — so the acceptance has to be followed by a new token.
+
+`GET /token` on its own returns the token they already hold. Adding **`?renew=true`** forces a new one to be issued instead:
+
+[source,bash]
+----
+curl -X GET 'https://<service>/token?renew=true' -H 'Authorization: Bearer <token>'
+----
+
+The renewed token is built from the user document read again from the database, so it carries the `consents` value as it is at that moment — along with any other change, including the user's roles.
+
+NOTE: When the user cannot be read from the service's `users` collection, the token is renewed from its own claims instead — a later expiry, the same data. That happens when the token was issued elsewhere, or by a realm that is not backed by a users collection. Renewal keeps working; it just has nothing fresher to build from.
+
+The alternative, and often the better one: **have the acceptance endpoint return the new token in the same response**. That is what `restheart-accounts` does when a user switches team or activates their account. It saves a round trip, and the user never passes through a state where they are blocked by a decision they have already made.
+
+Signing out and back in works too. It is the blunt version of the same thing.
+
+== Disabling and Uninstalling
+
+* **Disable** — temporarily turns off rule evaluation. Requests proceed as if the plugin were not there. Click **Enable** to re-activate.
+* **Uninstall** — removes the plugin *and its rules*. Re-installing gives you an empty rule list.
+
+Both actions are available in the header bar when the plugin is in the corresponding state.
+
+== Best Practices
+
+* Start with one rule and a narrow condition. Broad conditions are how lockouts happen.
+* Put the exclusions (`not path-prefix('/auth')` and friends) at the *front* of the condition, where they are hard to miss when re-reading it.
+* Order rules from most specific to most general — the first match wins.
+* Prefer `block` with a status code your frontend can act on (`451`, `402`, `403`) over a redirect, unless the client is a browser navigating between pages.
+* Leave `on_error` at `allow` unless the rule is a security control.
+
+== Related Pages
+
+* link:managing-permissions[Managing Permissions (ACL)] — role-based access control, evaluated before guards.
+* link:managing-users[Managing Users] — user documents and the JWT claims a service issues.
+* link:schemas[JSON Schema Validation] — enforce the shape of the data your conditions read.
+* link:origin-allowlist[Origin Allowlist] — restrict which websites can call your API.
