@@ -367,11 +367,13 @@ iframe {
   // display a paragraph runs well past 120 characters — roughly double what the
   // eye tracks comfortably, and the main reason these pages are tiring.
   //
-  // The cap goes on the text-bearing elements, not on the column, so code blocks,
-  // tables and images keep the whole width — those need the space, and the wider
-  // they are the fewer of them wrap. Prose is then centred in the column, so the
-  // narrow text sits inside the wide blocks instead of hanging off their left
-  // edge with a ragged gap on the right.
+  // Prose is capped at the narrow measure below and centred in the column.
+  // Tables, code and images get their own, wider measure a bit further down —
+  // not left uncapped: on a wide monitor .bd-content itself can be wider than
+  // this whole page is meant to feel, and a table or code block stretched to
+  // its raw edge no longer lines up with the paragraph sitting centred above
+  // it. Centring both measures on the same axis keeps that relationship
+  // deliberate — a symmetric, nested-boxes look — instead of accidental.
   .bd-content {
     h1,
     h2,
@@ -415,6 +417,28 @@ iframe {
       margin-left: 0;
       margin-right: 0;
       max-width: none;
+    }
+  }
+
+  // Wide measure. A table, a code block, or a screenshot loses information if
+  // squeezed into the prose measure — a table's columns get cramped, code
+  // wraps mid-token, a diagram shrinks past legibility. These get more room,
+  // but a defined amount rather than none: uncapped, they trail off to
+  // .bd-content's raw edge, which on a wide viewport can be far past where
+  // the prose above them stopped. Capped and centred on the same axis as
+  // prose, the extra width reads as deliberate — wider for a reason, not
+  // wide because nothing said otherwise.
+  .bd-content {
+    table,
+    .imageblock,
+    .listingblock,
+    .literalblock,
+    .videoblock,
+    .mermaid-diagram,
+    .mermaid-loading {
+      max-width: 64rem;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
@@ -499,6 +523,55 @@ iframe {
     scroll-margin-top: 4.5rem;
   }
 
+  // AsciiDoc's [.btn.btn-*] role on a paragraph (e.g. a "Quick Start →" call to
+  // action) puts those classes — always including the base .btn — on the
+  // wrapping <div>, not on the <a> inside it: asciidoctor emits
+  // `<div class="paragraph btn btn-primary"><p><a href="...">…</a></p></div>`.
+  //
+  // Two things follow from that shape:
+  //
+  // 1. The link keeps the ordinary anchor colour instead of the button's own —
+  //    for btn-primary that default is $color-link, the very same #f8a839 as
+  //    $color-primary, the button's background. Same colour on itself: the
+  //    text read as invisible, not just low-contrast. _components.scss sets
+  //    btn-primary's own text to white, but white on #f8a839 clears only
+  //    ~2:1 contrast — under the 3:1 floor for large/UI text even before this
+  //    bug. Black clears ~10.7:1, which is why btn-secondary (already black,
+  //    same background) was legible. Scoped to btn-primary/btn-secondary —
+  //    the solid-background variants — not outline ones, whose own colour
+  //    (already $color-primary) is what an outline button wants.
+  //
+  // 2. The <p>'s own margin-bottom (asciidoctor's base p rule) adds space only
+  //    below the text, inside a box whose padding (from .btn) is symmetric —
+  //    so the text sits visibly above centre rather than in it.
+  .bd-content .btn-primary a,
+  .bd-content .btn-secondary a {
+    color: variables.$color-black;
+    text-decoration: none;
+  }
+
+  .bd-content .btn p {
+    margin: 0;
+  }
+
+  // The button div is display: inline-block (_components.scss), so it shrink-
+  // wraps to its label's width instead of stretching full width like a plain
+  // paragraph — but that also means it is never subject to the Measure rule's
+  // margin: auto centring above, which only centres a box within the space it
+  // doesn't fill. An inline-block box sits at its parent's inline start
+  // instead, i.e. flush against .bd-content's raw left edge, while the prose
+  // around it is centred in a narrower column — so the button reads as
+  // unaligned with the text quite apart from any width or colour issue.
+  // width: fit-content keeps the shrink-to-label sizing while switching to a
+  // block box, which margin: auto can then centre on the same axis as prose.
+  .bd-content .btn {
+    display: block;
+    width: fit-content;
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   // Inline code. Orange on black with no plate is loud, and these pages are full
   // of it — a tinted background separates it from prose at lower saturation.
   .bd-content *:not(pre) > code {
@@ -540,8 +613,16 @@ iframe {
 
   // Admonitions. A tinted panel with a coloured edge makes NOTE/TIP/WARNING
   // recognisable before they are read, instead of blending into the prose.
+  //
+  // margin-top/-bottom only, not the margin shorthand: admonitions carry a
+  // paragraph's worth of text, so they belong in the narrow prose measure
+  // above, which centres them with margin-left/right: auto. `margin: 1.5rem 0`
+  // has the same specificity and comes later, so it was winning and resetting
+  // left/right back to 0 — the block stayed narrow but flush left instead of
+  // centred, out of step with the paragraphs around it.
   .bd-content .admonitionblock {
-    margin: 1.5rem 0;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
 
     > table {
       background: rgba(255, 255, 255, 0.04);
