@@ -35,7 +35,7 @@ emails:
   # ssl-port: 465
 ----
 
-When `enabled` is `false` or the configuration block is absent, the plugin is inert: `sendEmail()` logs a warning and returns without sending. This ensures services continue to operate even when SMTP is not configured.
+When `enabled` is `false` or the configuration block is absent, the plugin is inert: `sendEmail()` and `sendEmailAsync()` log a warning and return without sending. This ensures services continue to operate even when SMTP is not configured.
 
 === Usage in plugins
 
@@ -52,16 +52,16 @@ public class MyPlugin implements JsonService {
     @Override
     public void handle(JsonRequest req, JsonResponse res) {
         if (emails.isEnabled()) {
-            // Simple send — uses static YAML config
-            emails.sendEmail(
+            // Non-blocking send — the response is not delayed by the SMTP round trip
+            emails.sendEmailAsync(
                 "user@example.com",
                 "John",
                 "Welcome!",
                 "<h1>Hello John</h1><p>Welcome to our app.</p>"
             );
 
-            // Send with per-request SMTP overrides
-            emails.sendEmail(
+            // Non-blocking send with per-request SMTP overrides
+            emails.sendEmailAsync(
                 req,
                 "user@example.com",
                 "John",
@@ -80,15 +80,46 @@ The `EmailSender` interface is defined in `restheart-commons` (`org.restheart.em
 [source,java]
 ----
 public interface EmailSender {
-    // Uses static YAML configuration
+    // Blocking — runs the SMTP transaction on the calling thread
     void sendEmail(String to, String recipientName, String subject, String htmlBody);
 
-    // Reads per-request SMTP overrides from attached parameters
+    // Blocking, reads per-request SMTP overrides from attached parameters
     void sendEmail(Request<?> request, String to, String recipientName, String subject, String htmlBody);
+
+    // Non-blocking (default method) — dispatches the send on the shared virtual threads executor
+    void sendEmailAsync(String to, String recipientName, String subject, String htmlBody);
+
+    // Non-blocking (default method), reads per-request SMTP overrides from attached parameters
+    void sendEmailAsync(Request<?> request, String to, String recipientName, String subject, String htmlBody);
 
     boolean isEnabled();
 }
 ----
+
+=== Execution model
+
+TIP: The `sendEmailAsync()` methods are available since *version 9.7.0*.
+
+`sendEmail()` is *blocking*: the whole SMTP transaction — TCP connect, TLS handshake, `AUTH`, `DATA`, `QUIT` — runs on the calling thread. A remote SMTP provider typically takes a few hundred milliseconds to over a second, and up to ermes-mail's connection (10s) and socket (60s) timeouts when it is unresponsive.
+
+`sendEmailAsync()` dispatches that work on RESTHeart's shared virtual threads executor and returns immediately.
+
+Choose between them based on where your code runs:
+
+[options="header",cols="2,3"]
+|===
+| Use | When
+
+| `sendEmailAsync()`
+| Inside a service or a request-phase interceptor, where the SMTP round trip would otherwise be added to the response latency
+
+| `sendEmail()`
+| Inside a `RESPONSE_ASYNC` interceptor, a scheduled job, or an initializer — the caller is already off the request path, so the extra dispatch buys nothing and blocking gives you natural backpressure
+|===
+
+Delivery is best effort in both cases: `EmailSender` returns `void` and never throws. SMTP failures are logged by the plugin, so a failed email never breaks the calling request.
+
+NOTE: The plugin configures ermes-mail with no internal thread pool, and `EmailService` holds no persistent SMTP connection: every send opens and closes its own connection. This makes the sender a plain value object, which is why per-request SMTP overrides are built on the fly rather than pooled or cached.
 
 === Per-request SMTP overrides
 
@@ -119,7 +150,7 @@ The following attached parameters are supported:
 | Override the SMTP password
 |===
 
-If at least one override parameter is present, an ad-hoc SMTP connection is created using the overridden values. Parameters not specified fall back to the static YAML configuration. If no override parameters are present, the static configuration is used as-is.
+If at least one override parameter is present, the send uses the overridden values. Parameters not specified fall back to the static YAML configuration. If no override parameters are present, the static configuration is used as-is.
 
 Example from an interceptor:
 
@@ -127,5 +158,7 @@ Example from an interceptor:
 ----
 req.attachParam("override-emails-sender-email", "noreply@tenant-a.com");
 req.attachParam("override-emails-smtp-hostname", "smtp.tenant-a.com");
-emails.sendEmail(req, "user@tenant-a.com", "User", "Subject", "<p>Body</p>");
+emails.sendEmailAsync(req, "user@tenant-a.com", "User", "Subject", "<p>Body</p>");
 ----
+
+`sendEmailAsync(Request, ...)` reads the attached parameters on the calling thread before dispatching, so it is safe to use even though the exchange may be completed and recycled by the time the send actually runs.
