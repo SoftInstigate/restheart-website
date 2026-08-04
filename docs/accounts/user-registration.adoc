@@ -117,7 +117,11 @@ The document is validated *as it is inserted*, which is not its final shape. `cr
 
 Schemas meant for the registration path should declare `teams` and `team` as optional.
 
-Fields of the request body that are not in the mapping table are dropped before the document is built, so the schema never sees them and cannot reject them — with or without `additionalProperties: false`. Body-level rejection is not part of this feature.
+When no `jsonSchema` metadata is configured on the users collection, fields of the request body that are not in the mapping table are dropped before the document is built, so the schema never sees them and cannot reject them — with or without `additionalProperties: false`.
+
+When a `jsonSchema` _is_ configured, the remaining body properties are carried into the user document as-is before validation. The schema becomes the contract: `additionalProperties: false` rejects extensions, `required: [...]` mandates them. Service-managed fields (`_id`, `password`, `roles`, `profile.name`, `profile.surname`, `emailVerificationToken`, `emailVerificationCreatedAt`) are never overwritten by the body.
+
+Application-level fields such as `consents` should be declared optional in the schema — their absence is enforced by guard rules, not by the schema. The schema validates the _format_ when the field is present. See link:/docs/cloud/guards#_example_gating_on_consents[Gating on Consents] for the full pattern.
 
 Violation messages are returned as-is, in the schema's vocabulary. A body that omits `firstName` produces `#/profile/name: required key [name] not found`, not a message mentioning `firstName`.
 
@@ -152,23 +156,51 @@ The schema validates the *stored* document, not the request body. A schema that 
 
 [source,bash]
 ----
-# Create a schema that requires a 'consents' field
+# Create a schema that validates consents format (optional) and allows OAuth fields
 http POST :8080/_schemas Authorization:"Basic ..." \
   _id=user-with-consents \
   '$schema'="http://json-schema.org/draft-07/schema#" \
   type=object \
-  required:='["consents"]' \
-  properties:='{"consents":{"type":"object"}}'
+  required:='["_id", "password", "roles", "profile"]' \
+  properties:='{
+    "profile": {
+      "type": "object",
+      "required": ["name", "surname"],
+      "properties": {
+        "name":      { "type": "string" },
+        "surname":   { "type": "string" },
+        "avatarUrl": { "type": "string" }
+      }
+    },
+    "consents": {
+      "type": "object",
+      "required": ["terms", "privacy"],
+      "properties": {
+        "terms":    { "type": "boolean" },
+        "privacy":  { "type": "boolean" }
+      }
+    },
+    "socialAuths": { "type": "array" },
+    "teams":       { "type": "array" },
+    "team":        { "type": "object" }
+  }'
 
 # Apply schema to users collection
 http PATCH :8080/users Authorization:"Basic ..." \
   jsonSchema:='{"schemaId":"user-with-consents"}'
 
-# Registration now fails — user doc has no 'consents' field
+# Registration with consents in the body — passes validation
 http POST :8080/auth/register Authorization:"Basic ..." \
   firstName=Alice lastName=Smith teamName=Acme \
-  email=alice@example.com password=Password123!
-# → 400 Bad Request: User document violates schema: required key [consents] not found
+  email=alice@example.com password=Password123! \
+  consents:='{"terms":true,"privacy":true}'
+# → 201 Created (consents stored on the user document)
+
+# Registration without consents — schema is fine, guard handles absence
+http POST :8080/auth/register Authorization:"Basic ..." \
+  firstName=Bob lastName=Jones teamName=Acme \
+  email=bob@example.com password=Password123!
+# → 201 Created (no consents field — guard rule blocks subsequent requests)
 ----
 
 [NOTE]

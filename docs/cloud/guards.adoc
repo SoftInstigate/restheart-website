@@ -152,23 +152,33 @@ Set `on_error` to `deny` when the rule is a genuine security control and letting
 
 Three pieces, in the order you configure them.
 
-=== 1. Require the field
+=== 1. Validate the format
 
-Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) making `consents` mandatory, so a user document cannot exist without it. This applies to sign-ups through `/auth/register` too.
+Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) that validates the `consents` structure when present. Do _not_ make `consents` required — its absence is what the guard blocks. The schema also declares OAuth fields (`socialAuths`, `profile.avatarUrl`) and team fields (`teams`, `team`) as optional, so documents created via OAuth or after team operations pass validation.
 
 [source,json]
 ----
 {
   "_id": "user-consents-schema",
   "title": "User with consents",
-  "description": "Every user must carry the version of the terms they accepted",
+  "description": "Validates consents format when present; allows OAuth and team fields",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "required": ["_id", "password", "roles", "profile"],
   "properties": {
     "_id":      { "type": "string" },
     "_etag":    { "type": "object" },
     "password": { "type": "string" },
     "roles":    { "type": "array", "items": { "type": "string" } },
+    "profile": {
+      "type": "object",
+      "required": ["name", "surname"],
+      "properties": {
+        "name":      { "type": "string" },
+        "surname":   { "type": "string" },
+        "avatarUrl": { "type": "string" }
+      }
+    },
     "consents": {
       "type": "object",
       "properties": {
@@ -182,13 +192,17 @@ Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) making 
         }
       },
       "required": ["tos"]
-    }
-  },
-  "required": ["_id", "password", "roles", "consents"]
+    },
+    "socialAuths": { "type": "array" },
+    "teams":       { "type": "array" },
+    "team":        { "type": "object" }
+  }
 }
 ----
 
 IMPORTANT: Declare `_etag` and leave it out of `required`. RESTHeart adds `_etag` to every document it writes, so a schema that forbids extra properties without declaring it rejects RESTHeart's own writes; and it is absent on the very first insert, so requiring it rejects document creation. The same applies to any other field the platform adds — with `additionalProperties` left at its default (permissive) you only need to declare what you constrain.
+
+When a user registers through `POST /auth/register` with `consents` in the request body, the schema validates its format. Without `consents` in the body, registration succeeds — the guard rule below handles the absence.
 
 === 2. Expose it as a claim
 
