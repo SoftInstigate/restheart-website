@@ -150,7 +150,7 @@ Add a field when something needs to read it *without* a database lookup — a pe
 
 On **Dedicated** plans replace `/users` with `/restheart/users` in all paths above.
 
-NOTE: If your service also has link:signup-mgmt[Sign-up Management] enabled, the `/users` resource additionally enforces a restriction limiting your own end users to self-service `profile.*` edits (RESTHeart 9.6.0+). This User Management UI is unaffected and continues to create, edit (including `roles`), and delete users normally — RESTHeart Cloud manages your service on your behalf using a role that's exempt from that restriction. See link:signup-mgmt#users-self-service-write-restriction[Sign-up Management] for details.
+NOTE: If your service also has link:signup-mgmt[Sign-up Management] enabled, the `/users` resource additionally blocks your own end users from self-service writes to `roles`, `team`/`teams`, `password`, and a few other account-management fields — every other field, including `profile.*` and application-level data such as `consents`, is left to your own ACL. This User Management UI is unaffected and continues to create, edit (including `roles`), and delete users normally — RESTHeart Cloud manages your service on your behalf using a role that's exempt from that restriction. See link:signup-mgmt#users-self-service-write-restriction[Sign-up Management] for details.
 
 == Built-in and Custom Roles
 

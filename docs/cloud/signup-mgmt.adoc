@@ -67,11 +67,9 @@ Use the toggle switches to turn each feature on or off. Changes take effect afte
 
 == `/users` Self-Service Write Restriction
 
-CAUTION: Since RESTHeart 9.6.0.
+Once Sign-up Management is enabled on a service, the generic `/users` REST resource is automatically restricted for that service's own end users, to enforce security: creating or replacing a user document (`POST`/`PUT`) is always rejected, and a `PATCH` is rejected if it touches `roles`, `team`/`teams`, `password`, or a handful of other account-management fields — regardless of what ACL rules the service defines. Every other field, including `profile.*` and application-level data such as `consents`, is left entirely to the service's own ACL.
 
-Once Sign-up Management is enabled on a service, the generic `/users` REST resource is automatically restricted for that service's own end users: only `PATCH` requests that touch `profile.*` fields are allowed — creating or replacing a user document (`POST`/`PUT`), or writing to any other field (`roles`, `team`/`teams`, `password`, tokens, ...), is always rejected regardless of what ACL rules the service defines.
-
-This prevents a user who is only granted permission to edit their own profile from also being able to rewrite their own `roles` or team membership — e.g. self-promoting to `owner` of a team, or joining a team they were never invited to.
+This prevents a user who is only granted permission to edit their own profile (or other self-service data) from also being able to rewrite their own `roles` or team membership — e.g. self-promoting to `owner` of a team, or joining a team they were never invited to.
 
 This restriction does not affect any Sign-up Management feature itself (registration, verification, invitations, password reset, OAuth) — those are implemented as dedicated endpoints that write to MongoDB directly, not through the generic REST resource. It also does not affect RESTHeart Cloud's own link:managing-users[User Management] UI, which continues to work normally.
 
