@@ -82,7 +82,7 @@ A few examples:
 
 [source]
 ----
-not path-prefix('/auth') and not equals(@user.consents.tos.version, '2026-07-01')
+not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userid}') and bson-request-whitelist(consents.tos)) and not equals(@user.consents.tos.version, '2026-07-01')
 ----
 
 [source]
@@ -210,13 +210,18 @@ Add `consents/tos/version` to the JWT claims in *Service → Users → JWT Claim
 
 === 3. Write the rule
 
+The rule must also exempt the request the user sends to accept the terms in the first place — a
+self-service `PATCH /users/{userid}` that touches only `consents.tos`, already permitted by
+`restheart-accounts`'s own write restriction (see link:managing-users[Managing Users]).
+`bson-request-whitelist(consents.tos)` scopes the exemption to exactly that request, so the rule
+does not open up self-service writes to any other field.
 
 [source,json]
 ----
 {
   "id": "consents-gate",
   "name": "Block users who have not accepted the current ToS",
-  "condition": "not path-prefix('/auth') and not path('/consents') and not equals(@user.consents.tos.version, '2026-07-01')",
+  "condition": "not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userid}') and bson-request-whitelist(consents.tos)) and not equals(@user.consents.tos.version, '2026-07-01')",
   "action": "block",
   "status_code": 451,
   "message": "You must accept the current Terms of Service",
