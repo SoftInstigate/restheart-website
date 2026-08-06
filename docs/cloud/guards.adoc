@@ -66,7 +66,7 @@ Conditions use the RESTHeart predicate language — the same one used by link:ma
 | Variable | Value
 
 | `@user`
-| The authenticated account. `@user.email`, `@user.consents.tos.version`, and so on.
+| The authenticated account. `@user.email`, `@user.latestConsents.tos`, and so on. Sub-documents are addressed with dots.
 
 | `@team`
 | The document of the user's currently active team, from the `teams` collection.
@@ -82,7 +82,7 @@ A few examples:
 
 [source]
 ----
-not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userid}') and bson-request-whitelist(consents.tos)) and not equals(@user.consents.tos.version, '2026-07-01')
+not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents)) and not equals(@user.latestConsents.tos, '2026-07-01')
 ----
 
 [source]
@@ -99,7 +99,7 @@ TIP: The **Guards** page validates every condition against the server's predicat
 
 === `@user` Only Sees What Is in the Token
 
-For users authenticating with a JWT, `@user` is the token's claims — not the user document. A condition on `@user.consents` will simply never match unless `consents` is one of the claims your service issues.
+For users authenticating with a JWT, `@user` is the token's claims — not the user document. A condition on `@user.latestConsents` will simply never match unless `latestConsents` is one of the claims your service issues.
 
 Configure the claim list in *Service → Users → JWT Claims* (see link:managing-users[Managing Users]). The Guards page warns you inline when a condition names a field that is not in the configured list.
 
@@ -150,16 +150,46 @@ Set `on_error` to `deny` when the rule is a genuine security control and letting
 
 == Example: Gating on Consents
 
-Three pieces, in the order you configure them.
+A user who has not accepted the current Terms of Service and Privacy Policy is served nothing except the requests that let them accept. Five pieces, in the order you configure them.
 
-=== 1. Validate the format
+=== The Data Model
 
-Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) that validates the `consents` structure when present. Do _not_ make `consents` required — its absence is what the guard blocks. The schema also declares OAuth fields (`socialAuths`, `profile.avatarUrl`) and team fields (`teams`, `team`) as optional, so documents created via OAuth or after team operations pass validation.
+Two fields on the user document:
 
 [source,json]
 ----
 {
-  "_id": "user-consents-schema",
+  "latestConsents": {
+    "tos": "2026-07-01",
+    "pp":  "2026-07-01",
+    "acceptedAt": { "$date": 1754438400000 }
+  },
+  "consents": [
+    { "tos": "2026-07-01", "pp": "2026-07-01", "acceptedAt": { "$date": 1754438400000 } }
+  ]
+}
+----
+
+* `latestConsents` — a flat sub-document, overwritten at each acceptance. This is what the guard condition and the JWT claims read.
+* `consents` — an append-only array, one record per acceptance. The history, for the day someone asks what a user agreed to and when.
+
+Two flags rather than one, because the terms and the privacy policy have versions of their own. Both are accepted by the same request: the client does not choose *what* it accepts, which is what keeps this to one permission and one rule. An acceptance that must be splittable — the privacy policy mandatory, the terms optional — is a different design, with a permission and a rule per flag, not an extension of this one.
+
+Neither field is written by `POST /auth/register` on its own, and that absence is exactly what the guard blocks on — see <<accepting-at-sign-up,Accepting at Sign-Up>> for the sign-up form that fills them in from the start.
+
+=== 1. Validate the format
+
+Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) that validates the two fields *when present*. Do _not_ make them required — their absence is the state the guard exists to catch. The schema also declares OAuth fields (`socialAuths`, `profile.avatarUrl`) and team fields (`teams`, `team`) as optional, so documents created via OAuth or after team operations pass validation.
+
+In *Service → Schemas → New Schema* the schema `_id` goes in **its own field**, not in the document — the editor takes only the schema body. Through the API it goes in the body like in any other MongoDB document: `POST /_schemas` with `{"_id": "userConsentsSchema", ...}`.
+
+*Schema id:* `userConsentsSchema`
+
+*Schema document:*
+
+[source,json]
+----
+{
   "title": "User with consents",
   "description": "Validates consents format when present; allows OAuth and team fields",
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -179,19 +209,26 @@ Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) that va
         "avatarUrl": { "type": "string" }
       }
     },
-    "consents": {
+    "latestConsents": {
       "type": "object",
       "properties": {
-        "tos": {
-          "type": "object",
-          "properties": {
-            "version":    { "type": "string" },
-            "acceptedAt": { "type": "string" }
-          },
-          "required": ["version"]
-        }
+        "tos":        { "type": "string" },
+        "pp":         { "type": "string" },
+        "acceptedAt": { "type": "object", "properties": { "_$date": { "type": "number" } } }
       },
-      "required": ["tos"]
+      "required": ["tos", "pp"]
+    },
+    "consents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tos":        { "type": "string" },
+          "pp":         { "type": "string" },
+          "acceptedAt": { "type": "object", "properties": { "_$date": { "type": "number" } } }
+        },
+        "required": ["tos", "pp"]
+      }
     },
     "socialAuths": { "type": "array" },
     "teams":       { "type": "array" },
@@ -200,36 +237,96 @@ Add a JSON Schema on `/users` (see link:schemas[JSON Schema Validation]) that va
 }
 ----
 
+The two `_id` in play are not the same thing: the one in the UI field identifies the *schema*, the one under `properties` describes the `_id` of a *user document* — the email.
+
+IMPORTANT: `acceptedAt` is a BSON date, which renders as `{"$date": <millis>}`. Inside a schema document the BSON type keys are written with a leading underscore — `_$date` — so that the request parser does not read them as actual BSON values while the schema itself is being stored (see link:/docs/mongodb-rest/json-schema-validation[JSON Schema Validation]). Declaring it as `{"type": "string"}` rejects every acceptance.
+
 IMPORTANT: Declare `_etag` and leave it out of `required`. RESTHeart adds `_etag` to every document it writes, so a schema that forbids extra properties without declaring it rejects RESTHeart's own writes; and it is absent on the very first insert, so requiring it rejects document creation. The same applies to any other field the platform adds — with `additionalProperties` left at its default (permissive) you only need to declare what you constrain.
 
-When a user registers through `POST /auth/register` with `consents` in the request body, the schema validates its format. Without `consents` in the body, registration succeeds — the guard rule below handles the absence.
+NOTE: The schema is enforced on the *resulting* document, not on the request body, so a `PATCH` carrying only the consents validates against the whole user document as it will be once written. A `PUT`, which replaces the document, must carry everything in `required`.
 
-=== 2. Expose it as a claim
+=== 2. Authorize the acceptance
 
-Add `consents/tos/version` to the JWT claims in *Service → Users → JWT Claims* (see link:managing-users#jwt-claims[Managing Users]), so the condition also holds for users authenticating with a token.
+The user accepts with a `PATCH /users/{userId}` on their own document. Nothing authorizes that request out of the box, and the guard never gets a say on a request the ACL has already refused: without a permission of your own the acceptance is a `403` and the user is locked out for good.
 
-=== 3. Write the rule
+`restheart-accounts` does install a rule of its own on `/users`, but it is a **veto** — it denies self-service writes to `_id`, `password`, `roles`, `team`, `teams`, `sub`, `socialAuths`, `providerId` and the one-shot token fields. A veto never grants. Every other field, `consents` included, is left to your ACL.
 
-The rule must also exempt the request the user sends to accept the terms in the first place — a
-self-service `PATCH /users/{userid}` that touches only `consents.tos`, already permitted by
-`restheart-accounts`'s own write restriction (see link:managing-users[Managing Users]).
-`bson-request-whitelist(consents.tos)` scopes the exemption to exactly that request, so the rule
-does not open up self-service writes to any other field.
+Create the permission in *Service → Permissions* (see link:managing-permissions[Managing Permissions]):
 
 [source,json]
 ----
 {
-  "id": "consents-gate",
-  "name": "Block users who have not accepted the current ToS",
-  "condition": "not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userid}') and bson-request-whitelist(consents.tos)) and not equals(@user.consents.tos.version, '2026-07-01')",
+  "_id": "userCanPatchOwnConsents",
+  "predicate": "path-template('/users/{userId}') and method(PATCH) and (equals(@user._id, ${userId}) or equals(@user.sub, ${userId})) and bson-request-whitelist(consents)",
+  "roles": ["user"],
+  "priority": 1,
+  "mongo": {
+    "mergeRequest": {
+      "latestConsents": { "tos": "2026-07-01", "pp": "2026-07-01", "acceptedAt": "@now" },
+      "_$push": { "consents": { "tos": "2026-07-01", "pp": "2026-07-01", "acceptedAt": "@now" } }
+    }
+  }
+}
+----
+
+The request the client sends is then just:
+
+[source,bash]
+----
+curl -X PATCH 'https://<service>/users/<userid>' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{"consents": []}'
+----
+
+A few things are doing work here:
+
+* `${userId}` — dollar-brace — is the value the path template captured. The `@user.sub` branch covers users authenticating with a JWT, where the account id is in `sub` rather than in `_id`.
+* `roles: ["user"]` is the role an account carries once verified. Use whatever role your service assigns.
+* `bson-request-whitelist(consents)` narrows the permission to that single field: it grants the acceptance and nothing else. This runs *before* `mergeRequest`, so it sees the client's body, not the enriched one.
+* `mergeRequest` moves the decision of *what* is being accepted to the server. Without it the client states the version and the timestamp itself — it could accept terms it was never shown, or backdate `acceptedAt`. The body above carries `consents` only to satisfy the whitelist; its value is discarded.
+* The two entries write the two fields of the model. `latestConsents` is a plain field and becomes a `$set`. `_$push` is a MongoDB update operator: written with a leading underscore in the permission document, unescaped to `$push` before the merge, it appends the record to the history array.
+* `@now` resolves to a BSON date — the same value in both entries.
+
+IMPORTANT: Write `latestConsents` as a nested object, not with dotted keys. A merged request that sets both `latestConsents` and a path inside it is rejected by MongoDB with `500 ConflictingUpdateOperators: Updating the path 'latestConsents.tos' would create a conflict at 'latestConsents'`. The nested object replaces the sub-document in a single key and cannot conflict.
+
+=== 3. Expose the flags as claims
+
+Add **both** `latestConsents/tos` and `latestConsents/pp` to the JWT claims in *Service → Users → JWT Claims* (see link:managing-users#jwt-claims[Managing Users]), so the condition also holds for users authenticating with a token.
+
+WARNING: If one of the two is missing from the claim list, the `equals` on it is false for every token-authenticated user forever — including those who have just accepted. The rule then blocks them permanently, and nothing in the condition looks wrong.
+
+=== 4. Write the rule
+
+The rule must exempt the very request the user sends to accept — the `PATCH` of step 2. `bson-request-whitelist(consents)` scopes the exemption to exactly that request, so the rule does not open up self-service writes to any other field.
+
+[source,json]
+----
+{
+  "id": "consentsGate",
+  "name": "Block users who have not accepted the current ToS and Privacy Policy",
+  "condition": "not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents)) and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestConsents.pp, '2026-07-01'))",
   "action": "block",
   "status_code": 451,
-  "message": "You must accept the current Terms of Service",
+  "message": "You must accept the current Terms of Service and Privacy Policy",
   "on_error": "allow"
 }
 ----
 
-=== 4. Get the user a token that reflects the acceptance
+The condition on three lines, as it reads:
+
+[source]
+----
+not path-prefix('/auth')
+and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents))
+and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestConsents.pp, '2026-07-01'))
+----
+
+* The exemption whitelists `consents` — the same field, written the same way, as the permission of step 2. The two predicates see the same body, so a mismatch between them means the acceptance is authorized and then blocked by the rule that exists to let it through. (`bson-request-whitelist` does take several comma-separated and dotted keys, `bson-request-whitelist(consents.tos, consents.pp)`; that form fits a body that names the sub-keys, not the one above.)
+* `not (A and B)` blocks when *either* acceptance is missing. `not A and not B` would block only the users who accepted neither — worth reading twice.
+* The rule reads `latestConsents`, never the `consents` array. The array is history; access decisions are made on the flat sub-document, whose keys resolve in a predicate with the dotted form `@user.latestConsents.tos`.
+
+=== 5. Get the user a token that reflects the acceptance
 
 A JWT is a snapshot taken at issuance. After a user accepts, the token they are holding still says they have not, and the rule keeps blocking them — so the acceptance has to be followed by a new token.
 
@@ -240,13 +337,35 @@ A JWT is a snapshot taken at issuance. After a user accepts, the token they are 
 curl -X GET 'https://<service>/token?renew=true' -H 'Authorization: Bearer <token>'
 ----
 
-The renewed token is built from the user document read again from the database, so it carries the `consents` value as it is at that moment — along with any other change, including the user's roles.
+The renewed token is built from the user document read again from the database, so it carries `latestConsents` as it is at that moment — along with any other change, including the user's roles.
 
 NOTE: When the user cannot be read from the service's `users` collection, the token is renewed from its own claims instead — a later expiry, the same data. That happens when the token was issued elsewhere, or by a realm that is not backed by a users collection. Renewal keeps working; it just has nothing fresher to build from.
 
 The alternative, and often the better one: **have the acceptance endpoint return the new token in the same response**. That is what `restheart-accounts` does when a user switches team or activates their account. It saves a round trip, and the user never passes through a state where they are blocked by a decision they have already made.
 
 Signing out and back in works too. It is the blunt version of the same thing.
+
+=== Accepting at Sign-Up [[accepting-at-sign-up]]
+
+A sign-up form that already shows the terms should not send the user through the blocked state at all. When the users collection has a JSON Schema configured — step 1 — `POST /auth/register` carries the body properties it does not map itself into the user document as they are, so the form can send the acceptance together with the credentials:
+
+[source,json]
+----
+{
+  "email": "user@example.com",
+  "password": "<password>",
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "latestConsents": { "tos": "2026-07-01", "pp": "2026-07-01" },
+  "consents": [{ "tos": "2026-07-01", "pp": "2026-07-01" }]
+}
+----
+
+The schema of step 1 validates the shape, and the guard is satisfied from the first request the user makes.
+
+What the server does *not* vouch for on this path is the content: there is no `mergeRequest` on `/auth/register`, so `acceptedAt` is whatever the client wrote — which is why it is left out above rather than forged. The version is a different matter: the guard compares it against the current one, so a client claiming an old version gains nothing and one claiming a version that does not exist yet is blocked all the same.
+
+Users who arrive some other way still need the `PATCH` — someone signing in with OAuth, where no form of yours is in the loop, and everyone who already had an account when the terms changed. The `PATCH` path is the general one; sign-up acceptance is the shortcut for the case where you control the form.
 
 == Disabling and Uninstalling
 

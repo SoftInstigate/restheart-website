@@ -138,7 +138,7 @@ The `predicate` field uses the **Undertow predicate expression language**. A pre
 | `path-prefix('/orders')`
 
 | `path-template('/users/{id}')`
-| Matches parameterised paths; captured segments are available as variables.
+| Matches parameterised paths; a captured segment is referenced later in the predicate as `${id}`.
 | `path-template('/users/{id}/profile')`
 
 | `path-suffix('.json')`
@@ -208,7 +208,15 @@ path-prefix('/admin') and not method('GET')
 
 | Deny DELETE everywhere (use `not`)
 | `not method('DELETE')`
+
+| Allow a user to edit only their own document
+| `path-template('/users/{userId}') and method(PATCH) and (equals(@user._id, ${userId}) or equals(@user.sub, ${userId}))`
+
+| ... and only one field of it
+| `... and bson-request-whitelist(consents)`
 |===
+
+The `@user.sub` branch above covers users authenticating with a JWT, where the account id is carried in the `sub` claim rather than in `_id`. `bson-request-whitelist` takes one or more comma-separated keys, dotted for nested ones (`bson-request-whitelist(profile.name, profile.surname)`), and matches the request body as the client sent it — before any `mergeRequest` enriches it.
 
 TIP: Use the **Predicate helper** tooltip inside the permission form — it shows common predicate patterns inline without leaving the page.
 
@@ -263,6 +271,28 @@ A document merged into every write request body before it is persisted. Use this
 }
 ----
 
+Write sub-documents as nested objects rather than with dotted keys. A merged request that touches both a field and a path inside it is rejected by MongoDB with `ConflictingUpdateOperators`.
+
+==== Update Operators in `mergeRequest`
+
+Plain fields are merged into `$set`. A MongoDB update operator can be merged as well — written with a **leading underscore**, since the key would otherwise be an illegal one in a stored document. `_$push` becomes `$push` when the request is merged.
+
+*Use case — append to a server-controlled history, without letting the client overwrite it:*
+
+[source,json]
+----
+{
+  "mongo": {
+    "mergeRequest": {
+      "lastSeenAt": "@now",
+      "_$push": { "auditTrail": { "at": "@now", "by": "@user._id" } }
+    }
+  }
+}
+----
+
+The client sends the field only to satisfy whatever `bson-request-whitelist` the predicate carries; the value it sends for a key that an array operator manages is discarded, so the two cannot conflict.
+
 === `projectResponse`
 
 A MongoDB projection applied to every response document before it is sent to the client. Use this to mask sensitive fields.
@@ -289,6 +319,9 @@ A MongoDB projection applied to every response document before it is sent to the
 
 | `@user.roles`
 | The `roles` array of the authenticated user.
+
+| `@now`
+| The current instant, as a BSON date. Declare it in a JSON Schema as `{"_$date": {"type": "number"}}`, not as a string.
 |===
 
 == Priority and Evaluation Order
