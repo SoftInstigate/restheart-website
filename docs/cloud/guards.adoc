@@ -82,7 +82,7 @@ A few examples:
 
 [source]
 ----
-not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents)) and not equals(@user.latestConsents.tos, '2026-07-01')
+not path-prefix('/auth') and not path-prefix('/token') and not path('/users/me') and not equals(@user.latestConsents.tos, '2026-07-01')
 ----
 
 [source]
@@ -125,16 +125,32 @@ NOTE: Changes are not sent to the server until you click **Save**.
 
 TIP: Configuration changes may take up to 60 seconds to propagate to all service nodes.
 
-== Locking Users Out
+== Locking Users Out [[locking-users-out]]
 
 A rule matches requests, and the requests users need in order to *get back in* are requests like any other. A condition that also matches signing in, accepting the terms, or the OAuth callback leaves users with no way through — the application appears broken and nothing in the logs says "misconfigured rule".
 
-Exclude those paths in the condition itself:
+Only `/ping`, `/health/db` and CORS preflight are never guarded. Everything else your application depends on — including the endpoints that establish the session — is matched like any other path, and has to be excluded in the condition itself:
 
 [source]
 ----
-not path-prefix('/auth') and not path('/consents') and <your actual condition>
+not path-prefix('/auth') and not path-prefix('/token') and not path('/users/me') and <your actual condition>
 ----
+
+Those three are the ones a blocked user needs:
+
+[cols="1,3"]
+|===
+| Path | Why it must stay reachable
+
+| `/auth/*`
+| Sign-up, email verification, password reset, the OAuth callback — and, for a rule about consents, whatever endpoint records the acceptance.
+
+| `/token`, `/token/cookie`
+| Signing in. And, crucially, `GET /token?renew=true`: a user who has just accepted still holds the old token, so the request that would unblock them is made *while still blocked*. Guard that path and the acceptance can never take effect.
+
+| `/users/me`
+| How the application learns who the user is and what state they are in. Blocked, the frontend cannot even render the screen that asks them to accept.
+|===
 
 There is no separate allowlist field: the exclusions are part of the condition, so what you read is what is evaluated.
 
@@ -175,7 +191,7 @@ Two fields on the user document:
 
 Two flags rather than one, because the terms and the privacy policy have versions of their own. Both are accepted by the same request: the client does not choose *what* it accepts, which is what keeps this to one permission and one rule. An acceptance that must be splittable — the privacy policy mandatory, the terms optional — is a different design, with a permission and a rule per flag, not an extension of this one.
 
-Neither field is written by `POST /auth/register` on its own, and that absence is exactly what the guard blocks on — see <<accepting-at-sign-up,Accepting at Sign-Up>> for the sign-up form that fills them in from the start.
+Neither field is written by `POST /auth/register`, and that absence is exactly what the guard blocks on. There is one way to accept — the `PATCH` of step 2 — and it is the same one whether the user has just signed up, arrived through OAuth, or has had an account since before the current version existed.
 
 === 1. Validate the format
 
@@ -305,7 +321,7 @@ The rule must exempt the very request the user sends to accept — the `PATCH` o
 {
   "id": "consentsGate",
   "name": "Block users who have not accepted the current ToS and Privacy Policy",
-  "condition": "not path-prefix('/auth') and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents)) and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestConsents.pp, '2026-07-01'))",
+  "condition": "not path-prefix('/auth') and not path-prefix('/token') and not path('/users/me') and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents)) and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestConsents.pp, '2026-07-01'))",
   "action": "block",
   "status_code": 451,
   "message": "You must accept the current Terms of Service and Privacy Policy",
@@ -313,15 +329,18 @@ The rule must exempt the very request the user sends to accept — the `PATCH` o
 }
 ----
 
-The condition on three lines, as it reads:
+The same condition, broken up as it reads:
 
 [source]
 ----
 not path-prefix('/auth')
+and not path-prefix('/token')
+and not path('/users/me')
 and not (method(PATCH) and path-template('/users/{userId}') and bson-request-whitelist(consents))
 and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestConsents.pp, '2026-07-01'))
 ----
 
+* The first three exclusions are the session itself — signing in, renewing the token after the acceptance, and reading the user. See <<locking-users-out,Locking Users Out>> for why leaving any of them out is a lockout rather than a stricter rule.
 * The exemption whitelists `consents` — the same field, written the same way, as the permission of step 2. The two predicates see the same body, so a mismatch between them means the acceptance is authorized and then blocked by the rule that exists to let it through. (`bson-request-whitelist` does take several comma-separated and dotted keys, `bson-request-whitelist(consents.tos, consents.pp)`; that form fits a body that names the sub-keys, not the one above.)
 * `not (A and B)` blocks when *either* acceptance is missing. `not A and not B` would block only the users who accepted neither — worth reading twice.
 * The rule reads `latestConsents`, never the `consents` array. The array is history; access decisions are made on the flat sub-document, whose keys resolve in a predicate with the dotted form `@user.latestConsents.tos`.
@@ -330,42 +349,75 @@ and not (equals(@user.latestConsents.tos, '2026-07-01') and equals(@user.latestC
 
 A JWT is a snapshot taken at issuance. After a user accepts, the token they are holding still says they have not, and the rule keeps blocking them — so the acceptance has to be followed by a new token.
 
-`GET /token` on its own returns the token they already hold. Adding **`?renew=true`** forces a new one to be issued instead:
+Which request you make depends on what the client is holding.
+
+**Holding a bearer token** — the usual case right after an acceptance — add **`?renew=true`** to get a new one issued without re-sending credentials:
 
 [source,bash]
 ----
 curl -X GET 'https://<service>/token?renew=true' -H 'Authorization: Bearer <token>'
 ----
 
+This request is made while the user is still blocked — the token it carries is the one that says they have not accepted. That is why `/token` is among the exclusions of the condition: without it the acceptance can never take effect.
+
+**Authenticating with credentials** — `?renew=true` is not needed. Every `GET /token` authenticated with Basic credentials is a fresh issuance built from the user document as it is read at that moment:
+
+[source,bash]
+----
+curl -X GET 'https://<service>/token' -u '<userid>:<password>'
+----
+
 The renewed token is built from the user document read again from the database, so it carries `latestConsents` as it is at that moment — along with any other change, including the user's roles.
 
 NOTE: When the user cannot be read from the service's `users` collection, the token is renewed from its own claims instead — a later expiry, the same data. That happens when the token was issued elsewhere, or by a realm that is not backed by a users collection. Renewal keeps working; it just has nothing fresher to build from.
+
+TIP: A JWT payload is base64, not encrypted — whatever is in the claim list is readable by any client holding the token. Keep it to the flags the rule compares (`latestConsents/tos`, `latestConsents/pp`) rather than the whole sub-document, and leave the `consents` history out: it is an array that grows at every acceptance, and no access decision reads it.
 
 The alternative, and often the better one: **have the acceptance endpoint return the new token in the same response**. That is what `restheart-accounts` does when a user switches team or activates their account. It saves a round trip, and the user never passes through a state where they are blocked by a decision they have already made.
 
 Signing out and back in works too. It is the blunt version of the same thing.
 
-=== Accepting at Sign-Up [[accepting-at-sign-up]]
+=== Checking It Works
 
-A sign-up form that already shows the terms should not send the user through the blocked state at all. When the users collection has a JSON Schema configured — step 1 — `POST /auth/register` carries the body properties it does not map itself into the user document as they are, so the form can send the acceptance together with the credentials:
+Five requests, on a test account that has not accepted yet. Run them in order — each one tells you which piece is wrong if it does not answer as described.
 
-[source,json]
+[source,bash]
 ----
-{
-  "email": "user@example.com",
-  "password": "<password>",
-  "firstName": "Ada",
-  "lastName": "Lovelace",
-  "latestConsents": { "tos": "2026-07-01", "pp": "2026-07-01" },
-  "consents": [{ "tos": "2026-07-01", "pp": "2026-07-01" }]
-}
+# 1. A token. Must succeed: if this is blocked, /token is missing from the exclusions.
+curl -X GET 'https://<service>/token' -u '<userid>:<password>'
+
+# 2. Any other request. Must be blocked with your status code and message.
+curl -X GET 'https://<service>/<collection>' -H 'Authorization: Bearer <token>'
+
+# 3. The acceptance. Must return 200 — a 403 means the permission of step 2 is missing
+#    or does not match; a 500 ConflictingUpdateOperators means dotted keys in mergeRequest.
+curl -X PATCH 'https://<service>/users/<userid>' \
+  -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' \
+  -d '{"consents": []}'
+
+# 4. A fresh token. Decode the payload: latestConsents must carry both flags at the
+#    current versions. Only one of them means only one is in the JWT claim list.
+curl -X GET 'https://<service>/token' -u '<userid>:<password>'
+
+# 5. The request from step 2 again, with the new token. Must now pass.
+curl -X GET 'https://<service>/<collection>' -H 'Authorization: Bearer <token>'
 ----
 
-The schema of step 1 validates the shape, and the guard is satisfied from the first request the user makes.
+Then check the user document: `latestConsents` carries the versions and an `acceptedAt` the server wrote, and `consents` has one record per acceptance rather than one that keeps being overwritten.
 
-What the server does *not* vouch for on this path is the content: there is no `mergeRequest` on `/auth/register`, so `acceptedAt` is whatever the client wrote — which is why it is left out above rather than forged. The version is a different matter: the guard compares it against the current one, so a client claiming an old version gains nothing and one claiming a version that does not exist yet is blocked all the same.
+TIP: With both flags on the same version, a condition mistakenly written `not A and not B` behaves exactly like the correct `not (A and B)`. To exercise that difference, raise *one* version in the rule and in `mergeRequest` and confirm the user is blocked again.
 
-Users who arrive some other way still need the `PATCH` — someone signing in with OAuth, where no form of yours is in the loop, and everyone who already had an account when the terms changed. The `PATCH` path is the general one; sign-up acceptance is the shortcut for the case where you control the form.
+=== How a Client Uses This
+
+The application never checks whether the user has accepted. It reacts to being told:
+
+. A request comes back with the status code the rule sets — `451` above.
+. The client shows its acceptance screen.
+. On acceptance it sends the `PATCH` of step 2, then gets a new token as in step 5.
+
+Nothing in the client compares versions. That is what keeps the two sides from drifting: raise the version in the rule and in the permission, and every client starts seeing `451` on the next request, with nothing to rebuild or redeploy.
+
+NOTE: `POST /auth/register` *can* carry the fields — with a JSON Schema configured it copies body properties it does not map itself into the user document — so a sign-up form could record the acceptance up front. There is no `mergeRequest` on that path, though, so the client would be stating the version and the timestamp itself. Leaving registration alone and letting the same `PATCH` serve every user is both simpler and better attested.
 
 == Disabling and Uninstalling
 
@@ -377,7 +429,7 @@ Both actions are available in the header bar when the plugin is in the correspon
 == Best Practices
 
 * Start with one rule and a narrow condition. Broad conditions are how lockouts happen.
-* Put the exclusions (`not path-prefix('/auth')` and friends) at the *front* of the condition, where they are hard to miss when re-reading it.
+* Put the exclusions (`/auth`, `/token`, `/users/me` and friends) at the *front* of the condition, where they are hard to miss when re-reading it.
 * Order rules from most specific to most general — the first match wins.
 * Prefer `block` with a status code your frontend can act on (`451`, `402`, `403`) over a redirect, unless the client is a browser navigating between pages.
 * Leave `on_error` at `allow` unless the rule is a security control.
