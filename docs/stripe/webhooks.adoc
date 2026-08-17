@@ -6,30 +6,23 @@ menu: stripe
 applies_to: restheart
 ---
 
-`POST /stripe/webhook` receives Stripe events and applies them to the entity's subscription state.
+`POST /stripe/webhook` receives Stripe events and applies them — updating subscription state or order status, recording transactions.
 
 It is the mechanism that makes billing actually work: Checkout only opens a payment page, and nothing in the application changes until Stripe tells the server what happened.
 
 [IMPORTANT]
 ====
-Without `stripeWebhookService` enabled and reachable from Stripe, a customer can pay successfully and remain on the free plan forever.
-This is the single most common way a Stripe integration is silently broken.
+Without `stripeWebhookService` enabled and reachable from Stripe, a customer can pay successfully and remain on the free plan forever (subscriptions) or their order stays `pending_payment` forever (products).
 ====
 
 === The only public endpoint
 
 `/stripe/webhook` has no authenticated caller: Stripe calls it directly.
-The module registers its own ACL allow rule for it — that exact path, `POST` and `OPTIONS` only — so it works regardless of how restrictive the deployment's ACL is.
+The module registers its own ACL allow rule for it — that exact path, `POST` and `OPTIONS` only.
 
 Its security is *signature verification*.
-Every request must carry a `Stripe-Signature` header that verifies against `stripeConfig.webhook-secret`, which only Stripe and your server know.
+Every request must carry a `Stripe-Signature` header that verifies against `stripeConfig.webhook-secret`.
 A request without a valid signature is rejected before anything is parsed.
-
-[WARNING]
-====
-The endpoint is only as safe as the secret.
-Configure `webhook-secret` from an environment variable, and treat a leaked signing secret as seriously as a leaked API key — it lets an attacker forge subscription upgrades.
-====
 
 === Status codes
 
@@ -38,62 +31,78 @@ Configure `webhook-secret` from an environment variable, and treat a leaked sign
 | Code | Meaning
 
 | `200`
-| The event was verified. It was handled, ignored as an unhandled type, or skipped as stale — all three are success, and Stripe must stop retrying.
+| Event verified. Handled, ignored, or skipped as stale — all are success.
 
 | `400`
-| Signature verification failed, the `Stripe-Signature` header is missing, or no `webhook-secret` is configured.
+| Signature failed, header missing, or no webhook-secret configured.
 
 | `500`
-| An unexpected failure (e.g. MongoDB unavailable) while applying an otherwise valid event. Stripe will retry.
+| Unexpected failure (e.g. MongoDB). Stripe will retry.
 |===
 
-[NOTE]
-====
-A *stale* event answers `200`, not an error.
-Stripe delivers events out of order, so an update older than the one already applied is expected traffic, not a fault: the state is already correct and there is nothing to retry.
-See <<_ordering_and_idempotency>>.
-====
-
-=== Events handled
+=== Events handled — Subscriptions
 
 [cols="2,4",options="header"]
 |===
 | Event | Effect
 
 | `checkout.session.completed`
-| Logged only. Stripe always follows it with `customer.subscription.created` carrying the full state; writing here as well would race the two events for no benefit.
+| Logged only. Stripe follows with `customer.subscription.created`.
 
 | `customer.subscription.created`
-| Rebuilds the entity's full subscription state.
+| Rebuilds full subscription state.
 
 | `customer.subscription.updated`
-| Rebuilds the entity's full subscription state — plan change, renewal, quantity change, cancellation scheduling.
+| Plan change, renewal, quantity change, cancellation scheduling.
 
 | `customer.subscription.deleted`
-| Resets the entity to `default-plan` with status `canceled`. Sends the `subscription-canceled` notification.
+| Resets to `default-plan`, status `canceled`. Sends notification.
 
 | `customer.subscription.trial_will_end`
-| Sends the `trial-will-end` notification. Changes no subscription field.
+| Sends the `trial-will-end` notification.
 
 | `invoice.payment_succeeded`
-| Sets status to `active`.
+| Status → `active`.
 
 | `invoice.payment_failed`
-| Sets status to `past_due`. Sends the `payment-failed` notification.
+| Status → `past_due`. Sends notification.
 
 | `product.updated`, `price.updated`
-| Invalidates the `GET /stripe/plans` display cache.
+| Invalidates the plans display cache.
 |===
 
-Any other event type is logged at debug level and answered `200`.
-Subscribing to more events in the Dashboard than this list is harmless.
+=== Events handled — Products
+
+[cols="2,4",options="header"]
+|===
+| Event | Effect
+
+| `checkout.session.completed` (paid)
+| Order → `paid`. Appends payment transaction.
+
+| `checkout.session.async_payment_succeeded`
+| Order → `paid`. Appends payment transaction.
+
+| `checkout.session.async_payment_failed`
+| Order → `failed`.
+
+| `checkout.session.expired`
+| Order → `expired` (from `pending_payment` only).
+
+| `charge.refunded`
+| Appends refund transaction. Updates `amount_refunded`.
+
+| `charge.dispute.created`
+| Appends dispute transaction.
+|===
 
 === Which events to subscribe to
 
-In *Stripe Dashboard → Developers → Webhooks*, select exactly:
+In *Stripe Dashboard → Developers → Webhooks*, subscribe to:
 
 [source,text]
 ----
+# subscriptions
 checkout.session.completed
 customer.subscription.created
 customer.subscription.updated
@@ -103,54 +112,25 @@ invoice.payment_succeeded
 invoice.payment_failed
 product.updated
 price.updated
+
+# products
+checkout.session.async_payment_succeeded
+checkout.session.async_payment_failed
+charge.refunded
+charge.dispute.created
 ----
 
-=== Plan attribution
+`checkout.session.completed` appears in both lists — it is handled differently per mode.
 
-Subscription events carry a Stripe *price id*, not a plan id.
-The module resolves it through the reverse index built from `stripeConfig.plans`.
+=== Idempotency
 
-An *unrecognised* price id keeps the entity's *previous* plan rather than falling back to `default-plan`, and logs a warning:
+*Subscriptions* — every write is conditional on the event timestamp being newer than the last one applied to that entity. Out-of-order delivery and redelivery are both no-ops.
 
-[source,text]
-----
-[stripe] subscription sub_123 carries unrecognised price id price_456 — keeping previous plan gold
-----
-
-[IMPORTANT]
-====
-This is deliberate and worth understanding: silently downgrading a paying customer because someone edited a price id in `restheart.yml` is the one failure this module must never produce.
-
-If you see that warning, your configured catalog and your Stripe account have drifted apart.
-Fix the price id — the customer is still on their old plan in the meantime, which is the safe direction to be wrong in.
-====
-
-=== Ordering and idempotency
-
-Stripe does not guarantee delivery order, and it retries.
-Both are handled by a single rule: *every write is conditional on the event's own timestamp being newer than the last one applied to that entity.*
-
-The last-applied timestamp is stored next to the subscription state, never inside it, so it can never leak into `GET /stripe/subscription` or `@subscription`.
-
-This gives three properties at once:
-
-* *Out-of-order delivery* — an older event arriving after a newer one is skipped.
-* *Redelivery* — a duplicate of an already-applied event is skipped.
-* *Notification idempotency* — because a notification is only sent when its write actually applied, a redelivered event does not email the customer twice.
-
-`customer.subscription.trial_will_end` changes no real field, so it writes a marker purely to reuse this same guard as its idempotency check.
+*Products* — order status transitions are monotonic (the update filter asserts current status). The `transactions` collection has a unique index on `stripe_event_id`, so a redelivered event cannot double-record a refund.
 
 === Unknown customers
 
-An event for a Stripe Customer that no entity is linked to is logged and ignored:
-
-[source,text]
-----
-[stripe] customer.subscription.updated for unknown customer cus_xyz — no entity is linked to it
-----
-
-This is normal when a Stripe account is shared with another application, or after restoring a database snapshot older than a customer.
-It is *not* normal if it happens for your own customers — that means the `stripe_customer_id` linkage was lost, and the affected entity will never receive another update.
+An event for a Stripe Customer that no entity is linked to is logged and ignored. This is normal when a Stripe account is shared with another application.
 
 === Local development
 
@@ -161,26 +141,13 @@ Stripe cannot reach `localhost`. Use the Stripe CLI:
 stripe listen --forward-to localhost:8080/stripe/webhook
 ----
 
-The CLI prints a signing secret (`whsec_…`) *for that session* — use it as `STRIPE_WEBHOOK_SECRET` while it runs.
-It is not the same secret as a Dashboard-registered endpoint.
+The CLI prints a signing secret (`whsec_…`) for that session — use it as `STRIPE_WEBHOOK_SECRET`.
 
-Trigger an event without a real payment:
+Trigger events:
 
 [source,bash]
 ----
 stripe trigger customer.subscription.updated
+stripe trigger checkout.session.completed
+stripe trigger charge.refunded
 ----
-
-The full walkthrough is in the xref:tutorial-stripe-setup.adoc[tutorial].
-
-=== Verifying it works
-
-After a test purchase:
-
-. The RESTHeart log shows the event arriving.
-. *Stripe Dashboard → Developers → Webhooks → your endpoint* shows `200` responses.
-. `GET /stripe/subscription` returns the new plan.
-
-If the Dashboard shows `400`, the signing secret does not match.
-If it shows `500`, read the RESTHeart log — the event was genuine and something downstream failed.
-If it shows nothing at all, Stripe cannot reach the URL.

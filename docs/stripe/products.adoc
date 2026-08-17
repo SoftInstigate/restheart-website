@@ -1,0 +1,280 @@
+---
+docs_version: 9
+title: Products & Orders
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+[NOTE]
+====
+The products mode is available starting from *RESTHeart v9.8*.
+It is independent of the xref:subscription-lifecycle.adoc[subscriptions mode]: either can be enabled alone, or both together.
+====
+
+The products mode sells one-time purchases through Stripe Checkout.
+
+The client sends product ids and quantities. The server resolves prices from the catalog, creates a Checkout session, and records the order. Everything downstream — fulfilment, shipping, returns — is your application's concern.
+
+=== Quick start
+
+[source,bash]
+----
+# 1. Create an order
+curl -X POST http://localhost:8080/orders \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"items": [{"productId": "SKU-1234", "quantity": 2}]}'
+
+# Response: {_id, checkout_url, secret}
+
+# 2. Redirect the customer to checkout_url
+
+# 3. After payment, the order becomes "paid" via webhook
+----
+
+=== Collections
+
+[cols="2,1,4",options="header"]
+|===
+| Collection | Module's role | Purpose
+
+| `catalog`
+| Read
+| Product definitions and prices
+
+| `orders`
+| Write
+| One document per checkout
+
+| `transactions`
+| Write
+| Append-only ledger of money movements
+
+| `inventory`
+| Read, optional
+| Stock check before checkout
+|===
+
+The initializer creates these collections, their indexes and the order JSON schema on startup. It never overwrites existing structures.
+
+=== The catalog
+
+[source,jsonc]
+----
+{
+  "_id":             "SKU-1234",
+  "type":            "physical",            // physical | digital
+  "name":            "Blue Widget",
+  "description":     "Anodised, 40mm",      // optional
+  "image_url":       "https://…",           // optional
+  "unit_amount":     2500,                  // integer, smallest currency unit
+  "currency":        "eur",                 // optional, defaults to products.default-currency
+  "purchasable":     true,
+  "tax_code":        "txcd_99999999",       // optional
+  "stripe_price_id": null                   // optional, see below
+}
+----
+
+Required: `_id`, `type`, `name`, `unit_amount`, `purchasable`.
+
+The module never writes to the catalog. CRUD is your application's, served by the MongoDB API.
+
+`stripe_price_id` is an escape hatch: absent (the normal case), the module builds an ad-hoc price so no product needs to exist in Stripe. Present, it uses that Stripe Price directly.
+
+[WARNING]
+====
+`unit_amount` is an integer in the smallest currency unit. `2500` = €25.00. A value of `25.00` would charge €0.25. The module refuses non-integer amounts.
+====
+
+=== `physical` vs `digital`
+
+[cols="3,2,2",options="header"]
+|===
+| | `physical` | `digital`
+
+| Shipping address collected
+| yes | no
+
+| Inventory checked
+| yes | no
+|===
+
+A cart may mix types. If any line is physical, the session collects a shipping address.
+
+=== Creating an order
+
+The client sends `items` only. Any other field is rejected with `400`.
+
+[source,json]
+----
+POST /orders
+{"items": [{"productId": "SKU-1234", "quantity": 2}]}
+----
+
+Response:
+
+[source,json]
+----
+{
+  "_id": { "$oid": "…" },
+  "checkout_url": "https://checkout.stripe.com/c/pay/cs_…",
+  "secret": "6f2c…"
+}
+----
+
+Redirect the customer to `checkout_url`.
+
+[cols="1,4",options="header"]
+|===
+| Code | Meaning
+
+| `201` | Order created; redirect to `checkout_url`
+| `400` | Unexpected field, bad quantity, unknown product, or mixed currencies
+| `409` | Product not purchasable or out of stock
+| `502` | Stripe unreachable
+|===
+
+=== Order lifecycle
+
+Orders are created in `pending_payment`. Webhooks move them forward.
+
+[cols="2,3",options="header"]
+|===
+| Event | Effect
+
+| `checkout.session.completed` (paid)
+| → `paid`, appends payment transaction
+
+| `checkout.session.async_payment_succeeded`
+| → `paid`, appends payment transaction
+
+| `checkout.session.async_payment_failed`
+| → `failed`
+
+| `checkout.session.expired`
+| → `expired` (from `pending_payment` only)
+
+| `charge.refunded`
+| Appends refund transaction, updates `amount_refunded`
+
+| `charge.dispute.created`
+| Appends dispute transaction
+|===
+
+[WARNING]
+====
+`checkout.session.completed` does not always mean paid. With SEPA, bank transfers and BLIK, Stripe sends `completed` with `payment_status: "unpaid"`. Only `payment_status == "paid"` means paid.
+====
+
+Status transitions are monotonic: a redelivered event is a no-op, not a regression.
+
+=== The ledger
+
+`transactions` is append-only. One order has many money movements:
+
+[source,jsonc]
+----
+{
+  "order_id":         { "$oid": "…" },
+  "type":             "payment",        // payment | refund | dispute
+  "amount":           6600,
+  "currency":         "eur",
+  "stripe_object_id": "pi_…",
+  "stripe_event_id":  "evt_…",          // unique — idempotency
+  "occurred_at":      { "$date": 1771200300000 }
+}
+----
+
+The unique index on `stripe_event_id` prevents double-recording on Stripe retries.
+
+=== Authorization
+
+The module registers no ACL rule for `/orders`. Grant access in your deployment:
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  permissions:
+    # team owners can buy and see their team's orders
+    - role: user
+      predicate: path-prefix(path="/orders") and equals(@user.team.role, "owner")
+      priority: 100
+      mongo:
+        readFilter: >
+          {"payer.id": "@user.team._id"}
+        mergeRequest: >
+          {"buyer_id": "@user._id"}
+
+    # guest checkout (omit to disable)
+    - role: $unauthenticated
+      predicate: path(path="/orders") and method(value="POST")
+      priority: 100
+
+    - role: $unauthenticated
+      predicate: path-template(value="/orders/{id}") and method(value="GET")
+      priority: 100
+      mongo:
+        readFilter: >
+          {"secret": "@qparams['secret']"}
+----
+
+[WARNING]
+====
+Grant `POST` and `GET` only. Without that restriction a customer can `PATCH` their own order to `status: "paid"`.
+====
+
+=== Guest checkout
+
+Enabled by the ACL rules above, not by a config flag.
+
+A guest supplies `email` in the request body and reads the order back with `_id` + `secret`:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/orders \
+  -d '{"email": "buyer@example.com", "items": [{"productId": "SKU-1234", "quantity": 1}]}'
+
+curl "http://localhost:8080/orders/{id}?secret=6f2c…"
+----
+
+Abandoned carts are cleaned up by a TTL index on `expires_at`, partial to `status: "pending_payment"`.
+
+=== Configuration
+
+Override file:
+
+[source,bash]
+----
+/stripeConfig/enabled -> true
+/stripeConfig/secret-key -> "${STRIPE_SECRET_KEY}"
+/stripeConfig/webhook-secret -> "${STRIPE_WEBHOOK_SECRET}"
+
+/stripeConfig/products/enabled -> true
+/stripeConfig/products/catalog-collection -> catalog
+/stripeConfig/products/orders-collection -> orders
+/stripeConfig/products/transactions-collection -> transactions
+# /stripeConfig/products/inventory-collection -> inventory   # omit to disable stock checks
+/stripeConfig/products/default-currency -> eur
+/stripeConfig/products/buyer-email-field -> _id
+/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+/stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
+/stripeConfig/products/session-expires-minutes -> 60
+/stripeConfig/products/max-line-items -> 50
+/stripeConfig/products/max-quantity-per-line -> 100
+/stripeConfig/products/automatic-tax -> true
+
+/stripeService/enabled -> true
+/stripeInitializer/enabled -> true
+/stripeWebhookService -> { "enabled": true }
+/ordersCheckoutInterceptor/enabled -> true
+/ordersCheckoutResponseInterceptor/enabled -> true
+----
+
+See xref:configuration.adoc[Configuration] for shared keys and xref:multi-tenancy.adoc[Multi-tenancy] for per-tenant overrides.
+
+=== Out of scope
+
+* **Stock reservation** — the optional `inventory` check is best-effort only
+* **Fulfilment and tracking** — add your own fields to the order document
+* **Refund initiation** — start refunds from Stripe Dashboard; they flow back via webhook

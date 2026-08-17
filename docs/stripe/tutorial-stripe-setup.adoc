@@ -47,7 +47,7 @@ Annual:  price_1PqRsTuVwXyZaBcDeFgHiJkL
 ====
 Two *prices*, one *product*.
 The product carries the name and description shown to customers; the prices carry the amounts.
-That is why raising a price later never means editing `restheart.yml`: `GET /stripe/plans` reads name, description and amount from Stripe at request time.
+That is why raising a price later never means editing your configuration: `GET /stripe/plans` reads name, description and amount from Stripe at request time.
 ====
 
 === Step 2 — Get your API key
@@ -56,7 +56,7 @@ That is why raising a price later never means editing `restheart.yml`: `GET /str
 
 [WARNING]
 ====
-Never commit this key, and never paste it into `restheart.yml`.
+Never commit this key, and never paste it into your configuration file.
 Even a test key can create customers, sessions and refunds, and it identifies your account.
 Keep it in the environment.
 ====
@@ -98,62 +98,59 @@ Leave this terminal running for the rest of the tutorial. If you restart it, re-
 
 === Step 4 — Configure RESTHeart
 
-Add to `restheart.yml`:
+Create an override file (e.g. `stripe.conf`):
 
-[source,yaml]
+[source,bash]
 ----
-stripeConfig:
-  enabled: true
-  secret-key:     $(STRIPE_SECRET_KEY)
-  webhook-secret: $(STRIPE_WEBHOOK_SECRET)
+/stripeConfig/enabled -> true
+/stripeConfig/secret-key -> "${STRIPE_SECRET_KEY}"
+/stripeConfig/webhook-secret -> "${STRIPE_WEBHOOK_SECRET}"
 
-  default-plan: free
+/stripeConfig/subscriptions/enabled -> true
+/stripeConfig/subscriptions/default-plan -> free
+/stripeConfig/subscriptions/success-url -> "http://localhost:4200/billing?success=true"
+/stripeConfig/subscriptions/cancel-url -> "http://localhost:4200/billing?canceled=true"
+/stripeConfig/subscriptions/portal-return-url -> "http://localhost:4200/billing"
 
-  success-url:       "http://localhost:4200/billing?success=true"
-  cancel-url:        "http://localhost:4200/billing?canceled=true"
-  portal-return-url: "http://localhost:4200/billing"
+/stripeConfig/subscriptions/plans -> {
+  "free": { "seats": { "mode": "capped", "max": 1 } },
+  "gold": {
+    "price-id-monthly": "price_1AbCdEfGhIjKlMnOpQrStUvW",
+    "price-id-annual": "price_1PqRsTuVwXyZaBcDeFgHiJkL",
+    "trial-period-days": 14,
+    "seats": { "mode": "capped", "max": 10 }
+  }
+}
 
-  plans:
-    free:
-      seats: { mode: capped, max: 1 }
-    gold:
-      price-id-monthly: price_1AbCdEfGhIjKlMnOpQrStUvW   # <- yours
-      price-id-annual:  price_1PqRsTuVwXyZaBcDeFgHiJkL   # <- yours
-      trial-period-days: 14
-      seats: { mode: capped, max: 10 }
-
-stripeService:             { enabled: true }
-stripeInitializer:         { enabled: true }
-stripeCatalogCache:        { enabled: true }
-stripeCheckoutService:     { enabled: true }
-stripePortalService:       { enabled: true }
-stripeSubscriptionService: { enabled: true }
-stripeWebhookService:      { enabled: true }
-stripeLicensesService:     { enabled: true }
-stripePlansService:        { enabled: true }
+/stripeService/enabled -> true
+/stripeInitializer/enabled -> true
+/stripeCatalogCache/enabled -> true
+/stripeCheckoutService/enabled -> true
+/stripePortalService/enabled -> true
+/stripeSubscriptionService/enabled -> true
+/stripeWebhookService/enabled -> true
+/stripeLicensesService/enabled -> true
+/stripePlansService/enabled -> true
 ----
 
 Grant access to the endpoints — the module registers an ACL rule only for `/stripe/webhook`:
 
-[source,yaml]
+[source,bash]
 ----
-fileAclAuthorizer:
-  enabled: true
-  permissions:
-    - role: user
-      predicate: >
-        path-prefix(path="/stripe/checkout")
-        or path-prefix(path="/stripe/portal")
-        or path-prefix(path="/stripe/subscription")
-        or path-prefix(path="/stripe/licenses")
-      priority: 10
-
-    - role: $unauthenticated
-      predicate: path(path="/stripe/plans") and method(value="GET")
-      priority: 10
+# append to the same file or a separate override file
+/fileAclAuthorizer/permissions/- -> {
+  "role": "user",
+  "predicate": "path-prefix(path=\"/stripe/checkout\") or path-prefix(path=\"/stripe/portal\") or path-prefix(path=\"/stripe/subscription\") or path-prefix(path=\"/stripe/licenses\")",
+  "priority": 10
+}
+/fileAclAuthorizer/permissions/- -> {
+  "role": "$unauthenticated",
+  "predicate": "path(path=\"/stripe/plans\") and method(value=\"GET\")",
+  "priority": 10
+}
 ----
 
-Restart RESTHeart and check the startup log:
+Start RESTHeart with the override file and check the startup log:
 
 [source,text]
 ----
@@ -201,7 +198,7 @@ Seeing `Gold` and `2900` here proves your key works and the price ids are correc
 
 [TIP]
 ====
-If `gold` comes back without `prices`, the price ids in `restheart.yml` do not exist in this Stripe account.
+If `gold` comes back without `prices`, the price ids in your configuration do not exist in this Stripe account.
 Check the RESTHeart log for a warning naming the id, and re-copy it from the Dashboard.
 ====
 
@@ -402,7 +399,7 @@ To see the final transition without waiting, cancel *immediately* from *Dashboar
 | Step | Action
 
 | 1
-| Recreate the products and prices in *live mode* — test-mode price ids do not exist in live mode. Update `restheart.yml` with the live ids.
+| Recreate the products and prices in *live mode* — test-mode price ids do not exist in live mode. Update your configuration with the live ids.
 
 | 2
 | Register a real webhook endpoint: *Developers → Webhooks → Add endpoint*, URL `https://api.example.com/stripe/webhook`, subscribing to the events listed in xref:webhooks.adoc#_which_events_to_subscribe_to[Webhooks].
@@ -420,7 +417,7 @@ To see the final transition without waiting, cancel *immediately* from *Dashboar
 | Set `success-url`, `cancel-url` and `portal-return-url` to real HTTPS URLs.
 
 | 7
-| Configure the Customer Portal in *Settings → Billing → Customer portal* — which plan changes and cancellation options customers get is decided there, not in `restheart.yml`.
+| Configure the Customer Portal in *Settings → Billing → Customer portal* — which plan changes and cancellation options customers get is decided there, not in your configuration.
 
 | 8
 | Decide about notifications: if you enable `payment-failed` or `trial-will-end`, turn the matching Stripe Dashboard email *off*, or customers receive both.

@@ -6,145 +6,272 @@ menu: stripe
 applies_to: restheart
 ---
 
-`restheart-stripe` is configured through the `stripeConfig` block in `restheart.yml`, plus one `enabled` flag per plugin.
-
+`restheart-stripe` is configured through the `stripeConfig` block.
 Everything is disabled by default: enabling the module is a deliberate act.
 
-=== Minimal working configuration
+RESTHeart uses its default configuration; you only need an override file for the settings that differ.
 
-[source,yaml]
+=== Quick start
+
+Create an override file (e.g. `stripe.conf`):
+
+[source,bash]
 ----
-stripeConfig:
-  enabled: true
-  secret-key:     $(STRIPE_SECRET_KEY)
-  webhook-secret: $(STRIPE_WEBHOOK_SECRET)
+# enable the module and set credentials
+/stripeConfig/enabled -> true
+/stripeConfig/secret-key -> "sk_test_..."
+/stripeConfig/webhook-secret -> "whsec_..."
 
-  default-plan: free
+# enable subscriptions
+/stripeConfig/subscriptions/enabled -> true
+/stripeConfig/subscriptions/default-plan -> free
+/stripeConfig/subscriptions/success-url -> "https://app.example.com/billing?success=true"
+/stripeConfig/subscriptions/cancel-url -> "https://app.example.com/billing?canceled=true"
+/stripeConfig/subscriptions/portal-return-url -> "https://app.example.com/billing"
 
-  success-url:       "https://app.example.com/billing?success=true"
-  cancel-url:        "https://app.example.com/billing?canceled=true"
-  portal-return-url: "https://app.example.com/billing"
+# enable products
+/stripeConfig/products/enabled -> true
+/stripeConfig/products/default-currency -> eur
+/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+/stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
 
-  plans:
-    free:
-      seats: { mode: capped, max: 1 }
-    gold:
-      price-id-monthly: price_1AbCdEfGhIjKlMnO
-      price-id-annual:  price_1PqRsTuVwXyZaBcD
-      seats: { mode: capped, max: 10 }
+# enable the plugins you need
+/stripeService/enabled -> true
+/stripeInitializer/enabled -> true
+/stripeWebhookService -> { "enabled": true }
 
-# every plugin must be enabled explicitly
-stripeService:              { enabled: true }
-stripeInitializer:          { enabled: true }
-stripeCatalogCache:         { enabled: true }
-stripeCheckoutService:      { enabled: true }
-stripePortalService:        { enabled: true }
-stripeSubscriptionService:  { enabled: true }
-stripeWebhookService:       { enabled: true }
-stripeLicensesService:      { enabled: true }
-stripePlansService:         { enabled: true }
+# subscriptions plugins
+/stripeCheckoutService/enabled -> true
+/stripePortalService/enabled -> true
+/stripeSubscriptionService/enabled -> true
+/stripePlansService/enabled -> true
+/stripeCatalogCache/enabled -> true
+/stripeLicensesService/enabled -> true
+
+# products plugins
+/ordersCheckoutInterceptor/enabled -> true
+/ordersCheckoutResponseInterceptor/enabled -> true
+----
+
+Start RESTHeart:
+
+[source,bash]
+----
+java -jar restheart.jar -o stripe.conf
 ----
 
 [WARNING]
 ====
-*Never write a Stripe key literally in `restheart.yml`.*
+Never write Stripe keys literally in a file that gets committed.
+Use environment variable expansion in the override file:
 
-Both `secret-key` and `webhook-secret` are credentials for a real Stripe account — even a `sk_test_…` key can create customers, sessions and refunds in test mode, and it identifies your account.
-Always inject them with environment variable substitution: `$(STRIPE_SECRET_KEY)`, `$(STRIPE_WEBHOOK_SECRET)`.
+[source,bash]
+----
+/stripeConfig/secret-key -> "${STRIPE_SECRET_KEY}"
+/stripeConfig/webhook-secret -> "${STRIPE_WEBHOOK_SECRET}"
+----
+
+Or pass them via `RHO`:
+
+[source,bash]
+----
+RHO='/stripeConfig/secret-key->"'$STRIPE_SECRET_KEY'"' java -jar restheart.jar -o stripe.conf
+----
 ====
 
-=== `stripeConfig` reference
+=== Structure
+
+[source]
+----
+stripeConfig:
+  enabled:              # master switch
+  secret-key:           # shared — Stripe API key
+  webhook-secret:       # shared — webhook signing secret
+  teams-collection:     # shared — default: teams
+
+  subscriptions:
+    enabled:            # subscriptions mode on/off
+    default-plan:       # plan for entities with no subscription
+    plans:              # the plan catalog
+    success-url:        # checkout redirect
+    cancel-url:         # checkout redirect
+    portal-return-url:  # portal return URL
+    notifications:      # per-notification enabled flags
+    templates:          # custom email template paths
+
+  products:
+    enabled:            # products mode on/off
+    catalog-collection: # default: catalog
+    orders-collection:  # default: orders
+    transactions-collection: # default: transactions
+    inventory-collection:    # optional — omit to disable stock checks
+    default-currency:   # default: eur
+    buyer-email-field:  # default: _id
+    success-url:        # checkout redirect
+    cancel-url:         # checkout redirect
+    session-expires-minutes: # default: 60
+    max-line-items:     # default: 50
+    max-quantity-per-line:   # default: 100
+    automatic-tax:      # default: true
+    shipping-options:   # for physical products
+    notifications:      # order-confirmed, order-refunded
+    init-enabled:       # default: true, set false for multi-tenant on-demand init
+----
+
+Credentials and database are shared across both modes. Each mode has its own sub-section.
+
+=== Shared keys
 
 [cols="2,1,4",options="header"]
 |===
 | Key | Default | Description
 
+| `enabled`
+| `false`
+| Master switch for the module.
+
 | `secret-key`
 | _(none)_
-| Stripe secret API key. `sk_test_…` in development, `sk_live_…` in production. *Required.*
+| Stripe secret API key. *Required.*
 
 | `webhook-secret`
 | _(none)_
-| Webhook signing secret from *Stripe Dashboard → Developers → Webhooks*. *Required.*
-
-| `default-plan`
-| `free`
-| Plan id assigned to an entity with no subscription. Must name a key under `plans`.
-
-| `default-trial-period-days`
-| `0`
-| Trial length used when a plan declares no `trial-period-days` of its own. `0` disables trials.
+| Webhook signing secret. *Required.*
 
 | `teams-collection`
 | `teams`
-| Collection holding the entity documents the default provider reads and writes.
+| Collection holding team documents.
+|===
+
+The MongoDB database is sourced from `mongoRealmAuthenticator.users-db`, not from `stripeConfig`.
+This prevents the two modules from drifting apart:
+
+[source,bash]
+----
+/mongoRealmAuthenticator/users-db -> "myapp"
+----
+
+=== Subscriptions keys
+
+[cols="2,1,4",options="header"]
+|===
+| Key | Default | Description
+
+| `enabled`
+| `false`
+| Subscriptions mode on/off.
+
+| `default-plan`
+| `free`
+| Plan id for entities with no subscription.
+
+| `default-trial-period-days`
+| `0`
+| Fallback trial days.
 
 | `success-url`
 | _(empty)_
-| Where Stripe Checkout redirects after a successful payment.
+| Checkout redirect after payment.
 
 | `cancel-url`
 | _(empty)_
-| Where Stripe Checkout redirects when the buyer abandons.
+| Checkout redirect on abandonment.
 
 | `portal-return-url`
 | _(empty)_
-| Where the Stripe Customer Portal returns the user.
+| Customer Portal return URL.
 
 | `plans`
 | _(empty)_
-| The plan catalog — see xref:plans-and-seats.adoc[Plans & Seats].
-
-| `notifications`
-| _(see below)_
-| Per-notification `enabled` flags.
-
-| `templates`
-| _(built-in)_
-| Per-notification custom HTML template paths.
+| Plan catalog. See xref:plans-and-seats.adoc[Plans & Seats].
 |===
 
-==== There is no `db` key
+=== Products keys
 
-The MongoDB database is *not* configured under `stripeConfig`.
-It is sourced from `mongoRealmAuthenticator.users-db`, exactly the way `accountsConfig` sources its own:
+[cols="2,1,4",options="header"]
+|===
+| Key | Default | Description
 
-[source,yaml]
-----
-mongoRealmAuthenticator:
-  users-db: myapp        # <- restheart-stripe reads and writes here too
-----
+| `enabled`
+| `false`
+| Products mode on/off.
 
-This is deliberate.
-Billing state lives on the same entity documents `restheart-accounts` manages; letting the two modules point at different databases would produce a team whose membership is in one place and whose subscription is in another, with nothing to reconcile them.
+| `catalog-collection`
+| `catalog`
+| Product definitions.
 
-Only the *collection* is configurable (`teams-collection`), for deployments whose entity documents are not called `teams`.
+| `orders-collection`
+| `orders`
+| Order documents.
 
-[NOTE]
-====
-In a multi-tenant deployment the database *can* vary per request, through the `override-stripe-db` parameter — see xref:multi-tenancy.adoc[Multi-tenancy].
-The static value above remains the fallback and the one the startup index creation uses.
-====
+| `transactions-collection`
+| `transactions`
+| Money ledger.
+
+| `inventory-collection`
+| _(none)_
+| Stock data. Omit to disable stock checks.
+
+| `default-currency`
+| `eur`
+| Currency when a product has none.
+
+| `buyer-email-field`
+| `_id`
+| User-document field for buyer email.
+
+| `success-url`
+| _(empty)_
+| Checkout redirect after payment.
+
+| `cancel-url`
+| _(empty)_
+| Checkout redirect on abandonment.
+
+| `session-expires-minutes`
+| `60`
+| Checkout session lifetime.
+
+| `max-line-items`
+| `50`
+| Maximum items per cart.
+
+| `max-quantity-per-line`
+| `100`
+| Maximum quantity per item.
+
+| `automatic-tax`
+| `true`
+| Enable Stripe Tax.
+
+| `init-enabled`
+| `true`
+| Set `false` for on-demand init (multi-tenant).
+|===
 
 === Plugins
 
-Each plugin is enabled independently, so a deployment can run only the parts it needs.
+Each plugin is enabled independently.
 
 [cols="2,4",options="header"]
 |===
 | Plugin | Role
 
 | `stripeConfig`
-| Reads the `stripeConfig` block and provides it to the others. *Required.*
+| Reads the `stripeConfig` block. *Required.*
 
 | `stripeService`
-| Holds the active `SubscriptionOwnerProvider` and the SPI registry. *Required.*
+| Holds the `SubscriptionOwnerProvider`. *Required.*
 
 | `stripeInitializer`
-| Validates the configuration, creates the `stripe_customer_id` index, registers the `@subscription` ACL variable. *Required.*
+| Validates config, creates indexes, registers `@subscription`. *Required.*
 
-| `stripeCatalogCache`
-| Caches the Stripe display data behind `GET /stripe/plans`. Required by `stripePlansService` and `stripeWebhookService`.
+| `stripeWebhookService`
+| `POST /stripe/webhook`. *Required.*
+
+2+|
+
+*Subscriptions:*
 
 | `stripeCheckoutService`
 | `POST /stripe/checkout`
@@ -155,50 +282,48 @@ Each plugin is enabled independently, so a deployment can run only the parts it 
 | `stripeSubscriptionService`
 | `GET /stripe/subscription`
 
-| `stripeWebhookService`
-| `POST /stripe/webhook`
-
 | `stripeLicensesService`
 | `/stripe/licenses`
 
 | `stripePlansService`
 | `GET /stripe/plans`
-|===
 
-[TIP]
-====
-`stripeWebhookService` is not optional in practice.
-Without it nothing ever updates a subscription after checkout: a customer pays and stays on the free plan forever.
-====
+| `stripeCatalogCache`
+| Display data cache for `/stripe/plans`
+
+2+|
+
+*Products:*
+
+| `ordersCheckoutInterceptor`
+| Validates cart, creates Checkout session
+
+| `ordersCheckoutResponseInterceptor`
+| Adds `_id`, `checkout_url`, `secret` to response
+|===
 
 === Startup validation
 
-`stripeInitializer` runs before the HTTP server starts accepting requests and logs a specific error when:
+`stripeInitializer` runs before the HTTP server starts and logs errors when:
 
-* `secret-key` or `webhook-secret` is missing or blank;
-* `default-plan` does not name a plan declared under `plans`.
+* `secret-key` or `webhook-secret` is missing
+* `default-plan` does not name a declared plan (subscriptions only)
 
 [IMPORTANT]
 ====
-RESTHeart catches exceptions thrown from initializers and logs them — *it does not abort startup*.
-A misconfigured deployment will therefore come up and serve traffic, failing later at the first Stripe call.
-Check the startup log for `[stripe]` errors; do not assume a running server is a correctly configured one.
+RESTHeart catches initializer exceptions and logs them — it does not abort startup. Check the log for `[stripe]` errors.
 ====
 
-On success the initializer logs the effective settings, including which Stripe mode is active:
+On success:
 
 [source,text]
 ----
-[stripe] plugin initialised — mode=TEST, db=myapp, teams-collection=teams, plans=[free, gold]
+[stripe] plugin initialised — mode=TEST, db=myapp, subscriptions=true, products=true
 ----
-
-`mode` is derived from the key prefix: `sk_live_…` yields `LIVE`.
-It is worth reading on every deploy.
 
 === Notifications
 
-The module can email the entity's owner on four billing events.
-They are rendered and sent through the `emails` plugin; if that plugin is absent or disabled, notifications are silently skipped and the rest of the module works normally.
+==== Subscriptions
 
 [cols="2,1,4",options="header"]
 |===
@@ -206,114 +331,87 @@ They are rendered and sent through the `emails` plugin; if that plugin is absent
 
 | `payment-failed`
 | `false`
-| An invoice payment fails.
+| Invoice payment fails
 
 | `trial-will-end`
 | `false`
-| Stripe signals the trial is about to end (three days ahead).
+| Trial ending in 3 days
 
 | `subscription-canceled`
 | `true`
-| The subscription is deleted at Stripe.
+| Subscription deleted
 
 | `over-limit`
 | `true`
-| The entity crosses above its seat limit.
+| Seat limit exceeded
 |===
 
-[NOTE]
-====
-`payment-failed` and `trial-will-end` default to *disabled* because Stripe can send its own equivalent emails from the Dashboard (*Settings → Customer emails* / *Subscriptions and emails*).
-Enabling one here means turning the matching Stripe email off — the module cannot detect the duplication at runtime, and the customer receives two.
-====
+==== Products
 
-[source,yaml]
-----
-stripeConfig:
-  notifications:
-    payment-failed:        { enabled: true }
-    trial-will-end:        { enabled: true }
-    subscription-canceled: { enabled: true }
-    over-limit:            { enabled: true }
-
-  templates:
-    payment-failed: etc/email-templates/stripe/payment-failed.html
-----
-
-Templates follow the same resolution rules and `{{variable}}` / `<span lang="xx">` i18n conventions as xref:../accounts/email-templates.adoc[the accounts email templates].
-Built-in bilingual (English/Italian) templates are used when no path is configured.
-
-Available variables:
-
-[cols="2,2,3",options="header"]
+[cols="2,1,4",options="header"]
 |===
-| Notification | Variables | Notes
+| Notification | Default | Sent when
 
-| `payment-failed`
-| `plan`, `billing-url`
-| `billing-url` is `portal-return-url`
+| `order-confirmed`
+| `true`
+| Order paid
 
-| `trial-will-end`
-| `plan`, `trial-end-date`, `billing-url`
-|
-
-| `subscription-canceled`
-| `plan`, `billing-url`
-| `plan` is the plan *before* cancellation
-
-| `over-limit`
-| `plan`, `seats-limit`, `seats-licensed`, `billing-url`
-| `seats-limit` is `∞` when unlimited
+| `order-refunded`
+| `true`
+| Refund recorded
 |===
+
+Notifications use the `emails` plugin. If absent, they are silently skipped.
 
 === Complete example
 
-[source,yaml]
+[source,bash]
 ----
-mongoRealmAuthenticator:
-  users-db: myapp
+# stripe.conf — override file for restheart-stripe
 
-stripeConfig:
-  enabled: true
-  secret-key:     $(STRIPE_SECRET_KEY)
-  webhook-secret: $(STRIPE_WEBHOOK_SECRET)
+/mongoRealmAuthenticator/users-db -> "myapp"
 
-  teams-collection: teams
-  default-plan: free
-  default-trial-period-days: 14
+# ── shared ──
+/stripeConfig/enabled -> true
+/stripeConfig/secret-key -> "${STRIPE_SECRET_KEY}"
+/stripeConfig/webhook-secret -> "${STRIPE_WEBHOOK_SECRET}"
 
-  success-url:       "https://app.example.com/billing?success=true"
-  cancel-url:        "https://app.example.com/billing?canceled=true"
-  portal-return-url: "https://app.example.com/billing"
+# ── subscriptions ──
+/stripeConfig/subscriptions/enabled -> true
+/stripeConfig/subscriptions/default-plan -> free
+/stripeConfig/subscriptions/default-trial-period-days -> 14
+/stripeConfig/subscriptions/success-url -> "https://app.example.com/billing?success=true"
+/stripeConfig/subscriptions/cancel-url -> "https://app.example.com/billing?canceled=true"
+/stripeConfig/subscriptions/portal-return-url -> "https://app.example.com/billing"
 
-  plans:
-    free:
-      seats: { mode: capped, max: 1 }
-      limits: { max-projects: 3 }
+/stripeConfig/subscriptions/plans -> {
+  "free": { "seats": { "mode": "capped", "max": 1 } },
+  "gold": {
+    "price-id-monthly": "price_xxx",
+    "price-id-annual": "price_yyy",
+    "trial-period-days": 30,
+    "seats": { "mode": "capped", "max": 10 }
+  }
+}
 
-    gold:
-      price-id-monthly:  price_1AbCdEfGhIjKlMnO
-      price-id-annual:   price_1PqRsTuVwXyZaBcD
-      trial-period-days: 30
-      seats: { mode: capped, max: 10 }
-      limits: { max-projects: 50 }
+# ── products ──
+/stripeConfig/products/enabled -> true
+/stripeConfig/products/default-currency -> eur
+/stripeConfig/products/buyer-email-field -> _id
+/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+/stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
+/stripeConfig/products/automatic-tax -> true
 
-    enterprise:
-      price-id-monthly: price_1EnTeRpRiSeMoNtH
-      seats: { mode: per-seat }
-      limits: { max-projects: -1 }
-
-  notifications:
-    subscription-canceled: { enabled: true }
-    over-limit:            { enabled: true }
-
-stripeService:             { enabled: true }
-stripeInitializer:         { enabled: true }
-stripeCatalogCache:        { enabled: true }
-stripeCheckoutService:     { enabled: true }
-stripePortalService:       { enabled: true }
-stripeSubscriptionService: { enabled: true }
-stripeWebhookService:      { enabled: true }
-stripeLicensesService:     { enabled: true }
-stripePlansService:        { enabled: true }
+# ── plugins ──
+/stripeService/enabled -> true
+/stripeInitializer/enabled -> true
+/stripeWebhookService -> { "enabled": true }
+/stripeCheckoutService/enabled -> true
+/stripePortalService/enabled -> true
+/stripeSubscriptionService/enabled -> true
+/stripePlansService/enabled -> true
+/stripeCatalogCache/enabled -> true
+/stripeLicensesService/enabled -> true
+/ordersCheckoutInterceptor/enabled -> true
+/ordersCheckoutResponseInterceptor/enabled -> true
 ----

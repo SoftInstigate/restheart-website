@@ -10,25 +10,27 @@ The plan catalog declares what the module *enforces*.
 Everything a customer *reads* — plan name, description, price, currency — comes from the Stripe Products and Prices your price ids point at.
 
 That split is the organising idea of this page: configuration is the contract your server enforces, Stripe is the source of truth for what things cost.
-Raising a price never means editing `restheart.yml`.
+Raising a price never means changing your override file.
 
 === The catalog
 
-[source,yaml]
+[source,bash]
 ----
-stripeConfig:
-  default-plan: free
-  plans:
-    free:
-      seats: { mode: capped, max: 1 }
-      limits: { max-projects: 3 }
+/stripeConfig/subscriptions/default-plan -> free
 
-    gold:
-      price-id-monthly:  price_1AbCdEfGhIjKlMnO
-      price-id-annual:   price_1PqRsTuVwXyZaBcD
-      trial-period-days: 30
-      seats: { mode: capped, max: 10 }
-      limits: { max-projects: 50 }
+/stripeConfig/subscriptions/plans -> {
+  "free": {
+    "seats": { "mode": "capped", "max": 1 },
+    "limits": { "max-projects": 3 }
+  },
+  "gold": {
+    "price-id-monthly": "price_1AbCdEfGhIjKlMnO",
+    "price-id-annual": "price_1PqRsTuVwXyZaBcD",
+    "trial-period-days": 30,
+    "seats": { "mode": "capped", "max": 10 },
+    "limits": { "max-projects": 50 }
+  }
+}
 ----
 
 [cols="2,4",options="header"]
