@@ -81,7 +81,7 @@
 </div>
 
 <div class="row my-4">
-    <article class="mt-4 mt-lg-0 col-lg-6 zoom">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Development Framework</span></h3>
@@ -94,7 +94,21 @@
             </div>
         </div>
     </article>
-    <article class="mt-4 mt-lg-0 col-lg-6 zoom">
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
+        <div class="card newsText h-100 w-100">
+            <div class="card-body">
+                <h3 class="feature-title mb-3"><span class="text-primary">Stripe Payments</span></h3>
+                <p>
+                    Add <strong>subscriptions</strong> and <strong>one-time purchases</strong> to your app with the <code>restheart-stripe</code> module. Multi-tenant ready, no backend code.
+                </p>
+                <p class="mt-1 mb-0" style="font-size: 0.85rem; opacity: 0.7;">Available from RESTHeart 9.8</p>
+            </div>
+            <div class="d-flex w-100 justify-content-center">
+                <a class="btn btn-sm" href="{{ '/docs/stripe/overview' | prepend: site.baseurl }}">Read More</a>
+            </div>
+        </div>
+    </article>
+    <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Container friendly</span></h3>
