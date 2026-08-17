@@ -66,3 +66,34 @@ The following table describes the arguments of the annotation:
 |yes
 |*none*
 |===
+
+=== Optional Dependencies
+
+By default, `@Inject` declares a *required* dependency: if the provider is not found or is disabled, the plugin itself is disabled at startup.
+
+To declare an *optional* dependency, set `required = false`. When the provider is missing, the field is set to `null` and the plugin remains enabled. A DEBUG log is emitted.
+
+[source,java]
+----
+@RegisterPlugin(name = "myPlugin", description = "...")
+public class MyPlugin implements JsonService {
+
+    @Inject(value = "emails", required = false)
+    private EmailSender emailSender;
+
+    @OnInit
+    public void init() {
+        if (emailSender == null) {
+            // fallback: notifications disabled
+        }
+    }
+}
+----
+
+[NOTE]
+.Available from version 9.8
+====
+The `required` parameter was introduced in RESTHeart 9.8. In earlier versions, optional dependencies required a manual lookup via `PluginsRegistry.getProviders()`.
+====
+
+This is useful when a plugin can function without a particular provider — for example, a billing service that optionally sends email notifications.

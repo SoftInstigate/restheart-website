@@ -696,16 +696,24 @@ try {
 
 [IMPORTANT]
 ====
-The *implementation* still lives in `restheart-mongodb`, so the `json-schemas` provider only exists where that module is deployed. `@Inject("json-schemas")` is a hard dependency: if the provider is missing, the plugin declaring the injection is *disabled at startup*, not merely deprived of validation.
+The *implementation* still lives in `restheart-mongodb`, so the `json-schemas` provider only exists where that module is deployed.
 
-If your plugin must keep working without `restheart-mongodb`, resolve the provider optionally through the registry instead:
+If your plugin must keep working without `restheart-mongodb`, declare the injection as optional (available from version 9.8):
+
+[source,java]
+----
+@Inject(value = "json-schemas", required = false)
+private JsonSchemas jsonSchemas;   // null when restheart-mongodb is not deployed
+----
+
+In earlier versions, resolve the provider optionally through the registry instead:
 
 [source,java]
 ----
 @Inject("registry")
 private PluginsRegistry registry;
 
-private JsonSchemas jsonSchemas;   // null when restheart-mongodb is not deployed
+private JsonSchemas jsonSchemas;
 
 @OnInit
 public void onInit() {
