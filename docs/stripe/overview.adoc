@@ -1,0 +1,171 @@
+---
+docs_version: 9
+title: restheart-stripe
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+[NOTE]
+====
+`restheart-stripe` is available starting from *RESTHeart v9.8*.
+====
+
+`restheart-stripe` adds subscription billing to any RESTHeart deployment, backed by https://stripe.com[Stripe].
+It covers the full billing lifecycle — checkout, the Stripe Customer Portal, webhook ingestion, plan gating, and seat licensing — as a set of configurable HTTP endpoints.
+
+Like every RESTHeart module, all features are opt-in, configured exclusively via `restheart.yml`, and integrate with the existing security pipeline: plan and seat state is reachable from ACL rules through the xref:plan-gates.adoc[`@subscription` variable].
+
+[source,mermaid]
+----
+flowchart LR
+  subgraph Clients
+    B[Browser / Mobile]
+  end
+
+  subgraph RS[restheart-stripe]
+    direction TB
+    EP["Endpoints\n/stripe/checkout  /stripe/portal\n/stripe/subscription  /stripe/plans\n/stripe/licenses\n/stripe/webhook"]
+    SPI[SubscriptionOwnerProvider SPI]
+    ACL["@subscription ACL variable"]
+    EP --> SPI
+    ACL --> SPI
+  end
+
+  subgraph Storage
+    M[(MongoDB\nteams)]
+    E[Email\nemails module]
+  end
+
+  S[Stripe]
+
+  B -- HTTP + JWT --> RS
+  RS -- SDK calls --> S
+  S -- signed webhooks --> RS
+  SPI --> M
+  RS --> E
+----
+
+=== What a subscription belongs to
+
+A subscription belongs to an *entity* — not to a user.
+
+By default that entity is the xref:../accounts/overview.adoc[`restheart-accounts`] *team*: the team resolved from the caller's JWT team claim pays, and its members consume its seats.
+This is the common case for B2B SaaS, where a company buys a plan and its employees use it.
+
+That default is replaceable.
+If your application bills something else — an individual user, a workspace, a project, an organisation in your own data model — implement the xref:subscription-owner-provider.adoc[`SubscriptionOwnerProvider` SPI].
+The module never assumes what the paying entity is beyond what that interface returns.
+
+=== Endpoints
+
+[cols="2,1,4",options="header"]
+|===
+| Endpoint | Method | Description
+
+| `/stripe/checkout`
+| `POST`
+| Creates a Stripe Checkout session to subscribe to a plan. The only path that creates a Stripe Customer. Requires billing-management rights.
+
+| `/stripe/portal`
+| `POST`
+| Creates a Stripe Customer Portal session — payment method, invoices, plan change, cancellation. Requires billing-management rights.
+
+| `/stripe/subscription`
+| `GET`
+| The caller's entity's current subscription state: plan, status, seats, trial and period dates. Any member may read it.
+
+| `/stripe/plans`
+| `GET`
+| The plan catalog, with display data (name, description, amount, currency) read from Stripe.
+
+| `/stripe/licenses`
+| `POST` `DELETE` `GET`
+| Grants, revokes and lists seat licences. Requires billing-management rights.
+
+| `/stripe/webhook`
+| `POST`
+| Receives Stripe events. *The only public endpoint* — see below.
+|===
+
+Each endpoint is a separately named plugin that must be enabled in `restheart.yml`; see xref:configuration.adoc[Configuration].
+
+=== Security model
+
+Every endpoint except `/stripe/webhook` requires an authenticated caller and returns `401` without one.
+
+Beyond authentication, the endpoints that *spend money or consume a scarce resource* — checkout, the Portal, and licence grants/revokes — are additionally gated on `canManageBilling`.
+With the default provider that means the caller's role in the team must match `accountsConfig.ownership-role` (default `owner`).
+Reading subscription state is deliberately *not* gated this way: any member may see which plan they are on.
+
+[IMPORTANT]
+====
+`/stripe/webhook` is public by construction: Stripe calls it, and there is no authenticated caller on that path.
+The module registers its own ACL allow rule for it, matching that exact path and `POST`/`OPTIONS` only.
+
+Its security is *signature verification*, not authentication — every request is rejected with `400` unless the `Stripe-Signature` header verifies against the configured signing secret.
+See xref:webhooks.adoc[Webhooks].
+====
+
+All other endpoints register *no* ACL rule of their own.
+They follow whatever your deployment's ACL says, like any other resource.
+Grant them explicitly:
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - role: user
+      predicate: >
+        path-prefix(path="/stripe/checkout")
+        or path-prefix(path="/stripe/portal")
+        or path-prefix(path="/stripe/subscription")
+        or path-prefix(path="/stripe/licenses")
+      priority: 100
+
+    # A public pricing page can expose the catalog to anonymous visitors.
+    - role: $unauthenticated
+      predicate: path(path="/stripe/plans") and method(value="GET")
+      priority: 100
+----
+
+=== Gating features by plan
+
+The module exposes the caller's subscription state to ACL rules as `@subscription`:
+
+[source,yaml]
+----
+- role: user
+  predicate: path-prefix(path="/api/reports") and equals(@subscription.plan, "gold")
+  priority: 100
+----
+
+`@subscription` carries the plan, status, whether the caller holds a seat licence, and the seat counters.
+It resolves through the same code path that answers `GET /stripe/subscription`, so what a client renders on its billing page and what the ACL enforces can never disagree.
+
+See xref:plan-gates.adoc[Plan Gates & Seat Licensing] for the full variable shape and the enforcement patterns — including xref:plan-gates.adoc#_the_lockout_trap[the lockout trap], which is the one mistake in this area that is genuinely expensive.
+
+=== Multi-tenancy
+
+Every configuration value can be overridden per request, so a single RESTHeart instance can serve many tenants with different Stripe accounts, plan catalogs and databases.
+
+The module never sets the Stripe API key globally: the effective key is passed explicitly to each SDK call, which is what makes per-tenant secret keys safe under concurrency.
+See xref:multi-tenancy.adoc[Multi-tenancy].
+
+=== Relationship to restheart-accounts
+
+`restheart-stripe` works best alongside xref:../accounts/overview.adoc[`restheart-accounts`], which provides the teams, roles and JWT claims the default `SubscriptionOwnerProvider` reads.
+
+The coupling is *soft*, not a hard dependency:
+
+* The module compiles against `restheart-commons` only.
+* `accountsConfig` is resolved at runtime if present, and the module falls back to sensible defaults (`team` claim, `owner` ownership role) if it is not.
+* Replacing the SPI removes the relationship entirely.
+
+=== Next steps
+
+* xref:tutorial-stripe-setup.adoc[*Tutorial: Stripe setup end to end*] — a Stripe account, products and prices, a local webhook, and a first subscription
+* xref:configuration.adoc[Configuration] — the full `stripeConfig` reference
+* xref:plans-and-seats.adoc[Plans & Seats] — the catalog and the three seat modes
+* xref:subscription-lifecycle.adoc[Subscription Lifecycle] — signup through cancellation

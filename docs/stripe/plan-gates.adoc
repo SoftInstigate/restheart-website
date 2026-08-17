@@ -1,0 +1,244 @@
+---
+docs_version: 9
+title: Plan Gates & ACL
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+`restheart-stripe` registers an ACL variable, `@subscription`, that exposes the caller's subscription state to RESTHeart's authorization layer.
+
+This is how a paid feature actually becomes paid: not by hiding a button in the frontend, but by a server-side rule that a request cannot get past.
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - role: user
+      predicate: path-prefix(path="/api/reports") and equals(@subscription.plan, "gold")
+      priority: 100
+----
+
+`@subscription` resolves through the same code that answers `GET /stripe/subscription`, so the billing page a client renders and the rule the server enforces can never disagree.
+
+=== The variable
+
+[source,json]
+----
+{
+  "plan":                 "gold",
+  "status":               "active",
+  "active":               true,
+  "licensed":             true,
+  "trial_end":            "2026-03-01T00:00:00Z",
+  "current_period_end":   "2026-04-01T00:00:00Z",
+  "cancel_at_period_end": false,
+  "seats": {
+    "limit":            10,
+    "licensed":         7,
+    "available":        3,
+    "over_limit":       false,
+    "over_limit_since": null,
+    "over_limit_days":  null
+  }
+}
+----
+
+[cols="2,4",options="header"]
+|===
+| Field | Meaning
+
+| `plan`
+| The configured plan id, or `default-plan` when there is no subscription.
+
+| `status`
+| Stripe status: `trialing`, `active`, `past_due`, `canceled`, `unpaid`. Absent when there is no Stripe subscription.
+
+| `active`
+| `true` when `status` is `active` *or* `trialing`. The field most gates should use.
+
+| `licensed`
+| Whether *the calling user* holds a seat licence.
+
+| `cancel_at_period_end`
+| `true` when the subscription is set to end at the period boundary. Access continues until then.
+
+| `seats.limit`
+| The entity's seat limit; `null` when unlimited.
+
+| `seats.licensed`
+| How many members hold a licence — a *count*, unlike the top-level boolean.
+
+| `seats.available`
+| `limit - licensed`, floored at zero; `null` when unlimited.
+
+| `seats.over_limit`
+| `true` when licensed count exceeds the limit.
+
+| `seats.over_limit_since` / `seats.over_limit_days`
+| When it happened and how long ago. Absent when within limit. See xref:plans-and-seats.adoc#_going_over_the_limit[Going over the limit].
+|===
+
+[TIP]
+====
+`licensed` (top level, boolean) is *the caller's own licence*.
+`seats.licensed` (nested, number) is *how many people hold one*.
+
+The two most useful gates are `@subscription.active` (is the entity paying?) and `@subscription.licensed` (is this particular user one of the people it is paying for?).
+====
+
+The Stripe subscription id, the price id and the customer id are deliberately *not* exposed.
+They are internal identifiers with no use in an authorization decision.
+
+=== Common patterns
+
+[source,yaml]
+----
+# 1. Any paying entity — trials count as paying
+- role: user
+  predicate: path-prefix(path="/api/pro") and @subscription.active
+  priority: 100
+
+# 2. A specific plan
+- role: user
+  predicate: path-prefix(path="/api/reports") and equals(@subscription.plan, "gold")
+  priority: 100
+
+# 3. This user must personally hold a seat
+- role: user
+  predicate: path-prefix(path="/api/editor") and @subscription.licensed
+  priority: 100
+
+# 4. Paying AND licensed — the usual combination for a per-seat product
+- role: user
+  predicate: >
+    path-prefix(path="/api/editor")
+    and @subscription.active
+    and @subscription.licensed
+  priority: 100
+
+# 5. Read for everyone, write only for licensed users
+- role: user
+  predicate: path-prefix(path="/api/docs") and method(value="GET")
+  priority: 100
+
+- role: user
+  predicate: path-prefix(path="/api/docs") and @subscription.licensed
+  priority: 90
+----
+
+=== Comparing numbers
+
+`equals` compares its operands *as strings*, which is wrong for thresholds: as strings, `"10" < "9"`.
+
+Use `gte` and `lte` for numeric comparisons:
+
+[source,yaml]
+----
+# deny once the entity has been over its seat limit for 5 days or more
+- role: user
+  predicate: >
+    path-prefix(path="/api")
+    and @subscription.licensed
+    and not (@subscription.seats.over_limit
+             and gte(@subscription.seats.over_limit_days, 5))
+  priority: 100
+----
+
+[NOTE]
+====
+`gte` and `lte` are general-purpose RESTHeart predicates, not Stripe-specific — they work with any `@` variable resolving to a number.
+
+A non-numeric or unresolved operand makes them resolve to `false`, never `true`: a comparison that cannot be evaluated must not grant access.
+====
+
+=== The lockout trap
+
+[WARNING]
+====
+*Do not put a subscription gate in front of the screens a customer needs in order to pay you.*
+
+Consider a rule like this, applied with `path-prefix(path="/")`:
+
+[source,yaml]
+----
+# DANGEROUS — gates everything, including billing itself
+- role: user
+  predicate: path-prefix(path="/") and @subscription.licensed
+  priority: 100
+----
+
+If the entity ends up over its seat limit and the deployment blocks unlicensed users, the owner may find themselves unable to reach `/stripe/portal`, `/stripe/checkout` or `/stripe/licenses` — the only three places where the problem can be fixed.
+
+The customer is then locked out of the remedy by the very rule meant to encourage them to buy more seats.
+They cannot upgrade, cannot revoke a licence to get back under the limit, and cannot pay you.
+====
+
+Always keep the billing endpoints reachable, ahead of any gate:
+
+[source,yaml]
+----
+# Billing endpoints: reachable by any authenticated user, always, first.
+- role: user
+  predicate: >
+    path-prefix(path="/stripe/checkout")
+    or path-prefix(path="/stripe/portal")
+    or path-prefix(path="/stripe/subscription")
+    or path-prefix(path="/stripe/licenses")
+    or path-prefix(path="/stripe/plans")
+  priority: 10        # <- lower number = evaluated first
+
+# Application gate, after
+- role: user
+  predicate: path-prefix(path="/api") and @subscription.licensed
+  priority: 100
+----
+
+The same applies to whatever *your own* frontend routes serve the billing screen, the seat-management screen, and the account settings page.
+A good rule of thumb: *anything on the path from "I have a billing problem" to "I have paid" must never be gated on the subscription state.*
+
+=== A typo denies silently
+
+`@subscription.plan` is an open set: its values are whatever plan ids you declared in `stripeConfig.plans`.
+Nothing validates a plan id written inside an ACL predicate.
+
+[source,yaml]
+----
+# 'god' is not a plan. This rule simply never matches — no error, anywhere.
+- role: user
+  predicate: equals(@subscription.plan, "god")
+----
+
+The failure direction is safe — it denies rather than grants — but it is silent, and it looks exactly like a subscription that is not working.
+
+Before concluding the module is broken, compare the predicate against `GET /stripe/plans` and against `stripeConfig.plans`.
+The same applies to a field name: `@subscription.plann` resolves to nothing and denies.
+
+=== Unresolvable state denies
+
+If the caller has no resolvable entity — no team claim, an entity that no longer exists, a provider that throws — `@subscription` resolves to nothing and any predicate naming it denies.
+
+This is deliberate: a broken authorization variable must never grant access.
+The practical consequence is that a user with a malformed token gets `403` from plan-gated paths, not a plan-less free tier.
+
+=== Filtering data by plan
+
+`@subscription` also works in `readFilter` and `mergeRequest`, not just in predicates:
+
+[source,yaml]
+----
+- role: user
+  predicate: path(path="/api/features") and method(value="GET")
+  priority: 100
+  mongo:
+    readFilter: >
+      {"min_plan": {"$in": ["free", "@subscription.plan"]}}
+----
+
+=== Performance
+
+Resolution is cached per request.
+A predicate naming `@subscription.plan` and `@subscription.seats.limit` resolves the underlying state once, not twice.
+
+Across requests there is no caching: a plan change takes effect on the very next request, which is the right trade-off for authorization — a customer who just upgraded should not wait for a cache to expire, and one who just cancelled should not keep access.

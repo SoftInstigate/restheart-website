@@ -187,7 +187,17 @@ NOTE: When using BSON predicates with values, use valid JSON/BSON syntax: `"1"` 
 |`in`
 |Check if value is in array
 |`in(value=${tenant}, array=@user.tenants)`
+|`gte`
+|Numeric `>=` comparison
+|`gte(@subscription.seats.over_limit_days, 5)`
+|`lte`
+|Numeric `<=` comparison
+|`lte(@request.body.amount, 1000)`
 |===
+
+CAUTION: `gte` and `lte` are available since RESTHeart 9.8.0.
+
+Use `gte`/`lte` rather than `equals` whenever you compare numbers: `equals` compares its operands as *strings*, so `"10"` sorts before `"9"`. Both operands are parsed as numbers, and an operand that is not numeric — including an `@`-variable that failed to resolve — makes the predicate `false`, never `true`: a comparison that cannot be evaluated must not grant access.
 
 ==== Using Variables in Predicates
 
@@ -272,6 +282,8 @@ Then use it exactly like a built-in:
 **Registration.** Built-in resolvers register first, at class-loading time, so they always win a name collision — registering an already-taken name (e.g. `user`) fails at startup with a clear `ConfigurationException` instead of silently being ignored.
 
 **Failure semantics.** Returning `null` (or throwing) from `resolve()` is treated as "unresolved": in a `readFilter`/`mergeRequest` document the value becomes MongoDB `null`; in a `predicate` string the expression is replaced with an unguessable random token, so any comparison against it fails. A broken resolver denies access, it never widens it.
+
+TIP: `@subscription` is not hypothetical — link:/docs/stripe/plan-gates[`restheart-stripe`] registers exactly this variable to gate features by subscription plan and seat licence. See link:/docs/stripe/plan-gates[Plan Gates & ACL] for a working example, including the failure modes to avoid.
 
 **The resolver contract:**
 

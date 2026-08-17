@@ -1,0 +1,263 @@
+---
+docs_version: 9
+title: Subscription Owner Provider
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+[NOTE]
+====
+`SubscriptionOwnerProvider` is defined in *`restheart-commons`* (`org.restheart.plugins.stripe`), so a custom implementation depends only on `restheart-commons` — not on `restheart-stripe`.
+====
+
+A subscription belongs to an *entity*, and `SubscriptionOwnerProvider` is what decides what that entity is.
+
+By default it is the xref:../accounts/overview.adoc[`restheart-accounts`] team.
+If your application bills something else — an individual user, a workspace, a project, an organisation in your own schema — implement this interface and the rest of the module follows.
+
+Every billing operation goes through it: no service, interceptor or ACL variable in the module reaches billing state any other way.
+
+=== The default implementation
+
+`DefaultSubscriptionOwnerProvider` resolves the paying entity as the team from the caller's JWT team claim:
+
+* the entity is the team named by `accountsConfig.team-claim-name` (default `team`);
+* `canManageBilling` is `true` when the caller's role in that team equals `accountsConfig.ownership-role` (default `owner`);
+* Stripe linkage, subscription state and seat licences are stored on the team document;
+* the collection is `stripeConfig.teams-collection`, in the database from `mongoRealmAuthenticator.users-db`.
+
+Document shape:
+
+[source,json]
+----
+{
+  "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },
+  "name": "Acme Corp",
+  "createdBy": "owner@acme.example",
+  "stripe_customer_id": "cus_QxYz123",
+  "subscription": {
+    "plan":                   "gold",
+    "price_id":               "price_1AbC…",
+    "status":                 "active",
+    "stripe_subscription_id": "sub_1XyZ…",
+    "trial_end":              { "$date": 1772323200000 },
+    "current_period_end":     { "$date": 1774915200000 },
+    "seats":                  1,
+    "cancel_at_period_end":   false,
+    "over_limit_since":       null,
+    "last_applied_event_at":  { "$date": 1771063200000 }
+  },
+  "members": [
+    { "userId": "alice@acme.example", "role": "owner",  "licensed": true  },
+    { "userId": "bob@acme.example",   "role": "member", "licensed": false }
+  ]
+}
+----
+
+[NOTE]
+====
+`last_applied_event_at` is bookkeeping, not state: it is what makes out-of-order and redelivered webhooks safe (see xref:webhooks.adoc#_ordering_and_idempotency[Ordering and idempotency]).
+
+It is stored *next to* the subscription state rather than inside it, so it can never leak into `GET /stripe/subscription` or `@subscription`.
+====
+
+`stripe_customer_id` carries a *unique, sparse* index, created at startup.
+Sparse because with lazy Customer provisioning most entities never have the field at all, and a plain unique index would collide on the missing value.
+
+=== When to replace it
+
+Implement your own provider when:
+
+* the paying entity is not a `restheart-accounts` team;
+* billing state must live in a different collection or shape (an existing `organizations` collection, say);
+* who may manage billing follows a rule of your own — a permission flag, a separate admin list, a role from an external system;
+* the entity is resolved from something other than a JWT claim: a header, a subdomain, an API key.
+
+If none of these apply, the default is likely fine.
+
+=== The interface
+
+[cols="2,4",options="header"]
+|===
+| Method | Purpose
+
+| `fromRequest(req, scope)`
+| Resolve the paying entity for an incoming request. Takes the whole request because implementations differ in what they read.
+
+| `byStripeCustomerId(scope, customerId)`
+| Resolve the entity from a `cus_…` id. Used on the webhook path, which has no authenticated caller.
+
+| `byId(scope, ownerId)`
+| Resolve by entity id — used for a Checkout session's `client_reference_id`.
+
+| `canManageBilling(req, owner)`
+| May this caller start a checkout, open the Portal, or grant/revoke licences?
+
+| `linkStripeCustomer(owner, customerId)`
+| Persist the Stripe Customer linkage. *Must be atomic and idempotent.*
+
+| `readSubscription(owner, defaultPlanId)`
+| Current state; never `null`.
+
+| `writeSubscription(owner, state, appliedAt)`
+| Replace the state, unless a newer update was already applied.
+
+| `patchSubscription(owner, changes, appliedAt)`
+| Partial update, same staleness rule.
+
+| `grantLicense(owner, userId, limit)`
+| Grant a seat licence. *Must test availability and write atomically.*
+
+| `revokeLicense(owner, userId)`
+| Revoke a licence. A no-op if not licensed.
+
+| `licensedCount(owner)` / `licensedUserIds(owner)` / `isLicensed(owner, userId)`
+| Seat queries.
+|===
+
+==== Three contracts that matter
+
+These are the places where a plausible-looking implementation is subtly wrong.
+
+*1. `linkStripeCustomer` must be atomic and idempotent.*
+Two simultaneous first checkouts must not produce two Stripe Customers for one entity — that means two subscriptions, two invoices, and a customer who is billed twice.
+Link only if none is set yet, and *return whatever is now persisted* rather than the argument.
+Callers use the return value, so a losing racer transparently proceeds with the winner's Customer.
+
+*2. `grantLicense` must test-and-write in one operation.*
+A read followed by a separate write is a race: two concurrent grants on the last seat both see one free and both succeed.
+Recompute the count inside the same conditional update.
+
+*3. `writeSubscription` / `patchSubscription` must honour `appliedAt`.*
+Stripe delivers out of order and retries.
+Apply the change only if `appliedAt` is newer than the last applied timestamp, and return `false` when you skip.
+Returning `false` is *not* an error — the webhook answers `200` either way, because a superseded event needs no retry.
+
+[WARNING]
+====
+Ignoring `appliedAt` produces the worst class of billing bug: a stale `subscription.updated` arriving after a `subscription.deleted` silently resurrects a cancelled subscription, and a customer keeps paid access indefinitely.
+
+It will not show up in testing, because events arrive in order when you are the only user.
+====
+
+=== Registering a custom provider
+
+Implement both `SubscriptionOwnerProvider` and `Initializer`, and register at startup:
+
+[source,java]
+----
+package com.example.billing;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+import org.bson.BsonDocument;
+import org.restheart.exchange.ServiceRequest;
+import org.restheart.plugins.Initializer;
+import org.restheart.plugins.Inject;
+import org.restheart.plugins.RegisterPlugin;
+import org.restheart.plugins.stripe.BillingScope;
+import org.restheart.plugins.stripe.LicenseGrantResult;
+import org.restheart.plugins.stripe.SubscriptionOwner;
+import org.restheart.plugins.stripe.SubscriptionOwnerProvider;
+import org.restheart.plugins.stripe.SubscriptionOwnerProviderRegistry;
+import org.restheart.plugins.stripe.SubscriptionState;
+
+import com.mongodb.client.MongoClient;
+
+@RegisterPlugin(
+        name = "workspaceOwnerProvider",
+        description = "Bills workspaces instead of teams",
+        // BEFORE_STARTUP: registered before the server accepts any request
+        initPoint = org.restheart.plugins.InitPoint.BEFORE_STARTUP)
+public class WorkspaceOwnerProvider implements SubscriptionOwnerProvider, Initializer {
+
+    @Inject("stripeService")
+    private SubscriptionOwnerProviderRegistry registry;
+
+    @Inject("mclient")
+    private MongoClient mclient;
+
+    @Override
+    public void init() {
+        registry.registerSubscriptionOwnerProvider(this);
+    }
+
+    @Override
+    public Optional<SubscriptionOwner> fromRequest(ServiceRequest<?> req, BillingScope scope) {
+        var workspaceId = req.getHeader("X-Workspace-Id");
+        return workspaceId == null ? Optional.empty() : byId(scope, workspaceId);
+    }
+
+    @Override
+    public boolean canManageBilling(ServiceRequest<?> req, SubscriptionOwner owner) {
+        // your own rule here — never default to true
+        return false;
+    }
+
+    // ... remaining methods
+}
+----
+
+Enable it like any other plugin:
+
+[source,yaml]
+----
+workspaceOwnerProvider:
+  enabled: true
+----
+
+[IMPORTANT]
+====
+Register at `InitPoint.BEFORE_STARTUP`.
+
+`AFTER_STARTUP` initializers run *concurrently with request processing* — the server is already accepting requests. Registering there leaves a window in which early requests are served by the default provider, writing billing state in the wrong place.
+====
+
+If no custom provider is registered, the module falls back to `DefaultSubscriptionOwnerProvider`.
+
+=== Scope and multi-tenancy
+
+Every resolution method receives a `BillingScope` — a `(db, collection)` pair the module resolves per request, applying any per-tenant override.
+
+A custom provider is free to use it, or to ignore it entirely if its storage does not have that shape.
+The module never assumes the provider stores anything in the scope it passes; the scope exists so the *default* provider can be multi-tenant without the module having to know how.
+
+See xref:multi-tenancy.adoc[Multi-tenancy].
+
+=== Related types
+
+[cols="2,4",options="header"]
+|===
+| Type | Description
+
+| `SubscriptionOwner`
+| `(id, scope, displayName, ownerEmail, stripeCustomerId)`. `id` is a `BsonValue`, so the identifier keeps its native MongoDB type. `ownerEmail` is where billing notifications are sent.
+
+| `BillingScope`
+| `(db, collection)` — where to resolve and persist, for this request.
+
+| `SubscriptionState`
+| The immutable state snapshot. Carries no bookkeeping.
+
+| `LicenseGrantResult`
+| `GRANTED` → `201`, `ALREADY_LICENSED` → `200`, `MEMBER_NOT_FOUND` → `404`, `NO_SEAT_AVAILABLE` → `409`.
+|===
+
+[NOTE]
+====
+`SubscriptionOwner.id()` is a `BsonValue`, not a `String` — typically a `BsonObjectId`, but the SPI imposes nothing.
+A provider is free to use `BsonString`, `BsonInt32`, or whatever its data model requires.
+
+`byId` receives the id as a `String` because it comes back from Stripe that way, in `client_reference_id`.
+Converting it to whatever type your store uses is the provider's job.
+====
+
+=== Indexes
+
+`stripeInitializer` creates the `stripe_customer_id` index only for the *default* provider, against the *static* configuration.
+
+A custom provider is responsible for its own indexes.
+So is a multi-tenant deployment whose databases vary per request — the startup index creation only covers the statically configured database.

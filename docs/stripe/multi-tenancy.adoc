@@ -1,0 +1,240 @@
+---
+docs_version: 9
+title: Multi-tenancy
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+A single RESTHeart instance can serve many tenants, each with its own Stripe account, plan catalog, database and redirect URLs.
+
+Every value in `stripeConfig` can be overridden *per request*.
+When no override is attached, the static configuration applies — so a single-tenant deployment needs to know nothing about this mechanism.
+
+=== How it works
+
+A deployment-layer interceptor running at `REQUEST_BEFORE_EXCHANGE_INIT` resolves the tenant (typically from the hostname), reads that tenant's configuration, and attaches it to the request as override parameters.
+
+Every service then reads the *effective* value: the override if present, the static one otherwise.
+
+[source,mermaid]
+----
+flowchart LR
+  R[Request\nacme.example.com] --> I["TenantConfigInterceptor\nREQUEST_BEFORE_EXCHANGE_INIT"]
+  I -- "attaches override-stripe-*" --> S[stripe services]
+  S --> K["effective secret key,\ncatalog, db, URLs"]
+----
+
+The interceptor is *not* part of `restheart-stripe` — it belongs to the deployment layer, exactly as `AuthDbResolver` and `TeamConfigInterceptor` do for xref:../accounts/multi-tenancy.adoc[restheart-accounts].
+No plugin configuration changes per tenant.
+
+=== Override parameters
+
+[cols="3,2,4",options="header"]
+|===
+| Request attribute | Overrides | Effect
+
+| `override-stripe-secret-key`
+| `stripeConfig.secret-key`
+| The Stripe account this request bills against
+
+| `override-stripe-webhook-secret`
+| `stripeConfig.webhook-secret`
+| Signing secret used to verify this request's webhook signature
+
+| `override-stripe-plans`
+| `stripeConfig.plans`
+| Replaces the *entire* catalog — see below
+
+| `override-stripe-default-plan`
+| `stripeConfig.default-plan`
+| Plan for an entity with no subscription
+
+| `override-stripe-db`
+| `mongoRealmAuthenticator.users-db`
+| Database holding this tenant's entity documents
+
+| `override-stripe-teams-collection`
+| `stripeConfig.teams-collection`
+| Collection holding them
+
+| `override-stripe-success-url`
+| `stripeConfig.success-url`
+| Per-tenant Checkout success redirect
+
+| `override-stripe-cancel-url`
+| `stripeConfig.cancel-url`
+| Per-tenant Checkout cancel redirect
+
+| `override-stripe-portal-return-url`
+| `stripeConfig.portal-return-url`
+| Per-tenant Portal return URL
+
+| `override-stripe-tmpl-{name}`
+| built-in / configured template
+| Inline HTML for one notification template
+
+| `override-stripe-notify-{name}-enabled`
+| `stripeConfig.notifications.{name}.enabled`
+| Enables or disables one notification
+
+| `override-accounts-ownership-role`
+| `accountsConfig.ownership-role`
+| Which team role may manage billing. Shared with `restheart-accounts` — see below
+|===
+
+`{name}` is one of `payment-failed`, `trial-will-end`, `subscription-canceled`, `over-limit`.
+
+=== Per-tenant Stripe accounts
+
+[IMPORTANT]
+====
+The module never assigns the API key globally.
+
+The Stripe Java SDK exposes a global `Stripe.apiKey`, and using it in a multi-tenant server is a data-leak bug waiting to happen: it is process-wide mutable state, so two requests for different tenants overlapping in time can send one tenant's call with the other's key — creating a customer, a subscription or a refund in the *wrong Stripe account*.
+
+`restheart-stripe` passes the effective key explicitly to every SDK call via `RequestOptions`.
+There is no window in which one tenant's key applies to another tenant's request, regardless of concurrency.
+====
+
+If you write code against the Stripe SDK alongside this module, follow the same rule:
+
+[source,java]
+----
+// WRONG in a multi-tenant deployment — process-wide mutable state
+Stripe.apiKey = tenantSecretKey;
+Customer.create(params);
+
+// RIGHT — scoped to this call
+var opts = RequestOptions.builder().setApiKey(tenantSecretKey).build();
+Customer.create(params, opts);
+----
+
+=== Overriding the plan catalog
+
+`override-stripe-plans` is different from the other overrides in two ways.
+
+*It must be a fully parsed value.*
+Attach a `Map<String, PlanConfig>`, not a raw YAML fragment — the interceptor does the parsing, once, rather than the module re-parsing on every request.
+
+*It replaces the catalog wholesale.*
+There is no merging with the static catalog. A partial override would leave a tenant on a mix of two catalogs, where a plan id present in one and absent from the other resolves differently depending on which half answered — the kind of bug that surfaces as one customer on the wrong price.
+
+[source,java]
+----
+var plans = Map.of(
+    "free", new PlanConfig(null, null, null,
+                new SeatsConfig(SeatsMode.CAPPED, 1), Map.of()),
+    "gold", new PlanConfig("price_tenantA_monthly", "price_tenantA_annual", 30,
+                new SeatsConfig(SeatsMode.CAPPED, 25), Map.of("max-projects", 100)));
+
+request.attachParam("override-stripe-plans", plans);
+----
+
+=== Webhooks in a multi-tenant deployment
+
+The webhook path is always `/stripe/webhook` — there is no per-tenant path segment.
+
+Because each tenant has its own signing secret, the interceptor must attach the correct `override-stripe-webhook-secret` *before* `stripeWebhookService` verifies the signature.
+Resolve the tenant the same way as any other request — normally from the hostname:
+
+[source,text]
+----
+https://acme.example.com/stripe/webhook   -> tenant "acme"   -> whsec_acme…
+https://globex.example.com/stripe/webhook -> tenant "globex" -> whsec_globex…
+----
+
+Register the tenant's own hostname as the endpoint URL in each tenant's Stripe Dashboard.
+
+[WARNING]
+====
+If the interceptor cannot resolve a tenant, the static `webhook-secret` applies.
+When tenants have different secrets, the signature then fails and the event is rejected with `400` — Stripe retries for a while and eventually gives up, and that tenant's subscriptions silently stop updating.
+
+Monitor `400`s on the webhook endpoint. In a multi-tenant deployment they usually mean tenant resolution failed, not that someone is forging requests.
+====
+
+An event whose Customer belongs to no entity *in the resolved scope* is logged and ignored — which is also what a mis-resolved tenant looks like:
+
+[source,text]
+----
+[stripe] customer.subscription.updated for unknown customer cus_xyz — no entity is linked to it
+----
+
+=== Per-tenant databases
+
+`override-stripe-db` and `override-stripe-teams-collection` bind the *default* `SubscriptionOwnerProvider`.
+A xref:subscription-owner-provider.adoc[custom provider] receives the resulting `BillingScope` and may ignore it.
+
+[IMPORTANT]
+====
+`stripeInitializer` creates the `stripe_customer_id` unique index at startup, against the *statically configured* database only.
+
+A deployment whose database varies per tenant must create that index on every tenant database itself.
+Without it, `byStripeCustomerId` does a collection scan on every webhook delivery, and nothing prevents two entities from being linked to the same Stripe Customer.
+====
+
+=== Relationship to restheart-accounts
+
+`override-accounts-ownership-role` is *shared* with `restheart-accounts` rather than duplicated under a `stripe` name.
+
+The two modules must agree on who owns a team: if they disagreed, a caller could be an owner for invitations and not for billing, or the reverse.
+Sharing the parameter makes that disagreement impossible.
+
+The coupling is a naming convention, not a compile-time dependency — `restheart-stripe` does not depend on `restheart-accounts`.
+If the parameter is absent, because accounts is not deployed or not overriding it, the static value applies.
+
+=== Example interceptor
+
+[source,java]
+----
+@RegisterPlugin(
+        name = "tenantStripeConfigInterceptor",
+        description = "Attaches per-tenant stripe overrides",
+        interceptPoint = InterceptPoint.REQUEST_BEFORE_EXCHANGE_INIT)
+public class TenantStripeConfigInterceptor implements WildcardInterceptor {
+
+    @Inject("mclient")
+    private MongoClient mclient;
+
+    @Override
+    public boolean resolve(ServiceRequest<?> req, ServiceResponse<?> res) {
+        return req.getPath().startsWith("/stripe/");
+    }
+
+    @Override
+    public void handle(ServiceRequest<?> req, ServiceResponse<?> res) {
+        var tenant = tenantFromHost(req.getHeader("Host"));
+        if (tenant == null) {
+            return;   // fall back to the static configuration
+        }
+
+        var conf = mclient.getDatabase("confs")
+                .getCollection("stripe", BsonDocument.class)
+                .find(eq("_id", tenant)).first();
+
+        if (conf == null) {
+            return;
+        }
+
+        req.attachParam("override-stripe-secret-key",     conf.getString("secret_key").getValue());
+        req.attachParam("override-stripe-webhook-secret", conf.getString("webhook_secret").getValue());
+        req.attachParam("override-stripe-db",             tenant);
+        req.attachParam("override-stripe-plans",          parsePlans(conf.getDocument("plans")));
+    }
+}
+----
+
+[NOTE]
+====
+`REQUEST_BEFORE_EXCHANGE_INIT` is required, not merely convenient: it is the only intercept point that runs before authentication and before the service reads any configuration.
+
+Attaching overrides later means the webhook signature has already been verified against the wrong secret.
+====
+
+=== Testing tenant isolation
+
+Two checks are worth automating, because both failures are silent:
+
+. *State isolation* — a webhook for tenant A must not modify tenant B's entity, even when both have an entity with the same id in different databases.
+. *Key isolation* — under concurrent load from two tenants, every Stripe call must carry its own tenant's key. This is the regression test for the global-`apiKey` problem; without it, a future refactor can reintroduce it and nothing will fail visibly until a customer is billed in the wrong account.

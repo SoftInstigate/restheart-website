@@ -1,0 +1,300 @@
+---
+docs_version: 9
+title: Plans & Seats
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+The plan catalog declares what the module *enforces*.
+Everything a customer *reads* — plan name, description, price, currency — comes from the Stripe Products and Prices your price ids point at.
+
+That split is the organising idea of this page: configuration is the contract your server enforces, Stripe is the source of truth for what things cost.
+Raising a price never means editing `restheart.yml`.
+
+=== The catalog
+
+[source,yaml]
+----
+stripeConfig:
+  default-plan: free
+  plans:
+    free:
+      seats: { mode: capped, max: 1 }
+      limits: { max-projects: 3 }
+
+    gold:
+      price-id-monthly:  price_1AbCdEfGhIjKlMnO
+      price-id-annual:   price_1PqRsTuVwXyZaBcD
+      trial-period-days: 30
+      seats: { mode: capped, max: 10 }
+      limits: { max-projects: 50 }
+----
+
+[cols="2,4",options="header"]
+|===
+| Key | Description
+
+| `price-id-monthly`
+| Stripe Price id for monthly billing. Omit to make the plan unpurchasable monthly.
+
+| `price-id-annual`
+| Stripe Price id for annual billing. Omit to make the plan unpurchasable annually.
+
+| `trial-period-days`
+| Trial length for this plan. Falls back to `default-trial-period-days`.
+
+| `seats`
+| Seat model — see <<_seat_modes>>.
+
+| `limits`
+| Free-form application limits. The module stores and serves them; it does not enforce them.
+|===
+
+A plan with *no* price ids — like `free` above — is a valid catalog entry that simply cannot be bought.
+That is exactly what a free tier is.
+
+==== `limits` is yours to enforce
+
+`limits` is an open map passed through to `GET /stripe/plans` and available to your application.
+The module attaches no meaning to any key in it: `max-projects: 50` does not stop anyone creating a 51st project.
+
+Enforce it in your own code or ACL rules.
+The catalog exists so the value lives in one place rather than being hard-coded in a frontend and a backend that then disagree.
+
+=== Seat modes
+
+[cols="1,4",options="header"]
+|===
+| Mode | Meaning
+
+| `capped`
+| A fixed number of seats included in the plan price. `max` is the limit. Quantity at Stripe is always `1` — the plan price already covers the cap.
+
+| `per-seat`
+| The customer buys a quantity, and pays per seat. The limit *is* the purchased quantity. `max`, if present, is an optional upper bound on what may be purchased.
+
+| `unlimited`
+| No seat limit.
+|===
+
+[source,yaml]
+----
+# 10 users included, one flat price
+gold:
+  price-id-monthly: price_gold
+  seats: { mode: capped, max: 10 }
+
+# customer buys N seats, pays N × price
+enterprise:
+  price-id-monthly: price_per_seat
+  seats: { mode: per-seat, max: 500 }
+
+# no limit
+unlimited-plan:
+  price-id-monthly: price_flat
+  seats: { mode: unlimited }
+----
+
+[NOTE]
+====
+In `capped` mode the Checkout session disables quantity adjustment.
+If it were adjustable, a buyer could set quantity to 5 on a "10 seats included" price and get 50 seats for 5× the price of a plan that was never meant to scale that way.
+
+In `per-seat` mode it is enabled, pre-filled with the current licensed count.
+====
+
+=== Seat licensing
+
+A seat is consumed by an explicit *licence*, not by team membership.
+
+This is the part that most often surprises people, so it is worth stating plainly: *adding a member to a team does not consume a seat.*
+An owner invites whoever they like, then decides which of those members get a licence to the paid product.
+
+[source,mermaid]
+----
+flowchart LR
+  A[User joins team] --> B[Member, unlicensed]
+  B -- "POST /stripe/licenses" --> C[Member, licensed]
+  C -- "DELETE /stripe/licenses" --> B
+----
+
+Rationale:
+
+* *Membership and paying for someone are different decisions.* A contractor, an auditor, or a billing admin may belong to the team without using the paid product.
+* *Seat count becomes deterministic.* It is a stored fact, not something derived from a membership list that changes for unrelated reasons.
+* *Adding a member can never fail for billing reasons.* Invitations do not become a payment flow.
+
+==== Granting and revoking
+
+[source,http]
+----
+POST /stripe/licenses
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{ "userId": "alice@example.com" }
+----
+
+[cols="1,4",options="header"]
+|===
+| Code | Meaning
+
+| `201`
+| Licence granted.
+
+| `200`
+| Already licensed — idempotent, not an error.
+
+| `404`
+| That user is not a member of the entity.
+
+| `409`
+| No seat available.
+
+| `403`
+| Caller may not manage billing.
+|===
+
+[source,http]
+----
+DELETE /stripe/licenses
+Content-Type: application/json
+
+{ "userId": "alice@example.com" }
+----
+
+Returns `200`. Revoking a licence nobody holds is a no-op, not an error.
+
+[TIP]
+====
+The target user is named in the *request body*, not in the path.
+RESTHeart services match a fixed URI rather than a path template; this follows the same convention as `DELETE /auth/remove-member` in xref:../accounts/overview.adoc[restheart-accounts].
+====
+
+[source,http]
+----
+GET /stripe/licenses
+----
+
+[source,json]
+----
+{
+  "licensed": ["alice@example.com", "bob@example.com"],
+  "seats": { "limit": 10, "licensed": 2, "available": 8 }
+}
+----
+
+==== Concurrency
+
+Granting tests availability and writes in a single atomic operation, with the licensed count recomputed from the membership array itself.
+
+Two simultaneous grants on the last remaining seat therefore produce exactly one licence and one `409` — never two licences, and never a drifting counter that has to be repaired.
+
+=== Going over the limit
+
+An entity can end up with more licences than seats without anyone doing anything wrong:
+
+* a subscription is downgraded from `gold` (10 seats) to `free` (1 seat);
+* a subscription is cancelled and the entity falls back to `default-plan`;
+* a `per-seat` quantity is reduced in the Customer Portal.
+
+When that happens the module records *when* it happened, and stops there.
+
+[IMPORTANT]
+====
+*Nothing is revoked automatically, ever.*
+
+The module does not choose which of nine people loses access.
+It has no basis for that decision, and getting it wrong is worse than doing nothing.
+The owner sees the over-limit state and resolves it — by revoking licences, or by upgrading again.
+====
+
+==== The module states facts; you decide the policy
+
+`@subscription.seats` exposes three related values:
+
+[cols="2,4",options="header"]
+|===
+| Field | Meaning
+
+| `over_limit`
+| `true` when licensed count exceeds the limit.
+
+| `over_limit_since`
+| When the entity first crossed above the limit. Absent when within limit.
+
+| `over_limit_days`
+| Whole days elapsed since that moment. Absent when within limit.
+|===
+
+The module deliberately does *not* block anything on its own.
+What should happen to an over-limit entity — nothing, a warning banner, read-only access after a week, a hard block after a month — is a commercial decision that belongs to the deployment, not to a billing library.
+
+Build whatever policy you want on top of these facts, using the `gte` and `lte` ACL predicates:
+
+[source,yaml]
+----
+# Grace period: full access for 5 days after going over limit, then denied.
+- role: user
+  predicate: >
+    path-prefix(path="/api")
+    and @subscription.licensed
+    and not (@subscription.seats.over_limit
+             and gte(@subscription.seats.over_limit_days, 5))
+  priority: 100
+----
+
+`over_limit_since` is *carried forward*, not recomputed, on every routine webhook delivery.
+A partial revocation that is still over limit does not restart the clock — otherwise a customer could stay permanently within any grace period by revoking one licence a day.
+
+It is cleared only when the entity returns within its limit.
+
+==== Recovery
+
+Upgrading restores everyone.
+Licences are never touched while over limit, so raising the limit above the licensed count clears `over_limit_since` and every existing licence is valid again — no reassignment, no re-granting, nobody has to be told to log in again.
+
+=== `GET /stripe/plans`
+
+Returns the catalog joined with live display data from Stripe:
+
+[source,json]
+----
+{
+  "default_plan": "free",
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "seats": { "mode": "capped", "max": 1 },
+      "limits": { "max-projects": 3 }
+    },
+    {
+      "id": "gold",
+      "name": "Gold",
+      "description": "For growing teams",
+      "seats": { "mode": "capped", "max": 10 },
+      "limits": { "max-projects": 50 },
+      "prices": {
+        "month": { "price_id": "price_1AbC…", "amount": 2900, "currency": "eur" },
+        "year":  { "price_id": "price_1PqR…", "amount": 29000, "currency": "eur" }
+      }
+    }
+  ]
+}
+----
+
+`amount` is in the currency's *smallest unit* — `2900` is €29.00.
+
+This endpoint registers no ACL rule of its own.
+Expose it to `$unauthenticated` for a public pricing page, or keep it behind authentication.
+
+==== Caching and resilience
+
+Display data is cached for one hour, and invalidated immediately by the `product.updated` and `price.updated` webhook events — so a price edited in the Dashboard is reflected right away rather than up to an hour later.
+
+The cache keeps a *last known good* copy that never expires.
+If Stripe is unreachable when the cache is cold, the endpoint serves the last good data rather than failing: a pricing page that shows slightly stale prices beats one that shows an error.
+
+A single misconfigured price id degrades only its own plan — the rest of the catalog still resolves.

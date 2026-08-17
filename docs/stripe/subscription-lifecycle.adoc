@@ -1,0 +1,313 @@
+---
+docs_version: 9
+title: Subscription Lifecycle
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+This page follows a subscription from a brand-new signup through to cancellation, showing what each step does on the Stripe side and what changes in MongoDB.
+
+[source,mermaid]
+----
+flowchart TD
+  A[Entity created] --> B["No Stripe Customer\nplan = default-plan"]
+  B -- "POST /stripe/checkout" --> C[Customer created lazily]
+  C --> D[Stripe Checkout page]
+  D -- paid --> E[webhook: subscription.created]
+  E --> F["plan = gold\nstatus = trialing / active"]
+  F -- "POST /stripe/portal" --> G[Customer Portal]
+  G -- cancel --> H["cancel_at_period_end = true\naccess continues"]
+  H -- period ends --> I[webhook: subscription.deleted]
+  I --> J["plan = default-plan\nstatus = canceled"]
+  D -- abandoned --> B
+----
+
+=== 1. Before any payment
+
+A newly created entity has no Stripe Customer and no subscription.
+`GET /stripe/subscription` still answers `200`:
+
+[source,json]
+----
+{
+  "plan": "free",
+  "active": false,
+  "licensed": false,
+  "cancel_at_period_end": false,
+  "seats": { "limit": 1, "licensed": 0, "available": 1, "over_limit": false }
+}
+----
+
+Being unsubscribed is a legitimate state, not a missing resource — there is no `404` here.
+`status` is absent because no Stripe subscription has ever existed.
+
+==== No Stripe Customer is created up front
+
+A Stripe Customer is created *lazily*, at the first checkout, and never when an entity is created.
+
+This matters more than it looks: creating a Customer for every signup fills the Stripe account with records for entities that never pay — most of them, for most products — and every one of them is a row in the Dashboard, an object in exports, and a potential subject in a data-deletion request.
+
+`POST /stripe/portal` therefore answers `402 Payment Required` for an entity that has never checked out: the Portal would open on an empty page.
+
+=== 2. Checkout
+
+[source,http]
+----
+POST /stripe/checkout
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{ "plan": "gold", "interval": "month" }
+----
+
+[source,json]
+----
+{ "url": "https://checkout.stripe.com/c/pay/cs_test_..." }
+----
+
+Redirect the browser to that URL. Stripe hosts the payment page — card details never reach your server.
+
+[cols="1,4",options="header"]
+|===
+| Code | Meaning
+
+| `201`
+| Session created; `url` is in the body.
+
+| `400`
+| Missing/invalid `plan` or `interval`, or that plan is not purchasable for that interval.
+
+| `401`
+| Not authenticated.
+
+| `403`
+| No resolvable entity, or the caller may not manage its billing.
+
+| `409`
+| The entity already has an active subscription — use the Portal to change plan.
+
+| `502`
+| Stripe is unreachable.
+|===
+
+`interval` must be `month` or `year`, and the plan must declare the matching price id.
+
+[NOTE]
+====
+The `409` is checked *before* anything is created at Stripe.
+An entity that already subscribes must change plan through the Customer Portal, which handles proration; a second checkout would create a second subscription and bill the customer twice.
+====
+
+On success the entity's Stripe Customer is created if it does not exist yet, and the id is stored atomically — two simultaneous first checkouts produce exactly one Customer.
+
+=== 3. Payment completes
+
+Stripe redirects the browser to `success-url` and, separately, delivers webhook events.
+
+[IMPORTANT]
+====
+*The redirect is not the confirmation.* It only means the browser came back.
+
+The subscription becomes active when `customer.subscription.created` is received and applied.
+Treat `success-url` as "show a thank-you page and refetch", never as "grant access".
+
+A frontend that unlocks features on the redirect alone will unlock them for a user whose payment later fails, and will look broken for a user who closes the tab before being redirected.
+====
+
+The `success-url` page should call `GET /stripe/subscription` to read the real state.
+Webhook delivery is typically immediate but not instantaneous; if the plan has not changed yet, retry after a moment rather than assuming failure.
+
+After the event is applied:
+
+[source,json]
+----
+{
+  "plan": "gold",
+  "status": "trialing",
+  "active": true,
+  "licensed": false,
+  "cancel_at_period_end": false,
+  "trial_end": "2026-03-01T00:00:00Z",
+  "current_period_end": "2026-03-01T00:00:00Z",
+  "seats": { "limit": 10, "licensed": 0, "available": 10, "over_limit": false }
+}
+----
+
+Note `licensed: false`: paying does not license anyone, not even the buyer.
+See <<_4_assigning_seats>>.
+
+==== Trials
+
+If the plan declares `trial-period-days` (or `default-trial-period-days` is set), the subscription starts as `trialing`.
+
+`active` is `true` during a trial, so a gate written as `@subscription.active` includes trial users — usually what you want.
+To exclude them, test the status explicitly: `equals(@subscription.status, "active")`.
+
+Three days before the trial ends Stripe sends `customer.subscription.trial_will_end`, which can trigger the `trial-will-end` notification.
+
+=== 4. Assigning seats
+
+Seats are consumed by explicit licences, not by team membership:
+
+[source,http]
+----
+POST /stripe/licenses
+Content-Type: application/json
+
+{ "userId": "alice@example.com" }
+----
+
+The buyer usually licenses themselves first.
+See xref:plans-and-seats.adoc#_seat_licensing[Seat Licensing] for the full semantics.
+
+=== 5. Renewal
+
+At each period boundary Stripe charges the payment method and sends `invoice.payment_succeeded`, which sets status to `active` and moves `current_period_end` forward.
+
+Nothing is required from the application. A renewed subscription simply keeps working.
+
+==== Failed payment
+
+If the charge fails, `invoice.payment_failed` sets the status to `past_due` and can trigger the `payment-failed` notification.
+
+[IMPORTANT]
+====
+`past_due` makes `@subscription.active` `false`, so plan gates start denying immediately.
+
+Whether that is the behaviour you want is a product decision.
+A card that expired is usually a temporary problem, and cutting access on the first failed charge can be harsher than intended — Stripe retries on its own schedule for days.
+
+To keep access during the retry window, gate on the plan rather than on `active`:
+
+[source,yaml]
+----
+- role: user
+  predicate: path-prefix(path="/api") and equals(@subscription.plan, "gold")
+----
+
+The plan id survives `past_due`; only `active` changes.
+====
+
+=== 6. Changing plan
+
+Plan changes go through the Customer Portal, not through a second checkout:
+
+[source,http]
+----
+POST /stripe/portal
+Authorization: Bearer <token>
+----
+
+[source,json]
+----
+{ "url": "https://billing.stripe.com/p/session/..." }
+----
+
+[cols="1,4",options="header"]
+|===
+| Code | Meaning
+
+| `201`
+| Session created.
+
+| `401`
+| Not authenticated.
+
+| `402`
+| The entity has no Stripe Customer — it has never checked out.
+
+| `403`
+| No resolvable entity, or the caller may not manage its billing.
+
+| `502`
+| Stripe is unreachable.
+|===
+
+The Portal handles proration, payment methods, invoices and cancellation.
+What it offers is configured in *Stripe Dashboard → Settings → Billing → Customer portal*, not in `restheart.yml`.
+
+Changes made there arrive as `customer.subscription.updated`.
+
+[NOTE]
+====
+A *downgrade* can leave the entity with more licences than the new plan allows.
+Nothing is revoked automatically — see xref:plans-and-seats.adoc#_going_over_the_limit[Going over the limit].
+====
+
+=== 7. Cancellation
+
+Cancelling in the Portal normally schedules the subscription to end at the period boundary:
+
+[source,json]
+----
+{
+  "plan": "gold",
+  "status": "active",
+  "active": true,
+  "cancel_at_period_end": true,
+  "current_period_end": "2026-04-01T00:00:00Z"
+}
+----
+
+The customer paid for the period, so access continues: `active` stays `true` until it actually ends.
+`cancel_at_period_end` is what a UI should read to show "your plan ends on 1 April".
+
+When the period ends, Stripe sends `customer.subscription.deleted` and the entity falls back to `default-plan`:
+
+[source,json]
+----
+{
+  "plan": "free",
+  "status": "canceled",
+  "active": false,
+  "seats": { "limit": 1, "licensed": 3, "available": 0, "over_limit": true }
+}
+----
+
+The `subscription-canceled` notification is sent at this point.
+
+Note the entity is now over limit — three licences against a one-seat free plan.
+Nothing was revoked; the owner decides who keeps a seat, or resubscribes and restores everyone.
+
+=== Reference: state transitions
+
+[cols="2,2,2,3",options="header"]
+|===
+| Event | `plan` | `status` | Notes
+
+| _(no subscription)_
+| `default-plan`
+| absent
+| `active: false`
+
+| `subscription.created` (trial)
+| the purchased plan
+| `trialing`
+| `active: true`
+
+| `subscription.created` (no trial)
+| the purchased plan
+| `active`
+| `active: true`
+
+| `invoice.payment_succeeded`
+| unchanged
+| `active`
+| Renewal
+
+| `invoice.payment_failed`
+| unchanged
+| `past_due`
+| `active: false`
+
+| `subscription.updated` (cancel scheduled)
+| unchanged
+| unchanged
+| `cancel_at_period_end: true`
+
+| `subscription.deleted`
+| `default-plan`
+| `canceled`
+| May become over-limit
+|===

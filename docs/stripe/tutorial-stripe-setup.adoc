@@ -1,0 +1,442 @@
+---
+docs_version: 9
+title: 'Tutorial: Stripe Setup'
+layout: docs-adoc
+menu: stripe
+applies_to: restheart
+---
+
+This tutorial takes a RESTHeart instance from nothing to a working subscription: a Stripe test account, a product with monthly and annual prices, webhooks reaching your laptop, and a first end-to-end purchase.
+
+Everything happens in Stripe *test mode*. No real money moves, and the test card numbers below only work there.
+
+Expect about 30 minutes.
+
+=== Prerequisites
+
+* RESTHeart 9.8 or later, running with MongoDB
+* xref:../accounts/overview.adoc[`restheart-accounts`] enabled, with at least one registered user and team — the default provider bills teams
+* A https://dashboard.stripe.com/register[Stripe account] (free)
+* The https://stripe.com/docs/stripe-cli[Stripe CLI]
+
+[NOTE]
+====
+Confirm you are in test mode before starting: the Dashboard shows a *Test mode* toggle, and test keys begin with `sk_test_` / `pk_test_`.
+Everything below assumes test mode.
+====
+
+=== Step 1 — Create a product and prices
+
+In *Stripe Dashboard → Products → Add product*:
+
+* *Name*: `Gold` — this is what customers see, and what `GET /stripe/plans` returns
+* *Description*: `For growing teams`
+* *Pricing*: `Recurring`, `€29.00`, `Monthly`
+
+Save, then add a second price to the *same* product: *€290.00*, *Yearly*.
+
+Copy both price ids — `price_…`, under each price:
+
+[source,text]
+----
+Monthly: price_1AbCdEfGhIjKlMnOpQrStUvW
+Annual:  price_1PqRsTuVwXyZaBcDeFgHiJkL
+----
+
+[TIP]
+====
+Two *prices*, one *product*.
+The product carries the name and description shown to customers; the prices carry the amounts.
+That is why raising a price later never means editing `restheart.yml`: `GET /stripe/plans` reads name, description and amount from Stripe at request time.
+====
+
+=== Step 2 — Get your API key
+
+*Developers → API keys* → reveal the *Secret key* (`sk_test_…`).
+
+[WARNING]
+====
+Never commit this key, and never paste it into `restheart.yml`.
+Even a test key can create customers, sessions and refunds, and it identifies your account.
+Keep it in the environment.
+====
+
+[source,bash]
+----
+export STRIPE_SECRET_KEY="sk_test_51AbC..."
+----
+
+=== Step 3 — Start the webhook listener
+
+Stripe cannot reach `localhost`, so the CLI forwards events to it:
+
+[source,bash]
+----
+stripe login
+stripe listen --forward-to localhost:8080/stripe/webhook
+----
+
+It prints a signing secret for this session:
+
+[source,text]
+----
+> Ready! Your webhook signing secret is whsec_1a2b3c4d5e6f... (^C to quit)
+----
+
+[source,bash]
+----
+export STRIPE_WEBHOOK_SECRET="whsec_1a2b3c4d5e6f..."
+----
+
+[IMPORTANT]
+====
+This secret belongs to the CLI session.
+It changes each time you restart `stripe listen`, and it is *not* the secret of a Dashboard-registered endpoint.
+
+Leave this terminal running for the rest of the tutorial. If you restart it, re-export the new secret and restart RESTHeart.
+====
+
+=== Step 4 — Configure RESTHeart
+
+Add to `restheart.yml`:
+
+[source,yaml]
+----
+stripeConfig:
+  enabled: true
+  secret-key:     $(STRIPE_SECRET_KEY)
+  webhook-secret: $(STRIPE_WEBHOOK_SECRET)
+
+  default-plan: free
+
+  success-url:       "http://localhost:4200/billing?success=true"
+  cancel-url:        "http://localhost:4200/billing?canceled=true"
+  portal-return-url: "http://localhost:4200/billing"
+
+  plans:
+    free:
+      seats: { mode: capped, max: 1 }
+    gold:
+      price-id-monthly: price_1AbCdEfGhIjKlMnOpQrStUvW   # <- yours
+      price-id-annual:  price_1PqRsTuVwXyZaBcDeFgHiJkL   # <- yours
+      trial-period-days: 14
+      seats: { mode: capped, max: 10 }
+
+stripeService:             { enabled: true }
+stripeInitializer:         { enabled: true }
+stripeCatalogCache:        { enabled: true }
+stripeCheckoutService:     { enabled: true }
+stripePortalService:       { enabled: true }
+stripeSubscriptionService: { enabled: true }
+stripeWebhookService:      { enabled: true }
+stripeLicensesService:     { enabled: true }
+stripePlansService:        { enabled: true }
+----
+
+Grant access to the endpoints — the module registers an ACL rule only for `/stripe/webhook`:
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  enabled: true
+  permissions:
+    - role: user
+      predicate: >
+        path-prefix(path="/stripe/checkout")
+        or path-prefix(path="/stripe/portal")
+        or path-prefix(path="/stripe/subscription")
+        or path-prefix(path="/stripe/licenses")
+      priority: 10
+
+    - role: $unauthenticated
+      predicate: path(path="/stripe/plans") and method(value="GET")
+      priority: 10
+----
+
+Restart RESTHeart and check the startup log:
+
+[source,text]
+----
+[stripe] plugin initialised — mode=TEST, db=restheart, teams-collection=teams, plans=[free, gold]
+----
+
+[IMPORTANT]
+====
+If you see an `[stripe]` *error* instead, fix it now.
+RESTHeart logs initializer failures but still starts, so a running server is not evidence of a working configuration.
+
+`mode=TEST` confirms a `sk_test_` key. If it says `LIVE`, stop — you are about to charge real cards.
+====
+
+=== Step 5 — Read the catalog
+
+[source,bash]
+----
+curl -s http://localhost:8080/stripe/plans | jq
+----
+
+[source,json]
+----
+{
+  "default_plan": "free",
+  "plans": [
+    { "id": "free", "name": "free", "seats": { "mode": "capped", "max": 1 } },
+    {
+      "id": "gold",
+      "name": "Gold",
+      "description": "For growing teams",
+      "seats": { "mode": "capped", "max": 10 },
+      "prices": {
+        "month": { "price_id": "price_1AbC…", "amount": 2900,  "currency": "eur" },
+        "year":  { "price_id": "price_1PqR…", "amount": 29000, "currency": "eur" }
+      }
+    }
+  ]
+}
+----
+
+Seeing `Gold` and `2900` here proves your key works and the price ids are correct — before any customer is involved.
+
+`free` shows `"name": "free"` because it has no price id and therefore no Stripe product to read a name from. That is expected.
+
+[TIP]
+====
+If `gold` comes back without `prices`, the price ids in `restheart.yml` do not exist in this Stripe account.
+Check the RESTHeart log for a warning naming the id, and re-copy it from the Dashboard.
+====
+
+=== Step 6 — Check the starting state
+
+Log in as a user who owns a team and note the JWT:
+
+[source,bash]
+----
+TOKEN="eyJhbGciOi..."
+
+curl -s http://localhost:8080/stripe/subscription \
+     -H "Authorization: Bearer $TOKEN" | jq
+----
+
+[source,json]
+----
+{
+  "plan": "free",
+  "active": false,
+  "licensed": false,
+  "cancel_at_period_end": false,
+  "seats": { "limit": 1, "licensed": 0, "available": 1, "over_limit": false }
+}
+----
+
+[TIP]
+====
+`403` here means the caller has no resolvable team — check the JWT carries a `team` claim, which requires the user to belong to a team.
+
+`401` means the token is missing or expired.
+====
+
+=== Step 7 — Subscribe
+
+[source,bash]
+----
+curl -s -X POST http://localhost:8080/stripe/checkout \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"plan": "gold", "interval": "month"}' | jq
+----
+
+[source,json]
+----
+{ "url": "https://checkout.stripe.com/c/pay/cs_test_..." }
+----
+
+Open that URL and pay with a test card:
+
+[cols="2,3",options="header"]
+|===
+| Card number | Behaviour
+
+| `4242 4242 4242 4242`
+| Succeeds
+
+| `4000 0000 0000 9995`
+| Declined — insufficient funds
+
+| `4000 0025 0000 3155`
+| Requires 3D Secure authentication
+|===
+
+Any future expiry, any CVC, any postcode.
+
+[TIP]
+====
+`403` — the caller is not an owner of the team; only members whose role matches `accountsConfig.ownership-role` may start a checkout.
+
+`409` — the team already has an active subscription; use the Portal to change plan.
+
+`400` — `plan` or `interval` is wrong, or that plan has no price id for that interval.
+====
+
+=== Step 8 — Watch the webhook
+
+The `stripe listen` terminal shows the events as they arrive:
+
+[source,text]
+----
+2026-02-14 10:23:45  --> checkout.session.completed [evt_1...]
+2026-02-14 10:23:45  <--  [200] POST http://localhost:8080/stripe/webhook
+2026-02-14 10:23:46  --> customer.subscription.created [evt_2...]
+2026-02-14 10:23:46  <--  [200] POST http://localhost:8080/stripe/webhook
+----
+
+`customer.subscription.created` is the one that matters — it carries the state that changes the plan.
+
+[cols="1,4",options="header"]
+|===
+| Response | Meaning
+
+| `200`
+| Verified and applied.
+
+| `400`
+| Signature mismatch — `STRIPE_WEBHOOK_SECRET` does not match the running `stripe listen` session. Re-export and restart RESTHeart.
+
+| `500`
+| The event was genuine and something downstream failed. Read the RESTHeart log.
+
+| _nothing_
+| `stripe listen` is not running, or is forwarding to the wrong port.
+|===
+
+=== Step 9 — Confirm
+
+[source,bash]
+----
+curl -s http://localhost:8080/stripe/subscription \
+     -H "Authorization: Bearer $TOKEN" | jq
+----
+
+[source,json]
+----
+{
+  "plan": "gold",
+  "status": "trialing",
+  "active": true,
+  "licensed": false,
+  "cancel_at_period_end": false,
+  "trial_end": "2026-02-28T10:23:45Z",
+  "seats": { "limit": 10, "licensed": 0, "available": 10, "over_limit": false }
+}
+----
+
+`trialing` because the plan declares a 14-day trial; `active` is `true` throughout it.
+
+Note `licensed: false` — paying did not license anyone, not even the buyer.
+
+=== Step 10 — Assign a seat
+
+[source,bash]
+----
+curl -s -X POST http://localhost:8080/stripe/licenses \
+     -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"userId": "owner@example.com"}' -i | head -1
+----
+
+[source,text]
+----
+HTTP/1.1 201 Created
+----
+
+`GET /stripe/subscription` now reports `"licensed": true` and `seats.available: 9`.
+
+=== Step 11 — Gate a feature
+
+Add a rule that requires the gold plan:
+
+[source,yaml]
+----
+fileAclAuthorizer:
+  permissions:
+    - role: user
+      predicate: path-prefix(path="/restheart/reports") and equals(@subscription.plan, "gold")
+      priority: 100
+----
+
+Restart, then request `/restheart/reports` as the subscribed user (allowed) and as a user from a different, unsubscribed team (`403`).
+
+That `403` is the whole point of the module: the feature is protected server-side, not by hiding a button.
+
+[WARNING]
+====
+Never gate `/stripe/*` itself on the subscription state.
+An over-limit or lapsed customer must always be able to reach checkout, the Portal and licence management — those are the only places the problem can be fixed.
+
+See xref:plan-gates.adoc#_the_lockout_trap[The lockout trap].
+====
+
+=== Step 12 — Cancel
+
+[source,bash]
+----
+curl -s -X POST http://localhost:8080/stripe/portal \
+     -H "Authorization: Bearer $TOKEN" | jq -r .url
+----
+
+Open it and cancel the subscription. The subscription is scheduled to end at the period boundary:
+
+[source,json]
+----
+{ "plan": "gold", "active": true, "cancel_at_period_end": true }
+----
+
+Access continues — the customer paid for the period.
+To see the final transition without waiting, cancel *immediately* from *Dashboard → Customers → the subscription → Cancel subscription → immediately*.
+
+`customer.subscription.deleted` then arrives and the team returns to `free`.
+
+=== Going to production
+
+[cols="1,5",options="header"]
+|===
+| Step | Action
+
+| 1
+| Recreate the products and prices in *live mode* — test-mode price ids do not exist in live mode. Update `restheart.yml` with the live ids.
+
+| 2
+| Register a real webhook endpoint: *Developers → Webhooks → Add endpoint*, URL `https://api.example.com/stripe/webhook`, subscribing to the events listed in xref:webhooks.adoc#_which_events_to_subscribe_to[Webhooks].
+
+| 3
+| Use the *endpoint's* signing secret as `STRIPE_WEBHOOK_SECRET`. It is not the CLI one.
+
+| 4
+| Set `STRIPE_SECRET_KEY` to the `sk_live_…` key, from your secret manager — never from a file in the repository.
+
+| 5
+| Confirm the startup log says `mode=LIVE`.
+
+| 6
+| Set `success-url`, `cancel-url` and `portal-return-url` to real HTTPS URLs.
+
+| 7
+| Configure the Customer Portal in *Settings → Billing → Customer portal* — which plan changes and cancellation options customers get is decided there, not in `restheart.yml`.
+
+| 8
+| Decide about notifications: if you enable `payment-failed` or `trial-will-end`, turn the matching Stripe Dashboard email *off*, or customers receive both.
+|===
+
+[WARNING]
+====
+Verify webhook delivery in production before announcing anything.
+
+Make one real purchase and confirm *Developers → Webhooks → your endpoint* shows `200`.
+A firewall, a load balancer, or an ACL that blocks Stripe produces exactly the failure this module is most vulnerable to: customers pay, and nothing in the application changes.
+====
+
+=== Where to go next
+
+* xref:plans-and-seats.adoc[Plans & Seats] — seat modes and the over-limit contract
+* xref:plan-gates.adoc[Plan Gates & ACL] — the `@subscription` variable in full
+* xref:subscription-owner-provider.adoc[Subscription Owner Provider] — billing something other than a team
+* xref:multi-tenancy.adoc[Multi-tenancy] — many tenants, many Stripe accounts
