@@ -2,7 +2,7 @@
 layout: default
 stars-bounce: true
 title: The Open Source Backend for MongoDB
-excerpt: RESTHeart is the open source backend for MongoDB. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed RESTHeart Cloud service. Plus Sophia, the AI assistant with a native MCP server.
+excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Java stack with virtual threads and GraalVM native images. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed RESTHeart Cloud service. Plus Sophia, the AI assistant with a native MCP server.
 ---
 
 <section id="top" class="pt-4 pb-2">
@@ -16,6 +16,7 @@ excerpt: RESTHeart is the open source backend for MongoDB. It gives you instant 
                 <h2 class="text-break mt-3" style="font-size: 1.6rem; font-weight: 400; line-height: 1.4; color: var(--primarycolor);">
                     The <strong style="font-weight: 600;">Open Source Backend</strong> for MongoDB.
                 </h2>
+                <p class="white mt-1 mb-0" style="font-size: 1rem; opacity: 0.85;">Open Source &middot; Modern Java &middot; MongoDB-native</p>
                 <div class="hero-checklist mt-3">
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -28,6 +29,10 @@ excerpt: RESTHeart is the open source backend for MongoDB. It gives you instant 
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Need custom logic? Extend it in Java, Kotlin, JavaScript or TypeScript.
+                    </p>
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Built on modern Java — virtual threads, GraalVM native images, ~100ms startup.
                     </p>
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>

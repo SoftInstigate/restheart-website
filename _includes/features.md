@@ -84,9 +84,9 @@
     <article class="mt-4 mt-lg-0 col-lg-4 zoom">
         <div class="card newsText h-100 w-100">
             <div class="card-body">
-                <h3 class="feature-title mb-3"><span class="text-primary">Development Framework</span></h3>
+                <h3 class="feature-title mb-3"><span class="text-primary">Modern Java Framework</span></h3>
                 <p>
-                    Build microservices in Java, Kotlin, JavaScript or TypeScript with a set of simple yet robust building blocks: <strong>Service</strong>, <strong>Provider</strong>, <strong>Interceptor</strong>, and <strong>Initializer</strong>.
+                    Build microservices in Java 25, Kotlin, JavaScript or TypeScript, powered by virtual threads, with a set of simple yet robust building blocks: <strong>Service</strong>, <strong>Provider</strong>, <strong>Interceptor</strong>, and <strong>Initializer</strong>.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
