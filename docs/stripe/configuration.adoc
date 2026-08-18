@@ -38,6 +38,7 @@ Create an override file (e.g. `stripe.conf`):
 # enable the plugins you need
 /stripeService/enabled -> true
 /stripeInitializer/enabled -> true
+/stripeInitService/enabled -> true
 /stripeWebhookService -> { "enabled": true }
 
 # subscriptions plugins
@@ -265,7 +266,12 @@ Each plugin is enabled independently.
 | Holds the `SubscriptionOwnerProvider`. *Required.*
 
 | `stripeInitializer`
-| Validates config, creates indexes, registers `@subscription`. *Required.*
+| Validates config (logs, does not block) and registers `@subscription`. *Required.*
+
+| `stripeInitService`
+| On-demand, per-database init (indexes, collections, order schema) — `stripeInitializer` calls it
+for the statically configured database; a multi-tenant deployment calls it itself, per tenant. See
+xref:multi-tenancy.adoc[Multi-tenancy]. *Required.*
 
 | `stripeWebhookService`
 | `POST /stripe/webhook`. *Required.*
@@ -313,6 +319,14 @@ Each plugin is enabled independently.
 [IMPORTANT]
 ====
 RESTHeart catches initializer exceptions and logs them — it does not abort startup. Check the log for `[stripe]` errors.
+====
+
+[NOTE]
+====
+Missing credentials are logged, but they do not stop `@subscription` from being registered, or
+`stripeInitService` from initializing the statically configured database. A multi-tenant node has
+no static credentials at all — they arrive per-request, see xref:multi-tenancy.adoc[Multi-tenancy]
+— and would otherwise never get plan gates.
 ====
 
 On success:
@@ -416,6 +430,7 @@ Notifications use the `emails` plugin. If absent, they are silently skipped.
 # ── plugins ──
 /stripeService/enabled -> true
 /stripeInitializer/enabled -> true
+/stripeInitService/enabled -> true
 /stripeWebhookService -> { "enabled": true }
 /stripeCheckoutService/enabled -> true
 /stripePortalService/enabled -> true

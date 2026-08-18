@@ -50,6 +50,10 @@ No plugin configuration changes per tenant.
 | `stripeConfig.default-plan`
 | Plan for an entity with no subscription
 
+| `override-stripe-products`
+| `stripeConfig.products`
+| Replaces the *entire* products configuration — same replace-wholesale contract as `override-stripe-plans`, see below
+
 | `override-stripe-db`
 | `mongoRealmAuthenticator.users-db`
 | Database holding this tenant's entity documents
@@ -91,6 +95,30 @@ No plugin configuration changes per tenant.
 (`payment-failed`, `trial-will-end`, `subscription-canceled`, `over-limit`) or the order
 notifications (`order-confirmed`, `order-refunded`) — the parameter is generic on the name, so
 both sets are attached the same way and neither collides with the other.
+
+=== Kill switches
+
+Distinct from the overrides above by both prefix (`rh-`, not `override-`) and meaning: an override
+*replaces* a value, a kill switch *removes the module from the request entirely*. Presence of the
+parameter disables — the value itself is never inspected, so attaching `Boolean.FALSE` still
+disables.
+
+[cols="3,4",options="header"]
+|===
+| Request attribute | Effect
+
+| `rh-stripe-subscriptions-disabled`
+| Every subscriptions-mode service (`stripeCheckoutService`, `stripePortalService`, `stripeSubscriptionService`, `stripePlansService`, `stripeLicensesService`, `stripeWebhookService`) stops responding, and `@subscription` resolves to unresolved — the same outcome as any other resolution failure, not a special case.
+
+| `rh-stripe-products-disabled`
+| `ordersCheckoutInterceptor` and `ordersCheckoutResponseInterceptor` stop running.
+|===
+
+Use these for a tenant that has not installed, or has disabled, the corresponding mode — instead
+of building a separate access gate in the deployment layer. A tenant with an *incomplete*
+configuration (installed, but no `secret-key` yet) is a different case and is not covered by these
+switches: answer that with your own `503`, since disabling would misreport "not installed" for a
+tenant that is mid-setup.
 
 === Per-tenant Stripe accounts
 
@@ -138,6 +166,34 @@ var plans = Map.of(
 request.attachParam("override-stripe-plans", plans);
 ----
 
+Build each `PlanConfig` with `PlanConfig.fromMap(Map<String, Object>)` rather than the constructor
+directly — it is the same parser `stripeConfig`'s own YAML loader uses (field names, `seats.mode`
+tolerance for an unrecognized value falling back to `UNLIMITED`, and so on), so a tenant's plan
+read from MongoDB and one read from YAML can never silently drift apart:
+
+[source,java]
+----
+var plans = new LinkedHashMap<String, PlanConfig>();
+for (var entry : tenantPlansDoc.entrySet()) {
+    plans.put(entry.getKey(), PlanConfig.fromMap((Map<String, Object>) entry.getValue()));
+}
+request.attachParam("override-stripe-plans", plans);
+----
+
+=== Overriding the products configuration
+
+`override-stripe-products` follows the same contract as `override-stripe-plans`: a fully-parsed
+`ProductsConfig`, attached by the deployment's interceptor, replacing the static configuration
+wholesale.
+
+[source,java]
+----
+request.attachParam("override-stripe-products", tenantProductsConfig);
+----
+
+A tenant without products mode simply never has this attached; the module falls back to
+`stripeConfig.products`, which is `null` in that case exactly as it is statically.
+
 === Webhooks in a multi-tenant deployment
 
 The webhook path is always `/stripe/webhook` — there is no per-tenant path segment.
@@ -175,10 +231,23 @@ A xref:subscription-owner-provider.adoc[custom provider] receives the resulting 
 
 [IMPORTANT]
 ====
-`stripeInitializer` creates the `stripe_customer_id` unique index at startup, against the *statically configured* database only.
+`stripeInitializer` creates the `stripe_customer_id` unique index at startup, against the *statically configured* database only — by calling `StripeInitService.initSubscriptions()` internally.
 
-A deployment whose database varies per tenant must create that index on every tenant database itself.
-Without it, `byStripeCustomerId` does a collection scan on every webhook delivery, and nothing prevents two entities from being linked to the same Stripe Customer.
+A deployment whose database varies per tenant calls the same service itself, once per tenant, when that tenant enables the plugin:
+
+[source,java]
+----
+@Inject("stripeInitService")
+private StripeInitService initService;
+
+initService.initSubscriptions(tenantDbName);
+// and, if that tenant also has products mode:
+initService.initProducts(tenantDbName);
+----
+
+Idempotent, so calling it again — a tenant re-enabling the plugin, or a deployment that prefers calling it unconditionally at provisioning time — is safe.
+
+Without the index, `byStripeCustomerId` does a collection scan on every webhook delivery, and nothing prevents two entities from being linked to the same Stripe Customer. See xref:subscription-owner-provider.adoc#_indexes[Indexes] for the full picture, including `initProducts()`'s additional index and schema work.
 ====
 
 === Relationship to restheart-accounts
@@ -206,28 +275,37 @@ public class TenantStripeConfigInterceptor implements WildcardInterceptor {
 
     @Override
     public boolean resolve(ServiceRequest<?> req, ServiceResponse<?> res) {
-        return req.getPath().startsWith("/stripe/");
+        // Not scoped to "/stripe/*": @subscription must resolve on ANY request an ACL
+        // predicate might name it in — a plan gate on /api/reports needs the override
+        // exactly as much as /stripe/checkout does. Scoping resolve() to the stripe paths
+        // is the obvious-looking trap here — don't.
+        return tenantFromHost(req.getHeader("Host")) != null;
     }
 
     @Override
     public void handle(ServiceRequest<?> req, ServiceResponse<?> res) {
         var tenant = tenantFromHost(req.getHeader("Host"));
-        if (tenant == null) {
-            return;   // fall back to the static configuration
-        }
 
         var conf = mclient.getDatabase("confs")
                 .getCollection("stripe", BsonDocument.class)
                 .find(eq("_id", tenant)).first();
 
         if (conf == null) {
-            return;
+            return;   // tenant never installed the plugin — falls back to the static config
         }
 
         req.attachParam("override-stripe-secret-key",     conf.getString("secret_key").getValue());
         req.attachParam("override-stripe-webhook-secret", conf.getString("webhook_secret").getValue());
         req.attachParam("override-stripe-db",             tenant);
-        req.attachParam("override-stripe-plans",          parsePlans(conf.getDocument("plans")));
+
+        var plans = new java.util.LinkedHashMap<String, PlanConfig>();
+        for (var entry : conf.getDocument("plans").entrySet()) {
+            // toMap(): your own BsonDocument -> Map<String,Object> conversion (e.g. via the
+            // driver's Document codec). PlanConfig.fromMap() itself doesn't care where the
+            // map came from — see "Overriding the plan catalog" above.
+            plans.put(entry.getKey(), PlanConfig.fromMap(toMap(entry.getValue().asDocument())));
+        }
+        req.attachParam("override-stripe-plans", plans);
     }
 }
 ----

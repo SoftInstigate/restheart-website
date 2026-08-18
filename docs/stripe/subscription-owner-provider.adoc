@@ -257,7 +257,25 @@ Converting it to whatever type your store uses is the provider's job.
 
 === Indexes
 
-`stripeInitializer` creates the `stripe_customer_id` index only for the *default* provider, against the *static* configuration.
+At startup, `stripeInitializer` creates the `stripe_customer_id` index only for the *default*
+provider, against the *statically configured* database — via `StripeInitService.initSubscriptions()`
+(no argument), which it calls internally.
 
 A custom provider is responsible for its own indexes.
-So is a multi-tenant deployment whose databases vary per request — the startup index creation only covers the statically configured database.
+
+A multi-tenant deployment, whose databases vary per request, calls the same service itself, once
+per tenant database, when that tenant enables the plugin:
+
+[source,java]
+----
+@Inject("stripeInitService")
+private StripeInitService initService;
+
+// when a tenant enables subscriptions:
+initService.initSubscriptions(tenantDbName);
+----
+
+Idempotent — create-if-absent — so calling it again (a tenant re-enabling the plugin, or a
+deployment that prefers calling it unconditionally at provisioning time) is safe. See
+xref:multi-tenancy.adoc[Multi-tenancy] for the full per-tenant lifecycle, including the
+symmetric `initProducts()` for products mode.
