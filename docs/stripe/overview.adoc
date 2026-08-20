@@ -43,6 +43,7 @@ flowchart LR
   S[Stripe]
 
   B -- HTTP + JWT --> RS
+  B -- redirect to hosted Checkout --> S
   RS -- SDK calls --> S
   S -- signed webhooks --> WH
   SUB --> ACL
@@ -58,6 +59,8 @@ Manages recurring billing backed by a configurable plan catalog.
 
 *Endpoints* — `/stripe/checkout`, `/stripe/portal`, `/stripe/subscription`, `/stripe/plans`, `/stripe/licenses`. Each is a separately enabled plugin.
 
+*Hosted payment page* — `/stripe/checkout` returns the URL of a Stripe-hosted Checkout page; redirect the browser there. You never build a payment form, and card details never reach your server. The customer comes back to your `success-url`, but the subscription only becomes active when the webhook arrives — see xref:subscription-lifecycle.adoc[Subscription Lifecycle].
+
 *Plan gating* — the caller's subscription state is exposed to ACL rules as `@subscription`. See xref:plan-gates.adoc[Plan Gates].
 
 *Billing entity* — by default the xref:../accounts/overview.adoc[`restheart-accounts`] team, from the JWT team claim. Replaceable via the xref:subscription-owner-provider.adoc[`SubscriptionOwnerProvider` SPI].
@@ -71,6 +74,8 @@ Sells one-time purchases through Stripe Checkout.
 *No custom endpoints* — orders and catalog are ordinary MongoDB collections served by RESTHeart's API. The module adds interceptors and webhook handlers.
 
 *How it works* — the client sends product ids and quantities; the server resolves prices from the `catalog` collection, creates a Stripe Checkout session, and records the order. The client never sends a price.
+
+*Hosted payment page* — the created order carries a `checkout_url` pointing at a Stripe-hosted Checkout page; redirect the browser there. As with subscriptions, you never build a payment form.
 
 *Billing entity* — always the team from the JWT. Only team owners can purchase.
 
