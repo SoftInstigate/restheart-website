@@ -70,20 +70,27 @@ No plugin configuration changes per tenant.
 | `stripeConfig.portal-return-url`
 | Per-tenant Portal return URL
 
+| `override-stripe-products`
+| `stripeConfig.products`
+| Replaces the *entire* products configuration — same wholesale-replacement contract as `override-stripe-plans`, not a field-by-field override. Absent means products mode is off for this tenant.
+
 | `override-stripe-tmpl-{name}`
 | built-in / configured template
-| Inline HTML for one notification template
+| Inline HTML for one notification template — subscription and order notifications alike, see below
 
 | `override-stripe-notify-{name}-enabled`
-| `stripeConfig.notifications.{name}.enabled`
-| Enables or disables one notification
+| `stripeConfig.subscriptions.notifications.{name}.enabled`
+| Enables or disables one *subscription* notification. Order notifications have no equivalent: their enabled flag travels inside `override-stripe-products` itself, in `products.notifications.{name}.enabled`
 
 | `override-accounts-ownership-role`
 | `accountsConfig.ownership-role`
 | Which team role may manage billing. Shared with `restheart-accounts` — see below
 |===
 
-`{name}` is one of `payment-failed`, `trial-will-end`, `subscription-canceled`, `over-limit`.
+`{name}` in `override-stripe-tmpl-{name}` is one of the subscription notifications
+(`payment-failed`, `trial-will-end`, `subscription-canceled`, `over-limit`) or the order
+notifications (`order-confirmed`, `order-refunded`) — the parameter is generic on the name, so
+both sets are attached the same way and neither collides with the other.
 
 === Per-tenant Stripe accounts
 

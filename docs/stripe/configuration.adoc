@@ -115,6 +115,7 @@ stripeConfig:
     automatic-tax:      # default: true
     shipping-options:   # for physical products
     notifications:      # order-confirmed, order-refunded
+    templates:          # custom email template paths, same shape as subscriptions.templates
     init-enabled:       # default: true, set false for multi-tenant on-demand init
 ----
 
@@ -353,13 +354,23 @@ On success:
 | Notification | Default | Sent when
 
 | `order-confirmed`
-| `true`
+| `false`
 | Order paid
 
 | `order-refunded`
-| `true`
+| `false`
 | Refund recorded
 |===
+
+Off by default — declare `products.notifications.{name}.enabled: true` to turn one on. Unlike
+subscription notifications, an order notification with no explicit `enabled` key is not just
+defaulted off, it is not sent at all: `OrderEventHandler` looks the entry up by name and treats a
+missing one exactly like a disabled one.
+
+Each has a built-in template (`order-confirmed.html`, `order-refunded.html`), overridable per
+notification the same way subscription templates are — the `products.templates` key shown above,
+and for a multi-tenant deployment, xref:multi-tenancy.adoc[Multi-tenancy]'s
+`override-stripe-tmpl-{name}`.
 
 Notifications use the `emails` plugin. If absent, they are silently skipped.
 

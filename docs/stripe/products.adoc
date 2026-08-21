@@ -169,6 +169,60 @@ Orders are created in `pending_payment`. Webhooks move them forward.
 
 Status transitions are monotonic: a redelivered event is a no-op, not a regression.
 
+=== Notifications
+
+Two of the lifecycle events above can also email the buyer: `order-confirmed` when an order is
+paid, `order-refunded` when a refund is recorded. Both are off by default — turn one on
+explicitly:
+
+[source,bash]
+----
+/stripeConfig/products/notifications/order-confirmed/enabled -> true
+/stripeConfig/products/notifications/order-refunded/enabled  -> true
+----
+
+An order notification with no explicit `enabled` key is not sent — there is no implicit default
+the way `subscription-canceled` and `over-limit` default to on for subscriptions (see
+xref:configuration.adoc#_notifications[Configuration → Notifications]).
+
+Each has a built-in bilingual template
+(`stripe/src/main/resources/email-templates/order-confirmed.html` and `order-refunded.html`),
+filled in with:
+
+[cols="2,4",options="header"]
+|===
+| Placeholder | Value
+
+| `{{order-id}}`
+| The order's `_id`, hex-encoded
+
+| `{{amount}}`
+| The charged or refunded amount, in the currency's *minor* unit — cents for EUR/USD, as Stripe sends it
+
+| `{{amount-formatted}}`
+| The same amount converted to the currency's major unit, formatted with that currency's own number of decimals (2 for EUR/USD, 0 for JPY, 3 for BHD…) — what a template should actually display
+
+| `{{currency}}`
+| The order's currency code
+
+| `{{app-name}}`
+| Always `App` — unlike subscription notifications, `OrderEventHandler` has no tenant display name to resolve
+
+| `{{year}}`
+| Current year
+|===
+
+Override the template per notification, same mechanism subscription templates use:
+
+[source,bash]
+----
+/stripeConfig/products/notifications/order-confirmed/enabled  -> true
+/stripeConfig/products/templates/order-confirmed -> "<html>…</html>"
+----
+
+For a multi-tenant deployment, the tenant's HTML travels as `override-stripe-tmpl-order-confirmed`
+— see xref:multi-tenancy.adoc[Multi-tenancy].
+
 === The ledger
 
 `transactions` is append-only. One order has many money movements:
