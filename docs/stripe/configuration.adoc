@@ -32,7 +32,7 @@ Create an override file (e.g. `stripe.conf`):
 # enable products
 /stripeConfig/products/enabled -> true
 /stripeConfig/products/default-currency -> eur
-/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+/stripeConfig/products/success-url -> "https://shop.example.com/done#order={ORDER_ID}&secret={ORDER_SECRET}"
 /stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
 
 # enable the plugins you need
@@ -107,7 +107,7 @@ stripeConfig:
     inventory-collection:    # optional — omit to disable stock checks
     default-currency:   # default: eur
     buyer-email-field:  # default: _id
-    success-url:        # checkout redirect
+    success-url:        # checkout redirect — supports {ORDER_ID} / {ORDER_SECRET}
     cancel-url:         # checkout redirect
     session-expires-minutes: # default: 60
     max-line-items:     # default: 50
@@ -223,7 +223,7 @@ This prevents the two modules from drifting apart:
 
 | `success-url`
 | _(empty)_
-| Checkout redirect after payment.
+| Checkout redirect after payment. Supports `+{ORDER_ID}+` and `+{ORDER_SECRET}+`, interpolated when the session is created — put the secret in the fragment. See xref:products.adoc#_the_return_page[The return page].
 
 | `cancel-url`
 | _(empty)_
@@ -409,7 +409,7 @@ Notifications use the `emails` plugin. If absent, they are silently skipped.
 /stripeConfig/products/enabled -> true
 /stripeConfig/products/default-currency -> eur
 /stripeConfig/products/buyer-email-field -> _id
-/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+/stripeConfig/products/success-url -> "https://shop.example.com/done#order={ORDER_ID}&secret={ORDER_SECRET}"
 /stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
 /stripeConfig/products/automatic-tax -> true
 

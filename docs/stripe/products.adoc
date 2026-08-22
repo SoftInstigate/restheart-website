@@ -169,6 +169,35 @@ Orders are created in `pending_payment`. Webhooks move them forward.
 
 Status transitions are monotonic: a redelivered event is a no-op, not a regression.
 
+=== The return page
+
+Two things make the page the buyer lands on after Checkout harder than it looks.
+
+**It does not know which order it is showing.** Stripe substitutes only `+{CHECKOUT_SESSION_ID}+` in `success-url`, and a guest has no session for the server to recognise them by. Put `+{ORDER_ID}+` and `+{ORDER_SECRET}+` in the configured URL and the plugin interpolates them when it creates the Checkout session:
+
+[source,bash]
+----
+/stripeConfig/products/success-url -> "https://shop.example.com/done#order={ORDER_ID}&secret={ORDER_SECRET}"
+----
+
+[IMPORTANT]
+====
+Put `+{ORDER_SECRET}+` in the URL *fragment* (after `#`), not the query string.
+
+The secret is a bearer credential — it is the only thing standing between a stranger and a guest's order, with their email and shipping address in it. A fragment is never sent to a server, so it stays out of access logs, proxy logs and `Referer` headers. Have the page strip it from the address bar as soon as it has read it.
+====
+
+Substitution is opt-in: a `success-url` without the placeholders is used exactly as configured, so existing deployments are unaffected. `+{CHECKOUT_SESSION_ID}+` still works alongside them — Stripe fills that one in after the plugin is done.
+
+**The redirect races the webhook.** The browser comes back as soon as the payment is authorised, but the order only leaves `pending_payment` when the webhook arrives — a separate connection, usually seconds later, with no ordering guarantee against the redirect. A page that reads the order once will routinely tell someone who just paid that they have not.
+
+Poll until it leaves `pending_payment`, and treat running out of time as "not yet" rather than "failed" — the payment succeeded either way, only the webhook is late.
+
+[TIP]
+====
+`@restheart-cloud/kit` does both for you: `readOrderRef()` / `clearOrderRef()` for the reference, and `waitForOrder()` for the poll, which rejects with a distinct `WaitTimeoutError` so a late webhook never renders as a failed payment. See the https://github.com/SoftInstigate/restheart-cloud-kit/tree/main/packages/kit#payments[kit's payments guide].
+====
+
 === Notifications
 
 Two of the lifecycle events above can also email the buyer: `order-confirmed` when an order is
@@ -311,7 +340,8 @@ Override file:
 # /stripeConfig/products/inventory-collection -> inventory   # omit to disable stock checks
 /stripeConfig/products/default-currency -> eur
 /stripeConfig/products/buyer-email-field -> _id
-/stripeConfig/products/success-url -> "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+# {ORDER_ID}/{ORDER_SECRET} are interpolated by the plugin — see "The return page"
+/stripeConfig/products/success-url -> "https://shop.example.com/done#order={ORDER_ID}&secret={ORDER_SECRET}"
 /stripeConfig/products/cancel-url -> "https://shop.example.com/cart"
 /stripeConfig/products/session-expires-minutes -> 60
 /stripeConfig/products/max-line-items -> 50
