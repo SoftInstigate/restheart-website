@@ -1,0 +1,81 @@
+---
+docs_version: 9
+title: Authentication
+layout: docs-adoc
+menu: security
+applies_to: both
+redirect_from:
+  - /docs/security/authentication
+---
+
+=== Introduction
+
+See link:/docs/security/overview[Security Overview] for a high-level view of the RESTHeart security model.
+
+**RESTHeart** uses a **pluggable architecture**. It comes with a strong security implementation that you can easily extend by implementing plugins. This section documents the authentication plugins available out-of-the-box. You can also develop your own.
+
+=== The three pieces
+
+Authentication is split across three kinds of plugin, and knowing which does what is most of what you need to configure it.
+
+[cols="1,3"]
+|===
+|Plugin |What it does
+
+|**Authentication Mechanism**
+|Takes the credentials out of the request. `BasicAuthMechanism` reads the `Authorization: Basic` header; `JwtAuthenticationMechanism` reads a `Bearer` token. It does not decide whether they are valid.
+
+|**Authenticator**
+|Verifies those credentials against something — a MongoDB collection, a file, an LDAP server — and builds the account, with its roles. Some mechanisms need none: `IdentityAuthMechanism` builds the account from configuration alone.
+
+|**Token Manager**
+|Issues and verifies the auth token a client may use in place of its actual credentials on later requests.
+|===
+
+=== How several mechanisms coexist
+
+More than one mechanism can be enabled. When a request arrives, `authenticate()` is called on each in turn until one of the following happens:
+
+* a mechanism **authenticates** the request, which ends the chain successfully;
+* a mechanism **fails** the request, which ends the chain with `401 Unauthorized`;
+* the list is **exhausted**, and the request is unauthenticated.
+
+The distinction that matters when combining mechanisms is between *declining* and *failing*. A mechanism that finds no credentials of its own shape declines, and the next one gets its turn. A mechanism that finds credentials it recognises but cannot verify fails, and nothing after it runs.
+
+This is why two mechanisms can share one scheme: `tokenBasicAuthMechanism` reads `Authorization: Basic` before `basicAuthMechanism` does and declines what is not one of its tokens, leaving the very same header to be read as a username and password. link:/docs/security/authentication/api-key[apiKeyAuthMechanism] shares `Bearer` with the JWT mechanism the same way.
+
+=== Authentication Mechanisms
+
+[cols="1,2,1"]
+|===
+|Page |Mechanisms |Credential
+
+|link:/docs/security/authentication/jwt[JWT]
+|`jwtAuthenticationMechanism`, plus the JWT Token Manager and the claims RESTHeart reads
+|`Authorization: Bearer <jwt>`
+
+|link:/docs/security/authentication/cookie[Cookie]
+|`authCookieSetter`, `authCookieHandler`, `authCookieRemover`
+|A `Cookie` set at login
+
+|link:/docs/security/authentication/api-key[API Key]
+|`apiKeyAuthMechanism` and `mongoApiKeyAuthenticator` — long-lived, revocable keys for CLIs, CI jobs and integrations
+|`Authorization: Bearer <prefixed key>`
+
+|link:/docs/security/authentication/basic[Basic, Digest, Token and Identity]
+|`basicAuthMechanism`, `digestAuthMechanism`, `tokenBasicAuthMechanism`, `identityAuthMechanism`
+|`Authorization: Basic`, or none at all
+|===
+
+=== Authenticators and Token Managers
+
+link:/docs/security/authentication/authenticators[Authenticators and Token Managers] covers `mongoRealmAuthenticator` — the one suggested for production — along with `fileRealmAuthenticator` and `rndTokenManager`.
+
+=== Choosing one
+
+* A **browser application** wants link:/docs/security/authentication/cookie[cookie authentication], so the credential is not reachable from JavaScript.
+* A **single-page or mobile application** talking to an API wants link:/docs/security/authentication/jwt[JWT].
+* A **CLI, a CI job or a partner integration** wants an link:/docs/security/authentication/api-key[API key]: long-lived, revocable one at a time, and issuable with fewer roles than the person holding it. It is also the only option when identity is federated, since a user who signed up through OAuth has no password.
+* **`basicAuthMechanism`** is the simplest thing that works and is fine behind TLS for server-to-server calls.
+
+See also link:/docs/security/how-clients-authenticate[Client Authentication] for how a client carries the credential in practice, and link:/docs/security/oauth[OAuth 2.0 / 2.1] for delegated identity.

@@ -41,7 +41,7 @@ RESTHeart has always been a very good fit for Microservices and other styles of 
 
 RESTHeart receives HTTP requests and routes them to the Service bound to the request paths. Creating a cluster requires an HTTP load balancer on top of the chosen clustering technology.
 
-RESTHeart is stateless for all features but for the default Token Manager used for [token authentication](https://restheart.org/docs/security/authentication#token-managers). This implementation that comes with RESTHeart holds the tokens in memory. As a result, it does not support clustering.
+RESTHeart is stateless for all features but for the default Token Manager used for [token authentication](https://restheart.org/docs/security/authentication/authenticators#_token_managers). This implementation that comes with RESTHeart holds the tokens in memory. As a result, it does not support clustering.
 
 Thus a cluster of RESTHeart nodes requires **sticky sessions** when using token authentication otherwise the RESTHeart node could receive an authentication token created by another instance, which results in an HTTP 401 "Unauthorized" error.
 
@@ -51,7 +51,7 @@ As RESTHeart instances don't communicate directly (to avoid expensive synchroniz
 
 The specialized `JWT Token Manager` which creates cryptographically signed tokens that can be acknowledged by any RESTHeart node in the cluster without direct communication and synchronization among them: fast, simple and safe.
 
-For more information refer to the [JWT Token Manager](https://restheart.org/docs/security/authentication#jwt-token-manager) documentation page.
+For more information refer to the [JWT Token Manager](https://restheart.org/docs/security/authentication/jwt#_jwt_token_manager) documentation page.
 
 ![ALB](/images/alb.png){: class="mx-auto d-block img-responsive"}
 
