@@ -22,10 +22,25 @@ Build a complete full-stack web application with RESTHeart Cloud! This example d
 This example combines:
 
 * **Backend**: RESTHeart Cloud API with product catalog, search, and filtering
-* **Frontend**: Three complete implementations (Vue.js, React, Angular) available at https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^]
+* **Frontend**: a starter app you fork, or one of the small single-purpose demos
 
 You'll have a working full-stack application in under 10 minutes!
 ====
+
+[NOTE]
+====
+**Starting something real rather than following along?** Go straight to a
+link:cli#the-setup-file[starter]: each one ships an `rhc.setup.ts`, so the service configuration
+below is applied by one command instead of by hand, and each carries signup, login, OAuth,
+invitations and teams already working.
+
+* https://github.com/SoftInstigate/restheart-cloud-starter-react[React^] ·
+  https://github.com/SoftInstigate/restheart-cloud-starter-ng[Angular^] — auth and multi-tenancy
+* https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce[Ecommerce (React)^] — the above, plus a catalog, cart, Stripe checkout and an order ledger
+
+This page stays useful either way: it is where the API calls a starter makes are spelled out.
+====
+
 
 == What You'll Build
 
@@ -40,6 +55,22 @@ A complete e-commerce product catalog application featuring:
 * **Authentication** - Secure access control with ACL
 
 == Part 1: Backend Setup
+
+=== The short way
+
+The whole of Part 1 — collections, indexes, sample data and permissions — is what a setup file
+states, and link:cli[`rhc`] applies:
+
+[source,bash]
+----
+npm install -g @restheart-cloud/cli
+rhc login
+rhc setup --srv <srvId> --dry-run   # what the service is missing
+rhc setup --srv <srvId>             # make it so
+----
+
+Every step is a check and an apply, so running it again writes nothing. Read on for what each of
+those steps does through the API — worth knowing whether or not you let `rhc` do it.
 
 === Step 1: Create Collections
 
@@ -416,7 +447,29 @@ Now that your backend is ready, let's build the frontend! We've created three co
 
 === Choose Your Framework
 
-All three frontend examples are available in our GitHub repository: https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^]
+**For an application you intend to keep**, fork a starter. They are scaffolds rather than demos:
+signup, login, OAuth, email verification, password reset, team invitations and a team switcher
+all work out of the box, and each ships an `rhc.setup.ts` that configures the service to match.
+
+[cols="1,3"]
+|===
+| Starter | What it is
+
+| https://github.com/SoftInstigate/restheart-cloud-starter-react[React^]
+| Auth and multi-tenancy, on `@restheart-cloud/kit-react`
+
+| https://github.com/SoftInstigate/restheart-cloud-starter-ng[Angular^]
+| The same, on `@restheart-cloud/kit-ng`, with SSR for public routes
+
+| https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce[Ecommerce (React)^]
+| The above plus a shop: catalog, cart, Stripe Checkout, order ledger, guest checkout
+|===
+
+Their feature flags are read by the setup file rather than repeated in it, so the app and the
+service cannot drift apart.
+
+**To follow this page's catalog example specifically**, the three small single-purpose demos are at
+https://github.com/SoftInstigate/restheart-cloud-examples[restheart-cloud-examples^].
 
 Each implementation is a complete single-page application featuring:
 
