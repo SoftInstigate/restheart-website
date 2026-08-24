@@ -1,0 +1,111 @@
+---
+docs_version: 9
+title: Authenticators and Token Managers
+layout: docs-adoc
+menu: security
+applies_to: both
+---
+
+=== Mongo Realm Authenticator
+
+**mongoRealAuthenticator** authenticates users defined in a MongoDB collection.
+
+NOTE: Mongo Realm Authenticator is suggested for production usage.
+
+The configuration allows:
+
+-   defining the collection to use (`users-db` and `users-collection`), the properties of the user document to use as user id, password and roles (`prop-id`, `prop-password` and `json-path-roles`).
+-   enabling hashed password using the strong bcrypt hashing algorithm (`bcrypt-hashed-password` and `bcrypt-complexity`); note that the password is automatically hashed on write requests and that the password property is automatically removed from responses.
+-   allows initializing the users collection and the admin user if not existing. See `create-user` option.
+-   allows controlling the users caching.
+
+[source,yml]
+----
+mongoRealmAuthenticator:
+    users-db: restheart
+    users-collection: users
+    prop-id: _id
+    prop-password: password
+    json-path-roles: $.roles
+    bcrypt-hashed-password: true
+    bcrypt-complexity: 12
+    create-user: true
+    create-user-document: '{"_id": "admin", "password": "$2a$12$lZiMMNJ6pkyg4uq/I1cF5uxzUbU25aXHtg7W7sD2ED7DG1wzUoo6u", "roles": ["admin"]}'
+    # create-user-document.password must be hashed when bcrypt-hashed-password=true
+    # default password is 'secret'
+    # see https://bcrypt-generator.com but replace initial '$2y' with '$2a'
+    cache-enabled: false
+    cache-size: 1000
+    cache-ttl: 60000
+    cache-expire-policy: AFTER_WRITE
+    enforce-minimum-password-strength: false
+    # Integer from 0 to 4
+    # 0 Weak        （guesses < 3^10）
+    # 1 Fair        （guesses < 6^10）
+    # 2 Good        （guesses < 8^10）
+    # 3 Strong      （guesses < 10^10）
+    # 4 Very strong （guesses >= 10^10）
+    minimum-password-strength: 3
+
+==== Overriding the Authentication Database
+
+In multi-team deployments where each team has its own MongoDB database, you can override the database used by `mongoRealmAuthenticator` on a per-request basis.
+
+Attach the `override-users-db` parameter to the request (typically via an interceptor at `REQUEST_BEFORE_AUTH`):
+
+[source,java]
+----
+// In an interceptor at REQUEST_BEFORE_AUTH
+req.setAttachedParam("override-users-db", "team_acme_db");
+----
+
+When `override-users-db` is present, `mongoRealmAuthenticator` authenticates the user against that database instead of the configured `users-db`.
+When absent, the static `users-db` value is used.
+
+This is the same mechanism used by `restheart-accounts` for multi-team deployments.
+The `authDb` claim is automatically included in JWTs issued by accounts endpoints so that `JwtAuthDbVerifier` can route subsequent requests to the correct database.
+
+See also: xref:../accounts/configuration.adoc#_multi_tenancy_with_authdbresolver_and_teamconfiginterceptor[Multi-tenancy with AuthDbResolver and TeamConfigInterceptor].
+----
+
+=== File Realm Authenticator
+
+**fileRealmAuthenticator** defines users credentials and roles in the configuration or in a simple yml configuration file.
+
+[source,yml]
+----
+fileRealmAuthenticator:
+    enabled: true
+    #conf-file: ./etc/users.yml
+    users:
+    - userid: admin
+      password: null
+      roles: [admin]
+----
+
+The `conf-file` path is either absolute, or relative to the restheart configuration file (if specified) or relative to the plugins directory (if using the default configuration).
+
+See link:https://github.com/SoftInstigate/restheart/blob/master/examples/example-conf-files/users.yml[users.yml] for an example users definition.
+
+=== Token Managers
+
+A **Token Manager** issues and verifies the auth token that a client can use in
+place of its actual credentials on subsequent requests. See
+link:/docs/security/authentication/basic#_token_authentication[Token Authentication]
+for the mechanism that consumes one.
+
+==== Random Token Manager
+
+**rndTokenService** generates an auth token using a random number generator. It has two arguments, `ttl`, which is the tokens Time To Live in minutes, and `srv-uri` the URI of the service that allows to get and invalidate the user auth token.
+
+[source,yml]
+----
+rndTokenManager:
+    enabled: true
+    ttl: 15
+    srv-uri: /tokens
+----
+
+NOTE: `rndTokenManager` holds tokens in memory, so it does not support clustering.
+For a clustered deployment use
+link:/docs/security/authentication/jwt#_jwt_token_manager[jwtTokenManager] instead.

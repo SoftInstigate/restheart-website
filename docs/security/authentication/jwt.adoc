@@ -1,0 +1,134 @@
+---
+docs_version: 9
+title: JWT Authentication
+layout: docs-adoc
+menu: security
+applies_to: both
+---
+
+=== JWT Authentication
+
+JWT Authentication manages authentication following the link:https://jwt.io[JSON Web Token standard].
+
+The token is verified against the configured `issuer` and `audience` and according to the specified `algorithm`. If you want to disable checking `issuer` or  `audience`, set them to `null`. The property `audience` can be `null`, a String or an array of Strings.
+
+The authenticated client will receive the roles included in the JWT claim set by `rolesClaim` or the roles specified by the configuration option `fixedRoles`. You cannot set both `rolesClaim` and `fixedRoles`
+
+Supported algorithms are HMAC256, HMAC384, HMAC512, RSA256, RSA384, and RSA512.
+
+For HMAC, the `key` configuration option specifies the secret; for RSA, it specifies the public key.
+
+[source,yml]
+----
+jwtAuthenticationMechanism:
+    enabled: true
+    algorithm: HS256
+    key: secret
+    base64Encoded: false
+    usernameClaim: sub
+    rolesClaim: roles
+    fixedRoles:
+#      - admin
+    issuer: myIssuer
+    audience: myAudience
+----
+
+=== JWT Token Manager
+
+**jwtTokenManager** An implementation of Token Manger that issues and verifies auth tokens in a cluster compatible way.
+
+Each token can be verified by any node of the cluster regardless which one actually issued it (as long as they share the same secret)
+
+[source,yml]
+----
+jwtTokenManager:
+    key: secret
+    enabled: true
+    ttl: 15
+    srv-uri: /tokens
+    issuer: restheart.com
+----
+
+The query parameter `renew` forces the token to be renewed. Add it to `GET /token` or `GET /token/cookie` requests (e.g., `GET /token?renew`).
+
+The renewed token is built from the account read again from the users collection, so it also picks up changes made to the user document since the current token was issued — see <<Claims reflect the authenticated account>>.
+
+Generating a new token is a cryptographic operation and can have a significant performance overhead.
+It is the responsibility of the client to renew the token using this query parameter when it is going to expire soon.
+
+=== JWT claims
+
+CAUTION: Since RESTHeart 9.7.0.
+
+`account-properties-claims` selects which fields of the user document are copied into the JWTs RESTHeart issues. In a multi-tenant deployment it can be overridden per tenant with the `override-accounts-account-properties-claims` request parameter, attached before authentication by a deployment-layer interceptor such as `TeamConfigInterceptor`.
+
+==== One issuance logic
+
+A JWT issued by RESTHeart is one thing regardless of *when* it is issued: at login on `/token`, by an accounts endpoint (`/auth/verify`, `/auth/activate`, `/auth/reset-password`, `/auth/switch-team`, `GET`/`POST /auth/teams`, the OAuth callback), or as an OAuth authorization code on `/authorize`. All of them go through `JwtIssuer`, which owns claim selection, the denylist, the nested-path syntax and the claim type mapping. The issuance moments differ; the resulting token does not.
+
+Configure the claim list once, next to the signing key it belongs with:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  key: <signing key>
+  algorithm: HS256
+  issuer: my-deployment.example.com
+  account-properties-claims:
+    - profile
+    - plan
+----
+
+NOTE: The per-plugin settings `jwtTokenManager/account-properties-claims` and `accountsConfig/account-properties-claims` are deprecated. They still win when set, so existing deployments keep working, but they let the two issuers drift apart — exactly what `jwtConfigProvider` exists to prevent, as it already does for `key` and `issuer`.
+
+==== Nested paths
+
+A claim name may address a nested field with `/`. The nesting is rebuilt in the token:
+
+[source,yaml]
+----
+account-properties-claims:
+  - consents/tos/version    # -> { "consents": { "tos": { "version": "…" } } }
+----
+
+Note the separator is `/`, not `.`.
+
+==== Required claims
+
+Some claims are infrastructure the deployment cannot work without. On a multi-tenant node, for instance, a claim naming the node that issued the token is verified on every later request — a tenant able to drop it from its own claim list would lock itself out, since every token issued afterwards would be rejected.
+
+`required-account-properties-claims` lists the claims that are always copied into the token, whatever the effective list says:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  required-account-properties-claims:
+    - srvNode
+----
+
+A per-tenant override can add to this set but never remove from it.
+
+==== Denylist
+
+A JWT payload is base64, not encrypted — the client reads every claim it carries. Listing a sensitive field would ship it to the browser on every request. This matters more once the list is a per-tenant override: a tenant then holds a lever that used to belong only to the node operator.
+
+`JwtIssuer` enforces a fixed denylist at token issuance, on every issuance path and regardless of whether the list came from static configuration, a per-tenant override, or the required-claims set:
+
+* the configured password property — its name is read from `mongoRealmAuthenticator/prop-password` (default `"password"`), not hardcoded, so a deployment that renames it is still covered
+* `emailVerificationToken`, `emailVerificationCreatedAt`
+* `passwordResetToken`, `passwordResetCreatedAt`
+
+These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds regardless of which layer wrote the list — static YAML, a `TeamConfigInterceptor` override, or a future custom source. The denylist wins over the required-claims set: a credential cannot be made mandatory.
+
+==== Claims reflect the authenticated account
+
+Claims are read from the properties of the account that authenticated the request. What that means depends on how the caller authenticated:
+
+* with credentials (Basic Auth against `mongoRealmAuthenticator`), the properties are the user document, so a field added to the document appears in the next token
+* with an existing JWT, the properties are that token's own claims — a field that was not in it cannot appear in a token derived from it
+
+Renewal is the exception, and the way to pick up a change without asking the user for their password again. On `GET /token?renew` the account is re-read from the users collection, so the renewed token carries the current document — new claims included, and current roles.
+
+When the user cannot be re-read, the token is renewed from its own claims as before: a later expiry, the same data. This is the normal outcome when the token was issued by another node, or by a realm with no users collection behind it, and it is why renewal never fails for lack of a local user. The re-read is also skipped when the token's `authDb` names a realm other than the one the request resolves to — the same principal name in two realms is two different people.
+
+CAUTION: Since RESTHeart 9.7.0. Before it, `?renew` extended the expiry without re-reading, so a token could not pick up a change to its own user document at all.
