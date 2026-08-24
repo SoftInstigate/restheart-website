@@ -1,0 +1,130 @@
+---
+docs_version: 9
+title: RESTHeart Cloud — Stripe billing
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+NOTE: The `stripe` plugin is available from RESTHeart v9.8, and on RESTHeart Cloud from the marketplace.
+
+Your service can take money — recurring subscriptions, or one-time purchases with a catalog and an order ledger — without you running a payment backend.
+
+This page is about getting the plugin onto a **RESTHeart Cloud** service and pointing it at your Stripe account. What the plugin itself does, in depth, is the link:/docs/stripe/overview[restheart-stripe] section: the two modes, the webhook contract, plans and seats, the subscription lifecycle, multi-tenancy.
+
+== Two modes
+
+[cols="1,3"]
+|===
+| Mode | What it gives you
+
+| **Subscriptions**
+| Recurring plans, seat licensing, plan gates in your ACL, the Stripe Customer Portal
+
+| **Products**
+| A catalog collection, cart checkout, an order ledger, and the return page after payment
+|===
+
+Either alone, or both together. They share one set of credentials, one webhook endpoint and one `stripeConfig` block.
+
+== What you need from Stripe
+
+Two values, from **your own** Stripe account:
+
+* a **secret key** — `sk_test_…` while you are building, from https://dashboard.stripe.com/test/apikeys[the API keys page];
+* a **webhook signing secret** — `whsec_…`, from the webhook endpoint you create there, pointed at your service.
+
+WARNING: These are your Stripe account's, not RESTHeart Cloud's. RESTHeart Cloud bills you for the service; your Stripe account bills your customers. The two never mix.
+
+Use test keys until the flow works end to end. Stripe's test card numbers are in https://docs.stripe.com/testing[their testing guide].
+
+== Installing it
+
+From the console: your service → **Plugins**, install **stripe**, then fill in the two secrets under its configuration.
+
+Or, as configuration you keep in git, with link:cli[`rhc`]:
+
+[source,typescript]
+----
+import { defineSetup, step, fromEnv, isRedacted } from '@restheart-cloud/cli';
+
+/** A stored secret reads back as bullets; one never set reads back blank. */
+const configured = (v: unknown) =>
+  isRedacted(v) || (typeof v === 'string' && v.length > 0);
+
+export default defineSetup('Shop', [
+  step('stripe plugin installed', {
+    check: ({ admin, srvId }) => admin.isPluginInstalled(srvId, 'stripe'),
+    apply: ({ admin, srvId }) => admin.installPlugin(srvId, 'stripe'),
+  }),
+
+  step('stripe configured', {
+    async check({ admin, srvId }) {
+      const c = await admin.getPluginConfig(srvId, 'stripe');
+      return configured(c['secret-key']) && configured(c['webhook-secret']);
+    },
+    async apply({ admin, srvId }) {
+      const current = await admin.getPluginConfig(srvId, 'stripe');
+      await admin.updatePluginConfig(srvId, 'stripe', {
+        ...current,
+        'secret-key': configured(current['secret-key'])
+          ? current['secret-key']
+          : fromEnv('STRIPE_SECRET_KEY'),
+        'webhook-secret': configured(current['webhook-secret'])
+          ? current['webhook-secret']
+          : fromEnv('STRIPE_WEBHOOK_SECRET'),
+      });
+    },
+  }),
+
+  step('collections and indexes initialised', {
+    check: ({ service }) => service.collectionExists('transactions'),
+    apply: ({ admin, srvId }) => admin.initPlugin(srvId, 'stripe', 'products'),
+  }),
+]);
+----
+
+Three things worth copying from that:
+
+**Read-modify-write, placeholders untouched.** A configured secret reads back as bullets, and the server restores the stored value for any field still holding one. Diffing the config, or stripping fields that look empty, writes bullets over your real Stripe key.
+
+**`configured()` tells "not set" from "set and hidden".** A blank secret is not redacted, because "not configured" is information you need. That distinction is what lets a re-run need no secrets in the environment at all.
+
+**The initialiser, not you.** `initPlugin` creates the catalog, orders and transactions collections, their indexes and the order schema, and never overwrites what is already there.
+
+== Guests must be allowed to shop
+
+The plugin moves the money; your service's ACL decides who may reach the collections. For a shop that sells to people without accounts, three permissions have to exist, and each fails in a way that does not look like a permissions problem:
+
+[cols="1,2"]
+|===
+| Permission | Symptom when missing
+
+| `GET /catalog` anonymously
+| The shop is empty. No error.
+
+| `POST /orders` anonymously
+| Guest checkout answers `401` at the last click.
+
+| `GET /orders/{id}` anonymously, filtered on `?secret=`
+| The buyer pays, then the return page answers `401` — the one page whose job is to reassure them.
+|===
+
+TIP: Scope the catalog rule with `mongo: { readFilter: { purchasable: true } }`. A catalog document is public the moment the rule exists, so a draft product must not become readable by omission.
+
+The link:https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce[ecommerce starter] has all three written out, along with the success URL that carries the order reference.
+
+== Common mistakes
+
+**Pointing the app at the admin node.** `cloud-api.restheart.com` is RESTHeart Cloud's own control plane and serves no collection of yours, so every `GET /catalog` answers `401` — which reads exactly like a missing permission. Your service's URL is the one on its Connect page.
+
+**A `success-url` that does not match a route in the app.** The buyer pays and lands on a 404. Stripe substitutes `{CHECKOUT_SESSION_ID}`; RESTHeart's plugin also interpolates `{ORDER_ID}` and `{ORDER_SECRET}` — put those in the URL **fragment**, so the secret never reaches a server log or a `Referer` header.
+
+**Renamed collections the client does not know about.** `products.catalog-collection` and `products.orders-collection` are configurable, and the client takes them as parameters rather than assuming. Rename one, tell the client.
+
+== See also
+
+* link:/docs/stripe/overview[restheart-stripe] — the plugin in depth
+* link:/docs/stripe/webhooks[Webhooks] — the endpoint to register with Stripe
+* link:/docs/stripe/plan-gates[Plan Gates & ACL] — gating your API on a subscription
+* link:cli[The `rhc` command line] — keeping the configuration above in git

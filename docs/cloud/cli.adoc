@@ -1,0 +1,148 @@
+---
+docs_version: 9
+title: RESTHeart Cloud — The rhc command line
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+NOTE: `rhc` ships with the 9.8 release of the RESTHeart Cloud kit.
+
+`rhc` configures a service from a file committed to git — collections, indexes, permissions, plugins and their settings — applied the same way from a terminal or a CI pipeline.
+
+[source,bash]
+----
+npm install -g @restheart-cloud/cli
+
+rhc login
+rhc setup --srv ea820b --dry-run
+rhc setup --srv ea820b
+----
+
+== Why a file and not the console
+
+The console is the right tool for looking around and for one-off changes. It is the wrong one for knowledge you need twice.
+
+A service's configuration is a handful of settings that must line up — an ACL that lets guests read a catalog, a plugin's success URL matching a route in the app, a collection name the client also knows. Written down as a checklist, it is performed once by hand and nothing checks it afterwards. Written as a setup file it is runnable, re-runnable, diffable when it changes, and it lives in the same commit as the code it configures.
+
+== Logging in
+
+The credential is a link:tokens[personal access token]. Issue one at https://cloud.restheart.com/me/tokens.
+
+[source,bash]
+----
+rhc login     # prompts for the token; stored 0600 under ~/.config/restheart
+rhc logout    # forgets it here — revoke it in the console to kill it everywhere
+----
+
+`rhc` has no way to accept a password, and that is the design rather than a gap. See link:tokens#personal-access-tokens[why] — briefly: an OAuth user has none, and an account password is far too wide a credential to hand a pipeline.
+
+`rhc login` checks the token against the admin node before storing it. Writing an unverified credential to disk only moves the failure to the next command, where it lands in the middle of something you cared about.
+
+== The setup file
+
+`rhc setup` looks for `./rhc.setup.ts` in the working directory, or the path given by `--file`.
+
+[source,typescript]
+----
+import { defineSetup, step } from '@restheart-cloud/cli';
+
+export default defineSetup('Notes app', [
+  step('notes collection', {
+    check: ({ service }) => service.collectionExists('notes'),
+    apply: ({ service }) => service.createCollection('notes'),
+  }),
+
+  step('authors may read their own notes', {
+    check: ({ service }) => service.permissionExists('authorReadsOwnNotes'),
+    apply: ({ service }) => service.putPermission('authorReadsOwnNotes', {
+      predicate: "path-prefix('/notes') and method(GET)",
+      roles: ['author'],
+      priority: 10,
+    }),
+  }),
+]);
+----
+
+The file imports the package, so the project needs its own copy alongside the global command:
+
+[source,bash]
+----
+npm i -D @restheart-cloud/cli
+----
+
+Two installs for two audiences: the global one gives you `rhc`, and outlives any single project; the local one is what the setup file's imports resolve against, since a global install is not on that path.
+
+=== Every step is a check and an apply
+
+`check` answers "is this already so?" without changing anything. `apply` runs only when the answer was no, and the check runs again afterwards — an apply is never trusted to have worked.
+
+That shape is what makes a run safe to repeat. Against a service already configured, `rhc setup` writes nothing and reports every step satisfied. It is a deploy gate as much as a deploy step.
+
+`--dry-run` runs the checks and stops. It changes nothing and answers the question "what is this service missing".
+
+=== Secrets are named, not held
+
+[source,typescript]
+----
+import { fromEnv } from '@restheart-cloud/cli';
+
+'secret-key': fromEnv('STRIPE_SECRET_KEY'),
+----
+
+`fromEnv` puts the *name* of a variable in the setup file, and resolves it at apply time. A stored secret reads back from the server as bullets, so a step that keeps what is already configured needs no secret in the environment at all — which is what lets a pipeline re-run a setup without every key it once needed.
+
+A missing variable fails by name, and names all of them at once rather than one per run.
+
+=== What a step can reach
+
+`check` and `apply` receive `service` and `admin`. `service` speaks to your service — collections, indexes, permissions, users, schemas — authenticated with a token `rhc` mints for itself; you never handle one. `admin` speaks to RESTHeart Cloud — installing plugins, reading and writing their configuration, running their initialisers.
+
+== From a pipeline
+
+Set `RH_CLOUD_TOKEN` from your platform's secret store. There is no `rhc login` step: the variable **always wins over a stored session**, in that direction and with no condition attached, so a CI run can never quietly fall back to a session left behind on a shared runner.
+
+[source,yaml]
+----
+# .github/workflows/deploy.yml
+- run: npx @restheart-cloud/cli setup --srv ea820b
+  env:
+    RH_CLOUD_TOKEN: ${{ secrets.RH_CLOUD_TOKEN }}
+    STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+----
+
+Never a flag: a credential in a flag is a credential in the shell history, and in the process list of every other user on the machine.
+
+=== Exit codes
+
+[cols="1,4"]
+|===
+| Code | Meaning
+
+| `0` | Every step satisfied or applied
+| `1` | A step failed
+| `2` | A dry run found work outstanding — configuration drift, not an error
+|===
+
+`2` is what makes `--dry-run` useful as a check: a pipeline can fail on drift without applying anything.
+
+== Provisioning is deliberately not here
+
+`rhc setup` cannot create a service, and no setup file can. A setup is re-run on every merge, and a step able to create a service would create one per merge — a step able to create a *paid* one would start a purchase per merge.
+
+The `cli` role enforces this rather than the CLI merely declining: a token cannot start a Stripe Checkout session at all. See link:tokens#it-carries-the-cli-role-not-yours[the `cli` role].
+
+== Troubleshooting
+
+**`rhc` runs something about OpenShift, or fails with `bad interpreter`.** An unrelated `rhc` — Red Hat's OpenShift v2 client, a Ruby gem retired in 2017 — installs a script of the same name, usually in `/usr/local/bin`. Whichever comes first in `PATH` wins. `type -a rhc` shows both; remove the stale one, or reorder `PATH`.
+
+**`Cannot find package '@restheart-cloud/cli' imported from …`.** The setup file resolves its imports from its own directory, and a global install is not on that path. `npm i -D @restheart-cloud/cli` in the project the setup file belongs to.
+
+**A relative import in the setup file does not resolve.** Node loads it as a real ES module and does not guess extensions: write `./config.ts`, not `./config`.
+
+**`Unknown file extension ".ts"`.** Node 22.18 and later strip types on their own. Anything earlier wants `npx tsx`.
+
+== See also
+
+* link:tokens[Tokens] — the credential `rhc` authenticates with
+* https://github.com/SoftInstigate/restheart-cloud-starter-react[the starters] — each ships an `rhc.setup.ts` you can read
