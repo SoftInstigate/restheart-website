@@ -41,13 +41,13 @@ Both live on one page in the console: **your profile → Tokens** (https://cloud
 
 Put briefly: the personal token is **long-lived and narrow**, the service token is **short-lived and wide**. Automation wants the first; poking at a service by hand wants the second.
 
-== Personal access tokens
+== Personal access tokens [[personal-access-tokens]]
 
 A personal access token authenticates *you* to RESTHeart Cloud, so that a machine can manage your services on your behalf.
 
 It exists because a password is the wrong credential for the job, in two ways. If you signed up with Google or GitHub you have no password at all — the OAuth flow returns an httpOnly cookie, not a token, so nothing outside a browser can complete it. And an account password reaches billing and every service you own, and revoking it means changing it everywhere it has been used.
 
-=== It carries the `cli` role, not yours
+=== It carries the `cli` role, not yours [[it-carries-the-cli-role-not-yours]]
 
 A token does not inherit the roles of the person who issued it. It carries a derived role, `cli`, decided by the server.
 
@@ -77,7 +77,7 @@ For the same reason a token cannot pick a team on your behalf: an operation that
 
 See link:cli[The `rhc` command line]. In a pipeline, set `RH_CLOUD_TOKEN` from your platform's secret store; in a terminal, `rhc login` stores it at `~/.config/restheart/session.json`, readable only by you.
 
-== Service admin tokens
+== Service admin tokens [[service-admin-tokens]]
 
 A service admin token is a JWT that authenticates you to **one service** as its administrator. It is what the console itself uses for every management call it makes on your behalf.
 
