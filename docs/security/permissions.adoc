@@ -215,26 +215,53 @@ anonymous visitor is shown a form they cannot possibly complete, because complet
 writing to a user document they do not have. A webhook from a payment provider is refused, and the
 order it was carrying is never updated.
 
-`@roles` answers it:
+`@authenticated` answers it. It is the string `'true'` when the request carries an account and
+`'false'` when it does not:
 
 [source,text]
 ----
 # only applies to callers who are signed in
-not in(value='$unauthenticated', array=@roles)
+equals(@authenticated, 'true')
 
 # only applies to anonymous ones
-in(value='$unauthenticated', array=@roles)
-
-# only applies to staff
-in(value='staff', array=@roles)
+equals(@authenticated, 'false')
 ----
 
-`$unauthenticated` is the same name `mongoAclAuthorizer` uses for a request with no account, so
-permissions and predicates speak of anonymity in one vocabulary rather than two.
+`@roles` is the caller's roles as an array, for deciding *which* signed-in callers a rule is about:
+
+[source,text]
+----
+# only applies to staff
+in(value='staff', array=@roles)
+
+# only applies to callers who are neither staff nor admin
+not in(value='staff', array=@roles) and not in(value='admin', array=@roles)
+----
+
+[WARNING]
+====
+Do not test for anonymity through `@roles`. `@roles` does resolve to `["$unauthenticated"]` for a
+request with no account — the name `mongoAclAuthorizer` uses — but the comparison cannot be
+written, because `$` is Undertow's sigil for an exchange attribute:
+
+[source,text]
+----
+# BROKEN — never matches, not even for an anonymous caller
+in(value='$unauthenticated', array=@roles)
+----
+
+`'$unauthenticated'` in a value position is read as an *attribute* of that name, resolves to
+nothing, and the comparison is false for everybody. The negated form is the dangerous one:
+`not in(value='$unauthenticated', array=@roles)` is true for every request, so a rule meant to skip
+anonymous callers applies to all of them — the opposite of what it says, and it fails silently.
+
+Use `equals(@authenticated, 'true')` instead.
+====
 
 NOTE: An authenticated account holding no roles resolves to an empty array, not to
 `$unauthenticated`. The two are different — an API key naming no roles is still a credential, and a
-rule written for guests must not apply to it.
+rule written for guests must not apply to it. This is also why `@roles` cannot stand in for
+`@authenticated`: an empty array says nothing about whether anyone is signed in.
 
 [options="header"]
 [cols="2,3"]
@@ -242,8 +269,10 @@ rule written for guests must not apply to it.
 |Variable |Description
 |`@user`
 |Properties of authenticated user (e.g., `@user._id`, `@user.userid`, `@user.email`)
+|`@authenticated`
+|`'true'` when the request carries an account, `'false'` when it does not. Available from RESTHeart 9.8.
 |`@roles`
-|The caller's roles, as an array — `["$unauthenticated"]` when nobody is signed in. Available from RESTHeart 9.8.
+|The caller's roles, as an array. Use it for role names; it cannot test for anonymity — see <<Telling an anonymous caller apart>>. Available from RESTHeart 9.8.
 |`@request`
 |Request properties (e.g., `@request.remoteIp`)
 |`@request.body`

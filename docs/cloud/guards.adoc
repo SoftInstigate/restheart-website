@@ -68,8 +68,11 @@ Conditions use the RESTHeart predicate language — the same one used by link:ma
 | `@user`
 | The authenticated account. `@user.email`, `@user.latestConsents.tos`, and so on. Sub-documents are addressed with dots.
 
+| `@authenticated`
+| `'true'` when the caller is signed in, `'false'` when they are not. See <<Rules That Should Not Apply To Anonymous Callers>>.
+
 | `@roles`
-| The caller's roles, as an array — `["$unauthenticated"]` when nobody is signed in. See <<Rules that should not apply to anonymous callers>>.
+| The caller's roles, as an array — for scoping a rule to `staff`, say. It cannot test for anonymity; `@authenticated` does that.
 
 | `@team`
 | The document of the user's currently active team, from the `teams` collection.
@@ -114,11 +117,11 @@ false, and acts. The consequences do not look like each other:
 * a webhook from a payment provider is refused, so the customer's payment succeeds and the order it
   would have updated stays pending — with nothing, anywhere, reporting a problem.
 
-Guard the rule with `@roles`:
+Guard the rule with `@authenticated`:
 
 [source,text]
 ----
-not in(value='$unauthenticated', array=@roles)
+equals(@authenticated, 'true')
   and not (equals(@user.latestConsents.tos, '2026-07-01')
            and equals(@user.latestConsents.pp, '2026-07-01'))
 ----
@@ -127,8 +130,25 @@ The alternative — excluding every public path by name, alongside `/auth` and `
 the list is invisible until it is wrong, and it grows every time something else becomes reachable
 without an account, including endpoints a plugin registers on its own.
 
-NOTE: `@roles` is available from RESTHeart 9.8. On earlier versions, naming the paths is the only
-option.
+[WARNING]
+====
+`@roles` will not do this job, however natural it looks. It does resolve to `["$unauthenticated"]`
+for a caller with no account, but `$` is Undertow's sigil for an exchange attribute, so
+`'$unauthenticated'` written as a value is read as an attribute of that name and resolves to
+nothing:
+
+[source,text]
+----
+# BROKEN — true for every request, anonymous ones included
+not in(value='$unauthenticated', array=@roles)
+----
+
+A rule guarded that way applies to everybody, which is the opposite of what it says, and nothing
+reports it: the condition parses, saves, and validates. Use `equals(@authenticated, 'true')`.
+====
+
+NOTE: `@authenticated` and `@roles` are available from RESTHeart 9.8. On earlier versions, naming
+the paths is the only option.
 
 === `@user` Only Sees What Is in the Token
 
