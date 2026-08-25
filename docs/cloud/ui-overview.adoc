@@ -76,7 +76,11 @@ All management operations performed by the Cloud UI use a short-lived **Admin JW
 
 * The token is injected automatically as `Authorization: Bearer <token>` on every API call the UI makes to your service instance.
 * It is separate from the end-user credentials stored in the `users` collection and has broader administrative permissions.
-* You do **not** need to manage this token yourself — the UI handles its lifecycle, including renewal when it expires.
+* You do **not** need to manage this token yourself for anything the console does — it handles the lifecycle, including renewal when it expires.
+
+You can also ask for one deliberately, when you want to call the service by hand from a terminal: the service's **Connect** page hands you one alongside a ready-made `curl` line, and the link:tokens[Tokens] page does too if you would rather pick the service from a list. It lasts fifteen minutes either way.
+
+For automation, this is the wrong credential — fifteen minutes is not a pipeline. That is a link:tokens#personal-access-tokens[personal access token], which the link:cli[`rhc` CLI] authenticates with.
 
 NOTE: The Admin JWT cannot be used to authenticate WebSocket Change Stream connections. Only regular users registered in the `users` collection can authenticate WebSocket connections. See link:change-streams#authentication[Change Streams — Authentication] for details.
 

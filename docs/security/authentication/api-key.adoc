@@ -79,6 +79,18 @@ That makes a key **deny-by-default**: a permission written for `user` does not m
 
 This is what lets you issue a credential that is narrower than the person holding it. A key with a role your permissions never grant to billing or account management cannot perform those operations, whatever its owner could do from a browser.
 
+==== Identity comes from `prop-principal`, and travels as `_id`
+
+The account is built with the value of `prop-principal` as its name, and that same value as `_id` in its **account properties** — which is what everything downstream reads when it asks who is calling:
+
+[source,text]
+----
+equals(@user._id, ${userId})        # an ACL permission
+{ "$arg": ["@user._id", null] }     # a GraphQL mapping
+----
+
+So a permission or a query written for password-authenticated users works unchanged for a key. Nothing else from the key document travels: the document holds the hash, and it is yours to shape, so whatever else is in it was not written with an ACL predicate in mind.
+
 ==== Hashing
 
 Keys are hashed with SHA-256, not bcrypt.

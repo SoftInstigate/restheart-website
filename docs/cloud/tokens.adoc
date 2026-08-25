@@ -1,0 +1,99 @@
+---
+docs_version: 9
+title: RESTHeart Cloud — Tokens
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+NOTE: Personal access tokens are available from RESTHeart Cloud's 9.8 release, which is the next one and is not out yet.
+
+You hold two kinds of credential, and the hard part is knowing which one a job wants. They are not two flavours of the same thing.
+
+Both live on one page in the console: **your profile → Tokens** (https://cloud.restheart.com/me/tokens).
+
+== Which one do I need?
+
+[cols="1,2,2"]
+|===
+| | Personal access token | Service admin token
+
+| **What it is for**
+| The `rhc` command line and CI pipelines
+| Calling one service's API by hand — curl, a REST client, a quick script
+
+| **Lasts**
+| 30 days to a year, until you revoke it
+| 15 minutes, then it is simply gone
+
+| **Reaches**
+| Your services' *configuration*, through RESTHeart Cloud
+| One service, with full administrator rights *inside* it
+
+| **Cannot**
+| Buy or cancel a service, change your account, manage your team
+| Touch RESTHeart Cloud itself, or any other service
+
+| **You keep it**
+| In a secret store, or in `~/.config/restheart`
+| Nowhere — generate one when you need it
+|===
+
+Put briefly: the personal token is **long-lived and narrow**, the service token is **short-lived and wide**. Automation wants the first; poking at a service by hand wants the second.
+
+== Personal access tokens [[personal-access-tokens]]
+
+A personal access token authenticates *you* to RESTHeart Cloud, so that a machine can manage your services on your behalf.
+
+It exists because a password is the wrong credential for the job, in two ways. If you signed up with Google or GitHub you have no password at all — the OAuth flow returns an httpOnly cookie, not a token, so nothing outside a browser can complete it. And an account password reaches billing and every service you own, and revoking it means changing it everywhere it has been used.
+
+=== It carries the `cli` role, not yours [[it-carries-the-cli-role-not-yours]]
+
+A token does not inherit the roles of the person who issued it. It carries a derived role, `cli`, decided by the server.
+
+That makes it **deny-by-default**. A permission written for `user` does not match an account whose only role is `cli`, so a token reaches only what has been granted to it deliberately. Getting the grants wrong yields a token that cannot do enough — never one that can do too much.
+
+In practice a token can read the plugin catalog, read and change plugin configuration, run GraphQL queries, mint a service admin token for a service you own, and provision a free service. It cannot start a Stripe Checkout session, cancel a subscription, read invoices, change your account, or manage your team.
+
+TIP: The role is not a parameter. Every token is issued with `cli`, because an endpoint that let the caller choose its own role would be self-service privilege escalation.
+
+=== Issuing and revoking
+
+Give the token a name and an expiry, and copy it — **the clear value is shown once and never again**. Only a hash is stored, so a leaked database is not a leak of every token, and a lost token is revoked and reissued rather than recovered.
+
+The default expiry is 90 days. Not "never": a token that does not expire is a token nobody revokes.
+
+The listing shows each token's name, when it was created, when it expires, and **when it was last used**. That last column is the one that earns its place — the question is rarely "which tokens exist" but "which of these six have I forgotten about".
+
+Revoking takes effect within about a minute, the lifetime of the authenticator's cache.
+
+=== A token carries no team
+
+Removing you from a team disables your tokens against that team's services at once, without revoking anything — membership is read live, not frozen into the token when it was issued.
+
+For the same reason a token cannot pick a team on your behalf: an operation that needs one names it. `rhc new free --org <id>` is explicit at the point of call rather than implicit in the credential.
+
+=== Using one
+
+See link:cli[The `rhc` command line]. In a pipeline, set `RH_CLOUD_TOKEN` from your platform's secret store; in a terminal, `rhc login` stores it at `~/.config/restheart/session.json`, readable only by you.
+
+== Service admin tokens [[service-admin-tokens]]
+
+A service admin token is a JWT that authenticates you to **one service** as its administrator. It is what the console itself uses for every management call it makes on your behalf.
+
+It lasts **15 minutes** and there is nowhere to store it. Generate one, use it, let it expire.
+
+You can get one from two places:
+
+* the service's **Connect** page, alongside the ready-made `curl` line for that service;
+* the **Tokens** page, if you would rather pick the service from a list.
+
+Inside that service it can do anything an administrator can. Outside it, nothing: it says nothing about RESTHeart Cloud, and nothing about your other services.
+
+NOTE: A service admin token cannot authenticate a WebSocket change stream. Only users registered in the service's own `users` collection can. See link:change-streams#authentication[Change Streams — Authentication].
+
+== Which to reach for
+
+* Setting up a service from a terminal or a pipeline → **personal access token**, through `rhc`.
+* One-off `curl` against a service you are exploring → **service admin token**.
+* An application your users log into → **neither**. Those are your service's own users, in its `users` collection. See link:managing-users[User Management].
