@@ -68,6 +68,9 @@ Conditions use the RESTHeart predicate language — the same one used by link:ma
 | `@user`
 | The authenticated account. `@user.email`, `@user.latestConsents.tos`, and so on. Sub-documents are addressed with dots.
 
+| `@roles`
+| The caller's roles, as an array — `["$unauthenticated"]` when nobody is signed in. See <<Rules that should not apply to anonymous callers>>.
+
 | `@team`
 | The document of the user's currently active team, from the `teams` collection.
 
@@ -96,6 +99,36 @@ path-prefix('/admin') and not equals(@team.role, 'owner')
 ----
 
 TIP: The **Guards** page validates every condition against the server's predicate parser before saving. A condition that does not parse cannot be saved.
+
+=== Rules That Should Not Apply To Anonymous Callers
+
+A request that is unauthenticated on purpose reaches the guards — the ACL permitted it, so the
+rules get their say. That is what makes "registration is closed" possible, and it is also the
+sharpest edge in writing conditions.
+
+A rule keyed on a user's state runs the same comparison for a caller who has no user, finds it
+false, and acts. The consequences do not look like each other:
+
+* an anonymous visitor browsing a public page is blocked and shown an acceptance form they cannot
+  complete, because accepting means writing to a user document they do not have;
+* a webhook from a payment provider is refused, so the customer's payment succeeds and the order it
+  would have updated stays pending — with nothing, anywhere, reporting a problem.
+
+Guard the rule with `@roles`:
+
+[source,text]
+----
+not in(value='$unauthenticated', array=@roles)
+  and not (equals(@user.latestConsents.tos, '2026-07-01')
+           and equals(@user.latestConsents.pp, '2026-07-01'))
+----
+
+The alternative — excluding every public path by name, alongside `/auth` and `/token` — works, but
+the list is invisible until it is wrong, and it grows every time something else becomes reachable
+without an account, including endpoints a plugin registers on its own.
+
+NOTE: `@roles` is available from RESTHeart 9.8. On earlier versions, naming the paths is the only
+option.
 
 === `@user` Only Sees What Is in the Token
 

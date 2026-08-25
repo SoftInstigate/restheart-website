@@ -203,12 +203,47 @@ Use `gte`/`lte` rather than `equals` whenever you compare numbers: `equals` comp
 
 Predicates can reference dynamic values using special variables:
 
+==== Telling an anonymous caller apart
+
+A permission says who it is for with `roles`, and needs nothing else. A *predicate* had no way to
+ask — which matters wherever a predicate is used to decide whether a rule applies at all, such as a
+link:/docs/cloud/guards[Guards] condition.
+
+The failure is quiet. A rule keyed on a user's state — "has this person accepted the current
+terms?" — runs the same comparison for a caller who has no user, finds it false, and acts on it. An
+anonymous visitor is shown a form they cannot possibly complete, because completing it means
+writing to a user document they do not have. A webhook from a payment provider is refused, and the
+order it was carrying is never updated.
+
+`@roles` answers it:
+
+[source,text]
+----
+# only applies to callers who are signed in
+not in(value='$unauthenticated', array=@roles)
+
+# only applies to anonymous ones
+in(value='$unauthenticated', array=@roles)
+
+# only applies to staff
+in(value='staff', array=@roles)
+----
+
+`$unauthenticated` is the same name `mongoAclAuthorizer` uses for a request with no account, so
+permissions and predicates speak of anonymity in one vocabulary rather than two.
+
+NOTE: An authenticated account holding no roles resolves to an empty array, not to
+`$unauthenticated`. The two are different — an API key naming no roles is still a credential, and a
+rule written for guests must not apply to it.
+
 [options="header"]
 [cols="2,3"]
 |===
 |Variable |Description
 |`@user`
 |Properties of authenticated user (e.g., `@user._id`, `@user.userid`, `@user.email`)
+|`@roles`
+|The caller's roles, as an array — `["$unauthenticated"]` when nobody is signed in. Available from RESTHeart 9.8.
 |`@request`
 |Request properties (e.g., `@request.remoteIp`)
 |`@request.body`
