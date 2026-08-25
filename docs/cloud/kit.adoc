@@ -1,0 +1,174 @@
+---
+docs_version: 9
+title: RESTHeart Cloud — The Cloud Kit
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+RESTHeart Cloud gives you a backend without writing one. The **Cloud Kit** is the other half: the
+client code that talks to it — sign-up, sign-in, email verification, password reset, teams and
+invitations, and, for an app that sells something, subscriptions and orders.
+
+[source,bash]
+----
+npm install @restheart-cloud/kit
+----
+
+[source,typescript]
+----
+import { checkSession, login, logout } from '@restheart-cloud/kit';
+
+const config = { apiBaseUrl: 'https://ea820b.eu-central-1-free-1.restheart.com' };
+
+const user = await checkSession(config);   // UserInfo, or null
+await login(config, 'user@example.com', 'secret');
+await logout(config);
+----
+
+That is the whole shape of it. Every function takes the same `config` as its first argument, so
+nothing is initialised, registered, or held in a module global.
+
+== Why not just `fetch`
+
+Because none of these flows is one request.
+
+Signing up is a `POST`, an email, a verification link that lands on a different origin, a redirect
+carrying a token in a URL fragment, and a token to store. A session is a JWT that expires in
+fifteen minutes and has to be renewed before it does, from a timer that survives a backgrounded
+tab. A checkout is a redirect to Stripe, a return to a page that knows which order came back, and a
+webhook that may arrive after the customer does.
+
+The kit is the accumulated shape of those flows, against `restheart-accounts` and
+`restheart-stripe` as RESTHeart Cloud runs them. It has no dependencies of its own and no opinion
+about your framework.
+
+== The packages
+
+[cols="1,3"]
+|===
+| Package | What it adds
+
+| `@restheart-cloud/kit`
+| The core. Plain TypeScript, zero dependencies, works with any framework or none. Everything below is built on it.
+
+| `@restheart-cloud/kit-ng`
+| Angular — `provideRhAuth()`, `RhAuthService` and `RhPaymentsService` on signals, route guards, and an HTTP interceptor that attaches the token and clears the session on `401`.
+
+| `@restheart-cloud/kit-react`
+| React — `RhAuthProvider`, `useAuth()`, `usePayments()`, route guards. A `/next` subpath adds Next.js: middleware refresh, a first-party session cookie, the fragment→cookie bridge, and server actions.
+
+| `@restheart-cloud/kit-vue`
+| Vue — `createRhAuth()`, `useAuth()`, `usePayments()`, navigation guards. A `/nuxt` subpath does for Nuxt what `/next` does for Next.
+|===
+
+An adapter is a wrapper, not a fork: the same functions, exposed the way that framework expects
+state to arrive. Payments are a separate surface from auth in each of them, because a subscription
+is not a session — it loads on sign-in, reloads on team switch, and stays untouched when the
+service has no `stripe` plugin.
+
+Angular and Vue want the core installed alongside; React and Vue pull it in as a regular
+dependency. Each package's README has the exact line.
+
+== Setting it up
+
+Angular, in `app.config.ts`:
+
+[source,typescript]
+----
+providers: [provideRhAuth({ apiBaseUrl: environment.apiUrl })]
+----
+
+React, near the root:
+
+[source,tsx]
+----
+<RhAuthProvider config={{ apiBaseUrl: import.meta.env.VITE_API_URL }}>
+  <App />
+</RhAuthProvider>
+----
+
+Vue, in `main.ts`:
+
+[source,typescript]
+----
+const rhAuth = createRhAuth({ apiBaseUrl: import.meta.env.VITE_API_URL });
+app.use(rhAuth);
+router.beforeEach(rhAuth.authGuard);
+----
+
+In all three the session is restored once at start-up, before the first guard runs, so a page
+reload does not bounce a signed-in user to the login page. Until that settles, `initializing` is
+true — render a spinner on it, not a redirect.
+
+== Sessions
+
+The token is a JWT with a fifteen-minute life. The kit schedules a renewal at 80% of its TTL, so a
+tab left open stays signed in without the app or the user noticing. If it does expire — a sleeping
+laptop, a tab backgrounded for an hour — the next call gets a `401` and the session is cleared: the
+user sees "signed out" rather than a silent failure.
+
+=== Bearer, not cookie
+
+[WARNING]
+====
+The kit supports two modes, and for a RESTHeart Cloud service only one of them works.
+
+**Bearer** (the default) keeps the token in `localStorage` and sends
+`Authorization: Bearer <token>`. It works cross-origin.
+
+**Cookie** mode has the server manage an HttpOnly JWT cookie, and needs the app and the service to
+share an origin. Your service lives on `*.restheart.com` and your app does not, so that cookie is
+*third-party* on every request the page makes — blocked by default in Safari and Firefox, and the
+user's choice in Chrome. **No CORS configuration changes this**: the browser drops the cookie
+before CORS is consulted.
+
+Stay on `'bearer'` unless the app is served from the service's own origin.
+====
+
+Next.js and Nuxt are the exception that proves the rule: their cookie is a *first-party* one, set
+by your own server and holding the same bearer token. It needs no cookie support from RESTHeart at
+all. That is what the `/next` and `/nuxt` subpaths are for.
+
+== What it covers
+
+**Accounts** — `register`, `verify`, `login`, `logout`, `checkSession`, `getUserInfo`,
+`renewToken`, `forgotPassword`, `resetPassword`, `changePassword`, `updateProfile`. The flows
+documented under link:/docs/accounts/overview[Sign-up, OAuth & Invitations], with the redirects and
+token deliveries already handled.
+
+**Teams** — `getTeams`, `switchTeam`, `createTeam`, `listTeamMembers`, `updateMemberRole`,
+`removeMember`, and the invitation half: `invite`, `getInvitation`, `activate`, `acceptInvite`,
+`resendInvite`. Switching teams mints a new token, since the team is a claim in the old one.
+
+**Consents** — `acceptConsents`, for the terms-and-privacy pattern. Pairs with
+link:guards[Guards], which is what makes acceptance mandatory server-side rather than a dialog the
+client can be talked out of showing.
+
+**Payments** — `getPlans`, `createCheckoutSession`, `openBillingPortal`, `getSubscription`,
+`waitForSubscription`, and seat licences with `getLicenses` / `grantLicense` / `revokeLicense`.
+For a shop rather than a subscription: `getCatalog`, `createOrder`, `getOrder`, `waitForOrder`,
+`readOrderRef`. No Stripe.js and no publishable key — every Stripe page is hosted, so the kit hands
+you a URL to navigate to. See link:stripe[Stripe Billing] for the service side.
+
+`waitForOrder` exists because the customer's browser usually beats Stripe's webhook back to your
+site. It rejects with a distinct `WaitTimeoutError`, so a late webhook renders as "still
+confirming" rather than as a failed payment.
+
+Errors arrive as `{ status, message }` — an `ApiError`, thrown, with the server's own sentence in
+it.
+
+== A note on the users collection
+
+`register` sends whatever you give it. If the service's `users` collection has a JSON Schema, extra
+fields are validated against it; if it has none, the server **silently drops** them and still
+answers `201`. A profile field that never appears is usually this, and not the kit.
+
+== See also
+
+* link:cli[The `rhc` CLI] — the other half of a starter: the service the kit talks to, configured from a file in git
+* link:tokens[Tokens] — what a service token reaches, and what it does not
+* link:stripe[Stripe Billing] — the `stripe` plugin, its keys, and the permissions a guest checkout needs
+* link:guards[Guards] — server-side rules the client cannot skip
+* link:full-stack-example[Full-Stack Example] — a complete app built on the kit
+* https://github.com/SoftInstigate/restheart-cloud-kit[restheart-cloud-kit] — the monorepo; each package's README carries the full API

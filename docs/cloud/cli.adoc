@@ -40,6 +40,51 @@ rhc logout    # forgets it here — revoke it in the console to kill it everywhe
 
 `rhc login` checks the token against the admin node before storing it. Writing an unverified credential to disk only moves the failure to the next command, where it lands in the middle of something you cared about.
 
+== Commands and options
+
+[cols="1,3"]
+|===
+| Command | What it does
+
+| `rhc login`
+| Store a personal access token for later commands.
+
+| `rhc logout`
+| Forget the stored token.
+
+| `rhc setup`
+| Bring a service to the state the setup file describes.
+|===
+
+[cols="1,3"]
+|===
+| Option | Meaning
+
+| `--srv <id>`
+| The service to set up. Required.
+
+| `--file <path>`
+| A module exporting a setup — a default export, or one named `setup`. A function export is called with no arguments. Defaults to `./rhc.setup.ts`.
+
+| `--dry-run`
+| Run every check, apply nothing, write nothing.
+
+| `--force <name>`
+| Apply the steps whose name contains `<name>` without asking their check first. Repeatable. See <<forcing-a-step,below>>.
+
+| `--json`
+| Emit the report as JSON instead of a step list — for a pipeline that wants to read it.
+
+| `--api <url>`
+| The admin node. You will not need this.
+
+| `--version`, `-v`
+| Print the version and exit.
+
+| `--help`
+| The same summary, from the command itself.
+|===
+
 == The setup file [[the-setup-file]]
 
 `rhc setup` looks for `./rhc.setup.ts` in the working directory, or the path given by `--file`.
@@ -81,6 +126,32 @@ Two installs for two audiences: the global one gives you `rhc`, and outlives any
 That shape is what makes a run safe to repeat. Against a service already configured, `rhc setup` writes nothing and reports every step satisfied. It is a deploy gate as much as a deploy step.
 
 `--dry-run` runs the checks and stops. It changes nothing and answers the question "what is this service missing".
+
+=== Forcing a step [[forcing-a-step]]
+
+A check answers "does this exist?", and existing is not the same as being right. Edit a
+permission's predicate under the id it already had, or rewrite a schema under the same name, and
+the check still says yes — so the run reports the step satisfied and your change never reaches the
+service.
+
+`--force` names the steps to apply without asking first:
+
+[source,bash]
+----
+rhc setup --srv ea820b --force 'consents gate'
+rhc setup --srv ea820b --force catalog --force orders
+----
+
+The match is case-insensitive and on a substring, so a fragment of the step's name is enough. It
+skips the question, never the verification: the re-check still runs, and a forced step that did not
+work is reported failed like any other.
+
+CAUTION: Bare `--force`, with no name, takes every step — and that is usually the wrong tool. An
+apply written to run once may not survive running twice, and a step that seeds sample data will
+seed it again over whatever is there now. A check is partly what keeps those from happening.
+
+The honest fix, when a check keeps missing a change, is to deepen the check — compare the stored
+predicate, not merely its id. `--force` is what you reach for meanwhile.
 
 === Secrets are named, not held
 
@@ -145,5 +216,6 @@ The `cli` role enforces this rather than the CLI merely declining: a token canno
 
 == See also
 
+* link:kit[The Cloud Kit] — the other half: the client code that talks to the service `rhc` configures
 * link:tokens[Tokens] — the credential `rhc` authenticates with
 * https://github.com/SoftInstigate/restheart-cloud-starter-react[the starters] — each ships an `rhc.setup.ts` you can read
