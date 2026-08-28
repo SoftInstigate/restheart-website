@@ -155,6 +155,32 @@ you a URL to navigate to. See link:stripe[Stripe Billing] for the service side.
 site. It rejects with a distinct `WaitTimeoutError`, so a late webhook renders as "still
 confirming" rather than as a failed payment.
 
+**Cart** — lines, quantities, subtotal and persistence, which is the same code every shop was
+about to write. The logic is pure and takes the lines it works on, so each framework wraps it
+rather than reimplementing it: `useCart()` in React and Vue, `RhCartService` in Angular.
+
+[source,tsx]
+----
+const cart = useCart();
+
+cart.add({ productId: 'tee-classic/yellow-l', name: 'Classic T-shirt',
+           unitAmount: 2500, options: { colour: 'yellow', size: 'L' } });
+
+await createOrder(config, cart.orderItems);
+----
+
+`orderItems` is the cart in the shape `createOrder` takes. Names, prices and pictures stay behind —
+the service reads those from its own catalog — but the chosen **options travel, as the line's
+`metadata`**. They are the one thing the service cannot work out for itself: a reference like
+`tee-classic/yellow-l` says which row of the catalog was bought, and the seller reading the order
+wants "yellow, L" in fields rather than decoded out of an id.
+
+The cart is deliberately independent of the session: it needs no `AuthConfig` and no auth provider,
+because a shop that asks people to sign in before it will hold a basket loses most of them at that
+door. It becomes an order — which does need a config — at `createOrder`. It lives in
+`localStorage`, so a reload does not empty it; pass a `storageKey` when two of your apps share an
+origin.
+
 Errors arrive as `{ status, message }` — an `ApiError`, thrown, with the server's own sentence in
 it.
 

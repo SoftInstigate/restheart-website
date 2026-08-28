@@ -110,11 +110,70 @@ The plugin moves the money; your service's ACL decides who may reach the collect
 | The buyer pays, then the return page answers `401` — the one page whose job is to reassure them.
 |===
 
-TIP: Scope the catalog rule with `mongo: { readFilter: { purchasable: true } }`. A catalog document is public the moment the rule exists, so a draft product must not become readable by omission.
+TIP: Scope the catalog rule with a `readFilter`. A catalog document is public the moment the rule exists, so a draft product must not become readable by omission. Filtering on `{ purchasable: true }` alone is not enough once you sell variants — see below.
+
+[source,javascript]
+----
+mongo: {
+  readFilter: {
+    $or: [
+      { purchasable: true },
+      { variants: { $elemMatch: { purchasable: { $ne: false } } } }
+    ]
+  }
+}
+----
 
 The link:https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce[ecommerce starter] has all three written out, along with the success URL that carries the order reference.
 
+== Variants, and what is on the shelf
+
+A product with options — colours, sizes — carries them **inside its own document**, as `variants`. There is no second collection and no product-per-combination:
+
+[source,json]
+----
+{
+  "_id": "tee-classic",
+  "name": "Classic T-shirt",
+  "description": "Heavyweight cotton",
+  "images": ["https://…/tee.jpg"],
+  "currency": "eur",
+  "variants": [
+    { "id": "yellow-l",
+      "unit_amount": 2500,
+      "purchasable": true,
+      "in_stock": 12,
+      "images": ["https://…/tee-yellow.jpg"],
+      "metadata": { "colour": "yellow", "size": "L" } }
+  ]
+}
+----
+
+Five rules, and that is the whole model:
+
+. A document **without** `variants` is bought as itself. Most products have no variants, and making them declare a list of one would be ceremony.
+. A document **with** `variants` is not buyable; its variants are. The document carries what they share — name, description, images.
+. A variant is referenced as **`<product-id>/<variant-id>`**: `tee-classic/yellow-l`. That is a `productId` like any other in `POST /orders`, so a client never needs to know there are two shapes.
+. Variant ids are unique **inside their document** and nowhere else. Nothing to keep straight across the catalog.
+. A variant inherits every field it does not declare. Price and stock sit in fields beside the metadata, never inside it.
+
+`metadata` is labels: it describes, it does not define. Whatever keys you choose reach the order line, the Stripe dashboard, the receipt and the invoice, and your email templates can read them by name — `{{colour}}` if that is what you called it. At most 50 keys, keys under 40 characters, values under 500, which are Stripe's limits.
+
+=== `in_stock` is optional, and nothing is reserved
+
+`in_stock` goes on the variant, or on the product when it has none. **Leave it out and the item is uncounted**, which is the right default for most of what a small shop sells.
+
+A cart holds no claim on anything. The units come off when the payment lands, in one atomic update per line — so two people *can* buy the last one, and both payments succeed. The order that pushed the count below zero is marked `oversold: true`, and you refund it from the Stripe dashboard, which arrives back as `charge.refunded` and is already handled.
+
+That is a trade, made deliberately. Reserving would mean an endpoint, a server-issued token, a per-cart cap, a rate limit, expiry arithmetic and a cart that stops being client-side — to prevent two people wanting the last unit within the same half hour. Overselling costs a fee and an apologetic email and is paid rarely; the machinery would be paid always. What the atomic decrement buys is that the case is **visible**: nobody refunds what nobody noticed.
+
+Checkout still refuses what already reads zero, so this only leaves the window between that check and the payment.
+
+NOTE: Nothing puts stock back. A refund happens outside the system — the goods may return, return broken, or never return — so restocking and correcting after a refund are both a person's job, from the console.
+
 == Common mistakes
+
+**Filtering the catalog on `purchasable` alone.** A product with variants carries no top-level `purchasable` — the flag is on each variant, because that is where the decision belongs. A missing field does not match, so `{ purchasable: true }` hides every product that has options, and the shop simply renders without them. Nothing errors.
 
 **Pointing the app at the admin node.** `cloud-api.restheart.com` is RESTHeart Cloud's own control plane and serves no collection of yours, so every `GET /catalog` answers `401` — which reads exactly like a missing permission. Your service's URL is the one on its Connect page.
 
