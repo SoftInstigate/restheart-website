@@ -1,0 +1,36 @@
+{% comment %}
+  JSON-LD TechArticle schema for documentation pages.
+  Include in docs.html and docs-adoc.html layouts.
+{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "{{ page.title | escape }}",
+  "description": "{{ page.excerpt | strip_html | strip_newlines | truncate: 160 | escape | default: site.description }}",
+  "url": "{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}",
+  "datePublished": "{{ page.date | default: site.time | date_to_xmlschema }}",
+  "dateModified": "{{ site.time | date_to_xmlschema }}",
+  "author": {
+    "@type": "Organization",
+    "name": "SoftInstigate",
+    "url": "https://softinstigate.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SoftInstigate",
+    "url": "https://softinstigate.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://restheart.org/images/restheart_social_preview_1200x630.png"
+    }
+  },
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "RESTHeart",
+    "applicationCategory": "DeveloperApplication",
+    "softwareVersion": "{{ page.docs_version | default: '9' }}"
+  },
+  "proficiencyLevel": "Beginner"
+}
+</script>

@@ -1,0 +1,35 @@
+{% comment %}
+  Generates JSON-LD BreadcrumbList based on page.url.
+  Automatically builds crumbs from the URL path.
+{% endcomment %}
+{% assign crumbs = page.url | split: '/' %}
+{% if crumbs.size > 1 %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://restheart.org/"
+    }
+    {% assign pos = 2 %}
+    {% assign path = "" %}
+    {% for crumb in crumbs %}
+      {% if crumb != "" %}
+        {% assign path = path | append: '/' | append: crumb %}
+        ,{
+          "@type": "ListItem",
+          "position": {{ pos }},
+          "name": "{{ crumb | replace: '-', ' | replace: '_', ' | capitalize }}",
+          "item": "https://restheart.org{{ path }}/"
+        }
+        {% assign pos = pos | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}

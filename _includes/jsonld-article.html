@@ -1,0 +1,33 @@
+{% comment %}
+  JSON-LD Article schema for blog posts.
+  Include in post.html layout.
+{% endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title | escape }}",
+  "description": "{{ page.excerpt | strip_html | strip_newlines | truncate: 160 | escape }}",
+  "url": "{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  {% if page.last_modified_at %}"dateModified": "{{ page.last_modified_at | date_to_xmlschema }}",{% else %}"dateModified": "{{ page.date | date_to_xmlschema }}",{% endif %}
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "{{ page.author | default: 'SoftInstigate' }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SoftInstigate",
+    "url": "https://softinstigate.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://restheart.org/images/restheart_social_preview_1200x630.png"
+    }
+  },
+  "image": "https://restheart.org/images/restheart_social_preview_1200x630.png"
+}
+</script>
