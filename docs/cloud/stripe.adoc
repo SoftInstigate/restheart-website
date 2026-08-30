@@ -8,41 +8,90 @@ applies_to: cloud
 
 NOTE: The `stripe` plugin is available from RESTHeart v9.8, and on RESTHeart Cloud from the marketplace.
 
-Your service can take money — recurring subscriptions, or one-time purchases with a catalog and an order ledger — without you running a payment backend.
+Take payments from your service without writing a payment backend.
 
-This page is about getting the plugin onto a **RESTHeart Cloud** service and pointing it at your Stripe account. What the plugin itself does, in depth, is the link:/docs/stripe/overview[restheart-stripe] section: the two modes, the webhook contract, plans and seats, the subscription lifecycle, multi-tenancy.
+Two things you can sell:
 
-== Two modes
+* **Products** — a catalog, a cart, card payment, and an order you can look up afterwards.
+* **Subscriptions** — recurring plans, seats, and the Stripe billing portal.
 
-[cols="1,3"]
-|===
-| Mode | What it gives you
+Either one, or both. They share the same keys and the same webhook.
 
-| **Subscriptions**
-| Recurring plans, seat licensing, plan gates in your ACL, the Stripe Customer Portal
+TIP: Want a working shop to copy? The https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce[ecommerce starter] is one, set up by a single `rhc setup` command.
 
-| **Products**
-| A catalog collection, cart checkout, an order ledger, and the return page after payment
-|===
+== Before you start
 
-Either alone, or both together. They share one set of credentials, one webhook endpoint and one `stripeConfig` block.
+You need a https://stripe.com[Stripe account]. It is free, and **it is yours** — RESTHeart Cloud bills you for the service, your Stripe account bills your customers. The two never mix.
 
-== What you need from Stripe
+Stay in **test mode** until the whole flow works. The toggle is at the top right of the Stripe dashboard, and the test card is `4242 4242 4242 4242` with any future expiry and any CVC.
 
-Two values, from **your own** Stripe account:
+== 1. Get your secret key
 
-* a **secret key** — `sk_test_…` while you are building, from https://dashboard.stripe.com/test/apikeys[the API keys page];
-* a **webhook signing secret** — `whsec_…`, from the webhook endpoint you create there, pointed at your service.
+https://dashboard.stripe.com/test/apikeys[Developers → API keys]. Copy the one starting `sk_test_`.
 
-WARNING: These are your Stripe account's, not RESTHeart Cloud's. RESTHeart Cloud bills you for the service; your Stripe account bills your customers. The two never mix.
+== 2. Create the webhook
 
-Use test keys until the flow works end to end. Stripe's test card numbers are in https://docs.stripe.com/testing[their testing guide].
+This is how Stripe tells your service that a payment went through. Without it, people pay and their orders stay pending forever.
 
-== Installing it
+https://dashboard.stripe.com/test/webhooks[Developers → Webhooks] → add an event destination.
 
-From the console: your service → **Plugins**, install **stripe**, then fill in the two secrets under its configuration.
+**Destination URL** — your service, plus `/stripe/webhook`:
 
-Or, as configuration you keep in git, with link:cli[`rhc`]:
+----
+https://xxxxxx.eu-central-1-free-1.restheart.com/stripe/webhook
+----
+
+IMPORTANT: Your service's own URL, from its *Connect* page. Not `cloud-api.restheart.com`, which is RESTHeart Cloud's control panel and serves none of your collections.
+
+**Events** — select these six:
+
+----
+checkout.session.completed
+checkout.session.async_payment_succeeded
+checkout.session.async_payment_failed
+checkout.session.expired
+charge.refunded
+charge.dispute.created
+----
+
+The first marks an order paid. The rest cover slow payments, abandoned carts, refunds and disputes.
+
+Save it, then reveal the **signing secret**. It starts `whsec_`.
+
+NOTE: Your service is on the public internet, so Stripe reaches it directly. You do not need the Stripe CLI or `stripe listen` — those are for a webhook arriving at your laptop.
+
+== 3. Set it up
+
+With the two values in hand:
+
+[source,bash]
+----
+npm install -g @restheart-cloud/cli
+
+export STRIPE_SECRET_KEY=sk_test_...
+export STRIPE_WEBHOOK_SECRET=whsec_...
+
+rhc login
+rhc setup --srv <srvId>
+----
+
+`rhc login` asks for a personal access token — create one at https://cloud.restheart.com[cloud.restheart.com], under your profile. It is not your account password.
+
+Or do it from the console: your service → **Plugins** → install **stripe**, then fill in the two secrets.
+
+== 4. Check it worked
+
+Buy something with the test card, then look at your `orders` collection. The order should read `status: "paid"`.
+
+Still `pending_payment`? The webhook is not arriving. In Stripe, open your event destination and look at the recent deliveries:
+
+* `404` or `401` — the URL is wrong; it must end in `/stripe/webhook`
+* `400` — the signing secret does not match the one you configured
+* nothing at all — `checkout.session.completed` is not in your selected events
+
+== Keeping the setup in git
+
+`rhc setup` runs a file you commit alongside your app, so a new service is one command rather than a checklist. This is what that file looks like:
 
 [source,typescript]
 ----
@@ -84,13 +133,11 @@ export default defineSetup('Shop', [
 ]);
 ----
 
-Three things worth copying from that:
+Two things about it:
 
-**Read-modify-write, placeholders untouched.** A configured secret reads back as bullets, and the server restores the stored value for any field still holding one. Diffing the config, or stripping fields that look empty, writes bullets over your real Stripe key.
+**Run it as often as you like.** Every step checks before it writes, so a second run against a configured service changes nothing. `--dry-run` tells you what is missing without touching anything.
 
-**`configured()` tells "not set" from "set and hidden".** A blank secret is not redacted, because "not configured" is information you need. That distinction is what lets a re-run need no secrets in the environment at all.
-
-**The initialiser, not you.** `initPlugin` creates the catalog, orders and transactions collections, their indexes and the order schema, and never overwrites what is already there.
+**Secrets are only needed the first time.** A stored key reads back as bullets, and `configured()` passes those straight through — so a re-run needs nothing in your environment.
 
 == Guests must be allowed to shop
 
@@ -180,6 +227,10 @@ NOTE: Nothing puts stock back. A refund happens outside the system — the goods
 **A `success-url` that does not match a route in the app.** The buyer pays and lands on a 404. Stripe substitutes `{CHECKOUT_SESSION_ID}`; RESTHeart's plugin also interpolates `{ORDER_ID}` and `{ORDER_SECRET}` — put those in the URL **fragment**, so the secret never reaches a server log or a `Referer` header.
 
 **Renamed collections the client does not know about.** `products.catalog-collection` and `products.orders-collection` are configurable, and the client takes them as parameters rather than assuming. Rename one, tell the client.
+
+== Order emails
+
+Order confirmations and refund notices are sent by the plugin. They come from `noreply@restheart.com` unless you set up your own mail server — see link:emails[Email], which also covers the daily limit they count against.
 
 == See also
 
