@@ -92,6 +92,38 @@ Console → your service → **Email** → **Set up my email server**.
 | stored encrypted, never shown again
 |===
 
+=== Using Gmail
+
+Gmail works, with one catch: **it will not take your account password.** You need an app password.
+
+. Turn on 2-Step Verification on your Google account, if it is not already on. App passwords are not offered without it.
+. Go to https://myaccount.google.com/apppasswords[myaccount.google.com/apppasswords] and create one. Google shows it once — copy it now.
+. Fill the form in with:
+
+[cols="1,3"]
+|===
+| Field | Value
+
+| From address
+| your Gmail address
+
+| SMTP server
+| `smtp.gmail.com`
+
+| Port
+| `465`, or `587` for STARTTLS
+
+| Username
+| your Gmail address, in full
+
+| Password
+| the app password, not your Google password
+|===
+
+WARNING: Gmail caps you at **500 emails a day**, and that cap is Google's — it applies no matter what is sending. On a Shared service you get 200 from us, so Gmail is not the way to send more. It is the way to send **from your own address**.
+
+For the full picture, see https://mailmeteor.com/blog/gmail-smtp-settings[this guide to Gmail's SMTP settings].
+
 === 3. Test it
 
 Click **Send test email** again. It now goes through your server.
