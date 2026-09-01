@@ -8,14 +8,16 @@ applies_to: restheart
 
 NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
 
-This tutorial builds a small semantic search API: upload text files, have `restheart-ai` chunk and embed them automatically, then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search. Both stages run against the exact same chunks, so you can compare them directly on the same data.
+This tutorial builds a small semantic search API: upload files, have `restheart-ai` chunk and embed them automatically, then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search. Both stages run against the exact same chunks, so you can compare them directly on the same data.
+
+Uploads are extracted with Apache Tika, so PDFs, Word documents, HTML, and other common formats all work exactly the same way as the plain-text files used below — those are just the easiest to paste directly into a terminal command.
 
 See the xref:/docs/ai/overview.adoc[Vector Search & AI overview] for the full feature reference this tutorial pulls from.
 
 === What You'll Learn
 
 * Enable document chunking with automatic embeddings on upload
-* Upload text files to GridFS and watch them turn into searchable, embedded chunks
+* Upload files to GridFS and watch them turn into searchable, embedded chunks
 * Query those chunks semantically with `$vectorScan` — zero extra infrastructure
 * Create a vector search index and query the same chunks with `$vectorSearch`
 * Add reranking to either kind of search
@@ -68,7 +70,7 @@ curl -X PUT http://localhost:8080/library -u admin:secret
 curl -X PUT http://localhost:8080/library/docs.files -u admin:secret
 ----
 
-Upload a few short text files — one per topic keeps this tutorial's results easy to eyeball:
+Upload a few short files — one per topic keeps this tutorial's results easy to eyeball (a real PDF or Word document works identically, just swap the `-F file=@...` argument):
 
 [source,bash]
 ----
