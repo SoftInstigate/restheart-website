@@ -68,11 +68,10 @@ Query an `autoEmbed` index with `queryString` instead of `queryVector` in your `
 
 [source,yaml]
 ----
-plugins-args:
-  vectorScanInterceptor:
-    enabled: true
-    default-max-candidates: 10000  # candidates scanned when maxCandidates is omitted
-    default-limit: 10              # results returned when limit is omitted
+vectorScanInterceptor:
+  enabled: true
+  default-max-candidates: 10000  # candidates scanned when maxCandidates is omitted
+  default-limit: 10              # results returned when limit is omitted
 ----
 
 Use real `$match`/`$sort` stages to narrow candidates first — unlike `$vectorSearch`'s restricted `filter`, this is full MQL. `$vectorScan` itself takes a `path` to the vector field, a `queryVector`, a `similarity` (`cosine`, `dotProduct`, or `euclidean`), and an optional `limit`:
@@ -107,12 +106,11 @@ Enable chunking and every file uploaded to *any* GridFS bucket is automatically 
 
 [source,yaml]
 ----
-plugins-args:
-  documentChunkingInterceptor:
-    enabled: true
-    chunk-size: 1000          # characters per chunk (default)
-    chunk-overlap: 200        # characters of overlap (default)
-    target-collection: _chunks # where chunks are stored (default)
+documentChunkingInterceptor:
+  enabled: true
+  chunk-size: 1000          # characters per chunk (default)
+  chunk-overlap: 200        # characters of overlap (default)
+  target-collection: _chunks # where chunks are stored (default)
 ----
 
 [source,bash]
@@ -129,19 +127,18 @@ No Atlas, no mongot, or you just want a specific model? Enable a provider and po
 
 [source,yaml]
 ----
-plugins-args:
-  openAIEmbeddingProvider:      # or voyageEmbeddingProvider, ollamaEmbeddingProvider
-    enabled: true
-    api-key: <your-key>
-    model: text-embedding-3-small   # default
+openAIEmbeddingProvider:      # or voyageEmbeddingProvider, ollamaEmbeddingProvider
+  enabled: true
+  api-key: <your-key>
+  model: text-embedding-3-small   # default
 
-  documentChunkingInterceptor:
-    enabled: true
-    embedding-provider: openAIEmbeddingProvider   # chunks get a real `vector` field
+documentChunkingInterceptor:
+  enabled: true
+  embedding-provider: openAIEmbeddingProvider   # chunks get a real `vector` field
 
-  autoEmbeddingInterceptor:
-    enabled: true
-    embedding-provider: openAIEmbeddingProvider
+autoEmbeddingInterceptor:
+  enabled: true
+  embedding-provider: openAIEmbeddingProvider
 ----
 
 *Embed on write* — `autoEmbeddingInterceptor` embeds a text field automatically whenever a document is written, once a collection opts in:
@@ -193,17 +190,16 @@ Refine `$vectorSearch` results by adding a `rerank` block to a predefined aggreg
 }]}
 ----
 
-By default this calls the Atlas Reranking API (`plugins-args: rerankingInterceptor: { enabled: true, atlas-api-key: <key> }`). To use Voyage AI or Cohere instead:
+By default this calls the Atlas Reranking API (`rerankingInterceptor: { enabled: true, atlas-api-key: <key> }`). To use Voyage AI or Cohere instead:
 
 [source,yaml]
 ----
-plugins-args:
-  voyageRerankProvider:          # or cohereRerankProvider
-    enabled: true
-    api-key: <your-key>
-  rerankingInterceptor:
-    enabled: true
-    rerank-provider: voyageRerankProvider
+voyageRerankProvider:          # or cohereRerankProvider
+  enabled: true
+  api-key: <your-key>
+rerankingInterceptor:
+  enabled: true
+  rerank-provider: voyageRerankProvider
 ----
 
 Reranking scores each result's `text` field against the query — this is exactly what `_chunks` documents from section 3 have, so chunking and reranking pair naturally.

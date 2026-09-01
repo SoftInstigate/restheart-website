@@ -17,7 +17,7 @@ NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
 
 {% include get-restheart.adoc %}
 
-This tutorial builds a small semantic search API: upload files, have `restheart-ai` chunk and embed them automatically, then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search. Both stages run against the exact same chunks, so you can compare them directly on the same data.
+This tutorial builds a full-featured semantic search API: upload files, have `restheart-ai` chunk and embed them automatically — with either independent or context-aware embeddings — then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search — and refine either one with reranking. All of it runs against the exact same chunks, so you can compare every approach directly on the same data.
 
 Uploads are extracted with Apache Tika, so PDFs, Word documents, HTML, and other common formats all work exactly the same way as the plain-text files used below — those are just the easiest to paste directly into a terminal command.
 
@@ -52,26 +52,25 @@ The interactive examples on this page can automatically substitute the RESTHeart
 
 === 1. Enable chunking with embeddings
 
-Add this to your configuration's `plugins-args` and (re)start RESTHeart:
+Add this to `restheart.yml` (each plugin is configured under its own top-level key, matching the `name` it registers with) and (re)start RESTHeart:
 
 [source,yaml]
 ----
-plugins-args:
-  openAIEmbeddingProvider:
-    enabled: true
-    api-key: <your-key>
-    model: text-embedding-3-small   # 1536 dimensions
+openAIEmbeddingProvider:
+  enabled: true
+  api-key: <your-key>
+  model: text-embedding-3-small   # 1536 dimensions
 
-  documentChunkingInterceptor:
-    enabled: true
-    embedding-provider: openAIEmbeddingProvider
+documentChunkingInterceptor:
+  enabled: true
+  embedding-provider: openAIEmbeddingProvider
 
-  vectorizeOperator:
-    enabled: true
-    embedding-provider: openAIEmbeddingProvider
+vectorizeOperator:
+  enabled: true
+  embedding-provider: openAIEmbeddingProvider
 
-  vectorScanInterceptor:
-    enabled: true
+vectorScanInterceptor:
+  enabled: true
 ----
 
 * `documentChunkingInterceptor` splits every file you upload to a GridFS bucket into overlapping text chunks and, because `embedding-provider` is set, embeds each one immediately with a single batched call.
@@ -336,13 +335,12 @@ A `rerank` block works the same way on top of both aggregations, since it re-sco
 
 [source,yaml]
 ----
-plugins-args:
-  voyageRerankProvider:
-    enabled: true
-    api-key: <your-voyage-key>
-  rerankingInterceptor:
-    enabled: true
-    rerank-provider: voyageRerankProvider
+voyageRerankProvider:
+  enabled: true
+  api-key: <your-voyage-key>
+rerankingInterceptor:
+  enabled: true
+  rerank-provider: voyageRerankProvider
 ----
 
 ==== cURL
@@ -400,16 +398,15 @@ See the xref:/docs/ai/overview.adoc#_5_reranking[Reranking section] of the overv
 
 [source,yaml]
 ----
-plugins-args:
-  voyageContextualEmbeddingProvider:
-    enabled: true
-    api-key: <your-voyage-key>
-    model: voyage-context-4   # default
+voyageContextualEmbeddingProvider:
+  enabled: true
+  api-key: <your-voyage-key>
+  model: voyage-context-4   # default
 
-  documentChunkingInterceptor:
-    enabled: true
-    embedding-provider: voyageContextualEmbeddingProvider
-    chunk-overlap: 0   # the contextual call already sees neighboring chunks — no need to duplicate text between them
+documentChunkingInterceptor:
+  enabled: true
+  embedding-provider: voyageContextualEmbeddingProvider
+  chunk-overlap: 0   # the contextual call already sees neighboring chunks — no need to duplicate text between them
 ----
 
 Re-upload the same files from step 2 with this configuration active — the resulting `_chunks` documents have the exact same shape, still with a plain `vector` field, so everything in steps 3, 4 and 5 (`$vectorScan`, `$vectorSearch`, reranking) queries them exactly the same way. Only how the vectors were computed changed.
