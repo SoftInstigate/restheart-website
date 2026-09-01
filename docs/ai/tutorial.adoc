@@ -52,25 +52,32 @@ The interactive examples on this page can automatically substitute the RESTHeart
 
 === 1. Enable chunking with embeddings
 
-Add this to `restheart.yml` (each plugin is configured under its own top-level key, matching the `name` it registers with) and (re)start RESTHeart:
+RESTHeart ships with a built-in default configuration, so there's no `restheart.yml` to edit — you activate plugins with a small xref:/docs/deployment/configuration.adoc#_modify_the_configuration_with_an_override_file[configuration override file] instead. Save this as `overrides.yml` (each plugin is overridden at its own xpath, `/<name>`, matching the `name` it registers with):
 
 [source,yaml]
 ----
-openAIEmbeddingProvider:
+/openAIEmbeddingProvider:
   enabled: true
   api-key: <your-key>
   model: text-embedding-3-small   # 1536 dimensions
 
-documentChunkingInterceptor:
+/documentChunkingInterceptor:
   enabled: true
   embedding-provider: openAIEmbeddingProvider
 
-vectorizeOperator:
+/vectorizeOperator:
   enabled: true
   embedding-provider: openAIEmbeddingProvider
 
-vectorScanInterceptor:
+/vectorScanInterceptor:
   enabled: true
+----
+
+Start (or restart) RESTHeart with it:
+
+[source,bash]
+----
+java -jar restheart.jar -o overrides.yml
 ----
 
 * `documentChunkingInterceptor` splits every file you upload to a GridFS bucket into overlapping text chunks and, because `embedding-provider` is set, embeds each one immediately with a single batched call.
@@ -331,14 +338,14 @@ Same top result, same underlying `vector` field — the difference is entirely i
 
 === 5. Bonus: rerank either one
 
-A `rerank` block works the same way on top of both aggregations, since it re-scores whatever result array the pipeline already produced:
+A `rerank` block works the same way on top of both aggregations, since it re-scores whatever result array the pipeline already produced. Add these two entries to the same `overrides.yml` from step 1 and restart:
 
 [source,yaml]
 ----
-voyageRerankProvider:
+/voyageRerankProvider:
   enabled: true
   api-key: <your-voyage-key>
-rerankingInterceptor:
+/rerankingInterceptor:
   enabled: true
   rerank-provider: voyageRerankProvider
 ----
@@ -396,14 +403,16 @@ See the xref:/docs/ai/overview.adoc#_5_reranking[Reranking section] of the overv
 
 `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) removes the need for that trick. `documentChunkingInterceptor` detects that the configured provider implements `ContextualEmbeddingModel` and, instead of embedding each chunk in isolation, sends all of a file's chunks together in one call — every chunk's vector is computed already aware of the chunks around it. With that awareness coming from the embedding call itself, duplicating text at the boundaries buys nothing, so set `chunk-overlap: 0`:
 
+Update `overrides.yml` to swap the embedding provider and restart:
+
 [source,yaml]
 ----
-voyageContextualEmbeddingProvider:
+/voyageContextualEmbeddingProvider:
   enabled: true
   api-key: <your-voyage-key>
   model: voyage-context-4   # default
 
-documentChunkingInterceptor:
+/documentChunkingInterceptor:
   enabled: true
   embedding-provider: voyageContextualEmbeddingProvider
   chunk-overlap: 0   # the contextual call already sees neighboring chunks — no need to duplicate text between them
