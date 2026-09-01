@@ -13,6 +13,7 @@ WARNING: RESTHeart 9.9 has not been released yet — `restheart-ai` currently on
 `restheart-ai` adds vector search to any RESTHeart deployment: manage vector search indexes, turn uploaded files into searchable chunks, generate embeddings, and rerank results. It's included by default in the RESTHeart distribution — no separate install, no extra JAR to add.
 
 * **Vector search indexes** — create, list and delete via the existing `/_indexes` endpoint. Works out of the box, no configuration needed.
+* **`$vectorScan`** — brute-force semantic search with no mongot and no index at all.
 * **Document chunking** — upload a PDF, Word doc, or any Tika-supported format to GridFS and it's automatically split into searchable text chunks.
 * **Embeddings** — either let MongoDB generate them for you (`autoEmbed`, zero setup), or plug in your own provider (OpenAI, Voyage AI, Ollama) when you need a specific model or don't have Atlas/mongot autoEmbed available.
 * **Reranking** — refine `$vectorSearch` results with a dedicated rerank model (Voyage AI, Cohere, or the Atlas Reranking API).
@@ -25,9 +26,10 @@ Everything else in this page runs on *any* plain MongoDB — no mongot, no Atlas
 
 * **Document chunking** just extracts text and inserts plain documents into a collection.
 * **RESTHeart's own embedding providers** (OpenAI, Voyage AI, Ollama) and everything built on them — embed-on-write, `$vectorize` — call an external HTTP API directly; MongoDB is not involved in generating the vector.
-* **Reranking** re-scores whatever document array an aggregation already returned — it doesn't care whether those documents came from `$vectorSearch` or a plain query.
+* **`$vectorScan`** computes vector similarity directly, without an index or mongot at all — see section 2 below.
+* **Reranking** re-scores whatever document array an aggregation already returned — it doesn't care whether those documents came from `$vectorSearch`, `$vectorScan`, or a plain query.
 
-In practice: you can chunk files, embed them with your own provider, and store the vectors as a plain field on a stock MongoDB instance with zero extra setup — and only bring in mongot once you're ready to actually query with `$vectorSearch`.
+In practice: you can chunk files, embed them with your own provider, and semantically search them with `$vectorScan` on a stock MongoDB instance with zero extra setup — and only bring in mongot once you need `$vectorSearch`'s indexed, approximate-nearest-neighbor search at scale.
 
 === 1. Vector search indexes — works immediately
 
@@ -60,7 +62,46 @@ TIP: Use `"type": "autoEmbed"` instead of `"type": "vector"` to have MongoDB gen
 
 Query an `autoEmbed` index with `queryString` instead of `queryVector` in your `$vectorSearch` stage — mongot embeds the query text for you.
 
-=== 2. Chunk documents for RAG
+=== 2. `$vectorScan` — semantic search with no mongot and no index
+
+`$vectorSearch` needs mongot and a vector search index. `$vectorScan` needs neither: it's a brute-force aggregation stage that computes similarity directly against a plain array field, on any MongoDB — including MongoDB Community with no search component installed at all.
+
+[source,yaml]
+----
+plugins-args:
+  vectorScanInterceptor:
+    enabled: true
+    default-max-candidates: 10000  # candidates scanned when maxCandidates is omitted
+    default-limit: 10              # results returned when limit is omitted
+----
+
+Use real `$match`/`$sort` stages to narrow candidates first — unlike `$vectorSearch`'s restricted `filter`, this is full MQL. `$vectorScan` itself takes a `path` to the vector field, a `queryVector`, a `similarity` (`cosine`, `dotProduct`, or `euclidean`), and an optional `limit`:
+
+[source,json]
+----
+{ "aggrs": [{ "uri": "semantic-search", "type": "pipeline", "stages": [
+    { "$match": { "category": "articles" } },
+    { "$vectorScan": {
+        "path": "embedding",
+        "queryVector": { "$vectorize": { "$var": "q" } },
+        "similarity": "cosine",
+        "limit": 10,
+        "maxCandidates": 5000
+    }},
+    { "$project": { "text": 1, "score": 1 } }
+]}]}
+----
+
+[source,bash]
+----
+curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
+----
+
+Stages placed after `$vectorScan` — like the `$project` above — run for real against MongoDB, bridged back in via `$documents` (requires MongoDB 6.0+). Reranking composes automatically too: attach a `rerank` block exactly as in section 5 below, since it scores whatever result array the pipeline produced regardless of how it got there.
+
+`maxCandidates` bounds how many documents (after `$match`) are scanned and scored before ranking and truncating to `limit` — there's no index, so this is the whole cost control. Reach for `$vectorScan` when you don't have or don't want mongot, on candidate sets small enough that a full scan is cheap; move to `$vectorSearch` once you need indexed approximate-nearest-neighbor search at scale.
+
+=== 3. Chunk documents for RAG
 
 Enable chunking and every file uploaded to *any* GridFS bucket is automatically extracted (via Apache Tika — PDF, Office, HTML, plain text, and more) and split into overlapping text chunks:
 
@@ -82,7 +123,7 @@ curl -X POST http://localhost:8080/mydb/docs.files \
 
 Each chunk lands in `_chunks` as `{ "source", "fileId", "chunkIndex", "text" }`. Add an `autoEmbed` index on `_chunks` and MongoDB embeds them for you — or see the next section to have `restheart-ai` embed them itself.
 
-=== 3. Embeddings without MongoDB autoEmbed
+=== 4. Embeddings without MongoDB autoEmbed
 
 No Atlas, no mongot, or you just want a specific model? Enable a provider and point the pieces you need at it:
 
@@ -136,7 +177,7 @@ Requires `vectorizeOperator` enabled with its own `embedding-provider` set.
 
 TIP: `voyageEmbeddingProvider` also has a contextual sibling, `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) — used automatically by `documentChunkingInterceptor` when configured, it embeds every chunk of a file together so each vector is aware of the chunks around it, instead of in isolation.
 
-=== 4. Reranking
+=== 5. Reranking
 
 Refine `$vectorSearch` results by adding a `rerank` block to a predefined aggregation:
 
@@ -165,7 +206,7 @@ plugins-args:
     rerank-provider: voyageRerankProvider
 ----
 
-Reranking scores each result's `text` field against the query — this is exactly what `_chunks` documents from section 2 have, so chunking and reranking pair naturally.
+Reranking scores each result's `text` field against the query — this is exactly what `_chunks` documents from section 3 have, so chunking and reranking pair naturally.
 
 === Multi-tenancy
 
@@ -178,6 +219,7 @@ Every value above can be overridden per request instead of set once for the whol
 |===
 |Plugin |Purpose
 |`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
+|`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`).
 |`documentChunkingInterceptor` |Chunk GridFS uploads. `chunk-size`, `chunk-overlap`, `target-collection`, `embedding-provider`.
 |`autoEmbeddingInterceptor` |Embed on write. `embedding-provider`.
 |`vectorizeOperator` |`$vectorize` aggregation operator. `embedding-provider`.
