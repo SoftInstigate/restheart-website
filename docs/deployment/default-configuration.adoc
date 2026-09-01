@@ -101,6 +101,13 @@ jwtConfigProvider:
   issuer: restheart.org
   audience: null   # null or array of audience strings
 
+# API Key Authentication
+# See https://restheart.org/docs/security/authentication/api-key
+apiKeyAuthMechanism:
+  enabled: false
+  authenticator: mongoApiKeyAuthenticator
+  prefix: rhak_
+
 # JSON Web Token Authentication
 # See https://restheart.org/docs/security/authentication/jwt#_jwt_authentication
 jwtAuthenticationMechanism:
@@ -143,6 +150,26 @@ fileRealmAuthenticator:
     - userid: admin
       password: null
       roles: [admin]
+
+# mongoApiKeyAuthenticator verifies API keys stored in a MongoDB collection.
+# The account it builds carries the roles named on the *key* document, never the user's:
+# a key is deny-by-default, so it reaches only what has been granted to it deliberately.
+# Keys are hashed with SHA-256 rather than bcrypt — a key is high-entropy, and bcrypt's
+# slowness would be paid on every request instead of once per login.
+# Expiry wants a TTL index on `expiresAt`; revocation takes effect within cache-ttl.
+mongoApiKeyAuthenticator:
+  enabled: false
+  keys-db: restheart
+  keys-collection: apiKeys
+  prop-hash: hash
+  prop-principal: user
+  prop-roles: roles
+  prop-expires: expiresAt
+  track-last-used: true
+  cache-enabled: true
+  cache-size: 1000
+  cache-ttl: 60000
+  cache-expire-policy: AFTER_WRITE
 
 # mongoRealmAuthenticator authenticates users defined in a MongoDB collection.
 # See https://restheart.org/docs/security/authentication/authenticators#_mongo_realm_authenticator
@@ -301,11 +328,14 @@ All other services cascade-enable automatically once `accountsConfig` is active.
 # See https://restheart.org/docs/accounts/configuration
 accountsConfig:
   enabled: false
-  # MongoDB database where users and teams are stored.
-  # Must match mongoRealmAuthenticator.users-db.
-  db: restheart
+  # The MongoDB database and collection holding users, teams, invitations and
+  # oauth_codes are sourced from mongoRealmAuthenticator (users-db and
+  # users-collection), so that accounts writes users where the authenticator
+  # reads them.
+  # If the users collection carries the 'jsonSchema' metadata, the user document
+  # is validated against that schema on POST /auth/register.
   app-name: "My App"
-  # JWT TTL in minutes. Key and issuer come from jwtConfigProvider.
+  # JWT access token TTL in minutes. Key and issuer are sourced from jwtConfigProvider.
   jwt-ttl: 15
   cookie-domain: localhost
   cookie-name: rh_auth
@@ -314,35 +344,45 @@ accountsConfig:
   terms-version: "1.0"
   privacy-version: "1.0"
   default-locale: en
-  # templates:                               # null = use built-in
+  # Custom email template paths (null = use built-in templates)
+  # templates:
   #   verification:   etc/email-templates/verification.html
   #   password-reset: etc/email-templates/password-reset.html
   #   invite:         etc/email-templates/invite.html
 
-  # Membership SPI (9.4.1+) — see https://restheart.org/docs/accounts/membership-providers
-  # JWT claim name for the active tenant identifier. Default: "tenant".
-  tenant-claim-name: tenant
-  # System ACL role assigned after email verification or OAuth login.
-  # Default: "user". Override per-tenant via override-accounts-default-role.
-  default-role: user
-  # Team role for the user who creates a new team.
-  # Stored in user.tenants[].role and team.members[].role.
-  # Default: "owner". Override per-tenant via override-accounts-ownership-role.
-  ownership-role: owner
-  # Role name for regular (non-admin) team members. Default: "member".
-  # Set to "user" if your existing ACL rules already use that label.
+  # ── Membership SPI (9.4.1+) ─────────────────────────────────────────────
+  # See https://restheart.org/docs/accounts/membership-providers
+
+  # JWT claim name for the active team identifier.
+  # Default: "team".
+  team-claim-name: team
+
+  # Role name for regular (non-admin) team members.
+  # Default: "member". Set to "user" if existing ACL rules already use that label.
   member-role-name: member
-  # Set to false to disable /auth/invite, /auth/resend-invite, /auth/tenants,
-  # /auth/switch-tenant (useful when a custom MembershipProvider exposes its own endpoints).
+
+  # System ACL role assigned to users after email verification or OAuth login.
+  # Default: "user". Override per-team via override-accounts-default-role.
+  default-role: user
+
+  # Team role assigned to the user who creates a new team.
+  # Stored in user.teams[].role and team.members[].role.
+  # Default: "owner". Override per-team via override-accounts-ownership-role.
+  ownership-role: owner
+
+  # Set to false to disable /auth/invite, /auth/resend-invite,
+  # /auth/teams and /auth/switch-team.
+  # Useful when a custom MembershipProvider exposes its own equivalent endpoints.
   membership-endpoints-enabled: true
 
   # Additional JWT claims propagated from request attached-parameters to tokens
-  # issued by accounts endpoints (verify, activate, reset-password, switch-tenant, OAuth).
+  # issued by accounts endpoints (verify, activate, reset-password, switch-team, OAuth).
   # Mirrors jwtTokenManager.account-properties-claims: use the same list so that
   # all token-issuance paths produce identical JWTs.
-  # authDb is always included automatically (no need to list it here).
+  # For multi-team deployments, include the teams claim (e.g. "teams").
+  # authDb is always included automatically — never list it here.
   account-properties-claims:
-  # - srvNode  # example: attached-param set by SrvNodeEnricher in multi-tenant deployments
+  # - srvNode  # example: attached-param set by SrvNodeEnricher in multi-team deployments
 
 # Dependency-injection service holding the active MembershipProvider.
 accountsService:
@@ -381,12 +421,12 @@ inviteService:
 resendInviteService:
   enabled: false
 
-# GET  /auth/tenants — lists the authenticated user's team memberships
-getTenantsService:
+# GET  /auth/teams — lists the authenticated user's team memberships
+getTeamsService:
   enabled: false
 
-# POST /auth/switch-tenant — switches the active team and reissues the JWT cookie
-switchTenantService:
+# POST /auth/switch-team — switches the active team and reissues the JWT cookie
+switchTeamService:
   enabled: false
 
 # Interceptor: clears the auth cookie when token authentication fails
@@ -455,6 +495,9 @@ See link:/docs/security/oauth[OAuth 2.0 / 2.1] for the full documentation.
 # See https://restheart.org/docs/security/oauth
 authTokenService:
   uri: /token
+  # Redirect target for GET /token/redirect. null (default) means the endpoint
+  # returns 400 unless a per-request override-redirect-url is attached instead.
+  redirect-url: null                # e.g. https://app.example.com/callback
 
 # OAuth 2.0 Authorization Server Metadata (RFC 8414)
 # Endpoint: GET /.well-known/oauth-authorization-server
@@ -466,6 +509,10 @@ oauthAuthorizationServerMetadataService:
   base-url: null                    # e.g. https://api.example.com
   # URI of the authorization endpoint — must match oauthAuthorizationService URI.
   authorize-endpoint-uri: /authorize
+  # Optional: URI of the dynamic client registration endpoint (RFC 7591). When set,
+  # registration_endpoint is included in the AS metadata response. Enable
+  # oauthClientRegistrationService to activate the endpoint.
+  # registration-endpoint-uri: /register
 
 # OAuth 2.1 Authorization Code + PKCE endpoint (RFC 7636)
 # GET /authorize  — redirects to login-url
@@ -486,6 +533,167 @@ oauthProtectedResourceMetadataService:
   enabled: false
   # Optional: same as base-url in oauthAuthorizationServerMetadataService.
   base-url: null                    # e.g. https://api.example.com
+
+# OAuth 2.0 Dynamic Client Registration (RFC 7591)
+# Endpoint: POST /register
+# Allows OAuth clients (e.g. mcp-inspector, MCP SDKs) to self-register without admin
+# intervention. Pair with oauthAuthorizationServerMetadataService's
+# registration-endpoint-uri to advertise this endpoint in the AS metadata response.
+oauthClientRegistrationService:
+  enabled: false
+----
+
+=== restheart-stripe
+
+Stripe SaaS billing: customer lifecycle, Checkout, Customer Portal, webhook ingestion,
+plan catalog and seat licensing. All plugins are **disabled by default** and require
+MongoDB. See xref:/docs/stripe/overview.adoc[restheart-stripe overview] and
+xref:/docs/stripe/configuration.adoc[configuration reference].
+
+Enable the whole plugin by setting `stripeConfig.enabled: true` and configuring
+`secret-key`/`webhook-secret`. `subscriptions` and `products` are independent modes —
+enable either or both.
+
+[source,yml]
+----
+# Stripe SaaS billing: Customer lifecycle, Checkout, Customer Portal, webhook
+# ingestion, plan catalog and seat licensing.
+# See https://restheart.org/docs/stripe
+stripeConfig:
+  enabled: false
+  # sk_test_... in development, sk_live_... in production. Never commit to
+  # version control - inject via environment variable substitution.
+  secret-key: $(STRIPE_SECRET_KEY)
+  # From the Stripe Dashboard -> Developers -> Webhooks -> signing secret.
+  webhook-secret: $(STRIPE_WEBHOOK_SECRET)
+
+  # The MongoDB database containing the teams collection is sourced from
+  # mongoRealmAuthenticator (users-db), the same way accountsConfig sources
+  # it, so this module always reads and writes team documents where
+  # restheart-accounts writes them.
+  teams-collection: teams
+
+  subscriptions:
+    enabled: true
+    # Plan id assigned to an entity with no subscription. Must name a key
+    # declared under 'plans' below.
+    default-plan: free
+    # Trial days used when a plan does not declare its own trial-period-days.
+    default-trial-period-days: 0
+
+    success-url: "https://app.example.com/billing?success=true"
+    cancel-url: "https://app.example.com/billing?canceled=true"
+    portal-return-url: "https://app.example.com/billing"
+
+    # The plan catalog. Display data (name, description, price) is not
+    # configured here - it is read from the Stripe Product/Price the price
+    # ids point at (GET /stripe/plans). Configuration carries only what this
+    # module must enforce.
+    plans:
+      free:
+        seats:
+          mode: capped
+          max: 1
+      # gold:
+      #   price-id-monthly: price_xxx
+      #   price-id-annual:  price_yyy
+      #   trial-period-days: 30
+      #   seats:
+      #     mode: capped   # capped | per-seat | unlimited
+      #     max: 10
+      #   limits:
+      #     max-projects: 50
+
+    # payment-failed and trial-will-end default to disabled: Stripe can send
+    # its own equivalent email from the Dashboard ("Subscriptions and
+    # emails"), and duplication cannot be detected at runtime. Enabling one
+    # here means turning the matching Stripe dashboard email off.
+    # notifications:
+    #   payment-failed:        { enabled: false }
+    #   trial-will-end:        { enabled: false }
+    #   subscription-canceled: { enabled: true }
+    #   over-limit:            { enabled: true }
+
+    # Custom email template paths (null = use built-in templates)
+    # templates:
+    #   payment-failed:        etc/email-templates/stripe/payment-failed.html
+    #   trial-will-end:        etc/email-templates/stripe/trial-will-end.html
+    #   subscription-canceled: etc/email-templates/stripe/subscription-canceled.html
+    #   over-limit:            etc/email-templates/stripe/over-limit.html
+
+  products:
+    enabled: false
+    # Set to false to skip automatic init; use StripeInitService on demand.
+    init-enabled: true
+
+    catalog-collection: catalog
+    orders-collection: orders
+    transactions-collection: transactions
+
+    default-currency: eur
+    # User-document field holding the buyer's email; omit if users have none.
+    # Guests always supply it in the request body.
+    buyer-email-field: _id
+    # Stripe-issued invoices for team-paid orders; guests always get a receipt.
+    invoice-team-orders: true
+    collect-tax-id: true
+
+    success-url: "https://shop.example.com/done?session={CHECKOUT_SESSION_ID}"
+    cancel-url: "https://shop.example.com/cart"
+
+    session-expires-minutes: 60
+    max-line-items: 50
+    max-quantity-per-line: 100
+
+    # Stripe Tax. false => amounts are taken as final and tax is the deployment's problem.
+    automatic-tax: true
+
+    # Offered for carts containing a physical product.
+    # shipping-options:
+    #   - display-name: Standard
+    #     amount: 500
+    #     delivery-estimate-days: { minimum: 3, maximum: 5 }
+    #   - display-name: Express
+    #     amount: 1500
+    #     delivery-estimate-days: { minimum: 1, maximum: 2 }
+
+    # notifications:
+    #   order-confirmed: { enabled: true }
+    #   order-refunded:  { enabled: true }
+
+stripeService:
+  enabled: false
+
+stripeInitializer:
+  enabled: false
+
+stripeCheckoutService:
+  enabled: false
+
+stripePortalService:
+  enabled: false
+
+stripeSubscriptionService:
+  enabled: false
+
+# Verifies the Stripe-Signature header and processes billing events. The only
+# public endpoint in the module - security is the signing secret, not authentication.
+stripeWebhookService:
+  enabled: false
+
+# Grants, revokes, and lists seat licences.
+stripeLicensesService:
+  enabled: false
+
+# GET /stripe/plans. Registers no ACL rule of its own - follows the deployment's
+# ACL like any other endpoint except stripeWebhookService.
+stripePlansService:
+  enabled: false
+
+# Shared cache for the plan catalog's Stripe display data (name, description, price),
+# invalidated by stripeWebhookService on product.updated / price.updated.
+stripeCatalogCache:
+  enabled: false
 ----
 
 === restheart-ai
