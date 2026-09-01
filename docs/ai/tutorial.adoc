@@ -369,7 +369,7 @@ curl -X PATCH [RESTHEART-URL]/_chunks \
             "limit": 10
         }}
       ],
-      "rerank": { "model": "rerank-2.5", "query": "$avars.q", "topK": 3 }
+      "rerank": { "model": "rerank-2.5", "query": { "$var": "q" }, "topK": 3 }
     }]
   }'
 ----
@@ -390,7 +390,7 @@ echo '{
           "limit": 10
       }}
     ],
-    "rerank": { "model": "rerank-2.5", "query": "$avars.q", "topK": 3 }
+    "rerank": { "model": "rerank-2.5", "query": { "$var": "q" }, "topK": 3 }
   }]
 }' | http PATCH [RESTHEART-URL]/_chunks Authorization:"Basic [BASIC-AUTH]"
 ----
