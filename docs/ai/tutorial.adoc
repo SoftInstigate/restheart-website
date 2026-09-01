@@ -3,10 +3,19 @@ docs_version: 9
 title: Semantic Search Tutorial — $vectorScan & $vectorSearch
 layout: docs-adoc
 menu: ai
+liquid: true
 applies_to: restheart
 ---
 
 NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
 
 This tutorial builds a small semantic search API: upload files, have `restheart-ai` chunk and embed them automatically, then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search. Both stages run against the exact same chunks, so you can compare them directly on the same data.
 
@@ -21,15 +30,25 @@ See the xref:/docs/ai/overview.adoc[Vector Search & AI overview] for the full fe
 * Query those chunks semantically with `$vectorScan` — zero extra infrastructure
 * Create a vector search index and query the same chunks with `$vectorSearch`
 * Add reranking to either kind of search
+* Switch to Voyage AI's context-aware chunk embeddings, and why they make `chunk-overlap` unnecessary
 
 === Prerequisites
 
 * RESTHeart 9.9+ running locally (`restheart-ai` is included by default — see the xref:/docs/ai/overview.adoc[overview] page if you need to build it from source)
 * An OpenAI API key, to embed chunks and queries (any other supported provider — Voyage AI, Ollama — works the same way, just swap the plugin name)
 * For the `$vectorSearch` part only: MongoDB Atlas, or MongoDB Community/Enterprise 8.2+ with link:https://www.mongodb.com/docs/manual/core/search-in-community/[mongot installed]. The `$vectorScan` part needs none of this.
-* `curl`
+* A tool for making HTTP requests — examples below are given for cURL and HTTPie
 
-In every example below, replace `<your-key>` with your real API key, and `admin:secret` with your own admin credentials if different.
+[NOTE]
+====
+In all examples below:
+
+* `[RESTHEART-URL]` - Replace with your RESTHeart server URL (e.g., `http://localhost:8080`)
+* `[BASIC-AUTH]` - Replace with your Base64-encoded credentials (e.g., `YWRtaW46c2VjcmV0` for admin:secret)
+* `<your-key>` / `<your-voyage-key>` - Replace with your real provider API key (these only appear in configuration, not in requests)
+
+The interactive examples on this page can automatically substitute the RESTHeart URL and credentials.
+====
 
 === 1. Enable chunking with embeddings
 
@@ -65,29 +84,65 @@ RESTHeart's default configuration mounts the `restheart` database at the URL roo
 
 Create a GridFS bucket named `docs`:
 
+==== cURL
+
 [source,bash]
 ----
-curl -X PUT http://localhost:8080/docs.files -u admin:secret
+curl -X PUT [RESTHEART-URL]/docs.files \
+  -H "Authorization: Basic [BASIC-AUTH]"
 ----
 
-Upload a few short files — one per topic keeps this tutorial's results easy to eyeball (a real PDF or Word document works identically, just swap the `-F file=@...` argument):
+==== HTTPie
+
+[source,bash]
+----
+http PUT [RESTHEART-URL]/docs.files \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+Upload a few short files — one per topic keeps this tutorial's results easy to eyeball (a real PDF or Word document works identically, just swap the uploaded file):
 
 [source,bash]
 ----
 echo "Electric cars use rechargeable batteries and electric motors instead of a gasoline engine. Battery technology and charging infrastructure are the main constraints on their range." > ev.txt
 echo "The Great Wall of China is an ancient series of fortifications stretching thousands of kilometers, built over centuries to protect Chinese states from invasions." > wall.txt
 echo "Sourdough bread is made by fermenting dough using naturally occurring lactobacilli and wild yeast, giving it a distinctive tangy flavor." > bread.txt
+----
 
-curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@ev.txt
-curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@wall.txt
-curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@bread.txt
+==== cURL
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/docs.files -H "Authorization: Basic [BASIC-AUTH]" -F file=@ev.txt
+curl -X POST [RESTHEART-URL]/docs.files -H "Authorization: Basic [BASIC-AUTH]" -F file=@wall.txt
+curl -X POST [RESTHEART-URL]/docs.files -H "Authorization: Basic [BASIC-AUTH]" -F file=@bread.txt
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http --form POST [RESTHEART-URL]/docs.files Authorization:"Basic [BASIC-AUTH]" file@ev.txt
+http --form POST [RESTHEART-URL]/docs.files Authorization:"Basic [BASIC-AUTH]" file@wall.txt
+http --form POST [RESTHEART-URL]/docs.files Authorization:"Basic [BASIC-AUTH]" file@bread.txt
 ----
 
 Each upload triggers `documentChunkingInterceptor`: the file's text is extracted, split into chunks, embedded, and stored in `_chunks`. Check what landed there:
 
+==== cURL
+
 [source,bash]
 ----
-curl 'http://localhost:8080/_chunks?rep=s' -u admin:secret
+curl '[RESTHEART-URL]/_chunks?rep=s' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET [RESTHEART-URL]/_chunks rep==s \
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
 Each chunk looks like this — short files like these produce one chunk each:
@@ -110,10 +165,13 @@ That `vector` field is what both `$vectorScan` and `$vectorSearch` will search a
 
 Define an aggregation pipeline on `_chunks` that turns the query text into a vector with `$vectorize`, then scans and ranks chunks by cosine similarity with `$vectorScan`:
 
+==== cURL
+
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
-  -H 'Content-Type: application/json' \
+curl -X PATCH [RESTHEART-URL]/_chunks \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
   -d '{
     "aggrs": [{
       "uri": "semanticScan",
@@ -131,11 +189,43 @@ curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   }'
 ----
 
-Query it:
+==== HTTPie
 
 [source,bash]
 ----
-curl 'http://localhost:8080/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+echo '{
+  "aggrs": [{
+    "uri": "semanticScan",
+    "type": "pipeline",
+    "stages": [
+      { "$vectorScan": {
+          "path": "vector",
+          "queryVector": { "$vectorize": { "$var": "q" } },
+          "similarity": "cosine",
+          "limit": 3
+      }},
+      { "$project": { "text": 1, "score": 1 } }
+    ]
+  }]
+}' | http PATCH [RESTHEART-URL]/_chunks Authorization:"Basic [BASIC-AUTH]"
+----
+
+Query it:
+
+==== cURL
+
+[source,bash]
+----
+curl '[RESTHEART-URL]/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET '[RESTHEART-URL]/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' \
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
 The electric cars chunk comes back first with the highest `score`, even though the query text ("electric vehicles and battery technology") shares barely any words with the stored text ("Electric cars use rechargeable batteries...") — this is semantic, not keyword, matching. No vector search index was created, and mongot never entered the picture: `$vectorScan` computed every distance itself.
@@ -144,10 +234,13 @@ The electric cars chunk comes back first with the highest `score`, even though t
 
 Now create a real vector search index on the same `vector` field:
 
+==== cURL
+
 [source,bash]
 ----
-curl -X PUT http://localhost:8080/_chunks/_indexes/chunk_vectors -u admin:secret \
-  -H 'Content-Type: application/json' \
+curl -X PUT [RESTHEART-URL]/_chunks/_indexes/chunk_vectors \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
   -d '{
     "type": "vectorSearch",
     "fields": [
@@ -156,14 +249,29 @@ curl -X PUT http://localhost:8080/_chunks/_indexes/chunk_vectors -u admin:secret
   }'
 ----
 
-`numDimensions` must match your embedding model — `1536` for `text-embedding-3-small`. Building the index takes a few seconds; check its status with `GET /_chunks/_indexes`.
-
-Define an equivalent aggregation using `$vectorSearch`:
+==== HTTPie
 
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
-  -H 'Content-Type: application/json' \
+echo '{
+  "type": "vectorSearch",
+  "fields": [
+    { "type": "vector", "path": "vector", "numDimensions": 1536, "similarity": "cosine" }
+  ]
+}' | http PUT [RESTHEART-URL]/_chunks/_indexes/chunk_vectors Authorization:"Basic [BASIC-AUTH]"
+----
+
+`numDimensions` must match your embedding model — `1536` for `text-embedding-3-small`. Building the index takes a few seconds; check its status with a `GET` on `/_chunks/_indexes`.
+
+Define an equivalent aggregation using `$vectorSearch`:
+
+==== cURL
+
+[source,bash]
+----
+curl -X PATCH [RESTHEART-URL]/_chunks \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
   -d '{
     "aggrs": [{
       "uri": "semanticSearch",
@@ -181,11 +289,43 @@ curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   }'
 ----
 
-Query it with the same text as before:
+==== HTTPie
 
 [source,bash]
 ----
-curl 'http://localhost:8080/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+echo '{
+  "aggrs": [{
+    "uri": "semanticSearch",
+    "type": "pipeline",
+    "stages": [
+      { "$vectorSearch": {
+          "index": "chunk_vectors",
+          "path": "vector",
+          "queryVector": { "$vectorize": { "$var": "q" } },
+          "numCandidates": 100,
+          "limit": 3
+      }}
+    ]
+  }]
+}' | http PATCH [RESTHEART-URL]/_chunks Authorization:"Basic [BASIC-AUTH]"
+----
+
+Query it with the same text as before:
+
+==== cURL
+
+[source,bash]
+----
+curl '[RESTHEART-URL]/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' \
+  -H "Authorization: Basic [BASIC-AUTH]"
+----
+
+==== HTTPie
+
+[source,bash]
+----
+http GET '[RESTHEART-URL]/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' \
+  Authorization:"Basic [BASIC-AUTH]"
 ----
 
 Same top result, same underlying `vector` field — the difference is entirely in how the match was found: `$vectorSearch` used mongot's indexed approximate-nearest-neighbor search instead of a full scan.
@@ -205,10 +345,13 @@ plugins-args:
     rerank-provider: voyageRerankProvider
 ----
 
+==== cURL
+
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
-  -H 'Content-Type: application/json' \
+curl -X PATCH [RESTHEART-URL]/_chunks \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
   -d '{
     "aggrs": [{
       "uri": "semanticScan",
@@ -226,7 +369,50 @@ curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   }'
 ----
 
+==== HTTPie
+
+[source,bash]
+----
+echo '{
+  "aggrs": [{
+    "uri": "semanticScan",
+    "type": "pipeline",
+    "stages": [
+      { "$vectorScan": {
+          "path": "vector",
+          "queryVector": { "$vectorize": { "$var": "q" } },
+          "similarity": "cosine",
+          "limit": 10
+      }}
+    ],
+    "rerank": { "model": "rerank-2.5", "query": "$avars.q", "topK": 3 }
+  }]
+}' | http PATCH [RESTHEART-URL]/_chunks Authorization:"Basic [BASIC-AUTH]"
+----
+
 See the xref:/docs/ai/overview.adoc#_5_reranking[Reranking section] of the overview for the full set of rerank providers.
+
+=== 6. Bonus: context-aware embeddings with Voyage AI
+
+`openAIEmbeddingProvider` in step 1 embeds each chunk on its own — the model never sees the rest of the file. `chunk-overlap: 200` compensates for that: it duplicates a slice of text at each chunk boundary so a chunk doesn't lose the sentence that trails off just before it starts.
+
+`voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) removes the need for that trick. `documentChunkingInterceptor` detects that the configured provider implements `ContextualEmbeddingModel` and, instead of embedding each chunk in isolation, sends all of a file's chunks together in one call — every chunk's vector is computed already aware of the chunks around it. With that awareness coming from the embedding call itself, duplicating text at the boundaries buys nothing, so set `chunk-overlap: 0`:
+
+[source,yaml]
+----
+plugins-args:
+  voyageContextualEmbeddingProvider:
+    enabled: true
+    api-key: <your-voyage-key>
+    model: voyage-context-4   # default
+
+  documentChunkingInterceptor:
+    enabled: true
+    embedding-provider: voyageContextualEmbeddingProvider
+    chunk-overlap: 0   # the contextual call already sees neighboring chunks — no need to duplicate text between them
+----
+
+Re-upload the same files from step 2 with this configuration active — the resulting `_chunks` documents have the exact same shape, still with a plain `vector` field, so everything in steps 3, 4 and 5 (`$vectorScan`, `$vectorSearch`, reranking) queries them exactly the same way. Only how the vectors were computed changed.
 
 === Which one should you use?
 
