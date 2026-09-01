@@ -1,0 +1,241 @@
+---
+docs_version: 9
+title: Semantic Search Tutorial — $vectorScan & $vectorSearch
+layout: docs-adoc
+menu: ai
+applies_to: restheart
+---
+
+NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
+
+This tutorial builds a small semantic search API: upload text files, have `restheart-ai` chunk and embed them automatically, then query them two different ways — `$vectorScan`, which needs no mongot and no index at all, and `$vectorSearch`, which needs mongot and a vector search index but scales to large collections with approximate nearest-neighbor search. Both stages run against the exact same chunks, so you can compare them directly on the same data.
+
+See the xref:/docs/ai/overview.adoc[Vector Search & AI overview] for the full feature reference this tutorial pulls from.
+
+=== What You'll Learn
+
+* Enable document chunking with automatic embeddings on upload
+* Upload text files to GridFS and watch them turn into searchable, embedded chunks
+* Query those chunks semantically with `$vectorScan` — zero extra infrastructure
+* Create a vector search index and query the same chunks with `$vectorSearch`
+* Add reranking to either kind of search
+
+=== Prerequisites
+
+* RESTHeart 9.9+ running locally (`restheart-ai` is included by default — see the xref:/docs/ai/overview.adoc[overview] page if you need to build it from source)
+* An OpenAI API key, to embed chunks and queries (any other supported provider — Voyage AI, Ollama — works the same way, just swap the plugin name)
+* For the `$vectorSearch` part only: MongoDB Atlas, or MongoDB Community/Enterprise 8.2+ with link:https://www.mongodb.com/docs/manual/core/search-in-community/[mongot installed]. The `$vectorScan` part needs none of this.
+* `curl`
+
+In every example below, replace `<your-key>` with your real API key, and `admin:secret` with your own admin credentials if different.
+
+=== 1. Enable chunking with embeddings
+
+Add this to your configuration's `plugins-args` and (re)start RESTHeart:
+
+[source,yaml]
+----
+plugins-args:
+  openAIEmbeddingProvider:
+    enabled: true
+    api-key: <your-key>
+    model: text-embedding-3-small   # 1536 dimensions
+
+  documentChunkingInterceptor:
+    enabled: true
+    embedding-provider: openAIEmbeddingProvider
+
+  vectorizeOperator:
+    enabled: true
+    embedding-provider: openAIEmbeddingProvider
+
+  vectorScanInterceptor:
+    enabled: true
+----
+
+* `documentChunkingInterceptor` splits every file you upload to a GridFS bucket into overlapping text chunks and, because `embedding-provider` is set, embeds each one immediately with a single batched call.
+* `vectorizeOperator` lets an aggregation turn a search query's text into a vector at query time (the `$vectorize` operator used below).
+* `vectorScanInterceptor` is only needed for the `$vectorScan` half of this tutorial — leave it out if you only want `$vectorSearch`.
+
+=== 2. Create the database and upload some documents
+
+Create a database and a GridFS bucket named `docs`:
+
+[source,bash]
+----
+curl -X PUT http://localhost:8080/library -u admin:secret
+
+curl -X PUT http://localhost:8080/library/docs.files -u admin:secret
+----
+
+Upload a few short text files — one per topic keeps this tutorial's results easy to eyeball:
+
+[source,bash]
+----
+echo "Electric cars use rechargeable batteries and electric motors instead of a gasoline engine. Battery technology and charging infrastructure are the main constraints on their range." > ev.txt
+echo "The Great Wall of China is an ancient series of fortifications stretching thousands of kilometers, built over centuries to protect Chinese states from invasions." > wall.txt
+echo "Sourdough bread is made by fermenting dough using naturally occurring lactobacilli and wild yeast, giving it a distinctive tangy flavor." > bread.txt
+
+curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@ev.txt
+curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@wall.txt
+curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@bread.txt
+----
+
+Each upload triggers `documentChunkingInterceptor`: the file's text is extracted, split into chunks, embedded, and stored in `_chunks`. Check what landed there:
+
+[source,bash]
+----
+curl 'http://localhost:8080/library/_chunks?rep=s' -u admin:secret
+----
+
+Each chunk looks like this — short files like these produce one chunk each:
+
+[source,json]
+----
+{
+  "_id": "...",
+  "source": "library/docs.files/...",
+  "fileId": "...",
+  "chunkIndex": 0,
+  "text": "Electric cars use rechargeable batteries and electric motors instead of a gasoline engine...",
+  "vector": [0.0123, -0.0456, "... 1536 numbers total ..."]
+}
+----
+
+That `vector` field is what both `$vectorScan` and `$vectorSearch` will search against below.
+
+=== 3. Semantic search with `$vectorScan` — no mongot, no index
+
+Define an aggregation pipeline on `_chunks` that turns the query text into a vector with `$vectorize`, then scans and ranks chunks by cosine similarity with `$vectorScan`:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "aggrs": [{
+      "uri": "semanticScan",
+      "type": "pipeline",
+      "stages": [
+        { "$vectorScan": {
+            "path": "vector",
+            "queryVector": { "$vectorize": { "$var": "q" } },
+            "similarity": "cosine",
+            "limit": 3
+        }},
+        { "$project": { "text": 1, "score": 1 } }
+      ]
+    }]
+  }'
+----
+
+Query it:
+
+[source,bash]
+----
+curl 'http://localhost:8080/library/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+----
+
+The electric cars chunk comes back first with the highest `score`, even though the query text ("electric vehicles and battery technology") shares barely any words with the stored text ("Electric cars use rechargeable batteries...") — this is semantic, not keyword, matching. No vector search index was created, and mongot never entered the picture: `$vectorScan` computed every distance itself.
+
+=== 4. The same data with `$vectorSearch` — indexed, needs mongot
+
+Now create a real vector search index on the same `vector` field:
+
+[source,bash]
+----
+curl -X PUT http://localhost:8080/library/_chunks/_indexes/chunk_vectors -u admin:secret \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "vectorSearch",
+    "fields": [
+      { "type": "vector", "path": "vector", "numDimensions": 1536, "similarity": "cosine" }
+    ]
+  }'
+----
+
+`numDimensions` must match your embedding model — `1536` for `text-embedding-3-small`. Building the index takes a few seconds; check its status with `GET /library/_chunks/_indexes`.
+
+Define an equivalent aggregation using `$vectorSearch`:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "aggrs": [{
+      "uri": "semanticSearch",
+      "type": "pipeline",
+      "stages": [
+        { "$vectorSearch": {
+            "index": "chunk_vectors",
+            "path": "vector",
+            "queryVector": { "$vectorize": { "$var": "q" } },
+            "numCandidates": 100,
+            "limit": 3
+        }}
+      ]
+    }]
+  }'
+----
+
+Query it with the same text as before:
+
+[source,bash]
+----
+curl 'http://localhost:8080/library/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+----
+
+Same top result, same underlying `vector` field — the difference is entirely in how the match was found: `$vectorSearch` used mongot's indexed approximate-nearest-neighbor search instead of a full scan.
+
+=== 5. Bonus: rerank either one
+
+A `rerank` block works the same way on top of both aggregations, since it re-scores whatever result array the pipeline already produced:
+
+[source,yaml]
+----
+plugins-args:
+  voyageRerankProvider:
+    enabled: true
+    api-key: <your-voyage-key>
+  rerankingInterceptor:
+    enabled: true
+    rerank-provider: voyageRerankProvider
+----
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "aggrs": [{
+      "uri": "semanticScan",
+      "type": "pipeline",
+      "stages": [
+        { "$vectorScan": {
+            "path": "vector",
+            "queryVector": { "$vectorize": { "$var": "q" } },
+            "similarity": "cosine",
+            "limit": 10
+        }}
+      ],
+      "rerank": { "model": "rerank-2.5", "query": "$avars.q", "topK": 3 }
+    }]
+  }'
+----
+
+See the xref:/docs/ai/overview.adoc#_5_reranking[Reranking section] of the overview for the full set of rerank providers.
+
+=== Which one should you use?
+
+[options="header"]
+[cols="2,3,3"]
+|===
+| |`$vectorScan` |`$vectorSearch`
+|Infrastructure |Any MongoDB, no extra components |mongot: Atlas, or Community/Enterprise 8.2+ with mongot installed
+|Index |None |A vector search index (`/_indexes`)
+|Search |Brute-force, scores every matched candidate |Indexed approximate nearest-neighbor
+|Best for |No mongot available, smaller candidate sets, getting started fast |Large collections, production-scale search
+|===
+
+Both read the same `vector` field and compose with `$match`/`$sort` before them and `rerank` after — start with `$vectorScan` while you're building, and switch to `$vectorSearch` once you have mongot and need to scale.
