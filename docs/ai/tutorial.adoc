@@ -59,15 +59,15 @@ plugins-args:
 * `vectorizeOperator` lets an aggregation turn a search query's text into a vector at query time (the `$vectorize` operator used below).
 * `vectorScanInterceptor` is only needed for the `$vectorScan` half of this tutorial — leave it out if you only want `$vectorSearch`.
 
-=== 2. Create the database and upload some documents
+=== 2. Create a GridFS bucket and upload some documents
 
-Create a database and a GridFS bucket named `docs`:
+RESTHeart's default configuration mounts the `restheart` database at the URL root (`/`), so collections and GridFS buckets live directly under `/` — no separate "create a database" step, and `_chunks` (`documentChunkingInterceptor`'s default `target-collection`) is reachable straight at `/_chunks`. If your own deployment mounts things differently, adjust the paths below accordingly.
+
+Create a GridFS bucket named `docs`:
 
 [source,bash]
 ----
-curl -X PUT http://localhost:8080/library -u admin:secret
-
-curl -X PUT http://localhost:8080/library/docs.files -u admin:secret
+curl -X PUT http://localhost:8080/docs.files -u admin:secret
 ----
 
 Upload a few short files — one per topic keeps this tutorial's results easy to eyeball (a real PDF or Word document works identically, just swap the `-F file=@...` argument):
@@ -78,16 +78,16 @@ echo "Electric cars use rechargeable batteries and electric motors instead of a 
 echo "The Great Wall of China is an ancient series of fortifications stretching thousands of kilometers, built over centuries to protect Chinese states from invasions." > wall.txt
 echo "Sourdough bread is made by fermenting dough using naturally occurring lactobacilli and wild yeast, giving it a distinctive tangy flavor." > bread.txt
 
-curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@ev.txt
-curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@wall.txt
-curl -X POST http://localhost:8080/library/docs.files -u admin:secret -F file=@bread.txt
+curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@ev.txt
+curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@wall.txt
+curl -X POST http://localhost:8080/docs.files -u admin:secret -F file=@bread.txt
 ----
 
 Each upload triggers `documentChunkingInterceptor`: the file's text is extracted, split into chunks, embedded, and stored in `_chunks`. Check what landed there:
 
 [source,bash]
 ----
-curl 'http://localhost:8080/library/_chunks?rep=s' -u admin:secret
+curl 'http://localhost:8080/_chunks?rep=s' -u admin:secret
 ----
 
 Each chunk looks like this — short files like these produce one chunk each:
@@ -96,7 +96,7 @@ Each chunk looks like this — short files like these produce one chunk each:
 ----
 {
   "_id": "...",
-  "source": "library/docs.files/...",
+  "source": "restheart/docs.files/...",
   "fileId": "...",
   "chunkIndex": 0,
   "text": "Electric cars use rechargeable batteries and electric motors instead of a gasoline engine...",
@@ -112,7 +112,7 @@ Define an aggregation pipeline on `_chunks` that turns the query text into a vec
 
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   -H 'Content-Type: application/json' \
   -d '{
     "aggrs": [{
@@ -135,7 +135,7 @@ Query it:
 
 [source,bash]
 ----
-curl 'http://localhost:8080/library/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+curl 'http://localhost:8080/_chunks/_aggrs/semanticScan?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
 ----
 
 The electric cars chunk comes back first with the highest `score`, even though the query text ("electric vehicles and battery technology") shares barely any words with the stored text ("Electric cars use rechargeable batteries...") — this is semantic, not keyword, matching. No vector search index was created, and mongot never entered the picture: `$vectorScan` computed every distance itself.
@@ -146,7 +146,7 @@ Now create a real vector search index on the same `vector` field:
 
 [source,bash]
 ----
-curl -X PUT http://localhost:8080/library/_chunks/_indexes/chunk_vectors -u admin:secret \
+curl -X PUT http://localhost:8080/_chunks/_indexes/chunk_vectors -u admin:secret \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "vectorSearch",
@@ -156,13 +156,13 @@ curl -X PUT http://localhost:8080/library/_chunks/_indexes/chunk_vectors -u admi
   }'
 ----
 
-`numDimensions` must match your embedding model — `1536` for `text-embedding-3-small`. Building the index takes a few seconds; check its status with `GET /library/_chunks/_indexes`.
+`numDimensions` must match your embedding model — `1536` for `text-embedding-3-small`. Building the index takes a few seconds; check its status with `GET /_chunks/_indexes`.
 
 Define an equivalent aggregation using `$vectorSearch`:
 
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   -H 'Content-Type: application/json' \
   -d '{
     "aggrs": [{
@@ -185,7 +185,7 @@ Query it with the same text as before:
 
 [source,bash]
 ----
-curl 'http://localhost:8080/library/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
+curl 'http://localhost:8080/_chunks/_aggrs/semanticSearch?avars={"q":"electric+vehicles+and+battery+technology"}&rep=s' -u admin:secret
 ----
 
 Same top result, same underlying `vector` field — the difference is entirely in how the match was found: `$vectorSearch` used mongot's indexed approximate-nearest-neighbor search instead of a full scan.
@@ -207,7 +207,7 @@ plugins-args:
 
 [source,bash]
 ----
-curl -X PATCH http://localhost:8080/library/_chunks -u admin:secret \
+curl -X PATCH http://localhost:8080/_chunks -u admin:secret \
   -H 'Content-Type: application/json' \
   -d '{
     "aggrs": [{
