@@ -10,9 +10,25 @@ applies_to: both
 
 NOTE: Available from RESTHeart v9.8.
 
-**ApiKeyAuthMechanism** authenticates long-lived, revocable API keys sent in the standard `Authorization: Bearer` header (link:https://datatracker.ietf.org/doc/html/rfc6750[RFC 6750]). It extracts the key and delegates verification to the configured Authenticator, typically link:#_mongo_api_key_authenticator[mongoApiKeyAuthenticator].
+An API key is a long-lived, revocable credential for callers that are not a browser — a CLI, a CI job, a script, a partner integration — and it's the right choice when identity is federated: an OAuth user has no password, so there is nothing for Basic to carry and nothing for a token endpoint to exchange.
 
-An API key is the credential to reach for when the caller is not a browser — a CLI, a CI job, a script, a partner integration — and especially when identity is federated: a user who signed up through OAuth has no password, so there is nothing for Basic to carry and nothing for a token endpoint to exchange.
+Once configured (see below), a key is sent as a standard `Authorization: Bearer` header (link:https://datatracker.ietf.org/doc/html/rfc6750[RFC 6750]):
+
+[source,bash]
+----
+curl -H "Authorization: Bearer rhak_3f8a...c0e1" https://localhost:8443/db/coll
+----
+
+Two plugins are involved:
+
+- `apiKeyAuthMechanism` — reads the header and extracts the key.
+- `mongoApiKeyAuthenticator` — verifies the key against a MongoDB collection and builds the account.
+
+Both ship with RESTHeart but are **disabled by default**.
+
+=== Configuration
+
+==== apiKeyAuthMechanism
 
 [source,yml]
 ----
@@ -22,23 +38,27 @@ apiKeyAuthMechanism:
     prefix: rhak_
 ----
 
-==== Sharing the Bearer scheme with JWT
+[options="header"]
+[cols="1,3,1"]
+|===
+|param |description |default
 
-`jwtAuthenticationMechanism` also reads `Authorization: Bearer`, and the two coexist the same way `tokenBasicAuthMechanism` and `basicAuthMechanism` already share `Basic`: the more specific mechanism runs first and declines what is not its own.
+|`enabled`
+|`true` to enable the mechanism
+|`false`
 
-**The prefix is what decides.** A `Bearer` value that does not start with the configured `prefix` is answered `NOT_ATTEMPTED` and falls through to `jwtAuthenticationMechanism`, whose behaviour is unchanged — including its `NOT_AUTHENTICATED` for a malformed JWT, so a truncated token is still reported as a bad JWT rather than as a bad API key.
+|`authenticator`
+|the Authenticator that verifies the key, typically `mongoApiKeyAuthenticator`
+|*none*
 
-Once the prefix matches, this mechanism owns the outcome: an unknown, revoked or expired key is `NOT_AUTHENTICATED` rather than a fall-through, because a prefixed key is unambiguous and passing it on would replace a truthful answer with a confusing one.
+|`prefix`
+|the string every key must start with, e.g. `rhak_`
+|*none*
+|===
 
-Ordering is guaranteed by the mechanism's plugin priority, which is set low enough that it sees a request before the JWT mechanism does. Enabling `apiKeyAuthMechanism` never changes the outcome of a request that does not present a key carrying its prefix.
+IMPORTANT: Pick a distinctive `prefix` and keep it. It tells a key apart from a JWT on the same `Bearer` header (see <<Sharing the Bearer scheme with JWT>> below), and it's what lets secret scanners spot a key that has leaked into a repo or a log.
 
-IMPORTANT: Choose a `prefix` and keep it distinctive — `rhak_`, or one of your own. Besides telling a key from a JWT, a recognisable prefix is what lets secret scanners find a key that has leaked into a repository or a log.
-
-=== Mongo API Key Authenticator
-
-NOTE: Available from RESTHeart v9.8.
-
-**mongoApiKeyAuthenticator** verifies an API key against a MongoDB collection and builds the account from the key's own document. Use it with link:#_api_key_authentication[apiKeyAuthMechanism].
+==== mongoApiKeyAuthenticator
 
 [source,yml]
 ----
@@ -57,6 +77,52 @@ mongoApiKeyAuthenticator:
     cache-expire-policy: AFTER_WRITE
 ----
 
+[options="header"]
+[cols="1,3,1"]
+|===
+|param |description |default
+
+|`enabled`
+|`true` to enable the authenticator
+|`false`
+
+|`keys-db`
+|the database holding the keys collection
+|*none*
+
+|`keys-collection`
+|the collection holding key documents
+|*none*
+
+|`prop-hash`
+|the field holding the key's SHA-256 hash
+|`hash`
+
+|`prop-principal`
+|the field used as account name and `_id`
+|`user`
+
+|`prop-roles`
+|the field holding the account's roles
+|`roles`
+
+|`prop-expires`
+|the field holding the expiry date
+|`expiresAt`
+
+|`track-last-used`
+|update `lastUsedAt` on every successful verification
+|`true`
+
+|`cache-enabled`
+|cache verified keys to avoid a DB round trip per request
+|`true`
+
+|`cache-size`, `cache-ttl`, `cache-expire-policy`
+|standard cache tuning; `cache-ttl` also bounds how fast a revocation takes effect (see below)
+|`1000`, `60000`, `AFTER_WRITE`
+|===
+
 A key document looks like this. The key itself is never stored — only its hash:
 
 [source,json]
@@ -71,46 +137,106 @@ A key document looks like this. The key itself is never stored — only its hash
 }
 ----
 
-==== Roles come from the key, not from the user
+=== How the account is built
 
-The account this Authenticator builds carries **the roles named on the key document**, not the roles on the user document. A key document naming no roles produces an account with no roles; it never falls back to the user's.
-
-That makes a key **deny-by-default**: a permission written for `user` does not match a key whose role is `cli`, so a key reaches only what has been granted to it deliberately. The failure mode of getting it wrong is a key that cannot do enough — not a key that can do too much.
-
-This is what lets you issue a credential that is narrower than the person holding it. A key with a role your permissions never grant to billing or account management cannot perform those operations, whatever its owner could do from a browser.
-
-==== Identity comes from `prop-principal`, and travels as `_id`
-
-The account is built with the value of `prop-principal` as its name, and that same value as `_id` in its **account properties** — which is what everything downstream reads when it asks who is calling:
-
+- **Roles come from the key, not the user.** The account carries the roles named on the key document. No roles on the key → an account with no roles, no fallback to the user's own roles. This makes a key deny-by-default: it can be narrower than the person or system holding it.
+- **Identity comes from `prop-principal`, and travels as `_id`.** The account's name and its `_id` (the field permissions and queries actually read) are both set to the value of `prop-principal`. So code written for password-authenticated users works unchanged for a key:
++
 [source,text]
 ----
 equals(@user._id, ${userId})        # an ACL permission
 { "$arg": ["@user._id", null] }     # a GraphQL mapping
 ----
+- Nothing else in the key document is exposed to ACL predicates — it's yours to shape freely.
 
-So a permission or a query written for password-authenticated users works unchanged for a key. Nothing else from the key document travels: the document holds the hash, and it is yours to shape, so whatever else is in it was not written with an ACL predicate in mind.
+=== Hashing, expiry and revocation
 
-==== Hashing
+- **Hashing:** SHA-256, not bcrypt. A key is high-entropy random data, not a human-chosen secret, so brute force isn't the threat — and bcrypt's cost would be paid on every request, not once per login.
+- **Shown once:** since only the hash is stored, the plaintext key is not recoverable after issuance. A lost key is revoked and reissued.
+- **Expiry:** set `expiresAt` and the key stops working after that date. Checked at verification time, independent of any TTL index — a TTL index reclaims lazily, so a just-expired key can still be present in the collection.
+- **Revocation:** delete the key's document. Takes effect within `cache-ttl` (verified keys are cached). Set `cache-enabled: false` where revocation must be instantaneous.
+- **Usage tracking:** with `track-last-used`, each successful verification updates `lastUsedAt` — useful for spotting the key nobody remembers issuing.
 
-Keys are hashed with SHA-256, not bcrypt.
+=== Where keys live
 
-bcrypt is deliberately slow, and that slowness is the right defence for a low-entropy secret a human chose. An API key is high-entropy random data: brute force is not the threat, and the cost would be real, since it is paid on **every request** rather than once per login.
+`keys-db` and `keys-collection` are configurable — keys can live wherever suits the deployment, including alongside the users themselves. A dedicated collection is the default because a MongoDB TTL index only acts on a top-level date field (`expiresAt` inside a user document wouldn't auto-expire), and because `lastUsedAt` writes would otherwise touch the user document, and its cache, on every authenticated request.
 
-Because only the hash is stored, a key is shown once by whatever issues it and is not recoverable afterwards. A lost key is revoked and reissued.
+=== Issuing a key
 
-==== Expiry and revocation
+RESTHeart verifies API keys; it does not issue them. Whether that needs a plugin depends on who is allowed to create one:
 
-Set `expiresAt` to a date and a key stops working after it. Expiry is enforced at verification time as well as by any TTL index you create, since a TTL index reclaims lazily and a just-expired key can still be present in the collection.
+NOTE: Running on **RESTHeart Cloud**? Its Personal Access Tokens (link:/docs/cloud/tokens[docs]) already come with built-in issuance, listing and revocation — none of the below applies. This section is about the self-hosted, open-source `mongoApiKeyAuthenticator`.
 
-Revoking a key is deleting its document, and it takes effect **within `cache-ttl`**. Revocation immediacy is most of what an API key offers over a password, so keep the cache short — or set `cache-enabled: false` where revocation must be instantaneous.
+==== From a trusted script — no plugin needed
 
-With `track-last-used`, each successful verification records `lastUsedAt`. It is what makes an inventory of keys useful: the question an owner has is rarely "which keys exist" but "which of these is the one I forgot about".
+A key document is an ordinary document in a collection, so writing one is a normal RESTHeart REST API call. No plugin is needed as long as whoever runs the script already has write access to the `apiKeys` collection — an operator, or a CI job with its own credentials:
 
-==== Where keys live
+[source,bash]
+----
+# 1. generate a high-entropy key with the configured prefix
+KEY="rhak_$(openssl rand -hex 32)"
 
-`keys-db` and `keys-collection` are configurable, mirroring `mongoRealmAuthenticator`, so keys may live wherever suits the deployment — including alongside the users themselves.
+# 2. hash it — the plaintext must never reach the server
+HASH=$(printf '%s' "$KEY" | shasum -a 256 | cut -d' ' -f1)
 
-A collection of their own is the default for two practical reasons: a MongoDB TTL index only acts on a top-level date field, so `expiresAt` inside a user document would not expire on its own; and `lastUsedAt` writes would otherwise touch the user document on every authenticated request, churning the authenticator's own cache.
+# 3. store the hash as an ordinary document, via RESTHeart's own REST API
+#    (wm=upsert creates the document since it doesn't exist yet)
+curl -s -u admin:secret -X PUT \
+  "https://localhost:8443/restheart/apiKeys/$(uuidgen)?wm=upsert" \
+  -H 'Content-Type: application/json' \
+  -d "{\"user\":\"andrea@example.com\",\"roles\":[\"cli\"],\"hash\":\"$HASH\",\"expiresAt\":{\"\$date\":\"2026-12-31T00:00:00Z\"}}"
 
-NOTE: Issuing, listing and revoking keys is not part of this plugin. Those are product decisions — how many keys, what defaults, what expiry — and belong to whatever service owns that experience in your application.
+# 4. hand the key to the caller now — it's not recoverable afterwards
+echo "$KEY"
+----
+
+This is exactly how RESTHeart's own test suite seeds keys (`core/src/test/java/karate/api-key-auth-setup.feature`): generate, hash, `PUT .../apiKeys/<id>?wm=upsert` with the hash — nothing else running server-side.
+
+==== From a self-service endpoint — needs a plugin
+
+When *callers themselves* should be able to request a key — rather than an operator running the script above — don't give them direct write access to `apiKeys`: an unprivileged caller could then set `roles` to anything it likes. Wrap the same three steps in a `Service` that runs with its own privileges and decides what the caller is allowed to have:
+
+[source,java]
+----
+@RegisterPlugin(name = "issue-api-key", description = "issues an API key for the caller")
+public class IssueApiKeyService implements JsonService {
+    @Inject("mclient")
+    private MongoClient mclient;
+
+    @Override
+    public void handle(JsonRequest req, JsonResponse res) throws Exception {
+        if (req.getMethod() != METHOD.POST) {
+            res.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+            return;
+        }
+
+        // 1. generate a high-entropy secret and prefix it
+        var secret = new byte[32];
+        new SecureRandom().nextBytes(secret);
+        var key = "rhak_" + Base64.getUrlEncoder().withoutPadding().encodeToString(secret);
+
+        // 2. hash it — only the hash is ever stored
+        var digest = MessageDigest.getInstance("SHA-256").digest(key.getBytes(UTF_8));
+        var hash = HexFormat.of().formatHex(digest);
+
+        // 3. store the key document (roles/expiry are up to your own policy)
+        var doc = new Document()
+            .append("user", req.getAuthenticatedAccount().getPrincipal().getName())
+            .append("roles", List.of("cli"))
+            .append("hash", hash)
+            .append("expiresAt", Date.from(Instant.now().plus(90, ChronoUnit.DAYS)));
+
+        mclient.getDatabase("restheart").getCollection("apiKeys").insertOne(doc);
+
+        // 4. return the plaintext once — the caller must save it now
+        res.setContent(object().put("apiKey", key));
+        res.setStatusCode(HttpStatus.SC_CREATED);
+    }
+}
+----
+
+For a config-only shortcut on simple cases, the ACL variable `@rnd(bits)` (see link:/docs/security/permissions[permissions]) can generate a random value directly inside a permission. It doesn't by itself give you "store the hash, show the plaintext once" — for that pairing you still need a plugin like the one above.
+
+=== Sharing the Bearer scheme with JWT
+
+`jwtAuthenticationMechanism` also reads `Authorization: Bearer`. The two mechanisms coexist because **the prefix decides**: a `Bearer` value that doesn't start with your configured `prefix` gets `NOT_ATTEMPTED` from `apiKeyAuthMechanism` and falls through to JWT handling unchanged. Once the prefix matches, `apiKeyAuthMechanism` owns the outcome — an unknown, revoked or expired key is `NOT_AUTHENTICATED`, not a fall-through, since a prefixed key is unambiguous. Plugin priority guarantees `apiKeyAuthMechanism` sees the request first, so enabling it never changes the outcome for requests that don't carry a prefixed key.
