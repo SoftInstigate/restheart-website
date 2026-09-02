@@ -57,6 +57,33 @@ public class MyAuthorizer implements Authorizer {
 }
 ----
 
+==== Explaining a denial
+
+TIP: Available since *version 9.9.0*.
+
+By default, when a request is denied (no `ALLOWER` allows it, or a `VETOER` vetoes it) RESTHeart replies with a plain `403 Forbidden` and an empty body. This is often not enough to understand *why* the request was rejected, especially for a client without access to the server logs.
+
+An `Authorizer` can attach a specific reason for the denial by setting the `Authorizer.VETO_MESSAGE` request parameter before returning `false`:
+
+[source,java]
+----
+request.attachParam(Authorizer.VETO_MESSAGE, "Origin " + origin + " not allowed");
+return false;
+----
+
+When set, RESTHeart includes it as the `message` field of the JSON body of the `403 Forbidden` response:
+
+[source,json]
+----
+{ "message": "Origin https://evil.example.com not allowed" }
+----
+
+If no `Authorizer` sets `Authorizer.VETO_MESSAGE`, the response body stays empty, as before.
+
+This does not depend on the target service: the denial is evaluated before the request reaches it, so it works the same whether the service would have returned JSON, plain text (`StringService`), binary data (`ByteArrayService`), or anything else — the service is never actually invoked.
+
+`org.restheart.security.authorizers.OriginVetoer` uses this mechanism, so a request rejected because its `Origin` header is missing or not whitelisted gets a body explaining exactly that.
+
 ==== Configuration
 
 The Authorizer can receive parameters from the configuration file using the `@Inject("config")` annotation:

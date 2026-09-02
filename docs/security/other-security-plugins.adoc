@@ -78,6 +78,29 @@ request.attachParam("override-origin-allow-missing", true);
 * If attached as `false`: requests without an `Origin` header are denied for
   this request, even if the static config is `true`.
 
+==== Denial reason in the response body (since 9.9)
+
+By default a request vetoed by `OriginVetoer` gets a plain `403 Forbidden`
+with an empty body. Since 9.9.0, `OriginVetoer` attaches a specific reason
+for the denial, which RESTHeart returns as the `message` field of a JSON
+response body:
+
+[source,json]
+----
+{ "message": "Origin https://evil.example.com not allowed" }
+----
+
+or, when the `Origin` header itself is missing and `allow-missing-origin` is
+`false`:
+
+[source,json]
+----
+{ "message": "Origin header is required" }
+----
+
+See xref:../framework/authorizers.adoc#_explaining_a_denial[Explaining a denial]
+for how this mechanism works and how to use it in a custom `Authorizer`.
+
 === filterOperatorsBlacklist
 
 A global blacklist for MongoDb query operators in the `filter` query parameter.
