@@ -1,0 +1,115 @@
+---
+docs_version: 9
+title: McpAware
+layout: docs-adoc
+menu: framework
+applies_to: both
+---
+
+NOTE: `McpAware` is available starting from *RESTHeart v9.9*.
+
+`McpAware` is the interface any plugin implements to become discoverable and callable by an AI agent over the https://modelcontextprotocol.io[Model Context Protocol] — no MCP-specific transport code, no hand-written tool definitions. It lives in `restheart-commons`, so any `Service`, `Interceptor`, or other plugin, in any module, can implement it.
+
+The actual `/mcp` endpoint — the server that discovers every `McpAware` plugin and speaks MCP's JSON-RPC-over-HTTP transport to agents — ships as part of `restheart-ai`. If you're looking to expose your MongoDB collections or GraphQL apps rather than write a plugin, see xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] instead; this page is for plugin developers.
+
+=== How it works
+
+The server never calls your plugin's data for the agent — it only *describes* how to. Two tools do all the work: `list_apis` (what exists) and `how_to_call` (how to invoke it). The agent takes the descriptor `how_to_call` returns and makes the real HTTP request itself, directly against your plugin's own endpoint.
+
+[source,mermaid]
+----
+sequenceDiagram
+  participant Agent
+  participant MCP as RESTHeart /mcp
+  participant Plugin as Your McpAware plugin
+
+  Agent->>MCP: list_apis()
+  MCP-->>Agent: catalog (uri, kind, description)
+  Agent->>MCP: how_to_call(resource, action, args)
+  MCP-->>Agent: { method, url, headers, body }
+  Agent->>Plugin: the real request, directly
+  Plugin-->>Agent: real data
+----
+
+This means RESTHeart's existing ACL applies exactly as it does to any other client — an action the agent's credentials can't perform still fails with a normal `403`, the same way it would for a human hitting the same endpoint. `describeMcp` never filters by principal; the MCP server adds discovery, not a new security boundary.
+
+=== Implementing McpAware
+
+Two ways to implement it, depending on whether your plugin exposes one fixed thing or many dynamic ones.
+
+==== Mode A — a fixed, code-baked resource
+
+If your plugin is a single endpoint with a stable shape, override `defaultMcpConfig()`. `PingService` (`restheart-core`) is the real example:
+
+[source,java]
+----
+public class PingService implements ByteArrayService, McpAware {
+    @Override
+    public Map<String, Object> defaultMcpConfig() {
+        return Map.of(
+            "description", "Liveness probe. Returns a greeting message along with RESTHeart version and build time.",
+            "actions", Map.of(
+                "ping", Map.of(
+                    "method", "GET",
+                    "description", "Returns a greeting message, client IP, host, RESTHeart version and build time.")));
+    }
+}
+----
+
+The default `describeMcp(ctx)` implementation turns this into one `McpResource`, at `ctx.baseUrl() + ctx.pluginUri()`, merged with anything an operator overrides via the plugin's own `mcp-config` configuration key.
+
+==== Mode B — many dynamic resources
+
+If your plugin's resources come from somewhere else (a database, a registry) and change at runtime, override `describeMcp(McpContext ctx)` directly and build `McpResource` instances yourself. This is how `MongoService` and `GraphQLService` do it — see xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for what they actually expose.
+
+[source,java]
+----
+@Override
+public List<McpResource> describeMcp(McpContext ctx) {
+    var resources = new ArrayList<McpResource>();
+    // ... discover what to expose, e.g. by querying MongoDB, a registry, etc.
+    resources.add(McpResource.builder()
+        .uri(ctx.baseUrl() + "/my-resource")
+        .kind("my-kind")
+        .description("...")
+        .action("doSomething", a -> a.method("POST").bodySchema(Map.of(...)))
+        .build());
+    return resources;
+}
+----
+
+`McpContext` carries `principal`, `baseUrl`, `pluginName`, `pluginUri`, and the plugin's own resolved `pluginConfiguration` — everything needed to build absolute URIs without depending on `HttpServerExchange` or any other transport-level type.
+
+=== Calling a resource: `args.body`
+
+`how_to_call` composes a descriptor, it never executes it. For an action backed by a `body_schema`, the actual body goes under an `args.body` key — not as top-level args:
+
+[source,json]
+----
+{ "resource": "https://host/my-resource", "action": "doSomething",
+  "args": { "body": { "field": "value" } } }
+----
+
+Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
+
+=== Enabling and disabling
+
+Any `McpAware` plugin is exposed by default; set `mcp: false` in its own configuration to opt out entirely — the same override mechanism as `enabled`/`uri`:
+
+[source,yaml]
+----
+myPlugin:
+  mcp: false
+----
+
+=== Staying fresh: the catalog cache
+
+`list_apis`/`how_to_call` read from a cache, not from every `McpAware` implementation's `describeMcp()` on every call — refreshed at most every `catalog-ttl-seconds`. Change what your plugin exposes and an agent may see the old state for up to that long; there's no live invalidation watching your plugin's own data source. When a cache entry expires, already-connected agents get a `notifications/tools/list_changed` push telling them to refetch.
+
+[source,yaml]
+----
+mcpService:
+  catalog-ttl-seconds: 30   # default 300
+----
+
+This is a deliberate trade-off: instant, source-specific invalidation would mean different wiring per `McpAware` implementation (a MongoDB write, a config reload, ...); a single TTL is one uniform mechanism for all of them, at the cost of a bounded staleness window.

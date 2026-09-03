@@ -1,0 +1,189 @@
+---
+docs_version: 9
+title: MCP Server Tutorial — Expose a Collection and an Aggregation
+layout: docs-adoc
+menu: ai
+liquid: true
+applies_to: both
+---
+
+NOTE: The MCP server is available starting from *RESTHeart v9.9*.
+
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+This tutorial takes a plain MongoDB collection and makes it discoverable and callable by an AI agent: enable a collection, add an aggregation, connect a real MCP client, and watch it find both and use them — no code written on either side.
+
+See the xref:/docs/ai/mcp.adoc[MCP Server overview] for the full feature reference this tutorial pulls from.
+
+=== What You'll Learn
+
+* Opt a collection into MCP with a metadata `PATCH`
+* Call `list_apis`/`how_to_call` directly over JSON-RPC to see exactly what an agent sees
+* Connect a real MCP client (Claude Code) and let it discover the resource on its own
+* Add an aggregation with a `$var` parameter and expose it the same way
+
+=== Prerequisites
+
+* RESTHeart 9.9+ running locally (the MCP server is included by default — see the xref:/docs/ai/mcp.adoc[overview] page if you need to build it from source)
+* A tool for making HTTP requests (cURL is used below)
+* Optional, for the last section: https://claude.com/product/claude-code[Claude Code] or any other MCP-capable client
+
+[NOTE]
+====
+In all examples below:
+
+* `[RESTHEART-URL]` - Replace with your RESTHeart server URL (e.g., `http://localhost:8080`)
+* `[BASIC-AUTH]` - Replace with your Base64-encoded credentials (e.g., `YWRtaW46c2VjcmV0` for admin:secret)
+
+The interactive examples on this page can automatically substitute the RESTHeart URL and credentials.
+====
+
+=== 1. Create and seed a collection
+
+[source,bash]
+----
+curl -X PUT [RESTHEART-URL]/inventory -u admin:secret
+----
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/inventory -u admin:secret -H 'Content-Type: application/json' \
+  -d '{ "item": "notebook", "qty": 50, "status": "A" }'
+curl -X POST [RESTHEART-URL]/inventory -u admin:secret -H 'Content-Type: application/json' \
+  -d '{ "item": "notebook", "qty": 25, "status": "D" }'
+curl -X POST [RESTHEART-URL]/inventory -u admin:secret -H 'Content-Type: application/json' \
+  -d '{ "item": "journal", "qty": 10, "status": "A" }'
+----
+
+=== 2. Opt it into MCP
+
+[source,bash]
+----
+curl -X PATCH [RESTHEART-URL]/inventory -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "mcp": {
+      "enabled": true,
+      "description": "Product inventory."
+    }
+  }'
+----
+
+That's the whole opt-in. No restart, no extra plugin — the next `list_apis` call (once the xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[catalog cache] picks it up) shows it.
+
+=== 3. See what an agent sees, over raw JSON-RPC
+
+An MCP client talks to `/mcp` in JSON-RPC over HTTP. This section does the same calls a real client would, so you can see the exact protocol — skip to <<4-connect-a-real-client,section 4>> if you just want to plug in a real client.
+
+First, a session handshake — `initialize`, capturing the `Mcp-Session-Id` response header:
+
+[source,bash]
+----
+curl -i -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"tutorial","version":"1.0"}}}'
+----
+
+Copy the `Mcp-Session-Id` header from the response and use it below (`[SESSION-ID]`):
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_apis","arguments":{}}}'
+----
+
+The response is one `text/event-stream` frame wrapping the actual JSON-RPC result — `inventory` shows up in `resources`:
+
+[source,json]
+----
+{ "resources": [
+  { "uri": "http://localhost:8080/inventory", "kind": "collection", "description": "Product inventory." }
+]}
+----
+
+Now ask how to query it for low-quantity items:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"how_to_call","arguments":{"resource":"[RESTHEART-URL]/inventory","action":"query","args":{"filter":{"qty":{"$lt":30}}}}}}'
+----
+
+`how_to_call` composes the descriptor — it does not execute it:
+
+[source,json]
+----
+{ "transport": "http", "method": "GET",
+  "url": "http://localhost:8080/inventory?filter=%7B%22qty%22%3A%7B%22%24lt%22%3A30%7D%7D",
+  "headers": { "Authorization": "Bearer <token>" } }
+----
+
+Run that `url` yourself and you get the real, live-queried documents — the agent makes this exact request directly against RESTHeart, the MCP server was never in the data path.
+
+[[4-connect-a-real-client]]
+=== 4. Connect a real client
+
+Point Claude Code at your running instance:
+
+[source,bash]
+----
+claude mcp add --transport http restheart [RESTHEART-URL]/mcp \
+  --header "Authorization: Bearer <your-token>"
+----
+
+Restart the session so it picks up the new server, then ask it directly — no need to name tools or endpoints yourself:
+
+[source,text]
+----
+> what APIs do you have access to on restheart?
+> query the inventory collection for items with qty under 30
+----
+
+It calls `list_apis`, finds `inventory`, calls `how_to_call`, and executes the composed request — the same three steps you just did by hand.
+
+=== 5. Add an aggregation
+
+Expose a `$var`-parameterized aggregation the same way — declare `status` in `mcp.params` since an agent can't guess its `enum` from the pipeline alone:
+
+[source,bash]
+----
+curl -X PATCH [RESTHEART-URL]/inventory -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "aggrs": [{
+      "uri": "byStatus",
+      "stages": [
+        { "$match": { "status": { "$var": "status" } } },
+        { "$group": { "_id": "$item", "total": { "$sum": "$qty" } } }
+      ],
+      "mcp": {
+        "enabled": true,
+        "description": "Total quantity by item, for a given status.",
+        "params": { "status": { "type": "string", "enum": ["A", "D"] } }
+      }
+    }]
+  }'
+----
+
+Ask your connected client:
+
+[source,text]
+----
+> what's the total quantity of each item with status A in inventory?
+----
+
+It discovers `byStatus` under `inventory`'s `list_apis` context, sees `status` is one of `A`/`D` under the `avars` param, and calls `how_to_call` with `{"avars": {"status": "A"}}` — the same `avars` bundling xref:/docs/ai/mcp.adoc#_2_expose_an_aggregation[the overview] explains.
+
+=== Next steps
+
+* xref:/docs/ai/mcp.adoc[Full MCP Server reference] — change streams, GraphQL apps, configuration
+* xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`how_to_call` work under the hood, and how to expose your own plugin's data the same way
+* xref:/docs/ai/vector-search.adoc[Vector Search] — combine MCP with `$vectorScan`/`$vectorSearch` to let an agent search semantically, not just filter

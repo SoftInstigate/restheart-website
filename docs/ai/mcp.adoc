@@ -1,0 +1,137 @@
+---
+docs_version: 9
+title: MCP Server
+layout: docs-adoc
+menu: ai
+applies_to: both
+---
+
+NOTE: The MCP server is available starting from *RESTHeart v9.9*.
+
+WARNING: RESTHeart 9.9 has not been released yet — the MCP server currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
+
+This is the connectivity half of `restheart-ai` — see the xref:/docs/ai/overview.adoc[module overview] for how it fits together with xref:/docs/ai/vector-search.adoc[vector search].
+
+`restheart-ai` ships the native https://modelcontextprotocol.io[Model Context Protocol] server itself (`/mcp`), plus ready-made `McpAware` implementations for `mongo` and `graphql`. Any collection, aggregation, change stream, or GraphQL app you opt in becomes discoverable and callable by an AI agent — no hand-written tool definitions, no wrapper service, no separate integration code.
+
+TIP: `mongo`/`graphql` are just two plugins implementing the framework's xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface — see that page for how `list_apis`/`how_to_call` actually work, the `args.body` calling convention, and the catalog cache, or for exposing your own custom plugin the same way.
+
+=== Enabled by default, opt-in per resource
+
+The `mongo` and `graphql` plugins — the same ones serving your REST and GraphQL APIs — both expose their data through MCP automatically. Set `mcp: false` on either to turn it off entirely:
+
+[source,yaml]
+----
+mongo:
+  mcp: false     # no MongoDB resource ever appears in the catalog, regardless of mcp.enabled below
+graphql:
+  mcp: false     # same, for GraphQL apps
+----
+
+But nothing is actually visible in the catalog until you say so on the resource itself: every collection, aggregation, stream, and GraphQL app needs its own `mcp` block with `enabled: true` and a `description`. ACL and MCP visibility are two independent switches — a resource with no `mcp` block simply doesn't exist for an agent, no matter what permissions apply to it.
+
+=== 1. Expose a collection
+
+Add an `mcp` block to a collection's existing metadata (the same `PATCH` you'd use for `jsonSchema` or `aggrs`):
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/mydb/inventory \
+  -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "mcp": {
+      "enabled": true,
+      "description": "Product inventory.",
+      "examples": [
+        { "description": "Find low-stock items", "action": "query", "args": { "filter": { "qty": { "$lt": 10 } } } }
+      ]
+    }
+  }'
+----
+
+An agent now sees it via `list_apis()`, and its full context — `query`/`get`/`create`/`update`/`delete` actions, `body_schema` derived automatically from the collection's `jsonSchema` if one is set, your curated `examples` — via `list_apis(resource: "http://localhost:8080/mydb/inventory")`.
+
+=== 2. Expose an aggregation
+
+Add an `mcp` block to one entry in the collection's `aggrs` array. `$var` references in the pipeline are discovered automatically — declare only the ones whose type an agent can't guess from the pipeline alone:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/mydb/inventory \
+  -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "aggrs": [{
+      "uri": "byStatus",
+      "stages": [
+        { "$match": { "status": { "$var": "status" } } },
+        { "$group": { "_id": "$item", "total": { "$sum": "$qty" } } }
+      ],
+      "mcp": {
+        "enabled": true,
+        "description": "Total quantity by item, for a given status.",
+        "params": { "status": { "type": "string", "enum": ["A", "D"] } }
+      }
+    }]
+  }'
+----
+
+RESTHeart binds every `$var` through a single `avars` query parameter (`?avars={"status":"A"}`), so that's exactly the shape `how_to_call` composes — the agent never needs to know this convention, it just sees a `status` property under the `avars` param in `list_apis`'s output.
+
+TIP: `mcp.pipeline_summary` lets you override the auto-generated one-line summary of the pipeline (`$match → $group`) — useful once a pipeline uses `$lookup`/`$facet`/`$vectorSearch` and the auto-generated summary stops being meaningful.
+
+=== 3. Expose a change stream
+
+Same pattern, on one entry in `streams`. A change stream is a subscription, not a request/response call, so RESTHeart declares both transports it actually serves the endpoint on:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/mydb/inventory \
+  -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "streams": [{
+      "uri": "lowStock",
+      "stages": [{ "$match": { "fullDocument.qty": { "$lt": 10 } } }],
+      "mcp": {
+        "enabled": true,
+        "description": "Low-stock alerts.",
+        "event_type": "Update events where qty < 10"
+      }
+    }]
+  }'
+----
+
+`how_to_call` returns a `wss://` descriptor for the `websocket` transport and an `https://` one with `Accept: text/event-stream` for `sse` — pick whichever the agent's runtime can actually open.
+
+=== 4. Expose a GraphQL app
+
+Add a top-level `mcp` block to the app's own document in your `gql-apps` collection. Every GraphQL app shares one fixed action, `execute` (`POST` with the standard `{query, variables, operationName}` body) — what's specific to your app is which `Query` fields exist, listed automatically from its SDL:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/gql-apps/warehouse \
+  -u admin:secret -H 'Content-Type: application/json' \
+  -d '{
+    "mcp": {
+      "enabled": true,
+      "description": "Query the warehouse via GraphQL.",
+      "examples": [
+        { "description": "Find low-stock items", "args": { "body": { "query": "{ lowStock { sku qty } }" } } }
+      ]
+    }
+  }'
+----
+
+RESTHeart's GraphQL API is read-only — only `Query` fields are ever listed; a `Mutation` type in your SDL, if you have one, is never surfaced.
+
+=== Configuration reference
+
+[options="header"]
+[cols="3,6"]
+|===
+|Plugin |Purpose
+|`mongo` |`mcp: false` hides every MongoDB resource from MCP regardless of per-resource `mcp.enabled`. Default: exposed.
+|`graphql` |`mcp: false` does the same, for GraphQL apps.
+|`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
+|===
+
+Everything else is metadata, not server config: `mcp.enabled`, `mcp.description`, `mcp.params`, `mcp.examples`, `mcp.event_type`, `mcp.pipeline_summary` all live on the resource itself (a collection, an `aggrs`/`streams` entry, or a `gql-apps` document), set through RESTHeart's normal REST API.

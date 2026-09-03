@@ -1,251 +1,52 @@
 ---
 docs_version: 9
-title: Vector Search & AI
+title: restheart-ai
 layout: docs-adoc
 menu: ai
-applies_to: restheart
+applies_to: both
 ---
 
 NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
 
 WARNING: RESTHeart 9.9 has not been released yet — `restheart-ai` currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
 
-`restheart-ai` adds vector search to any RESTHeart deployment: manage vector search indexes, turn uploaded files into searchable chunks, generate embeddings, and rerank results. It's included by default in the RESTHeart distribution — no separate install, no extra JAR to add.
+`restheart-ai` is a RESTHeart plugin that makes any deployment agent-ready: it ties your data to AI agents and lets them search it by meaning, not just by exact match. It's included by default — no separate install, no extra JAR to add.
 
-* **Vector search indexes** — create, list and delete via the existing `/_indexes` endpoint. Works out of the box, no configuration needed.
-* **`$vectorScan`** — brute-force semantic search with no mongot and no index at all.
-* **Document chunking** — upload a PDF, Word doc, or any Tika-supported format to GridFS and it's automatically split into searchable text chunks; source code files are split at function/class boundaries instead.
-* **Embeddings** — either let MongoDB generate them for you (`autoEmbed`, zero setup), or plug in your own provider (OpenAI, Voyage AI, Ollama) when you need a specific model or don't have Atlas/mongot autoEmbed available.
-* **Reranking** — refine `$vectorSearch` results with a dedicated rerank model (Voyage AI, Cohere, or the Atlas Reranking API).
+Two independent capabilities, meant to be used together:
 
-=== Do you need mongot?
-
-Only for two things: **managing vector search indexes** (`/_indexes` with `"type": "vectorSearch"`, including `autoEmbed`) and **running `$vectorSearch` itself**. Both are executed by mongot, not by `mongod` alone — you need either MongoDB Atlas or MongoDB Community/Enterprise 8.2+ with link:https://www.mongodb.com/docs/manual/core/search-in-community/[mongot installed]. `autoEmbed` additionally needs a Voyage AI key configured on Atlas (Integrations) or passed to your mongot instance.
-
-Everything else in this page runs on *any* plain MongoDB — no mongot, no Atlas, no extra setup:
-
-* **Document chunking** just extracts text and inserts plain documents into a collection.
-* **RESTHeart's own embedding providers** (OpenAI, Voyage AI, Ollama) and everything built on them — embed-on-write, `$vectorize` — call an external HTTP API directly; MongoDB is not involved in generating the vector.
-* **`$vectorScan`** computes vector similarity directly, without an index or mongot at all — see section 2 below.
-* **Reranking** re-scores whatever document array an aggregation already returned — it doesn't care whether those documents came from `$vectorSearch`, `$vectorScan`, or a plain query.
-
-In practice: you can chunk files, embed them with your own provider, and semantically search them with `$vectorScan` on a stock MongoDB instance with zero extra setup — and only bring in mongot once you need `$vectorSearch`'s indexed, approximate-nearest-neighbor search at scale.
-
-=== 1. Vector search indexes — works immediately
-
-`PUT`, `GET` and `DELETE` on `/_indexes` handle `"type": "vectorSearch"` bodies automatically. No config, no `enabled: true` — just use it.
-
-[source,bash]
+[source,mermaid]
 ----
-curl -X PUT http://localhost:8080/mydb/articles/_indexes/article_vectors \
-  -u admin:secret -H 'Content-Type: application/json' \
-  -d '{
-    "type": "vectorSearch",
-    "fields": [
-      { "type": "vector", "path": "embedding", "numDimensions": 1536, "similarity": "cosine" }
-    ]
-  }'
+flowchart LR
+  Agent["AI Agent"]
+
+  subgraph AI["restheart-ai"]
+    direction TB
+    MCP["MCP Server\nlist_apis · how_to_call"]
+    VS["Vector Search\nindexes · chunking · embeddings · rerank"]
+  end
+
+  API["RESTHeart REST / GraphQL API"]
+  M[(MongoDB)]
+
+  Agent -- discovers & calls --> MCP
+  MCP -- describes --> API
+  Agent -- the real request --> API
+  VS -- powers $vectorScan / $vectorSearch on --> API
+  API --> M
 ----
 
-`GET /mydb/articles/_indexes` lists it alongside regular indexes; `DELETE /mydb/articles/_indexes/article_vectors` removes it.
+* **xref:/docs/ai/mcp.adoc[MCP Server]** — connectivity. Exposes your collections, aggregations, change streams, and GraphQL apps to an AI agent through the https://modelcontextprotocol.io[Model Context Protocol]: the agent discovers what exists and how to call it, then makes the real request itself, through RESTHeart's normal REST/GraphQL API and its normal ACL. No wrapper service, no hand-written tool definitions. Built on the framework-level xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface, which any plugin — yours included — can implement.
+* **xref:/docs/ai/vector-search.adoc[Vector Search]** — semantics. Vector search indexes, automatic document chunking (RAG), embeddings (MongoDB `autoEmbed` or your own provider — OpenAI, Voyage AI, Ollama), `$vectorScan` for mongot-free semantic search, and reranking.
 
-TIP: Use `"type": "autoEmbed"` instead of `"type": "vector"` to have MongoDB generate embeddings for you — no embedding provider, no `vector` field to populate yourself.
+Together, they compose: expose a `$vectorScan`/`$vectorSearch` aggregation through MCP exactly like any other aggregation, and an agent can search your data by meaning as just another tool call — no extra integration work on either side.
 
-[source,json]
-----
-{ "type": "vectorSearch",
-  "fields": [
-    { "type": "autoEmbed", "path": "description", "model": "voyage-3-large" }
-  ]
-}
-----
-
-Query an `autoEmbed` index with `queryString` instead of `queryVector` in your `$vectorSearch` stage — mongot embeds the query text for you.
-
-=== 2. `$vectorScan` — semantic search with no mongot and no index
-
-`$vectorSearch` needs mongot and a vector search index. `$vectorScan` needs neither: it's a brute-force aggregation stage that computes similarity directly against a plain array field, on any MongoDB — including MongoDB Community with no search component installed at all.
-
-[source,yaml]
-----
-vectorScanInterceptor:
-  enabled: true
-  default-max-candidates: 10000  # candidates scanned when maxCandidates is omitted
-  default-limit: 10              # results returned when limit is omitted
-----
-
-Use real `$match`/`$sort` stages to narrow candidates first — unlike `$vectorSearch`'s restricted `filter`, this is full MQL. `$vectorScan` itself takes a `path` to the vector field, a `queryVector`, a `similarity` (`cosine`, `dotProduct`, or `euclidean`), and an optional `limit`:
-
-[source,json]
-----
-{ "aggrs": [{ "uri": "semantic-search", "type": "pipeline", "stages": [
-    { "$match": { "category": "articles" } },
-    { "$vectorScan": {
-        "path": "embedding",
-        "queryVector": { "$vectorize": { "$var": "q" } },
-        "similarity": "cosine",
-        "limit": 10,
-        "maxCandidates": 5000
-    }},
-    { "$project": { "text": 1, "score": 1 } }
-]}]}
-----
-
-[source,bash]
-----
-curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
-----
-
-Stages placed after `$vectorScan` — like the `$project` above — run for real against MongoDB, bridged back in via `$documents` (requires MongoDB 6.0+). Reranking composes automatically too: attach a `rerank` block exactly as in section 5 below, since it scores whatever result array the pipeline produced regardless of how it got there.
-
-`maxCandidates` bounds how many documents (after `$match`) are scanned and scored before ranking and truncating to `limit` — there's no index, so this is the whole cost control. Reach for `$vectorScan` when you don't have or don't want mongot, on candidate sets small enough that a full scan is cheap; move to `$vectorSearch` once you need indexed approximate-nearest-neighbor search at scale.
-
-=== 3. Chunk documents for RAG
-
-Enable chunking and every file uploaded to *any* GridFS bucket is automatically extracted (via Apache Tika — PDF, Office, HTML, plain text, and more) and split into overlapping text chunks:
-
-[source,yaml]
-----
-documentChunkingInterceptor:
-  enabled: true
-  chunk-size: 1000          # characters per chunk (default)
-  chunk-overlap: 200        # characters of overlap (default)
-  target-collection: _chunks # where chunks are stored (default)
-----
-
-[source,bash]
-----
-curl -X POST http://localhost:8080/mydb/docs.files \
-  -u admin:secret -F file=@article.pdf
-----
-
-Each chunk lands in `_chunks` as `{ "source", "fileId", "chunkIndex", "text" }`. Add an `autoEmbed` index on `_chunks` and MongoDB embeds them for you — or see the next section to have `restheart-ai` embed them itself.
-
-**Uploading source code instead of prose just works — RAG over your own codebase, no extra configuration.** A filename with a recognized extension (`.java`, `.kt`, `.py`, `.go`, `.rs`, `.ts`/`.tsx`, `.js`/`.jsx`, `.c`/`.cpp`, `.cs`, `.swift`) is chunked at function/class boundaries instead of arbitrary character counts — and with *zero* overlap between chunks, unlike prose: a method is already a self-contained unit, so there's nothing useful to carry over into the next chunk.
-
-[source,bash]
-----
-curl -X POST http://localhost:8080/mydb/docs.files \
-  -u admin:secret -F file=@UserService.java
-----
-
-A large class lands in `_chunks` as one chunk per method, each still carrying the enclosing class declaration for context — so a retrieved chunk is never a floating method body with no idea which class it belongs to:
-
-[source,json]
-----
-{
-  "source": "mydb/docs.files/...", "fileId": "...", "chunkIndex": 3,
-  "text": "public class UserService {\n    public User findById(String id) {\n        ...\n    }\n}"
-}
-----
-
-Brace counting is comment- and string-literal-aware (a `{` inside a `"..."` or `// ...` doesn't confuse it), and a class small enough to fit in one chunk stays as a single chunk rather than being split per method for no reason.
-
-=== 4. Embeddings without MongoDB autoEmbed
-
-No Atlas, no mongot, or you just want a specific model? Enable a provider and point the pieces you need at it:
-
-[source,yaml]
-----
-openAIEmbeddingProvider:      # or voyageEmbeddingProvider, ollamaEmbeddingProvider
-  enabled: true
-  api-key: <your-key>
-  model: text-embedding-3-small   # default
-
-documentChunkingInterceptor:
-  enabled: true
-  embedding-provider: openAIEmbeddingProvider   # chunks get a real `vector` field
-
-autoEmbeddingInterceptor:
-  enabled: true
-  embedding-provider: openAIEmbeddingProvider
-----
-
-*Embed on write* — `autoEmbeddingInterceptor` embeds a text field automatically whenever a document is written, once a collection opts in:
-
-[source,bash]
-----
-curl -X PATCH http://localhost:8080/mydb/articles \
-  -u admin:secret -H 'Content-Type: application/json' \
-  -d '{ "vectorSearch": { "textField": "description", "embeddingField": "embedding" } }'
-----
-
-From then on, any `description` you write to `articles` gets an `embedding` field computed for free.
-
-*Embed inline in a pipeline* — the `$vectorize` operator turns text into a vector at query time, anywhere in an aggregation:
-
-[source,json]
-----
-{ "aggrs": [{ "uri": "semantic-search", "type": "pipeline", "stages": [
-    { "$vectorSearch": {
-        "index": "article_vectors", "path": "embedding",
-        "queryVector": { "$vectorize": { "$var": "q" } },
-        "numCandidates": 100, "limit": 10
-    }}
-]}]}
-----
-
-[source,bash]
-----
-curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
-----
-
-Requires `vectorizeOperator` enabled with its own `embedding-provider` set.
-
-TIP: `voyageEmbeddingProvider` also has a contextual sibling, `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) — used automatically by `documentChunkingInterceptor` when configured, it embeds every chunk of a file together so each vector is aware of the chunks around it, instead of in isolation.
-
-=== 5. Reranking
-
-Refine `$vectorSearch` results by adding a `rerank` block to a predefined aggregation:
-
-[source,json]
-----
-{ "aggrs": [{ "uri": "vector-search", "type": "pipeline",
-    "stages": [
-        { "$vectorSearch": { "index": "article_vectors", "path": "embedding",
-            "queryVector": { "$vectorize": { "$var": "q" } },
-            "numCandidates": 100, "limit": 50 } }
-    ],
-    "rerank": { "model": "rerank-2.5", "query": { "$var": "q" }, "topK": 10 }
-}]}
-----
-
-By default this calls the Atlas Reranking API (`rerankingInterceptor: { enabled: true, atlas-api-key: <key> }`). To use Voyage AI or Cohere instead:
-
-[source,yaml]
-----
-voyageRerankProvider:          # or cohereRerankProvider
-  enabled: true
-  api-key: <your-key>
-rerankingInterceptor:
-  enabled: true
-  rerank-provider: voyageRerankProvider
-----
-
-Reranking scores each result's `text` field against the query — this is exactly what `_chunks` documents from section 3 have, so chunking and reranking pair naturally.
-
-=== Multi-tenancy
-
-Every value above can be overridden per request instead of set once for the whole server — different API keys, models, or providers per tenant. Attach `override-ai-embedding-provider`, `override-ai-openai-api-key`, `override-ai-chunk-size`, and so on to the request (typically from your own tenant-resolving interceptor); anything not overridden falls back to the static config shown above.
-
-=== Configuration reference
+=== Where to start
 
 [options="header"]
-[cols="3,6"]
+[cols="2,3,3"]
 |===
-|Plugin |Purpose
-|`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
-|`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`).
-|`documentChunkingInterceptor` |Chunk GridFS uploads — code-aware (function/class boundaries) for recognized source file extensions, character-window otherwise. `chunk-size`, `chunk-overlap`, `target-collection`, `embedding-provider`.
-|`autoEmbeddingInterceptor` |Embed on write. `embedding-provider`.
-|`vectorizeOperator` |`$vectorize` aggregation operator. `embedding-provider`.
-|`rerankingInterceptor` |Rerank `$vectorSearch` results. `atlas-api-key`, `rerank-api-url`, `rerank-provider`.
-|`openAIEmbeddingProvider` |OpenAI/OpenRouter/any OpenAI-wire-compatible embeddings. `api-key`, `model` (`text-embedding-3-small`), `base-url`.
-|`voyageEmbeddingProvider` |Voyage AI embeddings. `api-key`, `model` (`voyage-3.5`), `base-url`, `input-type`.
-|`voyageContextualEmbeddingProvider` |Voyage AI contextualized chunk embeddings. `api-key`, `model` (`voyage-context-4`), `input-type`, `output-dimension`.
-|`ollamaEmbeddingProvider` |Local embeddings via Ollama. `base-url` (`http://localhost:11434`), `model` (`nomic-embed-text`).
-|`voyageRerankProvider` |Voyage AI reranking. `api-key`, `model` (`rerank-2.5`), `base-url`.
-|`cohereRerankProvider` |Cohere reranking. `api-key`, `model` (`rerank-v3.5`), `base-url`.
-|===
+|Capability |Reference |Tutorial
 
-All plugins above default to `enabled: false` except the three index-management interceptors.
+|MCP Server |xref:/docs/ai/mcp.adoc[Overview] |xref:/docs/ai/mcp-tutorial.adoc[Expose a Collection and an Aggregation]
+|Vector Search |xref:/docs/ai/vector-search.adoc[Overview] |xref:/docs/ai/vector-search-tutorial.adoc[Semantic Search Tutorial]
+|===
