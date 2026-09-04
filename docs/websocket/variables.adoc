@@ -23,20 +23,33 @@ The aggregation stages of the change stream can use _variables_, as in the follo
 
 The `$match` stage uses the variable `n`, specified as `{ "$var": "n" }`.
 
-The client can pass the variable using the `avars` query parameter.
+Since 9.9.0, the client passes the variable as a plain query parameter named after it:
+
+[source,http]
+----
+GET /messages/_streams/mine?n=Andrea HTTP/1.1
+----
+
+In case of the change stream *mine* described in the link:/docs/mongodb-websocket/examples[examples], the variable `n` is used to restrict notifications only to changes on documents with the property _name_ matching it.
+
+A value is interpreted as JSON when it parses as one (so `?opts={"a":1}` binds `opts` to that object and `?tags=[1,2,3]` binds `tags` to that array), and otherwise taken literally as a string (so `?n=Andrea` binds `n` to `"Andrea"`). See link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables] for the full details — the mechanism is shared between aggregations and change streams.
+
+==== Legacy: the `avars` Query Parameter
+
+Before 9.9.0, all variables had to be bundled into a single JSON object passed via the `avars` query parameter:
 
 [source,http]
 ----
 GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
 ----
 
-In case of the change stream *mine* described in the link:/docs/mongodb-websocket/examples[examples], the variable `n` is used to restrict notifications only to changes on documents with the property _name_ matching it.
+This form still works and remains fully supported. You can combine both forms in the same request; if a variable name is given both ways, the `avars` value wins.
 
 === Dot Notation support for `$var`
 
 `$var` in RESTHeart change streams can utilize dot notation to access nested properties. This allows you to specify a complex variable structure and reference its components for more flexible filtering.
 
-For example, if a client passes a variable as `avars={"options": {"name": "Andrea"}}`, you can access the nested property `name` using the dot notation within an aggregation stage, like this:
+For example, if a client passes `?options={"name":"Andrea"}` (or, using the legacy form, `avars={"options":{"name":"Andrea"}}`), you can access the nested property `name` using dot notation within an aggregation stage, like this:
 
 [source,json]
 ----

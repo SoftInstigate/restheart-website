@@ -77,7 +77,7 @@ curl -X PATCH http://localhost:8080/mydb/inventory \
   }'
 ----
 
-RESTHeart binds every `$var` through a single `avars` query parameter (`?avars={"status":"A"}`), so that's exactly the shape `how_to_call` composes — the agent never needs to know this convention, it just sees a `status` property under the `avars` param in `list_apis`'s output.
+RESTHeart binds every `$var` through a single `avars` query parameter (`?avars={"status":"A"}`), so that's exactly the shape `how_to_call` composes — the agent never needs to know this convention, it just sees a `status` property under the `avars` param in `list_apis`'s output. Since 9.9.0, a bare `?status=A` also works — any query parameter not otherwise reserved by RESTHeart is bound the same way as an entry in `avars`, and `avars` wins only when it already carries that name — see link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables].
 
 TIP: `mcp.pipeline_summary` lets you override the auto-generated one-line summary of the pipeline (`$match → $group`) — useful once a pipeline uses `$lookup`/`$facet`/`$vectorSearch` and the auto-generated summary stops being meaningful.
 

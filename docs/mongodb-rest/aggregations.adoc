@@ -164,7 +164,70 @@ Use the `$var` operator in your aggregation stages to reference variables:
 
 ==== Passing Variables
 
-When executing the aggregation, provide variable values using the `avars` query parameter:
+Since 9.9.0, the simplest way to provide variable values is a plain query parameter named after the `$var` it binds:
+
+==== cURL
+[source,bash]
+----
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?productName=Widget%20Pro" \
+  -u "[BASIC-AUTH]"
+----
+
+==== HTTPie
+[source,bash]
+----
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+  productName=="Widget Pro" \
+  Authorization:"Basic [BASIC-AUTH]"
+----
+
+==== JavaScript
+[source,javascript]
+----
+const params = new URLSearchParams({ productName: "Widget Pro" });
+
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Retrieved data:', data);
+})
+.catch(error => console.error('Error:', error));
+----
+
+This returns sales data only for the "Widget Pro" product. Any query parameter that isn't otherwise reserved by RESTHeart (`filter`, `sort`, `page`, `pagesize`, `keys`, `hint`, `avars`, and similar — see the legacy form below) is bound as a `$var` this way — you're not limited to one, and each is parsed independently, so a single request can bind as many variables as the pipeline needs.
+
+Each value is interpreted as JSON when it parses as one, and otherwise taken literally as a string:
+
+[cols="1,1"]
+|===
+|Query parameter |Bound value
+
+|`?status=A`
+|the string `"A"` (not valid JSON on its own, so taken literally — no need to quote it)
+
+|`?limit=10`
+|the number `10`
+
+|`?tags=[1,2,3]`
+|the array `[1, 2, 3]`
+
+|`?opts={"limit":10,"skip":20}`
+|the object `{"limit": 10, "skip": 20}`
+
+|`?date={"$date":1700000000000}`
+|the BSON date it represents — MongoDB Extended JSON types (`$date`, `$oid`, `$numberLong`, ...) work too
+|===
+
+NOTE: This shorthand works the same way for xref:/docs/websocket/variables.adoc[change stream variables], since both are bound through the same mechanism.
+
+==== Legacy: the `avars` Query Parameter
+
+Before 9.9.0, all variables had to be bundled into a single JSON object passed via the `avars` query parameter. This form still works and remains fully supported — it's still required if your pipeline needs a variable whose name collides with a reserved query parameter (`page`, `sort`, ...), and it's the only option against a RESTHeart instance older than 9.9.0:
 
 ==== cURL
 [source,bash]
@@ -202,7 +265,7 @@ fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
 .catch(error => console.error('Error:', error));
 ----
 
-This returns sales data only for the "Widget Pro" product.
+You can combine both forms in the same request. If a variable name is given both as a flat query parameter and inside `avars`, the `avars` value wins.
 
 ==== Default Values
 
@@ -234,21 +297,21 @@ Example with default value:
 
 ==== Dot Notation for Nested Variables
 
-You can access nested properties in variables using dot notation:
+You can access nested properties in variables using dot notation. Since a flat query parameter's value is parsed as JSON when it looks like one (see above), it can carry a whole object:
 
 ==== cURL
 [source,bash]
 ----
 curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
   -u "[BASIC-AUTH]" \
-  -G --data-urlencode 'avars={"config":{"limit":10,"skip":20}}'
+  -G --data-urlencode 'config={"limit":10,"skip":20}'
 ----
 
 ==== HTTPie
 [source,bash]
 ----
 http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
-  avars=='{"config":{"limit":10,"skip":20}}' \
+  config=='{"limit":10,"skip":20}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
@@ -256,7 +319,7 @@ http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
 [source,javascript]
 ----
 const params = new URLSearchParams({
-  avars: JSON.stringify({"config":{"limit":10,"skip":20}})
+  config: JSON.stringify({"limit":10,"skip":20})
 });
 
 fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
@@ -271,6 +334,8 @@ fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
 })
 .catch(error => console.error('Error:', error));
 ----
+
+The legacy form, `avars={"config":{"limit":10,"skip":20}}`, works identically.
 
 In the aggregation definition:
 
