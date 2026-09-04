@@ -92,6 +92,27 @@ public List<McpResource> describeMcp(McpContext ctx) {
 
 Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
 
+=== Letting agents read your data directly: `readResource()`
+
+`list_apis`/`how_to_call` only ever *describe* a request — for a plugin whose data agents should be able to read directly (loaded straight into context, or picked from a host UI's resource list), implement the `resources` primitive's read side too. Mark a safe, idempotent, `GET`-shaped action `readable`, and override `readResource()` to actually produce the data, in-process — no `HttpServerExchange`, no self-directed HTTP call:
+
+[source,java]
+----
+resources.add(McpResource.builder()
+    .uri(ctx.baseUrl() + "/my-resource")
+    .kind("my-kind")
+    .action("get", a -> a.method("GET").readable(true))
+    .build());
+
+@Override
+public Optional<McpReadResult> readResource(McpContext ctx, String resource, String action, Map<String, Object> args) {
+    // talk to your own engine directly, exactly as your handle() method already does
+    return Optional.of(new McpReadResult(myData));
+}
+----
+
+`resources/read` always means "here is real data" — a resource with no `readable` action is simply never registered with the resources primitive at all (`resources/list`/`resources/templates/list`); it stays discoverable through `list_apis`/`how_to_call` only. There is no "context" fallback to fall back to. If your default action needs an argument with no sensible default, the framework surfaces it as a Resource Template instead of a plain resource, so a client knows to fill it in before reading — see the "Reading data directly" section of xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for a concrete example (aggregations with a required `$var`).
+
 === Enabling and disabling
 
 Any `McpAware` plugin is exposed by default; set `mcp: false` in its own configuration to opt out entirely — the same override mechanism as `enabled`/`uri`:

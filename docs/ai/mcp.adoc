@@ -125,6 +125,39 @@ curl -X PATCH http://localhost:8080/gql-apps/warehouse \
 
 RESTHeart's GraphQL API is read-only — only `Query` fields are ever listed; a `Mutation` type in your SDL, if you have one, is never surfaced.
 
+=== Reading data directly: the `resources` primitive
+
+Everything exposed above is also reachable through MCP's native `resources` primitive (`resources/list`, `resources/read`), not just through `list_apis`/`how_to_call`. This gives an agent — or a host UI like Claude Desktop/Cursor with a resource picker — a second, more direct channel to *read* data:
+
+[cols="1,1"]
+|===
+|Use `resources/read` when... |Use `how_to_call` when...
+
+|You just want the data loaded into context
+|You need to generate/inspect the actual request, or the action is a write
+
+|The host UI has a resource picker
+|The host has no built-in HTTP execution
+|===
+
+`resources/read` **always returns real data, or a clear error — never a description of the resource.** A resource with nothing readable to return (a database, a change stream, a GraphQL app, or an aggregation `AggregationPipelineSecurityChecker` didn't clear — see below) simply doesn't appear under `resources/list` at all; it stays reachable through `list_apis`/`how_to_call` only. There is exactly one way to get real data through this primitive and one generic way to invoke anything (reads and writes alike) through tools — never two different answers to "read this" depending on which channel you used.
+
+==== Collections
+
+Reading a collection's bare URI (`https://host/mydb/inventory`) returns its first page of documents with default pagination — the same shape as `GET`. Add the usual query parameters to filter or page through it: `?filter={"qty":{"$lt":10}}&sort=-qty&pagesize=20`. A single document is read at `.../inventory/<id>`.
+
+==== Aggregations
+
+An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations#aggregation-pipeline-security[`AggregationPipelineSecurityChecker`] clears its raw, un-interpolated pipeline (the default blacklist blocks `$out`, `$merge`, `$lookup`, `$graphLookup`, `$unionWith`) — a pipeline it rejects stays `how_to_call`-only, same as any other non-readable resource.
+
+If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_aggrs/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_aggrs/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
+
+As with the real REST endpoint, a flat query parameter like `?status=A` binds the `$var` of the same name — see link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables] for the full rules (JSON-shaped values, combining with `avars`, etc.).
+
+==== Not (yet) readable this way
+
+Change streams (they're a live subscription, not a request/response read), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`how_to_call`-only for now.
+
 === Configuration reference
 
 [options="header"]
