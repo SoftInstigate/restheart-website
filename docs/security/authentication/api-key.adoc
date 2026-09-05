@@ -182,9 +182,9 @@ HASH=$(printf '%s' "$KEY" | shasum -a 256 | cut -d' ' -f1)
 # 3. store the hash as an ordinary document, via RESTHeart's own REST API
 #    (wm=upsert creates the document since it doesn't exist yet)
 curl -s -u admin:secret -X PUT \
-  "https://localhost:8443/restheart/apiKeys/$(uuidgen)?wm=upsert" \
+  "https://localhost:8080/apiKeys/$(uuidgen)?wm=upsert" \
   -H 'Content-Type: application/json' \
-  -d "{\"user\":\"andrea@example.com\",\"roles\":[\"cli\"],\"hash\":\"$HASH\",\"expiresAt\":{\"\$date\":\"2026-12-31T00:00:00Z\"}}"
+  -d "{\"user\":\"andrea@example.com\",\"roles\":[\"cli\"],\"hash\":\"$HASH\",\"expiresAt\":{\"\$date\":\"2027-12-31T00:00:00Z\"}}"
 
 # 4. hand the key to the caller now — it's not recoverable afterwards
 echo "$KEY"
