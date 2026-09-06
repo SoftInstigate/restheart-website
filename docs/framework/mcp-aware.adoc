@@ -14,7 +14,7 @@ The actual `/mcp` endpoint — the server that discovers every `McpAware` plugin
 
 === How it works
 
-The server never calls your plugin's data for the agent — it only *describes* how to. Two tools do all the work: `list_apis` (what exists) and `how_to_call` (how to invoke it). The agent takes the descriptor `how_to_call` returns and makes the real HTTP request itself, directly against your plugin's own endpoint.
+The server never calls your plugin's data for the agent — it only *describes* how to. Three tools do all the work: `list_apis` (what exists), `how_to_call` (how to invoke it) and `get_token` (a credential to invoke it with). The agent takes the descriptor `how_to_call` returns and makes the real HTTP request itself, directly against your plugin's own endpoint.
 
 [source,mermaid]
 ----
@@ -27,9 +27,14 @@ sequenceDiagram
   MCP-->>Agent: catalog (uri, kind, description)
   Agent->>MCP: how_to_call(resource, action, args)
   MCP-->>Agent: { method, url, headers, body }
+  Note over Agent: descriptor carries a placeholder,<br/>no credential — reusable
+  Agent->>MCP: get_token()
+  MCP-->>Agent: { access_token, expires_in: 60 }
   Agent->>Plugin: the real request, directly
   Plugin-->>Agent: real data
 ----
+
+The split is deliberate: a descriptor answers "how do I call this" and is worth keeping, while a token is worth seconds. Were the token baked into the descriptor, its clock would start when the agent asked how to call something — and an agent that reasons, or asks its user, before actually calling would find it already expired.
 
 This means RESTHeart's existing ACL applies exactly as it does to any other client — an action the agent's credentials can't perform still fails with a normal `403`, the same way it would for a human hitting the same endpoint. `describeMcp` never filters by principal; the MCP server adds discovery, not a new security boundary.
 
@@ -91,6 +96,20 @@ public List<McpResource> describeMcp(McpContext ctx) {
 ----
 
 Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
+
+=== Filling in the credential: `get_token`
+
+The descriptor's `Authorization` header holds the literal placeholder `Bearer <token_from_get_token>` — it never carries a credential, which is what makes it stable and reusable. The agent calls `get_token` when it is about to send the request and substitutes the value:
+
+[source,json]
+----
+{ "access_token": "eyJhbGciOiJIUzI1NiIs...", "token_type": "Bearer",
+  "expires_in": 60, "username": "andrea@example.com", "roles": ["cli"] }
+----
+
+Same field names as RESTHeart's own xref:/docs/security/authentication#_token_endpoint[`/token` endpoint], so an agent that has seen either recognises this one. The token carries the identity and roles of the MCP session and nothing more — it can do exactly what that session can do — and expires within `expires_in` seconds. That short life is the point: the agent never handles a password or a long-lived API key, and a token that leaks is worthless almost immediately.
+
+Requires the `jwtIssuer` provider (enabled by default) and an authenticated session; the tool returns an explanatory error rather than a weaker credential when either is missing.
 
 === Letting agents read your data directly: `readResource()`
 

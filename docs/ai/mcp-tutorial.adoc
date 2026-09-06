@@ -24,7 +24,7 @@ See the xref:/docs/ai/mcp.adoc[MCP Server overview] for the full feature referen
 === What You'll Learn
 
 * Opt a collection into MCP with a metadata `PATCH`
-* Call `list_apis`/`how_to_call` directly over JSON-RPC to see exactly what an agent sees
+* Call `list_apis`/`how_to_call`/`get_token` directly over JSON-RPC to see exactly what an agent sees
 * Connect a real MCP client (Claude Code) and let it discover the resource on its own
 * Add an aggregation with a `$var` parameter and expose it the same way
 
@@ -124,10 +124,26 @@ curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
 ----
 { "transport": "http", "method": "GET",
   "url": "http://localhost:8080/inventory?filter=%7B%22qty%22%3A%7B%22%24lt%22%3A30%7D%7D",
-  "headers": { "Authorization": "Bearer <token>" } }
+  "headers": { "Authorization": "Bearer <token_from_get_token>" } }
 ----
 
-Run that `url` yourself and you get the real, live-queried documents — the agent makes this exact request directly against RESTHeart, the MCP server was never in the data path.
+The descriptor carries no credential, only that placeholder — which is what makes it stable and worth keeping. Ask for a token when you are about to send the request:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
+  -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_token","arguments":{}}}'
+----
+
+[source,json]
+----
+{ "access_token": "eyJhbGciOiJIUzI1NiIs...", "token_type": "Bearer",
+  "expires_in": 60, "username": "admin", "roles": ["admin"] }
+----
+
+Substitute `access_token` for the placeholder and run that `url` yourself: you get the real, live-queried documents — the agent makes this exact request directly against RESTHeart, the MCP server was never in the data path. Mind `expires_in`: the token lasts a minute, so fetch it right before use rather than in advance.
 
 [[4-connect-a-real-client]]
 === 4. Connect a real client
@@ -148,7 +164,7 @@ Restart the session so it picks up the new server, then ask it directly — no n
 > query the inventory collection for items with qty under 30
 ----
 
-It calls `list_apis`, finds `inventory`, calls `how_to_call`, and executes the composed request — the same three steps you just did by hand.
+It calls `list_apis`, finds `inventory`, calls `how_to_call`, fetches a token with `get_token`, and executes the composed request — the same steps you just did by hand.
 
 === 5. Add an aggregation
 
@@ -185,6 +201,6 @@ It discovers `byStatus` under `inventory`'s `list_apis` context, sees `status` i
 === Next steps
 
 * xref:/docs/ai/mcp.adoc[Full MCP Server reference] — change streams, GraphQL apps, configuration
-* xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`how_to_call` work under the hood, and how to expose your own plugin's data the same way
+* xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`how_to_call`/`get_token` work under the hood, and how to expose your own plugin's data the same way
 * link:https://github.com/SoftInstigate/restheart/tree/9.x/examples/mcp-mongodb[`examples/mcp-mongodb`] — a worked example with all four kinds (collection, aggregation, stream, GraphQL app) loaded in one shot
 * xref:/docs/ai/vector-search.adoc[Vector Search] — combine MCP with `$vectorScan`/`$vectorSearch` to let an agent search semantically, not just filter
