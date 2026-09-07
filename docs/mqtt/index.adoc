@@ -1,0 +1,28 @@
+---
+docs_version: 9
+title: MQTT Overview
+layout: docs-adoc
+menu: mqtt
+applies_to: restheart
+---
+
+[.badge.bg-warning]#Coming soon#
+
+The MQTT module bridges an external MQTT broker into RESTHeart. Incoming topic messages become Server-Sent Events, REST responses, MongoDB documents, or input to your own plugins.
+
+It connects to any MQTT 3.1.1 or 5.0 broker — Mosquitto, HiveMQ, EMQX, AWS IoT Core — using link:https://github.com/hivemq/hivemq-mqtt-client[hivemq-mqtt-client] and exposes what it receives through ordinary RESTHeart plugins.
+
+== What it does
+
+* *Stream MQTT to HTTP clients* — subscribe to broker topics and push messages to browser or API consumers as Server-Sent Events, with optional per-connection filtering, throttling, and window aggregation.
+* *REST access to the last message* — expose the most recent message for any subscribed topic through a simple GET endpoint, backed by an in-memory cache.
+* *Persist to MongoDB* — write incoming messages directly to a MongoDB collection through a buffered, fault-tolerant pipeline with dead-letter support.
+* *Plugin integration* — inject the message router into your own RESTHeart plugin to process MQTT messages with full access to the RESTHeart framework.
+
+== Security
+
+All HTTP-facing endpoints require authentication by default. Topic-level authorization is enforced through an ACL that maps roles to MQTT topic filters, using filter containment semantics — so a pattern granting `sensors/+` will not inadvertently grant `sensors/#`.
+
+== Roadmap
+
+Post-v1 work is tracked under link:https://github.com/SoftInstigate/restheart/issues/601[#601]: MQTT 5 shared subscriptions and user properties, an HTTP → MQTT publish endpoint, a WebSocket bridge, polyglot pipeline stages, replay from MongoDB via `Last-Event-ID`, a dead-letter REST API, metrics, schema validation, and a distributed single-writer mode.
