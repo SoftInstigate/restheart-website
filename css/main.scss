@@ -673,6 +673,165 @@ iframe {
     }
   }
 
+  // Quotations. asciidoctor lays a quote block out as `display: table` with a
+  // fixed left margin, so it opts out of the prose measure above: on a wide
+  // column the quote sits flush against the left edge while the paragraphs
+  // around it are centred, reading as misplaced rather than set apart. A block
+  // box on the same axis as prose puts it back in the flow; the rule down its
+  // left edge is what marks the text as quoted, which lets the type itself
+  // drop back to something quieter than asciidoctor's justified white — at
+  // this measure justification opens rivers, and near-white made the quote
+  // louder than the page it interrupts.
+  .bd-content .quoteblock {
+    display: block;
+    max-width: 46rem;
+    margin: 1.75rem auto;
+    padding: 0.15rem 0 0.15rem 1.25rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.18);
+
+    blockquote,
+    blockquote p {
+      color: #c2c2c2;
+      text-align: left;
+      word-spacing: normal;
+      line-height: 1.7;
+    }
+
+    // The attribution is a source credit, not part of the quotation: left it
+    // aligns with the quote it belongs to, and asciidoctor's `cite` colour is
+    // black — invisible on this page.
+    .attribution {
+      margin-top: 0.6em;
+      margin-right: 0;
+      text-align: left;
+      color: #9a9a9a;
+
+      cite {
+        display: inline;
+        color: #9a9a9a;
+      }
+    }
+  }
+
+  // Call-out panels. A few docs pages drop a Bootstrap alert in through raw
+  // HTML. Its palette is Bootstrap's light-theme one — dark green text on a
+  // pale green plate — but the docs' own colour rules above (white headings,
+  // #dadada paragraphs) are more specific than the colour the alert
+  // inherits down to its children, so the text came out near-white on that
+  // pale plate: the "Blazing fast" panel was effectively unreadable. These
+  // re-tint the panel for a dark page, in the shape the admonitions already
+  // use — tinted ground, coloured left edge — and let each variant set the
+  // colour its own contents inherit.
+  .bd-content .alert {
+    max-width: 46rem;
+    margin: 1.75rem auto;
+    padding: 1.1rem 1.35rem;
+    border: 0;
+    border-left: 4px solid transparent;
+    border-radius: 6px;
+
+    // Section-heading rules (3rem of space, a hairline above) belong to the
+    // page skeleton, not to a heading inside a box.
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0 0 0.4rem;
+      padding: 0;
+      border: 0;
+      max-width: none;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 0 0 0.35rem;
+      max-width: none;
+      color: inherit;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    hr {
+      margin: 0.7rem 0;
+      border: 0;
+      border-top: 1px solid currentColor;
+      opacity: 0.25;
+    }
+
+    a {
+      color: inherit;
+      font-weight: 600;
+    }
+  }
+
+  .bd-content .alert-success {
+    background-color: rgba(90, 200, 130, 0.12);
+    border-left-color: #5ac882;
+    color: #cfe9d8;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a {
+      color: #7fd9a0;
+    }
+  }
+
+  .bd-content .alert-info {
+    background-color: rgba(90, 169, 230, 0.12);
+    border-left-color: #5aa9e6;
+    color: #d3e4f2;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a {
+      color: #5aa9e6;
+    }
+  }
+
+  .bd-content .alert-warning {
+    background-color: rgba(230, 161, 90, 0.12);
+    border-left-color: #e6a15a;
+    color: #f0dcc6;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a {
+      color: #e6a15a;
+    }
+  }
+
+  .bd-content .alert-danger {
+    background-color: rgba(230, 106, 90, 0.12);
+    border-left-color: #e66a5a;
+    color: #f2d6d2;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a {
+      color: #e66a5a;
+    }
+  }
+
   // Code blocks get a little more breathing room inside the frame.
   .bd-content {
     .listingblock,
