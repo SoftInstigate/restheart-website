@@ -9,39 +9,85 @@ redirect_from:
   - /docs/mongodb-websocket/
 ---
 
-This section describes the WebSocket API that allows publishing data events to WebSocket clients.
+__RESTHeart embeds a WebSocket server__ that exposes MongoDB's Change Streams to web browsers and to any other HTTP/WebSocket client. With it you can __build web or mobile apps that are notified of data changes in real time__, without polling the server for updates.
 
-> The WebSocket API is an advanced technology that makes it possible to open a two-way interactive communication session between the user's browser and a server. With this API, you can send messages to a server and receive event-driven responses without having to poll the server for a reply.
+=== WebSockets and Change Streams
 
-Ref: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+Two standards do the work. The first is the transport between the client and RESTHeart:
 
-> MongoDB's Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will.
+[quote, MDN Web Docs, 'https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API[The WebSocket API]']
+____
+The WebSocket API is an advanced technology that makes it possible to open a two-way interactive communication session between the user's browser and a server. With this API, you can send messages to a server and receive event-driven responses without having to poll the server for a reply.
+____
 
-Ref: https://docs.mongodb.com/manual/changeStreams
+The second is how MongoDB tells RESTHeart what changed:
 
-=== RESTHeart Change Stream
+[quote, MongoDB Manual, 'https://docs.mongodb.com/manual/changeStreams[Change Streams]']
+____
+MongoDB's Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog. Applications can use change streams to subscribe to all data changes on a single collection, a database, or an entire deployment, and immediately react to them. Because change streams use the aggregation framework, applications can also filter for specific changes or transform the notifications at will.
+____
 
-__RESTHeart embeds a WebSocket server implementation__ that allows to expose MongoDB's Change Streams to Web browsers and any kind of HTTP/WebSocket client.
-
-With RESTHeart is possible to __create Web or Mobile apps that can be asynchronously notified in real time of data changes__. Because change streams use the link:https://docs.mongodb.com/manual/aggregation/[aggregation framework], applications can also filter for specific changes.
-
-For example, if the stream `all` is defined on the collection `messages`, clients can connect via WebSocket to `ws://mydomain.com/messages/_streams/all` and receive real time notification of data changes occurring in the collection.
+RESTHeart joins the two: it opens the change stream on MongoDB and pushes every change event down to the WebSocket clients watching it.
 
 ++++
 <img src="/images/changes-stream.png" width="80%" height="auto" class="image-center img-responsive" />
 ++++
 
-Exposing a WebSocket Server, clients may be promptly notified about these changes only if necessary, avoiding network expensive common practices like polling.
+=== Exposing a Change Stream
+
+Change streams are not opened by the client at will: they are declared by the developer as the `streams` collection metadata, and RESTHeart binds each definition to a URI under `/<db>/<collection>/_streams`.
+
+[source,json]
+----
+{ "streams": [
+    { "uri": "all",
+      "stages": [
+        { "_$match": { "_$or": [ { "operationType": "insert" }, { "operationType": "update" } ] } }
+      ]
+    }
+]}
+----
+
+With the stream `all` defined on the collection `messages`, clients connect via WebSocket to `ws://mydomain.com/messages/_streams/all` and receive real time notifications of the data changes occurring in that collection.
+
+The stages are a link:https://docs.mongodb.com/manual/aggregation/[MongoDB aggregation pipeline] over the change events, so they can filter and transform the notifications before they are sent — here, only inserts and updates are notified. See link:/docs/websocket/change-streams[Change Streams] for the full definition format, including why the operators are written `_$match` and `_$or` when the metadata is submitted through the REST API.
+
+=== Filtering per Client
+
+The same stream can serve different data to different clients. Stages accept _variables_ that the client binds with query parameters at connection time, so one definition covers many filtered views:
+
+[source,http]
+----
+GET /messages/_streams/mine?n=Andrea HTTP/1.1
+----
+
+`notify_when` goes one step further and filters which connected clients receive each event, using a single MongoDB cursor for all of them. See link:/docs/websocket/variables[Using Variables] and link:/docs/websocket/change-streams#per-client-filtering-notify_when[notify_when].
+
+=== No More Polling
+
+Because RESTHeart pushes the events, a client learns about a change the moment it happens — no polling loop, no requests that come back empty, no delay between the write and the notification.
 
 ++++
 <div class="alert alert-success" role="alert">
-    <h2 class="alert-heading"><strong>Blazing fast.</strong></h2>
+    <h4 class="alert-heading"><strong>Blazing fast.</strong></h4>
     <hr class="my-2">
     <p>Handle hundreds of thousands of concurrent clients.</p>
     <p>Check the <a class="alert-link" href="/docs/performances">performance tests</a>!</p>
 </div>
 ++++
 
-NOTE:  Change streams require at least MongoDB configured as a link:https://docs.mongodb.com/manual/replication/[Replica Set]
+=== Requirements and Lifecycle
 
-NOTE: When the `stream` collection metadata is modified or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
+NOTE: Change streams require MongoDB configured as a link:https://docs.mongodb.com/manual/replication/[Replica Set].
+
+NOTE: When the `streams` collection metadata is modified, or the collection or the db is deleted, all related WebSocket connections are closed and the change streams are consequently updated.
+
+=== WebSocket or SSE?
+
+The same change streams are also available over link:/docs/sse/[Server-Sent Events], at the same URL, with `Accept: text/event-stream` instead of a WebSocket upgrade. Both transports share the same MongoDB cursor; SSE reconnects and resumes on its own, WebSocket gives you a full-duplex channel. The link:/docs/sse/#sse-vs-websocket[SSE vs. WebSocket] table compares them feature by feature.
+
+=== Next Steps
+
+* link:/docs/websocket/tutorial[WebSocket API Tutorial] — a step-by-step walkthrough, from creating the collection to receiving events in the browser
+* link:/docs/websocket/change-streams[Change Streams] — the `streams` metadata and stream definition format
+* link:/docs/websocket/variables[Using Variables] — parameterize a stream with `$var` and query parameters
