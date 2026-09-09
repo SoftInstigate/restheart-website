@@ -27,6 +27,7 @@ See the xref:/docs/ai/mcp.adoc[MCP Server overview] for the full feature referen
 * Call `list_apis`/`how_to_call`/`get_token` directly over JSON-RPC to see exactly what an agent sees
 * Connect a real MCP client (Claude Code) and let it discover the resource on its own
 * Add an aggregation with a `$var` parameter and expose it the same way
+* Subscribe to a collection and get told when it changes
 
 === Prerequisites
 
@@ -198,9 +199,48 @@ Ask your connected client:
 
 It discovers `byStatus` under `inventory`'s `list_apis` context, sees `status` is one of `A`/`D` under the `avars` param, and calls `how_to_call` with `{"avars": {"status": "A"}}` — the same `avars` bundling xref:/docs/ai/mcp.adoc#_2_expose_an_aggregation[the overview] explains.
 
+=== 6. Get told when it changes
+
+Open the notification stream — a `GET` on `/mcp` with the same session — and leave it running:
+
+[source,bash]
+----
+curl -N [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Accept: text/event-stream' -H 'Mcp-Session-Id: [SESSION-ID]'
+----
+
+In another shell, subscribe:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' \
+  -d '{"jsonrpc":"2.0","id":5,"method":"resources/subscribe","params":{"uri":"[RESTHEART-URL]/inventory"}}'
+----
+
+Now write a document:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/inventory -u admin:secret \
+  -H 'Content-Type: application/json' -d '{"sku":"widget","qty":3}'
+----
+
+The open stream prints:
+
+[source,json]
+----
+{ "jsonrpc": "2.0", "method": "notifications/resources/updated",
+  "params": { "uri": "http://localhost:8080/inventory" } }
+----
+
+There is no payload: the notification means "read it again". Subscribe to `inventory/_aggrs/byStatus` instead and you get the same signal for the aggregation, watched through the collection it reads from.
+
 === Next steps
 
 * xref:/docs/ai/mcp.adoc[Full MCP Server reference] — change streams, GraphQL apps, configuration
+* xref:/docs/ai/mcp.adoc#_securing_it[Securing it] — this tutorial ran as `admin`; here is how to give an agent its own account and let the ACL decide what it can see and read
 * xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`how_to_call`/`get_token` work under the hood, and how to expose your own plugin's data the same way
 * link:https://github.com/SoftInstigate/restheart/tree/9.x/examples/mcp-mongodb[`examples/mcp-mongodb`] — a worked example with all four kinds (collection, aggregation, stream, GraphQL app) loaded in one shot
 * xref:/docs/ai/vector-search.adoc[Vector Search] — combine MCP with `$vectorScan`/`$vectorSearch` to let an agent search semantically, not just filter

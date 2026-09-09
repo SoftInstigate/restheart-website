@@ -235,6 +235,37 @@ public class XmlRequest extends ServiceRequest<Document> {
 In the constructor a call to `super(exchange)` attaches the object to the `HttpServerExchange`. The object is retrieved using the inherited `of()` method that gets the instance attachment from the `HttpServerExchange`. This is fundamental for two reasons: first the same request and response objects must be shared by the all handlers of the processing chain. Second, this avoid the need to parse the content several times for performance reasons.
 
 
+=== Authorizing what a single endpoint actually does
+
+A service that answers everything on one path — a protocol endpoint like `/mcp`, or `/graphql` — is a problem for a path-based ACL: every request looks like `POST /mcp`, so a permission either grants all of it or none of it.
+
+Override `operationsToAuthorize()` to tell the framework what the request will really do. Return one descriptor per underlying operation, shaped as the equivalent REST call:
+
+[source,java]
+----
+@Override
+public List<RequestDescriptor> operationsToAuthorize(HttpServerExchange exchange) {
+    var caller = RequestDescriptor.of(exchange);
+
+    // inspect the body, work out what this call reads, and describe it as the GET it amounts to
+    return List.of(new RequestDescriptor(caller.principal(), "GET", "/inventory",
+            Map.of(), caller.headers(), caller.cookies(), caller.remoteAddress(), caller.scheme()));
+}
+----
+
+Each descriptor is authorized before your service runs, against the same permissions that apply to REST. If any is denied the whole request is refused with `403`. Existing ACL rules then govern your protocol endpoint with no protocol-specific configuration — `readFilter` and `projectResponse` included.
+
+Retrieve what the ACL decided, to apply it while executing the operation:
+
+[source,java]
+----
+var decisions = exchange.getAttachment(DescriptorAwareAuthorizer.AUTHORIZED_OPERATIONS);
+----
+
+WARNING: A service that overrides this fails closed: with no `DescriptorAwareAuthorizer` configured, every request to it is denied. Do not override it for an ordinary service — the default returns the request itself and behaves exactly as before.
+
+This is how RESTHeart's own MCP server authorizes a `resources/read` as the REST `GET` it is equivalent to — see xref:/docs/ai/mcp.adoc#_securing_it[Securing the MCP server].
+
 === CORS Headers
 
 RESTHeart provides built-in support for CORS (Cross-Origin Resource Sharing), enabling services to handle requests from different origins.

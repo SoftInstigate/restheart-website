@@ -294,6 +294,24 @@ The following only returns the property `public` (you can use the dot notation!)
 }
 ----
 
+=== Saying why a request was denied
+
+A `403` is normally empty, which makes a denial hard to diagnose — especially on a deployment where you cannot read the server logs. An authorizer can attach a reason, and RESTHeart returns it as the response body:
+
+[source,java]
+----
+request.attachParam(Authorizer.VETO_MESSAGE, "Origin header is required");
+----
+
+[source,json]
+----
+{ "message": "Origin header is required" }
+----
+
+`originVetoer` already does this, so a request blocked by CSRF protection says so instead of failing silently.
+
+Attach a reason only when it tells the caller something they are entitled to know. A message naming which collection or which role was missing turns a `403` into information about a resource the caller could not otherwise see.
+
 === File ACL Authorizer
 
 _fileAclAuthorizer_ allows defining roles permissions in the configuration or in a separate YAML configuration file.

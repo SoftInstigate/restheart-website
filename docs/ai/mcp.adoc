@@ -158,6 +158,68 @@ As with the real REST endpoint, a flat query parameter like `?status=A` binds th
 
 Change streams (they're a live subscription, not a request/response read), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`how_to_call`-only for now.
 
+=== Securing it
+
+Reaching `/mcp` and reading data through it are two separate permissions.
+
+A read through the `resources` primitive is authorized **exactly as the equivalent REST `GET`**: the same permission matches, and the same `readFilter` and `projectResponse` apply. Whatever an ACL already does to your REST API, it does to MCP — you do not write MCP-specific rules.
+
+Grant the endpoint itself, then the data:
+
+[source,json]
+----
+[
+  {
+    "_id": "agentCanReachMcp",
+    "roles": ["agent"],
+    "predicate": "path-prefix('/mcp') and method(POST, GET, DELETE)",
+    "priority": 100
+  },
+  {
+    "_id": "agentCanReadInventory",
+    "roles": ["agent"],
+    "predicate": "path-prefix('/inventory') and method(GET)",
+    "priority": 100,
+    "mongo": { "readFilter": { "owner": "@user._id" } }
+  }
+]
+----
+
+WARNING: `/mcp` needs `POST`, `GET` **and** `DELETE`. `POST` carries the JSON-RPC messages, but `GET` opens the stream the server delivers notifications on and `DELETE` closes the session. With `POST` alone a `resources/subscribe` succeeds and the client then waits forever for notifications it can never receive.
+
+Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_aggrs/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.
+
+Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` does not match `/inventory`.
+
+==== The catalog shows only what you can read
+
+`list_apis`, `resources/list`, `resources/templates/list` and `how_to_call` are all filtered by the caller's ACL: a resource whose read would be refused is not listed, not described, and not composable. Two callers hitting the same server get different catalogs.
+
+Filtering is in addition to enforcement, not instead of it — a read is still authorized when it happens.
+
+=== Subscribing to changes
+
+Subscribe to a **collection** or an **aggregation** over one, and the server sends `notifications/resources/updated` when it changes. The notification carries only the URI you subscribed to, no payload: read the resource again to get the new state.
+
+[source,json]
+----
+{ "jsonrpc": "2.0", "id": 1, "method": "resources/subscribe",
+  "params": { "uri": "https://host/inventory" } }
+----
+
+Subscribing to an aggregation watches the collection it reads from, so you can attach an aggregation that summarises your data and be told to re-read it whenever the underlying collection changes.
+
+`list_apis` marks what you can subscribe to:
+
+[source,json]
+----
+{ "uri": "https://host/inventory", "kind": "collection", "subscribable": true }
+----
+
+Anything else — a change stream, a GraphQL app, a service — is refused with a JSON-RPC error explaining why. Change streams are their own live channel: connect to them over WebSocket or SSE instead.
+
+TIP: A busy collection does not become a burst of messages. The first change is notified immediately, further ones are collapsed into at most one notification per `subscription-notify-interval-seconds` (default `5`).
+
 === Configuration reference
 
 [options="header"]
@@ -167,6 +229,8 @@ Change streams (they're a live subscription, not a request/response read), datab
 |`mongo` |`mcp: false` hides every MongoDB resource from MCP regardless of per-resource `mcp.enabled`. Default: exposed.
 |`graphql` |`mcp: false` does the same, for GraphQL apps.
 |`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
+|`mcpService` |`subscription-notify-interval-seconds` — at most one `resources/updated` per subscribed resource per interval. Default `5`.
+|`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`how_to_call` keep working).
 |===
 
 Everything else is metadata, not server config: `mcp.enabled`, `mcp.description`, `mcp.params`, `mcp.examples`, `mcp.event_type`, `mcp.pipeline_summary` all live on the resource itself (a collection, an `aggrs`/`streams` entry, or a `gql-apps` document), set through RESTHeart's normal REST API.

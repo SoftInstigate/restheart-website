@@ -250,7 +250,30 @@ type Query {
 }
 ----
 
-Starting with RESTHeart 8.2, the `@user` predefined argument is now available in aggregation stages when using Field-to-Aggregation mapping. This enables dynamic filtering based on the authenticated user. For example, the following mapping is supported:
+===== Predefined variables
+
+Mappings can reference server-resolved variables through `$arg`, in both field-to-query and field-to-aggregation mappings. The value comes from the server, never from the client: a caller cannot supply it as a GraphQL argument or a query parameter.
+
+[options="header"]
+[cols="2,5"]
+|===
+|Variable |Resolves to
+|`@user` |the authenticated user; `@user._id`, `@user.roles`, or any property of the account document
+|`@roles` |the authenticated user's roles, as an array
+|`@authenticated` |`true` when the request is authenticated
+|`@request` |the request; `@request.body`, `@request.method`, and nested properties with dot notation
+|`@filter` |the request's `filter` query parameter
+|`@qparams['name']` |one query parameter by name
+|`@now` |the current timestamp
+|`@rnd(bits)` |a cryptographically secure random hex string
+|`@mongoPermissions` |the permissions applying to the request, e.g. `@mongoPermissions.readFilter`
+|===
+
+Any variable a plugin registers through the `VarResolver` SPI works here too — the Stripe module's `@subscription`, for instance.
+
+NOTE: Before RESTHeart 9.9 only `@user` resolved inside a mapping; every other variable failed with `variable ... not bound`.
+
+For example, filtering by the authenticated user:
 
 ```graphql
 type User {
@@ -610,6 +633,25 @@ As for interfaces, a _TypeResolver_ must be defined in the union mappings to dec
 The format for union's `$typeResolver` is identical to interface's.
 
 NOTE: An example GraphQL application that uses `union` is link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/unionTestApp.json[unionTestApp.json] used in the test link:https://github.com/SoftInstigate/restheart/blob/master/core/src/test/java/karate/graphql/enum-union-interface/union.feature[union.feature]
+
+=== Hiding fields by role: `@visible`
+
+Write `@visible(roles: [...])` on a field to restrict who sees it. The directive is declared for you — do not declare it in your SDL:
+
+[source,graphql]
+----
+type Employee {
+  name: String
+  department: String
+  salary: Float @visible(roles: ["hr", "admin"])
+}
+----
+
+A caller whose roles do not include `hr` or `admin` gets a schema without `salary`. Introspection does not list it, and asking for it is a validation error saying the field does not exist — so a caller who may not see a field does not learn it is there.
+
+Undecorated fields are visible to everyone: visibility is opt-in per field, and adding the directive to a schema changes nothing until you write it on a field. An unauthenticated caller has no roles, so it sees only the fields no `@visible` restricts.
+
+This also applies through MCP: the schema an agent introspects is the one its own roles can see.
 
 === Bson types
 

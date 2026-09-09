@@ -97,6 +97,17 @@ public List<McpResource> describeMcp(McpContext ctx) {
 
 Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
 
+TIP: Call `how_to_call` **once per action shape, not once per request.** The descriptor for creating a document in a collection is the same every time apart from the body — keep it and change only what varies. A repeated write is then two steps, not three: `get_token`, then send.
+
+If the action has a `body_schema` and the body does not satisfy it, `how_to_call` refuses to compose the request and reports which property failed and why, by JSON pointer:
+
+[source,text]
+----
+#/give/qty: 9 is not less or equal to 3
+----
+
+For a schema whose top level is a `oneOf`, each alternative is reported separately — `alternative 'offer' does not match: ...` — so it is clear which shape you were aiming at rather than being handed the union of every alternative's requirements.
+
 === Filling in the credential: `get_token`
 
 The descriptor's `Authorization` header holds the literal placeholder `Bearer <token_from_get_token>` — it never carries a credential, which is what makes it stable and reusable. The agent calls `get_token` when it is about to send the request and substitutes the value:
@@ -109,7 +120,11 @@ The descriptor's `Authorization` header holds the literal placeholder `Bearer <t
 
 Same field names as RESTHeart's own xref:/docs/security/authentication#_token_endpoint[`/token` endpoint], so an agent that has seen either recognises this one. The token carries the identity and roles of the MCP session and nothing more — it can do exactly what that session can do — and expires within `expires_in` seconds. That short life is the point: the agent never handles a password or a long-lived API key, and a token that leaks is worthless almost immediately.
 
+Read `access_token` from the response and put it in the descriptor's `Authorization` header as `Bearer <token>`.
+
 Requires the `jwtIssuer` provider (enabled by default) and an authenticated session; the tool returns an explanatory error rather than a weaker credential when either is missing.
+
+NOTE: A Personal Access Token works here too: authenticate the MCP session with `Authorization: Bearer <PAT>` and the session — and every token `get_token` then issues — carries the roles on the key, not the wider roles of the user it belongs to.
 
 === Letting agents read your data directly: `readResource()`
 
@@ -129,6 +144,8 @@ public Optional<McpReadResult> readResource(McpContext ctx, String resource, Str
     return Optional.of(new McpReadResult(myData));
 }
 ----
+
+Declare the resource `subscribable` as well if changes to it can be watched, and clients can call `resources/subscribe` on it; the framework refuses a subscription to any resource that does not declare it, rather than accepting one that would never fire.
 
 `resources/read` always means "here is real data" — a resource with no `readable` action is simply never registered with the resources primitive at all (`resources/list`/`resources/templates/list`); it stays discoverable through `list_apis`/`how_to_call` only. There is no "context" fallback to fall back to. If your default action needs an argument with no sensible default, the framework surfaces it as a Resource Template instead of a plain resource, so a client knows to fill it in before reading — see the "Reading data directly" section of xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for a concrete example (aggregations with a required `$var`).
 
