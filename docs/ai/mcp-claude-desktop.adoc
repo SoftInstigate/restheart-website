@@ -27,7 +27,8 @@ All four OAuth services are disabled by default. Claude needs all of them: one t
 
 [source,bash]
 ----
-RHO='/mcpService/public-base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
+RHO='/jwtTokenManager/ttl->480;
+/mcpService/public-base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
 /oauthProtectedResourceMetadataService/enabled->true;
 /oauthProtectedResourceMetadataService/base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
 /oauthAuthorizationServerMetadataService/enabled->true;
@@ -46,6 +47,8 @@ WARNING: Substitute your own ngrok URL in all three places. The two `base-url` v
 `base-url` is required rather than optional here: ngrok terminates TLS, so the `Host` header reaches RESTHeart as `http://` while the public URL is `https://`, and issuer validation fails per RFC 8414 §3.3 unless you say what the public URL is.
 
 You do not need to set `login-url`. It defaults to `/oauth/login`, the sign-in page RESTHeart serves itself, and it is deliberately relative: the browser resolves it against the origin it is already on, which is the `https://` one.
+
+`jwtTokenManager/ttl` is in minutes and defaults to `15`. Leave it there and Claude asks you to reconnect — with the full sign-in again — every quarter of an hour, because RESTHeart does not issue refresh tokens: `grant_types_supported` is `authorization_code`, `password` and `client_credentials`, so an expired access token cannot be renewed, only replaced by running the whole flow again. `480` gives you a working day. Raise it only as far as you are willing to have a leaked token remain valid.
 
 Check the metadata before going further:
 
@@ -128,6 +131,9 @@ Any value works; ngrok only checks that the header is present. A paid ngrok plan
 
 |It worked yesterday and not today
 |ngrok issued a new URL. Update both `base-url` values and the connector.
+
+|Claude asks to reconnect every 15 minutes
+|`jwtTokenManager/ttl` is at its default. There are no refresh tokens, so the token has to outlive your session.
 
 |The catalog is empty but tools are listed
 |The signed-in user's ACL grants nothing. The catalog only shows what that user could read.
