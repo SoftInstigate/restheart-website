@@ -1,0 +1,113 @@
+---
+docs_version: 9
+title: Connect Claude Desktop
+layout: docs-adoc
+menu: ai
+applies_to: both
+---
+
+Connect Claude Desktop to a RESTHeart running on your own machine, over a public HTTPS URL, with users signing in through OAuth.
+
+Claude Desktop needs a reachable `https://` endpoint, so a local instance has to be tunnelled — this page uses https://ngrok.com[ngrok]. Everything else is RESTHeart configuration.
+
+NOTE: The MCP server is available starting from *RESTHeart v9.9*.
+
+=== 1. Tunnel your instance
+
+[source,bash]
+----
+ngrok http 8080
+----
+
+Note the forwarding URL it prints — `https://ae5b-93-34-53-143.ngrok-free.app` in the examples below. It changes every time you restart ngrok on the free plan, and both the RESTHeart configuration and the connector have to be updated when it does.
+
+=== 2. Start RESTHeart with OAuth enabled
+
+All four OAuth services are disabled by default. Claude needs all of them: one to discover the authorization server, one to discover its endpoints, one to register itself, and one to run the flow.
+
+[source,bash]
+----
+RHO='/oauthProtectedResourceMetadataService/enabled->true;
+/oauthProtectedResourceMetadataService/base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
+/oauthAuthorizationServerMetadataService/enabled->true;
+/oauthAuthorizationServerMetadataService/base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
+/oauthAuthorizationServerMetadataService/registration-endpoint-uri->"/register";
+/oauthClientRegistrationService/enabled->true;
+/oauthAuthorizationService/enabled->true;
+/oauthAuthorizationService/allowed-redirect-uris->["https://claude.ai/api/mcp/auth_callback","http://localhost:*"]' \
+java -jar restheart.jar
+----
+
+WARNING: Substitute your own ngrok URL in both `base-url` values. They are what the metadata advertises as the issuer, and a wrong one sends Claude to a host that does not exist.
+
+`base-url` is required rather than optional here: ngrok terminates TLS, so the `Host` header reaches RESTHeart as `http://` while the public URL is `https://`, and issuer validation fails per RFC 8414 §3.3 unless you say what the public URL is.
+
+You do not need to set `login-url`. It defaults to `/login`, the sign-in page RESTHeart serves itself, and it is deliberately relative: the browser resolves it against the origin it is already on, which is the `https://` one.
+
+Check the metadata before going further:
+
+[source,bash]
+----
+curl https://ae5b-93-34-53-143.ngrok-free.app/.well-known/oauth-protected-resource
+----
+
+[source,json]
+----
+{ "resource": "https://ae5b-93-34-53-143.ngrok-free.app",
+  "authorization_servers": ["https://ae5b-93-34-53-143.ngrok-free.app"] }
+----
+
+If those URLs are not your ngrok host, fix `base-url` and restart — nothing after this step will work.
+
+=== 3. Add the connector in Claude Desktop
+
+Settings → Connectors → Add custom connector, with the URL of the MCP endpoint:
+
+[source,text]
+----
+https://ae5b-93-34-53-143.ngrok-free.app/mcp
+----
+
+IMPORTANT: Include `/mcp`. Without it the requests go to RESTHeart's root, the connector still appears to connect, and it reports having no tools available.
+
+Leave the `Authorization` header empty: OAuth provides the credential.
+
+=== 4. Sign in
+
+Click *Connect*. Claude registers itself, then opens the sign-in page RESTHeart serves. Enter the username and password of a RESTHeart user — the page says which application is asking, by the host it will return you to.
+
+Once signed in, the connector is live. Ask Claude what it can reach:
+
+[source,text]
+----
+> what APIs do you have access to on restheart?
+----
+
+=== What the agent may see and do
+
+The account you sign in with is the account the agent acts as. Its roles decide everything: which resources appear in the catalog, which reads succeed, which writes are refused. See xref:/docs/ai/mcp.adoc#_securing_it[Securing it] — you almost certainly do not want to sign in as `admin`.
+
+Grant the agent's role `POST`, `GET` and `DELETE` on `/mcp`, not `POST` alone: `GET` opens the stream notifications are delivered on, and `DELETE` ends the session.
+
+=== If something does not work
+
+[options="header"]
+[cols="3,4"]
+|===
+|Symptom |Cause
+
+|"This connector has no tools available"
+|The connector URL is missing `/mcp`.
+
+|Claude cannot find the authorization server
+|`base-url` is wrong, or the metadata services are not enabled. Check `/.well-known/oauth-protected-resource` returns your ngrok host.
+
+|The sign-in page loads but the redirect fails
+|`https://claude.ai/api/mcp/auth_callback` is not in `allowed-redirect-uris`.
+
+|It worked yesterday and not today
+|ngrok issued a new URL. Update both `base-url` values and the connector.
+
+|The catalog is empty but tools are listed
+|The signed-in user's ACL grants nothing. The catalog only shows what that user could read.
+|===
