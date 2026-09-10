@@ -3,12 +3,21 @@ docs_version: 9
 title: Data Constraints
 layout: docs-adoc
 menu: mongodb
+liquid: true
 applies_to: both
 redirect_from:
   - /docs/mongodb-rest/invariants
 ---
 
-A collection can declare rules that span documents, and the server enforces them on every write. `jsonSchema` validates one document in isolation; a constraint validates the collection: no balance goes negative, at least one admin remains, no booking overlaps another.
+++++
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/js/interactive-docs-config.js"></script>
+{% include interactive-docs-config.html %}
+++++
+
+{% include get-restheart.adoc %}
+
+A collection can declare data constraints that span documents, and the server enforces them on every write. `jsonSchema` validates one document in isolation; a constraint validates the collection: no balance goes negative, at least one admin remains, no booking overlaps another.
 
 The two are independent and a collection can carry both.
 
@@ -20,6 +29,7 @@ NOTE: Available from RESTHeart v9.9. Requires MongoDB configured as a replica se
 
 Collection metadata, alongside `jsonSchema`, `aggrs`, `streams` and `mcp`:
 
+==== cURL
 [source,bash]
 ----
 curl -i -X PUT "[RESTHEART-URL]/accounts" \
@@ -34,6 +44,37 @@ curl -i -X PUT "[RESTHEART-URL]/accounts" \
       }
     ]
   }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PUT "[RESTHEART-URL]/accounts" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  constraints:='[ { "name": "noNegativeBalance", "message": "an account balance cannot be negative", "stages": [ { "$match": { "balance": { "$lt": 0 } } } ] } ]'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/accounts', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    constraints: [
+      {
+        name: 'noNegativeBalance',
+        message: 'an account balance cannot be negative',
+        stages: [ { $match: { balance: { $lt: 0 } } } ]
+      }
+    ]
+  })
+})
+.then(response => console.log('Constraint declared:', response.status))
+.catch(error => console.error('Error:', error));
 ----
 
 [cols="1,1,3"]
@@ -86,12 +127,37 @@ Every condition over a collection fits one of the two, so there is no third form
 
 === What a violation looks like
 
+==== cURL
 [source,bash]
 ----
 curl -i -X PATCH "[RESTHEART-URL]/accounts/alice" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{ "$inc": { "balance": -100 } }'
+----
+
+==== HTTPie
+[source,bash]
+----
+http PATCH "[RESTHEART-URL]/accounts/alice" \
+  Authorization:"Basic [BASIC-AUTH]" \
+  '$inc':='{ "balance": -100 }'
+----
+
+==== JavaScript
+[source,javascript]
+----
+fetch('[RESTHEART-URL]/accounts/alice', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Basic [BASIC-AUTH]',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ $inc: { balance: -100 } })
+})
+.then(response => response.json())
+.then(body => console.log(body))
+.catch(error => console.error('Error:', error));
 ----
 
 [source,http]
