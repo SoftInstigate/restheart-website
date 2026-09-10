@@ -1,0 +1,135 @@
+---
+docs_version: 9
+title: Integrity Invariants
+layout: docs-adoc
+menu: mongodb
+applies_to: both
+---
+
+A collection can declare rules that span documents, and the server enforces them on every write. `jsonSchema` validates one document in isolation; an invariant validates the collection: no balance goes negative, at least one admin remains, no booking overlaps another.
+
+An invariant is a property of the data, not of the caller. It applies whatever permission authorized the write, whatever the role, `admin` included.
+
+NOTE: Available from RESTHeart v9.9. Requires MongoDB configured as a replica set.
+
+=== Declaring one
+
+Collection metadata, alongside `jsonSchema`, `aggrs`, `streams` and `mcp`:
+
+[source,bash]
+----
+curl -i -X PUT "[RESTHEART-URL]/accounts" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "invariants": [
+      {
+        "name": "noNegativeBalance",
+        "message": "an account balance cannot be negative",
+        "stages": [ { "$match": { "balance": { "$lt": 0 } } } ]
+      }
+    ]
+  }'
+----
+
+[cols="1,1,3"]
+|===
+| Field | Required | Meaning
+
+| `name`
+| yes
+| Unique within the collection. Identifies the rule in the error body.
+
+| `stages`
+| yes
+| An aggregation pipeline over the collection.
+
+| `holdsWhen`
+| no, default `empty`
+| `empty`: the rule holds when `stages` returns no documents. `notEmpty`: it holds when it returns at least one.
+
+| `message`
+| no
+| Returned on violation.
+
+| `enabled`
+| no, default `true`
+| Turns a rule off without deleting it.
+|===
+
+The metadata is validated when you write it — a duplicate `name`, an empty `stages`, an unknown `holdsWhen`, a blacklisted stage — and refused with `400`. Not at the first write.
+
+=== The two directions
+
+**`empty` — no bad rows exist.** Write the pipeline that finds the offenders; finding any means the rule is broken, and the documents it returns are what the error body reports.
+
+[source,json]
+----
+{ "name": "noNegativeBalance",
+  "stages": [ { "$match": { "balance": { "$lt": 0 } } } ] }
+----
+
+**`notEmpty` — something must exist.** The same shape read the other way round, for rules that would otherwise have to be written inside out.
+
+[source,json]
+----
+{ "name": "atLeastOneAdmin",
+  "holdsWhen": "notEmpty",
+  "stages": [ { "$match": { "role": "admin" } }, { "$limit": 1 } ] }
+----
+
+Every condition over a collection fits one of the two, so there is no third form and no boolean: an aggregation returns documents, not a verdict.
+
+=== What a violation looks like
+
+[source,bash]
+----
+curl -i -X PATCH "[RESTHEART-URL]/accounts/alice" \
+  -H "Authorization: Basic [BASIC-AUTH]" \
+  -H "Content-Type: application/json" \
+  -d '{ "$inc": { "balance": -100 } }'
+----
+
+[source,http]
+----
+HTTP/1.1 409 Conflict
+
+{
+  "http status code": 409,
+  "message": "an account balance cannot be negative",
+  "invariant": "noNegativeBalance",
+  "violations": [ { "_id": "alice", "balance": -30 } ]
+}
+----
+
+`409`, not `400`: the request is well formed, the resulting state is not admissible. Nothing was written — `alice` still holds what she held. `violations` carries the documents the pipeline returned, capped at 10; a `notEmpty` rule has none by definition, and the field is omitted.
+
+=== When it runs
+
+Every shape of document write is covered: insert, update, bulk update, and **delete**. A delete breaks "this parent exists" as readily as an insert breaks "no balance is negative" — the rule is a property of the state, not of the operation.
+
+A bulk write is judged once, after the whole request is applied, and refused as a whole: either every document it touched satisfies the rules or none of them is written.
+
+=== What it costs
+
+The write runs in a transaction and every rule is one aggregation, so a collection declaring invariants pays a transaction and N aggregations per write.
+
+**Writes to that collection also serialize.** That is not incidental, it is what makes the rule a guarantee. MongoDB transactions give snapshot isolation: the engine detects two transactions writing the same document, and nothing else. Two writes each valid against their own snapshot and invalid together would both commit — which is precisely the case an invariant exists to prevent. Every write to the collection therefore touches one guard document, turning that undetectable conflict into one the engine does detect: one of the two aborts.
+
+Invariants are opt-in per collection for this reason. A collection that needs write throughput does not declare them.
+
+[source,yml]
+----
+mongo:
+  invariants-guard-collection: _invariants   # one document per guarded collection
+----
+
+The guard collection lives in the same database as the guarded collection and is created on first use. You never write to it.
+
+=== Requirements and limits
+
+**A replica set is required.** Without transactions a write that breaks a rule could not be undone, so a write to a collection declaring invariants is refused with `501` rather than let through unchecked. Invariants live in collection metadata, so this cannot be reported at startup — it is reported on the write.
+
+**Concurrent writes may be refused with `409` instead of a violation.** When two writes to the same collection collide on the guard document, one is aborted and the client is told to retry. Nothing invalid is committed either way; the difference is only that the message says "conflict" rather than naming the rule.
+
+**Pipelines are held to `aggregationSecurity`**, unchanged and in full — the same settings that constrain `aggrs`. `$lookup`, `$merge`, `$out`, `$graphLookup` and `$unionWith` are blacklisted by default, so an invariant reads only its own collection unless the deployment has already decided otherwise for its aggregations.
