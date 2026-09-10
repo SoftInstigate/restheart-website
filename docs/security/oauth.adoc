@@ -190,10 +190,14 @@ CAUTION: `grant_type=refresh_token` is available since RESTHeart 9.9.0.
 [source,yml]
 ----
 authTokenService:
-  refresh-grace-seconds: 60
+  refresh-grace-seconds: 300
 ----
 
-Only renewal accepts an expired token; it opens and reads nothing. Sixty seconds covers the time a client takes to notice a `401` and act on it, plus clock skew. Raising it to a token lifetime is equivalent to raising `ttl` by the same amount, for anyone holding the token — a renewal yields a token that reads.
+Only renewal accepts an expired token; it opens and reads nothing.
+
+Five minutes is sized for the client that went idle. A busy client gets its `401` within seconds of expiry and renews immediately; the one that actually meets an expired token stopped calling for a while, so this window sets how long it may stay away and still resume without sending the user through the sign-in flow again.
+
+**Set it together with `ttl`, and read the sum.** The window extends the power to renew, not to read — but a renewal yields a token that reads, so moving seconds between the two changes little. What `ttl + refresh-grace-seconds` measures is revocation latency: renewal re-reads the account, so a user you disable keeps working for at most that long. At the defaults, twenty minutes.
 
 ===== Bounding the renewal chain
 
@@ -590,5 +594,5 @@ The grace window for `grant_type=refresh_token` belongs to the token *endpoint*,
 [source,yml]
 ----
 authTokenService:
-  refresh-grace-seconds: 60   # how long past expiry a token may still be renewed
+  refresh-grace-seconds: 300   # how long past expiry a token may still be renewed
 ----
