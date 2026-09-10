@@ -201,7 +201,9 @@ It discovers `byStatus` under `inventory`'s `list_apis` context, sees `status` i
 
 === 6. Get told when it changes
 
-Open the notification stream — a `GET` on `/mcp` with the same session — and leave it running:
+Notifications arrive on a stream the client opens itself, with a `GET` on `/mcp`. This tutorial runs as `admin`, who may do anything; giving an agent its own account means granting it `GET` on `/mcp` too, not only `POST` — otherwise subscriptions succeed and never fire.
+
+Open the stream with the same session and leave it running:
 
 [source,bash]
 ----

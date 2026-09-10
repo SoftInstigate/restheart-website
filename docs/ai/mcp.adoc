@@ -6,13 +6,13 @@ menu: ai
 applies_to: both
 ---
 
-NOTE: The MCP server is available starting from *RESTHeart v9.9*.
-
-WARNING: RESTHeart 9.9 has not been released yet — the MCP server currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
-
 This is the connectivity half of `restheart-ai` — see the link:/docs/ai/[module overview] for how it fits together with xref:/docs/ai/vector-search.adoc[vector search].
 
 `restheart-ai` ships the native https://modelcontextprotocol.io[Model Context Protocol] server itself (`/mcp`), plus ready-made `McpAware` implementations for `mongo` and `graphql`. Any collection, aggregation, change stream, or GraphQL app you opt in becomes discoverable and callable by an AI agent — no hand-written tool definitions, no wrapper service, no separate integration code.
+
+NOTE: The MCP server is available starting from *RESTHeart v9.9*.
+
+WARNING: RESTHeart 9.9 has not been released yet — the MCP server currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
 
 TIP: `mongo`/`graphql` are just two plugins implementing the framework's xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface — see that page for how `list_apis`/`how_to_call`/`get_token` actually work, the `args.body` calling convention, and the catalog cache, or for exposing your own custom plugin the same way.
 
@@ -200,6 +200,8 @@ Filtering is in addition to enforcement, not instead of it — a read is still a
 === Subscribing to changes
 
 Subscribe to a **collection** or an **aggregation** over one, and the server sends `notifications/resources/updated` when it changes. The notification carries only the URI you subscribed to, no payload: read the resource again to get the new state.
+
+Notifications are delivered on a stream the client opens with a `GET` on `/mcp`, so **the caller needs `GET` on `/mcp` as well as `POST`** — see xref:#_securing_it[Securing it]. Without it the subscription succeeds and nothing ever arrives.
 
 [source,json]
 ----

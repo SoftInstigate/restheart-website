@@ -8,13 +8,20 @@ redirect_from:
   - /docs/ai/overview/
 ---
 
+`restheart-ai` makes the capabilities your application already has — collections, aggregations, change streams, GraphQL apps — discoverable and callable by AI agents, without building a second integration for each one.
+
+An agent asks what exists, gets back how to call it, and makes the request itself through RESTHeart's normal API. Your existing authentication and ACL decide what it may see and do: the same permissions that govern your REST clients govern agents, with no agent-specific rules to write and no separate stack to keep in sync. Opt a new aggregation into MCP and it is available to agents immediately — there is no tool to implement.
+
+Semantic search is one of those capabilities, not a separate product: expose a `$vectorScan`/`$vectorSearch` aggregation and an agent searches your data by meaning as just another call.
+
+It ships with RESTHeart — no separate install, no extra JAR to add.
+
 NOTE: `restheart-ai` is available starting from *RESTHeart v9.9*.
 
 WARNING: RESTHeart 9.9 has not been released yet — `restheart-ai` currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
 
-`restheart-ai` is a RESTHeart plugin that makes any deployment agent-ready: it ties your data to AI agents and lets them search it by meaning, not just by exact match. It's included by default — no separate install, no extra JAR to add.
 
-Two independent capabilities, meant to be used together:
+Two capabilities, meant to be used together:
 
 [source,mermaid]
 ----
@@ -40,7 +47,7 @@ flowchart LR
 * **xref:/docs/ai/mcp.adoc[MCP Server]** — connectivity. Exposes your collections, aggregations, change streams, and GraphQL apps to an AI agent through the https://modelcontextprotocol.io[Model Context Protocol]: the agent discovers what exists and how to call it, then makes the real request itself, through RESTHeart's normal REST/GraphQL API and its normal ACL. No wrapper service, no hand-written tool definitions. Built on the framework-level xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface, which any plugin — yours included — can implement.
 * **xref:/docs/ai/vector-search.adoc[Vector Search]** — semantics. Vector search indexes, automatic document chunking (RAG), embeddings (MongoDB `autoEmbed` or your own provider — OpenAI, Voyage AI, Ollama), `$vectorScan` for mongot-free semantic search, and reranking.
 
-Together, they compose: expose a `$vectorScan`/`$vectorSearch` aggregation through MCP exactly like any other aggregation, and an agent can search your data by meaning as just another tool call — no extra integration work on either side.
+Together, they compose: a semantic-search aggregation is exposed through MCP exactly like any other aggregation — no extra integration work on either side.
 
 === Where to start
 
