@@ -1,14 +1,18 @@
 ---
 docs_version: 9
-title: Integrity Invariants
+title: Data Constraints
 layout: docs-adoc
 menu: mongodb
 applies_to: both
+redirect_from:
+  - /docs/mongodb-rest/constraints
 ---
 
-A collection can declare rules that span documents, and the server enforces them on every write. `jsonSchema` validates one document in isolation; an invariant validates the collection: no balance goes negative, at least one admin remains, no booking overlaps another.
+A collection can declare rules that span documents, and the server enforces them on every write. `jsonSchema` validates one document in isolation; a constraint validates the collection: no balance goes negative, at least one admin remains, no booking overlaps another.
 
-An invariant is a property of the data, not of the caller. It applies whatever permission authorized the write, whatever the role, `admin` included.
+The two are independent and a collection can carry both.
+
+A constraint is a property of the data, not of the caller. It applies whatever permission authorized the write, whatever the role, `admin` included.
 
 NOTE: Available from RESTHeart v9.9. Requires MongoDB configured as a replica set.
 
@@ -22,7 +26,7 @@ curl -i -X PUT "[RESTHEART-URL]/accounts" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
-    "invariants": [
+    "constraints": [
       {
         "name": "noNegativeBalance",
         "message": "an account balance cannot be negative",
@@ -97,7 +101,7 @@ HTTP/1.1 409 Conflict
 {
   "http status code": 409,
   "message": "an account balance cannot be negative",
-  "invariant": "noNegativeBalance",
+  "constraint": "noNegativeBalance",
   "violations": [ { "_id": "alice", "balance": -30 } ]
 }
 ----
@@ -112,24 +116,24 @@ A bulk write is judged once, after the whole request is applied, and refused as 
 
 === What it costs
 
-The write runs in a transaction and every rule is one aggregation, so a collection declaring invariants pays a transaction and N aggregations per write.
+The write runs in a transaction and every rule is one aggregation, so a collection declaring constraints pays a transaction and N aggregations per write.
 
-**Writes to that collection also serialize.** That is not incidental, it is what makes the rule a guarantee. MongoDB transactions give snapshot isolation: the engine detects two transactions writing the same document, and nothing else. Two writes each valid against their own snapshot and invalid together would both commit — which is precisely the case an invariant exists to prevent. Every write to the collection therefore touches one guard document, turning that undetectable conflict into one the engine does detect: one of the two aborts.
+**Writes to that collection also serialize.** That is not incidental, it is what makes the rule a guarantee. MongoDB transactions give snapshot isolation: the engine detects two transactions writing the same document, and nothing else. Two writes each valid against their own snapshot and invalid together would both commit — which is precisely the case a constraint exists to prevent. Every write to the collection therefore touches one guard document, turning that undetectable conflict into one the engine does detect: one of the two aborts.
 
-Invariants are opt-in per collection for this reason. A collection that needs write throughput does not declare them.
+Constraints are opt-in per collection for this reason. A collection that needs write throughput does not declare them.
 
 [source,yml]
 ----
 mongo:
-  invariants-guard-collection: _invariants   # one document per guarded collection
+  constraints-guard-collection: _constraints   # one document per guarded collection
 ----
 
 The guard collection lives in the same database as the guarded collection and is created on first use. You never write to it.
 
 === Requirements and limits
 
-**A replica set is required.** Without transactions a write that breaks a rule could not be undone, so a write to a collection declaring invariants is refused with `501` rather than let through unchecked. Invariants live in collection metadata, so this cannot be reported at startup — it is reported on the write.
+**A replica set is required.** Without transactions a write that breaks a rule could not be undone, so a write to a collection declaring constraints is refused with `501` rather than let through unchecked. Constraints live in collection metadata, so this cannot be reported at startup — it is reported on the write.
 
 **Concurrent writes may be refused with `409` instead of a violation.** When two writes to the same collection collide on the guard document, one is aborted and the client is told to retry. Nothing invalid is committed either way; the difference is only that the message says "conflict" rather than naming the rule.
 
-**Pipelines are held to `aggregationSecurity`**, unchanged and in full — the same settings that constrain `aggrs`. `$lookup`, `$merge`, `$out`, `$graphLookup` and `$unionWith` are blacklisted by default, so an invariant reads only its own collection unless the deployment has already decided otherwise for its aggregations.
+**Pipelines are held to `aggregationSecurity`**, unchanged and in full — the same settings that constrain `aggrs`. `$lookup`, `$merge`, `$out`, `$graphLookup` and `$unionWith` are blacklisted by default, so a constraint reads only its own collection unless the deployment has already decided otherwise for its aggregations.

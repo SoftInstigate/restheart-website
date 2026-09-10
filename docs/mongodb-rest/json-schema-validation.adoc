@@ -741,7 +741,7 @@ When a JSON Schema is configured on the `users` collection (via `_properties` me
 * `POST /auth/register` — user creation
 * `DbHelper.updateUser()` and `DbHelper.unsetUserFields()` — all user update paths (password reset, email verification, team operations, etc.)
 
-This ensures that invariants declared on the users collection — for example that a `consents` field conforms to a specific structure when present — are enforced even for documents created or modified through `restheart-accounts` endpoints, which bypass the MongoService pipeline.
+This ensures that the rules declared on the users collection — for example that a `consents` field conforms to a specific structure when present — are enforced even for documents created or modified through `restheart-accounts` endpoints, which bypass the MongoService pipeline.
 
 When a `jsonSchema` is configured, additional body properties sent to `POST /auth/register` are carried into the user document before validation. This allows clients to submit application-level fields (such as `consents`) that the schema can validate. Service-managed fields (`_id`, `password`, `roles`, etc.) are never overwritten by the body. When no schema is configured, unmapped body fields are dropped as before.
 
