@@ -277,6 +277,10 @@ http --follow=false GET "[RESTHEART-URL]/authorize" \
 
 RESTHeart responds with `302` to the configured `login-url`, forwarding all OAuth parameters as query string.
 
+RESTHeart serves a sign-in page of its own at `/oauth/login`, and that is the default: enable `oauthAuthorizationService` and the flow works with no page to build. It posts the credentials as described in Step 2 and shows which application is asking, by the host it will return the user to. Set `login-url` to replace it with your own.
+
+The default is a relative path on purpose — the browser resolves it against the origin it is already on, which keeps it right behind a TLS-terminating proxy where an absolute URL built from the `Host` header would come out as `http://`.
+
 ==== Step 2: User authenticates
 
 The frontend presents the login form and POSTs the credentials to `POST /authorize`.
@@ -356,7 +360,8 @@ oauthAuthorizationServerMetadataService:
 
 oauthAuthorizationService:
   enabled: true
-  # URL of the frontend login page (required)
+  # The login page. Defaults to /oauth/login, the page RESTHeart serves itself;
+  # set it only to use your own.
   login-url: https://myapp.example.com/login
   # Allowed redirect_uri values — supports * wildcard
   allowed-redirect-uris:
