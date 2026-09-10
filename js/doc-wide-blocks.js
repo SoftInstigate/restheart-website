@@ -39,7 +39,7 @@
     var pre = block.querySelector('pre');
 
     if (pre) {
-      return pre.scrollWidth > pre.clientWidth + 1;
+      return preNeedsRoom(pre);
     }
 
     var img = block.querySelector('img');
@@ -49,6 +49,37 @@
     }
 
     return true;
+  }
+
+  /*
+   * A code block does not overflow: `pre code` is white-space: pre-wrap on these pages, so a long
+   * line wraps and scrollWidth never exceeds clientWidth — the content is reflowed, not hidden, and
+   * asking whether it overflows always answers no.
+   *
+   * So ask what it would do if it did not wrap: switch the code to white-space: pre for the length
+   * of one measurement and see whether the pre then has more than it can show. Restored before
+   * anything paints.
+   */
+  function preNeedsRoom(pre) {
+    if (pre.scrollWidth > pre.clientWidth + 1) {
+      return true;
+    }
+
+    var code = pre.querySelector('code');
+
+    if (!code) {
+      return false;
+    }
+
+    var previous = code.style.whiteSpace;
+
+    code.style.whiteSpace = 'pre';
+
+    var wrapped = pre.scrollWidth > pre.clientWidth + 1;
+
+    code.style.whiteSpace = previous;
+
+    return wrapped;
   }
 
   function wrap(block) {
@@ -131,6 +162,12 @@
 
   // mermaid replaces its listingblock with a rendered diagram after this has already run
   new MutationObserver(scan).observe(content, { childList: true, subtree: true });
+
+  // the copy button is appended inside every pre on load, and web fonts can settle later: both
+  // change what fits, so measure once more when the page is done
+  window.addEventListener('load', function () {
+    wrappers.forEach(update);
+  });
 
   var pending;
 

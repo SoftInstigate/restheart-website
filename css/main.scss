@@ -424,6 +424,17 @@ iframe {
     }
   }
 
+  // The interactive panels are injected by _includes, outside the asciidoc body,
+  // so none of the block rules above reach them — they were running to the raw
+  // column edge while the prose under them stopped well short. Same measure,
+  // same axis.
+  .bd-content .config-panel,
+  .bd-content .setup-panel {
+    max-width: var(--doc-measure);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   // Room on request. The single measure is right for the page and wrong for the
   // occasional wide table or long command, which it leaves scrolling inside a
   // narrow box with empty column to its right. js/doc-wide-blocks.js wraps those
