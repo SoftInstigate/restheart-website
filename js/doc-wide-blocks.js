@@ -6,8 +6,11 @@
  * wide table or long command, which the cap leaves scrolling inside a narrow box while there is
  * empty room to its right. This puts a toggle on those blocks instead of widening them all.
  *
- * The toggle only appears where it would do something: when the column is actually wider than the
- * measure, and when the block has more content than it can show. Blocks that fit stay quiet.
+ * The toggle appears whenever the column is wider than the measure, on every block that can use the
+ * room. It deliberately does not try to work out whether a given block would benefit: a code block
+ * wraps rather than overflows, a capped table reflows, a diagram scales — none of them can be asked
+ * directly, and the measurement that guessed for them kept hiding the control on blocks that needed
+ * it. At rest the button is faint enough not to compete with the content.
  */
 (function () {
   var BLOCKS = [
@@ -27,60 +30,6 @@
 
   var ICON_WIDEN = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3L2 8l4 5M10 3l4 5-4 5"/></svg>';
   var ICON_NARROW = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3l4 5-4 5M14 3l-4 5 4 5"/></svg>';
-
-  /*
-   * Whether the block is showing everything it has.
-   *
-   * A pre and an image can be asked directly. A table squeezed by a max-width does not overflow —
-   * it reflows, wrapping cell text — and a diagram scales, so neither can answer; there the offer
-   * is made whenever there is room, and the reader decides.
-   */
-  function needsRoom(block) {
-    var pre = block.querySelector('pre');
-
-    if (pre) {
-      return preNeedsRoom(pre);
-    }
-
-    var img = block.querySelector('img');
-
-    if (img) {
-      return img.naturalWidth > img.clientWidth + 1;
-    }
-
-    return true;
-  }
-
-  /*
-   * A code block does not overflow: `pre code` is white-space: pre-wrap on these pages, so a long
-   * line wraps and scrollWidth never exceeds clientWidth — the content is reflowed, not hidden, and
-   * asking whether it overflows always answers no.
-   *
-   * So ask what it would do if it did not wrap: switch the code to white-space: pre for the length
-   * of one measurement and see whether the pre then has more than it can show. Restored before
-   * anything paints.
-   */
-  function preNeedsRoom(pre) {
-    if (pre.scrollWidth > pre.clientWidth + 1) {
-      return true;
-    }
-
-    var code = pre.querySelector('code');
-
-    if (!code) {
-      return false;
-    }
-
-    var previous = code.style.whiteSpace;
-
-    code.style.whiteSpace = 'pre';
-
-    var wrapped = pre.scrollWidth > pre.clientWidth + 1;
-
-    code.style.whiteSpace = previous;
-
-    return wrapped;
-  }
 
   function wrap(block) {
     var wrapper = document.createElement('div');
@@ -123,9 +72,8 @@
     }
 
     var room = wrapper.parentElement.clientWidth - wrapper.clientWidth > 8;
-    var block = wrapper.firstElementChild;
 
-    wrapper.classList.toggle('widenable--offered', room && needsRoom(block));
+    wrapper.classList.toggle('widenable--offered', room);
   }
 
   var wrappers = [];
@@ -139,15 +87,6 @@
 
     wrappers.push(wrapper);
     update(wrapper);
-
-    // an image measured before it loaded reports a natural width of 0
-    var img = block.querySelector('img');
-
-    if (img && !img.complete) {
-      img.addEventListener('load', function () {
-        update(wrapper);
-      });
-    }
   }
 
   function scan() {
@@ -163,8 +102,8 @@
   // mermaid replaces its listingblock with a rendered diagram after this has already run
   new MutationObserver(scan).observe(content, { childList: true, subtree: true });
 
-  // the copy button is appended inside every pre on load, and web fonts can settle later: both
-  // change what fits, so measure once more when the page is done
+  // late layout — web fonts, images, the copy button appended inside every pre — can change the
+  // column, so measure once more when the page is done
   window.addEventListener('load', function () {
     wrappers.forEach(update);
   });
