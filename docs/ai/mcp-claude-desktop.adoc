@@ -27,7 +27,8 @@ All four OAuth services are disabled by default. Claude needs all of them: one t
 
 [source,bash]
 ----
-RHO='/oauthProtectedResourceMetadataService/enabled->true;
+RHO='/mcpService/public-base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
+/oauthProtectedResourceMetadataService/enabled->true;
 /oauthProtectedResourceMetadataService/base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
 /oauthAuthorizationServerMetadataService/enabled->true;
 /oauthAuthorizationServerMetadataService/base-url->"https://ae5b-93-34-53-143.ngrok-free.app";
@@ -38,7 +39,9 @@ RHO='/oauthProtectedResourceMetadataService/enabled->true;
 java -jar restheart.jar
 ----
 
-WARNING: Substitute your own ngrok URL in both `base-url` values. They are what the metadata advertises as the issuer, and a wrong one sends Claude to a host that does not exist.
+WARNING: Substitute your own ngrok URL in all three places. The two `base-url` values are what the OAuth metadata advertises as the issuer, and a wrong one sends Claude to a host that does not exist.
+
+`mcpService/public-base-url` is what the `resources` primitive builds resource URIs from. It defaults to `http://localhost:8080`, so leaving it out gives a remote client a catalogue of resources at `localhost` — reading them through MCP still works, but an agent that takes those URIs and makes an HTTP call with them reaches nothing.
 
 `base-url` is required rather than optional here: ngrok terminates TLS, so the `Host` header reaches RESTHeart as `http://` while the public URL is `https://`, and issuer validation fails per RFC 8414 §3.3 unless you say what the public URL is.
 
@@ -131,4 +134,7 @@ Any value works; ngrok only checks that the header is present. A paid ngrok plan
 
 |A call returns HTML instead of JSON
 |ngrok's free-plan warning page — the request was made from a browser. See above.
+
+|`resources/list` shows `localhost` URIs
+|`mcpService/public-base-url` is not set to your ngrok URL.
 |===
