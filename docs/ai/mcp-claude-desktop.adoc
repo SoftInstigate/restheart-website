@@ -48,7 +48,7 @@ WARNING: Substitute your own ngrok URL in all three places. The two `base-url` v
 
 You do not need to set `login-url`. It defaults to `/oauth/login`, the sign-in page RESTHeart serves itself, and it is deliberately relative: the browser resolves it against the origin it is already on, which is the `https://` one.
 
-`jwtTokenManager/ttl` is in minutes and defaults to `15`. Leave it there and Claude asks you to reconnect — with the full sign-in again — every quarter of an hour, because RESTHeart does not issue refresh tokens: `grant_types_supported` is `authorization_code`, `password` and `client_credentials`, so an expired access token cannot be renewed, only replaced by running the whole flow again. `480` gives you a working day. Raise it only as far as you are willing to have a leaked token remain valid.
+`jwtTokenManager/ttl` is in minutes and defaults to `15`. Since 9.9.0 Claude renews the token on its own — `grant_types_supported` includes `refresh_token` — so the default no longer means signing in every quarter of an hour. Raise it to `480` anyway if you want a session that survives a client which renews badly, or an instance restarted with a fresh signing key. Raise it only as far as you are willing to have a leaked token remain valid.
 
 Check the metadata before going further:
 
@@ -133,7 +133,7 @@ Any value works; ngrok only checks that the header is present. A paid ngrok plan
 |ngrok issued a new URL. Update both `base-url` values and the connector.
 
 |Claude asks to reconnect every 15 minutes
-|`jwtTokenManager/ttl` is at its default. There are no refresh tokens, so the token has to outlive your session.
+|Renewal is not reaching the server. Check that `POST /token` is allowed for the signed-in user's role, and that you are on 9.9.0 or later — before it there was no `refresh_token` grant and `ttl` had to outlive the whole session.
 
 |The catalog is empty but tools are listed
 |The signed-in user's ACL grants nothing. The catalog only shows what that user could read.

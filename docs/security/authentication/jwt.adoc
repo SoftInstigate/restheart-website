@@ -51,6 +51,8 @@ jwtTokenManager:
 
 The query parameter `renew` forces the token to be renewed. Add it to `GET /token` or `GET /token/cookie` requests (e.g., `GET /token?renew`).
 
+An OAuth client renews the same token with `POST /token`, `grant_type=refresh_token` — see xref:/docs/security/oauth.adoc#_token_renewal[Token Renewal]. That form also accepts a token that expired within `authTokenService/refresh-grace-seconds`; `?renew` requires a valid one.
+
 The renewed token is built from the account read again from the users collection, so it also picks up changes made to the user document since the current token was issued — see <<Claims reflect the authenticated account>>.
 
 Generating a new token is a cryptographic operation and can have a significant performance overhead.
@@ -59,6 +61,23 @@ It is the responsibility of the client to renew the token using this query param
 === JWT claims
 
 CAUTION: Since RESTHeart 9.7.0.
+
+Two claims are always present and describe the *session* rather than the token, which `iat` and `exp` already do:
+
+[cols="1,4"]
+|===
+| Claim | Meaning
+
+| `auth_time`
+| When the user actually authenticated, in epoch seconds. Unchanged across renewals, so it survives a chain of them.
+
+| `renewals`
+| `0` on a token that follows an authentication, `+1` on each renewal.
+|===
+
+Both are readable in ACL rules as `@user.auth_time` and `@user.renewals`, which is how a deployment bounds the renewal chain without a plugin — see xref:/docs/security/oauth.adoc#_bounding_the_renewal_chain[Bounding the renewal chain]. Renewing with username and password starts a new chain rather than continuing one.
+
+CAUTION: Both claims are available since RESTHeart 9.9.0.
 
 `account-properties-claims` selects which fields of the user document are copied into the JWTs RESTHeart issues. In a multi-tenant deployment it can be overridden per tenant with the `override-accounts-account-properties-claims` request parameter, attached before authentication by a deployment-layer interceptor such as `TeamConfigInterceptor`.
 

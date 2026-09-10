@@ -16,7 +16,7 @@ applies_to: both
 === Overview
 
 RESTHeart provides a standards-compliant OAuth 2.0/2.1 token endpoint and authorization server.
-It supports three grant types and the full Authorization Code + PKCE flow for delegated user authentication.
+It supports four grant types and the full Authorization Code + PKCE flow for delegated user authentication.
 
 [NOTE]
 ====
@@ -31,7 +31,7 @@ In all examples below, replace `[RESTHEART-URL]` with your RESTHeart server URL 
 
 | `POST /token`
 | yes
-| Issues a JWT access token. Supports `password`, `client_credentials`, and `authorization_code` grants.
+| Issues a JWT access token. Supports `password`, `client_credentials`, `authorization_code` and `refresh_token` grants.
 
 | `POST /token/cookie`
 | yes
@@ -148,14 +148,78 @@ http GET [RESTHEART-URL]/mycollection \
 
 ==== Token Renewal
 
-To renew a token before it expires, add `?renew` to any `GET /token` or `POST /token` request:
+There is one token, and renewing it means asking for a new one with the one you have. Two ways to do it — pick by what your client already speaks.
 
-===== HTTPie
+**With `?renew`**, on a token that has *not* expired yet:
+
 [source,bash]
 ----
 http GET [RESTHEART-URL]/token?renew \
   Authorization:"Bearer <current-token>"
 ----
+
+**With `grant_type=refresh_token`**, which is what an OAuth client does. The value you send is the token itself — RESTHeart does not issue a separate refresh token:
+
+[source,bash]
+----
+http -f POST [RESTHEART-URL]/token \
+  grant_type=refresh_token \
+  refresh_token=<current-token>
+----
+
+[source,json]
+----
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+----
+
+`refresh_token` in the response is the same string as `access_token`, so a client that stores the two separately keeps working.
+
+The renewed token is built from the account read again from the users collection, so it carries current roles and claims. A user disabled in the meantime stops renewing.
+
+CAUTION: `grant_type=refresh_token` is available since RESTHeart 9.9.0.
+
+===== The grace window
+
+`?renew` requires a valid token. `grant_type=refresh_token` also accepts one that expired recently, because OAuth clients typically renew *after* a `401` rather than before expiry:
+
+[source,yml]
+----
+authTokenService:
+  refresh-grace-seconds: 60
+----
+
+Only renewal accepts an expired token; it opens and reads nothing. Sixty seconds covers the time a client takes to notice a `401` and act on it, plus clock skew. Raising it to a token lifetime is equivalent to raising `ttl` by the same amount, for anyone holding the token — a renewal yields a token that reads.
+
+===== Bounding the renewal chain
+
+A renewed token is renewable in turn, so `ttl` is not a limit on how long a token stays useful. Two claims let you set one without writing a plugin:
+
+[cols="1,4"]
+|===
+| Claim | Meaning
+
+| `auth_time`
+| When the user actually authenticated, in epoch seconds. Carried through renewals unchanged.
+
+| `renewals`
+| `0` on a token that follows an authentication, `+1` on each renewal.
+|===
+
+Refuse renewal past ten of them with an ACL permission:
+
+[source,json]
+----
+{ "predicate": "path('/token') and method(POST) and lte(@user.renewals, 9)" }
+----
+
+Renewing with username and password starts a new chain: `auth_time` is now and `renewals` is back to `0`.
+
+CAUTION: Both claims are available since RESTHeart 9.9.0. A token issued before the upgrade carries neither, and `lte` treats an operand it cannot read as `false` — such a token is refused renewal rather than granted it.
 
 NOTE: Token generation is a cryptographic operation with some overhead. The client is responsible for renewing before expiry.
 
@@ -395,7 +459,7 @@ http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
   "authorization_endpoint": "https://api.example.com/authorize",
   "token_endpoint": "https://api.example.com/token",
   "response_types_supported": ["code"],
-  "grant_types_supported": ["authorization_code", "password", "client_credentials"],
+  "grant_types_supported": ["authorization_code", "refresh_token", "password", "client_credentials"],
   "code_challenge_methods_supported": ["S256"],
   "token_endpoint_auth_methods_supported": ["none", "client_secret_basic", "client_secret_post"]
 }
@@ -520,3 +584,11 @@ jwtTokenManager:
 ----
 
 IMPORTANT: Always set a strong, random `key` value in production environments.
+
+The grace window for `grant_type=refresh_token` belongs to the token *endpoint*, not to the token manager:
+
+[source,yml]
+----
+authTokenService:
+  refresh-grace-seconds: 60   # how long past expiry a token may still be renewed
+----
