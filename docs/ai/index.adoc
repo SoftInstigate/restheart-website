@@ -30,15 +30,17 @@ flowchart LR
 
   subgraph AI["restheart-ai"]
     direction TB
-    MCP["MCP Server\nlist_apis · how_to_call"]
+    MCP["MCP Server\ntools: list_apis · how_to_call · get_token\nresources: read · subscribe"]
     VS["Vector Search\nindexes · chunking · embeddings · rerank"]
   end
 
   API["RESTHeart REST / GraphQL API"]
   M[(MongoDB)]
 
-  Agent -- discovers & calls --> MCP
+  Agent -- discovers, reads, subscribes --> MCP
+  MCP -- how to call it, data, change notifications --> Agent
   MCP -- describes --> API
+  MCP -- reads in-process, same ACL --> M
   Agent -- the real request --> API
   VS -- powers $vectorScan / $vectorSearch on --> API
   API --> M

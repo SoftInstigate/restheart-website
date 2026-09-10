@@ -36,7 +36,9 @@ sequenceDiagram
 
 The split is deliberate: a descriptor answers "how do I call this" and is worth keeping, while a token is worth seconds. Were the token baked into the descriptor, its clock would start when the agent asked how to call something — and an agent that reasons, or asks its user, before actually calling would find it already expired.
 
-This means RESTHeart's existing ACL applies exactly as it does to any other client — an action the agent's credentials can't perform still fails with a normal `403`, the same way it would for a human hitting the same endpoint. `describeMcp` never filters by principal; the MCP server adds discovery, not a new security boundary.
+This means RESTHeart's existing ACL applies exactly as it does to any other client — an action the agent's credentials can't perform still fails with a normal `403`, the same way it would for a human hitting the same endpoint.
+
+Your `describeMcp` does not filter by principal, and should not: describe everything your plugin exposes. The MCP server filters the catalog itself, per caller, hiding from `list_apis`, `resources/list` and `how_to_call` anything whose read that caller's ACL would refuse. Discovery therefore follows the same boundary as access, and you get that without writing any authorization code of your own.
 
 === Implementing McpAware
 
