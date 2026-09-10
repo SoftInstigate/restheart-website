@@ -2,7 +2,7 @@
 docs_version: 9
 title: Enterprise License
 layout: docs
-menu: setup
+menu: reference
 applies_to: restheart
 redirect_from:
   - /docs/enterprise-license
