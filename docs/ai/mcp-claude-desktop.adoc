@@ -89,6 +89,24 @@ The account you sign in with is the account the agent acts as. Its roles decide 
 
 Grant the agent's role `POST`, `GET` and `DELETE` on `/mcp`, not `POST` alone: `GET` opens the stream notifications are delivered on, and `DELETE` ends the session.
 
+=== The ngrok interstitial
+
+On the free plan ngrok serves a warning page before your site — but only to requests that look like they come from a browser, meaning a browser `User-Agent` together with `Accept: text/html`. A normal HTTP client gets your JSON:
+
+[source,bash]
+----
+curl -u admin:secret https://ae5b-93-34-53-143.ngrok-free.app/ping     # application/json
+----
+
+It matters when the agent executes the request `how_to_call` composed *through a browser* rather than an HTTP library — it then gets the warning page instead of the response. Add the header ngrok looks for:
+
+[source,text]
+----
+ngrok-skip-browser-warning: 1
+----
+
+Any value works; ngrok only checks that the header is present. A paid ngrok plan, or any other tunnel, removes the problem.
+
 === If something does not work
 
 [options="header"]
@@ -110,4 +128,7 @@ Grant the agent's role `POST`, `GET` and `DELETE` on `/mcp`, not `POST` alone: `
 
 |The catalog is empty but tools are listed
 |The signed-in user's ACL grants nothing. The catalog only shows what that user could read.
+
+|A call returns HTML instead of JSON
+|ngrok's free-plan warning page — the request was made from a browser. See above.
 |===
