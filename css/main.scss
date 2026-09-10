@@ -367,13 +367,17 @@ iframe {
   // display a paragraph runs well past 120 characters — roughly double what the
   // eye tracks comfortably, and the main reason these pages are tiring.
   //
-  // Prose is capped at the narrow measure below and centred in the column.
-  // Tables, code and images get their own, wider measure a bit further down —
-  // not left uncapped: on a wide monitor .bd-content itself can be wider than
-  // this whole page is meant to feel, and a table or code block stretched to
-  // its raw edge no longer lines up with the paragraph sitting centred above
-  // it. Centring both measures on the same axis keeps that relationship
-  // deliberate — a symmetric, nested-boxes look — instead of accidental.
+  // One measure for everything: prose, tables, code, images, diagrams. They used
+  // to have two — a narrow one for prose and a wider one for blocks, on the
+  // reasoning that a table or a code sample loses information when squeezed. It
+  // does, but the price is worse: every block stepping out past the paragraph
+  // above it, down the whole page, reads as an accident rather than a decision.
+  // A code block that needs more room now scrolls, which it already did on
+  // narrow viewports.
+  //
+  // Change it here and everything follows.
+  --doc-measure: 46rem;
+
   .bd-content {
     h1,
     h2,
@@ -387,7 +391,7 @@ iframe {
     dl,
     blockquote,
     .admonitionblock {
-      max-width: 46rem;
+      max-width: var(--doc-measure);
       margin-left: auto;
       margin-right: auto;
     }
@@ -420,14 +424,8 @@ iframe {
     }
   }
 
-  // Wide measure. A table, a code block, or a screenshot loses information if
-  // squeezed into the prose measure — a table's columns get cramped, code
-  // wraps mid-token, a diagram shrinks past legibility. These get more room,
-  // but a defined amount rather than none: uncapped, they trail off to
-  // .bd-content's raw edge, which on a wide viewport can be far past where
-  // the prose above them stopped. Capped and centred on the same axis as
-  // prose, the extra width reads as deliberate — wider for a reason, not
-  // wide because nothing said otherwise.
+  // The blocks, on the same measure and the same axis as the prose: one column
+  // edge down the page, whatever the content is.
   .bd-content {
     table,
     .imageblock,
@@ -436,7 +434,7 @@ iframe {
     .videoblock,
     .mermaid-diagram,
     .mermaid-loading {
-      max-width: 64rem;
+      max-width: var(--doc-measure);
       margin-left: auto;
       margin-right: auto;
     }
@@ -567,7 +565,7 @@ iframe {
   .bd-content .btn {
     display: block;
     width: fit-content;
-    max-width: 46rem;
+    max-width: var(--doc-measure);
     margin-left: auto;
     margin-right: auto;
   }
@@ -684,7 +682,7 @@ iframe {
   // louder than the page it interrupts.
   .bd-content .quoteblock {
     display: block;
-    max-width: 46rem;
+    max-width: var(--doc-measure);
     margin: 1.75rem auto;
     padding: 0.15rem 0 0.15rem 1.25rem;
     border-left: 3px solid rgba(255, 255, 255, 0.18);
@@ -723,7 +721,7 @@ iframe {
   // use — tinted ground, coloured left edge — and let each variant set the
   // colour its own contents inherit.
   .bd-content .alert {
-    max-width: 46rem;
+    max-width: var(--doc-measure);
     margin: 1.75rem auto;
     padding: 1.1rem 1.35rem;
     border: 0;
