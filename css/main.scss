@@ -424,6 +424,54 @@ iframe {
     }
   }
 
+  // Room on request. The single measure is right for the page and wrong for the
+  // occasional wide table or long command, which it leaves scrolling inside a
+  // narrow box with empty column to its right. js/doc-wide-blocks.js wraps those
+  // blocks and offers a toggle — but only where it would do something: the
+  // column has to be wider than the measure, and the block has to be hiding
+  // something. Blocks that fit are left alone, so the page stays quiet.
+  .bd-content .widenable {
+    position: relative;
+    max-width: var(--doc-measure);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bd-content .widenable.is-wide,
+  .bd-content .widenable.is-wide > * {
+    max-width: none;
+  }
+
+  .bd-content .widenable__toggle {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #cccccc;
+    // at rest it is a hint, not a control competing with the content
+    opacity: 0.35;
+    transition: opacity 0.15s ease, color 0.15s ease;
+  }
+
+  .bd-content .widenable--offered .widenable__toggle {
+    display: flex;
+  }
+
+  .bd-content .widenable:hover .widenable__toggle,
+  .bd-content .widenable__toggle:focus-visible {
+    opacity: 1;
+    color: #ffffff;
+  }
+
   // The blocks, on the same measure and the same axis as the prose: one column
   // edge down the page, whatever the content is.
   .bd-content {
