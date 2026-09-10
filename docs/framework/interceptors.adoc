@@ -161,6 +161,96 @@ For a practical example of transforming request and response content to and from
 
 ---
 
+=== Undoing a Write at RESPONSE Time (v9.9)
+
+Some checks cannot run before the write. A `PATCH` carrying update operators has no resulting document to inspect until it has been applied, so the check belongs at `RESPONSE` — and it needs a way to take the write back.
+
+A `MongoInterceptor` declares that intent at request time and undoes the write at response time:
+
+[cols="1,1,3"]
+|===
+| Call | When | Meaning
+
+| `request.startTxn()`
+| a REQUEST intercept point
+| this request may need to be undone. Idempotent.
+
+| `response.rollback(mclient)`
+| `RESPONSE`
+| undo this request's write.
+|===
+
+`startTxn()` must be called *before* the write: a transaction cannot be opened around something that already happened. Since the decision is taken on the shape of the request rather than on its outcome, it is conservative — a transaction is opened whenever an undo might be needed, and most commit with nothing to undo.
+
+**You never commit.** The transaction is committed for you once every `RESPONSE` interceptor has run, unless one of them called `rollback()`.
+
+A plugin registers at one intercept point, so the pair is two classes:
+
+[source,java]
+----
+@RegisterPlugin(name = "orderTotalsTxn",
+    description = "runs in a transaction the writes orderTotals checks",
+    interceptPoint = InterceptPoint.REQUEST_AFTER_AUTH)
+public class OrderTotalsTxn implements MongoInterceptor {
+    @Override
+    public void handle(MongoRequest request, MongoResponse response) {
+        request.startTxn();
+    }
+
+    @Override
+    public boolean resolve(MongoRequest request, MongoResponse response) {
+        return request.isPatch() && "orders".equals(request.getCollectionName());
+    }
+}
+----
+
+[source,java]
+----
+@RegisterPlugin(name = "orderTotals",
+    description = "refuses an order whose total does not match its items",
+    interceptPoint = InterceptPoint.RESPONSE)
+public class OrderTotals implements MongoInterceptor {
+    @Inject("mclient")
+    private MongoClient mclient;
+
+    @Override
+    public void handle(MongoRequest request, MongoResponse response) throws Exception {
+        var order = response.getDbOperationResult().getNewData();
+
+        if (!totalMatchesItems(order)) {
+            response.setInError(HttpStatus.SC_BAD_REQUEST, "total does not match the items");
+            response.rollback(mclient);
+        }
+    }
+
+    @Override
+    public boolean resolve(MongoRequest request, MongoResponse response) {
+        return request.isPatch()
+            && "orders".equals(request.getCollectionName())
+            && response.getDbOperationResult() != null
+            && response.getDbOperationResult().getHttpCode() < 300;
+    }
+}
+----
+
+==== What rollback() actually does
+
+On a replica set the write ran in a transaction, and `rollback()` marks it for abort — it does not undo anything on the spot, because a later interceptor would then be working on a dead session. The abort happens after the last `RESPONSE` interceptor. Nothing was committed, so nothing was ever visible and no change stream event was emitted.
+
+Without a replica set `startTxn()` is a no-op and `rollback()` falls back to a compensating write: the original document is restored for an update, the new one deleted for an insert. Know its limits — the compensating write is guarded by the ETag the write produced, so a concurrent change to the same document in the meantime leaves the refused write in place; the document is visible to readers and to change streams while it lasts; and bulk writes are not supported at all.
+
+The active mode is logged at startup.
+
+==== Inside a client transaction
+
+A request may already be running in a client-driven transaction (`?sid=&txn=`). MongoDB has no nested transactions, so `startTxn()` joins that one, and `rollback()` aborts *the client's whole transaction*, not just this write. That is deliberate: leaving a refused document in an uncommitted transaction the client can still commit would defeat the check that refused it.
+
+==== A worked example in RESTHeart itself
+
+`jsonSchemaAfterWrite` is built exactly this way — see link:/docs/mongodb-rest/json-schema-validation#_bulk_patch[JSON Schema validation].
+
+---
+
 === Handling Failed Authentication (v9)
 
 RESTHeart v9 introduces the `REQUEST_AFTER_FAILED_AUTH` intercept point, which executes when authentication or authorization fails. This enables custom handling for failed security attempts before the error response is sent to the client.
