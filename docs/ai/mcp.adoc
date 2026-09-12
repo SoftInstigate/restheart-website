@@ -142,7 +142,7 @@ Everything exposed above is also reachable through MCP's native `resources` prim
 |The host has no built-in HTTP execution
 |===
 
-`resources/read` **always returns real data, or a clear error — never a description of the resource.** A resource with nothing readable to return (a database, a change stream, a GraphQL app, or an aggregation `AggregationPipelineSecurityChecker` didn't clear — see below) simply doesn't appear under `resources/list` at all; it stays reachable through `list_apis`/`how_to_call` only. There is exactly one way to get real data through this primitive and one generic way to invoke anything (reads and writes alike) through tools — never two different answers to "read this" depending on which channel you used.
+`resources/read` **always returns real data, or a clear error — never a description of the resource.** A read that cannot be served answers with a JSON-RPC error (`-32002` unknown resource, `-32602` bad parameters, `-32603` internal), not with a successful result whose text happens to start with "Error:" — so a client branches on `error` as it does everywhere else. A resource with nothing readable to return (a database, a change stream, a GraphQL app, or an aggregation `AggregationPipelineSecurityChecker` didn't clear — see below) simply doesn't appear under `resources/list` at all; it stays reachable through `list_apis`/`how_to_call` only. There is exactly one way to get real data through this primitive and one generic way to invoke anything (reads and writes alike) through tools — never two different answers to "read this" depending on which channel you used.
 
 ==== Collections
 
@@ -254,6 +254,8 @@ RESTHeart finds it by the type it provides, so the plugin name is yours to choos
 
 A scope is an opaque token naming *which* partition, and each service maps it onto its own namespace — `MongoService` reads it as a database name. Resolve it from something present on every request whatever the credential: the hostname is, an authentication detail may not be.
 
+NOTE: If your `mongo-mounts` use the parametric form — `what: /{host[0]}/{*}` — the scope is what binds `{host[0]}`. Such a mount used to be skipped when the catalogue was built, so the instance advertised nothing over MCP; with a scope it resolves like any other mount and the catalogue fills in. Without one it is still skipped, since there is nothing to bind the placeholder to.
+
 Three answers, and the third matters:
 
 [options="header"]
@@ -268,10 +270,14 @@ Three answers, and the third matters:
 |This request belongs to that partition, and sees only its resources.
 
 |`McpScopeProvider.UNRESOLVED`
-|The scope should have been determined and could not. The request is refused with `403`.
+|The scope should have been determined and could not. The request is refused with `400` and a JSON body naming the reason — a request that does not carry what the provider needs is the caller's to fix.
 |===
 
-Returning `UNPARTITIONED` when you meant `UNRESOLVED` hands that caller the whole instance's catalogue. A provider that throws is treated as `UNRESOLVED`, not as `UNPARTITIONED`, for the same reason.
+A provider that *throws* is refused too, with `500`: that is not the caller's fault. Both refuse; neither falls back to serving the whole catalogue.
+
+Returning `UNPARTITIONED` when you meant `UNRESOLVED` hands that caller the whole instance's catalogue.
+
+On a partitioned instance `GraphQLService` reads its app definitions from the scope's own database rather than from the configured `graphql.db`, so each caller gets its own apps. The per-request `override-gql-apps-db` cannot serve here: the catalogue is built outside any request, so there is no exchange to read an override from.
 
 Plugins that hold caller-specific data must filter by the scope themselves — see xref:/docs/framework/mcp-aware.adoc[McpAware]. RESTHeart cannot tell a plugin that ignores the scope from one whose content genuinely is the same everywhere.
 
