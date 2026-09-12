@@ -224,6 +224,57 @@ Anything else — a change stream, a GraphQL app, a service — is refused with 
 
 TIP: A busy collection does not become a burst of messages. The first change is notified immediately, further ones are collapsed into at most one notification per `subscription-notify-interval-seconds` (default `5`).
 
+=== Serving several isolated callers: scopes
+
+NOTE: available from *RESTHeart v9.9*.
+
+By default one instance serves one catalogue: every MCP-enabled resource on it, to every caller its ACL allows. That is the right shape for a single deployment and it needs no configuration.
+
+A process that serves several isolated callers needs more than the ACL filter above. The ACL decides what a caller may *read*; it does not stop the catalogue from being built out of every database on the instance in the first place. **Scopes** partition the catalogue itself: each scope gets its own MCP server, its own resource registry, and its own notifications.
+
+There is no switch to turn this on. Register a provider and the instance is partitioned; register none and nothing changes:
+
+[source,java]
+----
+@RegisterPlugin(name = "myScopeProvider", description = "Resolves the MCP scope from the request")
+public class MyScopeProvider implements Provider<McpScopeProvider> {
+    @Override
+    public McpScopeProvider get(PluginRecord<?> caller) {
+        return request -> {
+            var host = request.getExchange().getHostName();
+            var label = host.indexOf('.') > 0 ? host.substring(0, host.indexOf('.')) : null;
+
+            return label == null ? McpScopeProvider.UNRESOLVED : label;
+        };
+    }
+}
+----
+
+RESTHeart finds it by the type it provides, so the plugin name is yours to choose.
+
+A scope is an opaque token naming *which* partition, and each service maps it onto its own namespace — `MongoService` reads it as a database name. Resolve it from something present on every request whatever the credential: the hostname is, an authentication detail may not be.
+
+Three answers, and the third matters:
+
+[options="header"]
+[cols="2,5"]
+|===
+|Return |Meaning
+
+|`McpScopeProvider.UNPARTITIONED`
+|No partitioning for this request — the whole catalogue, exactly as an unpartitioned instance behaves. This is what the default provider returns for everything.
+
+|any other value
+|This request belongs to that partition, and sees only its resources.
+
+|`McpScopeProvider.UNRESOLVED`
+|The scope should have been determined and could not. The request is refused with `403`.
+|===
+
+Returning `UNPARTITIONED` when you meant `UNRESOLVED` hands that caller the whole instance's catalogue. A provider that throws is treated as `UNRESOLVED`, not as `UNPARTITIONED`, for the same reason.
+
+Plugins that hold caller-specific data must filter by the scope themselves — see xref:/docs/framework/mcp-aware.adoc[McpAware]. RESTHeart cannot tell a plugin that ignores the scope from one whose content genuinely is the same everywhere.
+
 === Configuration reference
 
 [options="header"]

@@ -40,6 +40,8 @@ This means RESTHeart's existing ACL applies exactly as it does to any other clie
 
 Your `describeMcp` does not filter by principal, and should not: describe everything your plugin exposes. The MCP server filters the catalog itself, per caller, hiding from `list_apis`, `resources/list` and `how_to_call` anything whose read that caller's ACL would refuse. Discovery therefore follows the same boundary as access, and you get that without writing any authorization code of your own.
 
+Filtering by *scope* is the one exception, and it is yours to do — see xref:#mcp-scope[`ctx.scope()`].
+
 === Implementing McpAware
 
 Two ways to implement it, depending on whether your plugin exposes one fixed thing or many dynamic ones.
@@ -150,6 +152,37 @@ public Optional<McpReadResult> readResource(McpContext ctx, String resource, Str
 Declare the resource `subscribable` as well if changes to it can be watched, and clients can call `resources/subscribe` on it; the framework refuses a subscription to any resource that does not declare it, rather than accepting one that would never fire.
 
 `resources/read` always means "here is real data" — a resource with no `readable` action is simply never registered with the resources primitive at all (`resources/list`/`resources/templates/list`); it stays discoverable through `list_apis`/`how_to_call` only. There is no "context" fallback to fall back to. If your default action needs an argument with no sensible default, the framework surfaces it as a Resource Template instead of a plain resource, so a client knows to fill it in before reading — see the "Reading data directly" section of xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for a concrete example (aggregations with a required `$var`).
+
+[#mcp-scope]
+=== Partitioned deployments: `ctx.scope()`
+
+NOTE: available from *RESTHeart v9.9*.
+
+One RESTHeart process can serve several isolated callers, each seeing only its own slice of the catalogue. `ctx.scope()` tells you which slice you are describing.
+
+It is an opaque token: a name for *which* partition, never a description of what a partition is. What it means is yours to decide — `MongoService` reads it as a database name, a plugin backed by something else maps it onto whatever its own content is organised by.
+
+*If your plugin's content is the same for every caller, ignore it.* Ignoring it is already correct: the same resources are contributed to every partition, each carrying that partition's own base URL. There is nothing to write.
+
+*If your plugin's content depends on the caller, you must filter by it.* RESTHeart cannot do this for you: a plugin that returns identical resources in every partition looks exactly like one that forgot to check.
+
+[source,java]
+----
+@Override
+public List<McpResource> describeMcp(McpContext ctx) {
+    var all = myResources();
+
+    if (ctx.unpartitioned()) {
+        return all;   // nothing to filter — this deployment partitions nothing
+    }
+
+    return all.stream()
+            .filter(r -> ctx.scope().equals(tenantOf(r)))
+            .toList();
+}
+----
+
+Most deployments never partition anything. With no `McpScopeProvider` registered every request resolves to `McpScopeProvider.UNPARTITIONED` and `ctx.unpartitioned()` is always `true`, so the branch above is all you need to stay correct in both cases.
 
 === Enabling and disabling
 
