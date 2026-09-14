@@ -44,7 +44,7 @@ excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Jav
                     </p>
                 </div>
                 <div class="hero-buttons mt-4">
-                    <a href="https://cloud.restheart.com/signup" class="btn btn-primary font-weight-bold btn-lg text-black">
+                    <a href="https://cloud.restheart.com/signup?utm_source=restheart.org&utm_medium=home&utm_content=home" class="btn btn-primary font-weight-bold btn-lg text-black">
                         <span class="cta-emoji">🚀</span> Try RESTHeart Cloud
                     </a>
                     <a href="/docs/setup" class="btn btn-o-white btn-lg">
@@ -96,7 +96,7 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center highlightcolor font-weight-bold">Your App, 2 Minutes, Every Framework</h2>
-        <p class="mt-2 mb-4">Works with <a href="https://cloud.restheart.com" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> — backend and frontend with full user management, ready to start your logic</p>
+        <p class="mt-2 mb-4">Works with <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> — backend and frontend with full user management, ready to start your logic</p>
 
         <!-- Core Libraries -->
         <h3 class="font-weight-bold mb-3" style="font-size: 1.1rem;">Core Libraries</h3>
@@ -159,7 +159,7 @@ git clone https://github.com/SoftInstigate/restheart-cloud-starter-react.git
                 </div>
             </div>
         </div>
-        <p class="mt-3"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps">Read about the Kit and Starter Apps →</a></p>
+        <p class="mt-3"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
     </div>
 </section>
 

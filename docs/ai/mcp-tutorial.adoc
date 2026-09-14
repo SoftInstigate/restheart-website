@@ -130,7 +130,20 @@ curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
   "headers": { "Authorization": "Bearer <token_from_get_token>" } }
 ----
 
-The descriptor carries no credential, only that placeholder — which is what makes it stable and worth keeping. Ask for a token when you are about to send the request:
+The descriptor carries no credential, only that placeholder — which is what makes it stable and worth keeping.
+
+When the action has something to say about itself, it says it here too, as `notes`. The case that matters most is a write to a collection that declares xref:/docs/mongodb-rest/constraints[constraints]: every write then runs in a transaction and a `409` can mean three different things, and the descriptor for `create`, `update` and `delete` spells them out — `"retryable": true` is a write conflict to send again unchanged; `"constraint": "<name>"` is a violated rule, with `message` and `violations`, that no retry will change; neither is a document whose `_id` already exists. An agent reads that at the moment it is about to send, which is where it is needed.
+
+[source,json]
+----
+{ "transport": "http", "method": "POST",
+  "url": "http://localhost:8080/market_events",
+  "headers": { "Authorization": "Bearer <token_from_get_token>", "Content-Type": "application/json" },
+  "body": { "_id": "accept:offer:trader1:1", "offerId": "offer:trader1:1", "type": "trade" },
+  "notes": "409 Conflict means one of three things, and the body says which. \"retryable\": true — two writes collided and this one was NOT applied: send exactly the same request again. \"constraint\": \"<name>\" — the write broke one of this collection's rules (noNegativeHoldings, noOverCommitment): \"message\" says why and \"violations\" lists the documents; do not retry, the answer will not change. Neither — a document with this _id already exists." }
+----
+
+Ask for a token when you are about to send the request:
 
 [source,bash]
 ----
