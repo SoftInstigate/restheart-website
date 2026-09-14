@@ -1,0 +1,102 @@
+---
+docs_version: 9
+title: MCP Server
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+Every service can present itself to an AI agent over the **Model Context Protocol**. You choose which collections, aggregations, change streams and GraphQL applications the agent may use, and describe each one so it knows what the thing is for. Nothing is exposed until you publish it.
+
+*Navigation path:* Service → MCP Server
+
+NOTE: MCP is in **beta**. The endpoint and the published catalogue are stable enough to build against; expect the page itself to keep gaining features.
+
+== Connecting an Agent
+
+The **Connect an agent** panel gives you the endpoint and the four facts every client needs:
+
+[cols="1,3"]
+|===
+| | Value
+
+| Endpoint
+| `https://<your-service>.restheart.com/mcp`
+
+| Transport
+| Streamable HTTP
+
+| Configuration
+| MCP 2025-06-18
+
+| Headers
+| `Authorization: Bearer <the agent's token>` and `Content-Type: application/json`
+|===
+
+The panel also has ready-made steps for the three common clients:
+
+* **Claude** — Settings → Connectors, in the desktop app or on claude.ai. Add → Add custom connector, and paste the endpoint. Sign in when Claude asks: it runs the sign-in flow for you against your service's own login page.
+* **Cursor** — add it from Cursor's own settings and paste the endpoint. The panel shows the `.cursor/mcp.json` it expects.
+* **VS Code** — run "MCP: Add Server" from the Command Palette and paste the endpoint. The panel shows the `.vscode/mcp.json`.
+
+For anything else — Zed, Windsurf, an agent you wrote yourself — the four facts above are all the configuration there is.
+
+=== Give the Agent Its Own Credential
+
+An agent reads with the permissions of whoever it authenticates as. Create a user, or an API key, with only the roles it needs on the link:/docs/cloud/managing-users[Users] and link:/docs/cloud/managing-permissions[Permissions] pages, and point the agent at that.
+
+Not your own account, and not the service administrator. An agent that authenticates as an administrator can read everything the administrator can.
+
+== Publishing Resources
+
+The **Published resources** panel lists what an agent may use. It starts empty.
+
+To publish something, click the **Add** button for its type — **Add collection**, **Add aggregation**, **Add change stream**, **Add GraphQL app** — and an inline form appears:
+
+. **Which one** — pick from what is not published yet, of that type.
+. **What it is for** — the description the agent reads to decide whether this is the resource it wants.
+. Save.
+
+The description is the part that matters. An agent picks a resource by reading it, so write what the thing holds or computes, not what it is called:
+
+[cols="1,3"]
+|===
+| Type | What to write
+
+| Collection
+| What it holds, so an agent knows when to read it.
+
+| Aggregation
+| What it computes, and what its parameters mean.
+
+| Change stream
+| What changes it reports.
+
+| GraphQL app
+| What this API is for.
+|===
+
+To unpublish, remove the entry. The agent stops seeing it on its next catalogue read.
+
+=== Parameters of a Parametric Aggregation
+
+An aggregation whose pipeline uses `$var` takes parameters, and the page lists them under the entry, one row each, driven by the pipeline itself: add a variable to the stages and the row appears.
+
+Give each one a type and a description. Left undescribed, an agent is told the parameter exists and nothing more, which in practice means it guesses.
+
+== What an Agent Sees
+
+The catalogue an agent gets depends on **who it signs in as**. The same service shows different things to different users, because permissions apply to MCP exactly as they apply to REST.
+
+The **What an agent sees** panel lets you check that. Enter the **User** and **Password** of one of your service's users and read back the catalogue that user would get. Create test users with the various roles you intend to hand out, and try each one.
+
+Two things the listing does not show on its own:
+
+* The listing is only the first half. What an agent then *reads* is narrowed again by the permission's `readFilter` and `projectResponse`, which apply to MCP reads as they do to REST ones.
+* A GraphQL app's schema is already per-caller here: a field its `@visible` directive hides from those roles is absent from what you see.
+
+== Related Pages
+
+* link:/docs/cloud/managing-permissions[Managing Permissions (ACL)] — what an agent may read, including `readFilter` and `projectResponse`
+* link:/docs/cloud/aggregations[Aggregation Pipelines] — where `$var` parameters come from
+* link:/docs/cloud/graphql[GraphQL Applications] — and the `@visible` directive

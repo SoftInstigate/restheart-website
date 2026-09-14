@@ -98,7 +98,28 @@ Use the **Search** box to filter the collection list by name (debounced, 300 ms)
 
 . Click **Save**. The UI issues `PATCH /<db>/<collection>` with the updated `aggrs` array.
 
-TIP: Use the **Format** button to pretty-print your pipeline JSON before saving. Invalid JSON blocks the save action with an inline error.
+=== The Pipeline Editor
+
+Four buttons sit on the **Pipeline Stages** field:
+
+[cols="1,3"]
+|===
+| Button | What it does
+
+| **Add template**
+| Drops in a starting pipeline, so you are editing something rather than facing an empty box.
+
+| **Add pagination**
+| Appends `$skip` and `$limit` stages driven by parameters with defaults, so callers can page without the pipeline requiring them to.
+
+| **Format**
+| Pretty-prints the JSON. Invalid JSON blocks the save with an inline error.
+
+| **Run**
+| Executes the pipeline as it stands — see <<run-from-editor,below>>.
+|===
+
+Below them, **Variables and optional stages** expands into a short reference for `$var` and `$ifvar` with the predefined names.
 
 == Editing an Aggregation
 
@@ -115,49 +136,32 @@ Click **Delete** on an aggregation entry. A confirmation dialog appears before t
 
 WARNING: Deleting an aggregation removes the endpoint immediately. Any clients that call the old URL will receive a `404 Not Found` response.
 
-== Executing an Aggregation (Inline Test Runner)
+[[run-from-editor]]
+== Running a Pipeline From the Editor
 
-Every aggregation entry has an **Execute** panel that lets you test the pipeline directly from the UI without leaving the page.
+**Run** executes the pipeline you are editing against the collection, before you save it, and shows the documents it returns with a count above them.
 
-=== Basic Execution
+It runs under the service's own security checks and always against the service's own database. `$out` and `$merge` are refused — this is a way to look, not to write — and a pipeline that takes too long is stopped rather than left to occupy the node.
 
-Click **Execute** to run the aggregation with default parameters. Results are displayed as formatted JSON below the panel.
+=== Parameters for the Run [[avars]]
 
-=== Pipeline Variables (`avars`) [[avars]]
-
-The `$var` operator lets you inject runtime variables into a pipeline stage. In the execution panel, enter a JSON object in the **avars** field:
+When the pipeline uses `$var`, a **Parameters for the run** box appears, and the names it uses are listed under it. Enter a JSON object:
 
 [source,json]
 ----
 { "region": "europe", "minAmount": 1000 }
 ----
 
-A pipeline stage using these variables might look like:
+matching stages such as:
 
 [source,json]
 ----
 { "$match": { "region": { "$var": "region" }, "amount": { "$gt": { "$var": "minAmount" } } } }
 ----
 
-The variables are passed as `?avars={"region":"europe","minAmount":1000}` in the REST call.
+**Fill in the ones this pipeline uses** writes the skeleton for you, with every name the pipeline reads, so you only fill in values.
 
-=== Pagination
-
-The execution panel also exposes **page** and **pagesize** fields. Use these to page through large result sets during testing.
-
-=== Copy Pagination Stages
-
-Click **Copy Pagination Stages** to copy `$skip` and `$limit` stage templates to the clipboard. Paste them into your pipeline to implement server-side pagination:
-
-[source,json]
-----
-{ "$skip": 0 },
-{ "$limit": 20 }
-----
-
-=== Copy Endpoint URL
-
-Click **Copy URL** to copy the full REST endpoint URL (including `avars`) to the clipboard. Share it with clients or paste it into curl/HTTPie.
+These are the same values a client sends as `?avars={"region":"europe","minAmount":1000}`.
 
 == The `allowDiskUse` Flag
 
@@ -236,7 +240,7 @@ Click **Save**.
 
 === Step 2: Test in the UI
 
-Click **Execute** on the `count-by-status` entry. The results panel shows something like:
+Click **Run** in the editor. The panel below shows the documents and their count:
 
 [source,json]
 ----

@@ -157,6 +157,28 @@ Use the **Search** box to filter the collection list by name (debounced, 300 ms)
 
 NOTE: The editor shows the complete stream definition object `{ "uri": "...", "stages": [...] }` — not just the stages array. This makes it easy to copy and paste stream definitions between collections.
 
+=== The Pipeline Editor
+
+The same editor used for link:aggregations[aggregation pipelines], so the buttons behave the same way:
+
+[cols="1,3"]
+|===
+| Button | What it does
+
+| **Add template**
+| Drops in a starting definition, with the `uri` and `stages` already in place.
+
+| **Add pagination**
+| Appends `$skip` and `$limit` stages. Rarely what you want on a stream, which delivers events as they happen rather than a page of them.
+
+| **Format**
+| Pretty-prints the JSON and validates it. Invalid JSON blocks the save with an inline error.
+|===
+
+There is no **Run** button here, and there could not be: a stream is not executed once and finished, it stays open and reports changes as they occur. Use the <<live-try-panel,Live Try panel>> below to watch it instead.
+
+**Variables and optional stages** expands into a reference for `$var` and `$ifvar`. They work in a stream's stages as they do in an aggregation's, with the values coming from the `avars` query parameter on the WebSocket URL — see link:aggregations#avars[Pipeline Variables] for the syntax.
+
 == Editing a Stream
 
 . Expand the collection and find the stream entry.
@@ -183,6 +205,7 @@ wss://<host>/<db>/<collection>/_streams/<uri>
 
 You can paste this URL directly into websocat, a browser DevTools console, or your application code.
 
+[[live-try-panel]]
 == Live Try Panel
 
 Every stream definition has a built-in **Live Try** panel that lets you test the WebSocket connection directly from the UI.
