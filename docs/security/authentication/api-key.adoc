@@ -87,12 +87,12 @@ mongoApiKeyAuthenticator:
 |`false`
 
 |`keys-db`
-|the database holding the keys collection
-|*none*
+|the database holding the keys collection; overridable per request with `override-keys-db` (see <<One database per tenant>>)
+|`restheart`
 
 |`keys-collection`
 |the collection holding key documents
-|*none*
+|`apiKeys`
 
 |`prop-hash`
 |the field holding the key's SHA-256 hash
@@ -147,6 +147,7 @@ A key document looks like this. The key itself is never stored — only its hash
 equals(@user._id, ${userId})        # an ACL permission
 { "$arg": ["@user._id", null] }     # a GraphQL mapping
 ----
+- **`authDb` is the database the key was found in.** From v9.9, as for an account from `mongoRealmAuthenticator`. A JWT minted for the key carries it as a claim, so on a multi-tenant deployment the token names the tenant it was issued for (see <<One database per tenant>>).
 - Nothing else in the key document is exposed to ACL predicates — it's yours to shape freely.
 
 === Hashing, expiry and revocation
@@ -160,6 +161,52 @@ equals(@user._id, ${userId})        # an ACL permission
 === Where keys live
 
 `keys-db` and `keys-collection` are configurable — keys can live wherever suits the deployment, including alongside the users themselves. A dedicated collection is the default because a MongoDB TTL index only acts on a top-level date field (`expiresAt` inside a user document wouldn't auto-expire), and because `lastUsedAt` writes would otherwise touch the user document, and its cache, on every authenticated request.
+
+==== One database per tenant [[one-database-per-tenant]]
+
+NOTE: Available from RESTHeart v9.9.
+
+On a deployment that serves several tenants from one instance, `keys-db` can be chosen per request, the same way `mongoRealmAuthenticator` takes `override-users-db` and `mongoAclAuthorizer` takes `override-acl-db`. Attach `override-keys-db` from an interceptor that runs before authentication:
+
+[source,java]
+----
+@RegisterPlugin(name = "tenantResolver",
+        description = "scopes users, ACL and API keys to the tenant named by the hostname",
+        interceptPoint = InterceptPoint.REQUEST_BEFORE_EXCHANGE_INIT)
+public class TenantResolver implements WildcardInterceptor {
+    @Override
+    public void handle(ServiceRequest<?> req, ServiceResponse<?> res) {
+        var tenant = req.getExchange().getHostName().split("\\.")[0];
+
+        req.attachParam("override-users-db", tenant);
+        req.attachParam("override-acl-db", tenant);
+        req.attachParam("override-keys-db", tenant);
+    }
+
+    @Override
+    public boolean resolve(ServiceRequest<?> req, ServiceResponse<?> res) {
+        return true;
+    }
+}
+----
+
+With the override in place:
+
+- **A key works only on its own tenant.** It is looked up in the database the request resolves to, and a key stored in another tenant's database is not found there: `401`, exactly as for an unknown key.
+- **The keys cache is per database.** A key verified for one tenant is never served from cache for another.
+- **`lastUsedAt` is written to the tenant's database**, the one the key was found in.
+- **The account's `authDb` is the tenant's database**, and so is the `authDb` claim of a JWT minted for the key. A deployment that checks `authDb` against the request's tenant covers key-derived tokens too.
+
+Without the override, the configured `keys-db` is used, as before.
+
+An override that is present but unusable is refused: `401`, never a lookup in `keys-db`. That covers an empty value, a value that isn't a string, and a database name MongoDB rejects. A resolver that fails to name a tenant must not end up accepting the default tenant's keys.
+
+Two things are deliberately missing:
+
+- **No fallback to `override-users-db`.** Keys can live apart from users, and a fallback would silently move them. Set `override-keys-db` explicitly, even when it names the same database as `override-users-db`.
+- **No override for `keys-collection`.** The collection is part of the schema and the database is the tenant, the same reason `mongoRealmAuthenticator` has no override for `users-collection`.
+
+IMPORTANT: The override is honoured when `apiKeyAuthMechanism` authenticates the request, which hands the request to `mongoApiKeyAuthenticator`. Code calling `mongoApiKeyAuthenticator.verify(credential)` directly, without the request, always uses the configured `keys-db`.
 
 === Issuing a key
 
