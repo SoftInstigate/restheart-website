@@ -541,9 +541,24 @@ Common error scenarios:
 |===
 |Error |Status Code |Description
 |Transaction not in progress |406 |An operation was attempted in a transaction that's not in the "IN" state
-|Write conflict |409 |Another transaction committed changes to the same documents
+|Write conflict |409 |Another transaction committed changes to the same documents. The error body carries `"retryable": true`
 |Transaction expired |500 |Transaction exceeded the maximum runtime (default: 60 seconds)
 |===
+
+A write conflict is the one error a retry can clear: nothing was applied, and the same request sent again may well succeed. It is marked in the error body so the client does not have to guess:
+
+[source,http]
+----
+HTTP/1.1 409 Conflict
+
+{
+  "http status code": 409,
+  "message": "the write conflicted with a concurrent one and was not applied, retry the request",
+  "retryable": true
+}
+----
+
+Retry only on `retryable`. Other `409` responses — an ETag mismatch, a duplicate key, a violated link:/docs/mongodb-rest/constraints[data constraint] — repeat the same answer however many times they are sent. Back off between attempts and give up after a few.
 
 ==== Transaction Timeouts
 

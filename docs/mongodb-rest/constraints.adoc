@@ -174,6 +174,61 @@ HTTP/1.1 409 Conflict
 
 `409`, not `400`: the request is well formed, the resulting state is not admissible. Nothing was written — `alice` still holds what she held. `violations` carries the documents the pipeline returned, capped at 10; a `notEmpty` rule has none by definition, and the field is omitted.
 
+=== Handling the two kinds of 409
+
+A write to a guarded collection can be refused with `409` for two different reasons, and the client must treat them differently:
+
+[cols="1,2,1"]
+|===
+|Error body |What happened |What to do
+
+|`"retryable": true`
+|The write lost a race with a concurrent one. Nothing was applied, no rule was broken.
+|Send the same request again.
+
+|`"constraint": "<name>"`
+|The write would have broken that rule.
+|Report it. Retrying repeats the same answer.
+|===
+
+Check `retryable` and nothing else: it is set only on failures that a retry can clear, so its absence always means "do not retry".
+
+[source,http]
+----
+HTTP/1.1 409 Conflict
+
+{
+  "http status code": 409,
+  "message": "the write conflicted with a concurrent one and was not applied, retry the request",
+  "retryable": true
+}
+----
+
+Retry with a backoff, and give up after a few attempts — a collection under contention serializes its writes, so retrying forever only makes the queue longer.
+
+[source,javascript]
+----
+async function write(url, options, attempts = 4) {
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch(url, options);
+
+    if (response.status !== 409 || attempt === attempts - 1) {
+      return response;
+    }
+
+    const body = await response.clone().json();
+
+    if (!body.retryable) {
+      return response;   // a violated constraint, or any other conflict
+    }
+
+    await new Promise(r => setTimeout(r, 50 * 2 ** attempt));
+  }
+}
+----
+
+`retryable` is not specific to constraints: any write in a transaction that aborts on a transient conflict carries it. Every other `409` — a violated constraint, an ETag mismatch, a duplicate key — does not.
+
 === When it runs
 
 Every shape of document write is covered: insert, update, bulk update, and **delete**. A delete breaks "this parent exists" as readily as an insert breaks "no balance is negative" — the rule is a property of the state, not of the operation.
@@ -200,6 +255,6 @@ The guard collection lives in the same database as the guarded collection and is
 
 **A replica set is required.** Without transactions a write that breaks a rule could not be undone, so a write to a collection declaring constraints is refused with `501` rather than let through unchecked. Constraints live in collection metadata, so this cannot be reported at startup — it is reported on the write.
 
-**Concurrent writes may be refused with `409` instead of a violation.** When two writes to the same collection collide on the guard document, one is aborted and the client is told to retry. Nothing invalid is committed either way; the difference is only that the message says "conflict" rather than naming the rule.
+**Concurrent writes may be refused with `409` instead of a violation.** When two writes to the same collection collide on the guard document, one is aborted with `"retryable": true` and the client is expected to send it again. Nothing invalid is committed either way. See <<Handling the two kinds of 409>>.
 
 **Pipelines are held to `aggregationSecurity`**, unchanged and in full — the same settings that constrain `aggrs`. `$lookup`, `$merge`, `$out`, `$graphLookup` and `$unionWith` are blacklisted by default, so a constraint reads only its own collection unless the deployment has already decided otherwise for its aggregations.
