@@ -1,6 +1,6 @@
 ---
 docs_version: 9
-title: RESTHeart Cloud — API Keys for Agents
+title: RESTHeart Cloud — API Keys
 layout: docs-adoc
 menu: cloud
 applies_to: cloud
@@ -8,13 +8,13 @@ applies_to: cloud
 
 NOTE: API keys for a service's users are available from RESTHeart Cloud's 9.9 release.
 
-An AI agent connects to your service and stays connected. There is no sign-in dialog in which to renew a token, and a fifteen-minute JWT is no use to it. What it needs is a credential that lives long and can be revoked one at a time: an **API key**.
+Something acting on a user's behalf — an AI agent, a script, a mobile app, another backend — connects to your service and stays connected. There is no sign-in dialog in which to renew a token, and a fifteen-minute JWT is no use to it. What it needs is a credential that lives long and can be revoked one at a time: an **API key**. AI agents over MCP are the case that made this urgent; the key is the same for any of them.
 
 The key belongs to a **user of your service** — one of the people who sign in to *your* application — and is issued by that user, for their own agent, with roles you allow. Your application asks the service for it on the user's behalf. You, the owner, decide whether this is possible at all, which roles a key may carry, and you see and revoke everything that was issued.
 
 Not to be confused with the link:/docs/cloud/tokens[personal access tokens] of your *cloud account*, which `rhc` signs in with. Those reach your services' configuration; these reach one service's data, as one of its users, and nothing else.
 
-*Navigation path:* Service → MCP Server → API keys for agents
+*Navigation path:* Service → API Keys
 
 == How it works
 
@@ -28,7 +28,7 @@ Two things have to agree before a key can be issued, the switch and the permissi
 
 == Turning it on
 
-On the **MCP Server** page, under **API keys for agents**:
+On the **API Keys** page:
 
 [cols="1,3"]
 |===
@@ -104,7 +104,7 @@ curl -u alice@example.com:her-password -X DELETE https://<your-service>.resthear
 
 `lastUsedAt` is absent until the key is first used. That absence is the useful part: it is how you tell the key somebody forgot about from the one in use.
 
-You see every key issued on the service on the **MCP Server** page, with who holds it and when it was last used, and revoke any with the bin icon. Revocation takes effect within twenty seconds.
+You see every key issued on the service on the **API Keys** page, with who holds it and when it was last used, and revoke any with the bin icon. Revocation takes effect within twenty seconds.
 
 == Trying the catalogue with a key
 
