@@ -104,36 +104,14 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 
         <div class="tabs-dark">
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
-            <li class="nav-item"><a class="examples__link nav-link active" data-bs-toggle="tab" href="#starter-angular" role="tab">Angular</a></li>
-            <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-react" role="tab">React</a></li>
+            <li class="nav-item"><a class="examples__link nav-link active" data-bs-toggle="tab" href="#starter-react" role="tab">React</a></li>
+            <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-angular" role="tab">Angular</a></li>
             <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-ecommerce" role="tab">Ecommerce with Stripe</a></li>
             <li class="nav-item"><a class="examples__link nav-link disabled" href="#" role="tab" tabindex="-1" aria-disabled="true">Vue · coming soon</a></li>
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="starter-angular" role="tabpanel">
-                <div class="hero-terminal text-left p-3">
-{% highlight bash %}
-# 1. get the app
-git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
-cd restheart-cloud-starter-ng
-npm install
-
-# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
-#    into src/environments/environment.dev.ts
-
-# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
-npm install -g @restheart-cloud/cli
-rhc login                  # paste a personal access token from cloud.restheart.com
-rhc setup --srv <srvId>    # the six characters at the start of your service URL
-
-# 4. run it
-ng serve
-{% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank" rel="noopener">README →</a></p>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="starter-react" role="tabpanel">
+            <div class="tab-pane fade show active" id="starter-react" role="tabpanel">
                 <div class="hero-terminal text-left p-3">
 {% highlight bash %}
 # 1. get the app
@@ -153,6 +131,28 @@ rhc setup --srv <srvId>    # the six characters at the start of your service URL
 npm run dev
 {% endhighlight %}
                     <p class="mt-2 mb-0 text-left"><strong>React</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-react" target="_blank" rel="noopener">README →</a></p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="starter-angular" role="tabpanel">
+                <div class="hero-terminal text-left p-3">
+{% highlight bash %}
+# 1. get the app
+git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
+cd restheart-cloud-starter-ng
+npm install
+
+# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
+#    into src/environments/environment.dev.ts
+
+# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
+npm install -g @restheart-cloud/cli
+rhc login                  # paste a personal access token from cloud.restheart.com
+rhc setup --srv <srvId>    # the six characters at the start of your service URL
+
+# 4. run it
+ng serve
+{% endhighlight %}
+                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
             <div class="tab-pane fade" id="starter-ecommerce" role="tabpanel">
