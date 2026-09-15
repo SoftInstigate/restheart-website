@@ -95,71 +95,90 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 <!-- Starter Apps for RESTHeart Cloud -->
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
-        <h2 class="text-center highlightcolor font-weight-bold">Your App, 2 Minutes, Every Framework</h2>
-        <p class="mt-2 mb-4">Works with <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> — backend and frontend with full user management, ready to start your logic</p>
+        <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
+        <p class="mt-2 mb-4">Clone a starter, point it at a free <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
 
-        <!-- Core Libraries -->
-        <h3 class="font-weight-bold mb-3" style="font-size: 1.1rem;">Core Libraries</h3>
-        <div class="row mb-5">
-            <div class="col-md-4 mb-3">
-                <div class="hero-terminal text-left p-3">
-                    <p class="white mb-2"><strong>React / Next.js</strong></p>
-{% highlight bash %}
-npm install @restheart-cloud/kit-react
-{% endhighlight %}
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="hero-terminal text-left p-3">
-                    <p class="white mb-2"><strong>Angular</strong></p>
-{% highlight bash %}
-npm install @restheart-cloud/kit-ng
-{% endhighlight %}
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="hero-terminal text-left p-3">
-                    <p class="white mb-2"><strong>Vue / Nuxt</strong></p>
-{% highlight bash %}
-npm install @restheart-cloud/kit-vue
-{% endhighlight %}
-                </div>
-            </div>
-        </div>
+        <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
+            <li class="nav-item"><a class="examples__link nav-link active" data-bs-toggle="tab" href="#starter-angular" role="tab">Angular</a></li>
+            <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-react" role="tab">React</a></li>
+            <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-ecommerce" role="tab">Ecommerce with Stripe</a></li>
+            <li class="nav-item"><a class="examples__link nav-link disabled" href="#" role="tab" tabindex="-1" aria-disabled="true">Vue · coming soon</a></li>
+        </ul>
 
-        <!-- Starter Apps -->
-        <h3 class="font-weight-bold mb-1" style="font-size: 1.1rem;">Starter Apps</h3>
-        <p class="mb-3" style="opacity: 0.7; font-size: 0.9rem;">Start from our ready-made apps — auth, teams, and data APIs already wired up</p>
-        <div class="row">
-            <div class="col-md-4 mb-3">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="starter-angular" role="tabpanel">
                 <div class="hero-terminal text-left p-3">
-                    <p class="white mb-2"><strong>Angular</strong> <span class="badge badge-success">Available</span></p>
-                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Signals, route guards, HTTP interceptor. Complete multi-tenant app.</p>
 {% highlight bash %}
+# 1. get the app
 git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
+cd restheart-cloud-starter-ng
+npm install
+
+# 2. point it at your free service: paste the service URL from its Connect page
+#    into src/environments/environment.dev.ts
+
+# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+npm install -g @restheart-cloud/cli
+rhc login                  # paste a personal access token from cloud.restheart.com
+rhc setup --srv <srvId>    # the six characters at the start of your service URL
+
+# 4. run it
+ng serve
 {% endhighlight %}
-                    <p class="mt-2 mb-0"><a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank">View on GitHub →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="tab-pane fade" id="starter-react" role="tabpanel">
                 <div class="hero-terminal text-left p-3">
-                    <p class="white mb-2"><strong>React / Next.js</strong> <span class="badge badge-success">Available</span></p>
-                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Context, hooks, guard components. Plus Next.js SSR support.</p>
 {% highlight bash %}
+# 1. get the app
 git clone https://github.com/SoftInstigate/restheart-cloud-starter-react.git
+cd restheart-cloud-starter-react
+npm install
+
+# 2. point it at your free service: paste the service URL from its Connect page
+#    into src/environments/environment.ts
+
+# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+npm install -g @restheart-cloud/cli
+rhc login                  # paste a personal access token from cloud.restheart.com
+rhc setup --srv <srvId>    # the six characters at the start of your service URL
+
+# 4. run it
+npm run dev
 {% endhighlight %}
-                    <p class="mt-2 mb-0"><a href="https://github.com/SoftInstigate/restheart-cloud-starter-react" target="_blank">View on GitHub →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>React</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-react" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="hero-terminal text-left p-3" style="opacity: 0.6;">
-                    <p class="white mb-2"><strong>Vue / Nuxt</strong> <span class="badge badge-warning">Coming soon</span></p>
-                    <p class="mb-2" style="font-size: 0.85rem; opacity: 0.7;">Composables, navigation guards. Nuxt SSR support on the same pattern.</p>
-                    <p class="mb-0" style="font-size: 0.85rem;">In development</p>
+            <div class="tab-pane fade" id="starter-ecommerce" role="tabpanel">
+                <div class="hero-terminal text-left p-3">
+{% highlight bash %}
+# 1. get the app
+git clone https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce.git
+cd restheart-cloud-starter-ecommerce
+npm install
+
+# 2. point it at your free service: paste the service URL from its Connect page
+#    into src/environments/environment.ts
+#    and export your Stripe test keys, which the setup stores on the service once
+export STRIPE_SECRET_KEY=sk_test_...
+export STRIPE_WEBHOOK_SECRET=whsec_...
+
+# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+npm install -g @restheart-cloud/cli
+rhc login                  # paste a personal access token from cloud.restheart.com
+rhc setup --srv <srvId>    # the six characters at the start of your service URL
+
+# 4. run it
+npm run dev
+{% endhighlight %}
+                    <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
         </div>
-        <p class="mt-3"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
+
+        <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@restheart-cloud/kit-react</code>, <code>@restheart-cloud/kit-ng</code> and <code>@restheart-cloud/kit-vue</code>.</p>
+        <p class="mt-1"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
     </div>
 </section>
 
