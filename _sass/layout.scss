@@ -20,16 +20,19 @@
   z-index: 100;
 }
 
-/* The Discord button, in Discord's own colour so it reads as Discord next to the site's buttons. */
-.btn-discord {
+/* The Discord button, in Discord's own colour so it reads as Discord next to the site's buttons.
+   Doubled selector on purpose: the site's own .btn comes later in this file and would otherwise
+   win on equal specificity, painting it with a colour variable that is not defined. */
+.btn.btn-discord {
   background-color: #5865f2;
   border-color: #5865f2;
   color: #fff !important;
   font-weight: 700;
 }
 
-.btn-discord:hover,
-.btn-discord:focus {
+.btn.btn-discord:hover,
+.btn.btn-discord:focus,
+.btn.btn-discord:active {
   background-color: #4752c4;
   border-color: #4752c4;
   color: #fff !important;
@@ -1890,6 +1893,11 @@ div.editions-matrix {
 
   .hero-brand {
     justify-content: flex-start;
+  }
+
+  /* Centred only where the hero is: on the left-aligned desktop hero it sits with the rest. */
+  .hero-checklist {
+    margin-left: 0;
   }
 }
 
