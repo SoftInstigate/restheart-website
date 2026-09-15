@@ -1216,18 +1216,32 @@ blockquote.font12em {
 }
 
 @media (min-width: 768px) {
+  /* Fixed, not sticky. A sticky sidebar is clipped to its row, and at the end of a long page the
+     row ends where the content does: the sidebar then rode up over the footer, short of the
+     viewport. Fixed, it spans header to bottom on every scroll position; the column it left
+     behind is given back to the content as a margin, below. */
   .bd-sidebar {
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     top: 4rem;
-    height: calc(100vh - 4rem);
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
     z-index: 10;
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0;
   }
 
+  .doc .bd-sidebar ~ .bd-content {
+    margin-left: 25%;
+  }
+
   .bd-sidebar__menu {
-    height: calc(100vh - 12rem);
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
     overflow-y: auto;
     display: block;
 
@@ -1973,5 +1987,15 @@ div.editions-matrix {
 
   .hero-buttons .btn {
     margin-right: 0.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .bd-sidebar {
+    width: 16.6667%;
+  }
+
+  .doc .bd-sidebar ~ .bd-content {
+    margin-left: 16.6667%;
   }
 }
