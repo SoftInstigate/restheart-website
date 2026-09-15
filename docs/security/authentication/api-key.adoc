@@ -202,6 +202,21 @@ With the override in place:
 
 Without the override, the configured `keys-db` is used, as before.
 
+===== Carrying the tenant on the account
+
+NOTE: Available from RESTHeart v9.9.
+
+A multi-tenant deployment usually attaches more than the database before authentication — the node the request arrived on, say — and copies it onto every account with `mongoRealmAuthenticator`'s `attached-props`, so that its guards can compare it and a JWT minted from the account carries it. An account built from a key has to carry the same, or it is the one kind that fails those checks. `mongoApiKeyAuthenticator` takes the same option, with the same meaning:
+
+[source,yml]
+----
+mongoApiKeyAuthenticator:
+  attached-props:
+    - srvNode
+----
+
+Each named request parameter, when present, is copied onto the account after the key is verified; names that are not attached are skipped. The copy is made onto a fresh account, not onto the cached one, so a value attached by one request is never found by the next.
+
 An override that is present but unusable is refused: `401`, never a lookup in `keys-db`. That covers an empty value, a value that isn't a string, and a database name MongoDB rejects. A resolver that fails to name a tenant must not end up accepting the default tenant's keys.
 
 Two things are deliberately missing:
