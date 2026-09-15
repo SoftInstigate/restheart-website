@@ -10,7 +10,7 @@ NOTE: API keys for a service's users are available from RESTHeart Cloud's 9.9 re
 
 Something acting on a user's behalf — an AI agent, a script, a mobile app, another backend — connects to your service and stays connected. There is no sign-in dialog in which to renew a token, and a fifteen-minute JWT is no use to it. What it needs is a credential that lives long and can be revoked one at a time: an **API key**. AI agents over MCP are the case that made this urgent; the key is the same for any of them.
 
-The key belongs to a **user of your service** — one of the people who sign in to *your* application — and is issued by that user, for their own agent, with roles you allow. Your application asks the service for it on the user's behalf. You, the owner, decide whether this is possible at all, which roles a key may carry, and you see and revoke everything that was issued.
+The key belongs to a **user of your service** — one of the people who sign in to *your* application — and is issued by that user, with roles you allow *for that user's role*. Your application asks the service for it on the user's behalf. You, the owner, decide whether this is possible at all, which roles a key may carry for whom, and you see and revoke everything that was issued.
 
 Not to be confused with the link:/docs/cloud/tokens[personal access tokens] of your *cloud account*, which `rhc` signs in with. Those reach your services' configuration; these reach one service's data, as one of its users, and nothing else.
 
@@ -18,13 +18,41 @@ Not to be confused with the link:/docs/cloud/tokens[personal access tokens] of y
 
 == How it works
 
-. **You turn it on** for the service and list the roles a key may carry.
-. **You grant `/keys`** in the service's ACL to the roles that may issue. The page writes the permission for you.
-. **A user issues a key** with `POST /keys`, signed in with their own credentials, naming the roles they want among those allowed — and among those they already hold.
-. **The agent sends the key** as `Authorization: Bearer rhak_…`, and reads what those roles may read.
+. **You turn it on** for the service, with default limits.
+. **You write a permission on `/keys`** for each role that may issue, naming in it the roles a key may be given. The API Keys page does this for you.
+. **A user issues a key** with `POST /keys`, signed in with their own credentials, naming the roles they want among those their permission allows.
+. **The client sends the key** as `Authorization: Bearer rhak_…`, and does what those roles may do.
 . **Anyone revokes**: the user their own, you any.
 
-Two things have to agree before a key can be issued, the switch and the permission. Each on its own does nothing, and the error says which one is missing.
+Two things have to agree before a key can be issued, the switch and a permission with an `apiKeys` block. Each on its own does nothing, and the error says which one is missing.
+
+== Who may issue which keys
+
+This is the part to get right, and it is written where every other grant is: in the service's ACL. A permission that lets a role reach `/keys` carries an `apiKeys` block naming the roles a key may be given, and optionally its own limits:
+
+[source,json]
+----
+{ "_id": "adminsIssueKeys",
+  "predicate": "path-prefix('/keys')",
+  "roles": ["admin"],
+  "priority": 10,
+  "apiKeys": { "roles": ["cli-rw", "api-admin"], "max-expires-in-days": 365 } }
+
+{ "_id": "usersIssueKeys",
+  "predicate": "path-prefix('/keys')",
+  "roles": ["user"],
+  "priority": 1,
+  "apiKeys": { "roles": ["cli-ro"] } }
+----
+
+With these, an `admin` may issue a `cli-rw` or an `api-admin` key and a `user` only a `cli-ro` one. The key roles need not be roles the user holds — usually they are not: a key's role is deliberately narrower than its owner's, and it can do only what *other* permissions grant to it. `cli-ro`, `cli-rw` and `api-admin` here are ordinary roles you define like any other.
+
+Two rules follow from how RESTHeart evaluates permissions:
+
+* **One permission decides.** When several match — a user who is both `admin` and `user` — the one with the highest priority is the one that applies, and only its `apiKeys.roles` are available. Give the wider grant the higher priority.
+* **A permission without the block grants nothing.** Its roles reach `/keys` and get a `403` that says so. Reaching the endpoint and being allowed to issue are two different things.
+
+The **API Keys** page lists the permissions on `/keys` with the key roles each one grants, lets you edit them, and adds a new one from three fields: the role that may issue, the roles a key may carry, and, optionally, its limits. They are ordinary permissions, also visible on the link:/docs/cloud/managing-permissions[Permissions] page, and like any ACL change they apply within twenty seconds.
 
 == Turning it on
 
@@ -37,17 +65,12 @@ On the **API Keys** page:
 | Users may issue API keys
 | The switch. Off, `POST /keys` answers `403` whatever the ACL says.
 
-| Roles a key may carry
-| The allowlist. A user picks among these. A user who holds none of them cannot issue a key that does anything.
-
 | Longest a key may live
-| In days, up to ten years. A user may ask for less, never for more.
+| The default, in days, up to ten years. A permission may set a lower one for its roles. A user may ask for less, never for more.
 
 | Keys per user, at most
-| A user at the limit has to revoke one before issuing another.
+| The default. A permission may set its own. A user at the limit has to revoke one before issuing another.
 |===
-
-Then **Write it to the ACL**. This adds a permission named `usersCanIssueApiKeys` granting `path-prefix('/keys')` to the roles in the allowlist. It is an ordinary permission: edit or replace it on the link:/docs/cloud/managing-permissions[Permissions] page if the roles that may *issue* differ from the roles a key may *carry*. Like any ACL change it applies within twenty seconds.
 
 == Issuing a key
 
@@ -58,7 +81,7 @@ Your application calls the service, with the user's own credentials:
 curl -u alice@example.com:her-password \
   -X POST https://<your-service>.restheart.com/keys \
   -H 'Content-Type: application/json' \
-  -d '{ "name": "my agent", "roles": ["reader"], "expiresIn": 90 }'
+  -d '{ "name": "my agent", "roles": ["cli-rw"], "expiresIn": 90 }'
 ----
 
 [source,json]
@@ -66,7 +89,7 @@ curl -u alice@example.com:her-password \
 {
   "_id": "68c7…",
   "name": "my agent",
-  "roles": ["reader"],
+  "roles": ["cli-rw"],
   "expiresAt": { "$date": 1765555200000 },
   "key": "rhak_Kx7Rz9…"
 }
@@ -74,11 +97,11 @@ curl -u alice@example.com:her-password \
 
 **The key is shown once.** Only its SHA-256 is stored, so it cannot be recovered afterwards, not by you, not by the user, not through any endpoint. An application that loses one issues another.
 
-`roles` is the part to understand. A key's roles must lie within **both** the allowlist you configured **and** the roles the user already holds. A `reader` cannot issue an `admin` key even if `admin` is allowed; nobody can issue a key with a role the owner never allowed. A key is never more than its user and never more than your list. Left out, `roles` is empty, and an empty key can do nothing.
+`roles` is the part to understand. A key's roles must lie within what the permission that authorised the call names in its `apiKeys.roles` — nothing else, whatever the user holds. With the permissions above, `alice` as an `admin` may write `["cli-rw"]` or `["api-admin"]` and nothing else; `bob` as a `user` only `["cli-ro"]`. Left out, `roles` is empty, and an empty key can do nothing.
 
 There is no field in which to name another user. The principal is the one who signed in, always; anything else in the body is not read.
 
-`expiresIn` is in days, defaulting to 90 or the maximum you set, whichever is lower.
+`expiresIn` is in days, defaulting to 90 or the maximum that applies, whichever is lower: the permission's, when it sets one, otherwise the service's.
 
 == Using a key
 
@@ -114,4 +137,4 @@ The **What an agent sees** panel on the MCP Server page accepts an API key. Use 
 
 * link:/docs/cloud/mcp[MCP Server] — where an agent uses the key
 * link:/docs/cloud/tokens[Tokens] — the other kind of credential, for your cloud account and `rhc`
-* link:/docs/cloud/managing-permissions[Managing Permissions (ACL)] — the permission that lets a role issue, and what a key's roles may read
+* link:/docs/cloud/managing-permissions[Managing Permissions (ACL)] — where the `apiKeys` block lives, and what a key's roles may do
