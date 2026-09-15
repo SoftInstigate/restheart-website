@@ -99,7 +99,8 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
-        <p class="mt-2 mb-4">Clone a starter, point it at a free <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
+        <p class="mt-2 mb-1">Clone a starter, point it at a free <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
+        <p class="mb-4" style="opacity: 0.8; font-size: 0.95rem;">These starters run on <strong>RESTHeart Cloud</strong>, the managed service. <code>rhc</code> is its command line: it configures your cloud service from a file in the repo. For a RESTHeart you run yourself, start from <a href="/docs/setup">Setup</a> instead.</p>
 
         <div class="tabs-dark">
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
@@ -118,10 +119,10 @@ git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
 cd restheart-cloud-starter-ng
 npm install
 
-# 2. point it at your free service: paste the service URL from its Connect page
+# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
 #    into src/environments/environment.dev.ts
 
-# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
 npm install -g @restheart-cloud/cli
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
@@ -140,10 +141,10 @@ git clone https://github.com/SoftInstigate/restheart-cloud-starter-react.git
 cd restheart-cloud-starter-react
 npm install
 
-# 2. point it at your free service: paste the service URL from its Connect page
+# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
 #    into src/environments/environment.ts
 
-# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
 npm install -g @restheart-cloud/cli
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
@@ -162,13 +163,13 @@ git clone https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce.git
 cd restheart-cloud-starter-ecommerce
 npm install
 
-# 2. point it at your free service: paste the service URL from its Connect page
+# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
 #    into src/environments/environment.ts
 #    and export your Stripe test keys, which the setup stores on the service once
 export STRIPE_SECRET_KEY=sk_test_...
 export STRIPE_WEBHOOK_SECRET=whsec_...
 
-# 3. set the service up from the file in the repo (accounts, sign-up, your origin)
+# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
 npm install -g @restheart-cloud/cli
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
