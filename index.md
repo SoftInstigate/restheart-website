@@ -24,7 +24,7 @@ excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Jav
                     </p>
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Authentication, authorization, sign-up and teams, built in.
+                        Authentication, sign-up, teams and <a href="/docs/stripe/overview">Stripe subscriptions</a>, built in.
                     </p>
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
