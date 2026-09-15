@@ -378,6 +378,48 @@ iframe {
   // Change it here and everything follows.
   --doc-measure: 46rem;
 
+  // Body text. The site's root is 14px (layout.scss, "reduce base font size"), and asciidoctor's
+  // stylesheet pins prose to 1rem and code to 0.9rem — so the documentation was reading at 14px,
+  // with code at 12.6px: small for long text on a dark background, and not the 18px the rhythm
+  // below was tuned for, which never actually applied. In px on purpose: this is the one place
+  // that must not follow the root, and everything inside follows this instead, in em.
+  .bd-content {
+    font-size: 17px;
+
+    p,
+    li,
+    dd,
+    dt,
+    blockquote,
+    td,
+    th,
+    .admonitionblock td.content,
+    .paragraph > .title,
+    .listingblock > .title,
+    .ulist > .title,
+    .olist > .title,
+    table.tableblock > .title {
+      font-size: inherit;
+    }
+
+    code,
+    kbd,
+    samp {
+      font-size: 0.9em;
+    }
+
+    pre,
+    .listingblock pre,
+    .literalblock pre {
+      font-size: 0.85em;
+    }
+
+    // Not 0.9em of 0.85em: the block already set the size.
+    pre code {
+      font-size: 1em;
+    }
+  }
+
   .bd-content {
     h1,
     h2,
