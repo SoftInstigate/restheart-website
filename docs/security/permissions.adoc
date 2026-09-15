@@ -60,6 +60,21 @@ A permission document defines who can access what resources under which conditio
 |(Optional) Human-readable description of what the permission does.
 |===
 
+==== Your Own Fields
+
+A permission may carry fields of your own beside the ones above: the authorizer keeps the document whole and ignores what it does not know. This is how a plugin reads a setting *from the permission that let the request in*, rather than from a lookup of its own that might pick a different one:
+
+[source,java]
+----
+var permission = BaseAclPermission.of(request);        // what the authorizer attached
+
+if (permission != null && permission.getRaw() instanceof BsonDocument raw) {
+    var block = raw.get("apiKeys");                    // your field, as written
+}
+----
+
+RESTHeart Cloud uses this for the link:/docs/cloud/api-keys[API Keys] permission, whose `apiKeys` block names the roles a key may be given. Available from RESTHeart 9.9: earlier releases loaded permissions with a projection and dropped every field they did not read.
+
 ==== Basic Permission Example (JSON)
 
 [source,json]
