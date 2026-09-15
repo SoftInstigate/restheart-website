@@ -101,6 +101,7 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
         <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
         <p class="mt-2 mb-4">Clone a starter, point it at a free <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
 
+        <div class="tabs-dark">
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
             <li class="nav-item"><a class="examples__link nav-link active" data-bs-toggle="tab" href="#starter-angular" role="tab">Angular</a></li>
             <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-react" role="tab">React</a></li>
@@ -178,6 +179,7 @@ npm run dev
                     <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
+        </div>
         </div>
 
         <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@restheart-cloud/kit-react</code>, <code>@restheart-cloud/kit-ng</code> and <code>@restheart-cloud/kit-vue</code>.</p>

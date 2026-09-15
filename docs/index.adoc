@@ -33,11 +33,12 @@ Get RESTHeart running in 5 minutes.
 
 == 📚 Learning Paths
 
-Choose the path that matches your goal:
+Choose the path that matches what you are building. The first four cover what RESTHeart gives you without writing backend code; the last three are for extending and running it.
 
-=== Path 1: MongoDB API User (No Coding Required)
+[[path-mongodb-api]]
+=== Path 1: Build on MongoDB, No Backend Code
 
-*Goal:* Build applications using RESTHeart's MongoDB APIs without writing backend code.
+*Goal:* Read, write, aggregate and validate data through RESTHeart's APIs, with rules enforced by the server.
 
 *Time:* ~4 hours | *Difficulty:* Beginner
 
@@ -67,10 +68,10 @@ Choose the path that matches your goal:
 |link:/docs/mongodb-rest/aggregations[Aggregations] (20 min)
 
 |8
-|link:/docs/security/tutorial[Security Tutorial] (30 min)
+|link:/docs/mongodb-rest/constraints[Data Constraints] (20 min)
 
 |9
-|link:/docs/security/user-management[User Management] (20 min)
+|link:/docs/websocket/change-streams[Change Streams] (15 min)
 
 |10
 |link:/docs/security/permissions[Permissions] (30 min)
@@ -79,15 +80,142 @@ Choose the path that matches your goal:
 |link:/docs/deployment/configuration[Configuration] (20 min)
 |===
 
-**✓ You're now ready to deploy a production MongoDB API!**
+**✓ You can now run a production API on MongoDB.**
 
-*Next steps:* Explore link:/docs/mongodb-rest/transactions[Transactions], link:/docs/mongodb-rest/files[File Storage], link:/docs/mongodb-rest/json-schema-validation[Schema Validation]
+*Next steps:* link:/docs/mongodb-rest/transactions[Transactions], link:/docs/mongodb-rest/files[File Storage], link:/docs/mongodb-rest/json-schema-validation[Schema Validation]
 
 '''
 
-=== Path 2: Plugin Developer
+[[path-accounts]]
+=== Path 2: Users, Sign-up and Teams
 
-*Goal:* Extend RESTHeart with custom services and interceptors.
+*Goal:* Give your application sign-up, login, social sign-in, password reset, teams and invitations — with the `restheart-accounts` plugin, not with code of yours.
+
+*Time:* ~2 hours | *Difficulty:* Beginner
+
+[cols="1,4", options="header"]
+|===
+|Step |Topic
+
+|1
+|link:/docs/accounts/overview[Sign-up Management Overview] (10 min)
+
+|2
+|link:/docs/accounts/tutorial-registration-setup[Tutorial: Set Up Registration] (30 min)
+
+|3
+|link:/docs/accounts/user-registration[User Registration and Verification] (15 min)
+
+|4
+|link:/docs/accounts/password-reset[Password Reset] (10 min)
+
+|5
+|link:/docs/accounts/email-templates[Email Templates] (15 min)
+
+|6
+|link:/docs/accounts/google-oauth[Sign in with Google and GitHub] (20 min)
+
+|7
+|link:/docs/accounts/team-invitations[Teams and Invitations] (15 min)
+
+|8
+|link:/docs/accounts/multi-tenancy[Multi-tenancy] (15 min)
+
+|9
+|link:/docs/accounts/consents-management[Terms and Consents] (10 min)
+|===
+
+**✓ Your users can register, sign in and work in teams.**
+
+*Next steps:* link:/docs/security/how-clients-authenticate[How clients authenticate], link:/docs/framework/emails[Sending your own email], link:/docs/stripe/overview[Subscriptions with Stripe]
+
+'''
+
+[[path-ai]]
+=== Path 3: AI Agents and Semantic Search
+
+*Goal:* Let an AI agent use your data over MCP, and search it by meaning with vector search — the `restheart-ai` plugin.
+
+*Time:* ~2 hours | *Difficulty:* Intermediate
+
+[cols="1,4", options="header"]
+|===
+|Step |Topic
+
+|1
+|link:/docs/ai/[AI Features Overview] (10 min)
+
+|2
+|link:/docs/ai/mcp[The MCP Server] (20 min)
+
+|3
+|link:/docs/ai/mcp-tutorial[Tutorial: Publish Your Data to an Agent] (30 min)
+
+|4
+|link:/docs/ai/mcp-claude-desktop[Connect Claude Desktop] (10 min)
+
+|5
+|link:/docs/security/authentication/api-key[API Keys: a Credential for an Agent] (15 min)
+
+|6
+|link:/docs/ai/vector-search[Vector Search] (20 min)
+
+|7
+|link:/docs/ai/vector-search-tutorial[Tutorial: Semantic Search on Your Documents] (30 min)
+|===
+
+**✓ An agent answers questions on your data, and your search understands meaning.**
+
+*Next steps:* link:/docs/cloud/mcp[MCP on RESTHeart Cloud], link:/docs/cloud/api-keys[API keys for agents on Cloud], link:/docs/mongodb-rest/aggregations[Aggregations an agent can call]
+
+'''
+
+[[path-stripe]]
+=== Path 4: Subscriptions and Billing with Stripe
+
+*Goal:* Sell plans and seats, gate features by plan, and keep subscriptions in step with Stripe — the `restheart-stripe` plugin.
+
+*Time:* ~2 hours | *Difficulty:* Intermediate
+
+[cols="1,4", options="header"]
+|===
+|Step |Topic
+
+|1
+|link:/docs/stripe/overview[Stripe Integration Overview] (10 min)
+
+|2
+|link:/docs/stripe/tutorial-stripe-setup[Tutorial: Set Up Stripe] (30 min)
+
+|3
+|link:/docs/stripe/products[Products and Prices] (15 min)
+
+|4
+|link:/docs/stripe/plans-and-seats[Plans and Seats] (20 min)
+
+|5
+|link:/docs/stripe/plan-gates[Plan Gates] (15 min)
+
+|6
+|link:/docs/stripe/subscription-lifecycle[Subscription Lifecycle] (15 min)
+
+|7
+|link:/docs/stripe/webhooks[Webhooks] (15 min)
+
+|8
+|link:/docs/stripe/multi-tenancy[Multi-tenancy] (10 min)
+|===
+
+**✓ Your application charges, and knows who paid for what.**
+
+*Next steps:* link:/docs/stripe/subscription-owner-provider[Subscription Owner Provider], link:/docs/accounts/team-invitations[Teams and Invitations]
+
+'''
+
+[[path-plugins]]
+=== Path 5: Plugin Developer
+
+*Goal:* Extend RESTHeart with custom services, interceptors and providers, in Java, Kotlin, JavaScript or TypeScript.
 
 *Time:* ~3 hours | *Difficulty:* Intermediate
 
@@ -123,13 +251,14 @@ Choose the path that matches your goal:
 |link:/docs/framework/deploy[Deploying Plugins] (20 min)
 |===
 
-**✓ You can now build and deploy custom plugins!**
+**✓ You can now build and deploy custom plugins.**
 
-*Next steps:* Try link:/docs/framework/core-plugins-js[JavaScript Plugins], learn link:/docs/framework/initializers[Initializers], explore link:/docs/framework/overview[Security Plugin Development]
+*Next steps:* link:/docs/framework/javascript-plugins[JavaScript Plugins], link:/docs/framework/initializers[Initializers], link:/docs/framework/emails[Sending email from a plugin]
 
 '''
 
-=== Path 3: DevOps / Site Reliability Engineer
+[[path-devops]]
+=== Path 6: DevOps / Site Reliability Engineer
 
 *Goal:* Deploy and operate RESTHeart in production.
 
@@ -167,13 +296,14 @@ Choose the path that matches your goal:
 |link:/docs/deployment/clustering[Clustering & Load Balancing] (20 min)
 |===
 
-**✓ You're ready to run RESTHeart in production!**
+**✓ You're ready to run RESTHeart in production.**
 
-*Next steps:* Optimize with link:/docs/deployment/graalvm[GraalVM Native Image], set up link:/docs/deployment/auditing[Auditing], configure link:/docs/deployment/proxy[Reverse Proxy]
+*Next steps:* link:/docs/deployment/graalvm[GraalVM Native Image], link:/docs/deployment/auditing[Auditing], link:/docs/deployment/proxy[Reverse Proxy]
 
 '''
 
-=== Path 4: GraphQL Developer
+[[path-graphql]]
+=== Path 7: GraphQL Developer
 
 *Goal:* Build GraphQL APIs on top of MongoDB.
 
@@ -208,9 +338,9 @@ Choose the path that matches your goal:
 |link:/docs/graphql/resolvers[Resolvers] (20 min)
 |===
 
-**✓ You can now build GraphQL APIs with RESTHeart!**
+**✓ You can now build GraphQL APIs with RESTHeart.**
 
-*Next steps:* Learn link:/docs/graphql/n-plus-one[Performance Optimization], study link:/docs/graphql/complex-app-example[Advanced Example], review link:/docs/graphql/best-practices[Best Practices]
+*Next steps:* link:/docs/graphql/n-plus-one[Performance Optimization], link:/docs/graphql/complex-app-example[Advanced Example], link:/docs/graphql/best-practices[Best Practices]
 
 '''
 
