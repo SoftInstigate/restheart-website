@@ -1,5 +1,8 @@
 ---
 layout: default
+title: Community
+redirect_from:
+  - /contact
 ---
 
 <div class="h-100 jumbotron jumbotron-fluid background-black my-0 pt-3">
