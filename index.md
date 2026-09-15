@@ -24,6 +24,10 @@ excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Jav
                     </p>
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <a href="#ai-content">AI-native</a>: an MCP server on your data, vector search and RAG, and Sophia, the assistant.
+                    </p>
+                    <p class="text-break white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Built-in authentication and authorization. Declarative, zero boilerplate.
                     </p>
                     <p class="text-break white">
@@ -37,10 +41,6 @@ excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Jav
                     <p class="text-break white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         <a href="/docs/stripe/overview">Stripe payments</a>: subscriptions and one-time purchases, multi-tenant ready.
-                    </p>
-                    <p class="text-break white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f8a839" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Plus <a href="#mcp">Sophia</a>, the AI assistant: chat with the docs or vibe code via MCP.
                     </p>
                 </div>
                 <div class="hero-buttons mt-4">
@@ -96,6 +96,41 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 </section>
 
 <!-- Starter Apps for RESTHeart Cloud -->
+<section id="ai-content" class="text-center pb-2 mt-5">
+    <a id="mcp"></a>
+    <div class="container">
+        <h2 class="text-center color-primary font-weight-bold">Your Data, Ready for AI Agents</h2>
+        <p class="mt-3 mb-4">Everything your application already has — collections, aggregations, change streams, GraphQL apps — an agent can discover and call, with the permissions your app already enforces. No wrapper service, no hand-written tools. Since RESTHeart 9.9.</p>
+        <div class="row mt-4">
+            <div class="col-lg-4 mb-4 mb-lg-0 d-flex">
+                <div class="hero-terminal w-100 d-flex flex-column">
+                    <h3 class="feature-title mb-2">🤖 MCP server</h3>
+                    <p class="mb-2">Publish a collection, an aggregation or a stream with one line of metadata, and Claude, Cursor or VS Code find it, ask how to call it, and call it. An agent reads exactly what its user may read.</p>
+                    <p class="mt-auto mb-0"><a href="/docs/ai/mcp">The MCP server →</a> · <a href="/docs/ai/mcp-tutorial">Tutorial</a></p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4 mb-lg-0 d-flex">
+                <div class="hero-terminal w-100 d-flex flex-column">
+                    <h3 class="feature-title mb-2">🔎 Vector search and RAG</h3>
+                    <p class="mb-2">Chunk documents, embed them with your provider — OpenAI, Voyage AI, Ollama or MongoDB's own — and search by meaning with <code>$vectorSearch</code>, or <code>$vectorScan</code> with no Atlas Search at all. Reranking included.</p>
+                    <p class="mt-auto mb-0"><a href="/docs/ai/vector-search">Vector search →</a> · <a href="/docs/ai/vector-search-tutorial">Tutorial</a></p>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex">
+                <div class="hero-terminal w-100 d-flex flex-column">
+                    <h3 class="feature-title mb-2">💬 Sophia, the assistant</h3>
+                    <p class="mb-2">Ask about RESTHeart from the chat on every page, or connect your editor to the Sophia MCP server and let it answer, write working code and configure your backend.</p>
+{% highlight bash %}
+claude mcp add --transport http sophia-restheart \
+  https://api.bysophia.ai/mcp/restheart
+{% endhighlight %}
+                    <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">Claude Desktop, VS Code, Zed and more →</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
@@ -221,32 +256,6 @@ npm run dev
 <!-- just to make anchor link go to the right height -->
 <div id="mcp" class="pb-4"></div>
 
-<section id="mcp-content" class="text-center pb-2 mt-5">
-    <div class="container">
-        <h2 class="text-center color-primary font-weight-bold">Vibe Coding with RESTHeart</h2>
-        <p class="mt-3 mb-4">RESTHeart comes with <strong>Sophia</strong>, its AI assistant. Two ways to use it:</p>
-        <div class="row mt-4">
-            <div class="col-lg-5 offset-lg-1 mb-4 mb-lg-0 d-flex">
-                <div class="hero-terminal w-100 d-flex flex-column justify-content-center text-center">
-                    <h3 class="feature-title mb-2">💬 Just ask</h3>
-                    <p class="mb-3">Chat with Sophia in your browser and get instant answers about RESTHeart. No setup needed.</p>
-                    <p class="mb-0">Sophia is available via the chat button on every page.</p>
-                </div>
-            </div>
-            <div class="col-lg-5 d-flex">
-                <div class="hero-terminal w-100">
-                    <h3 class="feature-title mb-2">⚡ Vibe code in your editor</h3>
-                    <p class="mb-2">Connect Claude Code, Cursor or VS Code to the RESTHeart MCP server: your AI answers questions, writes working code and configures your backend.</p>
-{% highlight bash %}
-claude mcp add --transport http sophia-restheart \
-  https://api.bysophia.ai/mcp/restheart
-{% endhighlight %}
-                    <p class="mt-2 mb-0"><a href="/docs/cloud/sophia/mcp">Setup for Claude Desktop, VS Code, Zed and more →</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <div class="container mt-5">
     <h2 class="text-center color-primary font-weight-bold">Data API</h2>
