@@ -5,6 +5,8 @@ title: The Open Source Backend for MongoDB
 excerpt: RESTHeart is the open source backend for MongoDB, built on a modern Java stack with virtual threads and GraalVM native images. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed RESTHeart Cloud service. Plus Sophia, the AI assistant with a native MCP server.
 ---
 
+{% include community-bar.html %}
+
 <section id="top" class="pt-4 pb-2">
     <div class="container">
         <div class="row align-items-center">

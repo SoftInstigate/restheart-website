@@ -5,6 +5,8 @@ redirect_from:
   - /contact
 ---
 
+{% include community-bar.html %}
+
 <div class="h-100 jumbotron jumbotron-fluid background-black my-0 pt-3">
     <div class="d-flex justify-content-center align-content-end w-100 h-100 pt-5">
         <div class="row text-center">
