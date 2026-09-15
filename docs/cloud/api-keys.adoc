@@ -1,0 +1,117 @@
+---
+docs_version: 9
+title: RESTHeart Cloud — API Keys for Agents
+layout: docs-adoc
+menu: cloud
+applies_to: cloud
+---
+
+NOTE: API keys for a service's users are available from RESTHeart Cloud's 9.9 release.
+
+An AI agent connects to your service and stays connected. There is no sign-in dialog in which to renew a token, and a fifteen-minute JWT is no use to it. What it needs is a credential that lives long and can be revoked one at a time: an **API key**.
+
+The key belongs to a **user of your service** — one of the people who sign in to *your* application — and is issued by that user, for their own agent, with roles you allow. Your application asks the service for it on the user's behalf. You, the owner, decide whether this is possible at all, which roles a key may carry, and you see and revoke everything that was issued.
+
+Not to be confused with the link:/docs/cloud/tokens[personal access tokens] of your *cloud account*, which `rhc` signs in with. Those reach your services' configuration; these reach one service's data, as one of its users, and nothing else.
+
+*Navigation path:* Service → MCP Server → API keys for agents
+
+== How it works
+
+. **You turn it on** for the service and list the roles a key may carry.
+. **You grant `/keys`** in the service's ACL to the roles that may issue. The page writes the permission for you.
+. **A user issues a key** with `POST /keys`, signed in with their own credentials, naming the roles they want among those allowed — and among those they already hold.
+. **The agent sends the key** as `Authorization: Bearer rhak_…`, and reads what those roles may read.
+. **Anyone revokes**: the user their own, you any.
+
+Two things have to agree before a key can be issued, the switch and the permission. Each on its own does nothing, and the error says which one is missing.
+
+== Turning it on
+
+On the **MCP Server** page, under **API keys for agents**:
+
+[cols="1,3"]
+|===
+| Setting | What it decides
+
+| Users may issue API keys
+| The switch. Off, `POST /keys` answers `403` whatever the ACL says.
+
+| Roles a key may carry
+| The allowlist. A user picks among these. A user who holds none of them cannot issue a key that does anything.
+
+| Longest a key may live
+| In days, up to ten years. A user may ask for less, never for more.
+
+| Keys per user, at most
+| A user at the limit has to revoke one before issuing another.
+|===
+
+Then **Write it to the ACL**. This adds a permission named `usersCanIssueApiKeys` granting `path-prefix('/keys')` to the roles in the allowlist. It is an ordinary permission: edit or replace it on the link:/docs/cloud/managing-permissions[Permissions] page if the roles that may *issue* differ from the roles a key may *carry*. Like any ACL change it applies within twenty seconds.
+
+== Issuing a key
+
+Your application calls the service, with the user's own credentials:
+
+[source,bash]
+----
+curl -u alice@example.com:her-password \
+  -X POST https://<your-service>.restheart.com/keys \
+  -H 'Content-Type: application/json' \
+  -d '{ "name": "my agent", "roles": ["reader"], "expiresIn": 90 }'
+----
+
+[source,json]
+----
+{
+  "_id": "68c7…",
+  "name": "my agent",
+  "roles": ["reader"],
+  "expiresAt": { "$date": 1765555200000 },
+  "key": "rhak_Kx7Rz9…"
+}
+----
+
+**The key is shown once.** Only its SHA-256 is stored, so it cannot be recovered afterwards, not by you, not by the user, not through any endpoint. An application that loses one issues another.
+
+`roles` is the part to understand. A key's roles must lie within **both** the allowlist you configured **and** the roles the user already holds. A `reader` cannot issue an `admin` key even if `admin` is allowed; nobody can issue a key with a role the owner never allowed. A key is never more than its user and never more than your list. Left out, `roles` is empty, and an empty key can do nothing.
+
+There is no field in which to name another user. The principal is the one who signed in, always; anything else in the body is not read.
+
+`expiresIn` is in days, defaulting to 90 or the maximum you set, whichever is lower.
+
+== Using a key
+
+[source,bash]
+----
+curl https://<your-service>.restheart.com/things \
+  -H 'Authorization: Bearer rhak_Kx7Rz9…'
+----
+
+The request runs as the user who issued the key, with the key's roles and no others. The ACL applies as it does to a password sign-in — `readFilter`, `projectResponse`, everything. An MCP client uses the same header on `/mcp`.
+
+A key works on the service it was issued on and nowhere else, not even on another of your services that happens to know the same role names.
+
+== Listing and revoking
+
+A user sees their own keys, without the key or its hash:
+
+[source,bash]
+----
+curl -u alice@example.com:her-password https://<your-service>.restheart.com/keys
+curl -u alice@example.com:her-password -X DELETE https://<your-service>.restheart.com/keys/68c7…
+----
+
+`lastUsedAt` is absent until the key is first used. That absence is the useful part: it is how you tell the key somebody forgot about from the one in use.
+
+You see every key issued on the service on the **MCP Server** page, with who holds it and when it was last used, and revoke any with the bin icon. Revocation takes effect within twenty seconds.
+
+== Trying the catalogue with a key
+
+The **What an agent sees** panel on the MCP Server page accepts an API key. Use it. The catalogue an agent gets is filtered by what its credential may read, so a test made with a user's password tells you what the *user* sees, not necessarily what their *key* does: the key carries only the roles it was issued with.
+
+== Related Pages
+
+* link:/docs/cloud/mcp[MCP Server] — where an agent uses the key
+* link:/docs/cloud/tokens[Tokens] — the other kind of credential, for your cloud account and `rhc`
+* link:/docs/cloud/managing-permissions[Managing Permissions (ACL)] — the permission that lets a role issue, and what a key's roles may read
