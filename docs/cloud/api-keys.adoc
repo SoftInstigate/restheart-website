@@ -51,6 +51,7 @@ Two rules follow from how RESTHeart evaluates permissions:
 
 * **One permission decides.** When several match — a user who is both `admin` and `user` — the one with the highest priority is the one that applies, and only its `apiKeys.roles` are available. Give the wider grant the higher priority.
 * **A permission without the block grants nothing.** Its roles reach `/keys` and get a `403` that says so. Reaching the endpoint and being allowed to issue are two different things.
+* **A malformed block is refused where it is written.** `roles` must be a non-empty array of distinct role names, the two limits whole numbers within their bounds, and no other field is accepted. A typo — `role` for `roles` — would otherwise be a permission that reaches `/keys` and grants nothing, found out only by a refused user; so the service answers the write with a `400` that names the field, whoever writes it: the console, `rhc`, `curl`.
 
 The **API Keys** page lists the permissions on `/keys` with the key roles each one grants, lets you edit them, and adds a new one from three fields: the role that may issue, the roles a key may carry, and, optionally, its limits. They are ordinary permissions, also visible on the link:/docs/cloud/managing-permissions[Permissions] page, and like any ACL change they apply within twenty seconds.
 
