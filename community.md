@@ -5,13 +5,11 @@ redirect_from:
   - /contact
 ---
 
-{% include community-bar.html %}
-
 <div class="h-100 jumbotron jumbotron-fluid background-black my-0 pt-3">
     <div class="d-flex justify-content-center align-content-end w-100 h-100 pt-5">
         <div class="row text-center">
         <div class="col-12 my-2">
-                <a class="btn-o-white btn btn-lg" title="Chat" href="https://discord.gg/tdpWwC6ng2" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i><strong>Join us on Discord</strong></a>
+                <a class="btn-o-white btn btn-lg" title="Chat" href="https://discord.gg/tdpWwC6ng2" target="blank"> <i style="font-size:18px" class="icon-chat-alt"></i><strong>Join our community on Discord</strong></a>
             </div>
             <div class="col-12 my-2">
                 <a class="btn-o-white btn btn-lg" title="Issues" href="https://github.com/SoftInstigate/restheart/issues/new" target="blank"> <i style="font-size:18px" class="icon-code"></i>Open an issue on github</a>
