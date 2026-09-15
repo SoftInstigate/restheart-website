@@ -18,13 +18,13 @@ Not to be confused with the link:/docs/cloud/tokens[personal access tokens] of y
 
 == How it works
 
-. **You turn it on** for the service, with default limits.
+. **You install the API Keys plugin** on the service, as you would any other, and set its default limits.
 . **You write a permission on `/keys`** for each role that may issue, naming in it the roles a key may be given. The API Keys page does this for you.
 . **A user issues a key** with `POST /keys`, signed in with their own credentials, naming the roles they want among those their permission allows.
 . **The client sends the key** as `Authorization: Bearer rhak_…`, and does what those roles may do.
 . **Anyone revokes**: the user their own, you any.
 
-Two things have to agree before a key can be issued, the switch and a permission with an `apiKeys` block. Each on its own does nothing, and the error says which one is missing.
+Two things have to agree before a key can be issued, the plugin being enabled and a permission with an `apiKeys` block. Each on its own does nothing, and the error says which one is missing.
 
 == Who may issue which keys
 
@@ -57,14 +57,13 @@ The **API Keys** page lists the permissions on `/keys` with the key roles each o
 
 == Turning it on
 
-On the **API Keys** page:
+API keys are a plugin, with the lifecycle every plugin has: **Install**, **Enable**, **Disable**, **Uninstall**, and a badge that says where it stands. The **API Keys** page opens with it. Disabled or uninstalled, `POST /keys` answers `403` whatever the ACL says, and no key authenticates; nothing is deleted, and installing again finds the keys, the permissions and the limits as they were. It is free on every tier.
+
+Below the plugin, the default limits:
 
 [cols="1,3"]
 |===
 | Setting | What it decides
-
-| Users may issue API keys
-| The switch. Off, `POST /keys` answers `403` whatever the ACL says.
 
 | Longest a key may live
 | The default, in days, up to ten years. A permission may set a lower one for its roles. A user may ask for less, never for more.
