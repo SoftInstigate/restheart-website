@@ -1895,18 +1895,22 @@ div.editions-matrix {
     justify-content: flex-start;
   }
 
-  /* Centred only where the hero is: on the left-aligned desktop hero it sits with the rest. */
-  .hero-checklist {
-    margin-left: 0;
-  }
 }
 
 /* Each line is icon + text, side by side. Inline, on the centred mobile hero, the icon landed
    wherever the centring put the first word and the wrapped lines ran back under it. */
 .hero-checklist {
   max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+/* Centred only where the hero is. Below 992px .hero-copy centres its text, so the block goes to
+   the middle too; on the left-aligned desktop hero it sits with the rest. After the base rule,
+   not before: the two have the same specificity and the later one wins. */
+@media (max-width: 991.98px) {
+  .hero-checklist {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .hero-checklist p {
