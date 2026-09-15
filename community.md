@@ -35,7 +35,7 @@ redirect_from:
                     <p class="mt-auto mb-0">
                         <a href="https://github.com/SoftInstigate/restheart" target="_blank" rel="noopener">SoftInstigate/restheart →</a>
                         <span class="mx-2" style="opacity: 0.5;">·</span>
-                        <a href="https://github.com/SoftInstigate/restheart/issues/new" target="_blank" rel="noopener">Open an issue</a>
+                        <a href="https://github.com/SoftInstigate/restheart/issues" target="_blank" rel="noopener">Open an issue</a>
                     </p>
                 </div>
             </div>
@@ -60,7 +60,7 @@ redirect_from:
                 <div class="hero-terminal w-100 d-flex flex-column">
                     <h3 class="feature-title text-left mb-2">📰 The blog</h3>
                     <p class="mb-3">The longer stories: what a release changes, how a feature was built, and what it is for.</p>
-                    <p class="mt-auto mb-0"><a href="/blog">Read the blog →</a></p>
+                    <p class="mt-auto mb-0"><a href="https://cloud.restheart.com/blog">Read the blog →</a></p>
                 </div>
             </div>
         </div>
