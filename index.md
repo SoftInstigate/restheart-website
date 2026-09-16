@@ -109,7 +109,7 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
                 </div>
             </div>
         </div>
-        <p class="mt-4 mb-0" style="opacity: 0.8; font-size: 0.95rem;">Building with it? Sophia, the documentation assistant, is the chat button on every page — or <a href="/docs/cloud/sophia/mcp">in your editor</a>.</p>
+        <p class="mt-4 mb-0" style="opacity: 0.8; font-size: 0.95rem;">Building with it? Sophia, the documentation assistant, is the chat button on every page — or <a href="/docs/sophia/mcp">in your editor</a>.</p>
     </div>
 </section>
 

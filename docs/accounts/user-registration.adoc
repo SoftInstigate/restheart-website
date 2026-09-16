@@ -121,7 +121,7 @@ When no `jsonSchema` metadata is configured on the users collection, fields of t
 
 When a `jsonSchema` _is_ configured, the remaining body properties are carried into the user document as-is before validation. The schema becomes the contract: `additionalProperties: false` rejects extensions, `required: [...]` mandates them. Service-managed fields (`_id`, `password`, `roles`, `profile.name`, `profile.surname`, `emailVerificationToken`, `emailVerificationCreatedAt`) are never overwritten by the body.
 
-Application-level fields such as `consents` should be declared optional in the schema — their absence is enforced by guard rules, not by the schema. The schema validates the _format_ when the field is present. See link:/docs/cloud/guards#_example_gating_on_consents[Gating on Consents] for the full pattern.
+Application-level fields such as `consents` should be declared optional in the schema — their absence is enforced by guard rules, not by the schema. The schema validates the _format_ when the field is present. See link:https://cloud.restheart.com/docs/guards#_example_gating_on_consents[Gating on Consents] for the full pattern.
 
 Violation messages are returned as-is, in the schema's vocabulary. A body that omits `firstName` produces `#/profile/name: required key [name] not found`, not a message mentioning `firstName`.
 

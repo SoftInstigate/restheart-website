@@ -1,8 +1,8 @@
 ---
 docs_version: 9
-permalink: "/docs/reference/example-webapps"
+permalink: "/docs/cloud/examples"
 layout: redirect
 redirectUrl: "https://cloud.restheart.com/docs/full-stack-example"
 sitemap: false
-applies_to: both
+applies_to: cloud
 ---
