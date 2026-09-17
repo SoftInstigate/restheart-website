@@ -412,6 +412,70 @@ http -f POST [RESTHEART-URL]/token \
 }
 ----
 
+[[deciding-which-token-the-flow-issues]]
+==== Deciding which token the flow issues
+
+NOTE: Available from RESTHeart v9.9.0.
+
+By itself the flow has one outcome: `/token` mints the JWT of the account that signed in, with every role that account holds, renewable through `grant_type=refresh_token` without end. A client that signs the user in through the browser — an MCP client, say — therefore runs with everything the user can do, indefinitely, and there is nothing to revoke.
+
+A deployment that has narrower, revocable credentials of its own — API keys, scoped tokens — can hand one of those out instead, and let the user choose something about it on the sign-in page before it exists: which role it carries, how long it lives. RESTHeart does not know what those credentials are. It knows the three moments at which to ask an `OAuthTokenIssuer`, and a deployment supplies one as a link:/docs/framework/providers[Provider]:
+
+[source,java]
+----
+@RegisterPlugin(name = "myTokenIssuer", description = "...")
+public class MyTokenIssuer implements Provider<OAuthTokenIssuer> {
+    @Override
+    public OAuthTokenIssuer get(PluginRecord<?> caller) {
+        return new OAuthTokenIssuer() {
+            // 1. what the page may offer this account, once its credentials are verified
+            public Optional<Offer> offer(Account account, Request<?> request) throws Refusal { ... }
+
+            // 2. validate the choice; what comes back is sealed in the authorization code
+            public Map<String, Object> claims(Account account, Request<?> request, Map<String, String> choice) throws Refusal { ... }
+
+            // 3. mint the token from the sealed claims, at /token
+            public IssuedToken issue(Map<String, Object> claims, Account account, Request<?> request) throws Refusal { ... }
+        };
+    }
+}
+----
+
+**Registering one is the switch.** With no issuer registered, the page, `/authorize` and `/token` behave exactly as described above. The OAuth services find the issuer by the type it provides, so no name has to be agreed; one is active per instance.
+
+===== The choice step
+
+The sign-in page RESTHeart serves has a second step, shown only when the issuer offers something:
+
+. the person enters username and password; the page asks `GET /authorize/offer` with them, as `Basic` credentials and the same query string it received;
+. `204`: nothing to choose, the page submits the credentials at once. `200`: an offer, rendered as a second step — a heading, a message, and the choices, each a select, a number or a text field. `403`: a refusal, shown and stopped at: this account obtains no token here. `401`: wrong password, so this call is also how the page checks it;
+. the person chooses and the page posts to `/authorize` as in Step 2, credentials in the form body and the choices in the query string, one `choice.<name>` parameter per choice.
+
+A client that knows what it wants says so with the OAuth `scope` parameter, one `<name>:<value>` entry per choice — `scope=role:agent days:30`. The page uses it to preselect, and `/authorize` applies it for any choice the page did not send. The issuer receives one map either way and validates it: nothing the page or the client sent is trusted.
+
+A custom `login-url` follows the same contract: call `GET /authorize/offer` to learn what to render, send `choice.<name>` in the query string of the `POST`. A page that sends no choice gets whatever `scope` asked for, or the issuer's defaults, or a refusal if the issuer needed an answer.
+
+===== What the code carries
+
+What `claims()` returns is sealed in the authorization code under the claim `ti`, next to the PKCE challenge and the account's own claims. The code is signed, not encrypted, and travels in the redirect URL — so an issuer never puts a secret there. From then on that code is the issuer's: `/token` asks `issue()` for the token and **never falls back to the JWT**, not even if no issuer is registered when the code is presented — a sealed code means "not the JWT", and answering it with one would hand out exactly the credential the issuer was there to replace.
+
+===== What `/token` answers
+
+The issuer's token, as it gave it:
+
+[source,json]
+----
+{
+  "access_token": "rhak_…",
+  "token_type": "Bearer",
+  "expires_in": 7776000
+}
+----
+
+`refresh_token` only if the issuer supplied one. A token that is not a JWT has nothing to renew through `grant_type=refresh_token`, which answers `invalid_grant`: when it expires, the client signs in again, and that is the intended lifecycle of a credential the user chose a duration for.
+
+A refusal from `claims()` goes back to the sign-in page with `error` and `error_description` when the credentials came from its form, and to the client's `redirect_uri` as an OAuth error otherwise — the same two routes wrong credentials take. A refusal from `issue()` is a token error, `400` with `error` and `error_description`.
+
 ==== Configuration
 
 All three OAuth endpoints are **disabled by default** and must be explicitly enabled.
