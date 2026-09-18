@@ -511,13 +511,17 @@ sequenceDiagram
 
 *Flow:*
 
-1. Frontend builds authorize URL with optional `pendingInviteToken`, `returnUrl`, `consentsAccepted`.
+1. Frontend builds authorize URL with optional `pendingInviteToken`, `consentsAccepted`, `returnTo`.
 2. Backend stores CSRF state token, redirects to provider.
 3. Provider redirects back with authorization code.
 4. Backend exchanges code for user profile, finds or creates user.
 5. If user is `$unauthenticated` (new invited user): activate via `MembershipProvider.activateViaOAuth()`.
 6. If user is NOT `$unauthenticated` and `pendingInviteToken` is present (existing invited user): accept invitation via `auth_invitations`, call `addMember()`.
-7. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment.
+7. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` — or to `returnTo` when the flow carried one — with the token also appended as a URL fragment.
+
+`returnTo` is for a sign-in that starts somewhere other than the tenant's own app. The OAuth authorization page RESTHeart serves uses it: its "continue with ..." buttons leave for `/auth/oauth/authorize/{provider}?returnTo=<this page, with the OAuth parameters untouched>`, and the callback brings the browser back there with the token in the fragment, where the page completes the authorization code flow (see link:/docs/security/oauth#_step_1_authorization_request[OAuth 2.0 / 2.1]).
+
+CAUTION: `returnTo` must be a path on this host. An absolute URL is refused, and so is `//elsewhere`, which a browser reads as another host. The check is made when the flow starts, not when it ends: the value decides where a freshly issued token is delivered, so a redirect this service can be talked into would hand that token to whoever asked.
 
 NOTE: Since RESTHeart 9.5, `OAuthCallback` hands the token back two ways on the same redirect: the `rh_auth` HttpOnly cookie (unchanged, for same-site frontends) **and** a `#access_token=...` URL fragment (for frontends using in-memory Bearer-token session handling, which can't rely on a cross-origin cookie — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]). The frontend reads `location.hash` on landing and clears it via `history.replaceState`.
 

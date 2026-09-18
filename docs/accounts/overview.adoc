@@ -64,7 +64,7 @@ flowchart LR
 | `POST`  | `/auth/switch-team`          | authenticated | Switch active team; reissues JWT cookie †
 | `PATCH` | `/auth/profile`              | authenticated | Self-service update of the caller's own profile (`firstName`, `lastName`)
 | `PATCH` | `/auth/change-password`      | authenticated | In-session password change (current password → new password); also lets OAuth-only accounts set their first password, with no current one to confirm
-| `GET`   | `/auth/oauth/authorize/{provider}` | public        | Redirect browser to the OAuth provider's consent screen
+| `GET`   | `/auth/oauth/authorize/{provider}` | public        | Redirect browser to the OAuth provider's consent screen. Optional query parameters, all carried through the flow in the state token: `pendingInviteToken`, `consentsAccepted`, and `returnTo` — where the callback should land instead of `frontendSuccessUrl`, refused unless it is a path on this host
 | `GET`   | `/auth/oauth/callback/{provider}`  | public        | OAuth callback: exchange code, upsert user, set JWT cookie
 |===
 

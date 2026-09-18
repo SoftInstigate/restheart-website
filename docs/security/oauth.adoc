@@ -57,6 +57,10 @@ In all examples below, replace `[RESTHEART-URL]` with your RESTHeart server URL 
 | **no**
 | Completes the Authorization Code flow — issues the authorization code after successful login.
 
+| `GET /authorize/providers`
+| **no**
+| The social providers this deployment can sign a person in with, for the sign-in page to offer.
+
 | `GET /.well-known/oauth-authorization-server`
 | **no**
 | Authorization Server Metadata (RFC 8414) — for automatic client discovery.
@@ -347,6 +351,19 @@ RESTHeart responds with `302` to the configured `login-url`, forwarding all OAut
 
 RESTHeart serves a sign-in page of its own at `/oauth/login`, and that is the default: enable `oauthAuthorizationService` and the flow works with no page to build. It posts the credentials as described in Step 2 and shows which application is asking, by the host it will return the user to. Set `login-url` to replace it with your own.
 
+Where social sign-in is configured, the page also offers it. It asks `GET /authorize/providers` — unauthenticated, since it is asked before anyone has signed in — and renders a button per provider it names:
+
+[source,json]
+----
+{ "providers": ["google"] }
+----
+
+The answer is per request, because providers are configured per tenant, and it is empty where none is: the page is then exactly the password form it was. The list comes from whatever implements `OAuthProviderRegistry` on the instance, found by type; with no such module there is nothing to offer.
+
+Pressing a button leaves for `/auth/oauth/authorize/<provider>`, carrying `returnTo` set to this page with the OAuth parameters untouched. The provider's callback signs the person in — creating the account on a first sign-in, as it does anywhere else — and sends the browser back to `returnTo` with the token in the URL fragment. The page reads it, erases it from the address bar, and completes the flow exactly as a password would: the same `/authorize/offer` call, the same submission, with the token in place of the credentials.
+
+`returnTo` is refused unless it is a path on this host: not an absolute URL, and not `//elsewhere`, which a browser reads as another host. The value decides where a freshly issued token is delivered, so it is checked when the flow starts rather than sanitised when it ends.
+
 The default is a relative path on purpose — the browser resolves it against the origin it is already on, which keeps it right behind a TLS-terminating proxy where an absolute URL built from the `Host` header would come out as `http://`.
 
 ==== Step 2: User authenticates
@@ -354,7 +371,7 @@ The default is a relative path on purpose — the browser resolves it against th
 The frontend presents the login form and POSTs the credentials to `POST /authorize`.
 The OAuth parameters are forwarded as query string (exactly as received from the `GET /authorize` redirect).
 
-Two credential formats are supported:
+Three credential formats are supported:
 
 **Option A — form body** (recommended for browser login pages):
 
@@ -374,7 +391,9 @@ code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&state=random-state-v
 On invalid credentials RESTHeart redirects back to `login-url?error=invalid_credentials&<original_query_params>`
 so the login page can show an error without losing the OAuth context.
 
-**Option B — HTTP Basic Auth** (for API clients / programmatic use):
+**Option B — a bearer token in the form body**, for a person the sign-in page just signed in through a social provider: RESTHeart reads `access_token` from the same form-encoded body and authenticates the request with it. Completing the flow has to be a browser navigation, because the answer is a `302` the browser must follow, and a navigation carries no headers — so the token travels as a field.
+
+**Option C — HTTP Basic Auth** (for API clients / programmatic use):
 
 [source,bash]
 ----
@@ -447,9 +466,9 @@ public class MyTokenIssuer implements Provider<OAuthTokenIssuer> {
 
 The sign-in page RESTHeart serves has a second step, shown only when the issuer offers something:
 
-. the person enters username and password; the page asks `GET /authorize/offer` with them, as `Basic` credentials and the same query string it received;
+. the person enters username and password, or signs in with a social provider and comes back with a token; the page asks `GET /authorize/offer` with whichever it has, as `Basic` credentials or a `Bearer` token, and the same query string it received;
 . `204`: nothing to choose, the page submits the credentials at once. `200`: an offer, rendered as a second step — a heading, a message, and the choices, each a select, a number or a text field. `403`: a refusal, shown and stopped at: this account obtains no token here. `401`: wrong password, so this call is also how the page checks it;
-. the person chooses and the page posts to `/authorize` as in Step 2, credentials in the form body and the choices in the query string, one `choice.<name>` parameter per choice.
+. the person chooses and the page posts to `/authorize` as in Step 2, the identity in the form body — `username`/`password`, or `access_token` — and the choices in the query string, one `choice.<name>` parameter per choice.
 
 A client that knows what it wants says so with the OAuth `scope` parameter, one `<name>:<value>` entry per choice — `scope=role:agent days:30`. The page uses it to preselect, and `/authorize` applies it for any choice the page did not send. The issuer receives one map either way and validates it: nothing the page or the client sent is trusted.
 
