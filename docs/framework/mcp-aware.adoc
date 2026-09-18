@@ -113,7 +113,7 @@ For a schema whose top level is a `oneOf`, each alternative is reported separate
   "body": { "...": "parsed, when the API returned JSON" } }
 ----
 
-A non-2xx status is a result, not a tool error: the agent reads `body` for the reason, exactly as a REST client would. Only a failure to execute at all — unknown resource or action, invalid arguments, a stream that has no single response — is reported as a tool error. Streams (SSE, WebSocket) are not executable this way: the agent subscribes with `resources/subscribe`, or asks `how_to_call` for a descriptor to use from its own code.
+A non-2xx status is a result, not a tool error: the agent reads `body` for the reason, exactly as a REST client would. Only a failure to execute at all — unknown resource or action, invalid arguments, a stream that has no single response — is reported as a tool error. Streams (SSE, WebSocket) are not executable this way, and a stream is not itself subscribable: an agent follows changes by subscribing to the resource the stream watches (a `subscribable` one, see below) with `resources/subscribe`, or asks `how_to_call` for the stream's descriptor to use from its own code.
 
 The request runs as the MCP session's own account, whatever authenticated it — a password, a JWT, a Personal Access Token: with a PAT the session, and every `call_api` it makes, carries the roles on the key, not the wider roles of the user it belongs to. Nothing is minted for the agent, so nothing can leak and nothing needs revoking.
 
@@ -123,9 +123,9 @@ You almost never should. `McpAware.execute(ctx, resource, action, args)` returns
 
 Override it only when your plugin *is* the whole semantics of the operation — no interceptor and no data-level ACL would apply to it on the REST path. A direct implementation is never a cheap optimization: it has to redo by hand whatever the chain would have done, and keep doing so as the chain evolves. A plugin that owns some actions and not others answers for its own and returns empty for the rest.
 
-=== Letting agents read your data directly: `readResource()`
+=== Letting agents read your data directly: `readable` actions
 
-For a plugin whose data agents should be able to read directly (loaded straight into context, or picked from a host UI's resource list), implement the `resources` primitive's read side too. Mark a safe, idempotent, `GET`-shaped action `readable`, and override `readResource()` to actually produce the data, in-process — no `HttpServerExchange`, no self-directed HTTP call:
+For a plugin whose data agents should be able to read directly (loaded straight into context, or picked from a host UI's resource list), give the `resources` primitive a read side too: mark a safe, idempotent, `GET`-shaped action `readable`. That is all. `resources/read` runs it through `execute()` — by default through RESTHeart's handler chain, in-process, as the session — and returns what your plugin's own `handle()` answered, as the resource's content:
 
 [source,java]
 ----
@@ -134,13 +134,9 @@ resources.add(McpResource.builder()
     .kind("my-kind")
     .action("get", a -> a.method("GET").readable(true))
     .build());
-
-@Override
-public Optional<McpReadResult> readResource(McpContext ctx, String resource, String action, Map<String, Object> args) {
-    // talk to your own engine directly, exactly as your handle() method already does
-    return Optional.of(new McpReadResult(myData));
-}
 ----
+
+A read is the `GET` it stands for: a `2xx` body is the content, a `404` is `-32002` (resource not found), a `400` is `-32602` (invalid params), and a `403` from the ACL is `-32003` — a code RESTHeart adds for "this session may not read it", so an agent does not mistake a refusal for a missing resource. Nothing is replicated for reads: the ACL's own filters and projections, and every interceptor, apply because the request is the same one REST would see.
 
 Declare the resource `subscribable` as well if changes to it can be watched, and clients can call `resources/subscribe` on it; the framework refuses a subscription to any resource that does not declare it, rather than accepting one that would never fire.
 

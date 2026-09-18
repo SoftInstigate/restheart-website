@@ -104,7 +104,9 @@ curl -X PATCH http://localhost:8080/mydb/inventory \
   }'
 ----
 
-A change stream is a live subscription, not a request with one response, so `call_api` does not execute it: an agent subscribes with `resources/subscribe` and receives `notifications/resources/updated` as events arrive. For code that opens the stream itself, `how_to_call` returns a `wss://` descriptor for the `websocket` transport and an `https://` one with `Accept: text/event-stream` for `sse`.
+IMPORTANT: An exposed change stream is **neither executable nor subscribable by the agent**. MCP has no streaming primitive: a tool answers once, so `call_api` refuses a stream, and `resources/subscribe` accepts collections and aggregations, not streams. What the agent gets from `list_apis`/`how_to_call` is the stream's *descriptor* — a `wss://` URL for the `websocket` transport, or an `https://` one with `Accept: text/event-stream` for `sse` — to hand to the user for an **external client**: `websocat wss://host/mydb/inventory/_streams/lowStock`, a `curl -N` on the SSE URL, or a script in the browser. The agent itself never opens it.
+
+To *follow changes* from inside MCP, subscribe to the **collection** the stream watches (or to an aggregation over it) with `resources/subscribe`: the agent receives `notifications/resources/updated` whenever the collection changes, and re-reads.
 
 === 4. Expose a GraphQL app
 
@@ -162,7 +164,7 @@ As with the real REST endpoint, a flat query parameter like `?status=A` binds th
 
 ==== Not (yet) readable this way
 
-Change streams (they're a live subscription, not a request/response read — use `resources/subscribe`), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`call_api`-only for now.
+Change streams (they're a live subscription, not a request/response read — subscribe to the collection they watch instead), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`call_api`-only for now.
 
 === Securing it
 
