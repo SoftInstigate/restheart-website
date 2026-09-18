@@ -203,6 +203,8 @@ Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` do
 
 `list_apis`, `resources/list`, `resources/templates/list`, `call_api` and `how_to_call` are all filtered by the caller's ACL: a resource whose read would be refused is not listed, not described, not callable and not composable. Two callers hitting the same server get different catalogs.
 
+The filter goes one level deeper: `list_apis` describes a resource with only the actions that caller could invoke, each probed with its own method and path. A ledger a role may only append to is described with `create` and the reads, and not with `update` or `delete` — advertising them would read as an offer and cost the agent a turn to find out otherwise. An action whose path carries a variable (`/{id}`) is probed on the literal part before it, which is exact against the path-prefix rules ACLs are usually written with and generous against a rule naming one document: an action wrongly shown costs a `403` the caller can read, one wrongly hidden costs them an API they were entitled to.
+
 Filtering is in addition to enforcement, not instead of it — a read is still authorized when it happens.
 
 === Subscribing to changes

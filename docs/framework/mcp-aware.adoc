@@ -93,14 +93,17 @@ Whether executed by `call_api` or described by `how_to_call`, a call is the same
 
 Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
 
-If the action has a `body_schema` and the body does not satisfy it, both tools refuse before anything runs and report which property failed and why, by JSON pointer:
+Declared params are validated before anything runs: a missing required one, or one of the wrong type, is refused with the property named. **The body is not**, and deliberately so. A `body_schema` describes the document the resource *stores*, and what a caller sends is not that document: a deployment fills fields in on the way — RESTHeart's own `mongo.mergeRequest` stamps the author of a write and the time of it — so a schema that rightly requires them would reject a request that is right to omit them. That is a refusal the REST endpoint does not make, because its own checker runs after those fields are set.
 
-[source,text]
+The body is the service's to judge, and it judges it. `call_api` carries the answer back with its status and its message, the same one the REST call would give:
+
+[source,json]
 ----
-#/give/qty: 9 is not less or equal to 3
+{ "status": 400,
+  "body": { "message": "#/give/qty: 9 is not less or equal to 3" } }
 ----
 
-For a schema whose top level is a `oneOf`, each alternative is reported separately — `alternative 'offer' does not match: ...` — so it is clear which shape you were aiming at rather than being handed the union of every alternative's requirements.
+Publish `body_schema` all the same: it is how an agent learns the shape it should aim at, and the closer it is the fewer round trips it costs.
 
 === Executing an action: `call_api`
 
