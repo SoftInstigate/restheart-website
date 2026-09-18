@@ -24,7 +24,7 @@ See the xref:/docs/ai/mcp.adoc[MCP Server overview] for the full feature referen
 === What You'll Learn
 
 * Opt a collection into MCP with a metadata `PATCH`
-* Call `list_apis`/`how_to_call`/`get_token` directly over JSON-RPC to see exactly what an agent sees
+* Call `list_apis`/`call_api`/`how_to_call` directly over JSON-RPC to see exactly what an agent sees
 * Connect a real MCP client (Claude Code) and let it discover the resource on its own
 * Add an aggregation with a `$var` parameter and expose it the same way
 * Subscribe to a collection and get told when it changes
@@ -111,55 +111,70 @@ The response is one `text/event-stream` frame wrapping the actual JSON-RPC resul
 
 NOTE: A tool call is answered as an event stream; `resources/list`, `resources/read` and the other single-answer methods come back as plain `application/json`. That is why the `Accept` header above lists both — a client has to handle either.
 
-Now ask how to query it for low-quantity items:
+Now query it for low-quantity items — `call_api` runs the action on the server, as your session, and returns what the API answered:
 
 [source,bash]
 ----
 curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
-  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"how_to_call","arguments":{"resource":"[RESTHEART-URL]/inventory","action":"query","args":{"filter":{"qty":{"$lt":30}}}}}}'
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"call_api","arguments":{"resource":"[RESTHEART-URL]/inventory","action":"query","args":{"filter":{"qty":{"$lt":30}}}}}}'
 ----
 
-`how_to_call` composes the descriptor — it does not execute it:
+[source,json]
+----
+{ "status": 200,
+  "headers": { "Content-Type": "application/json", "X-Powered-By": "restheart.org" },
+  "body": [ { "_id": { "$oid": "66f1..." }, "item": "stapler", "qty": 12 } ] }
+----
+
+These are the real, live-queried documents, read through RESTHeart's whole request pipeline — the ACL, every interceptor — with no token and no request for you to send. (For a plain read like this, `resources/read` is the shorter channel; `call_api` is the one that also covers writes.) Try one:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
+  -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"call_api","arguments":{"resource":"[RESTHEART-URL]/inventory","action":"create","args":{"body":{"item":"tape","qty":3}}}}}'
+----
+
+[source,json]
+----
+{ "status": 201,
+  "headers": { "Location": "http://localhost:8080/inventory/66f1...", "Content-Type": "application/json" } }
+----
+
+A non-2xx status comes back the same way — `409` for a document whose `_id` already exists, `403` for something your session's roles may not do — with the API's own body, for the agent to read and decide. Nothing is a tool error except a call that cannot run at all: unknown resource, unknown action, arguments that fail the action's `params` or `body_schema`.
+
+To see the request behind an action — for code you are writing yourself, not for the agent to run — ask `how_to_call` with the same arguments:
+
+[source,bash]
+----
+curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
+  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
+  -d '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"how_to_call","arguments":{"resource":"[RESTHEART-URL]/inventory","action":"query","args":{"filter":{"qty":{"$lt":30}}}}}}'
+----
 
 [source,json]
 ----
 { "transport": "http", "method": "GET",
   "url": "http://localhost:8080/inventory?filter=%7B%22qty%22%3A%7B%22%24lt%22%3A30%7D%7D",
-  "headers": { "Authorization": "Bearer <token_from_get_token>" } }
+  "headers": { "Authorization": "Bearer <your-credential>" } }
 ----
 
-The descriptor carries no credential, only that placeholder — which is what makes it stable and worth keeping.
+It composes and never executes, and it carries no credential — the placeholder is where the user's own API key or token goes in the code that will make this request.
 
-When the action has something to say about itself, it says it here too, as `notes`. The case that matters most is a write to a collection that declares xref:/docs/mongodb-rest/constraints[constraints]: every write then runs in a transaction and a `409` can mean three different things, and the descriptor for `create`, `update` and `delete` spells them out — `"retryable": true` is a write conflict to send again unchanged; `"constraint": "<name>"` is a violated rule, with `message` and `violations`, that no retry will change; neither is a document whose `_id` already exists. An agent reads that at the moment it is about to send, which is where it is needed.
+When the action has something to say about itself, both tools say it. The case that matters most is a write to a collection that declares xref:/docs/mongodb-rest/constraints[constraints]: every write then runs in a transaction and a `409` can mean three different things — `"retryable": true` is a write conflict to send again unchanged; `"constraint": "<name>"` is a violated rule, with `message` and `violations`, that no retry will change; neither is a document whose `_id` already exists. `list_apis` spells it out in the action's description, and `how_to_call` repeats it as `notes` in the descriptor:
 
 [source,json]
 ----
 { "transport": "http", "method": "POST",
   "url": "http://localhost:8080/market_events",
-  "headers": { "Authorization": "Bearer <token_from_get_token>", "Content-Type": "application/json" },
+  "headers": { "Authorization": "Bearer <your-credential>", "Content-Type": "application/json" },
   "body": { "_id": "accept:offer:trader1:1", "offerId": "offer:trader1:1", "type": "trade" },
   "notes": "409 Conflict means one of three things, and the body says which. \"retryable\": true — two writes collided and this one was NOT applied: send exactly the same request again. \"constraint\": \"<name>\" — the write broke one of this collection's rules (noNegativeHoldings, noOverCommitment): \"message\" says why and \"violations\" lists the documents; do not retry, the answer will not change. Neither — a document with this _id already exists." }
 ----
-
-Ask for a token when you are about to send the request:
-
-[source,bash]
-----
-curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
-  -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
-  -H 'Mcp-Session-Id: [SESSION-ID]' -H 'Mcp-Protocol-Version: 2025-03-26' \
-  -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_token","arguments":{}}}'
-----
-
-[source,json]
-----
-{ "access_token": "eyJhbGciOiJIUzI1NiIs...", "token_type": "Bearer",
-  "expires_in": 60, "username": "admin", "roles": ["admin"] }
-----
-
-Substitute `access_token` for the placeholder and run that `url` yourself: you get the real, live-queried documents — the agent makes this exact request directly against RESTHeart, the MCP server was never in the data path. Mind `expires_in`: the token lasts a minute, so fetch it right before use rather than in advance.
 
 [[4-connect-a-real-client]]
 === 4. Connect a real client
@@ -180,7 +195,7 @@ Restart the session so it picks up the new server, then ask it directly — no n
 > query the inventory collection for items with qty under 30
 ----
 
-It calls `list_apis`, finds `inventory`, calls `how_to_call`, fetches a token with `get_token`, and executes the composed request — the same steps you just did by hand.
+It calls `list_apis`, finds `inventory`, and calls `call_api` — the same steps you just did by hand. The agent never makes a request of its own: the action runs on RESTHeart, as the session you connected with, which is what makes this work from any host, sandboxed ones included.
 
 For Claude Desktop, which needs a public HTTPS endpoint and signs users in through OAuth rather than a token you paste, see xref:/docs/ai/mcp-claude-desktop.adoc[Connect Claude Desktop].
 
@@ -260,6 +275,6 @@ There is no payload: the notification means "read it again". Subscribe to `inven
 
 * xref:/docs/ai/mcp.adoc[Full MCP Server reference] — change streams, GraphQL apps, configuration
 * xref:/docs/ai/mcp.adoc#_securing_it[Securing it] — this tutorial ran as `admin`; here is how to give an agent its own account and let the ACL decide what it can see and read
-* xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`how_to_call`/`get_token` work under the hood, and how to expose your own plugin's data the same way
+* xref:/docs/framework/mcp-aware.adoc[`McpAware`] — how `list_apis`/`call_api`/`how_to_call` work under the hood, and how to expose your own plugin's data the same way
 * link:https://github.com/SoftInstigate/restheart/tree/9.x/examples/mcp-mongodb[`examples/mcp-mongodb`] — a worked example with all four kinds (collection, aggregation, stream, GraphQL app) loaded in one shot
 * xref:/docs/ai/vector-search.adoc[Vector Search] — combine MCP with `$vectorScan`/`$vectorSearch` to let an agent search semantically, not just filter

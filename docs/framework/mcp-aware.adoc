@@ -14,39 +14,31 @@ The actual `/mcp` endpoint — the server that discovers every `McpAware` plugin
 
 === How it works
 
-The server never calls your plugin's data for the agent — it only *describes* how to. Three tools do all the work: `list_apis` (what exists), `how_to_call` (how to invoke it) and `get_token` (a credential to invoke it with). The agent takes the descriptor `how_to_call` returns and makes the real HTTP request itself, directly against your plugin's own endpoint.
+The server does the calling for the agent. Three tools do all the work: `list_apis` (what exists, and how each action is shaped), `call_api` (execute an action) and `how_to_call` (the HTTP request behind an action, described for code the agent writes for the user). An agent that wants something done calls `call_api`; the MCP server composes the request from your plugin's own description and runs it through RESTHeart's *whole* handler chain, in-process, as the MCP session's own identity: authentication, authorizers, every interceptor, your plugin's `handle()`. Your plugin sees an ordinary request.
 
 [source,mermaid]
 ----
 sequenceDiagram
   participant Agent
   participant MCP as RESTHeart /mcp
+  participant Chain as Handler chain
   participant Plugin as Your McpAware plugin
 
   Agent->>MCP: list_apis()
   MCP-->>Agent: catalog (uri, kind, description)
-  Agent->>MCP: how_to_call(resource, action, args)
-  MCP-->>Agent: { method, url, headers, body }
-  Note over Agent: descriptor carries a placeholder,<br/>no credential — reusable
-  Agent->>MCP: get_token()
-  MCP-->>Agent: { access_token, expires_in: 60 }
-  Agent->>Plugin: the real request, directly
-  Plugin-->>Agent: real data
+  Agent->>MCP: call_api(resource, action, args)
+  MCP->>Chain: the composed request, in-process, as the session
+  Chain->>Plugin: handle(request)
+  Plugin-->>Chain: response
+  Chain-->>MCP: status, headers, body
+  MCP-->>Agent: { status, headers, body }
 ----
 
-The split is deliberate: a descriptor answers "how do I call this" and is worth keeping, while a token is worth seconds. Were the token baked into the descriptor, its clock would start when the agent asked how to call something — and an agent that reasons, or asks its user, before actually calling would find it already expired.
+There is one executable road, and no credential in it: the agent never holds a token, never needs a network path to your endpoint (an agent running in a sandbox with no egress works exactly like one on the user's machine), and RESTHeart's existing ACL applies exactly as it does to any other client. An action the session's roles can't perform still fails with a normal `403` — a result the agent reads, with the body, not a tool error.
 
-This means RESTHeart's existing ACL applies exactly as it does to any other client — an action the agent's credentials can't perform still fails with a normal `403`, the same way it would for a human hitting the same endpoint.
+`how_to_call` remains for the other job: when the agent is writing code *for the user* — a frontend, a script, an integration — it asks for the request behind an action and gets method, URL, headers and body, with a `<your-credential>` placeholder where the user's own credential goes. It composes and never executes.
 
-Your `describeMcp` does not filter by principal, and should not: describe everything your plugin exposes. The MCP server filters the catalog itself, per caller, hiding from `list_apis`, `resources/list` and `how_to_call` anything whose read that caller's ACL would refuse. Discovery therefore follows the same boundary as access, and you get that without writing any authorization code of your own.
-
-Filtering by *scope* is the one exception, and it is yours to do — see xref:#mcp-scope[`ctx.scope()`].
-
-=== Implementing McpAware
-
-Two ways to implement it, depending on whether your plugin exposes one fixed thing or many dynamic ones.
-
-==== Mode A — a fixed, code-baked resource
+=== Mode A — a fixed, code-baked resource
 
 If your plugin is a single endpoint with a stable shape, override `defaultMcpConfig()`. `PingService` (`restheart-core`) is the real example:
 
@@ -91,7 +83,7 @@ public List<McpResource> describeMcp(McpContext ctx) {
 
 === Calling a resource: `args.body`
 
-`how_to_call` composes a descriptor, it never executes it. For an action backed by a `body_schema`, the actual body goes under an `args.body` key — not as top-level args:
+Whether executed by `call_api` or described by `how_to_call`, a call is the same thing: `resource`, `action`, `args`. For an action backed by a `body_schema`, the actual body goes under an `args.body` key — not as top-level args:
 
 [source,json]
 ----
@@ -101,9 +93,7 @@ public List<McpResource> describeMcp(McpContext ctx) {
 
 Any other top-level `args` entries become the query string instead — this applies uniformly across `HTTP`, `SSE`, and `WebSocket` transports.
 
-TIP: Call `how_to_call` **once per action shape, not once per request.** The descriptor for creating a document in a collection is the same every time apart from the body — keep it and change only what varies. A repeated write is then two steps, not three: `get_token`, then send.
-
-If the action has a `body_schema` and the body does not satisfy it, `how_to_call` refuses to compose the request and reports which property failed and why, by JSON pointer:
+If the action has a `body_schema` and the body does not satisfy it, both tools refuse before anything runs and report which property failed and why, by JSON pointer:
 
 [source,text]
 ----
@@ -112,27 +102,30 @@ If the action has a `body_schema` and the body does not satisfy it, `how_to_call
 
 For a schema whose top level is a `oneOf`, each alternative is reported separately — `alternative 'offer' does not match: ...` — so it is clear which shape you were aiming at rather than being handed the union of every alternative's requirements.
 
-=== Filling in the credential: `get_token`
+=== Executing an action: `call_api`
 
-The descriptor's `Authorization` header holds the literal placeholder `Bearer <token_from_get_token>` — it never carries a credential, which is what makes it stable and reusable. The agent calls `get_token` when it is about to send the request and substitutes the value:
+`call_api` answers with what the API answered:
 
 [source,json]
 ----
-{ "access_token": "eyJhbGciOiJIUzI1NiIs...", "token_type": "Bearer",
-  "expires_in": 60, "username": "andrea@example.com", "roles": ["cli"] }
+{ "status": 201,
+  "headers": { "Location": "https://host/my-resource/66f1...", "Content-Type": "application/json" },
+  "body": { "...": "parsed, when the API returned JSON" } }
 ----
 
-Same field names as RESTHeart's own xref:/docs/security/authentication#_token_endpoint[`/token` endpoint], so an agent that has seen either recognises this one. The token carries the identity and roles of the MCP session and nothing more — it can do exactly what that session can do — and expires within `expires_in` seconds. That short life is the point: the agent never handles a password or a long-lived API key, and a token that leaks is worthless almost immediately.
+A non-2xx status is a result, not a tool error: the agent reads `body` for the reason, exactly as a REST client would. Only a failure to execute at all — unknown resource or action, invalid arguments, a stream that has no single response — is reported as a tool error. Streams (SSE, WebSocket) are not executable this way: the agent subscribes with `resources/subscribe`, or asks `how_to_call` for a descriptor to use from its own code.
 
-Read `access_token` from the response and put it in the descriptor's `Authorization` header as `Bearer <token>`.
+The request runs as the MCP session's own account, whatever authenticated it — a password, a JWT, a Personal Access Token: with a PAT the session, and every `call_api` it makes, carries the roles on the key, not the wider roles of the user it belongs to. Nothing is minted for the agent, so nothing can leak and nothing needs revoking.
 
-Requires the `jwtIssuer` provider (enabled by default) and an authenticated session; the tool returns an explanatory error rather than a weaker credential when either is missing.
+==== Overriding `execute()`
 
-NOTE: A Personal Access Token works here too: authenticate the MCP session with `Authorization: Bearer <PAT>` and the session — and every token `get_token` then issues — carries the roles on the key, not the wider roles of the user it belongs to.
+You almost never should. `McpAware.execute(ctx, resource, action, args)` returns `Optional.empty()` by default, which means "use the default": the MCP server composes the request from your description and runs it through the handler chain, and that is the right implementation for nearly every plugin, reads and writes alike.
+
+Override it only when your plugin *is* the whole semantics of the operation — no interceptor and no data-level ACL would apply to it on the REST path. A direct implementation is never a cheap optimization: it has to redo by hand whatever the chain would have done, and keep doing so as the chain evolves. A plugin that owns some actions and not others answers for its own and returns empty for the rest.
 
 === Letting agents read your data directly: `readResource()`
 
-`list_apis`/`how_to_call` only ever *describe* a request — for a plugin whose data agents should be able to read directly (loaded straight into context, or picked from a host UI's resource list), implement the `resources` primitive's read side too. Mark a safe, idempotent, `GET`-shaped action `readable`, and override `readResource()` to actually produce the data, in-process — no `HttpServerExchange`, no self-directed HTTP call:
+For a plugin whose data agents should be able to read directly (loaded straight into context, or picked from a host UI's resource list), implement the `resources` primitive's read side too. Mark a safe, idempotent, `GET`-shaped action `readable`, and override `readResource()` to actually produce the data, in-process — no `HttpServerExchange`, no self-directed HTTP call:
 
 [source,java]
 ----
@@ -151,7 +144,7 @@ public Optional<McpReadResult> readResource(McpContext ctx, String resource, Str
 
 Declare the resource `subscribable` as well if changes to it can be watched, and clients can call `resources/subscribe` on it; the framework refuses a subscription to any resource that does not declare it, rather than accepting one that would never fire.
 
-`resources/read` always means "here is real data" — a resource with no `readable` action is simply never registered with the resources primitive at all (`resources/list`/`resources/templates/list`); it stays discoverable through `list_apis`/`how_to_call` only. There is no "context" fallback to fall back to. If your default action needs an argument with no sensible default, the framework surfaces it as a Resource Template instead of a plain resource, so a client knows to fill it in before reading — see the "Reading data directly" section of xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for a concrete example (aggregations with a required `$var`).
+`resources/read` always means "here is real data" — a resource with no `readable` action is simply never registered with the resources primitive at all (`resources/list`/`resources/templates/list`); it stays discoverable through `list_apis`, and callable through `call_api`, only. There is no "context" fallback to fall back to. If your default action needs an argument with no sensible default, the framework surfaces it as a Resource Template instead of a plain resource, so a client knows to fill it in before reading — see the "Reading data directly" section of xref:/docs/ai/mcp.adoc[MCP for MongoDB & GraphQL] for a concrete example (aggregations with a required `$var`).
 
 [#mcp-scope]
 === Partitioned deployments: `ctx.scope()`
@@ -196,7 +189,7 @@ myPlugin:
 
 === Staying fresh: the catalog cache
 
-`list_apis`/`how_to_call` read from a cache, not from every `McpAware` implementation's `describeMcp()` on every call — refreshed at most every `catalog-ttl-seconds`. Change what your plugin exposes and an agent may see the old state for up to that long; there's no live invalidation watching your plugin's own data source. When a cache entry expires, already-connected agents get a `notifications/tools/list_changed` push telling them to refetch.
+`list_apis`, `call_api` and `how_to_call` read from a cache, not from every `McpAware` implementation's `describeMcp()` on every call — refreshed at most every `catalog-ttl-seconds`. Change what your plugin exposes and an agent may see the old state for up to that long; there's no live invalidation watching your plugin's own data source. When a cache entry expires, already-connected agents get a `notifications/tools/list_changed` push telling them to refetch.
 
 [source,yaml]
 ----

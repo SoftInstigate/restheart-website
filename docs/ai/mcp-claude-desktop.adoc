@@ -104,7 +104,7 @@ On the free plan ngrok serves a warning page before your site — but only to re
 curl -u admin:secret https://ae5b-93-34-53-143.ngrok-free.app/ping     # application/json
 ----
 
-It matters when the agent executes the request `how_to_call` composed *through a browser* rather than an HTTP library — it then gets the warning page instead of the response. Add the header ngrok looks for:
+The agent itself never hits it: `call_api` and `resources/read` run on RESTHeart, and the MCP transport is a normal HTTP client. It matters for code of your own that opens a `how_to_call` descriptor *through a browser* — that gets the warning page instead of the response. Add the header ngrok looks for:
 
 [source,text]
 ----

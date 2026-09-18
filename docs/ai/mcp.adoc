@@ -14,7 +14,7 @@ NOTE: The MCP server is available starting from *RESTHeart v9.9*.
 
 WARNING: RESTHeart 9.9 has not been released yet — the MCP server currently only exists in development snapshot builds. Until 9.9 is out, build RESTHeart yourself from the `9.x` branch: `git clone https://github.com/SoftInstigate/restheart.git && cd restheart && git checkout 9.x && ./mvnw clean package`. The `restheart-ai.jar` you need is produced at `core/target/plugins/restheart-ai.jar`.
 
-TIP: `mongo`/`graphql` are just two plugins implementing the framework's xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface — see that page for how `list_apis`/`how_to_call`/`get_token` actually work, the `args.body` calling convention, and the catalog cache, or for exposing your own custom plugin the same way.
+TIP: `mongo`/`graphql` are just two plugins implementing the framework's xref:/docs/framework/mcp-aware.adoc[`McpAware`] interface — see that page for how `list_apis`/`call_api`/`how_to_call` actually work, the `args.body` calling convention, and the catalog cache, or for exposing your own custom plugin the same way.
 
 TIP: To try it from a real client, see xref:/docs/ai/mcp-claude-desktop.adoc[Connect Claude Desktop] — a local instance exposed over HTTPS with OAuth sign-in.
 
@@ -104,7 +104,7 @@ curl -X PATCH http://localhost:8080/mydb/inventory \
   }'
 ----
 
-`how_to_call` returns a `wss://` descriptor for the `websocket` transport and an `https://` one with `Accept: text/event-stream` for `sse` — pick whichever the agent's runtime can actually open.
+A change stream is a live subscription, not a request with one response, so `call_api` does not execute it: an agent subscribes with `resources/subscribe` and receives `notifications/resources/updated` as events arrive. For code that opens the stream itself, `how_to_call` returns a `wss://` descriptor for the `websocket` transport and an `https://` one with `Accept: text/event-stream` for `sse`.
 
 === 4. Expose a GraphQL app
 
@@ -129,20 +129,24 @@ RESTHeart's GraphQL API is read-only — only `Query` fields are ever listed; a 
 
 === Reading data directly: the `resources` primitive
 
-Everything exposed above is also reachable through MCP's native `resources` primitive (`resources/list`, `resources/read`), not just through `list_apis`/`how_to_call`. This gives an agent — or a host UI like Claude Desktop/Cursor with a resource picker — a second, more direct channel to *read* data:
+Everything exposed above is also reachable through MCP's native `resources` primitive (`resources/list`, `resources/read`), not just through the tools. This gives an agent — or a host UI like Claude Desktop/Cursor with a resource picker — a second, more direct channel to *read* data:
 
-[cols="1,1"]
+[cols="1,1,1"]
 |===
-|Use `resources/read` when... |Use `how_to_call` when...
+|Use `resources/read` when... |Use `call_api` when... |Use `how_to_call` when...
 
 |You just want the data loaded into context
-|You need to generate/inspect the actual request, or the action is a write
+|The action is a write, or anything `resources/read` does not cover
+|You are writing code for the user that will make the request itself
 
 |The host UI has a resource picker
-|The host has no built-in HTTP execution
+|You want the API's own status, headers and body back
+|You need to inspect the actual request
 |===
 
-`resources/read` **always returns real data, or a clear error — never a description of the resource.** A read that cannot be served answers with a JSON-RPC error (`-32002` unknown resource, `-32602` bad parameters, `-32603` internal), not with a successful result whose text happens to start with "Error:" — so a client branches on `error` as it does everywhere else. A resource with nothing readable to return (a database, a change stream, a GraphQL app, or an aggregation `AggregationPipelineSecurityChecker` didn't clear — see below) simply doesn't appear under `resources/list` at all; it stays reachable through `list_apis`/`how_to_call` only. There is exactly one way to get real data through this primitive and one generic way to invoke anything (reads and writes alike) through tools — never two different answers to "read this" depending on which channel you used.
+Both `resources/read` and `call_api` run on the server, as the session: the agent never needs a network path to the API.
+
+`resources/read` **always returns real data, or a clear error — never a description of the resource.** A read that cannot be served answers with a JSON-RPC error (`-32002` unknown resource, `-32602` bad parameters, `-32603` internal), not with a successful result whose text happens to start with "Error:" — so a client branches on `error` as it does everywhere else. A resource with nothing readable to return (a database, a change stream, a GraphQL app, or an aggregation `AggregationPipelineSecurityChecker` didn't clear — see below) simply doesn't appear under `resources/list` at all; it stays reachable through `list_apis`/`call_api` only. There is exactly one way to get real data through this primitive and one generic way to invoke anything (reads and writes alike) through tools — never two different answers to "read this" depending on which channel you used.
 
 ==== Collections
 
@@ -150,7 +154,7 @@ Reading a collection's bare URI (`https://host/mydb/inventory`) returns its firs
 
 ==== Aggregations
 
-An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations#aggregation-pipeline-security[`AggregationPipelineSecurityChecker`] clears its raw, un-interpolated pipeline (the default blacklist blocks `$out`, `$merge`, `$lookup`, `$graphLookup`, `$unionWith`) — a pipeline it rejects stays `how_to_call`-only, same as any other non-readable resource.
+An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations#aggregation-pipeline-security[`AggregationPipelineSecurityChecker`] clears its raw, un-interpolated pipeline (the default blacklist blocks `$out`, `$merge`, `$lookup`, `$graphLookup`, `$unionWith`) — a pipeline it rejects stays `call_api`-only, same as any other non-readable resource.
 
 If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_aggrs/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_aggrs/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
 
@@ -158,7 +162,7 @@ As with the real REST endpoint, a flat query parameter like `?status=A` binds th
 
 ==== Not (yet) readable this way
 
-Change streams (they're a live subscription, not a request/response read), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`how_to_call`-only for now.
+Change streams (they're a live subscription, not a request/response read — use `resources/subscribe`), databases (a container, not itself document-shaped), and GraphQL apps stay `list_apis`/`call_api`-only for now.
 
 === Securing it
 
@@ -195,7 +199,7 @@ Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` do
 
 ==== The catalog shows only what you can read
 
-`list_apis`, `resources/list`, `resources/templates/list` and `how_to_call` are all filtered by the caller's ACL: a resource whose read would be refused is not listed, not described, and not composable. Two callers hitting the same server get different catalogs.
+`list_apis`, `resources/list`, `resources/templates/list`, `call_api` and `how_to_call` are all filtered by the caller's ACL: a resource whose read would be refused is not listed, not described, not callable and not composable. Two callers hitting the same server get different catalogs.
 
 Filtering is in addition to enforcement, not instead of it — a read is still authorized when it happens.
 
@@ -291,7 +295,7 @@ Plugins that hold caller-specific data must filter by the scope themselves — s
 |`graphql` |`mcp: false` does the same, for GraphQL apps.
 |`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
 |`mcpService` |`subscription-notify-interval-seconds` — at most one `resources/updated` per subscribed resource per interval. Default `5`.
-|`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`how_to_call` keep working).
+|`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`call_api`/`how_to_call` keep working).
 |===
 
 Everything else is metadata, not server config: `mcp.enabled`, `mcp.description`, `mcp.params`, `mcp.examples`, `mcp.event_type`, `mcp.pipeline_summary` all live on the resource itself (a collection, an `aggrs`/`streams` entry, or a `gql-apps` document), set through RESTHeart's normal REST API.
