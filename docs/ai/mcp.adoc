@@ -237,11 +237,21 @@ The opposite holds for anything the catalog *can* work out. A condition on who i
 
 **Actions are never filtered.** A resource is described with every action its kind affords: a collection with all of them, an aggregation with its execution, a GraphQL app with its query. What a call may do is decided when it is made, and `call_api` says so: a `403` means the session's role cannot do that thing.
 
-**Announcing is not granting.** A resource in your catalog may still answer `403`, and a read is authorized when it happens, exactly as the equivalent REST `GET` would be.
+[IMPORTANT]
+====
+**The catalog is discovery, not security.** It decides what an agent is *told about*. It neither grants nor denies anything, in either direction:
+
+* a resource in the catalog may still answer `403` — the call is authorized when it is made, exactly as the equivalent REST call would be;
+* a resource **absent** from the catalog can still be called. `call_api` and `resources/read` execute whatever URI they are given, and the ACL decides. An agent that learns a URI some other way — a colleague, a log, a guess — reaches it as it would over REST.
+
+The channels the catalog governs are `list_apis`, `resources/list`, `resources/templates/list` and `how_to_call`. Nothing else consults it.
+
+So hiding a resource protects its **name and description**, which is often what you want, since a description is prose written to explain what the data is. It does not protect the data. Only permissions do that.
+====
 
 ==== Overriding what the catalog decides
 
-Two keys of a resource's `mcp` block override the reading of the permissions. Both decide **disclosure**, never access.
+Two keys of a resource's `mcp` block override the reading of the permissions. Both decide **disclosure**, never access — see the note above: an agent that knows the URI can call a resource neither key announces.
 
 `hide_from_roles` keeps the resource out of the catalog of anyone holding one of those roles, whatever the permissions say. It is for a resource the ACL does allow and whose very name should not be announced — remember a description is prose written to explain what the data is.
 
@@ -270,6 +280,8 @@ Two keys of a resource's `mcp` block override the reading of the permissions. Bo
 ----
 
 `hide_from_roles` is decided first and wins over everything, `show_if` included.
+
+WARNING: `hide_from_roles` is not a permission. It keeps a name out of a listing; it does not stop the read. If the role must not read the data, write that in the ACL — the two are not interchangeable, and only one of them is enforced.
 
 IMPORTANT: `show_if` may only read what a catalog has: the caller's session and the resource itself. A condition reading the call — `qparams-contain(...)`, `%{q,...}`, `@qparams[...]`, the request body — has no meaning while a listing is being composed, and the resource is not announced at all, with a warning in the log naming the atom at fault.
 
