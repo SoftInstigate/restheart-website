@@ -256,6 +256,8 @@ RESTHeart's default authorizer, `mongoAclAuthorizer`, enforces permissions based
 
 We aim to allow `user` role to create and access their own documents in `/secrets`, and to modify only their documents.
 
+NOTE: The permissions below identify the caller by `@user._id`, which is right for this tutorial: users are defined in MongoDB and authenticate with Basic auth. A caller authenticated with a **token** has no `_id` — a JWT account carries the token's claims — and is identified by `@user.sub` instead. Naming a property the account does not carry leaves the variable unresolved: since 9.8.2 the filter then matches no document and a `mergeRequest` refuses the write with `403`; before 9.8.2 it became `null`, which matched every document without that field. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller].
+
 1) **Allow `GET` on `/secrets`**:
 
 Users can only access documents they created.

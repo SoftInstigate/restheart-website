@@ -80,14 +80,16 @@ The change stream aggregation can use _predefined variables_, as in the followin
 {
     "uri": "mine",
     "stages": [
-        { "$match": { "fullDocument::name": { "$var": "@user._id" } } }
+        { "$match": { "fullDocument::owner": { "$var": "@user.sub" } } }
     ]
 }
 ----
 
-The `$match` stage uses the predefined variable `@user._id`, specified as `{ "$var": "@user._id" }`.
+The `$match` stage uses the predefined variable `@user.sub`, specified as `{ "$var": "@user.sub" }`, and matches it against the document's `owner`.
 
-NOTE: the predefined variables are resolved server side, i.e. the client does not need to pass the variable and the server will resolve it, making sure its value is trusted. In the example, the `name` property is matched against the user id of the authenticated user.
+NOTE: the predefined variables are resolved server side: the client does not pass them, and a value it supplies for one — `?avars={"@user.sub": "someone-else"}` — is ignored, so the stream stays scoped to whoever is connected.
+
+IMPORTANT: use the name the caller's account actually carries. `@user.sub` identifies a caller authenticated with a JWT, `@user._id` one authenticated against MongoDB users, `@user.userid` one from the file realm — see link:/docs/security/permissions#identifying-the-caller[Identifying the caller]. A variable the account does not carry is unresolved, and since 9.8.2 an unresolved variable fails the request with `variable not bound` rather than binding `null`, which would have matched every document without that field.
 
 Refer to link:/docs/mongodb-rest/aggregations#predefined-variables[Aggregation] documentation page for more information.
 

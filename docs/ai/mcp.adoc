@@ -195,6 +195,8 @@ Grant the endpoint itself, then the data:
 ]
 ----
 
+IMPORTANT: `@user._id` identifies a caller authenticated against MongoDB users. An agent that connects with a **Bearer token** — a JWT or a personal access token, which is how most MCP clients authenticate — has no `_id`: the account carries the token's claims, and the identity is `@user.sub`. A filter naming a property the account does not carry is unresolved, so since 9.8.2 it matches no document, and before 9.8.2 it matched every document without an owner. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller], and write `{"$or": [{"owner": "@user._id"}, {"owner": "@user.sub"}]}` when both kinds of caller must be served.
+
 WARNING: `/mcp` needs `POST`, `GET` **and** `DELETE`. `POST` carries the JSON-RPC messages, but `GET` opens the stream the server delivers notifications on and `DELETE` closes the session. With `POST` alone a `resources/subscribe` succeeds and the client then waits forever for notifications it can never receive.
 
 Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_aggrs/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.

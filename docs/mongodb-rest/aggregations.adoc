@@ -353,7 +353,7 @@ RESTHeart provides several predefined variables that you can use in your aggrega
 [cols="1,3", options="header"]
 |===
 |Variable |Description
-|`@user` |The authenticated user object (e.g., `@user._id`)
+|`@user` |The authenticated account. Which properties it carries depends on how the caller authenticated — `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. A name the account does not carry fails the request with `variable not bound` unless the `$var` declares a default, and a value supplied by the caller for a `@` name is ignored. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
 |`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`)
 |`@page` |Current page number from query parameter
 |`@pagesize` |Page size from query parameter

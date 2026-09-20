@@ -283,7 +283,7 @@ rule written for guests must not apply to it. This is also why `@roles` cannot s
 |===
 |Variable |Description
 |`@user`
-|Properties of authenticated user (e.g., `@user._id`, `@user.userid`, `@user.email`)
+|Properties of the authenticated account. **Which properties exist depends on how the caller authenticated** — see <<identifying-the-caller,Identifying the caller>> below. With `mongoRealmAuthenticator` they are the user document's (`@user._id`, `@user.email`, ...); with `fileRealmAuthenticator`, `@user.userid` and the roles; with a JWT, the token's claims (`@user.sub`, plus anything in `account-properties-claims`).
 |`@authenticated`
 |`'true'` when the request carries an account, `'false'` when it does not. Available from RESTHeart 9.8.
 |`@roles`
@@ -305,6 +305,34 @@ rule written for guests must not apply to it. This is also why `@roles` cannot s
 |`${variable}`
 |Path template variable (e.g., `${userid}` from path `/{userid}`)
 |===
+
+[#identifying-the-caller]
+==== Identifying the caller
+
+`@user` carries whatever the authenticator put in the account, and the three shipped ones put in different things:
+
+[options="header"]
+[cols="2,2,3"]
+|===
+|Authenticator |Identity |Also available
+
+|`mongoRealmAuthenticator`
+|`@user._id`
+|every property of the user document
+
+|`fileRealmAuthenticator`
+|`@user.userid`
+|the properties declared in the YAML
+
+|`jwtAuthenticationMechanism`, and any Bearer token issued by `/token`
+|`@user.sub`
+|the token's other claims, plus whatever `jwtTokenManager/account-properties-claims` adds
+|===
+
+WARNING: **A JWT account has no `_id`.** A permission written as `readFilter: {"owner": "@user._id"}` therefore leaves the variable unresolved for every JWT caller — which, since 9.8.2, means it matches no document, and before 9.8.2 meant it matched every document without an owner. Use `@user.sub` when callers authenticate with a token, or add `_id` to `jwtTokenManager/account-properties-claims` so it travels in the token (string ids only). A permission that must serve both kinds of caller can test either: `equals(@user._id, ...) or equals(@user.sub, ...)` in a predicate, and `{"$or": [{"owner": "@user._id"}, {"owner": "@user.sub"}]}` in a filter.
+
+TIP: RESTHeart Cloud Kit applications authenticate with a JWT: Basic only on `POST /token`, Bearer afterwards. Their ACLs identify the caller by `@user.sub`.
+
 
 All of the above work identically in the `predicate` string, and in the `readFilter`/`mergeRequest` permission properties — one namespace, one place to look.
 
@@ -360,7 +388,13 @@ Then use it exactly like a built-in:
 
 **Registration.** Built-in resolvers register first, at class-loading time, so they always win a name collision — registering an already-taken name (e.g. `user`) fails at startup with a clear `ConfigurationException` instead of silently being ignored.
 
-**Failure semantics.** Returning `null` (or throwing) from `resolve()` is treated as "unresolved": in a `readFilter`/`mergeRequest` document the value becomes MongoDB `null`; in a `predicate` string the expression is replaced with an unguessable random token, so any comparison against it fails. A broken resolver denies access, it never widens it.
+**Failure semantics.** Returning `null` (or throwing) from `resolve()` is treated as "unresolved", and an unresolved variable never widens access:
+
+* in a `predicate` string the expression is replaced with an unguessable random token, so any comparison against it fails;
+* in a `readFilter` or `writeFilter` the same happens (since 9.8.2): the variable becomes a random value that matches no document, and a warning naming it is logged. The rest of the filter still applies, so `{"$or": [{"owner": "@user._id"}, {"public": true}]}` keeps returning the public documents;
+* in a `mergeRequest` an unresolved `@user` variable refuses the write with `403`, rather than storing `null`.
+
+WARNING: Before 9.8.2 an unresolved variable became MongoDB `null` in a filter — and `{"owner": null}` matches every document that has *no* owner, so the filter widened the read instead of narrowing it. Note that a negation of an unresolved variable still matches (`{"owner": {"$ne": "@user._id"}}`): do not negate `@` variables in filters.
 
 TIP: `@subscription` is not hypothetical — link:/docs/stripe/plan-gates[`restheart-stripe`] registers exactly this variable to gate features by subscription plan and seat licence. See link:/docs/stripe/plan-gates[Plan Gates & ACL] for a working example, including the failure modes to avoid.
 
@@ -430,7 +464,7 @@ This permission:
 }
 ----
 
-NOTE: Missing properties and non-JSON/BSON requests resolve to `null`, implementing fail-safe denial semantics.
+NOTE: A missing property, and a request whose body is not JSON/BSON, leave the variable unresolved. In a predicate the comparison then fails; in a `readFilter` or `writeFilter` the condition matches no document; in a `mergeRequest` the write is refused with `403`. See the `VarResolver` failure semantics above.
 
 ===== Example: Query Parameter Access with @qparams
 

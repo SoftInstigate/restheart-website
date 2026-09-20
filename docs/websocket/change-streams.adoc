@@ -135,6 +135,15 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 * If `notify_when` is absent, all clients receive all events (broadcast — existing behaviour).
 * If a client connects *without* the required query parameter, it receives all events (pass-through).
 
+[WARNING]
+====
+**`notify_when` is a delivery filter, not an access control.** The variable it binds comes from the client's own query string, and a client that omits it receives everything on the stream. Never use it to keep tenants apart.
+
+What does keep them apart, since 9.8.2, is the caller's permission: a `readFilter` is applied to the stream exactly as it is to the equivalent `GET`, and so is `projectResponse`. Scope the data in the ACL, and use `notify_when` on top of it to save a client the events it does not care about.
+
+A stage can also scope a stream, provided it uses a server-resolved variable rather than a client-supplied one: `{ "$match": { "fullDocument::owner": { "$var": "@user.sub" } } }`. See link:/docs/websocket/variables[Predefined variables].
+====
+
 ==== `Last-Event-ID` limitation
 
 When `notify_when` is defined, `Last-Event-ID` is ignored on reconnect and a warning is logged. The shared cursor cannot be rewound for a single client; reconnecting clients should recover missed events via the REST API.

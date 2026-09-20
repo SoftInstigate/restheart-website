@@ -600,7 +600,7 @@ permissions:
 
 **Notable Behavior:**
 
-Missing properties and non-JSON/BSON requests resolve to `null`, implementing fail-safe denial semantics.
+A missing property, and a request whose body is not JSON/BSON, leave the variable unresolved: a predicate comparison fails, a `readFilter` or `writeFilter` condition matches no document, and a `mergeRequest` refuses the write with `403`. Until 9.8.2 an unresolved variable became `null` in a filter, which matched every document lacking that field — see the link:/docs/security/permissions[permissions page].
 
 ==== New Permission Variables - @rnd and @qparams
 

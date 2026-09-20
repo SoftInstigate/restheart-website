@@ -258,7 +258,7 @@ Mappings can reference server-resolved variables through `$arg`, in both field-t
 [cols="2,5"]
 |===
 |Variable |Resolves to
-|`@user` |the authenticated user; `@user._id`, `@user.roles`, or any property of the account document
+|`@user` |the authenticated account; which properties it has depends on how the caller authenticated — `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
 |`@roles` |the authenticated user's roles, as an array
 |`@authenticated` |`true` when the request is authenticated
 |`@request` |the request; `@request.body`, `@request.method`, and nested properties with dot notation
@@ -305,6 +305,8 @@ type Query {
 ```
 
 With this configuration, the `me` query will return the `User` object corresponding to the authenticated user.
+
+The `$or` is there because the two kinds of caller are identified differently: `@user._id` for an account read from MongoDB users, `@user.sub` for one carried by a token. Each `$arg` takes `null` as its default so that the branch which does not apply simply does not match — without a default, a name the account does not carry fails the query with `variable not bound` (since 9.8.2; before, it bound `null`, and `{"_id": null}` matches any document without an `_id`, which no document has, so that particular case was harmless here).
 
 ===== Optional Stages
 

@@ -287,7 +287,13 @@ fileAclAuthorizer:
         readFilter: >
           {"payer.id": "@user.team._id"}
         mergeRequest: >
-          {"buyer_id": "@user._id"}
+          {"buyer_id": "@user.sub"}
+
+    # The buyer is identified by @user.sub: these callers sign in through the accounts
+    # module and carry a JWT, whose claims are the account properties listed in
+    # account-properties-claims - and _id is not one of them unless you add it. A
+    # mergeRequest naming a claim the token does not carry refuses the write with 403
+    # (before 9.8.2 it stored null). See /docs/security/permissions#identifying-the-caller.
 
     # guest checkout (omit to disable)
     - role: $unauthenticated

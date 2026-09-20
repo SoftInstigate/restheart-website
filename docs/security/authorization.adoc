@@ -251,9 +251,19 @@ the property `author` is evaluated to be the `userid` of the authenticated clien
 |===
 |variable |description
 |`@user`
-|the user object (excluding the password), e.g. `@user.userid` (for users defined in acl.yml by `FileRealmAuthenticator`) or `@user._id` (for users defined in MongoDB by `MongoRealmAuthenticator`)
+|the account (excluding the password). What it carries depends on the authenticator: `@user._id` with `MongoRealmAuthenticator`, `@user.userid` with `FileRealmAuthenticator`, `@user.sub` for a JWT
+|`@authenticated`
+|`'true'` when the request carries an account, `'false'` when it does not
+|`@roles`
+|the caller's roles, as an array
 |`@request`
 |the properties of the request, e.g. `@request.remoteIp`
+|`@request.body`
+|the request body, e.g. `@request.body.amount`
+|`@qparams['key']`
+|a query parameter's value, e.g. `@qparams['status']`
+|`@rnd(bits)`
+|a cryptographically secure random string
 |`@mongoPermissions`
 |the `MongoPermissions` object, e.g. `@mongoPermissions.writeFilter`
 |`@now`
@@ -261,6 +271,8 @@ the property `author` is evaluated to be the `userid` of the authenticated clien
 |`@filter`
 |the value of the `filter` query parameter
 |===
+
+WARNING: **A JWT account has no `_id`**, so `{"owner": "@user._id"}` leaves the variable unresolved for every caller authenticated with a token. Since 9.8.2 an unresolved variable in a filter matches no document, and refuses a `mergeRequest` write with `403`; before 9.8.2 it became `null`, which matches every document that has no owner. Identify a JWT caller by `@user.sub`. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller] for the full list and for permissions that must serve both kinds of caller.
 
 ===== projectResponse
 

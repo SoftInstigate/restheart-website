@@ -63,6 +63,18 @@ GET /messages/_streams/mine?n=Andrea HTTP/1.1
 
 `notify_when` goes one step further and filters which connected clients receive each event, using a single MongoDB cursor for all of them. See link:/docs/websocket/variables[Using Variables] and link:/docs/websocket/change-streams#per-client-filtering-notify_when[notify_when].
 
+=== Permissions Apply to a Stream
+
+A change stream is a read, and the caller's permission governs it as it governs the equivalent `GET`. Since 9.8.2:
+
+* the `readFilter` of the matching permission is applied to the events: a caller limited to their own documents is notified about their own documents only, and events that carry no document — deletes — are not delivered when the filter is about the document's own fields;
+* an exclusion `projectResponse` removes those properties from the event, including from `updateDescription.updatedFields`;
+* a `readFilter` that cannot be applied to an event (`$expr`, `$where`, `$text`) and an inclusion `projectResponse`, which would strip the event's resume token, refuse the subscription with `403`.
+
+WARNING: Before 9.8.2 neither was applied. A caller who could open the stream received every event on the collection, whatever their `readFilter`, and with the properties `projectResponse` hides. If you run an older version, restrict who may reach `/_streams` until you upgrade.
+
+Filtering per client with `notify_when` is a convenience for the client, not a boundary: the variable it binds comes from the client's own query string. See link:/docs/websocket/change-streams#per-client-filtering-notify_when[notify_when].
+
 === No More Polling
 
 Because RESTHeart pushes the events, a client learns about a change the moment it happens — no polling loop, no requests that come back empty, no delay between the write and the notification.
