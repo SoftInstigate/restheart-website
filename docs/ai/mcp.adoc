@@ -249,9 +249,65 @@ The channels the catalog governs are `list_apis`, `resources/list`, `resources/t
 So hiding a resource protects its **name and description**, which is often what you want, since a description is prose written to explain what the data is. It does not protect the data. Only permissions do that.
 ====
 
-==== Overriding what the catalog decides
+==== What the catalog works out, and where it needs a hand
 
-Two keys of a resource's `mcp` block override the reading of the permissions. Both decide **disclosure**, never access — see the note above: an agent that knows the URI can call a resource neither key announces.
+**Security is the ACL, and only the ACL.** Permissions, vetoers and allowers are what is enforced; nothing on this page changes that. What follows is about a catalog being accurate, not about a boundary holding.
+
+To read a permission, the catalog looks at its predicate one atom at a time, and there are three kinds:
+
+[cols="1,2,2"]
+|===
+| Kind | Examples | What the catalog does with it
+
+| **Determined** — it already has a value
+| `path('/orders')`, `method(GET)`, `regex('/t-[^/]+/orders')`, `equals(@user.dept, 'sales')`, `@roles`, `%u`
+| Evaluates it. This is what makes a policy decide a catalog exactly.
+
+| **Belongs to the call** — there is no call yet
+| `qparams-contain(page)`, `equals(%{q,ticket}, 'golden')`, `bson-request-contains(title)`, `@qparams['id']`, anything reading the body
+| Leaves it open, so the resource is announced. The call itself is authorized when it happens.
+
+| **Unreadable** — nothing says which of the two it is
+| a predicate a plugin registered without declaring anything: `is-premium()`; a variable of a custom `VarResolver` that declares nothing: `@billing.tier`
+| Leaves it open, so the resource is announced — the same as the row above, and for the same reason: never hide what might be allowed.
+|===
+
+The first two kinds need nothing from you. Every predicate, exchange attribute and variable RESTHeart ships declares itself, so a policy written with them — which is almost every policy — produces an accurate catalog on its own.
+
+The third is where a hand helps, and it costs precision, not safety: an atom nobody can read makes the resource **visible to everyone the rest of the rule admits**, so `path-prefix('/orders') and is-premium()` announces `/orders` to every customer instead of the premium ones. Three places to say what it is, best first:
+
+. **In the plugin that registers it**, once, correctly for every permission that ever uses it. A `PredicateBuilder` implements `EvaluationScope`; a `VarResolver` overrides `scope()`:
++
+[source,java]
+----
+public static class Builder implements PredicateBuilder, EvaluationScope {
+    @Override
+    public Scope scope() {
+        return Scope.LISTING;  // reads only the session; CALL if it reads the request
+    }
+}
+----
++
+`Scope.ARGUMENTS` is the third value, for a predicate that simply compares what it is given, as `equals` and `in` do.
+
+. **On the permission**, when the predicate comes from something you cannot change:
++
+[source,json]
+----
+{
+  "roles": ["customer"],
+  "predicate": "path-prefix('/orders') and is-premium()",
+  "mcp": { "resolve": { "is-premium": "listing" } }
+}
+----
++
+The same block takes `"publish": "never"`, which keeps a deliberately wide permission — `path-prefix('/')` for an operations role — from announcing the whole service to it.
+
+. **On the resource**, when there is no predicate at all to declare: access decided by an `Authorizer` written in Java, whose logic is code and has nothing to read. That is what the two keys below are for.
+
+==== Declaring it on the resource
+
+Two keys of a resource's `mcp` block override the reading of the permissions altogether. Both decide **disclosure**, never access — an agent that knows the URI can call a resource neither key announces.
 
 `hide_from_roles` keeps the resource out of the catalog of anyone holding one of those roles, whatever the permissions say. It is for a resource the ACL does allow and whose very name should not be announced — remember a description is prose written to explain what the data is.
 
