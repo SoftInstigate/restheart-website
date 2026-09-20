@@ -203,13 +203,79 @@ Use `path-prefix`, not `path`. One collection answers at several paths — `/inv
 
 Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` does not match `/inventory`.
 
-==== The catalog shows only what you can read
+==== What the catalog announces
 
-`list_apis`, `resources/list`, `resources/templates/list`, `call_api` and `how_to_call` are all filtered by the caller's ACL: a resource whose read would be refused is not listed, not described, not callable and not composable. Two callers hitting the same server get different catalogs.
+NOTE: changed in *RESTHeart v9.9*.
 
-The filter goes one level deeper: `list_apis` describes a resource with only the actions that caller could invoke, each probed with its own method and path. A ledger a role may only append to is described with `create` and the reads, and not with `update` or `delete` — advertising them would read as an offer and cost the agent a turn to find out otherwise. An action whose path carries a variable (`/{id}`) is probed on the literal part before it, which is exact against the path-prefix rules ACLs are usually written with and generous against a rule naming one document: an action wrongly shown costs a `403` the caller can read, one wrongly hidden costs them an API they were entitled to.
+`list_apis`, `resources/list`, `resources/templates/list` and `how_to_call` are composed per caller: two callers hitting the same server get different catalogs.
 
-Filtering is in addition to enforcement, not instead of it — a read is still authorized when it happens.
+To decide what to announce, RESTHeart **reads the caller's own permissions** — it does not put the authorization chain a request invented for the occasion. For each MCP-enabled resource it asks whether some call could satisfy one of those permissions, and announces the resource as soon as the answer is yes.
+
+That matters because a permission may decide on something a call carries:
+
+[source,json]
+----
+{
+  "roles": ["agent"],
+  "predicate": "path('/ledger') and method(POST) and equals(%{q,ticket}, 'golden')",
+  "priority": 100
+}
+----
+
+There is no ticket while a catalog is being composed — there is no call yet — so that part of the rule is left open and `/ledger` is announced. The call itself is authorized as usual: without the ticket it answers `403`, with it, it goes through. A rule the catalog could not see past would have hidden the resource from the very caller entitled to it.
+
+The opposite holds for anything the catalog *can* work out. A condition on who is asking is decided exactly:
+
+[source,json]
+----
+{
+  "roles": ["customer"],
+  "predicate": "path-prefix('/orders') and equals(@user.plan, 'gold')",
+  "priority": 100
+}
+----
+
+`/orders` is announced to a customer on the `gold` plan and to nobody else — which no list of roles could express, since every customer holds the same role.
+
+**Actions are never filtered.** A resource is described with every action its kind affords: a collection with all of them, an aggregation with its execution, a GraphQL app with its query. What a call may do is decided when it is made, and `call_api` says so: a `403` means the session's role cannot do that thing.
+
+**Announcing is not granting.** A resource in your catalog may still answer `403`, and a read is authorized when it happens, exactly as the equivalent REST `GET` would be.
+
+==== Overriding what the catalog decides
+
+Two keys of a resource's `mcp` block override the reading of the permissions. Both decide **disclosure**, never access.
+
+`hide_from_roles` keeps the resource out of the catalog of anyone holding one of those roles, whatever the permissions say. It is for a resource the ACL does allow and whose very name should not be announced — remember a description is prose written to explain what the data is.
+
+[source,json]
+----
+{
+  "mcp": {
+    "enabled": true,
+    "description": "Performance reviews pending approval.",
+    "hide_from_roles": ["employee"]
+  }
+}
+----
+
+`show_if` replaces the reading of the permissions with a condition of your own. Use it when the decision lives somewhere the catalog cannot read — an `Authorizer` written in Java, for instance, which has no predicate to analyse.
+
+[source,json]
+----
+{
+  "mcp": {
+    "enabled": true,
+    "description": "Orders, for customers on the gold plan.",
+    "show_if": "equals(@user.plan, 'gold')"
+  }
+}
+----
+
+`hide_from_roles` is decided first and wins over everything, `show_if` included.
+
+IMPORTANT: `show_if` may only read what a catalog has: the caller's session and the resource itself. A condition reading the call — `qparams-contain(...)`, `%{q,...}`, `@qparams[...]`, the request body — has no meaning while a listing is being composed, and the resource is not announced at all, with a warning in the log naming the atom at fault.
+
+TIP: Do not restate your ACL here. The catalog already reads it; a condition duplicating it is a second rule in a second place, and the two drift apart without anything saying so. Write one only for what the reading of the permissions cannot reach.
 
 === Subscribing to changes
 
