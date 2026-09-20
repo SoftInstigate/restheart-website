@@ -205,11 +205,9 @@ Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` do
 
 ==== What the catalog announces
 
-NOTE: changed in *RESTHeart v9.9*.
-
 `list_apis`, `resources/list`, `resources/templates/list` and `how_to_call` are composed per caller: two callers hitting the same server get different catalogs.
 
-To decide what to announce, RESTHeart **reads the caller's own permissions** — it does not put the authorization chain a request invented for the occasion. For each MCP-enabled resource it asks whether some call could satisfy one of those permissions, and announces the resource as soon as the answer is yes.
+To decide what to announce, RESTHeart **reads the caller's own permissions**: for each MCP-enabled resource it asks whether some call could satisfy one of them, and announces the resource as soon as the answer is yes.
 
 That matters because a permission may decide on something a call carries:
 
@@ -222,7 +220,7 @@ That matters because a permission may decide on something a call carries:
 }
 ----
 
-There is no ticket while a catalog is being composed — there is no call yet — so that part of the rule is left open and `/ledger` is announced. The call itself is authorized as usual: without the ticket it answers `403`, with it, it goes through. A rule the catalog could not see past would have hidden the resource from the very caller entitled to it.
+There is no ticket while a catalog is being composed — there is no call yet — so that part of the rule is left open and `/ledger` is announced. The call itself is authorized as usual: without the ticket it answers `403`, with it, it goes through. Reading the rule as a refusal would hide the resource from the very caller entitled to it.
 
 The opposite holds for anything the catalog *can* work out. A condition on who is asking is decided exactly:
 
@@ -304,8 +302,6 @@ TIP: A busy collection does not become a burst of messages. The first change is 
 
 === Serving several isolated callers: scopes
 
-NOTE: available from *RESTHeart v9.9*.
-
 By default one instance serves one catalogue: every MCP-enabled resource on it, to every caller its ACL allows. That is the right shape for a single deployment and it needs no configuration.
 
 A process that serves several isolated callers needs more than the ACL filter above. The ACL decides what a caller may *read*; it does not stop the catalogue from being built out of every database on the instance in the first place. **Scopes** partition the catalogue itself: each scope gets its own MCP server, its own resource registry, and its own notifications.
@@ -332,7 +328,7 @@ RESTHeart finds it by the type it provides, so the plugin name is yours to choos
 
 A scope is an opaque token naming *which* partition, and each service maps it onto its own namespace — `MongoService` reads it as a database name. Resolve it from something present on every request whatever the credential: the hostname is, an authentication detail may not be.
 
-NOTE: If your `mongo-mounts` use the parametric form — `what: /{host[0]}/{*}` — the scope is what binds `{host[0]}`. Such a mount used to be skipped when the catalogue was built, so the instance advertised nothing over MCP; with a scope it resolves like any other mount and the catalogue fills in. Without one it is still skipped, since there is nothing to bind the placeholder to.
+NOTE: If your `mongo-mounts` use the parametric form — `what: /{host[0]}/{*}` — the scope is what binds `{host[0]}`. Without one such a mount is skipped when the catalogue is built, since there is nothing to bind the placeholder to, and the instance advertises nothing over MCP.
 
 Three answers, and the third matters:
 
