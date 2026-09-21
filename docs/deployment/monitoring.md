@@ -83,6 +83,19 @@ jvmMetricsCollector:
 
 Additionally, RESTHeart captures JVM metrics such as memory usage and garbage collector data.
 
+### Workers Watchdog
+
+Available from RESTHeart v9.9.
+
+```yaml
+workersWatchdog:
+  enabled: false
+  interval-seconds: 10
+  threshold-seconds: 30
+```
+
+Blocking requests run on virtual threads, carried by as many platform threads as the container has CPUs. If those stay occupied, every blocking request hangs while `/ping`, served on the I/O thread, still answers. When enabled, a platform thread hands the request executor an empty task every `interval-seconds`; if it has not started `threshold-seconds` later, the full thread dump — virtual threads included, as `jcmd Thread.dump_to_file` writes it — goes to the log, once until the executor serves again. It is meant for containers with no shell to run `jcmd` from.
+
 ### Metrics UI (Static Resources)
 
 > **Note**: The embedded Metrics UI dashboard is available starting from RESTHeart v9.5.0.
