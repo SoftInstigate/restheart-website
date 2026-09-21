@@ -146,7 +146,13 @@ Everything exposed above is also reachable through MCP's native `resources` prim
 |The host UI has a resource picker
 |You want the API's own status, headers and body back
 |You need to inspect the actual request
+
+|
+|The client exposes tools only
+|
 |===
+
+The resources primitive is optional for a client, and many do without it: the subagents of an agent host typically get the server's tools and nothing else. So `call_api` is the one road every client has, reads included — a read is the resource's read action (`query` for a collection, `get` for a document, `execute` for an aggregation), and it returns the same data `resources/read` would. The server's tool descriptions and its initialize instructions say so.
 
 Both `resources/read` and `call_api` run on the server, as the session: the agent never needs a network path to the API.
 
