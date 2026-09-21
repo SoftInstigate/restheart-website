@@ -17,7 +17,7 @@
         <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Declarative Access Control</span></h3>
-                <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure without coding</strong>.
+                <p>RESTHeart provides a powerful and battle-tested <strong>security layer</strong> that keeps your application <strong>secure</strong>.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
@@ -29,7 +29,7 @@
         <div class="card newsText h-100 w-100">
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">User Accounts</span></h3>
-                <p>The <strong>restheart-accounts</strong> plugin covers the full user lifecycle: registration, email verification, password reset, team invitations and Google social login — all <strong>configurable, no code</strong>.</p>
+                <p>The <strong>restheart-accounts</strong> plugin covers the full user lifecycle: registration, email verification, password reset, team invitations and Google social login — all <strong>configurable</strong>.</p>
             </div>
             <div class="d-flex w-100 justify-content-center">
                 <a class="btn btn-sm" href="{{ '/docs/accounts/overview' | prepend: site.baseurl }}">Read More</a>
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">REST Data API</span></h3>
                 <p>
-                Read, write and search JSON documents with HTTP requests <strong>without coding</strong>; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
+                Read, write and search JSON documents with HTTP requests; specify MongoDB queries and projection options; deal with large result sets with automatic pagination.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
@@ -57,7 +57,7 @@
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">GraphQL Data API</span></h3>
                 <p>
-                    The GraphQL plugin works side by side with the REST plugin to get an unified API to build modern applications. GraphQL applications are configured through an API <strong>without coding</strong>.
+                    The GraphQL plugin works side by side with the REST plugin to get an unified API to build modern applications. GraphQL applications are configured through an API.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
@@ -70,7 +70,7 @@
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">WebSocket Data API</span></h3>
                 <p>
-                The WebSocket API notifies clients of data changes in real time and supports thousands of connected clients. Data streams are configured through an API <strong>without coding</strong>.
+                The WebSocket API notifies clients of data changes in real time and supports thousands of connected clients. Data streams are configured through an API.
                 </p>
             </div>
             <div class="d-flex w-100 justify-content-center">
@@ -99,7 +99,7 @@
             <div class="card-body">
                 <h3 class="feature-title mb-3"><span class="text-primary">Stripe Payments</span></h3>
                 <p>
-                    Add <strong>subscriptions</strong> and <strong>one-time purchases</strong> to your app with the <code>restheart-stripe</code> module. Multi-tenant ready, no backend code.
+                    Add <strong>subscriptions</strong> and <strong>one-time purchases</strong> to your app with the <code>restheart-stripe</code> module. Multi-tenant ready.
                 </p>
                 <p class="mt-1 mb-0" style="font-size: 0.85rem; opacity: 0.7;">Available from RESTHeart 9.8</p>
             </div>

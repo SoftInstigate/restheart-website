@@ -15,7 +15,7 @@ bundle install
 bin/serve.sh
 ```
 
-## RESTHeart - Ready to use backend for the modern Web.
+## RESTHeart - A backend for web, mobile and AI apps.
 
 ### Automatic REST, GraphQL and WebSocket APIs for MongoDB and any compatible database.
 
