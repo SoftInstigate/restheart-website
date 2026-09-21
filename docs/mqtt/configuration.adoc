@@ -1,0 +1,467 @@
+---
+docs_version: 9
+title: MQTT Configuration
+layout: docs-adoc
+menu: mqtt
+applies_to: restheart
+---
+
+[.badge.bg-warning]#Preview#
+
+NOTE: `restheart-mqtt` ships separately from RESTHeart and is not yet part of a release, so the keys below may still change between snapshots — pin the build you install. See link:/docs/mqtt/[MQTT Overview].
+
+Plugin configuration blocks are **top-level keys named after the plugin**. There is no `plugins-args:` wrapper: RESTHeart's `PluginsFactory` looks up each plugin's arguments by name directly at the root of the configuration map.
+
+See link:/docs/mqtt/#enablement[Enablement] for each plugin's `enabled` default; the tables below cover the other keys only.
+
+== `mqtt-client`
+
+[options="header"]
+[cols="2,2,3"]
+|===
+|Key |Default |Notes
+
+|`broker-url`
+|`tcp://localhost:1883`
+|`tcp`, `ssl`, `mqtts`, `ws`, `wss`
+
+|`protocol-version`
+|`3`
+|`3` or `5` only; anything else fails at startup
+
+|`client-id`
+|generated
+|`restheart-<instance name>` when absent or blank; must be unique per concurrently connected instance
+
+|`username`, `password`
+|none
+|
+
+|`clean-session`
+|`false`
+|Persistent session, so the broker replays what you missed. With the documented defaults the session is stable across restarts.
+
+|`keep-alive-seconds`
+|`60`
+|`< 0` fails at startup
+
+|`connect-timeout-seconds`
+|`10`
+|Must be > 0
+
+|`session-expiry-seconds`
+|`4294967295`
+|MQTT 5 only
+
+|`tls`
+|`false`
+|Forces TLS even on a plaintext scheme
+
+|`tls-trust-store`, `tls-trust-store-password`
+|none
+|Path to a JKS/PKCS12 trust store, and its password
+
+|`reconnect.enabled`
+|`true`
+|
+
+|`reconnect.initial-delay-ms`
+|`1000`
+|Exponential back-off from here
+
+|`reconnect.max-delay-ms`
+|`30000`
+|
+
+|`will.topic`, `will.payload`
+|none
+|
+
+|`will.qos`
+|`0`
+|Must be 0–2
+
+|`will.retain`
+|`false`
+|
+
+|`will.delay-seconds`
+|`0`
+|MQTT 5 only
+
+|`will.message-expiry-seconds`
+|none
+|MQTT 5 only
+|===
+
+The port follows the scheme when you do not give one: 1883 for `tcp`, 8883 for `ssl`/`mqtts`, 80 for `ws`, 443 for `wss`. Setting `tls: true` on a plaintext scheme also moves the default port — `tcp://broker` becomes port 8883, not 1883 — and an explicit port always wins.
+
+NOTE: `protocol-version` is a construction-time choice — `Mqtt3Client` and `Mqtt5Client` are separate class hierarchies — so changing it requires a restart.
+
+== `mqtt-router`
+
+[options="header"]
+[cols="2,1,4"]
+|===
+|Key |Default |Notes
+
+|`max-inflight-messages-per-second`
+|`5000`
+|Global token bucket for **live** listeners — SSE connections and plugins' `subscribe` listeners. Excess messages are dropped for them, not queued. The last-value cache behind `mqtt-rest` and durable listeners such as `mqtt-mongo-writer` still see every message. `0` or any value `<= 0` disables it.
+
+|`last-message-cache`
+|`true`
+|Backs `mqtt-rest` and the SSE replay-on-connect
+
+|`last-message-cache-size`
+|`1000`
+|LRU
+
+|`subscriptions`
+|`[]`
+|List of `{topic, qos}` subscribed at startup
+|===
+
+Subscriptions declared here survive a broker session reset: when the client reconnects with a new session, the router re-subscribes them.
+
+`qos` is optional and defaults to `0`. It accepts an integer or a numeric string — `qos: "1"` works, since quoting a number in YAML is easy to do by accident — but any other value, including an out-of-range one such as `5`, fails at startup naming the offending entry rather than quietly becoming `0`. An entry whose `topic` is missing or blank is skipped with a warning; the other entries are still subscribed.
+
+== `mqtt-sse`
+
+[options="header"]
+[cols="2,1,4"]
+|===
+|Key |Default |Notes
+
+|`default-topic`
+|`sensors/#`
+|Used when the request omits `?topic=`
+
+|`default-qos`
+|`1`
+|Validated at startup, since it is the fallback for a bad request parameter
+
+|`per-connection-queue-capacity`
+|`256`
+|A full queue drops the newest message for that client only
+
+|`payload-envelope`
+|`false`
+|`true` wraps the payload as `{topic, payload, payloadEncoding, receivedAt, qos, replay, retain}`
+
+|`last-message-cache`
+|`true`
+|On connect, replays the cached last message of **every** topic currently cached that matches the request's topic filter, sorted by `receivedAt` — not just one message
+
+|`max-connections-per-topic`
+|`0`
+|`0` = unlimited
+
+|`keep-alive-ms`
+|`20000`
+|Period of the SSE keep-alive comment; `0` disables it
+
+|`pipeline`
+|none
+|See <<Processing pipeline>>
+|===
+
+Query parameters: `?topic=<filter>&qos=<0-2>`. A `qos` that is unparseable or outside 0–2 falls back to `default-qos` with a warning rather than refusing the connection — by the time the service sees the request the SSE handshake has already been sent, so there is no status code left to return.
+
+Every event is sent with SSE event type `mqtt-message` — this is the field a client dispatches on (`event: mqtt-message`). Each event carries an id of the form `<topic>-<epochMillis>-<n>`, where `n` is a per-connection sequence.
+
+NOTE: These ids are unique within one stream but are not globally meaningful and **cannot be used to resume** — `Last-Event-ID` is currently ignored. Resumable replay is tracked in https://github.com/SoftInstigate/restheart/issues/606[#606].
+
+=== MQTT 5 publish properties
+
+On MQTT 5, an `mqtt5` object reports the publish properties — `userProperties`, `contentType`, `correlationData` (base64), `responseTopic`, `payloadFormatIndicator` and `messageExpiryInterval`. It is **omitted** on MQTT 3.1.1, which has no such properties, and omitted when the publisher set none, so its presence means something.
+
+`userProperties` is an **array of `{name, value}` pairs, not an object**, because MQTT 5 permits a repeated name and requires the order preserved. Measured against Mosquitto: publishing `dup=first`, `other=in-between`, `dup=second` delivers all three, in that order — a JSON object would have kept one `dup` and lost the ordering.
+
+=== Payloads are bytes
+
+An MQTT payload is arbitrary bytes — protobuf, CBOR, an image, anything compressed — and JSON cannot carry bytes. So the envelope sends `payload` as text when the bytes are valid UTF-8 and as base64 when they are not, and `payloadEncoding` is always present, `"text"` or `"base64"`, because a base64 string is indistinguishable by inspection from a text payload that happens to look like base64.
+
+The raw format (`payload-envelope: false`) has nowhere to put that label, and SSE is a UTF-8 text protocol whose `data:` lines cannot carry arbitrary bytes at all. A non-text payload is therefore sent as **unlabelled** base64 and the service warns once.
+
+TIP: If your payloads are not all text, enable the envelope. `mqtt-rest` follows the same rule and returns `payloadEncoding` alongside `payload`.
+
+=== `replay` and `retain` are two different questions
+
+A consumer that wants live data must ask both. They only exist with `payload-envelope: true`; the raw format has nowhere to put them.
+
+* `replay` — this delivery came from the router's last-message cache rather than from the live stream. It is a fact about _this_ delivery, so two clients can legitimately disagree about the same message.
+* `retain` — the broker delivered this as the topic's last known state because the subscription was new. It is a fact about the _delivery from the broker_, so every consumer inside this instance agrees about it.
+
+`retain` is **not the publisher's retain flag.** MQTT 3.1.1 §3.3.1.3 has the server set RETAIN on delivery only when the message is sent as the result of a _new subscription_, and clear it for an established subscription however the publisher set it. So `retain: true` means "I was given this because I had just subscribed", not "the publisher asked for this to be retained" — which a subscriber cannot know. Measured both ways with `mosquitto_sub -F '%r'`: the same retained publish arrives with the flag set to a fresh subscription and clear to an established one.
+
+They are orthogonal, and the combination that catches people is `replay: false, retain: true`: the first client to subscribe to a filter receives the broker's retained value through the live path, so it arrives looking like an event that has just happened. **A genuinely new event is neither replayed nor retained.**
+
+CAUTION: `receivedAt` is always assigned locally when the message arrives, so a retained value published days ago is stamped with the moment this instance received it. MQTT 3.1.1 transports no publisher timestamp, so a retained message's true age cannot be recovered — `retain: true` tells you not to trust `receivedAt` as the time of measurement, not how wrong it is.
+
+=== Why `keep-alive-ms` matters
+
+It is how a departed client is noticed at all. Nothing reads an SSE connection after the handshake, so the only way the server learns a client is gone is a write to its socket failing. On a busy topic that happens on the next message; on a quiet one it may never be attempted.
+
+Until it is, the connection's router listener stays registered, filling a queue nobody drains, and its broker subscription stays in place — so every message matching both that filter and a broader one is delivered to the module twice, duplicating SSE events for other clients, duplicating custom-plugin callbacks, and duplicating MongoDB documents under `id-strategy: auto`. With `clean-session: false` the leaked broker subscription outlives the process, because it lives in the broker's session.
+
+The periodic comment turns that into a bounded wait. Detection takes up to **two** periods, not one: the first write into a half-closed socket succeeds, and only the next one fails.
+
+== Processing pipeline
+
+Events can pass through an ordered chain of stages before reaching the client. Pipelines are declared per topic filter and **instantiated per connection**, so stages holding state (`throttle`, the window aggregators) never share it between clients.
+
+[source,yaml]
+----
+mqtt-sse:
+  pipeline:
+    - topic: "sensors/#"
+      stages:
+        - type: filter
+          jsonpath: "$.temperature"
+          condition: "> 30"
+        - type: throttle
+          max-events-per-second: 10
+        - type: tumbling-window
+          window-ms: 5000
+          function: avg
+          field: "$.value"
+----
+
+[options="header"]
+[cols="1,3"]
+|===
+|Stage |Parameters
+
+|`filter`
+|`jsonpath` + `condition`, or `topic-regex`, or `min-qos`
+
+|`map`
+|`extract-field`
+
+|`throttle`
+|`max-events-per-second` (default `10`)
+
+|`tumbling-window`
+|`window-ms` (default `1000`), `function` (default `count`), `field`
+
+|`sliding-window`
+|`window-size` (default `10`), `function` (default `count`), `field`
+|===
+
+WARNING: A window's `field`, `map`'s `extract-field`, and `filter`'s `jsonpath` are **JSONPath expressions** evaluated against the message payload (e.g. `"$.value"`), not plain field names. `"temperature"` is not valid JSONPath and throws for every message, logged at WARN, so the window silently emits nothing. A `map` stage configured without `extract-field` is not rejected either: it is silently dropped from the pipeline.
+
+Aggregation functions: `count`, `sum`, `avg`, `min`, `max`, `array`, `last`. A window whose messages yield no numeric values (`avg`/`sum`/`min`/`max`) emits nothing rather than a zero or a sentinel. Tumbling windows are flushed by the connection's drain loop even when no further message arrives, so the last window of a quiet stream is still emitted.
+
+Pipeline selection for a connection is: exact topic-filter match, then MQTT wildcard match, then no pipeline. Every entry must carry a `topic`; one without it could never be selected, so it fails at startup rather than sitting there doing nothing.
+
+Every other validation — `window-ms <= 0`, `window-size <= 0`, `max-events-per-second <= 0`, and `avg`/`min`/`max`/`sum` configured with no `field` — is checked only **per connection**, inside the SSE handshake, since pipelines are instantiated fresh for every connection: a bad value throws for that one connection rather than failing at startup.
+
+== `mqtt-rest`
+
+`GET /mqtt?topic=<topic>` returns the last message cached for that topic:
+
+[source,json]
+----
+{
+  "topic": "sensors/temp",
+  "payload": "{\"temp\":25}",
+  "payloadEncoding": "text",
+  "receivedAt": "2026-09-13T22:57:12.951701590Z",
+  "qos": 1,
+  "retain": false
+}
+----
+
+`payloadEncoding` is `"base64"` when the payload is not valid UTF-8, and on MQTT 5 an `mqtt5` object carries the publish properties when the publisher set any — both exactly as in `mqtt-sse`'s envelope. There is no `replay` flag: every answer comes from the cache.
+
+`400` when the `topic` parameter is missing, `404` when nothing is cached for that topic — both with an `{"error": "..."}` body naming the reason. `OPTIONS` is handled for CORS; any other method returns `405`.
+
+NOTE: Requires `last-message-cache: true` on `mqtt-router`; with the cache disabled every topic returns `404`.
+
+== `mqtt-topic-authorizer`
+
+Restricts which topic filters a role may subscribe to, on both `/mqtt-sse` and `/mqtt`.
+
+[source,yaml]
+----
+mqtt-topic-authorizer:
+  acl:
+    iot-reader:
+      - "sensors/#"
+      - "devices/+/status"
+    admin:
+      - "#"
+----
+
+An unauthenticated request is denied with `401`. A request whose topic filter is not covered by any of the account's roles is denied with `403`.
+
+IMPORTANT: **The ACL check is filter containment, not topic matching, and the difference matters.** A pattern grants a requested filter only when everything the requested filter could match is also matched by the pattern. So `sensors/+` does **not** grant `sensors/#`: `#` reaches deeper levels that `+` cannot. Granting `sensors/+` and receiving `sensors/a/b` would be a privilege escalation, so it is refused. `#` in a pattern grants everything below it, as expected.
+
+== `mqtt-mongo-writer`
+
+Persists messages to MongoDB through a bounded in-memory buffer that absorbs traffic peaks.
+
+[source,yaml]
+----
+mqtt-mongo-writer:
+  buffer:
+    strategy: "blocking-queue"
+    capacity: 10000
+    max-bytes: 67108864
+  drain:
+    batch-size: 200
+    flush-interval-ms: 500
+    max-retries: 3
+    retry-delay-ms: 1000
+    shutdown-timeout-ms: 5000
+  id-strategy: "payload-field"
+  id-field: "messageId"
+  dead-letter-collection: "mqtt-dead-letter"
+  mongo-sink:
+    - topic: "sensors/#"
+      database: "iot"
+      collection: "sensor-events"
+----
+
+Requires the `mongoclient` module: it injects `mclient` rather than opening its own connection.
+
+=== Buffer ceilings
+
+`capacity` (10000) is a number of messages and `max-bytes` (64 MB) is how much heap they may take; whichever is reached first applies backpressure. Both are needed: ten thousand readings of a hundred bytes are a megabyte, ten thousand images of a hundred kilobytes are a gigabyte. A message's weight is its payload plus its topic plus a fixed allowance for the objects around them.
+
+=== Buffer strategies
+
+`buffer.strategy`, default `blocking-queue`. `buffer.max-wait-ms` bounds how long `blocking-queue` waits for room; `0` — the default — waits indefinitely.
+
+[options="header"]
+[cols="1,3"]
+|===
+|Value |On overflow
+
+|`ring-buffer`
+|Drop the oldest message; the new one is always accepted
+
+|`drop-incoming`
+|Reject the new message
+
+|`blocking-queue`
+|Block the producer until space frees up — the only strategy that applies real backpressure rather than losing data
+|===
+
+WARNING: A message a buffer refuses is lost: it was acknowledged to the broker as it arrived, so nothing else is holding it. Set `max-wait-ms`, or a dropping strategy, only where losing messages is preferable to slowing ingestion down.
+
+An unrecognised strategy fails at startup rather than silently falling back.
+
+=== Id strategies
+
+`id-strategy`, default `auto`.
+
+[options="header"]
+[cols="1,2,2"]
+|===
+|Value |`_id` |Write
+
+|`auto`
+|ObjectId
+|`insertMany`
+
+|`payload-field`
+|The `id-field` of the payload
+|Upserting `bulkWrite`
+|===
+
+Two values, not three, and the reason is worth stating because it also answers every future request for a clever third: **nothing the receiver computes locally can be stable across two receptions of the same message.** A redelivery is a fresh reception, so `receivedAt` differs, and the retain flag depends on subscription timing. Convergence needs an identity that travels _with_ the message, which means the publisher has to supply one. That is a boundary of MQTT 3.1.1, not a gap in this module.
+
+A duplicate-key error is treated as "already stored" under **either** strategy, so neither retries nor dead-letters a document that is in the database. That matters for `auto` too: when a write fails at the connection level the whole batch is re-sent, and part of it may already have landed.
+
+`id-field` (default `messageId`) must be set and non-blank when `id-strategy` is `payload-field`. Both keys are validated at startup, because a typo would otherwise disable deduplication silently.
+
+`payload-field` only applies to text payloads; a binary one falls through to `auto`, since there is no JSON document to read a field from. And if the payload is not valid JSON or the field is absent, the failure is swallowed: no `_id` is computed, and that one document falls back to a plain insert instead of an upsert — deduplication is lost silently, per message, rather than failing the write.
+
+**Only `payload-field` converges**, and it converges everywhere: across a redelivery to the same instance, and across nodes that all receive the same broker message. `auto` converges nowhere — every redelivery is a new document, which is a legitimate choice when you would rather keep every delivery than key on something the publisher controls.
+
+=== Stored document shape
+
+Documents use BSON types rather than strings, so the collection can be queried and indexed as what it is:
+
+[options="header"]
+[cols="2,1,4"]
+|===
+|Field |BSON type |Notes
+
+|`payload`
+|`string` \| `binData`
+|A string when the bytes are valid UTF-8, binary when they are not — the type itself is the discriminator, so no companion field can go stale
+
+|`receivedAt`
+|`date`
+|Range-queryable and indexable as a date
+
+|`receivedAtNanos`
+|`int`
+|The sub-millisecond remainder, `0`–`999999`
+
+|`retain`
+|`bool`
+|The flag the broker delivered the message with
+
+|`mqtt5`
+|`object`
+|The MQTT 5 publish properties; absent on MQTT 3.1.1 and when the publisher set none
+
+|`mqtt5.correlationData`
+|`binData`
+|Binary, like the payload
+
+|`mqtt5.messageExpiryInterval`
+|`int64`
+|As delivered — see the warning below
+
+|`mqtt5.expiresAt`
+|`date`
+|**Derived**: `receivedAt` + the interval above
+|===
+
+`receivedAtNanos` exists because BSON dates are milliseconds and `receivedAt` carries nanoseconds. Two messages inside one millisecond are ordinary at sensor rates, and a collection meant to be replayable must not lose the order they arrived in.
+
+Every document also records `retain`, so the collection records the event rather than an interpretation of it. Without it, a value delivered as a topic's stored last-known-state — possibly days old, and possibly already in the collection from before — is indistinguishable from a measurement just taken. In a steady-state deployment it is `false` on nearly every document, and `true` mainly on the messages delivered just after a (re)start, which is exactly when a row is most likely to be a re-record of an old value.
+
+WARNING: **`mqtt5.messageExpiryInterval` is a countdown, not what the publisher set.** A server decrements it by the time the message waited before delivery: measured against Mosquitto, 120 seconds published came back as **99** after a 20-second wait, and 300 came back as 283 after 15 seconds. Stored on its own the number is meaningless, so `mqtt5.expiresAt` is derived from it and `receivedAt` — the one derived field in the document, and the one that answers "which of these has expired?" with a date that can be indexed. Everything else is recorded verbatim.
+
+Two things a subscriber cannot know, so the collection cannot record them. Both limit how faithfully a stored stream can be replayed, and neither is a gap in this module:
+
+* whether the _publisher_ asked for retention — the delivered `retain` flag answers a different question;
+* the publisher's chosen message expiry, for the reason just given.
+
+Everything else a replay needs is there: topic, payload byte for byte, QoS, ordering to the nanosecond, and the MQTT 5 properties.
+
+CAUTION: A message published with MQTT 5 properties and delivered to an MQTT 3.1.1 subscriber arrives with **every property silently stripped** — measured; no error, no warning. If you intend to persist them, `mqtt-client` must be configured with `protocol-version: 5`.
+
+=== Dead letters
+
+`dead-letter-collection`, default `mqtt-dead-letter`, in the same database as the sink whose write failed.
+
+Only documents MongoDB _refuses_ — a failed validation, a size or type it will not take — end up there, after `drain.max-retries` attempts. Each keeps the document as it was plus a `_deadLetter` sub-document naming the collection it was meant for, the reason, and when. Being documents in a collection, they can be queried, repaired and re-inserted with the same REST API as anything else.
+
+`max-retries` governs only this path: a MongoDB that is unreachable is retried indefinitely instead, because the messages have already been acknowledged to the broker and there is nowhere else for them to be. A MongoDB that is **down** therefore produces no dead letters — a dead-letter queue in a stopped server would be no use anyway.
+
+If the dead-letter write fails too — the collection validates its documents as well, say — it is logged and those documents are lost; nothing is propagated into the drain loop. Re-ingesting them through an API of their own is tracked in https://github.com/SoftInstigate/restheart/issues/607[#607].
+
+=== Sinks
+
+Every `mongo-sink` entry must carry all three of `topic`, `database` and `collection`, each a string; a missing or mistyped key fails at startup naming the entry. An absent or empty `mongo-sink` list is legal and simply means nothing is persisted.
+
+== Metrics
+
+`mqtt-metrics-collector` (enabled by default whenever `mqtt-client` is armed) registers the router's counters as live Prometheus gauges via `restheart-metrics`' custom-metrics API, exposed at `GET /metrics/<name>`:
+
+* `mqtt_router_topic_filters`
+* `mqtt_router_listeners`
+* `mqtt_router_cached_messages`
+* `mqtt_router_messages_received`
+* `mqtt_router_messages_dropped`
+
+`mqtt-mongo-writer` and `mqtt-sse`, when enabled, register their own gauges the same way: `mqtt_buffer_size`, `mqtt_buffer_capacity`, `mqtt_buffer_bytes`, `mqtt_buffer_max_bytes`, `mqtt_buffer_accepted`, `mqtt_buffer_dropped`, `mqtt_buffer_duplicates`, `mqtt_sse_dropped`, `mqtt_sse_open_connections`, and `mqtt_throttle_dropped` (aggregated across every per-connection throttle stage).
+
+For a synchronous JSON view of the router's own counters without a Prometheus scrape, enable `mqtt-stats` (Tier 2, opt-in, secure) and `GET /mqtt/stats`.
