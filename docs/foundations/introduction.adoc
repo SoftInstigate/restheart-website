@@ -8,36 +8,34 @@ applies_to: both
 
 == What is RESTHeart?
 
-RESTHeart is a modern Java framework — built on Java 25, virtual threads, and GraalVM native images — that turns a MongoDB database into a REST, GraphQL, WebSocket, and SSE API, with authentication, authorization, and real-time change streams already wired in.
+RESTHeart is a backend for web, mobile, AI and IoT apps. It gives an application the backend it would otherwise have to write:
 
-Point it at a MongoDB instance and the API is there: no routes to write, no permission checks to hand-code, no pagination or filtering logic to duplicate across endpoints. 
+* **AI**: an MCP server, so AI agents use the application's APIs under the same permissions as its users; vector search, with embeddings computed on write (Voyage AI, any OpenAI-compatible endpoint, Ollama), uploaded documents chunked for retrieval, and results re-ranked — the pieces of RAG, on the data the application already has;
+* **accounts**: sign-up, login, email verification, password reset, team invitations, Google sign-in, tokens and API keys;
+* **permissions** per role, down to the documents a user may read or change;
+* **data** on MongoDB through REST, GraphQL, WebSocket and SSE, with JSON Schema validation;
+* **live data**: changes pushed to clients as they happen;
+* **email**: transactional messages from templates, over your own SMTP;
+* **payments** with Stripe;
+* **IoT**: an MQTT bridge for devices.
 
-Permissions and behavior are configured declaratively. Custom logic goes into plugins, written in Java, Kotlin, JavaScript, or TypeScript, only for what a data API cannot express.
+All of it is configuration, not code. What an application needs beyond it goes into plugins, in Java, Kotlin, JavaScript or TypeScript.
 
-RESTHeart has two faces, and understanding this distinction is crucial:
+RESTHeart can be used in two ways, and most applications use both.
 
 === RESTHeart as a Ready-to-Use Platform
 
-Out of the box, RESTHeart provides complete MongoDB APIs that work immediately:
-
-* **REST API** - Full CRUD operations, queries, aggregations, transactions
-* **GraphQL API** - Flexible queries with automatic MongoDB integration
-* **WebSocket API** - Real-time data with change streams
-* **Security** - Built-in authentication and authorization
-
-**No coding required.** You can build complete applications using just HTTP requests and configuration.
+Everything listed above works out of the box, configured rather than coded: an application can be built with HTTP requests and configuration alone.
 
 === RESTHeart as an HTTP Framework
 
-RESTHeart is also a powerful framework for building custom services:
+RESTHeart is also a framework for the services configuration cannot express, on Java 25, virtual threads and GraalVM native images:
 
-* Develop plugins in **Java**, **Kotlin**, **JavaScript**, or **TypeScript**
-* Four simple building blocks: Services, Interceptors, Providers, Initializers
-* Starts in ~100 milliseconds for fast development cycles
-* Each request runs in a dedicated virtual thread (simple, scalable code)
-* Powerful dependency injection
-
-**Write custom code** when you need functionality beyond the standard MongoDB APIs.
+* plugins in **Java**, **Kotlin**, **JavaScript** or **TypeScript**;
+* four building blocks: Services, Interceptors, Providers, Initializers;
+* dependency injection;
+* each request on its own virtual thread, so plugin code is plain blocking code;
+* startup in about 100 milliseconds.
 
 ++++
 <div class="col-md-8 col-12 mx-auto">
@@ -52,28 +50,29 @@ RESTHeart is also a powerful framework for building custom services:
 
 RESTHeart consists of:
 
-1. **restheart-core** - The runtime process that:
-   - Parses configuration
-   - Registers plugins
-   - Enforces security policies
-   - Routes requests to services
-   - Executes interceptors
+1. **restheart-core**: the runtime. It reads the configuration, registers the plugins, enforces the security policies, routes each request to its service and runs the interceptors.
 
-2. **Standard Plugins** - Pre-built functionality in the `plugins` directory:
+2. **Standard plugins**, in the `plugins` directory:
 
 [source,bash]
 ----
 plugins
-├── lib/                         # Plugin dependencies
-├── restheart-graphql.jar       # GraphQL API
-├── restheart-metrics.jar       # Metrics and monitoring
+├── lib/                                # plugin dependencies
+├── restheart-accounts.jar              # sign-up, login, teams, password reset
+├── restheart-ai.jar                    # MCP server, vector search, embeddings, reranking
+├── restheart-emails.jar                # transactional email over SMTP
+├── restheart-graphql.jar               # GraphQL API
+├── restheart-metrics.jar               # metrics and monitoring
 ├── restheart-mongoclient-provider.jar  # MongoDB connection
-├── restheart-mongodb.jar        # REST API for MongoDB
-├── restheart-polyglot.jar       # JavaScript/TypeScript support
-└── restheart-security.jar       # Authentication & Authorization
+├── restheart-mongodb.jar               # REST, WebSocket and SSE APIs for MongoDB
+├── restheart-polyglot.jar              # JavaScript and TypeScript plugins
+├── restheart-security.jar              # authentication and authorization
+└── restheart-stripe.jar                # payments with Stripe
 ----
 
-3. **Your Custom Plugins** (optional) - Add JAR files or JavaScript directories
+The MQTT bridge is a separate module, installed into an instance rather than shipped with it: see link:/docs/mqtt/[IoT / MQTT].
+
+3. **Your plugins**, optional: JAR files, or directories of JavaScript.
 
 ++++
 <div class="col-md-8 col-12 mx-auto">
@@ -82,69 +81,38 @@ plugins
 </div>
 ++++
 
-== Who Should Use RESTHeart?
+== What to Build with It
 
-=== You Need a MongoDB API (No Coding)
+=== A web or mobile app
 
-**Use case:** Build mobile apps, web apps, or integrations that need to access MongoDB.
+Accounts, permissions, data, live updates, email and payments, with no backend code.
+Start from link:/docs/accounts/overview[Accounts], link:/docs/security/overview[Security] and the link:/docs/mongodb-rest/[REST API]; add link:/docs/websocket/[WebSocket] or link:/docs/sse/[SSE] for live data, link:/docs/framework/emails[Email] and link:/docs/stripe/overview[Stripe] when you need them.
 
-**What you'll use:**
-- Part 2: MongoDB REST API
-- Part 3: GraphQL & WebSocket APIs
-- Part 4: Security
-- Part 5: Configuration & Deployment
+=== An AI app
 
-**Example:** A mobile app that needs CRUD operations, user authentication, and real-time updates.
+Agents that use the application's APIs through link:/docs/ai/mcp[MCP], under the same permissions as its users; retrieval over the application's own data with link:/docs/ai/vector-search[vector search], embeddings computed on write, documents chunked and results re-ranked.
 
-=== You're Building Custom HTTP Services
+=== An IoT app
 
-**Use case:** Build microservices with custom business logic.
+Device messages from an MQTT broker, turned into MongoDB documents, REST responses or Server-Sent Events: see link:/docs/mqtt/[IoT / MQTT].
 
-**What you'll use:**
-- Part 6: Framework (Plugin Development)
-- Part 7: Security Plugins (if needed)
+=== Custom services
 
-**Example:** An HTTP API that processes payments, sends emails, or integrates with third-party services.
-
-=== You Need Both
-
-**Use case:** Use the MongoDB API for data operations, plus custom services for business logic.
-
-**What you'll use:** Everything!
-
-**Example:** An e-commerce platform using the MongoDB API for products/orders, plus custom services for payment processing and inventory management.
+What configuration cannot express — a third-party integration, a computation, a workflow — goes into link:/docs/framework/overview[plugins], next to everything above.
 
 == Why RESTHeart?
 
-=== Speed and Ease
+=== Out of the box
 
-RESTHeart prioritizes speed and simplicity. It's built with high-quality libraries to provide a seamless developer experience.
+Most applications need what the list at the top of this page gives: accounts, permissions, data and live updates, often email and payments, now AI too. With RESTHeart that is a running instance and its configuration, not code.
 
-=== Virtual Threads for Superior Performance
+TIP: See it with a link:/#starter-apps-content[starter app]: sign-up, login, teams and data, with no backend code. Clone it, point it at a free RESTHeart Cloud service, run it.
 
-RESTHeart fully embraces virtual threads that deliver remarkable performance and efficiency improvements:
+=== Virtual threads
 
-- Faster execution
-- Lower memory footprint
-- Simpler concurrent code
-- Better resource utilization
+Every request runs on its own virtual thread. Plugin code is written as plain blocking code, with no callbacks or reactive types, and a blocked request does not hold a platform thread.
 
-This keeps RESTHeart at the forefront of high-performance, scalable frameworks.
-
-=== Instant APIs Out of the Box
-
-For many applications, you just need:
-- **Data access** - REST/GraphQL/WebSocket APIs for MongoDB
-- **Security** - Authentication and authorization
-- **Configuration** - Connect to your database
-
-> Most applications require exactly this. Run a stock RESTHeart instance with zero code!
-
-TIP: See it for yourself with a link:/#starter-apps-content[starter app]: sign-up, login, teams and data, with *zero* lines of backend code — clone it, point it at a free RESTHeart Cloud service, run it.
-
-=== Built for Developers
-
-When you need custom functionality, RESTHeart makes plugin development simple:
+=== Plugins when you need them
 
 **Hello World in Java:**
 
@@ -171,44 +139,32 @@ export function handle(request, response) {
 }
 ----
 
-NOTE: JavaScript runs in a thread-safe, multi-threading environment. No async/await, promises, or callbacks required. *Just clean, simple code.*
-
-=== Key Features
-
-* **Declarative Security** - Configure authentication and authorization without code
-* **Instant MongoDB APIs** - REST, GraphQL, and WebSocket
-* **Polyglot** - Java, Kotlin, JavaScript, TypeScript
-* **High Performance** - Hundreds of thousands of requests per second
-* **Cloud-Ready** - Docker, Kubernetes, GraalVM native images
-* **Fully Extensible** - Simple plugin system
+NOTE: JavaScript plugins are plain synchronous code: no async/await, promises or callbacks.
 
 == What Makes RESTHeart Different?
 
-RESTHeart is similar to frameworks like _Undertow_ (which RESTHeart uses internally), _Vert.x_, _Quarkus_, _Spring Boot_, and _Node.js_.
+RESTHeart is comparable to frameworks such as _Undertow_ (which it uses internally), _Vert.x_, _Quarkus_, _Spring Boot_ and _Node.js_. The difference is that it includes the application's backend, not only the primitives to write one:
 
-**The difference:** RESTHeart includes application-level features, not just framework primitives.
-
-* **Other frameworks** require you to implement authentication, database access, API design, security
-* **RESTHeart** provides these features ready to use, and lets you customize when needed
+* with **other frameworks** you implement accounts, permissions, data APIs, payments and the AI integration yourself;
+* with **RESTHeart** they are there, configured, and you write code only for what is specific to your application.
 
 == Deployment Options
 
-RESTHeart runs anywhere Java runs:
-
-* **Standalone JAR** - `java -jar restheart.jar`
-* **Docker** - `docker run softinstigate/restheart`
-* **Kubernetes** - Deploy with standard manifests
-* **GraalVM Native** - ~40MB native binary, instant startup
-* **Cloud Platforms** - AWS, GCP, Azure
+* **Standalone JAR**: `java -jar restheart.jar`
+* **Docker**: `docker run softinstigate/restheart`
+* **Kubernetes**: standard manifests, or the link:/docs/deployment/helm-chart[Helm chart]
+* **GraalVM native**: a native binary, instant startup
+* **Cloud platforms**: AWS, GCP, Azure
+* **RESTHeart Cloud**: fully managed, at link:https://cloud.restheart.com[cloud.restheart.com]
 
 == Licensing
 
 RESTHeart is dual-licensed:
 
-* **AGPL** - Free and open source (no feature restrictions)
-* **Enterprise License** - Business-friendly license for closed-source products
+* **AGPL**: free and open source, with no feature restrictions;
+* **Enterprise License**: for closed-source products.
 
-link:/docs/reference/enterprise-license[Learn more about Enterprise License]
+link:/docs/reference/enterprise-license[Learn more about the Enterprise License]
 
 == What's Next?
 
