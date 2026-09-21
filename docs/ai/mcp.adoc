@@ -230,6 +230,10 @@ That matters because a permission may decide on something a call carries:
 
 There is no ticket while a catalog is being composed — there is no call yet — so that part of the rule is left open and `/ledger` is announced. The call itself is authorized as usual: without the ticket it answers `403`, with it, it goes through. Reading the rule as a refusal would hide the resource from the very caller entitled to it.
 
+The action left open says what it depends on, so the agent knows what to send: its note reads _whether this is permitted depends on the query parameter `ticket`, which the call carries…_. And when the rule that could apply writes fields into the body with `mergeRequest`, the action lists them as `server_sets` and its `body_schema` no longer requires them: the collection's schema describes the stored document, not what the caller sends.
+
+The unfiltered catalog names each resource's actions with the parameters each one requires, so an agent can go from the listing to `call_api` without describing every resource first.
+
 The opposite holds for anything the catalog *can* work out. A condition on who is asking is decided exactly:
 
 [source,json]
