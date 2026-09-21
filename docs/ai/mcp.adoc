@@ -235,7 +235,11 @@ The opposite holds for anything the catalog *can* work out. A condition on who i
 
 `/orders` is announced to a customer on the `gold` plan and to nobody else — which no list of roles could express, since every customer holds the same role.
 
-**Actions are never filtered.** A resource is described with every action its kind affords: a collection with all of them, an aggregation with its execution, a GraphQL app with its query. What a call may do is decided when it is made, and `call_api` says so: a `403` means the session's role cannot do that thing.
+**The same rule decides a resource's actions.** A resource is described with the actions the caller's own rules could allow, and with no others: a role holding only `GET` on a collection is not offered its writes, and one whose permission does not grant `mongo.allowManagementRequests` is not offered `drop`. An action the rules might allow *is* offered, with what the catalog knows about it — `create` on a collection whose write rule reads a query parameter says that whether it goes through depends on what the call carries.
+
+This does not bring back the defect that filtering actions once caused. That was a two-valued probe: it answered "refused" to a rule deciding on an argument it did not have, and dropped the write for the very caller entitled to it. The analysis answers "undetermined" there, and undetermined is offered.
+
+Withholding is not blocking, here as anywhere else in the catalog: a caller who knows an action can still ask for it, and the ACL refuses it then.
 
 [IMPORTANT]
 ====
@@ -272,6 +276,8 @@ To read a permission, the catalog looks at its predicate one atom at a time, and
 | Leaves it open, so the resource is announced — the same as the row above, and for the same reason: never hide what might be allowed.
 |===
 
+There is a fourth case, one step up from an atom: a caller for whom there is **no rule to read at all**. It happens when access is granted by an `Authorizer` written in Java rather than by a permission — a hosting platform letting an administrator onto its own node, for instance. No rule to read is not the same as no rule that matches: the caller reached `/mcp`, so something allowed them, and the analysis has nothing to go on. It rules nothing out, so it hides nothing, and the whole catalog is announced. Use the two keys below on anything that should stay quiet anyway.
+
 The first two kinds need nothing from you. Every predicate, exchange attribute and variable RESTHeart ships declares itself, so a policy written with them — which is almost every policy — produces an accurate catalog on its own.
 
 The third is where a hand helps, and it costs precision, not safety: an atom nobody can read makes the resource **visible to everyone the rest of the rule admits**, so `path-prefix('/orders') and is-premium()` announces `/orders` to every customer instead of the premium ones. Three places to say what it is, best first:
@@ -304,6 +310,44 @@ public static class Builder implements PredicateBuilder, EvaluationScope {
 The same block takes `"publish": "never"`, which keeps a deliberately wide permission — `path-prefix('/')` for an operations role — from announcing the whole service to it.
 
 . **On the resource**, when there is no predicate at all to declare: access decided by an `Authorizer` written in Java, whose logic is code and has nothing to read. That is what the two keys below are for.
+
+==== The operations on a resource itself
+
+A collection publishes more than its documents' actions. The
+https://restheart.org/docs/mongodb-rest/dbs-collections[data management API] — reading and changing
+its properties, dropping it, listing and managing its
+https://restheart.org/docs/mongodb-rest/indexes[indexes] — and the bulk writes over `/<coll>/*` are
+published like anything else, because they are legitimate operations and the ACL is what decides
+them.
+
+Each one says what it acts on, which a name alone does not: `delete` is `DELETE /<coll>/{id}` and
+removes one document, while `drop` is `DELETE /<coll>` and removes the collection with everything in
+it. An action on the resource itself carries `"target": "resource"`; acting on an element is the
+ordinary case and stays unsaid.
+
+Each also names the switch its permission must grant, because there are always **two** conditions
+and both are necessary — a permission matching the method and the path, *and* the switch:
+
+[cols="1,2"]
+|===
+| Action | Needs
+
+| `properties`, `set_properties`, `drop`, `indexes`, `create_index`, `delete_index`
+| `mongo.allowManagementRequests`
+
+| `update_many`
+| `mongo.allowBulkPatch`
+
+| `delete_many`
+| `mongo.allowBulkDelete`
+|===
+
+Those switches are off unless written, so by default none of these is offered to anybody — which is
+why a catalog that lists them for a role is worth a second look, not a shrug.
+
+TIP: `drop` needs the collection's current ETag, which `properties` returns, and declares it as a
+parameter carried in the `If-Match` header. Without it the answer is `409`, which an agent has no
+way to interpret.
 
 ==== Declaring it on the resource
 
