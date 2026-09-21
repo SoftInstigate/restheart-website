@@ -83,19 +83,6 @@ jvmMetricsCollector:
 
 Additionally, RESTHeart captures JVM metrics such as memory usage and garbage collector data.
 
-### Workers Watchdog
-
-Available from RESTHeart v9.9.
-
-```yaml
-workersWatchdog:
-  enabled: false
-  interval-seconds: 10
-  threshold-seconds: 30
-```
-
-Blocking requests run on virtual threads, carried by as many platform threads as the container has CPUs. If those stay occupied, every blocking request hangs while `/ping`, served on the I/O thread, still answers. When enabled, a platform thread hands the request executor an empty task every `interval-seconds`; if it has not started `threshold-seconds` later, the full thread dump — virtual threads included, as `jcmd Thread.dump_to_file` writes it — goes to the log, once until the executor serves again. It is meant for containers with no shell to run `jcmd` from.
-
 ### Metrics UI (Static Resources)
 
 > **Note**: The embedded Metrics UI dashboard is available starting from RESTHeart v9.5.0.
@@ -648,6 +635,75 @@ Or via the `RHO` environment variable:
 ```bash
 RHO='/metrics/enabled->false;/requestsMetricsCollector/enabled->false'
 ```
+
+## Workers Watchdog
+
+> **Note**: Available from RESTHeart v9.9.
+
+The workers watchdog writes a full thread dump to the log when RESTHeart stops serving requests, and can terminate the process so that its orchestrator starts a new one.
+
+### Why it exists
+
+A blocking request — almost every request — runs on a virtual thread, and virtual threads run on a few *carrier* threads: as many as the container has CPUs. If the carriers stay occupied, no virtual thread gets to run. Every blocking request then waits forever, while `/ping`, which is served on the I/O thread, keeps answering: to a load balancer the node looks healthy.
+
+Finding out why needs a thread dump taken at that moment, and the RESTHeart images are distroless: there is no shell to run `jcmd` from. The watchdog takes the dump from inside the process and puts it where it can be read, in the log.
+
+### Configuration
+
+```yaml
+workersWatchdog:
+  enabled: false
+  interval-seconds: 10
+  threshold-seconds: 30
+  halt-after-seconds: 0
+  notify-email: null
+```
+
+| Option | Default | What it does |
+|---|---|---|
+| `enabled` | `false` | Turns the watchdog on. |
+| `interval-seconds` | `10` | How often an empty task is handed to the executor of blocking requests. |
+| `threshold-seconds` | `30` | How long that task may wait to start before the thread dump is logged. |
+| `halt-after-seconds` | `0` | How long it may wait before the process halts; `0` never. Never shorter than `threshold-seconds`. |
+| `notify-email` | `null` | An address to mail the report to as well, once per stall. Needs the `emails` provider configured. |
+
+The watchdog runs on its own platform thread, so it keeps working when the carriers are stuck.
+
+### What the log shows
+
+Once per episode, at `ERROR`:
+
+```
+ERROR Blocking requests are not being served: a task handed to the request executor 6s ago has not started. Thread dump follows.
+```
+
+followed by every thread, virtual threads included, in the format of `jcmd <pid> Thread.dump_to_file`. When the executor serves again the watchdog logs `Blocking requests are served again, after <n>s` at `WARN`, and a later stall is reported anew.
+
+To read the dump, look for two things:
+
+- the carrier threads, `ForkJoinPool-1-worker-<n>`, all `RUNNABLE` and running a continuation: they are occupied;
+- the virtual threads named `RH VRT WRK ⚙` that are `RUNNABLE` **with a stack**: they are the ones holding the carriers, and their stack names the code that does it.
+
+```
+#85 "RH VRT WRK ⚙" virtual RUNNABLE
+    at com.example.MyService.handle(MyService.java:16)
+    at org.restheart.handlers.ServiceWrapper.handleRequest(PipelinedWrappingHandler.java:277)
+    ...
+```
+
+A virtual thread that is `RUNNABLE` with no stack is a request waiting for a carrier.
+
+### The alarm mail
+
+With `notify-email` set, the report also goes by mail to that address, through the `emails` provider — the same SMTP settings RESTHeart uses for account emails. The subject names the host; the body says whether and when the process will halt, and carries the dump. It is sent from a thread of its own and never through the executor that is stuck, so it goes out while no request can. If the provider is not configured, the watchdog says so at startup and logs only.
+
+### Halting
+
+A process whose carriers are stuck does not recover by itself. With `halt-after-seconds` above zero, if the executor has still not served that long after the task was handed over, the watchdog logs why and terminates the process with exit status `70`, so that ECS, Kubernetes or systemd starts a new one. The dump is always written first, and the alarm mail, which left with the dump, is given up to another 60 seconds to go out.
+
+It halts rather than exits: an orderly exit waits for the requests in flight, which will never complete, and part of the shutdown itself runs on virtual threads, which have no carrier left. The process would hang while stopping.
+
+Leave it at `0` where a debugger is attached: a request stopped at a breakpoint keeps its carrier, and after `halt-after-seconds` the process would be terminated.
 
 ## See Also
 

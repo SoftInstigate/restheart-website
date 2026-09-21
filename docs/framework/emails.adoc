@@ -10,7 +10,7 @@ The **emails** plugin (`restheart-emails` module) provides SMTP email sending ca
 
 TIP: Available since *version 9.6.0*.
 
-The plugin is used by `restheart-accounts` for transactional emails (registration verification, team invitations, password reset) and can be used by any custom plugin that needs to send emails.
+The plugin is used by `restheart-accounts` for transactional emails (registration verification, team invitations, password reset), by the link:/docs/deployment/monitoring#workers-watchdog[workers watchdog] to mail its alarm, and can be used by any custom plugin that needs to send emails.
 
 NOTE: The `restheart-emails` module is bundled with RESTHeart. No separate installation is required — just enable and configure it below.
 
@@ -116,6 +116,8 @@ Choose between them based on where your code runs:
 | `sendEmail()`
 | Inside a `RESPONSE_ASYNC` interceptor, a scheduled job, or an initializer — the caller is already off the request path, so the extra dispatch buys nothing and blocking gives you natural backpressure
 |===
+
+Code that has to mail *because* requests are not being served must not use `sendEmailAsync()`: it queues the send on the executor that is stuck. The workers watchdog calls `sendEmail()` from a platform thread of its own for this reason.
 
 Delivery is best effort in both cases: `EmailSender` returns `void` and never throws. SMTP failures are logged by the plugin, so a failed email never breaks the calling request.
 
