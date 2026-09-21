@@ -613,6 +613,24 @@ oauthProtectedResourceMetadataService:
   base-url: https://api.example.com   # optional, resolves TLS proxy mismatch
 ----
 
+Without `base-url`, the scheme comes from `X-Forwarded-Proto` and the host from `X-Forwarded-Host`, each when present, else from the request itself. A multi-tenant deployment can attach the tenant's base URL to each request as `override-ai-mcp-public-base-url`, which wins over both.
+
+[[the-challenge-on-a-refused-mcp-request]]
+==== The challenge on a refused MCP request
+
+NOTE: Available from RESTHeart v9.9.0.
+
+When a request to the MCP server is refused — no credential, or a token or API key that is invalid, expired or revoked — the `401` carries the location of this document:
+
+[source,http]
+----
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Basic realm="RESTHeart Realm"
+WWW-Authenticate: Bearer resource_metadata="https://api.example.com/.well-known/oauth-protected-resource/mcp"
+----
+
+MCP 2025-06-18 requires it; clients of 2025-11-25 also find the document at the well-known URI without it. It is sent by `oauthResourceChallengeMechanism`, enabled by default, which never authenticates anybody and speaks only when `oauthProtectedResourceMetadataService` and `mcpService` are both enabled, and only on the MCP server's path. The URL is built exactly as the document builds its own, so the two always name the same host. A request with `No-Auth-Challenge` gets no challenge, this one included.
+
 === Dynamic Client Registration (RFC 7591)
 
 NOTE: Available from RESTHeart v9.3.0. Disabled by default.
