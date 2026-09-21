@@ -161,6 +161,17 @@ Location: http://localhost:8080/inventory/61709f718bedc3055e218d7e
 
 TIP: You can specify your own `_id` in the request body to avoid having MongoDB generate one.
 
+===== Where the `Location` points
+
+The URL is built for the client, not from what the node sees. Behind a proxy that terminates TLS the request reaches RESTHeart as plain `http`, so the scheme comes from `X-Forwarded-Proto` and the host from `X-Forwarded-Host`, each when present. Set `instance-base-url` in the `mongo` configuration to fix it instead — it includes the service's mount, e.g. `https://api.example.com/mongo`.
+
+NOTE: From RESTHeart v9.9, `instance-base-url` can be overridden per request. A multi-tenant deployment, where one node serves several hosts, attaches the tenant's own value as `override-mongo-instance-base-url`, typically from an interceptor at `REQUEST_BEFORE_AUTH`:
+
+[source,java]
+----
+req.attachParam("override-mongo-instance-base-url", "https://tenant1.example.com");
+----
+
 ==== PUT - Create with Specific ID
 
 Use `PUT` with the `?wm=upsert` parameter to create a document with a specific ID:
