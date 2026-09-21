@@ -162,6 +162,8 @@ An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations
 
 If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_aggrs/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_aggrs/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
 
+Expect most clients not to show it. Listing resources and listing resource templates are two different MCP methods, and a client that calls only the first shows a catalog missing every parametric resource — the agent then has no reason to think it exists. `list_apis` always carries it, `call_api` always executes it, and the server says so in the instructions it sends at initialize.
+
 As with the real REST endpoint, a flat query parameter like `?status=A` binds the `$var` of the same name — see link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables] for the full rules (JSON-shaped values, combining with `avars`, etc.).
 
 ==== Not (yet) readable this way
