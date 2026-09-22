@@ -27,6 +27,7 @@ Data validation ensures that documents conform to a predefined structure before 
 The jsonSchema Interceptor in RESTHeart offers several advantages over MongoDB's native validation:
 
 * Schemas are stored in a dedicated schema store (`/_schemas`) and are validated themselves
+* JSON Schema draft-04, draft-06 and draft-07, by each schema's `$schema`; draft-07 when it has none, since 9.9.0. Before 9.9.0 every schema was validated as draft-04, whatever its `$schema`. Draft 2019-09 and 2020-12 are refused with `400`
 * Schemas can be reused across multiple collections
 * Support for complex schemas with sub-schemas using the `$ref` keyword
 * Integration with online schemas
