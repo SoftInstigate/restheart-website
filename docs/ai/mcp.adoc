@@ -81,6 +81,8 @@ curl -X PATCH http://localhost:8080/mydb/inventory \
 
 Each variable the pipeline reads is declared as a parameter of its own, so `list_apis` shows `status` beside `jsonMode` and `how_to_call` composes `?status=A`. Since 9.9.0 that is how RESTHeart binds them: any query parameter it does not reserve for itself becomes the `$var` of the same name — see link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables] for the full rules.
 
+A parameter's `type` is a JSON Schema type, or — since 9.9.0 — a BSON one by MongoDB's `$type` alias: `date`, `objectId`, `long`, `decimal`. The catalog publishes it as the Extended JSON an agent sends: `"type": "date"` becomes an `object` described as `{"$date": <epoch millis>}`, which binds the `$var` to a date. Declared `string`, a variable compared with a date field matches nothing.
+
 The older shape, one `avars` object holding them all (`?avars={"status":"A"}`), still works and is still accepted wherever the flat one is. Two cases keep it: a variable whose name collides with a query parameter RESTHeart reads itself — `page`, `sort`, `filter` and the like, which would never reach the pipeline — and a service older than 9.9.0. A colliding variable is declared under `avars` for that reason, and the resource says so among its `warnings`.
 
 TIP: `mcp.pipeline_summary` lets you override the auto-generated one-line summary of the pipeline (`$match → $group`) — useful once a pipeline uses `$lookup`/`$facet`/`$vectorSearch` and the auto-generated summary stops being meaningful.
