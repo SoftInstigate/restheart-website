@@ -178,7 +178,7 @@ curl -X PATCH http://localhost:8080/mydb/articles \
 
 From then on, any `description` you write to `articles` gets an `embedding` field computed for free.
 
-The model is a property of the vector field, from 9.9: a collection may name its own `provider`, `model` and `dimensions` in the same block, and they win over the provider's configuration and over any `override-ai-*` the request carries. `voyage-law-2` on `/legal` and `voyage-code-4` on `/src`, with one key. `$vectorize` follows the same block, so a question is embedded with the model of the vectors it is searched against:
+The model is a property of the vector field, from 9.9: a rule may name its own `provider`, `model` and `dimensions`, and they win over the provider's configuration and over any `override-ai-*` the request carries. `voyage-law-2` on `/legal` and `voyage-code-4` on `/src`, with one key. `$vectorize` follows the same rule, so a question is embedded with the model of the vectors it is searched against:
 
 [source,json]
 ----
@@ -187,6 +187,20 @@ The model is a property of the vector field, from 9.9: a collection may name its
 ----
 
 `provider` names a configured embedding provider (`voyageEmbeddingProvider`, `voyageContextualEmbeddingProvider`, `openAIEmbeddingProvider`, `ollamaEmbeddingProvider`); `dimensions` applies where the provider takes a vector length.
+
+A collection can hold more than one vector field, each with its own model: `vectorSearch` is then a list of rules, one per vector field. On every write, each rule whose text field the document carries embeds it; a write with only `summary` recomputes `summaryVector` and leaves `bodyVector` as it is. The object form above is still read, as a list of one.
+
+[source,json]
+----
+{ "vectorSearch": [
+    { "textField": "summary", "embeddingField": "summaryVector",
+      "provider": "voyageEmbeddingProvider", "model": "voyage-law-2" },
+    { "textField": "body", "embeddingField": "bodyVector",
+      "provider": "voyageContextualEmbeddingProvider", "model": "voyage-context-4" }
+] }
+----
+
+The metadata is checked when it is written: a rule without `textField` or `embeddingField`, or two rules on the same `embeddingField`, is refused with a `400` that names the rule, not at the first document write. With more than one rule, a `$vectorize` has to say which vector field the question is for; an aggregation that does not is refused, with the collection's vector fields in the message.
 
 *Embed inline in a pipeline* — the `$vectorize` operator turns text into a vector at query time, anywhere in an aggregation:
 
@@ -253,7 +267,8 @@ Every value above can be overridden per request instead of set once for the whol
 |`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
 |`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`), `max-candidates-cap` and `max-limit-cap` (unset: no cap).
 |`documentChunkingInterceptor` |Chunk GridFS uploads — code-aware (function/class boundaries) for recognized source file extensions, character-window otherwise. `chunk-size`, `chunk-overlap`, `target-collection`, `embedding-provider`.
-|`autoEmbeddingInterceptor` |Embed on write. `embedding-provider`.
+|`autoEmbeddingInterceptor` |Embed on write, one or more rules per collection. `embedding-provider`.
+|`vectorSearchMetadataChecker` |Refuses malformed `vectorSearch` rules when the metadata is written. Enabled by default, no config.
 |`vectorizeOperator` |`$vectorize` aggregation operator. `embedding-provider`.
 |`rerankingInterceptor` |Rerank `$vectorSearch` results. `atlas-api-key`, `rerank-api-url`, `rerank-provider`.
 |`openAIEmbeddingProvider` |OpenAI/OpenRouter/any OpenAI-wire-compatible embeddings. `api-key`, `model` (`text-embedding-3-small`), `base-url`, `dimensions` (a shorter vector, from 9.9).
