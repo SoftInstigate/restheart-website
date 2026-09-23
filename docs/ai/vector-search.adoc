@@ -74,6 +74,8 @@ vectorScanInterceptor:
   enabled: true
   default-max-candidates: 10000  # candidates scanned when maxCandidates is omitted
   default-limit: 10              # results returned when limit is omitted
+  # max-candidates-cap: 2000     # no stage may scan more than this; unset = no cap
+  # max-limit-cap: 100           # no stage may return more than this; unset = no cap
 ----
 
 Use real `$match`/`$sort` stages to narrow candidates first — unlike `$vectorSearch`'s restricted `filter`, this is full MQL. `$vectorScan` itself takes a `path` to the vector field, a `queryVector`, a `similarity` (`cosine`, `dotProduct`, or `euclidean`), and an optional `limit`:
@@ -101,6 +103,8 @@ curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"ele
 Stages placed after `$vectorScan` — like the `$project` above — run for real against MongoDB, bridged back in via `$documents` (requires MongoDB 6.0+). Reranking composes automatically too: attach a `rerank` block exactly as in section 5 below, since it scores whatever result array the pipeline produced regardless of how it got there.
 
 `maxCandidates` bounds how many documents (after `$match`) are scanned and scored before ranking and truncating to `limit` — there's no index, so this is the whole cost control. Reach for `$vectorScan` when you don't have or don't want mongot, on candidate sets small enough that a full scan is cheap; move to `$vectorSearch` once you need indexed approximate-nearest-neighbor search at scale.
+
+`maxCandidates` and `limit` are set by whoever defines the aggregation. `max-candidates-cap` and `max-limit-cap` are set by whoever runs the node, and the stage cannot exceed them: the scan uses `min(what the stage asks for, cap)`. Scoring runs in RESTHeart, not in MongoDB, so on a node shared by many tenants the caps bound how many vectors a single query pulls into memory. Both are unset by default, which means no cap. When a request is capped, the response carries a `Warning: 299` header naming the requested and the effective value, so results that differ from an uncapped run are explained (the body of an aggregation is a plain array, so there is no `_warnings` field to put it in). Aggregation responses list `Warning` in `Access-Control-Expose-Headers`, so a browser on another origin can read it too. A multi-tenant deployment sets the caps per request instead, attaching `override-ai-max-candidates-cap` and `override-ai-max-limit-cap` from its own interceptor; an attached value wins over the configured one, and `0` lifts the cap.
 
 === 3. Chunk documents for RAG
 
@@ -247,7 +251,7 @@ Every value above can be overridden per request instead of set once for the whol
 |===
 |Plugin |Purpose
 |`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
-|`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`).
+|`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`), `max-candidates-cap` and `max-limit-cap` (unset: no cap).
 |`documentChunkingInterceptor` |Chunk GridFS uploads — code-aware (function/class boundaries) for recognized source file extensions, character-window otherwise. `chunk-size`, `chunk-overlap`, `target-collection`, `embedding-provider`.
 |`autoEmbeddingInterceptor` |Embed on write. `embedding-provider`.
 |`vectorizeOperator` |`$vectorize` aggregation operator. `embedding-provider`.
