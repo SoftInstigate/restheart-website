@@ -220,7 +220,16 @@ The metadata is checked when it is written: a rule without `textField` or `embed
 curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
 ----
 
-Requires `vectorizeOperator` enabled with its own `embedding-provider` set.
+Requires `vectorizeOperator` enabled with its own `embedding-provider` set, unless the collection's embedding rules name a provider.
+
+The question is embedded with the model of the vectors it is searched against. As the `queryVector` of a `$vectorSearch` or `$vectorScan` stage, `$vectorize` reads the stage's `path` and uses the rule that writes that field: the aggregation above on `embedding` embeds with the `embedding` rule, one on `bodyVector` with the `bodyVector` rule, and the two questions can have different lengths. Anywhere else, in a `$set` or a `$match` on a precomputed vector, the long form names the field:
+
+[source,json]
+----
+{ "$set": { "queryVector": { "$vectorize": { "text": { "$var": "q" }, "field": "bodyVector" } } } }
+----
+
+With one rule on the collection, `$vectorize` uses it wherever it is, as before; with none, it uses the deployment's default provider, for vectors written by something else. A `path` or `field` that no rule writes is refused with a `400` that names it and lists the collection's vector fields: a question embedded with the wrong model would make the search silently wrong. So is a `$vectorize` on a collection with several rules that says nothing about which. With a Voyage provider, `$vectorize` sends `input_type: query` unless the configuration or a request override sets one.
 
 TIP: `voyageEmbeddingProvider` also has a contextual sibling, `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) — used automatically by `documentChunkingInterceptor` when configured, it embeds every chunk of a file together so each vector is aware of the chunks around it, instead of in isolation.
 
