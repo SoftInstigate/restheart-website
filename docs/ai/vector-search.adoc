@@ -108,26 +108,52 @@ Stages placed after `$vectorScan` — like the `$project` above — run for real
 
 === 3. Chunk documents for RAG
 
-Enable chunking and every file uploaded to *any* GridFS bucket is automatically extracted (via Apache Tika — PDF, Office, HTML, plain text, and more) and split into overlapping text chunks:
+A bucket says in its `chunking` metadata which of its files are split into text chunks, how, and into which collection. Apache Tika extracts the text: PDF, Office, HTML, plain text, and more. The chunker only splits; the collection the chunks go to embeds them with its own `vectorSearch` rules, as any collection does.
 
 [source,yaml]
 ----
 documentChunkingInterceptor:
   enabled: true
-  chunk-size: 1000          # characters per chunk (default)
-  chunk-overlap: 200        # characters of overlap (default)
-  target-collection: _chunks # where chunks are stored (default)
+  chunk-size: 1000          # default for a rule that sets none
+  chunk-overlap: 200        # default for a rule that sets none
+----
+
+[source,json]
+----
+PATCH /mydb/docs.files
+{ "chunking": [
+    { "name": "manuals",
+      "filter": { "contentType": ["application/pdf", "application/vnd.openxmlformats-officedocument.*"] },
+      "target-collection": "manuals_chunks",
+      "chunk-size": 1000, "chunk-overlap": 200 },
+    { "name": "code",
+      "filter": { "extension": [".java", ".ts", ".py"] },
+      "target-collection": "code_chunks",
+      "splitter": "text" }
+] }
+
+PATCH /mydb/manuals_chunks
+{ "vectorSearch": { "textField": "text", "embeddingField": "vector",
+    "provider": "voyageContextualEmbeddingProvider", "model": "voyage-context-4", "groupBy": "fileId" } }
 ----
 
 [source,bash]
 ----
 curl -X POST http://localhost:8080/mydb/docs.files \
-  -u admin:secret -F file=@article.pdf
+  -u admin:secret -F file=@manual.pdf -F 'metadata={"owner": "docs-team"}'
 ----
 
-Each chunk lands in `_chunks` as `{ "source", "fileId", "chunkIndex", "text" }`. Add an `autoEmbed` index on `_chunks` and MongoDB embeds them for you — or see the next section to have `restheart-ai` embed them itself.
+*Which files.* The first rule a file matches is applied; a file that matches none is not chunked, and a bucket without `chunking` is never chunked. The filter has three keys, all optional and case-insensitive, all required to match when present: `contentType`, the type Tika detects, where a trailing `*` matches any suffix; `extension`, of the uploaded filename; `metadata`, a MongoDB filter on the file's `metadata`, so your app routes a file by what it sets at upload, e.g. `{ "metadata": { "kind": "manual" } }`. A rule without a filter matches every file.
 
-**Uploading source code instead of prose just works — RAG over your own codebase, no extra configuration.** A filename with a recognized extension (`.java`, `.kt`, `.py`, `.go`, `.rs`, `.ts`/`.tsx`, `.js`/`.jsx`, `.c`/`.cpp`, `.cs`, `.swift`) is chunked at function/class boundaries instead of arbitrary character counts — and with *zero* overlap between chunks, unlike prose: a method is already a self-contained unit, so there's nothing useful to carry over into the next chunk.
+*How.* `chunk-size` and `chunk-overlap` default to the interceptor's configuration. `splitter` chooses how the text is cut: `auto`, the default, at function and class boundaries for a recognized source file and in character windows otherwise; `text`, always in character windows, when the model embeds code better that way; `code`, at code boundaries whenever the language is recognized. Code gets no overlap unless the rule sets `chunk-overlap`.
+
+*The chunks.* Each one is `{ "source", "fileId", "chunkIndex", "text", "filename", "contentType", "metadata", "rule" }`, where `metadata` is the file's own, so a search can narrow by what your app set at upload: a `$match` before `$vectorScan`, or the `filter` of `$vectorSearch`. All the chunks of a file are written in one request, so the collection's embedding rule sees them together: with `"groupBy": "fileId"` and `voyageContextualEmbeddingProvider`, they are embedded as one document, each vector aware of the others. A collection without an embedding rule stores the chunks without vectors; one that does not exist is created. The account that uploads needs to be able to write to the bucket, not to the chunks collection.
+
+*Their lifecycle.* Replacing a file with `PUT` replaces its chunks; deleting it, one by one or in bulk, deletes them.
+
+*Checked when written.* A rule without `target-collection`, an unknown key, or an embedding key such as `provider` or `model`, which belongs to the chunks collection's `vectorSearch` rule, is refused with a `400` that names it.
+
+**Source code is chunked as code.** A filename with a recognized extension (`.java`, `.kt`, `.py`, `.go`, `.rs`, `.ts`/`.tsx`, `.js`/`.jsx`, `.c`/`.cpp`, `.cs`, `.swift`) is chunked at function/class boundaries instead of arbitrary character counts — and with *zero* overlap between chunks, unlike prose: a method is already a self-contained unit, so there's nothing useful to carry over into the next chunk.
 
 [source,bash]
 ----
@@ -135,7 +161,7 @@ curl -X POST http://localhost:8080/mydb/docs.files \
   -u admin:secret -F file=@UserService.java
 ----
 
-A large class lands in `_chunks` as one chunk per method, each still carrying the enclosing class declaration for context — so a retrieved chunk is never a floating method body with no idea which class it belongs to:
+A large class lands in the chunks collection as one chunk per method, each still carrying the enclosing class declaration for context — so a retrieved chunk is never a floating method body with no idea which class it belongs to:
 
 [source,json]
 ----
@@ -157,10 +183,6 @@ openAIEmbeddingProvider:      # or voyageEmbeddingProvider, ollamaEmbeddingProvi
   enabled: true
   api-key: <your-key>
   model: text-embedding-3-small   # default
-
-documentChunkingInterceptor:
-  enabled: true
-  embedding-provider: openAIEmbeddingProvider   # chunks get a real `vector` field
 
 autoEmbeddingInterceptor:
   enabled: true
@@ -231,7 +253,7 @@ The question is embedded with the model of the vectors it is searched against. A
 
 With one rule on the collection, `$vectorize` uses it wherever it is, as before; with none, it uses the deployment's default provider, for vectors written by something else. A `path` or `field` that no rule writes is refused with a `400` that names it and lists the collection's vector fields: a question embedded with the wrong model would make the search silently wrong. So is a `$vectorize` on a collection with several rules that says nothing about which. With a Voyage provider, `$vectorize` sends `input_type: query` unless the configuration or a request override sets one.
 
-TIP: `voyageEmbeddingProvider` also has a contextual sibling, `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model) — used automatically by `documentChunkingInterceptor` when configured, it embeds every chunk of a file together so each vector is aware of the chunks around it, instead of in isolation.
+TIP: `voyageEmbeddingProvider` also has a contextual sibling, `voyageContextualEmbeddingProvider` (Voyage's `voyage-context-4` model). With `"groupBy": "fileId"` in a collection's embedding rule, the documents of one write that share a `fileId`, such as the chunks of a file, are embedded together, each vector aware of the others. A document longer than the model's 32,000-token window is embedded in consecutive windows, each chunk with the context of its own.
 
 === 5. Reranking
 
@@ -261,7 +283,7 @@ rerankingInterceptor:
   rerank-provider: voyageRerankProvider
 ----
 
-Reranking scores each result's `text` field against the query — this is exactly what `_chunks` documents from section 3 have, so chunking and reranking pair naturally.
+Reranking scores each result's `text` field against the query — this is exactly what the chunks of section 3 have, so chunking and reranking pair naturally.
 
 === Multi-tenancy
 
@@ -275,7 +297,9 @@ Every value above can be overridden per request instead of set once for the whol
 |Plugin |Purpose
 |`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
 |`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`), `max-candidates-cap` and `max-limit-cap` (unset: no cap).
-|`documentChunkingInterceptor` |Chunk GridFS uploads — code-aware (function/class boundaries) for recognized source file extensions, character-window otherwise. `chunk-size`, `chunk-overlap`, `target-collection`, `embedding-provider`.
+|`documentChunkingInterceptor` |Split GridFS uploads into chunks, as each bucket's `chunking` rules say; code-aware for recognized source files. `chunk-size`, `chunk-overlap`.
+|`chunkingMetadataChecker` |Refuses malformed `chunking` rules when a bucket's metadata is written. Enabled by default, no config.
+|`chunkedFilesDeleteCollector` |Lets a bulk delete of files delete their chunks too. Enabled by default, no config.
 |`autoEmbeddingInterceptor` |Embed on write, one or more rules per collection. `embedding-provider`.
 |`vectorSearchMetadataChecker` |Refuses malformed `vectorSearch` rules when the metadata is written. Enabled by default, no config.
 |`vectorizeOperator` |`$vectorize` aggregation operator. `embedding-provider`.
