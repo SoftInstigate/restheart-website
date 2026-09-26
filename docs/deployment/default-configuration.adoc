@@ -756,18 +756,22 @@ vectorSearchIndexListInterceptor:
 vectorSearchIndexDeleteInterceptor:
   enabled: true
 
-# Extracts text (Apache Tika) from every file uploaded to any GridFS bucket, splits it
-# into overlapping chunks and stores them in target-collection. embedding-provider is
-# optional: leave blank to rely on MongoDB's own autoEmbed index type on the chunks
-# collection instead of restheart-ai embedding them itself. A filename with a recognized
-# source code extension (.java, .py, .go, ...) is chunked at function/class boundaries
-# instead, with no overlap between chunks -- see CodeAwareSplitter.
+# Splits the files uploaded to a GridFS bucket into text chunks (Apache Tika extracts the text) and
+# writes them to a collection, as the bucket's "chunking" metadata says: rules with a filter on the
+# file (contentType, extension, metadata), a target-collection, and optionally chunk-size,
+# chunk-overlap and splitter (auto, text, code); the first rule that matches is applied. A bucket
+# without "chunking" is never chunked. The chunker computes no vectors: the target collection embeds
+# the chunks with its own vectorSearch rules, e.g. { "textField": "text", "embeddingField": "vector",
+# "groupBy": "fileId" } to embed a file's chunks together with a contextual model. Prose is cut
+# as LangChain's RecursiveCharacterTextSplitter does: at paragraphs, then lines, sentences and words,
+# the pieces put back together up to chunk-size, the overlap made of whole pieces; a word is never
+# cut, a chunk of whitespace alone is not written, one with fewer than 20 letters and digits is joined
+# to its neighbour. See https://github.com/SoftInstigate/restheart/issues/754
 documentChunkingInterceptor:
   enabled: false
+  # defaults for a rule that sets none
   chunk-size: 1000
   chunk-overlap: 200
-  target-collection: _chunks
-  embedding-provider: ""
 
 # Embeds a text field automatically on write. Also requires the target collection to
 # declare { "vectorSearch": { "textField": "...", "embeddingField": "..." } } metadata.
