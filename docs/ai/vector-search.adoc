@@ -149,6 +149,15 @@ curl -X POST http://localhost:8080/mydb/docs.files \
 
 *Prose* is cut the way LangChain's `RecursiveCharacterTextSplitter` does: at paragraphs; a paragraph longer than `chunk-size` at lines, then sentences, then words; the pieces are put back together into chunks as full as `chunk-size` allows, and the overlap is made of whole pieces of the chunk before. A word is never cut: one longer than a chunk, a URL or a hash, is a chunk of its own. A stretch of whitespace alone, such as a blank page of a PDF, makes no chunk, and a chunk with fewer than 20 letters and digits, a page number or a running header, is joined to its neighbour. The chunk indexes have no gaps.
 
+*In the background.* With `async: true` in the interceptor's configuration, the upload answers as soon as the file is stored, and the file is chunked afterwards: extraction and embedding take seconds on a large PDF. What the chunker did is written on the file's own document, beside `metadata`:
+
+[source,json]
+----
+"chunking": { "status": "pending", "job": { "$oid": "…" }, "warnings": [], "at": { "$date": … } }
+----
+
+`pending` is there as soon as the upload has answered, `running` once the file's turn comes; then `done`, with the `rule` applied and the number of `chunks`, `skipped` when no rule matched, or `failed`, with the reason in `warnings`. Read it with `GET /mydb/docs.files?filter={"_id":…}`. `max-concurrent` caps how many files the node chunks at once; a multi-tenant deployment can also cap one database with `override-ai-chunking-max-concurrent`, and turn the background on per tenant with `override-ai-chunking-async`. A job a node loses by stopping is not lost for good: every `resume-scan-minutes` the files still `pending` or `running` after `resume-after-minutes` are claimed, by one node each, and chunked again. Without `async` the upload waits, its response carries the warnings, and the status is written too.
+
 *The chunks.* Each one is `{ "source", "fileId", "chunkIndex", "text", "filename", "contentType", "metadata", "rule" }`, where `metadata` is the file's own, so a search can narrow by what your app set at upload: a `$match` before `$vectorScan`, or the `filter` of `$vectorSearch`. All the chunks of a file are written in one request, so the collection's embedding rule sees them together: with `"groupBy": "fileId"` and `voyageContextualEmbeddingProvider`, they are embedded as one document, each vector aware of the others. A collection without an embedding rule stores the chunks without vectors; one that does not exist is created. The account that uploads needs to be able to write to the bucket, not to the chunks collection.
 
 *Their lifecycle.* Replacing a file with `PUT` replaces its chunks; deleting it, one by one or in bulk, deletes them.
@@ -299,7 +308,7 @@ Every value above can be overridden per request instead of set once for the whol
 |Plugin |Purpose
 |`vectorSearchIndexCreateInterceptor` / `...ListInterceptor` / `...DeleteInterceptor` |Vector index CRUD on `/_indexes`. Enabled by default, no config.
 |`vectorScanInterceptor` |`$vectorScan` brute-force similarity search, no mongot or index required. `default-max-candidates` (`10000`), `default-limit` (`10`), `max-candidates-cap` and `max-limit-cap` (unset: no cap).
-|`documentChunkingInterceptor` |Split GridFS uploads into chunks, as each bucket's `chunking` rules say; code-aware for recognized source files. `chunk-size`, `chunk-overlap`.
+|`documentChunkingInterceptor` |Split GridFS uploads into chunks, as each bucket's `chunking` rules say; code-aware for recognized source files. `chunk-size`, `chunk-overlap`, `async`, `max-concurrent`, `resume-after-minutes`, `resume-scan-minutes`.
 |`chunkingMetadataChecker` |Refuses malformed `chunking` rules when a bucket's metadata is written. Enabled by default, no config.
 |`chunkedFilesDeleteCollector` |Lets a bulk delete of files delete their chunks too. Enabled by default, no config.
 |`autoEmbeddingInterceptor` |Embed on write, one or more rules per collection. `embedding-provider`.
