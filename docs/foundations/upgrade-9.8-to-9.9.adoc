@@ -1,0 +1,139 @@
+---
+docs_version: 9
+title: Upgrade from 9.8 to 9.9
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.9 adds the MCP server, the `restheart-ai` module (vector search, chunking, embeddings, reranking), declarative data constraints and the OAuth refresh token grant. All of it is new and opt-in: upgrading needs no data migration and no configuration change.
+
+A few existing behaviors change. This page lists them, says who is affected and what to do.
+
+== What changed
+
+=== A new MCP endpoint at `/mcp`
+
+`mcpService` is enabled by default and answers at `/mcp`. It exposes nothing until you opt a resource in, through the `mcp` block of its metadata, and every call goes through your ACL as a normal request would.
+
+You are affected only if one of your services is already bound to `/mcp`. Move the MCP server with `mcpService.uri`, or disable it:
+
+[source,yaml]
+----
+mcpService:
+  enabled: false
+----
+
+See link:/docs/ai/mcp[MCP server].
+
+=== JSON Schema: the declared draft is honored
+
+In 9.8 the schema store rewrote the `$schema` of every schema to draft-04, whatever the author declared. Keywords of later drafts, such as `const`, `if`/`then`/`else`, `contains` and `propertyNames`, were silently ignored.
+
+From 9.9:
+
+[cols="1,1"]
+|===
+|9.8 |9.9
+
+|every schema stored and validated as draft-04
+|draft-04, draft-06 and draft-07 kept as declared
+
+|no `$schema` → draft-04
+|no `$schema` → draft-07
+
+|draft 2019-09 and 2020-12 accepted and rewritten to draft-04
+|draft 2019-09 and 2020-12 refused with `400`
+|===
+
+Schemas already stored are not touched. They carry draft-04 and keep validating exactly as before, even the ones written for draft-07. They switch to their real draft only when you save them again.
+
+Two cases need attention when you save a schema:
+
+* *A schema without `$schema` that uses draft-04 syntax.* It is now read as draft-07. The usual trap is `"exclusiveMaximum": true`, a boolean in draft-04 and a number in draft-07: the schema is refused with `400`. Add `"$schema": "http://json-schema.org/draft-04/schema#"` or move to draft-07 syntax.
+* *A schema declared draft-07 that relied on keywords being ignored.* Once saved again, those keywords are enforced, and documents that passed before may now be refused.
+
+See link:/docs/mongodb-rest/json-schema-validation[JSON Schema Validation].
+
+=== Bulk PATCH on a collection with `jsonSchema`
+
+A bulk `PATCH` carries update operators, so it can only be validated after the write. In 9.8 it was refused with `501`, or let through *unvalidated* when the collection set `skipNotSupported: true`.
+
+From 9.9, on a replica set, the bulk `PATCH` runs in a transaction, is validated after the write and is rolled back if a document breaks the schema.
+
+[cols="1,1"]
+|===
+|9.8 |9.9
+
+|replica set → `501`, or unvalidated with `skipNotSupported: true`
+|replica set → validated, `400` and rolled back on failure
+
+|standalone → `501`, or unvalidated with `skipNotSupported: true`
+|standalone → unchanged
+|===
+
+If a collection sets `skipNotSupported: true` on a replica set, its bulk `PATCH` requests are now validated. Requests that produce invalid documents, which 9.8 let through, are refused.
+
+A validated bulk `PATCH` that matches more than 10,000 documents is refused with `413`. Narrow the filter or split the update.
+
+Single-document writes validated after the write also run in a transaction on a replica set. A refused write leaves no trace: no document, no change stream event. On a standalone MongoDB they are undone by a compensating write, as in 9.8.
+
+=== Permissions that use `@qparams` now load
+
+In 9.8 a permission whose predicate used `@qparams['name']` was discarded at startup, with a `Wrong permission` error in the log, and the requests it covered were answered `403`.
+
+From 9.9 these permissions load and take effect. If you have one, check it still grants what you want, because it now actually grants it.
+
+=== `Location` header behind a proxy
+
+In 9.8, without `instance-base-url`, the `Location` of a created document used the scheme and host the node saw. Behind a proxy that terminates TLS it read `http://`.
+
+From 9.9 it follows `X-Forwarded-Proto` and `X-Forwarded-Host` when present. Set `instance-base-url` in the `mongo` configuration to pin it. See link:/docs/mongodb-rest/write-docs[Write Requests].
+
+A write that is refused no longer carries the `Location` and `ETag` of the document it did not create.
+
+=== 403 responses may carry a message
+
+When a `VETOER` authorizer denies a request and gives a reason, the `403` now has a JSON body with a `message`, for instance naming the `Origin` that is not allowed. The body stays empty when there is no reason to give.
+
+=== Plugin API: `VarsInterpolator` takes a `Request<?>`
+
+Four public static methods of `org.restheart.mongodb.utils.VarsInterpolator`, in `restheart-commons`, now accept any `Request<?>` instead of a `MongoRequest`:
+
+* `interpolateBson`
+* `interpolateFilter`
+* `firstUnboundUserVar`
+* `interpolatePropValue`
+
+Your source compiles unchanged. A plugin jar built against 9.8 that calls one of them fails at runtime with `NoSuchMethodError`. Rebuild it against 9.9.
+
+== Migration steps
+
+=== 1. Rebuild your custom plugins
+
+Update the `restheart-commons` dependency and rebuild:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.restheart</groupId>
+    <artifactId>restheart-commons</artifactId>
+    <version>9.9.0</version>
+    <scope>provided</scope>
+</dependency>
+----
+
+=== 2. Check the schemas you save without `$schema`
+
+Look for draft-04 syntax, `exclusiveMaximum` or `exclusiveMinimum` as booleans above all. Either declare draft-04 explicitly or convert them.
+
+=== 3. Check collections with `skipNotSupported: true`
+
+On a replica set their bulk `PATCH` requests are now validated. Test the updates your clients send, or remove the flag, which no longer has any effect there.
+
+=== 4. Review permissions that use `@qparams`
+
+Search your ACL for `@qparams`. Those permissions were inactive in 9.8 and are active in 9.9.
+
+=== 5. Decide about `/mcp`
+
+Leave it enabled and opt resources in when you need them, or disable `mcpService`.
