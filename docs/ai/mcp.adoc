@@ -436,6 +436,21 @@ Anything else — a change stream, a GraphQL app, a service — is refused with 
 
 TIP: A busy collection does not become a burst of messages. The first change is notified immediately, further ones are collapsed into at most one notification per `subscription-notify-interval-seconds` (default `5`).
 
+=== How long a session lives
+
+NOTE: available from **RESTHeart v9.9**.
+
+A session ends when the client sends `DELETE` on `/mcp`. Most clients that go away never do, so the server also ends a session nobody has used for `session-idle-timeout-seconds` (default `1800`, 30 minutes):
+
+* a session with an open `GET` stream is in use, however long ago its last request was;
+* a session subscribed to a resource is never ended this way, so its notifications keep coming.
+
+A request that still carries a session ended this way is answered `404`, as the Streamable HTTP specification prescribes for a terminated session. The client sends a new `initialize` and gets a new session: protocol version, capabilities and subscriptions are negotiated again from scratch.
+
+A session id the server does not know for any other reason, typically after a restart, is recovered transparently: the request is served on a new session, returned in the `Mcp-Session-Id` header.
+
+Set `session-idle-timeout-seconds` to `0` to keep every session until the client sends `DELETE`.
+
 === Serving several isolated callers: scopes
 
 By default one instance serves one catalogue: every MCP-enabled resource on it, to every caller its ACL allows. That is the right shape for a single deployment and it needs no configuration.
@@ -501,6 +516,7 @@ Plugins that hold caller-specific data must filter by the scope themselves — s
 |`graphql` |`mcp: false` does the same, for GraphQL apps.
 |`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
 |`mcpService` |`subscription-notify-interval-seconds` — at most one `resources/updated` per subscribed resource per interval. Default `5`.
+|`mcpService` |`session-idle-timeout-seconds` — how long a session with no request and no open stream lives before the server ends it; see xref:#_how_long_a_session_lives[How long a session lives]. `0` keeps sessions until `DELETE`. Default `1800`.
 |`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`call_api`/`how_to_call` keep working).
 |===
 
