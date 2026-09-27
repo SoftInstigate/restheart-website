@@ -554,11 +554,12 @@ http GET [RESTHEART-URL]/.well-known/oauth-authorization-server
 
 The endpoint is publicly accessible (no authentication required).
 
-When `base-url` is set, all URLs in the response use it as the base.
-When null, the base URL is derived in this order:
+All URLs in the response share one base, resolved as for the protected resource metadata:
 
-. `base-url` configuration value
-. Request `Host` header
+. `override-ai-mcp-public-base-url`, when a multi-tenant deployment attaches it to the request
+. the `base-url` configuration value
+. `X-Forwarded-Proto` for the scheme and `X-Forwarded-Host` for the host, each when present
+. the request itself
 
 [source,yml]
 ----

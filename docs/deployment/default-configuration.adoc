@@ -84,6 +84,13 @@ ajp-listener:
 tokenBasicAuthMechanism:
   enabled: true
 
+# In-process Authentication
+# Signs in a request RESTHeart dispatched to itself in-process (the MCP call_api tool runs an
+# action of a resource this way, as the MCP session's own account). Inert for every request
+# that arrives on a listener: it only acts on an exchange the in-process dispatcher marked.
+inProcessAuthMechanism:
+  enabled: true
+
 # Basic Authentication
 # See https://restheart.org/docs/security/authentication/basic#_basic_authentication
 basicAuthMechanism:
@@ -130,6 +137,15 @@ jwtAuthenticationMechanism:
   rolesClaim: roles
   fixedRoles: []
   #  - jwt-role
+
+# On a 401 from the MCP server, adds WWW-Authenticate: Bearer resource_metadata="…" pointing at
+# the OAuth protected resource metadata, beside the other challenges (Basic stays). MCP 2025-06-18
+# requires it; 2025-11-25 clients also find the metadata at the well-known URI without it.
+# It never authenticates anybody, and it speaks only when oauthProtectedResourceMetadataService and
+# mcpService are both enabled, and only on the MCP server's own path: elsewhere it is inert.
+# See https://restheart.org/docs/security/oauth#the-challenge-on-a-refused-mcp-request
+oauthResourceChallengeMechanism:
+  enabled: true
 
 # Digest Authentication
 # See https://restheart.org/docs/security/authentication/basic#_digest_authentication
@@ -542,7 +558,8 @@ authTokenService:
 oauthAuthorizationServerMetadataService:
   enabled: false
   # Optional: override scheme+host for metadata URLs (needed behind a TLS-terminating proxy).
-  # Falls back to the request Host header when null.
+  # When null: X-Forwarded-Proto and X-Forwarded-Host, each when present, else the request itself.
+  # A per-request override-ai-mcp-public-base-url wins over both.
   base-url: null                    # e.g. https://api.example.com
   # URI of the authorization endpoint — must match oauthAuthorizationService URI.
   authorize-endpoint-uri: /authorize
@@ -784,11 +801,28 @@ documentChunkingInterceptor:
   resume-after-minutes: 15
   resume-scan-minutes: 5
 
+# Refuses malformed "chunking" rules in a bucket's metadata when it is written, with a 400 naming
+# the rule: no target-collection, an unknown key, a filter value of the wrong kind, an embedding key
+# that belongs to the target collection's vectorSearch rules. No options.
+chunkingMetadataChecker:
+  enabled: true
+
+# Before a bulk delete of files in a bucket with chunking rules, notes which files it may remove, so
+# documentChunkingInterceptor deletes their chunks afterwards. Acts on nothing else. No options.
+chunkedFilesDeleteCollector:
+  enabled: true
+
 # Embeds a text field automatically on write. Also requires the target collection to
 # declare { "vectorSearch": { "textField": "...", "embeddingField": "..." } } metadata.
 autoEmbeddingInterceptor:
   enabled: false
   embedding-provider: ""
+
+# Refuses malformed vectorSearch collection metadata (the embedding rules autoEmbeddingInterceptor
+# and $vectorize read) when it is written, with a 400 naming the rule: a rule without textField
+# or embeddingField, or two rules on the same embeddingField. No options.
+vectorSearchMetadataChecker:
+  enabled: true
 
 # Registers the $vectorize aggregation operator (embeds text to a vector inline, at
 # query time, anywhere in a pipeline).
@@ -1259,6 +1293,14 @@ workersWatchdog:
   threshold-seconds: 30
   halt-after-seconds: 0
   notify-email: null
+
+# Runs a request through this server's handler chain in-process, without a socket, for plugins
+# such as the MCP service and the document chunker. An in-process request gets the same
+# connection-options as a request from the network, MAX_ENTITY_SIZE and the timeouts included.
+# timeout-seconds: how long a caller waits for the whole response. The caller parks a virtual
+# thread, so waiting costs nothing; the timeout only drops a connection whose response never comes.
+in-process-dispatcher:
+  timeout-seconds: 600
 ----
 === Core module configuration
 
