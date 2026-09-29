@@ -20,7 +20,7 @@ redirect_from:
 
 </div>
 
-<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0">
+<div markdown="1" class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0" data-pagefind-body>
 {% include docs-head.html %}
 
 ## What are Clustering and Load Balancing

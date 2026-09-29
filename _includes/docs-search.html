@@ -1,0 +1,184 @@
+<!--
+  Full-text search over the current docs, the same as on ulabase.com/docs. The index is built by
+  Pagefind after the Jekyll build (.github/workflows/jekyll.yml) from the elements marked
+  data-pagefind-body, so the v8 pages and the sidebars are left out. Locally, once jekyll (serve or
+  build, also in Docker) has written _site:
+    npx -y pagefind --site _site --glob "docs/**/*.html" --exclude-selectors "code[data-lang=html], code[data-lang=xml], code.language-html, code.language-xml"
+  HTML and XML code blocks stay out of the index: their markup is noise in the results.
+  _config.yml keeps _site/pagefind across the rebuilds of jekyll serve.
+
+  The sidebar shows a field that opens a panel over the page, wide enough for the results, where
+  Pagefind's own UI runs. Cmd+K or Ctrl+K opens it, Escape or a click outside closes it. Without an
+  index the field falls back to a Google search of the docs.
+-->
+<form action="https://www.google.com/search" class="form bd-sidebar__search d-flex flex-grow-1" method="get"
+  name="searchform" id="docs-search-form">
+  <input name="sitesearch" type="hidden" value="restheart.org/docs" />
+  <input id="docs-search-field" autocomplete="off" class="form-control input-sm search bd-sidebar__input" name="q"
+    placeholder="Search docs... ⌘K" required="required" type="text" />
+  <button class="bd-sidebar__submit" type="submit" aria-label="Search">
+    <svg width="16" height="16"><use xlink:href="/images/sprite.svg#search" /></svg>
+  </button>
+</form>
+
+<div id="docs-search-backdrop" class="docs-search-backdrop" hidden>
+  <div class="docs-search-panel" role="dialog" aria-label="Search the documentation">
+    <div id="docs-search-ui"></div>
+    <div class="docs-search-foot"><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+
+<style>
+  .docs-search-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    background: rgba(8, 12, 18, 0.7);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8vh 1rem 1rem;
+  }
+  .docs-search-backdrop[hidden] { display: none; }
+  .docs-search-panel {
+    width: min(720px, 100%);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #f8a839;
+    --pagefind-ui-text: #142233;
+    --pagefind-ui-border: #e8e8e8;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+    --pagefind-ui-font: inherit;
+  }
+  #docs-search-ui { flex: 1; min-height: 0; overflow-y: auto; padding: 1rem 1rem 0.5rem; }
+  .docs-search-foot {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #e8e8e8;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  /* Pagefind's own controls, which otherwise inherit the site's button and input styles */
+  .docs-search-panel .pagefind-ui__search-input {
+    font-weight: 400;
+  }
+  .docs-search-panel .pagefind-ui__search-clear {
+    height: auto;
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #6b7280;
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  .docs-search-panel .pagefind-ui__search-clear:hover,
+  .docs-search-panel .pagefind-ui__search-clear:focus-visible {
+    color: #142233;
+    background: #f1f3f5;
+  }
+  .docs-search-panel mark {
+    padding: 0 0.1em;
+    color: inherit;
+    background: rgba(248, 168, 57, 0.3);
+    border-radius: 2px;
+  }
+  .docs-search-foot kbd {
+    font-family: inherit;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.35rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: none;
+    color: inherit;
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('docs-search-form');
+    var field = document.getElementById('docs-search-field');
+    var backdrop = document.getElementById('docs-search-backdrop');
+    var ui = null;
+    var available = false;
+
+    // Out of the sidebar, whose stacking context would keep the panel under the page's own boxes.
+    document.body.appendChild(backdrop);
+
+    // The index exists only after pagefind has run on the built site.
+    fetch('/pagefind/pagefind-ui.js', { method: 'HEAD' })
+      .then(function (head) {
+        if (!head.ok) return;
+        var css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = '/pagefind/pagefind-ui.css';
+        document.head.appendChild(css);
+        var script = document.createElement('script');
+        script.src = '/pagefind/pagefind-ui.js';
+        script.onload = function () { available = true; };
+        document.head.appendChild(script);
+      })
+      .catch(function () {});
+
+    function show(query) {
+      if (!available) return false;
+      backdrop.hidden = false;
+      if (!ui) {
+        ui = new PagefindUI({
+          element: '#docs-search-ui',
+          showImages: false,
+          showSubResults: true,
+          excerptLength: 20,
+          resetStyles: false,
+          autofocus: true,
+        });
+      }
+      if (query) ui.triggerSearch(query);
+      setTimeout(function () {
+        var input = backdrop.querySelector('.pagefind-ui__search-input');
+        if (input) input.focus();
+      });
+      return true;
+    }
+
+    function hide() {
+      backdrop.hidden = true;
+    }
+
+    // Typing in the sidebar field opens the panel with what was typed; without an index the form
+    // still submits to Google.
+    field.addEventListener('focus', function () {
+      if (show(field.value)) field.blur();
+    });
+    form.addEventListener('submit', function (event) {
+      if (show(field.value)) event.preventDefault();
+    });
+    backdrop.addEventListener('click', function (event) {
+      if (event.target === backdrop) hide();
+    });
+    document.addEventListener('keydown', function (event) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        backdrop.hidden ? show('') : hide();
+      } else if (event.key === 'Escape' && !backdrop.hidden) {
+        hide();
+      }
+    });
+  })();
+</script>

@@ -1,32 +1,23 @@
 <div
-  class="config-panel border rounded p-4 my-4 bg-dark text-light"
+  class="docs-panel config-panel"
   x-data="interactiveDocs"
   x-show="isInitialized"
   data-bs-theme="dark"
 >
-  <style>
-    .form-select-lg {
-      height: 48px !important;
-      padding: 0.5rem 1rem !important;
-      font-size: 16px !important;
-      border-radius: 0.375rem !important;
-      border-width: 1px !important;
-      box-shadow: none !important;
-    }
-    .form-control-lg {
-      font-size: 16px !important;
-      height: 48px !important;
-    }
-  </style>
-  <h3 class="mb-3">🔧 Configuration</h3>
-  <div class="row g-3 mb-3">
+  <div class="docs-panel__header docs-panel__header--static">
+    <div>
+      <h3 class="docs-panel__title">Configuration</h3>
+      <p class="docs-panel__subtitle">The service and the admin token the examples on this page use</p>
+    </div>
+  </div>
+  <div class="docs-panel__body">
+  <div class="row g-3">
     <div class="col-md-3">
-      <label class="form-label fw-bold">Client Type</label>
+      <label>Client Type</label>
       <select
         x-model="clientType"
         @change="onClientTypeChange()"
-        class="mt-2 form-select form-select-lg bg-dark text-light rounded"
-        style="height: 48px; min-height: 48px; border-width: 1px"
+        class="form-select"
       >
         <option value="all">Show All</option>
         <option value="curl">cURL</option>
@@ -35,54 +26,52 @@
       </select>
     </div>
     <div class="col-md-3">
-      <label class="form-label fw-bold">Instance URL</label>
+      <label>Instance URL</label>
       <input
         type="text"
         x-model="instanceUrl"
         @input="onInputChange()"
-        class="mt-2 form-control form-control-lg bg-dark text-light"
-        placeholder="https://your-instance.restheart.com"
+        class="form-control"
+        placeholder="https://your-service.ulabase.app"
       />
     </div>
     <div class="col-md-3">
-      <label class="form-label fw-bold">Admin JWT</label>
+      <label>Admin JWT</label>
       <input
         type="text"
         x-model="jwt"
         @input="onInputChange()"
-        class="mt-2 form-control form-control-lg bg-dark text-light"
+        class="form-control"
         placeholder="JWT"
       />
     </div>
 
     <div class="col-md-3">
-      <label class="form-label fw-bold">Root user password to set</label>
+      <label>Root user password to set</label>
       <input
         type="text"
         style="text-security: disc; -webkit-text-security: disc"
         x-model="password"
         @input="onInputChange()"
-        class="mt-2 form-control form-control-lg bg-dark text-light"
+        class="form-control"
         placeholder="root_user_password"
       />
     </div>
   </div>
 
-  <div class="setup-warning border rounded p-3 mt-3 bg-dark text-light">
+  <div class="docs-panel__note">
     <p class="mb-0">
-      ⚠️ Before using these examples, get an Admin JWT token from
-      <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=docs&utm_content=root-user-config" target="_blank"
-        >https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=docs&utm_content=root-user-config</a
-      >
+      Before using these examples, get an admin JWT from
+      <a href="https://ulabase.com/?utm_source=restheart.org&utm_medium=docs&utm_content=root-user-config" target="_blank"
+        >ulabase.com</a
+      >, on the page of your service.
     </p>
   </div>
 
-  <div class="mt-3 d-flex justify-content-end align-items-center">
-    <div class="d-flex align-items-center">
-      <button @click="clearValues()" class="btn ms-2">Clear Values</button>
-      <small class="text-light-emphasis ms-2"
-        >Values are saved in your browser</small
-      >
-    </div>
+  <div class="docs-panel__actions">
+    <span class="docs-panel__spacer"></span>
+    <span class="docs-panel__hint">Saved in your browser</span>
+    <button type="button" @click="clearValues()" class="docs-panel__btn">Clear</button>
+  </div>
   </div>
 </div>
