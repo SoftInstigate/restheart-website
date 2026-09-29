@@ -2,7 +2,7 @@
 docs_version: 9
 permalink: "/docs/reference/example-webapps"
 layout: redirect
-redirectUrl: "https://cloud.restheart.com/docs/full-stack-example"
+redirectUrl: "https://ulabase.com/docs/full-stack-example"
 sitemap: false
 applies_to: both
 ---

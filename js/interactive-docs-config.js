@@ -21,10 +21,11 @@ document.addEventListener("alpine:init", () => {
         : "[BASIC-AUTH]";
     },
 
-    // A RESTHeart Cloud service: its host is <id>.<region>.restheart.com
+    // A Ulabase service: its host is <id>.ulabase.app, or <id>.nodes.ulabase.dev in the dev environment
     get isCloudService() {
       try {
-        return new URL(this.instanceUrl).hostname.endsWith(".restheart.com");
+        const host = new URL(this.instanceUrl).hostname;
+        return host.endsWith(".ulabase.app") || host.endsWith(".ulabase.dev");
       } catch (e) {
         return false;
       }
@@ -196,7 +197,7 @@ document.addEventListener("alpine:init", () => {
           from: '<span[^>]*class="o"[^>]*>:\\s*"\\[</span>JWT\\]"',
           to: `: "${this.displayJwt}"`,
         },
-        // RESTHeart Cloud configures its schema store as schemas (mongo schema-store), not _schemas
+        // Ulabase configures its schema store as schemas (mongo schema-store), not _schemas
         ...(this.isCloudService ? [{ from: "/_schemas\\b", to: "/schemas" }] : []),
       ];
 

@@ -60,7 +60,7 @@ redirect_from:
                 <div class="hero-terminal w-100 d-flex flex-column">
                     <h3 class="feature-title text-left mb-2">📰 The blog</h3>
                     <p class="mb-3">The longer stories: what a release changes, how a feature was built, and what it is for.</p>
-                    <p class="mt-auto mb-0"><a href="https://cloud.restheart.com/blog">Read the blog →</a></p>
+                    <p class="mt-auto mb-0"><a href="https://ulabase.com/blog">Read the blog →</a></p>
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
 layout: default
 stars-bounce: true
 title: A backend for web, mobile and AI apps
-excerpt: RESTHeart is a backend for web, mobile and AI apps. Open source and MongoDB-native, it is built on a modern Java stack with virtual threads and GraalVM native images. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed RESTHeart Cloud service. Plus Sophia, the AI assistant with a native MCP server.
+excerpt: RESTHeart is a backend for web, mobile and AI apps. Open source and MongoDB-native, it is built on a modern Java stack with virtual threads and GraalVM native images. It gives you instant REST, GraphQL and WebSocket APIs on your data, built-in authentication and authorization, and a plugin framework for Java, Kotlin, JavaScript and TypeScript — no backend boilerplate. Run it for free with Docker, or use the managed Ulabase service. Plus Sophia, the AI assistant with a native MCP server.
 ---
 
 <section id="top" class="pt-4 pb-2">
@@ -40,8 +40,8 @@ excerpt: RESTHeart is a backend for web, mobile and AI apps. Open source and Mon
                     </p>
                 </div>
                 <div class="hero-buttons mt-4">
-                    <a href="https://cloud.restheart.com/signup?utm_source=restheart.org&utm_medium=home&utm_content=home" class="btn btn-primary font-weight-bold btn-lg text-black">
-                        <span class="cta-emoji">🚀</span> Try RESTHeart Cloud
+                    <a href="https://ulabase.com/signup?utm_source=restheart.org&utm_medium=home&utm_content=home" class="btn btn-primary font-weight-bold btn-lg text-black">
+                        <span class="cta-emoji">🚀</span> Try Ulabase
                     </a>
                     <a href="/docs/setup" class="btn btn-o-white btn-lg">
                         <span class="cta-emoji">⬇️</span> Run it Free
@@ -90,7 +90,7 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
     </div>
 </section>
 
-<!-- Starter Apps for RESTHeart Cloud -->
+<!-- Starter Apps for Ulabase -->
 <section id="ai-content" class="text-center pb-2 mt-5">
     <a id="mcp"></a>
     <div class="container">
@@ -120,8 +120,8 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
-        <p class="mt-2 mb-1">Clone a starter, point it at a free <a href="https://cloud.restheart.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">RESTHeart Cloud</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
-        <p class="mb-4" style="opacity: 0.8; font-size: 0.95rem;">These starters run on <strong>RESTHeart Cloud</strong>, the managed service. <code>rhc</code> is its command line: it configures your cloud service from a file in the repo. For a RESTHeart you run yourself, start from <a href="/docs/setup">Setup</a> instead.</p>
+        <p class="mt-2 mb-1">Clone a starter, point it at a free <a href="https://ulabase.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">Ulabase</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
+        <p class="mb-4" style="opacity: 0.8; font-size: 0.95rem;">These starters run on <strong>Ulabase</strong>, the managed service. <code>ulabase</code> is its command line: it configures your cloud service from a file in the repo. For a RESTHeart you run yourself, start from <a href="/docs/setup">Setup</a> instead.</p>
 
         <div class="tabs-dark">
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
@@ -140,13 +140,13 @@ git clone https://github.com/ulabase/starter-react.git
 cd starter-react
 npm install
 
-# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
+# 2. point it at your free Ulabase service: paste its URL from the Connect page
 #    into src/environments/environment.ts
 
-# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
+# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
 npm install -g ulabase
-rhc login                  # paste a personal access token from cloud.restheart.com
-rhc setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login                  # paste a personal access token from ulabase.com
+ulabase setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 npm run dev
@@ -162,13 +162,13 @@ git clone https://github.com/ulabase/starter-ng.git
 cd starter-ng
 npm install
 
-# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
+# 2. point it at your free Ulabase service: paste its URL from the Connect page
 #    into src/environments/environment.dev.ts
 
-# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
+# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
 npm install -g ulabase
-rhc login                  # paste a personal access token from cloud.restheart.com
-rhc setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login                  # paste a personal access token from ulabase.com
+ulabase setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 ng serve
@@ -184,16 +184,16 @@ git clone https://github.com/ulabase/starter-ecommerce.git
 cd starter-ecommerce
 npm install
 
-# 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
+# 2. point it at your free Ulabase service: paste its URL from the Connect page
 #    into src/environments/environment.ts
 #    and export your Stripe test keys, which the setup stores on the service once
 export STRIPE_SECRET_KEY=sk_test_...
 export STRIPE_WEBHOOK_SECRET=whsec_...
 
-# 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
+# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
 npm install -g ulabase
-rhc login                  # paste a personal access token from cloud.restheart.com
-rhc setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login                  # paste a personal access token from ulabase.com
+ulabase setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 npm run dev
@@ -205,7 +205,7 @@ npm run dev
         </div>
 
         <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@ulabase/kit-react</code>, <code>@ulabase/kit-ng</code> and <code>@ulabase/kit-vue</code>.</p>
-        <p class="mt-1"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
+        <p class="mt-1"><a href="https://ulabase.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
     </div>
 </section>
 

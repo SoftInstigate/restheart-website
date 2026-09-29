@@ -10,7 +10,7 @@ sitemap: false
 <p class="text-center" id="missing-path"></p>
 
 <p class="text-center">Look for it in the <a href="/docs">documentation</a>, or ask Sophia, the chat button in the corner.
-Building an app rather than running RESTHeart yourself? <a href="https://cloud.restheart.com/docs/getting-started?utm_source=restheart.org&utm_medium=404&utm_content=not-found">RESTHeart Cloud</a> has it hosted.</p>
+Building an app rather than running RESTHeart yourself? <a href="https://ulabase.com/docs/getting-started?utm_source=restheart.org&utm_medium=404&utm_content=not-found">Ulabase</a> has it hosted.</p>
 
 <script>
   // The 404 page sends the missing path here, so it can be reported: in

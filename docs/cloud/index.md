@@ -2,7 +2,7 @@
 docs_version: 9
 permalink: "/docs/cloud/"
 layout: redirect
-redirectUrl: "https://cloud.restheart.com/docs"
+redirectUrl: "https://ulabase.com/docs"
 sitemap: false
 applies_to: cloud
 ---
