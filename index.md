@@ -136,52 +136,52 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
                 <div class="hero-terminal text-left p-3">
 {% highlight bash %}
 # 1. get the app
-git clone https://github.com/SoftInstigate/restheart-cloud-starter-react.git
-cd restheart-cloud-starter-react
+git clone https://github.com/ulabase/starter-react.git
+cd starter-react
 npm install
 
 # 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
 #    into src/environments/environment.ts
 
 # 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
-npm install -g @restheart-cloud/cli
+npm install -g ulabase
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 npm run dev
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>React</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-react" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>React</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-react" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
             <div class="tab-pane fade" id="starter-angular" role="tabpanel">
                 <div class="hero-terminal text-left p-3">
 {% highlight bash %}
 # 1. get the app
-git clone https://github.com/SoftInstigate/restheart-cloud-starter-ng.git
-cd restheart-cloud-starter-ng
+git clone https://github.com/ulabase/starter-ng.git
+cd starter-ng
 npm install
 
 # 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
 #    into src/environments/environment.dev.ts
 
 # 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
-npm install -g @restheart-cloud/cli
+npm install -g ulabase
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 ng serve
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ng" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ng" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
             <div class="tab-pane fade" id="starter-ecommerce" role="tabpanel">
                 <div class="hero-terminal text-left p-3">
 {% highlight bash %}
 # 1. get the app
-git clone https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce.git
-cd restheart-cloud-starter-ecommerce
+git clone https://github.com/ulabase/starter-ecommerce.git
+cd starter-ecommerce
 npm install
 
 # 2. point it at your free RESTHeart Cloud service: paste its URL from the Connect page
@@ -191,20 +191,20 @@ export STRIPE_SECRET_KEY=sk_test_...
 export STRIPE_WEBHOOK_SECRET=whsec_...
 
 # 3. configure the cloud service with rhc, the RESTHeart Cloud CLI (accounts, sign-up, your origin)
-npm install -g @restheart-cloud/cli
+npm install -g ulabase
 rhc login                  # paste a personal access token from cloud.restheart.com
 rhc setup --srv <srvId>    # the six characters at the start of your service URL
 
 # 4. run it
 npm run dev
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/SoftInstigate/restheart-cloud-starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
         </div>
         </div>
 
-        <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@restheart-cloud/kit-react</code>, <code>@restheart-cloud/kit-ng</code> and <code>@restheart-cloud/kit-vue</code>.</p>
+        <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@ulabase/kit-react</code>, <code>@ulabase/kit-ng</code> and <code>@ulabase/kit-vue</code>.</p>
         <p class="mt-1"><a href="https://cloud.restheart.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
     </div>
 </section>
