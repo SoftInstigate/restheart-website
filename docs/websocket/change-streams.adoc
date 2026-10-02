@@ -148,4 +148,26 @@ A stage can also scope a stream, provided it uses a server-resolved variable rat
 
 When `notify_when` is defined, `Last-Event-ID` is ignored on reconnect and a warning is logged. The shared cursor cannot be rewound for a single client; reconnecting clients should recover missed events via the REST API.
 
+=== Keeping a WebSocket alive
+
+The server sends a ping on an idle stream every `change-streams-keep-alive-ms` (20 seconds by default), and since 9.9.2 answers the client's pings with a pong. Anything else the client sends is ignored.
+
+A connection can die without a close reaching the client, for instance while its computer sleeps: the socket stays open and no event ever arrives. A client that wants to know sends pings and reconnects when the pong does not come back. With `websocat`:
+
+[source,bash]
+----
+websocat --ping-interval 20 --ping-timeout 60 autoreconnect:wss://example.com/coll/_streams/all -
+----
+
+=== Recovering missed events
+
+A WebSocket delivers events only while connected. After a reconnection, ask the REST API for what changed since the last event seen: every write through RESTHeart gives the document a new `_etag`, an ObjectId that grows with time, so
+
+[source,http]
+----
+GET /coll?filter={"_etag":{"$gt":{"$oid":"<last _etag seen>"}}}&sort={"_etag":1}
+----
+
+returns the documents inserted or updated since then, in order. Deleted documents do not show up.
+
 See link:/docs/sse/[SSE API Overview] for details on the SSE transport and event format.
