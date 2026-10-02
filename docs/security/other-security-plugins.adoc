@@ -143,6 +143,22 @@ When RESTHeart is behind a reverse proxy, the header `X-Forwarded-For` should be
 
 If several tiers of reverse proxies are in place, `x-forwarded-for-value-from-last-element` option allows to select the correct value.
 
+If the server is reached through more than one entry, each with its own chain of proxies, the client is at a different position on each. Since 9.9.2 `x-forwarded-for-overrides` sets the position per entry: the first override whose predicate matches decides, the other requests use `x-forwarded-for-value-from-last-element`.
+
+[source,yml]
+----
+bruteForceAttackGuard:
+  trust-x-forwarded-for: true
+  x-forwarded-for-value-from-last-element: 0   # straight to the load balancer
+  x-forwarded-for-overrides:
+    - predicate: regex[pattern='.*\.example\.app', value='%{i,Host}', full-match=true]
+      value-from-last-element: 1               # through a CDN, then the load balancer
+----
+
+The predicate must tell the entries apart by something a client cannot forge, like a host that only one entry forwards.
+
+A blocked source is logged on one line that starts with `Brute force guard:`, when it gets blocked and when it is released. Since 9.9.2, with the `emails` provider configured, `notify-email` also mails an alarm, at most one per source every `notify-cooldown-minutes` (60 by default).
+
 === Root Role Guard
 
 `rootRoleGuard` forbids accounts handled by `mongoAclAuthorizer` to gain the `root-role` defined by the `mongoAclAuthorizer`.
