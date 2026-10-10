@@ -325,13 +325,13 @@ The `filter` query parameter for the Mongo REST API allows clients to execute an
 
 This is very convenient at development time, however when you are ready to deploy your application, you should blacklist the `filter` query parameter in your ACL and rely on link:/docs/mongodb-rest/aggregations/[Aggregations] to expose, well defined and secured queries.
 
-== Blacklist the `$where` MongoDB operator
+== Blacklist the operators that run JavaScript
 
 If you cannot disable the `filter` query parameter, you can blacklist unused operators, using the `filterOperatorsBlacklist` plugin.
 
-The `$where` MongoDB query operator is dangerous and should not be used in any case.
+The `$where`, `$function` and `$accumulator` operators run JavaScript on the MongoDB server, and should not be reachable from a client in any case.
 
-NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`.
+NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`, `$function` and `$accumulator`, anywhere in the filter. Before 9.10.1 the default list held `$where` only.
 
 == Define role-specific GraphQL applications
 

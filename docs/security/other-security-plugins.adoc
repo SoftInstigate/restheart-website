@@ -108,11 +108,11 @@ A global blacklist for MongoDb query operators in the `filter` query parameter.
 [source,yml]
 ----
 filterOperatorsBlacklist:
-  blacklist: [ "$where" ]
+  blacklist: [ "$where", "$function", "$accumulator" ]
   enabled: true
 ----
 
-With this default configuration, the request `GET /coll?filter={"$where": "...."}` is forbidden.
+With this default configuration, the requests `GET /coll?filter={"$where": "...."}` and `GET /coll?filter={"$expr": {"$function": {...}}}` are forbidden with `403`: the check looks inside nested documents and arrays too.
 
 === Brute Force Attack Guard
 
