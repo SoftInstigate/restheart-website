@@ -112,7 +112,7 @@ curl -i -X PUT "[RESTHEART-URL]/_schemas/address?wm=upsert" \
   -H "Authorization: Basic [BASIC-AUTH]" \
   -H "Content-Type: application/json" \
   -d '{
-    "$schema": "https://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
       "address": { "type": "string" },
@@ -128,7 +128,7 @@ curl -i -X PUT "[RESTHEART-URL]/_schemas/address?wm=upsert" \
 [source,bash]
 ----
 echo '{
-  "$schema": "https://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
     "address": { "type": "string" },
@@ -152,7 +152,7 @@ fetch('[RESTHEART-URL]/_schemas/address?wm=upsert', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    "$schema": "https://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
       "address": { "type": "string" },
@@ -175,7 +175,7 @@ fetch('[RESTHEART-URL]/_schemas/address?wm=upsert', {
 
 This schema defines an address format that requires the address, city, and country fields.
 
-NOTE: RESTHeart automatically generates an `id` property for the schema (not to be confused with the `_id` field).
+NOTE: RESTHeart gives the schema its URI in the store as `id` and, on draft-06 and draft-07, also as `$id`, the one those drafts resolve `$ref` against. Neither is the document's `_id`.
 
 ==== cURL
 [source,bash]
@@ -213,8 +213,9 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "$schema": "https://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "id": "https://schema-store/restheart/address#",
+  "$id": "https://schema-store/restheart/address#",
   "_id": "address",
   "type": "object",
   "properties": {
@@ -305,7 +306,7 @@ curl -i -X PUT "[RESTHEART-URL]/_schemas/bson" \
   -H "Content-Type: application/json" \
   -d '{
     "_id": "bson",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
       "date": {
         "type": "object",
@@ -330,7 +331,7 @@ curl -i -X PUT "[RESTHEART-URL]/_schemas/bson" \
 ----
 echo '{
   "_id": "bson",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "date": {
       "type": "object",
@@ -363,7 +364,7 @@ fetch('[RESTHEART-URL]/_schemas/bson', {
   },
   body: JSON.stringify({
     "_id": "bson",
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
       "date": {
         "type": "object",
