@@ -211,6 +211,30 @@ Use `path-prefix`, not `path`. One collection answers at several paths — `/inv
 
 Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` does not match `/inventory`.
 
+==== An MCP open to everyone
+
+Grant `/mcp` to `$unauthenticated` and anyone can connect without credentials: a public, read-only MCP for documentation or open data. Since 9.11.0 `call_api` works in such a session: each action runs as `$unauthenticated`, and the ACL decides it as it decides an anonymous REST request. Before 9.11.0 `call_api` refused every session with no account.
+
+[source,json]
+----
+[
+  {
+    "_id": "anyoneCanReachMcp",
+    "roles": ["$unauthenticated"],
+    "predicate": "path-prefix('/mcp') and method(POST, GET, DELETE)",
+    "priority": 100
+  },
+  {
+    "_id": "anyoneCanReadDocs",
+    "roles": ["$unauthenticated"],
+    "predicate": "path-prefix('/docs') and method(GET)",
+    "priority": 100
+  }
+]
+----
+
+Give `$unauthenticated` only the reads you would give an anonymous REST client: through MCP an anonymous agent can do exactly what that client can, and nothing more.
+
 ==== What the catalog announces
 
 `list_apis`, `resources/list`, `resources/templates/list` and `how_to_call` are composed per caller: two callers hitting the same server get different catalogs.
