@@ -103,7 +103,7 @@ for how this mechanism works and how to use it in a custom `Authorizer`.
 
 === filterOperatorsBlacklist
 
-A global blacklist for MongoDb query operators in the `filter` query parameter.
+A global blacklist for MongoDb query operators in the `filter` and `keys` query parameters.
 
 [source,yml]
 ----
@@ -112,7 +112,19 @@ filterOperatorsBlacklist:
   enabled: true
 ----
 
-With this default configuration, the requests `GET /coll?filter={"$where": "...."}` and `GET /coll?filter={"$expr": {"$function": {...}}}` are forbidden with `403`: the check looks inside nested documents and arrays too.
+With this default configuration, the requests `GET /coll?filter={"$where": "...."}`, `GET /coll?filter={"$expr": {"$function": {...}}}` and `GET /coll?keys={"x": {"$function": {...}}}` are forbidden with `403`: the check looks inside nested documents and arrays too. `keys` is a projection, and since MongoDB 4.4 a projection accepts aggregation expressions, so it is checked like the filter (since 9.11.1).
+
+=== updatePipelineSecurityChecker
+
+A `PATCH` whose body is an array is an update with an aggregation pipeline, which MongoDB evaluates on the server. This interceptor checks the pipeline against the `aggregationSecurity` blacklists, the same that guard the link:/docs/mongodb-rest/aggregations/[aggregations] declared on a collection, and refuses with `403` a pipeline that uses a blacklisted operator, such as `$function`, or a blacklisted stage, such as `$lookup`.
+
+It is enabled by default (since 9.11.1). Disable it only where `aggregationSecurity` is disabled too:
+
+[source,yml]
+----
+updatePipelineSecurityChecker:
+  enabled: false
+----
 
 === Brute Force Attack Guard
 

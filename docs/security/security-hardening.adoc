@@ -327,11 +327,15 @@ This is very convenient at development time, however when you are ready to deplo
 
 == Blacklist the operators that run JavaScript
 
-If you cannot disable the `filter` query parameter, you can blacklist unused operators, using the `filterOperatorsBlacklist` plugin.
+The `$where`, `$function` and `$accumulator` operators run JavaScript on the MongoDB server, and should not be reachable from a client in any case. A client can write operators that MongoDB evaluates in three places, and each one is checked by default:
 
-The `$where`, `$function` and `$accumulator` operators run JavaScript on the MongoDB server, and should not be reachable from a client in any case.
+- the `filter` query parameter, by the `filterOperatorsBlacklist` plugin;
+- the `keys` query parameter, by the same plugin: a projection accepts aggregation expressions, `$function` included;
+- the aggregation pipeline of a `PATCH` request, by the `updatePipelineSecurityChecker` interceptor, against the same `aggregationSecurity` blacklists that guard the link:/docs/mongodb-rest/aggregations/[aggregations] declared on a collection. A pipeline with `$function`, or with a blacklisted stage such as `$lookup`, is refused with `403`.
 
-NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`, `$function` and `$accumulator`, anywhere in the filter. Before 9.11.0 the default list held `$where` only.
+If you cannot disable the `filter` query parameter, you can also blacklist other unused operators with `filterOperatorsBlacklist`, see link:/docs/security/other-security-plugins/#filteroperatorsblacklist[its configuration].
+
+NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`, `$function` and `$accumulator`, anywhere in `filter` and `keys`. Before 9.11.0 the default list held `$where` only; before 9.11.1 `keys` and the `PATCH` pipeline were not checked.
 
 == Define role-specific GraphQL applications
 

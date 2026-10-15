@@ -497,6 +497,8 @@ PATCH /inventory/myCustomId HTTP/1.1
 
 This adds "office" and "school" to the existing `tags` array.
 
+NOTE: The pipeline is checked against the `aggregationSecurity` blacklists, like the link:/docs/mongodb-rest/aggregations/[aggregations] declared on a collection: a stage such as `$lookup`, or an operator that runs JavaScript on the server such as `$function`, is refused with `403`. See link:/docs/security/other-security-plugins/#updatepipelinesecuritychecker[updatePipelineSecurityChecker].
+
 === Deleting Documents
 
 Use the `DELETE` method to remove documents:
