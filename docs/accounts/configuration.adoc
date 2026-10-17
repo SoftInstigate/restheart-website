@@ -95,6 +95,13 @@ accountsConfig:
   # Default: true
   membership-endpoints-enabled: true
 
+  # One-off migration of existing data to the 9.12.0 membership model (memberships on the
+  # team only, the user keeps the active team id). Turn it on once, restart, turn it off:
+  # old `teams` arrays and `team.role` are removed from the user documents, and every
+  # membership they listed that the team does not confirm is reported in the log, never added.
+  # Default: false. See: Custom Membership Providers.
+  migrate-memberships: false
+
   # Additional JWT claims propagated from request attached-parameters to tokens
   # issued by accounts endpoints (verify, activate, reset-password, switch-team, OAuth).
   # Mirrors jwtTokenManager.account-properties-claims: use the same list so that

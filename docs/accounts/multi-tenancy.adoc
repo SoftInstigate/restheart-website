@@ -31,31 +31,38 @@ This page describes the built-in default behaviour.
 
 === Data model
 
-Each user document stores a `teams` array alongside the scalar `team` field.
-The `DefaultMembershipProvider` stores team identifiers as MongoDB `ObjectId` values:
+Since 9.12.0 who belongs to a team, and as what, is kept in one place: the team's `members`. The user document keeps only the id of its active team, which is the user's own choice. The `DefaultMembershipProvider` stores team identifiers as MongoDB `ObjectId` values:
 
 [source,json]
 ----
+// teams collection
 {
-  "_id":     "alice@example.com",
-  "roles":   ["user"],                                        // system ACL role (from default-role)
-  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner" },  // active team { _id, role }, what @team resolves to
-  "teams": [
-    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },  // membership role
-    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
+  "_id":       { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },
+  "name":      "Acme Corp",
+  "createdBy": "alice@example.com",
+  "createdAt": { "$date": "…" },
+  "members": [
+    { "userId": "alice@example.com", "role": "owner",  "joinedAt": { "$date": "…" } },  // membership role
+    { "userId": "bob@example.com",   "role": "member", "joinedAt": { "$date": "…" } }
   ]
+}
+
+// users collection
+{
+  "_id":   "alice@example.com",
+  "roles": ["user"],                                   // system ACL role (from default-role)
+  "team":  { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" } }   // the active team
 }
 ----
 NOTE: `roles` contains the *system ACL role* (e.g. `user`), not the membership role.
-The membership role (`owner`/`member`) is per-team and stored in the `teams` array.
+The membership role (`owner`/`member`) is per-team and stored in the team's `members`; `@team.role` reads it from there.
 
-`roles` is always kept in sync with the role for the active `team`.
-`teams` is the authoritative list of all memberships.
+A membership exists only in the team's `members`: a user listed nowhere in them cannot use the team, and has no active membership while that team is the active one. Before 9.12.0 the user document also carried a `teams` array and `team.role`; they are neither read nor written any more, and `accountsConfig.migrate-memberships` removes them from existing data (see xref:configuration.adoc[Configuration]).
 Custom providers can use a different identifier type — see xref:membership-providers.adoc[Custom Membership Providers].
 
 === Adding a user to a second team
 
-Inviting an existing user to a different team adds a new entry to their `teams` array without requiring account reactivation (the user is already active):
+Inviting an existing user to a different team adds them to that team's `members` without requiring account reactivation (the user is already active):
 
 [source,http]
 ----

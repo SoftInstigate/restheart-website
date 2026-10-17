@@ -13,7 +13,7 @@ The `MembershipProvider` SPI is available starting from *restheart-accounts 9.4.
 The interface and its types (`Membership`, `TeamRef`, `TeamMember`) are defined in *`restheart-commons`* (`org.restheart.plugins.accounts`), so custom implementations depend only on `restheart-commons` — not on `restheart-accounts`.
 ====
 
-By default, `restheart-accounts` stores team membership directly on the user document using the `team` / `teams` schema.
+By default, `restheart-accounts` stores who belongs to a team in the team document (`members`), and the active team on the user document (`team._id`).
 For applications that already have a domain-specific membership model — different field names, a separate collection, additional metadata such as `joinedAt`, billing references, or a different role vocabulary — the *`MembershipProvider` SPI* lets you plug in your own storage strategy without forking the plugin.
 
 === How it works
@@ -433,27 +433,23 @@ public record TeamMember(String email, String name, String role, Instant joinedA
 
 === Built-in default provider
 
-`DefaultMembershipProvider` preserves the `team` / `teams` schema and stores team identifiers as MongoDB `ObjectId` values.
+Since 9.12.0 `DefaultMembershipProvider` keeps who belongs to a team, and as what, in the team's `members` only. The user document keeps the id of its active team, which is the user's own choice, and nothing else about memberships. Team identifiers are MongoDB `ObjectId` values.
 
 [source,json]
 ----
-// users collection — schema managed by DefaultMembershipProvider
-{
-  "_id":     "alice@example.com",
-  "team":  { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },   // active team (ObjectId)
-  "teams": [
-    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },
-    { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }
-  ]
-}
-
-// teams collection — created by createInitialTeam / addMember
+// teams collection — created by createInitialTeam / createTeam, written by addMember, removeMember, updateMemberRole
 {
   "_id":       { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" },
   "name":      "Acme Corp",
   "createdBy": "alice@example.com",
   "createdAt": { "$date": "…" },
   "members":   [{ "userId": "alice@example.com", "role": "owner", "joinedAt": { "$date": "…" } }]
+}
+
+// users collection — only the active team
+{
+  "_id":  "alice@example.com",
+  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" } }
 }
 ----
 
@@ -462,41 +458,56 @@ public record TeamMember(String email, String name, String role, Instant joinedA
 | Operation | MongoDB effect
 
 | `createInitialTeam`
-| Inserts a `teams` document with `ObjectId` `_id`; `$set team` (ObjectId), `$addToSet teams` on the user
+| Inserts a `teams` document with the user as its owner in `members`; `$set team: { _id }` on the user only if absent
+
+| `createTeam`
+| Same insert; `$set team: { _id }` on the user unconditionally, so the new team becomes active
 
 | `isMember`
-| Reads `team` + `teams` on the user document; compares by native `BsonValue.equals()`
+| Reads the team; true when its `members` name the user
 
 | `addMember`
-| `$addToSet teams`; sets `team` via `$set` only if the field is absent
+| `$push` to `members` when the user is not there yet (a user already there keeps the role it has); `$set team: { _id }` on the user only if absent
 
 | `activeMembership`
-| Reads the `team` field as-is (`BsonValue`); resolves team name from the `teams` collection
+| Reads the user's `team._id`, then the team: the membership with the role its `members` say, or none when the user is not among them
 
 | `listMemberships`
-| Reads the `teams` array as-is; resolves team names from the `teams` collection
+| One query on the `teams` collection, `members.userId`; `active` marks the user's `team._id`
 
 | `setActiveMembership`
-| `$set team` on the user document with `{ _id: <BsonValue>, role: <String> }`
+| `$set team: { _id }` on the user, after checking the team's `members`
 
 | `removeMember`
-| `$pull` from `user.teams[]` and `team.members[]`; if the removed team was active, `$unset team` on the user
+| `$pull` from `members`; `$unset team` on the user if the removed team was the active one
 
 | `updateMemberRole`
-| Positional `$set teams.$.role` on the user; positional `$set members.$.role` on the team
+| Positional `$set members.$.role` on the team; what `@team.role` reads on the next request
 
 | `listTeamMembers`
 | Reads `team.members[]`; batch-fetches (`$in`) the corresponding `users` documents to denormalize display names from `profile.name` / `profile.surname`
-
-| `createTeam`
-| Same as `createInitialTeam`, but unconditionally `$set team` (vs. only-if-absent) so the new team becomes active immediately
 
 | `updateTeam`
 | Partial `$set` of `name` / `description` on the `teams` document
 
 | `deleteTeam`
-| Atomic `findOneAndDelete` on the `teams` document guarded by `$expr: {$size: "$members"} <= 1`; on success, `$pull` from `user.teams[]` and `$unset team` if it was active
+| Atomic `findOneAndDelete` on the `teams` document guarded by `$expr: {$size: "$members"} <= 1`; on success, `$unset team` on the user if it was active
 |===
+
+The `teams` collection has an index on `members.userId`, ensured by `accountsInitializer`.
+
+=== Migrating from the pre-9.12.0 model
+
+Before 9.12.0 the user document also carried `teams: [{ id, role }]`, every team with the user's role, and the active role in `team.role`: three copies of one fact, written with separate updates, that could disagree. They are neither read nor written any more. A user whose `teams` names a team whose `members` do not name them has no access to that team: the team decides.
+
+Existing data is migrated once, at startup, with `accountsConfig.migrate-memberships: true`: every user document still carrying `teams` or `team.role` has them unset, a pre-9.6.0 bare `team` id becomes `{ _id }`, and every membership the old `teams` listed that the team does not confirm is reported in the log, as a warning, never added. Turn the setting off afterwards; running it again finds nothing to do.
+
+[WARNING]
+====
+ACL rules reading `@user.team.role` or `@user.team._id` must move to `@team.role` and `@team._id`, which read the team's `members` (see xref:/docs/security/permissions.adoc#_variables[Variables]). Clients and tools reading `teams` or `team.role` from the user document must read `GET /auth/teams` instead.
+
+Deleting a user document, with the MongoDB REST API or by hand, does not take the user out of the teams that name it: a user registered again with the same id finds those memberships, and their roles, as they were. Remove the member from its teams first (`DELETE /auth/remove-member`, or a `$pull` on `members`), as before 9.12.0 the stale entries existed just the same, only hidden by the user document.
+====
 
 === Backward compatibility
 
@@ -504,13 +515,13 @@ A 9.4 deployment upgraded to 9.4.1 with no configuration changes behaves identic
 
 * `DefaultMembershipProvider` is used automatically.
 * `team-claim-name` defaults to `"team"` — the variable is `@team`.
+* Since 9.12.0 memberships live on the team only: see <<_migrating_from_the_pre_9_12_0_model,Migrating from the pre-9.12.0 model>>.
 * `member-role-name` defaults to `"member"` — role names for new invitees use `"member"`.
 * `membership-endpoints-enabled` defaults to `true` — all endpoints remain active.
 
 [NOTE]
 ====
-If your existing user documents store `team` / `teams.id` as plain hex strings (the 9.4 format), they continue to work: `activeMembership` and `listMemberships` read the stored value as-is via `BsonValue`, so a stored `BsonString("64a1…")` is returned without conversion.
-New team memberships created after the upgrade will be stored as `ObjectId`.
+A team id stored as a plain hex string (the 9.4 format) keeps working: the active team and the members are compared as `BsonValue`, without conversion. New teams get an `ObjectId`.
 ====
 
 [NOTE]
