@@ -237,7 +237,7 @@ jwtConfigProvider:
     - "@team"     # quoted: @ is reserved in YAML
 ----
 
-In ACL rules, `@team._id` and `@team.role` read the active team from the provider, never from the token, so a rule returns the same documents to a password login and to an OAuth login:
+The claim is for the client, which reads from it which team it is working in. Permissions do not need it: in ACL rules, `@team._id` and `@team.role` read the active team from the provider, never from the token, so a rule returns the same documents to a password login and to an OAuth login, and a token issued before a switch of team acts as the team active now, never as the old one:
 
 [source,yaml]
 ----

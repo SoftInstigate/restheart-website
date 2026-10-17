@@ -8,15 +8,8 @@ applies_to: both
 
 Team invitations allow users with the `owner` role to add people to their team.
 
-[IMPORTANT]
-====
-The invite endpoint requires the JWT to contain the active team claim. Ensure the following configuration:
+NOTE: The invite endpoint reads the caller's active team and role from the membership provider, not from the JWT: no claim is required for it, and a token issued before a switch of team acts as the team active now. The `team` claim the accounts endpoints put in the token is for the client, which reads from it which team it is working in. To have `POST /token` carry it as well, list `"@team"` in `jwtConfigProvider.account-properties-claims` (see xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token]).
 
-* `accountsConfig.team-claim-name: team` (or your custom claim name)
-* `jwtConfigProvider.account-properties-claims: ["@team"]`, so that `POST /token` carries the active team exactly as the accounts endpoints issue it (see xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token]); before 9.12.0, `[team]` on both `jwtTokenManager` and `accountsConfig`
-
-Without these, the service cannot determine the caller's team role and returns `403 Forbidden`.
-====
 The behavior differs depending on whether the invited user already has an account.
 
 [source,mermaid]
