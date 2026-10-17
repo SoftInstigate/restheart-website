@@ -224,6 +224,32 @@ jwtTokenManager:
 TIP: Keep `accountsConfig.account-properties-claims` and `jwtTokenManager.account-properties-claims` identical.
 Any discrepancy means `/token` and accounts endpoints will issue JWTs with different claims, which can cause subtle authentication failures.
 
+==== The active team in the token: "@team"
+
+The accounts endpoints (activation, email verification, password reset, `POST /auth/switch-team`, the OAuth callback) put the active team in the token as `{ "_id": {"$oid": "…"}, "role": "owner" }`, built from the `MembershipProvider`. `POST /token` cannot build anything: `account-properties-claims: [team]` copies the `team` property of the user document as it is stored. With the default provider the two agree. A custom provider that stores the active team differently, a bare id for instance, gets one shape from `POST /token` and another from every other path, and an ACL rule matches only one of them.
+
+restheart-accounts registers the ACL variable `@team` (named after `team-claim-name`), resolved from `MembershipProvider.activeMembership` for the authenticated caller. Listed as a claim, it gives `POST /token` the same claim as every other path:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  account-properties-claims:
+    - "@team"     # quoted: @ is reserved in YAML
+----
+
+In ACL rules, `@team._id` and `@team.role` read the active team from the provider, never from the token, so a rule returns the same documents to a password login and to an OAuth login:
+
+[source,yaml]
+----
+- roles: [user]
+  predicate: path-prefix('/orders') and equals(@team.role, "owner")
+  mongo:
+    readFilter: {"team": "@team._id"}
+    mergeRequest: {"team": "@team._id"}
+----
+
+NOTE: Migrating a deployment: replace `account-properties-claims: [team]` with `["@team"]`, in `jwtConfigProvider`, and in ACL rules `@user.team._id` and `@user.team.role` with `@team._id` and `@team.role`. `[team]` keeps working as before; the variable is the only way to have one shape on every token path. Available since RESTHeart 9.12.0.
+
 Since 9.7.0, `account-properties-claims` can also be overridden per team via `override-accounts-account-properties-claims` (see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy]) — useful when different tenants want different token payloads (e.g. one wants `consents` for ACL predicates, another wants a plan identifier, another neither). Whichever list is in effect, a fixed denylist is enforced at token issuance and cannot be bypassed by the override — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist].
 
 === Multi-tenancy with AuthDbResolver and TeamConfigInterceptor

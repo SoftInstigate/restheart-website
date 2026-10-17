@@ -112,6 +112,24 @@ account-properties-claims:
 
 Note the separator is `/`, not `.`.
 
+==== Variables
+
+An entry starting with `@` is not a property of the user document: it is an ACL variable, one of those a `VarResolver` contributes (see xref:/docs/security/permissions.adoc#_variables[Variables]), resolved with the request that issues the token and put in the token under its name. It carries a value that is computed rather than stored.
+
+[source,yaml]
+----
+jwtConfigProvider:
+  account-properties-claims:
+    - email
+    - "@team"     # quoted: @ is reserved in YAML
+----
+
+`"@team"`, registered by restheart-accounts, puts the active team in the token as `{ "_id": {"$oid": "…"}, "role": "owner" }`: the same claim `POST /auth/switch-team` and the other accounts endpoints issue, so `POST /token` agrees with them whatever the membership provider stores. See xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token].
+
+Only the bare variable is accepted (`"@team"`, not `"@team.role"`): a claim carries the whole of it. A variable that resolves to nothing adds no claim. An entry naming a variable no plugin registers is reported in the startup log, by `accountPropertiesClaimsChecker`, once every plugin has had the chance to register its own.
+
+CAUTION: Available since RESTHeart 9.12.0.
+
 ==== Required claims
 
 Some claims are infrastructure the deployment cannot work without. On a multi-tenant node, for instance, a claim naming the node that issued the token is verified on every later request — a tenant able to drop it from its own claim list would lock itself out, since every token issued afterwards would be rejected.

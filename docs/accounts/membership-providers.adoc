@@ -72,6 +72,7 @@ At HTTP boundaries (request bodies, response bodies), team IDs are serialized as
 
 * An ObjectId team appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/teams` response items.
 * The `POST /auth/switch-team` response and the `team` JWT claim carry the active team as `{ _id, role }` — e.g. `{ "_id": {"$oid": "..."}, "role": "owner" }`.
+* The same document is the ACL variable `@team`, resolved from `activeMembership` for the caller: with `jwtConfigProvider.account-properties-claims: ["@team"]`, `POST /token` carries it too, whatever this provider stores on the user document. Since 9.12.0.
 * Clients must send the same format in the `POST /auth/switch-team` request body.
 
 This is handled automatically by `BsonUtils.parse` (input) and `BsonUtils.toJson` (output) — no custom conversion helpers are needed in providers.
