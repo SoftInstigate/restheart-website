@@ -8,7 +8,7 @@ applies_to: both
 
 Team invitations allow users with the `owner` role to add people to their team.
 
-NOTE: The invite endpoint reads the caller's active team and role from the membership provider, not from the JWT: no claim is required for it, and a token issued before a switch of team acts as the team active now. The `team` claim the accounts endpoints put in the token is for the client, which reads from it which team it is working in. To have `POST /token` carry it as well, list `"@team"` in `jwtConfigProvider.account-properties-claims` (see xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token]).
+NOTE: The invite endpoint reads the caller's active team and role from the membership provider, not from the JWT: no claim is required for it, and a token issued before a switch of team acts as the team active now. Since 9.12.0 the tokens carry no team claim: a client reads its team from `GET /auth/teams` or the switch-team response, or the deployment lists `"@team"` in `jwtConfigProvider.account-properties-claims` to have it in every token (see xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token]).
 
 The behavior differs depending on whether the invited user already has an account.
 

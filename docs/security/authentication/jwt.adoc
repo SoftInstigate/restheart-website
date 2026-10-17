@@ -124,7 +124,7 @@ jwtConfigProvider:
     - "@team"     # quoted: @ is reserved in YAML
 ----
 
-`"@team"`, registered by restheart-accounts, puts the active team in the token as `{ "_id": {"$oid": "…"}, "role": "owner" }`: the same claim `POST /auth/switch-team` and the other accounts endpoints issue, so `POST /token` agrees with them whatever the membership provider stores. See xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token].
+`"@team"`, registered by restheart-accounts, puts the active team in the token as `{ "_id": {"$oid": "…"}, "role": "owner" }`, on `POST /token` and on the accounts endpoints alike, whatever the membership provider stores. Since 9.12.0 those endpoints add no team claim of their own: this entry is the one way to have it in a token, and ACL rules do not need it, they read `@team` from the provider. See xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token].
 
 Only the bare variable is accepted (`"@team"`, not `"@team.role"`): a claim carries the whole of it. A variable that resolves to nothing adds no claim. An entry naming a variable no plugin registers is reported in the startup log, by `accountPropertiesClaimsChecker`, once every plugin has had the chance to register its own.
 

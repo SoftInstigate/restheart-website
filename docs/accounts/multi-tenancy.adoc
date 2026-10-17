@@ -16,7 +16,12 @@ ACL filters using `@user.team` as the team id must migrate to `@user.team._id`.
 Clients reading the `team` claim must adapt: `team._id` replaces `team`.
 ====
 
-The active team and its corresponding role are encoded in the JWT; switching teams reissues the JWT without requiring a new login.
+[WARNING]
+====
+*9.12.0 breaking change:* the tokens restheart-accounts issues carry no `team` claim any more. ACL rules read the active team through the `@team` variable, from the membership provider, on every login path: replace `@user.team._id` with `@team._id` and `@user.team.role` with `@team.role` in predicates, `readFilter` and `mergeRequest`. Clients that read the team from the JWT read it from `GET /auth/teams` or the `POST /auth/switch-team` response, or the deployment lists `"@team"` in `jwtConfigProvider.account-properties-claims` to have it in every token, `POST /token` included.
+====
+
+The active team and its role are read by ACL rules through `@team`; switching teams reissues the JWT without requiring a new login, and the response says the team.
 
 [NOTE]
 ====
@@ -34,7 +39,7 @@ The `DefaultMembershipProvider` stores team identifiers as MongoDB `ObjectId` va
 {
   "_id":     "alice@example.com",
   "roles":   ["user"],                                        // system ACL role (from default-role)
-  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner" },  // active team { _id, role } (JWT claim)
+  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner" },  // active team { _id, role }, what @team resolves to
   "teams": [
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" }, "role": "owner"  },  // membership role
     { "id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e2" }, "role": "member" }

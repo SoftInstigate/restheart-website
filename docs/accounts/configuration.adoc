@@ -68,8 +68,8 @@ accountsConfig:
 
   # ── Membership SPI (9.4.1+) ──────────────────────────────────────────────
 
-  # JWT claim name used to carry the active team identifier.
-  # Default: "team".
+  # The name of the ACL variable for the active team (@team), and of the claim when "@team"
+  # is listed in jwtConfigProvider/account-properties-claims. Default: "team".
   # See: Custom Membership Providers.
   team-claim-name: team
 
@@ -198,7 +198,7 @@ By default the tokens issued by accounts endpoints (`/auth/verify`, `/auth/activ
 * `sub` — the user's email
 * `roles` — the user's roles
 * `authDb` — the MongoDB authentication database (always included automatically; used by `JwtAuthDbVerifier` in multi-team deployments)
-* `team` / `status` (or whichever explicit claims each flow adds)
+* the claims `account-properties-claims` names, from the user document and the request's attached parameters. Since 9.12.0 no flow adds a claim of its own: the active team is read in ACL rules through `@team`, and is in the token only when the list names `"@team"`.
 
 In multi-team or custom deployments, interceptors such as `SrvNodeEnricher` attach additional parameters to the request _before_ it reaches the service.
 To propagate those parameters as JWT claims — so that the resulting token matches what `POST /token` would issue — list them in `account-properties-claims`:
@@ -226,9 +226,9 @@ Any discrepancy means `/token` and accounts endpoints will issue JWTs with diffe
 
 ==== The active team in the token: "@team"
 
-The accounts endpoints (activation, email verification, password reset, `POST /auth/switch-team`, the OAuth callback) put the active team in the token as `{ "_id": {"$oid": "…"}, "role": "owner" }`, built from the `MembershipProvider`. `POST /token` cannot build anything: `account-properties-claims: [team]` copies the `team` property of the user document as it is stored. With the default provider the two agree. A custom provider that stores the active team differently, a bare id for instance, gets one shape from `POST /token` and another from every other path, and an ACL rule matches only one of them.
+Since 9.12.0 the tokens the accounts endpoints issue (activation, email verification, password reset, `POST /auth/switch-team`, `POST /auth/teams`, the OAuth callback) carry no team claim. Before, each of them put the active team in as `{ "_id": {"$oid": "…"}, "role": "owner" }`, while `POST /token` could only copy the `team` property of the user document as stored: with a custom provider storing it differently, a bare id for instance, the same user carried two shapes of the claim depending on the login path, and an ACL rule matched only one of them. The team has one source now, the variable.
 
-restheart-accounts registers the ACL variable `@team` (named after `team-claim-name`), resolved from `MembershipProvider.activeMembership` for the authenticated caller. Listed as a claim, it gives `POST /token` the same claim as every other path:
+restheart-accounts registers the ACL variable `@team` (named after `team-claim-name`), resolved from `MembershipProvider.activeMembership` for the authenticated caller. A deployment that wants the team in the token lists it as a claim, and gets it on every path, `POST /token` included:
 
 [source,yaml]
 ----
@@ -237,7 +237,7 @@ jwtConfigProvider:
     - "@team"     # quoted: @ is reserved in YAML
 ----
 
-The claim is for the client, which reads from it which team it is working in. Permissions do not need it: in ACL rules, `@team._id` and `@team.role` read the active team from the provider, never from the token, so a rule returns the same documents to a password login and to an OAuth login, and a token issued before a switch of team acts as the team active now, never as the old one:
+The claim is for the client, which reads from it which team it is working in; without it, the client reads the team from `GET /auth/teams` or from the `POST /auth/switch-team` response. Permissions do not need it: in ACL rules, `@team._id` and `@team.role` read the active team from the provider, never from the token, so a rule returns the same documents to a password login and to an OAuth login, and a token issued before a switch of team acts as the team active now, never as the old one:
 
 [source,yaml]
 ----
@@ -248,7 +248,7 @@ The claim is for the client, which reads from it which team it is working in. Pe
     mergeRequest: {"team": "@team._id"}
 ----
 
-NOTE: Migrating a deployment: replace `account-properties-claims: [team]` with `["@team"]`, in `jwtConfigProvider`, and in ACL rules `@user.team._id` and `@user.team.role` with `@team._id` and `@team.role`. `[team]` keeps working as before; the variable is the only way to have one shape on every token path. Available since RESTHeart 9.12.0.
+WARNING: Migrating to 9.12.0: in ACL rules replace `@user.team._id` and `@user.team.role` with `@team._id` and `@team.role`, since `@user.team` resolves to nothing for a token that carries no team claim. Clients that read the team from the JWT either read it from `GET /auth/teams` or the switch-team response, or the deployment lists `"@team"` in `jwtConfigProvider.account-properties-claims`.
 
 Since 9.7.0, `account-properties-claims` can also be overridden per team via `override-accounts-account-properties-claims` (see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy]) — useful when different tenants want different token payloads (e.g. one wants `consents` for ACL predicates, another wants a plan identifier, another neither). Whichever list is in effect, a fixed denylist is enforced at token issuance and cannot be bypassed by the override — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist].
 

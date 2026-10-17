@@ -616,7 +616,7 @@ sequenceDiagram
 
 1. Validate `teamName` — `400` if missing or blank.
 2. `MembershipProvider.createTeam(userId, teamName)` — creates the team, adds the caller as owner, and sets it as the newly active membership (unlike `createInitialTeam`, which only activates a team if the user has none yet).
-3. Reissue the JWT with the new team claim, delivered per the `delivery` query parameter (same `cookie` / `body` selector as *8. Switch Team*).
+3. Reissue the JWT, delivered per the `delivery` query parameter (same `cookie` / `body` selector as *8. Switch Team*).
 4. Return `201 Created` with `{ "id": ..., "name": ..., "role": "owner" }`.
 
 *MembershipProvider SPI:* `createTeam(userId, teamName)`

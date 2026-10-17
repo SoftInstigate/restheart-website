@@ -71,8 +71,8 @@ A custom provider is free to use `BsonInt32`, `BsonString`, or any other type it
 At HTTP boundaries (request bodies, response bodies), team IDs are serialized as *MongoDB extended JSON*:
 
 * An ObjectId team appears as `{"$oid": "64a1b2c3…"}` in `GET /auth/teams` response items.
-* The `POST /auth/switch-team` response and the `team` JWT claim carry the active team as `{ _id, role }` — e.g. `{ "_id": {"$oid": "..."}, "role": "owner" }`.
-* The same document is the ACL variable `@team`, resolved from `activeMembership` for the caller: with `jwtConfigProvider.account-properties-claims: ["@team"]`, `POST /token` carries it too, whatever this provider stores on the user document. Since 9.12.0.
+* The `POST /auth/switch-team` response carries the active team as `{ _id, role }` — e.g. `{ "_id": {"$oid": "..."}, "role": "owner" }`.
+* The same document is the ACL variable `@team`, resolved from `activeMembership` for the caller, whatever this provider stores on the user document. Since 9.12.0 the tokens carry no team claim: a deployment that wants it lists `"@team"` in `jwtConfigProvider.account-properties-claims` and gets it on every path, `POST /token` included.
 * Clients must send the same format in the `POST /auth/switch-team` request body.
 
 This is handled automatically by `BsonUtils.parse` (input) and `BsonUtils.toJson` (output) — no custom conversion helpers are needed in providers.
@@ -110,7 +110,7 @@ accountsConfig:
 ----
 accountsConfig:
   db: myapp
-  team-claim-name: org          # JWT carries "org" instead of "team"
+  team-claim-name: org          # the variable is @org, and the claim "org" when listed
   member-role-name: user          # keep existing ACL rules
   membership-endpoints-enabled: false   # /orgs-mgmt/* handles invitations
 ----
@@ -309,7 +309,7 @@ public interface MembershipProvider {
      * the owner role. Called during /auth/register and the OAuth new-user path.
      *
      * The user document already exists when this is called.
-     * The returned TeamRef is embedded as the JWT team claim.
+     * The returned TeamRef is what @team resolves to while this team is the active one.
      */
     TeamRef createInitialTeam(String userId, String teamName);
 
@@ -503,7 +503,7 @@ public record TeamMember(String email, String name, String role, Instant joinedA
 A 9.4 deployment upgraded to 9.4.1 with no configuration changes behaves identically:
 
 * `DefaultMembershipProvider` is used automatically.
-* `team-claim-name` defaults to `"team"` — JWT payload is unchanged.
+* `team-claim-name` defaults to `"team"` — the variable is `@team`.
 * `member-role-name` defaults to `"member"` — role names for new invitees use `"member"`.
 * `membership-endpoints-enabled` defaults to `true` — all endpoints remain active.
 
