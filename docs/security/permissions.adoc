@@ -770,6 +770,13 @@ The permissions of all the user's roles are compared together: among those that 
 
 A user with roles `[author, editor]` patching an article gets `editorsWriteAll` (200 beats 100), so no `writeFilter`: they can edit any article. A user with the single role `author` gets `authorsWriteOwn`, and edits their own articles only. The same holds with roles `[editor, author]`.
 
+Now suppose the two permissions had the same priority, `100` both. The user with roles `[author, editor]` matches both, and the tie-break decides (see <<_permissions_with_the_same_priority,Permissions with the same priority>>):
+
+* with _mongoAclAuthorizer_ the greatest `_id` wins: `"editorsWriteAll"` sorts after `"authorsWriteOwn"`, so the user gets `editorsWriteAll` and can edit any article;
+* with _fileAclAuthorizer_ the permission written first in the configuration wins: in the order above, again `editorsWriteAll`; swap the two entries in the file and the user gets `authorsWriteOwn`.
+
+In both cases the order of the roles, `[author, editor]` or `[editor, author]`, does not change the outcome. What does change it, the `_id` or the position in a file, is not something to choose an outcome by: give the permission that must win the higher priority.
+
 CAUTION: Before 9.12.0 the first role of the account decided: with `[author, editor]` the request got `authorsWriteOwn`, with `[editor, author]` it got `editorsWriteAll`. Accounts with more than one role whose permissions match the same request may see a different permission applied after the upgrade, and with it different `mongo` options: review those rules.
 
 ==== Permissions with the same priority
