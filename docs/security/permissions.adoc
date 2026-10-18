@@ -772,6 +772,34 @@ A user with roles `[author, editor]` patching an article gets `editorsWriteAll` 
 
 CAUTION: Before 9.12.0 the first role of the account decided: with `[author, editor]` the request got `authorsWriteOwn`, with `[editor, author]` it got `editorsWriteAll`. Accounts with more than one role whose permissions match the same request may see a different permission applied after the upgrade, and with it different `mongo` options: review those rules.
 
+==== Permissions with the same priority
+
+Two permissions that match the same request with the same priority are resolved by a fixed rule, the same within a role and across roles, never by the order of the user's roles:
+
+* _mongoAclAuthorizer_: the permission with the greatest `_id` wins. With ObjectIds, that is the most recently created one.
+* _fileAclAuthorizer_: the permission that comes first in the configuration wins.
+
+For example, in an `acl.yml` with these two permissions for the role `user`:
+
+[source,yml]
+----
+- roles: [ user ]
+  predicate: method(GET) and path-prefix('/articles')
+  priority: 100
+  mongo:
+    projectResponse: { "draftNotes": 0 }
+
+- roles: [ user ]
+  predicate: method(GET) and path-template('/articles/{id}')
+  priority: 100
+----
+
+`GET /articles/abc` matches both, and the first one applies: the response hides `draftNotes`. To let a single article show them, give the second permission a higher priority, for instance `110`.
+
+TIP: Do not rely on the tie-break. Two permissions that can match the same request should have different priorities: the one meant as the exception gets the higher number.
+
+CAUTION: Before 9.12.0 _fileAclAuthorizer_ resolved a tie in favour of the permission that came *last* in the file, and across roles a tie went to the role the account listed first. A configuration that relied on either may apply a different permission after the upgrade.
+
 === Complete Permission Examples
 
 ==== Example 1: User Can Read Own Documents

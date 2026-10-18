@@ -342,7 +342,7 @@ The `conf-file` path is either absolute, or relative to the restheart configurat
 
 The permission's options are fully equivalent to the ones handled by the _mongoAclAuthorizer_, only the yml format is used in place of Json.
 
-Permissions are evaluated from the highest `priority` down, as the _mongoAclAuthorizer_ does, and a permission without `priority` is evaluated last.
+Permissions are evaluated from the highest `priority` down, as the _mongoAclAuthorizer_ does, and a permission without `priority` is evaluated last. At equal priority, the permission that comes first in the configuration wins (see xref:/docs/security/permissions.adoc#_permissions_with_the_same_priority[Permissions with the same priority]).
 
 WARNING: Before 9.12.0 the _fileAclAuthorizer_ evaluated permissions in the opposite order, the lowest number first. When upgrading, check the priorities of every role that has more than one permission matching the same request: the permission that gets applied changes, and with it the `mongo` options (filters, allowed write modes) the request runs under.
 
