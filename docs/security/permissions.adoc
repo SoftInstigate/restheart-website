@@ -744,6 +744,34 @@ In this example:
 
 TIP: Use priority to create exception rules. For example, give high priority to specific restrictions and low priority to general access rules.
 
+==== A user with more than one role
+
+The permissions of all the user's roles are compared together: among those that match the request, the one with the highest priority applies, with its `mongo` options. The order in which the account lists its roles plays no part.
+
+[source,json]
+----
+[
+  {
+    "_id": "editorsWriteAll",
+    "roles": ["editor"],
+    "predicate": "path-prefix('/articles') and method(PATCH)",
+    "priority": 200,
+    "mongo": { "allowWriteMode": true }
+  },
+  {
+    "_id": "authorsWriteOwn",
+    "roles": ["author"],
+    "predicate": "path-prefix('/articles') and method(PATCH)",
+    "priority": 100,
+    "mongo": { "writeFilter": { "author": "@user._id" } }
+  }
+]
+----
+
+A user with roles `[author, editor]` patching an article gets `editorsWriteAll` (200 beats 100), so no `writeFilter`: they can edit any article. A user with the single role `author` gets `authorsWriteOwn`, and edits their own articles only. The same holds with roles `[editor, author]`.
+
+CAUTION: Before 9.12.0 the first role of the account decided: with `[author, editor]` the request got `authorsWriteOwn`, with `[editor, author]` it got `editorsWriteAll`. Accounts with more than one role whose permissions match the same request may see a different permission applied after the upgrade, and with it different `mongo` options: review those rules.
+
 === Complete Permission Examples
 
 ==== Example 1: User Can Read Own Documents
