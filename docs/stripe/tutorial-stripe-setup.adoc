@@ -227,7 +227,7 @@ curl -s http://localhost:8080/stripe/subscription \
 
 [TIP]
 ====
-`403` here means the caller has no resolvable team — check the JWT carries a `team` claim, which requires the user to belong to a team.
+`403` here means the caller has no active team: `@team` does not resolve. Check that the user belongs to a team and has an active one, with `GET /auth/teams`.
 
 `401` means the token is missing or expired.
 ====

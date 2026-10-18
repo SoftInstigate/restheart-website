@@ -303,7 +303,7 @@ sequenceDiagram
 4. Set password, assign `roles: ["user"]`.
 5. `MembershipProvider.addMember(userId, teamId, role)` — adds user to the team and sets active team.
 6. Delete invitation from `auth_invitations` (one-shot token).
-7. Issue JWT with the newly set active team.
+7. Issue a JWT. It carries no team claim: ACL rules read the newly set active team through `@team`.
 8. Return `200 OK`; the fresh JWT is delivered per the `delivery` query parameter (auto-login).
 Consents are not managed by this endpoint. See link:/docs/accounts/consents-management[Consents Management] for details.
 
@@ -547,12 +547,12 @@ sequenceDiagram
   R->>M: verify membership in teamId
   R->>M: MembershipProvider.setActiveMembership(userId, teamId)
   M-->>R: OK
-  Note over R: reissue JWT with team = {_id, role}
-  R-->>C: 200 OK (JWT via cookie or body, per delivery)
+  Note over R: reissue JWT (no team claim)
+  R-->>C: 200 OK {team: {_id, role}} (JWT via cookie or body, per delivery)
 ----
 
 Calls `MembershipProvider.setActiveMembership(userId, teamId)` and reissues the JWT.
-The reissued token is delivered per the `delivery` query parameter — `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0; returns `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie). The response body also carries the new active `team` and `role`.
+The reissued token is delivered per the `delivery` query parameter: `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0; returns `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie). The token carries no team claim. The response body carries the new active team as `{"team": {"_id": …, "role": …}}`, under the key set by `team-claim-name`.
 
 == 9. List Teams
 
@@ -608,15 +608,15 @@ sequenceDiagram
   R->>M: MembershipProvider.createTeam(userId, teamName)
   Note over R,M: adds caller as owner, sets team as newly active
   M-->>R: OK
-  Note over R: reissue JWT with team = {_id, role}
-  R-->>C: 201 Created (JWT via cookie or body, per delivery)
+  Note over R: reissue JWT (no team claim)
+  R-->>C: 201 Created {id, name, role} (JWT via cookie or body, per delivery)
 ----
 
 *Flow:*
 
 1. Validate `teamName` — `400` if missing or blank.
 2. `MembershipProvider.createTeam(userId, teamName)` — creates the team, adds the caller as owner, and sets it as the newly active membership (unlike `createInitialTeam`, which only activates a team if the user has none yet).
-3. Reissue the JWT, delivered per the `delivery` query parameter (same `cookie` / `body` selector as *8. Switch Team*).
+3. Reissue the JWT, delivered per the `delivery` query parameter (same `cookie` / `body` selector as *8. Switch Team*). The token carries no team claim. The response body carries the new team as `{"id": …, "name": …, "role": …}`, where `role` is the ownership role.
 4. Return `201 Created` with `{ "id": ..., "name": ..., "role": "owner" }`.
 
 *MembershipProvider SPI:* `createTeam(userId, teamName)`

@@ -1,0 +1,116 @@
+---
+docs_version: 9
+title: Upgrade from 9.11 to 9.12
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.12 changes how `restheart-accounts` handles the active team. The tokens it issues no longer carry a team claim, and memberships are stored on the team only.
+
+You are affected if you use `restheart-accounts` with teams, or `restheart-stripe`. This page lists the breaking changes, says who is affected and what to do.
+
+== What changed
+
+=== No team claim in the tokens
+
+Before 9.12, the accounts endpoints (activation, email verification, password reset, `POST /auth/switch-team`, `POST /auth/teams`, the OAuth callback) put the active team in the JWT as `team: { _id, role }`.
+
+From 9.12, no token issued by `restheart-accounts` carries a team claim. The new token after a switch of team carries the user's system roles from the database, and no team role.
+
+A client that read the team from the JWT reads it from one of these:
+
+* the `POST /auth/switch-team` response body, `{ "team": { "_id": …, "role": … } }`;
+* the `POST /auth/teams` response body, `{ "id": …, "name": …, "role": … }`;
+* `GET /auth/teams`, the entry with `active: true`.
+
+With `?delivery=body`, these responses also carry the `access_token`.
+
+A deployment that still wants the team in every token opts in, on `jwtConfigProvider`:
+
+[source,yaml]
+----
+jwtConfigProvider:
+  account-properties-claims:
+    - "@team"     # quoted: @ is reserved in YAML
+----
+
+The claim then appears on every token path, `POST /token` included. See xref:/docs/accounts/configuration.adoc#_the_active_team_in_the_token_team[The active team in the token].
+
+=== ACL rules read the active team through `@team`
+
+`restheart-accounts` registers the ACL variable `@team`, as `{ _id, role }`. It is resolved at every request from the membership provider, so it follows a switch of team at once. Its name follows `accountsConfig.team-claim-name` (default `team`).
+
+`@user.team` reads the token, which no longer has a team. A rule that uses it resolves to nothing and denies. Replace it.
+
+Before (9.11):
+
+[source,yaml]
+----
+- role: user
+  predicate: path-prefix('/orders') and equals(@user.team.role, "owner")
+  mongo:
+    readFilter: '{"team": "@user.team._id"}'
+    mergeRequest:
+      team: "@user.team._id"
+----
+
+After (9.12):
+
+[source,yaml]
+----
+- role: user
+  predicate: path-prefix('/orders') and equals(@team.role, "owner")
+  mongo:
+    readFilter: '{"team": "@team._id"}'
+    mergeRequest:
+      team: "@team._id"
+----
+
+A caller with no active team has `@team` unresolved, and the rule denies.
+
+=== Memberships live in `team.members` only
+
+Before 9.12, the user document also carried `teams: [{ id, role }]` and the active role in `team.role`.
+
+From 9.12, the default membership provider stores who belongs to a team, and with which role, in the team's `members` only. The user document keeps the active team id:
+
+[source,json]
+----
+{
+  "_id": "alice@example.com",
+  "team": { "_id": { "$oid": "64a1b2c3d4e5f6a7b8c9d0e1" } }
+}
+----
+
+`teams` and `team.role` on the user are no longer read or written. Access follows `team.members`. Clients and tools that read them from the user document read `GET /auth/teams` instead.
+
+A JSON Schema on the users collection that declares `teams` can drop it.
+
+=== `restheart-stripe` resolves the team through `@team`
+
+The billing entity, for subscriptions and for orders, is the caller's active team from `@team`. The JWT team claim is used only as a fallback, where no `@team` variable is registered. No configuration change is needed.
+
+== Migration steps
+
+=== 1. Update your ACL rules
+
+Search your permissions, in the configuration and in the `acl` collection, for `@user.team`. Replace `@user.team._id` with `@team._id` and `@user.team.role` with `@team.role`.
+
+=== 2. Migrate the user documents
+
+Turn on the one-off migration and restart:
+
+[source,yaml]
+----
+accountsConfig:
+  migrate-memberships: true
+----
+
+At startup it removes `teams` and `team.role` from every user document that still has them. Every membership listed there that the team's `members` do not confirm is reported in the log as a warning. Nothing is added to a team. Check the warnings, then set `migrate-memberships` back to `false`, its default.
+
+See xref:/docs/accounts/membership-providers.adoc#_migrating_from_the_pre_9_12_0_model[Migrating from the pre-9.12.0 model].
+
+=== 3. Update your clients
+
+Read the active team from the switch-team response or from `GET /auth/teams`, or list `"@team"` in `jwtConfigProvider.account-properties-claims`.
+

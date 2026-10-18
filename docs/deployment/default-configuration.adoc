@@ -107,6 +107,19 @@ jwtConfigProvider:
   algorithm: HS256 # Supported: HS256, HS384, HS512
   issuer: restheart.org
   audience: null   # null or array of audience strings
+  # Account properties copied into every JWT this deployment issues, on /token and by the accounts
+  # endpoints alike. A plain entry names a property of the user document, nested with / (e.g.
+  # consents/tos/version). An entry starting with @ is an ACL variable, resolved with the request
+  # that issues the token and put in the token under its name. Since 9.12.0 no token carries a
+  # team claim unless "@team" is listed here: it adds the active team as { _id, role } on every
+  # token path. ACL rules do not need it, they read @team at every request. Quote it: @ is
+  # reserved in YAML.
+  #account-properties-claims:
+  #  - profile
+  #  - "@team"
+  # Claims copied whatever a per-request override of the list says.
+  #required-account-properties-claims:
+  #  - srvNode
 
 # Issues signed JWTs on behalf of other plugins, which inject it as @Inject("jwtIssuer").
 # Key, algorithm, issuer, audience and claim policy all come from jwtConfigProvider above: a token
@@ -340,7 +353,9 @@ jwtTokenManager:
   ttl: 15 # in minutes
   srv-uri: /token
   # Note: key, algorithm, issuer, audience configured via jwtConfigProvider
-  # additional JWT claims from accounts properties
+  # Additional JWT claims from accounts properties.
+  # Deprecated: configure account-properties-claims in jwtConfigProvider instead, once for every
+  # token path. The team claim is opt-in there, with "@team".
   account-properties-claims:
   # - foo # property name
   # - /nested/property # xpath expr for nested properties
@@ -388,7 +403,11 @@ accountsConfig:
   # ── Membership SPI (9.4.1+) ─────────────────────────────────────────────
   # See https://restheart.org/docs/accounts/membership-providers
 
-  # JWT claim name for the active team identifier.
+  # The name of the ACL variable restheart-accounts registers for the active team, @team, read
+  # from the membership provider as { _id, role } (@team._id, @team.role). It is also the key of
+  # the team in the POST /auth/switch-team response body. Since 9.12.0 the tokens carry no team
+  # claim: to put it in every token, list "@team" in jwtConfigProvider/account-properties-claims,
+  # and the claim takes this name too.
   # Default: "team".
   team-claim-name: team
 
@@ -401,7 +420,7 @@ accountsConfig:
   default-role: user
 
   # Team role assigned to the user who creates a new team.
-  # Stored in user.teams[].role and team.members[].role.
+  # Stored in team.members[].role.
   # Default: "owner". Override per-team via override-accounts-ownership-role.
   ownership-role: owner
 
@@ -412,12 +431,18 @@ accountsConfig:
 
   # Additional JWT claims propagated from request attached-parameters to tokens
   # issued by accounts endpoints (verify, activate, reset-password, switch-team, OAuth).
-  # Mirrors jwtTokenManager.account-properties-claims: use the same list so that
-  # all token-issuance paths produce identical JWTs.
-  # For multi-team deployments, include the teams claim (e.g. "teams").
-  # authDb is always included automatically — never list it here.
+  # authDb is always included automatically: never list it here.
+  # Deprecated: configure account-properties-claims in jwtConfigProvider instead, once for every
+  # token path. The team claim is opt-in there, with "@team".
   account-properties-claims:
   # - srvNode  # example: attached-param set by SrvNodeEnricher in multi-team deployments
+
+  # One-off migration of existing data to the 9.12.0 membership model: who belongs to a team is
+  # kept on the team only (teams.members), the user keeps just the id of its active team. Turn it
+  # on once: at startup every user document still carrying the old `teams` array or `team.role`
+  # has them removed, and every membership they listed that the team does not confirm is reported
+  # in the log, never added. Then turn it off.
+  #migrate-memberships: false
 
 # Dependency-injection service holding the active MembershipProvider.
 accountsService:

@@ -281,11 +281,11 @@ fileAclAuthorizer:
   permissions:
     # team owners can buy and see their team's orders
     - role: user
-      predicate: path-prefix(path="/orders") and equals(@user.team.role, "owner")
+      predicate: path-prefix(path="/orders") and equals(@team.role, "owner")
       priority: 100
       mongo:
         readFilter: >
-          {"payer.id": "@user.team._id"}
+          {"payer.id": "@team._id"}
         mergeRequest: >
           {"buyer_id": "@user.sub"}
 

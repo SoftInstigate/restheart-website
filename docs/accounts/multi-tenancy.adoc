@@ -81,7 +81,7 @@ Content-Type: application/json
 
 `GET /auth/teams` — requires authentication.
 
-Returns all teams the current user belongs to. The entry whose `active` field is `true` matches the team encoded in the current JWT.
+Returns all teams the current user belongs to. The entry whose `active` field is `true` is the active team, the one `@team` resolves to.
 
 [source,http]
 ----
@@ -107,7 +107,8 @@ Custom providers that use string or integer team IDs will produce a plain JSON s
 
 `POST /auth/switch-team` — requires authentication.
 
-Verifies that the user belongs to the requested team, issues a new JWT with the correct role for that team, and updates the auth cookie.
+Verifies that the user belongs to the requested team, makes it the active team, issues a new JWT and updates the auth cookie.
+The new JWT carries the user's system roles from the database. It carries no team and no team role: ACL rules read them through `@team`.
 The browser (or client) does not need to re-enter credentials.
 
 [source,http]
@@ -123,12 +124,12 @@ The `teamId` value must be in MongoDB extended JSON format, matching the `id` fi
 
 On success (`200 OK`):
 
-* The response body confirms the new active team and role.
+* The response body carries the new active team as `{_id, role}`, under the key set by `team-claim-name` (default `team`).
 * The reissued JWT is delivered per the optional `delivery` query parameter — `cookie` (default; `Set-Cookie` carries the new JWT) or `body` (since 9.6.0; `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie).
 
 [source,json]
 ----
-{ "team": { "_id": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "owner" }
+{ "team": { "_id": {"$oid": "64a1b2c3d4e5f6a7b8c9d0e2"}, "role": "owner" } }
 ----
 
 ==== Error responses
@@ -152,11 +153,14 @@ authService.getTeams()  // GET /auth/teams
 
 // 2. User picks a different team
 authService.switchTeam(teamId)  // POST /auth/switch-team
-  .pipe(switchMap(() => authService.checkSession()))
-  .subscribe(() => router.navigate(['/time']));
+  .subscribe(res => {
+    this.activeTeam.set(res.team);  // { _id, role }
+    router.navigate(['/time']);
+  });
 ----
 
-After `switchTeam`, call `checkSession()` (`GET /token`) so the app state reflects the new team and role.
+After `switchTeam`, read the new team and role from the switch-team response, or call `GET /auth/teams` and take the entry with `active: true`.
+`GET /token` does not help here: it returns the username and the system roles, and no team.
 
 === ACL considerations
 

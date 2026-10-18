@@ -217,10 +217,10 @@ The same applies to a field name: `@subscription.plann` resolves to nothing and 
 
 === Unresolvable state denies
 
-If the caller has no resolvable entity — no team claim, an entity that no longer exists, a provider that throws — `@subscription` resolves to nothing and any predicate naming it denies.
+If the caller has no resolvable entity (no active team, so `@team` does not resolve; an entity that no longer exists; a provider that throws), `@subscription` resolves to nothing and any predicate naming it denies.
 
 This is deliberate: a broken authorization variable must never grant access.
-The practical consequence is that a user with a malformed token gets `403` from plan-gated paths, not a plan-less free tier.
+The practical consequence is that a user with no active team gets `403` from plan-gated paths. There is no plan-less free tier.
 
 === Filtering data by plan
 

@@ -110,12 +110,12 @@ A typo in `schemaId` therefore surfaces as an error rather than silently disabli
 
 ==== What the schema sees
 
-The document is validated *as it is inserted*, which is not its final shape. `createInitialTeam` runs right after the insert and adds `teams` and `team` to the user document. Consequently:
+The document is validated *as it is inserted*, which is not its final shape. `createInitialTeam` runs right after the insert and adds `team` (the active team id, `{_id}`) to the user document. The membership is stored in the team's `members`. Consequently:
 
 * a schema with `required: ["team"]` always fails, even though the stored document does end up with the field;
 * a schema with `additionalProperties: false` passes validation but does not describe the document a moment later.
 
-Schemas meant for the registration path should declare `teams` and `team` as optional.
+Schemas meant for the registration path should declare `team` as optional.
 
 When no `jsonSchema` metadata is configured on the users collection, fields of the request body that are not in the mapping table are dropped before the document is built, so the schema never sees them and cannot reject them — with or without `additionalProperties: false`.
 
@@ -181,7 +181,6 @@ http POST :8080/_schemas Authorization:"Basic ..." \
       }
     },
     "socialAuths": { "type": "array" },
-    "teams":       { "type": "array" },
     "team":        { "type": "object" }
   }'
 

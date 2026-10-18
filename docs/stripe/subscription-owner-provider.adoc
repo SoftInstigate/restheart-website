@@ -20,9 +20,9 @@ Every billing operation goes through it: no service, interceptor or ACL variable
 
 === The default implementation
 
-`DefaultSubscriptionOwnerProvider` resolves the paying entity as the team from the caller's JWT team claim:
+`DefaultSubscriptionOwnerProvider` resolves the paying entity as the caller's active team. It reads it from the `@team` ACL variable, which restheart-accounts resolves from the active membership at every request. The JWT team claim is only a fallback, for deployments where no `@team` variable is registered.
 
-* the entity is the team named by `accountsConfig.team-claim-name` (default `team`);
+* the variable and the claim are named by `accountsConfig.team-claim-name` (default `team`);
 * `canManageBilling` is `true` when the caller's role in that team equals `accountsConfig.ownership-role` (default `owner`);
 * Stripe linkage, subscription state and seat licences are stored on the team document;
 * the collection is `stripeConfig.teams-collection`, in the database from `mongoRealmAuthenticator.users-db`.

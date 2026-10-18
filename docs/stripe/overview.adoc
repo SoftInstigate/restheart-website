@@ -63,7 +63,7 @@ Manages recurring billing backed by a configurable plan catalog.
 
 *Plan gating* — the caller's subscription state is exposed to ACL rules as `@subscription`. See xref:plan-gates.adoc[Plan Gates].
 
-*Billing entity* — by default the xref:../accounts/overview.adoc[`restheart-accounts`] team, from the JWT team claim. Replaceable via the xref:subscription-owner-provider.adoc[`SubscriptionOwnerProvider` SPI].
+*Billing entity*: by default the xref:../accounts/overview.adoc[`restheart-accounts`] team, from the `@team` ACL variable (the active membership). The JWT team claim is only a fallback. Replaceable via the xref:subscription-owner-provider.adoc[`SubscriptionOwnerProvider` SPI].
 
 See xref:subscription-lifecycle.adoc[Subscription Lifecycle] for the full flow.
 
@@ -77,7 +77,7 @@ Sells one-time purchases through Stripe Checkout.
 
 *Hosted payment page* — the created order carries a `checkout_url` pointing at a Stripe-hosted Checkout page; redirect the browser there. As with subscriptions, you never build a payment form.
 
-*Billing entity* — always the team from the JWT. Only team owners can purchase.
+*Billing entity*: always the caller's active team, from `@team`, with the JWT team claim as fallback. Only team owners can purchase.
 
 See xref:products.adoc[Products & Orders] for the full details.
 
