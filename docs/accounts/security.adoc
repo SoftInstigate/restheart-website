@@ -17,6 +17,7 @@ Standard string equality (`String.equals`) short-circuits on the first mismatch 
 === Account enumeration prevention
 
 - `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered, verified, or unverified. The response body is the same in all cases — internally it sends either a password-reset email or a re-sent verification email depending on the account's state, but the caller can't tell which.
+- The resend cooldown of `POST /auth/forgot-password` (see below) does not change the response either: when it stops the email, the caller still gets the same `202`.
 - `POST /auth/register` returns `409 Conflict` for duplicate emails — this is a deliberate trade-off: registration UX requires telling the user the address is taken so they can recover their account.
 
 === Token design
@@ -86,6 +87,26 @@ link:/docs/security/authentication/jwt#_jwt_claims[Authentication -- JWT claims]
 They are documented there rather than here because they are not specific to `restheart-accounts`:
 the same `JwtIssuer` applies them to every token this deployment issues -- on `/token`, from the
 accounts endpoints, and to OAuth authorization codes alike.
+
+=== Email abuse protection
+
+Since 9.12.2 `restheart-accounts` limits how the emails it sends can be abused. The first two protections below are configured with the `accountsEmailPolicy` provider (see link:/docs/accounts/configuration[Configuration]).
+
+==== X-Skip-Email is for tests only
+
+`POST /auth/register`, `POST /auth/forgot-password`, `POST /auth/invite` and `POST /auth/resend-invite` skip their email when the request carries `X-Skip-Email: true`, so that integration tests can run without an SMTP server. Honoured in production, the header lets anyone create an account, a password-reset token or an invitation for an address without its owner being told.
+
+The header is therefore ignored unless `allow-skip-email-header` is `true`, and RESTHeart logs a warning at startup when it is. Turn it on only in the configuration of your test environment.
+
+==== Resend cooldown
+
+`POST /auth/forgot-password` is public. Without a limit, anyone can call it in a loop and flood an address with reset or verification emails, also an address they registered themselves through `POST /auth/register`.
+
+It now sends at most one email per address every `resend-cooldown-seconds` (default 300). Calls inside the cooldown send nothing and get the same `202`.
+
+==== Input that ends up in emails
+
+The names given to `POST /auth/register` (`firstName`, `lastName`, `teamName`) appear in emails, in the greeting and in the invitation subject. They are limited to 100 characters, on one line, without control characters, `<` or `>`, so that they cannot add lines or markup to an email. The email field must be a single address. See link:/docs/accounts/user-registration[User registration].
 
 === Brute-force protection
 

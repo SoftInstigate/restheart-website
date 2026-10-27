@@ -55,7 +55,9 @@ Content-Type: application/json
 
 ==== Server-side steps
 
-. Validate all required fields.
+. Validate all required fields. Since 9.12.2 the values must also be usable in an email:
+  * `email`: a single address of at most 254 characters, without spaces, commas, semicolons, quotes, parentheses, square or angle brackets.
+  * `firstName`, `lastName` and `teamName`: at most 100 characters each, without line breaks, control characters, `<` or `>`.
 . Enforce password strength via *zxcvbn* (score ≥ `minimumPasswordStrength`, default 3).
 . Check email uniqueness — `409 Conflict` if already registered.
 . Generate a cryptographically random `verificationToken` (256-bit) and `verificationCreatedAt` timestamp.
@@ -82,7 +84,7 @@ Content-Type: application/json
 |===
 | Status | Reason
 
-| `400` | Missing or invalid fields; password too weak; document violates collection JSON Schema
+| `400` | Missing or invalid fields (including an email or a name rejected by the rules above); password too weak; document violates collection JSON Schema
 | `409` | Email already registered
 | `500` | A JSON Schema is configured on the users collection but cannot be applied
 |===

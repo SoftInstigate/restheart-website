@@ -175,6 +175,23 @@ emails:
   smtp-password: secret
 ----
 
+==== accountsEmailPolicy
+
+Decides when `restheart-accounts` may skip an email and how often it may send one to the same address. It is enabled by default, and the defaults below suit production. Since 9.12.2.
+
+[source,yaml]
+----
+accountsEmailPolicy:
+  # Honour the X-Skip-Email: true header on /auth/register, /auth/forgot-password,
+  # /auth/invite and /auth/resend-invite. For integration tests only.
+  allow-skip-email-header: false
+  # Minimum seconds between two emails sent by /auth/forgot-password to the same address.
+  # 0 turns the cooldown off.
+  resend-cooldown-seconds: 300
+----
+
+When `allow-skip-email-header` is `true`, RESTHeart logs a warning at startup. See link:/docs/accounts/security[Security] for why it must stay off in production.
+
 === JWT token integration
 
 The JWT access tokens issued by `restheart-accounts` (after login, verification, activation, password reset, and OAuth callback) are verified by RESTHeart's own `jwtAuthenticationMechanism`.
