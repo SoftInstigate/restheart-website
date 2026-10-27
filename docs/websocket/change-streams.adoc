@@ -102,6 +102,8 @@ curl -N \
   'http://localhost:8080/mydb/mycoll/_streams/by-tenant?tid=acme'
 ----
 
+The variable is bound like any other stream variable (see link:/docs/websocket/variables[Using Variables]): `?tid=acme` and `?avars={"tid":"acme"}` are equivalent, and when both are given the `avars` value wins. Before 9.12.2 `notify_when` read only the plain query parameter.
+
 ==== Field path notation
 
 The `notify_when` key uses `::` to separate the top-level change event field from the dotted path within it:
@@ -133,11 +135,11 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 * `stages` are sent to MongoDB and applied once on the shared cursor. Use them for fixed-value conditions (e.g. `operationType`, `fullDocument.status`).
 * `notify_when` is evaluated server-side per event × per connected client. Use it for conditions that depend on per-client variables.
 * If `notify_when` is absent, all clients receive all events (broadcast — existing behaviour).
-* If a client connects *without* the required query parameter, it receives all events (pass-through).
+* If a client connects without binding the variable, neither as a query parameter nor in `avars`, the request fails with `400` and `variable not bound`, as for an unbound stage variable. Before 9.12.2 such a client received every event of the stream (pass-through).
 
 [WARNING]
 ====
-**`notify_when` is a delivery filter, not an access control.** The variable it binds comes from the client's own query string, and a client that omits it receives everything on the stream. Never use it to keep tenants apart.
+**`notify_when` is a delivery filter, not an access control.** The variable it binds comes from the client's own query string, and a client can bind any value it can name and receive the events of that value. Never use it to keep tenants apart.
 
 What does keep them apart, since 9.8.2, is the caller's permission: a `readFilter` is applied to the stream exactly as it is to the equivalent `GET`, and so is `projectResponse`. Scope the data in the ACL, and use `notify_when` on top of it to save a client the events it does not care about.
 
