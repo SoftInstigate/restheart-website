@@ -473,6 +473,20 @@ A session id the server does not know for any other reason, typically after a re
 
 Set `session-idle-timeout-seconds` to `0` to keep every session until the client sends `DELETE`.
 
+==== How many sessions
+
+NOTE: available from **RESTHeart v9.12.3**.
+
+Sessions and subscriptions live in memory, and a client that keeps initializing, or that subscribes and goes away, leaves more of them behind. Two caps bound them, per scope (the whole server when there is no scope provider), both `0` by default, no cap:
+
+[source,yml]
+----
+/mcpService/max-sessions-per-scope: 50
+/mcpService/max-subscriptions-per-scope: 20
+----
+
+One more session than the cap is refused at `initialize`, `429` with a JSON-RPC error that says how many are alive and how to make room (`DELETE`, or wait for an idle one to expire); one more subscription is refused at `resources/subscribe` with a JSON-RPC error. A plugin that wants the numbers reads them from `McpService.instance()`: `sessions(scope)`, `subscriptions(scope)` and `scopes()`.
+
 === Serving several isolated callers: scopes
 
 By default one instance serves one catalogue: every MCP-enabled resource on it, to every caller its ACL allows. That is the right shape for a single deployment and it needs no configuration.
@@ -539,6 +553,7 @@ Plugins that hold caller-specific data must filter by the scope themselves — s
 |`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
 |`mcpService` |`subscription-notify-interval-seconds` — at most one `resources/updated` per subscribed resource per interval. Default `5`.
 |`mcpService` |`session-idle-timeout-seconds` — how long a session with no request and no open stream lives before the server ends it; see xref:#_how_long_a_session_lives[How long a session lives]. `0` keeps sessions until `DELETE`. Default `1800`.
+|`mcpService` |`max-sessions-per-scope`, `max-subscriptions-per-scope` — how many sessions and resource subscriptions a scope may hold at a time; see xref:#_how_many_sessions[How many sessions]. `0` means no cap. Default `0`.
 |`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`call_api`/`how_to_call` keep working).
 |===
 

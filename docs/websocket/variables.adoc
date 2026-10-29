@@ -9,6 +9,8 @@ redirect_from:
   - /docs/mongodb-websocket/variables
 ---
 
+IMPORTANT: A variable in a stage changes the pipeline, and a different pipeline is a different MongoDB cursor: a stream filtered in its stages opens one change stream per distinct set of bound values. To serve many clients from one cursor, keep the stages fixed and put the client-bound variable in link:/docs/websocket/change-streams#per-client-filtering-notify_when[`notify_when`], evaluated per client on the shared cursor. The way a client binds a variable, described here, is the same for both.
+
 The aggregation stages of the change stream can use _variables_, as in the following example:
 
 [source,json]
@@ -88,6 +90,8 @@ The change stream aggregation can use _predefined variables_, as in the followin
 The `$match` stage uses the predefined variable `@user.sub`, specified as `{ "$var": "@user.sub" }`, and matches it against the document's `owner`.
 
 NOTE: the predefined variables are resolved server side: the client does not pass them, and a value it supplies for one — `?avars={"@user.sub": "someone-else"}` — is ignored, so the stream stays scoped to whoever is connected.
+
+NOTE: a predefined variable is resolved per caller, so a stage that uses one opens a cursor per caller, like any other stage variable. It is a boundary, and it has that price; a selection that needs no boundary belongs in `notify_when`.
 
 IMPORTANT: use the name the caller's account actually carries. `@user.sub` identifies a caller authenticated with a JWT, `@user._id` one authenticated against MongoDB users, `@user.userid` one from the file realm — see link:/docs/security/permissions#identifying-the-caller[Identifying the caller]. A variable the account does not carry is unresolved, and since 9.8.2 an unresolved variable fails the request with `variable not bound` rather than binding `null`, which would have matched every document without that field.
 

@@ -54,14 +54,23 @@ The stages are a link:https://docs.mongodb.com/manual/aggregation/[MongoDB aggre
 
 === Filtering per Client
 
-The same stream can serve different data to different clients. Stages accept _variables_ that the client binds with query parameters at connection time, so one definition covers many filtered views:
+The same stream can serve different data to different clients, and the way to do it is `notify_when`: a condition in the stream definition, evaluated per connected client against a variable the client binds at connection time. All the clients of the stream share **one MongoDB cursor**, and each receives only the events that match its own value:
+
+[source,json]
+----
+{
+  "uri": "mine",
+  "stages": [ { "$match": { "operationType": { "$in": ["insert", "update"] } } } ],
+  "notify_when": { "fullDocument::owner": { "$var": "n" } }
+}
+----
 
 [source,http]
 ----
 GET /messages/_streams/mine?n=Andrea HTTP/1.1
 ----
 
-`notify_when` goes one step further and filters which connected clients receive each event, using a single MongoDB cursor for all of them. See link:/docs/websocket/variables[Using Variables] and link:/docs/websocket/change-streams#per-client-filtering-notify_when[notify_when].
+Stages accept variables too, but a variable in a stage changes the pipeline, and a different pipeline is a different cursor: a stream that filters in its stages with `{ "$var": "n" }` opens one MongoDB change stream per distinct value of `n`. Keep the stages fixed, the same for everyone, and put every client-bound variable in `notify_when`. See link:/docs/websocket/change-streams#per-client-filtering-notify_when[notify_when] and link:/docs/websocket/variables[Using Variables].
 
 === Permissions Apply to a Stream
 
@@ -102,4 +111,4 @@ The same change streams are also available over link:/docs/sse/[Server-Sent Even
 
 * link:/docs/websocket/tutorial[WebSocket API Tutorial] — a step-by-step walkthrough, from creating the collection to receiving events in the browser
 * link:/docs/websocket/change-streams[Change Streams] — the `streams` metadata and stream definition format
-* link:/docs/websocket/variables[Using Variables] — parameterize a stream with `$var` and query parameters
+* link:/docs/websocket/variables[Using Variables] — how a client binds the variables of `notify_when`, and why they do not belong in the stages

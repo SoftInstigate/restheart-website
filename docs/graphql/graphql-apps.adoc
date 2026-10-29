@@ -42,8 +42,14 @@ graphql:
   max-limit: 1000
   # The time limit in milliseconds for processing queries. Set to 0 for no time limit.
   query-time-limit: 0
+  # How deep a query may nest and how many fields it may select, nested ones weighed. A query over
+  # either cap is refused before any resolver runs, 400 with the error. 0 means no cap.
+  max-query-depth: 0
+  max-query-complexity: 0
   verbose: false
 ----
+
+NOTE: `max-query-depth` and `max-query-complexity` are available from v9.12.3. They bound the shape of a query, where `query-time-limit` bounds how long it runs: a query nested beyond the depth, or selecting more fields than the complexity allows (nested fields weigh more), is refused with `400` before any data is fetched. On a server that many tenants share, `10` and `1000` are a sound start.
 
 NOTE: `app-cache-enabled` and `app-cache-ttr` are available from v8.0.9 and v8.0.11, respectively. Earlier versions use an expiring cache policy with TTL configurable via the now-deprecated `graphql/app-def-cache-ttl` option. See link:https://github.com/SoftInstigate/restheart/issues/523[issue #523].
 

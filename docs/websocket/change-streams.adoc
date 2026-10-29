@@ -58,6 +58,8 @@ The aggregation of the stream can include optional stages. These optional stages
 
 For a more comprehensive understanding of how to use optional stages, please refer to the link:/docs/mongodb-rest/aggregations#optional-stages[Aggregation documentation].
 
+NOTE: An optional stage is a variable in the stages, with the cost described under link:#per-client-filtering-notify_when[`notify_when`]: one MongoDB cursor per distinct binding. For a selection that differs per client, prefer `notify_when`.
+
 === Escaped stage properties
 
 MongoDB (up to v5) does not allow to store fields with names starting with `$` or
@@ -75,6 +77,8 @@ the properties keys as follows:
 Available from RESTHeart 9.4.
 
 `notify_when` is an optional field in a stream definition that filters which connected clients receive each change event, without requiring a separate MongoDB cursor per client.
+
+Every client of the stream shares one cursor, whatever value it binds. The alternative, a `{ "$var": ... }` in a stage, changes the pipeline, and RESTHeart opens one cursor per distinct set of bound variables: a thousand users filtering in the stages are a thousand change streams on MongoDB. Keep the stages fixed and put the client-bound variables here.
 
 [source,json]
 ----
@@ -132,7 +136,7 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 
 ==== Design notes
 
-* `stages` are sent to MongoDB and applied once on the shared cursor. Use them for fixed-value conditions (e.g. `operationType`, `fullDocument.status`).
+* `stages` are sent to MongoDB and applied once on the shared cursor. Keep them fixed (e.g. `operationType`, `fullDocument.status`): a variable there means one cursor per distinct binding.
 * `notify_when` is evaluated server-side per event × per connected client. Use it for conditions that depend on per-client variables.
 * If `notify_when` is absent, all clients receive all events (broadcast — existing behaviour).
 * If a client connects without binding the variable, neither as a query parameter nor in `avars`, the request fails with `400` and `variable not bound`, as for an unbound stage variable. Before 9.12.2 such a client received every event of the stream (pass-through).
@@ -143,7 +147,7 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 
 What does keep them apart, since 9.8.2, is the caller's permission: a `readFilter` is applied to the stream exactly as it is to the equivalent `GET`, and so is `projectResponse`. Scope the data in the ACL, and use `notify_when` on top of it to save a client the events it does not care about.
 
-A stage can also scope a stream, provided it uses a server-resolved variable rather than a client-supplied one: `{ "$match": { "fullDocument::owner": { "$var": "@user.sub" } } }`. See link:/docs/websocket/variables[Predefined variables].
+A stage can also scope a stream with a server-resolved variable, `{ "$match": { "fullDocument::owner": { "$var": "@user.sub" } } }`, and so does a `readFilter` that names the caller: both become stages of the pipeline, and both cost one cursor per caller. That is the price of a boundary. `notify_when` is the selection that costs none, on top of it. See link:/docs/websocket/variables[Predefined variables].
 ====
 
 ==== `Last-Event-ID` limitation
