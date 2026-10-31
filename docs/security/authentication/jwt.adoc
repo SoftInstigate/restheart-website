@@ -58,6 +58,28 @@ The renewed token is built from the account read again from the users collection
 Generating a new token is a cryptographic operation and can have a significant performance overhead.
 It is the responsibility of the client to renew the token using this query parameter when it is going to expire soon.
 
+[[_token_invalidation]]
+==== Token invalidation
+
+A JWT issued by `jwtTokenManager` is valid until its `exp` claim. Its validity is in the
+signature, and any node that knows the key verifies it without consulting a store.
+
+`DELETE /token` clears the cached token of the authenticated account. After it, RESTHeart
+does not hand out that token again, but a copy of the JWT the client already holds keeps
+working until it expires. There is no revocation list in RESTHeart: a stateless JWT cannot
+be withdrawn before `exp` without one, and keeping one means a shared store consulted on
+every request, on every node.
+
+A deployment that needs to cut a token off before its expiration has three options:
+
+* Set a short `ttl`. The token is renewed with `GET /token?renew` or the refresh grant,
+  and a stolen copy lives at most `ttl` minutes.
+* Use `rndTokenManager`. Its tokens are random strings that exist only in the server's
+  store, so `DELETE /token` refuses them at once. It does not support clustering.
+* Keep a deny list. Every JWT carries a unique `jti` claim. A `TokenManager` plugin that
+  replaces `jwtTokenManager`, or an `Interceptor` on the authentication phase, can store
+  the `jti` of a revoked token until its `exp` and refuse requests that carry it.
+
 === JWT claims
 
 CAUTION: Since RESTHeart 9.7.0.

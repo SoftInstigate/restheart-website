@@ -231,8 +231,29 @@ Auth-Token-Valid-Until: 2015-04-16T13:28:10.749Z
 
 NOTE: the URI in the Auth-Token-Location header: the client can issue
 a GET request to obtain information about token or a DELETE request to
-invalidate it. Of course clients can only request their own tokens
+discard it. Of course clients can only request their own tokens
 (otherwise response code will be 403 Forbidden).
+
+[[_what_delete_token_does]]
+==== What DELETE does to a token
+
+`DELETE /token` (or `DELETE` on the `Auth-Token-Location` URI) removes the token the
+server keeps for the authenticated account. What this means for a token the client
+still holds depends on the Token Manager:
+
+* `rndTokenManager`: the token is a random string that only exists in the server's
+  store. Once removed, a request carrying it is refused at once.
+* `jwtTokenManager`: the token is a signed JWT and its validity is in the signature
+  and the `exp` claim. The DELETE clears the server-side cache, so the same token is
+  no longer handed out again, but a copy of the JWT the client already has keeps
+  working until it expires (`ttl`, 15 minutes by default).
+
+This is how stateless JWTs work. RESTHeart does not keep a revocation list for them.
+A deployment that needs to cut a JWT off before its expiration can shorten `ttl`,
+use `rndTokenManager`, or add a `TokenManager` or `Interceptor` plugin that keeps a
+deny list of the `jti` claims it has revoked and checks it on every request. Every
+JWT carries a unique `jti` for this purpose. See
+link:/docs/security/authentication/jwt#_token_invalidation[Token invalidation].
 
 ==== Token Management Examples
 
@@ -273,7 +294,7 @@ fetch('[RESTHEART-URL]/tokens/userid', {
 .catch(error => console.error('Error:', error));
 ----
 
-To invalidate your auth token:
+To discard your auth token (see <<_what_delete_token_does>>):
 
 ==== cURL
 
@@ -305,9 +326,9 @@ fetch('[RESTHEART-URL]/tokens/userid', {
 })
 .then(response => {
     if (response.ok) {
-        console.log('Token invalidated successfully');
+        console.log('Token discarded');
     } else {
-        console.error('Failed to invalidate token:', response.status);
+        console.error('Failed to discard token:', response.status);
     }
 })
 .catch(error => console.error('Error:', error));

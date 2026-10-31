@@ -110,3 +110,7 @@ rndTokenManager:
 NOTE: `rndTokenManager` holds tokens in memory, so it does not support clustering.
 For a clustered deployment use
 link:/docs/security/authentication/jwt#_jwt_token_manager[jwtTokenManager] instead.
+
+Since the token exists only in the server's store, `DELETE /token` refuses it at once.
+This is the difference from `jwtTokenManager`, whose JWTs stay valid until their
+expiration, see link:/docs/security/authentication/jwt#_token_invalidation[Token invalidation].
