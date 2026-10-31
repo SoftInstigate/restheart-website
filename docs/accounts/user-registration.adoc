@@ -72,6 +72,8 @@ Content-Type: application/json
 ----
 . Return `201 Created`.
 
+The verification link expires after 7 days; the account and everything registered in its document stay. The owner recovers it at any time with `POST /auth/forgot-password`: the reset link sets a password and verifies the account in one step, see link:/docs/accounts/password-reset[Password Reset]. The verification link is never re-sent, since anyone can register any address and the password given at registration may not be the owner's (since 9.13.0, GHSA-m7m7-gjxg-cjmm).
+
 ==== Response
 
 [source,json]
@@ -85,7 +87,7 @@ Content-Type: application/json
 | Status | Reason
 
 | `400` | Missing or invalid fields (including an email or a name rejected by the rules above); password too weak; document violates collection JSON Schema
-| `409` | Email already registered
+| `409` | Email already registered. If the address is the caller's own and the account was never verified, `POST /auth/forgot-password` recovers it: the reset link also verifies the account
 | `500` | A JSON Schema is configured on the users collection but cannot be applied
 |===
 
@@ -251,8 +253,8 @@ GET /auth/verify?email=...&token=...&delivery=fragment   → URL fragment
 
 With `delivery=fragment` no cookie is set. The fragment uses the same mechanism as `GET /token/redirect` and the OAuth callback: since a URL fragment is never sent to any server, the token does not leak into access logs or the `Referer` header. The frontend reads it from `window.location.hash` and stores it (e.g. in `localStorage`) for use in the `Authorization: Bearer` header.
 
-==== Expired token
+==== Expired or invalid token
 
-If the token has expired, the endpoint returns `400` with a message inviting the user to request a new verification email from the login page.
+The request arrives from a link in an email, so every outcome is a redirect: an expired token sends the browser to `{frontendUrl}/auth/login?error=token_expired`, an unknown token or a mismatched email to `{frontendUrl}/auth/login?error=invalid_token`.
 
-NOTE: Re-sending a verification email is triggered by `POST /auth/resend-verify` (not yet implemented in v1 — users can contact support or attempt login which will prompt re-verification).
+The way out is `POST /auth/forgot-password`: it sends a reset link that sets a password and verifies the account in one step (since 9.13.0). The verification link itself is never re-sent, and the account is never deleted for not following it.

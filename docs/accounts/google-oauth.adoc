@@ -88,7 +88,7 @@ See xref:configuration.adoc#_secrets_management_rho[Secrets management (RHO)].
 
 === Invite-flow integration
 
-Invited users (those with `status: "invited"`) can complete registration via OAuth
+Invited users (those still with `roles: ["$unauthenticated"]`) can complete registration via OAuth
 without setting a password. The frontend passes invite context as query parameters
 on the authorize redirect:
 
@@ -112,7 +112,7 @@ GET /auth/oauth/authorize/google
 
 The parameters are stored in the CSRF state token (persisted in MongoDB `oauth_codes` collection, TTL 10 min) and retrieved on callback.
 If `consentsAccepted=true`, the callback builds a `ConsentRecord` and passes it to
-`MembershipProvider.activateViaOAuth()`. See xref:membership-providers.adoc#_oauth_activation_for_invited_users[OAuth activation for invited users].
+`MembershipProvider.activateViaOAuth()`. See xref:membership-providers.adoc#_oauth_activation_for_unverified_users[OAuth activation for unverified users].
 
 === Security notes
 
@@ -207,11 +207,10 @@ Google has already verified the email address, so no separate email verification
 *Existing user* (email matches an existing document):
 
 . The user's profile fields (`profile.name`, `profile.surname`) are updated from Google's response if they have changed.
-. The user's system `roles` are *not* changed — a user who was previously unverified (`$unauthenticated`) remains blocked.
+. A verified user keeps its system `roles`. An account still `$unauthenticated`, invited or self-registered and never verified, is activated: its password is cleared, the provider is recorded in `socialAuths`, and `MembershipProvider.activateViaOAuth()` assigns the `default-role` — see xref:membership-providers.adoc#_oauth_activation_for_unverified_users[OAuth activation for unverified users].
 . A JWT cookie is set and the browser is redirected to `frontend-success-url`.
 
-NOTE: If the user was registered with email + password, adding Google login does not remove the password.
-Both authentication methods remain available.
+NOTE: A verified account registered with email + password keeps its password when Google login is added. Both authentication methods remain available. An account that was still unverified loses the password set at registration, since the owner never confirmed it (since 9.13.0, GHSA-m7m7-gjxg-cjmm). The owner sets one afterwards with `POST /auth/forgot-password` or `PATCH /auth/change-password`.
 
 === GitHub
 

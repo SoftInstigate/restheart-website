@@ -116,13 +116,14 @@ accountsConfig:
   membership-endpoints-enabled: false   # /orgs-mgmt/* handles invitations
 ----
 
-=== OAuth activation for invited users
+=== OAuth activation for unverified users
 
-When an invited user (one with `roles: ["$unauthenticated"]`) authenticates via OAuth, the callback invokes
+When an unverified user (one with `roles: ["$unauthenticated"]`, invited or self-registered and never verified) authenticates via OAuth, the callback invokes
 `MembershipProvider.activateViaOAuth()` instead of issuing a JWT that would be blocked by the ACL.
 
 Before `activateViaOAuth()` is called, the OAuth callback resolves the pending invitation from `auth_invitations` using the `pendingInviteToken` stored in the CSRF state, and calls `addMember(userId, teamId, role) to set the user's team.
-The `DefaultMembershipProvider` implementation of `activateViaOAuth` then assigns the system ACL role from `accountsConfig.default-role`, clears the `inviteToken` field, and returns the user's membership for JWT issuance.
+It then clears the document's password, sets it to the empty string, and records the provider in `socialAuths` (since 9.13.0): the password on an unverified document was chosen by whoever registered the address, who never proved they own it, while the provider just did for the person signing in. Implementations of `activateViaOAuth()` must not restore it.
+The `DefaultMembershipProvider` implementation of `activateViaOAuth` then assigns the system ACL role from `accountsConfig.default-role` and returns the user's membership for JWT issuance.
 
 Custom providers can override this behaviour (or disable it by returning `Optional.empty()`).
 

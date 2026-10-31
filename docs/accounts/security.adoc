@@ -16,9 +16,18 @@ Standard string equality (`String.equals`) short-circuits on the first mismatch 
 
 === Account enumeration prevention
 
-- `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered, verified, or unverified. The response body is the same in all cases — internally it sends either a password-reset email or a re-sent verification email depending on the account's state, but the caller can't tell which.
+- `POST /auth/forgot-password` always returns `202 Accepted` regardless of whether the email is registered, verified, or unverified. The response body is the same in all cases — internally it sends a password-reset email when the account exists and nothing otherwise, but the caller can't tell which.
 - The resend cooldown of `POST /auth/forgot-password` (see below) does not change the response either: when it stops the email, the caller still gets the same `202`.
 - `POST /auth/register` returns `409 Conflict` for duplicate emails — this is a deliberate trade-off: registration UX requires telling the user the address is taken so they can recover their account.
+
+=== Registering an address you do not own
+
+`POST /auth/register` creates the account before the address is proven: anyone can register any email, with a password of their choosing, and the owner proves the address later by following the verification link. Two rules make sure that a password chosen before that proof never becomes a way into the account (since 9.13.0, GHSA-m7m7-gjxg-cjmm):
+
+* An OAuth sign-in that activates an unverified account clears its password first. The account signs in through the provider; the owner sets a password afterwards with `POST /auth/forgot-password` or `PATCH /auth/change-password`.
+* `POST /auth/forgot-password` never re-sends the verification link. An unverified account gets the reset link, and `PATCH /auth/reset-password` verifies it while the owner sets a password of their own.
+
+An account activated by the verification link itself keeps the password given at registration, since the person who registered and the person who followed the link are the same. An unverified account is never deleted: whatever the application stored in the user document at registration stays, and the owner reclaims the address through `POST /auth/forgot-password`.
 
 === Token design
 
@@ -26,7 +35,7 @@ All tokens (invite, verification, password reset, OAuth state) are:
 
 * Generated with `SecureRandom` (256-bit entropy — equivalent to a UUIDv4 but longer).
 * Single-use: `$unset` from the user document on first successful consumption.
-* Scoped TTLs: invite and verification tokens expire after 7 days; password reset tokens after 1 hour; OAuth state after 600 seconds (MongoDB TTL index).
+* Scoped TTLs: invite and verification tokens expire after 7 days; password reset tokens after 1 hour; OAuth state after 600 seconds (MongoDB TTL index). The user document never expires: an unverified account keeps everything registered in it and is recovered through `POST /auth/forgot-password`.
 
 === Password policy
 
@@ -100,9 +109,9 @@ The header is therefore ignored unless `allow-skip-email-header` is `true`, and 
 
 ==== Resend cooldown
 
-`POST /auth/forgot-password` is public. Without a limit, anyone can call it in a loop and flood an address with reset or verification emails, also an address they registered themselves through `POST /auth/register`.
+`POST /auth/forgot-password` is public. Without a limit, anyone can call it in a loop and flood an address with reset emails, also an address they registered themselves through `POST /auth/register`.
 
-It now sends at most one email per address every `resend-cooldown-seconds` (default 300). Calls inside the cooldown send nothing and get the same `202`.
+It now sends at most one email per address every `resend-cooldown-seconds` (default 300), counting the verification email sent at registration. Calls inside the cooldown send nothing and get the same `202`.
 
 ==== Input that ends up in emails
 

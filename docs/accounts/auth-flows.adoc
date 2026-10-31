@@ -53,6 +53,8 @@ sequenceDiagram
 5. Send verification email.
 6. Return `201 Created`.
 
+The verification link expires after 7 days; the account stays. `POST /auth/forgot-password` recovers it at any time: the reset link sets a password and verifies the account in one step (since 9.13.0).
+
 *Consents:* User consent tracking (e.g. terms & conditions, privacy policy) is not handled by the Accounts plugin. See link:/docs/accounts/consents-management[Consents Management] for guidance on implementing consent persistence via a response interceptor.
 *Frontend route:* `/auth/signup`
 
@@ -136,7 +138,7 @@ NOTE: `POST /token/cookie` is one of three ways RESTHeart can hand a token to a 
 
 `POST /auth/forgot-password` — public. Always returns `202` (no email enumeration).
 
-If the account has **not** completed email verification yet (still `$unauthenticated`), there is no password to reset: instead, a new `emailVerificationToken` is generated and the activation email is re-sent — the account owner's only self-service way to recover a lost or expired verification link (registration itself rejects the email as already taken). See link:/docs/accounts/password-reset[Password Reset] for details.
+An account that has **not** completed email verification yet (still `$unauthenticated`) gets the same reset link: following it proves ownership of the address, and the reset makes the owner choose the password and verifies the account in one step. This is the owner's only self-service way to recover a lost or expired verification link, since registration rejects the email as already taken. Before 9.13.0 the verification link was re-sent instead, which activated the account with the password chosen at registration, possibly by someone else (GHSA-m7m7-gjxg-cjmm). See link:/docs/accounts/password-reset[Password Reset] for details.
 
 *Request body:*
 
@@ -180,12 +182,9 @@ sequenceDiagram
   Note over C,E: Step 1 — Request reset link
   C->>R: POST /auth/forgot-password {email}
   R->>M: lookup user (result not revealed)
-  alt user found and verified
+  opt user found (verified or not)
     R->>M: generate + store reset token (TTL 1h)
     R->>E: password reset email
-  else user found but not yet verified
-    R->>M: generate + store new emailVerificationToken
-    R->>E: verification email (re-sent)
   end
   R-->>C: 202 Accepted (always)
 
@@ -194,6 +193,9 @@ sequenceDiagram
   Note over R: constant-time token compare + TTL check
   Note over R: zxcvbn password strength check
   R->>M: hash + save password, unset reset token
+  opt account not verified yet
+    R->>M: set roles → default-role, unset verification token
+  end
   M-->>R: OK
   R-->>C: 200 OK (JWT via cookie or body, per delivery)
 ----
@@ -338,6 +340,7 @@ sequenceDiagram
   Note over R: user is $unauthenticated + pendingInviteToken present
   R->>M: find invitation by (email, pendingInviteToken) in auth_invitations
   R->>M: MembershipProvider.addMember(userId, teamId, role)
+  R->>M: clear password, record provider in socialAuths
   Note over R: activateViaOAuth() — assigns roles:[user], stores consents
   R->>M: delete auth_invitations doc
   R-->>C: 302 + JWT cookie + #access_token= fragment → frontend-app-url
@@ -348,8 +351,9 @@ sequenceDiagram
 1. User clicks "Sign in with Google/GitHub".
 2. OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
 3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`, call `MembershipProvider.addMember(userId, teamId, role)` to set team.
-4. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
-5. Delete invitation from `auth_invitations`. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment (`#access_token=...`, since 9.5 — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]).
+4. Clear the document's password and record the provider in `socialAuths`: the account signs in through the provider from now on (since 9.13.0, see step 5 of link:#_7_oauth_login[OAuth Login]).
+5. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
+6. Delete invitation from `auth_invitations`. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment (`#access_token=...`, since 9.5 — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]).
 
 == 6. Invite Existing User (has account)
 
@@ -505,6 +509,9 @@ sequenceDiagram
   R->>P: fetch user profile
   P-->>R: profile
   R->>M: upsert user document
+  opt user still $unauthenticated
+    R->>M: clear password, then activateViaOAuth()
+  end
   Note over R: issue JWT
   R-->>B: 302 + JWT cookie + #access_token= fragment → frontend-url
 ----
@@ -515,7 +522,7 @@ sequenceDiagram
 2. Backend stores CSRF state token, redirects to provider.
 3. Provider redirects back with authorization code.
 4. Backend exchanges code for user profile, finds or creates user.
-5. If user is `$unauthenticated` (new invited user): activate via `MembershipProvider.activateViaOAuth()`.
+5. If user is `$unauthenticated` (invited, or self-registered and not verified yet): clear the document's password, record the provider in `socialAuths`, then activate via `MembershipProvider.activateViaOAuth()`. The password on an unverified document was set by whoever registered the address, who never proved they own it; the provider just did, for the person signing in. Keeping it would let anyone pre-register a victim's address and log in with Basic auth once the victim activates the account through OAuth (since 9.13.0, GHSA-m7m7-gjxg-cjmm). The owner sets a password afterwards with `POST /auth/forgot-password` or `PATCH /auth/change-password`.
 6. If user is NOT `$unauthenticated` and `pendingInviteToken` is present (existing invited user): accept invitation via `auth_invitations`, call `addMember()`.
 7. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` — or to `returnTo` when the flow carried one — with the token also appended as a URL fragment.
 
@@ -865,7 +872,7 @@ sequenceDiagram
 
 [IMPORTANT]
 ====
-*OAuth-only accounts.* A user who signed up via `/auth/oauth/authorize/{provider}` (see xref:google-oauth.adoc[OAuth 2.0 Social Login]) has no password at all — `restheart-accounts` stores an empty, not `null`, `password` field for those accounts. `currentPassword` is still accepted in the request body for API-shape consistency, but it is only *verified* when the account actually has a password to check it against. This lets the same endpoint double as "set your first password" for OAuth-only accounts, with no current one to confirm, while every account that does have a password still needs the correct one.
+*OAuth-only accounts.* A user who signed up via `/auth/oauth/authorize/{provider}` (see xref:google-oauth.adoc[OAuth 2.0 Social Login]), or whose unverified account was activated by an OAuth sign-in (since 9.13.0), has no password at all: `restheart-accounts` stores an empty `password` field for those accounts (`null` would make the authenticator ignore the user). `mongoRealmAuthenticator` refuses every Basic credential against an empty stored password, the empty one included. `currentPassword` is still accepted in the request body for API-shape consistency, but it is only *verified* when the account actually has a password to check it against. This lets the same endpoint double as "set your first password" for OAuth-only accounts, with no current one to confirm, while every account that does have a password still needs the correct one.
 
 This is safe without any extra guard because the check above (step 1) already scopes the whole request to the caller's own document — there is no `currentPassword` belonging to *someone else* that could be bypassed this way.
 

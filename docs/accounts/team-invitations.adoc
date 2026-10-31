@@ -229,6 +229,7 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 
 . OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
 . Find invitation by `(email, pendingInviteToken)` in `auth_invitations`; call `MembershipProvider.addMember(userId, teamId, role)` to set team.
+. Clear the placeholder password and record the provider in `socialAuths` (since 9.13.0).
 . `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
 . Delete invitation from `auth_invitations`. JWT cookie set, redirect to `frontend-app-url`.
 
