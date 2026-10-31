@@ -1,0 +1,212 @@
+---
+docs_version: 9
+title: JavaScript Interceptors
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+:page-liquid:
+
+=== An interceptor
+
+An interceptor runs on the requests of other services, before or after they are handled, to observe or change the request or the response. The module exports it as its default export, declared with `defineInterceptor`:
+
+[source,javascript]
+----
+import { defineInterceptor } from "restheart:sdk";
+
+export default defineInterceptor({
+    name: "helloWorldInterceptor",
+    description: "modifies the response of helloWorldService",
+    interceptPoint: "RESPONSE",
+    contentKind: "json",
+
+    handle(req, res) {
+        res.content = { ...res.content, note: "modified by helloWorldInterceptor" };
+    },
+
+    resolve(req, res) {
+        return req.isHandledBy("helloWorldService") && req.isGet();
+    },
+});
+----
+
+The module file goes in `rh:interceptors` of `package.json`, see link:/docs/framework/javascript-plugins#packaging[Packaging].
+
+[cols="1,3,1,1"]
+|===
+|property |description |mandatory |default
+
+|`name`
+|the name of the interceptor; also the name of its section in `restheart.yml` and of its logger
+|yes
+|
+
+|`description`
+|what it does
+|yes
+|
+
+|`interceptPoint`
+|when it runs, see below
+|no
+|`REQUEST_AFTER_AUTH`
+
+|`contentKind`
+|which requests it sees and how their bodies are typed, see below
+|no
+|`string`
+
+|`handle(req, res)`
+|what it does, when `resolve` returned `true`
+|yes
+|
+
+|`resolve(req, res)`
+|whether to run `handle` on this request
+|yes
+|
+|===
+
+`req` and `res` are the same objects a link:/docs/framework/javascript-services[service] gets, with the same members. In a request interceptor `req.content` and `req.headers` are assignable; in a response interceptor `res.content`, `res.statusCode` and `res.headers` are.
+
+=== Intercept points
+
+[cols="1,3"]
+|===
+|intercept point |when
+
+|`REQUEST_BEFORE_EXCHANGE_INIT`
+|before the request content is parsed; `req.content` is not available yet
+
+|`REQUEST_BEFORE_AUTH`
+|before authentication; `req.account` is `null`
+
+|`REQUEST_AFTER_AUTH`
+|after authentication and authorization, before the service; the default
+
+|`RESPONSE`
+|after the service, before the response is sent
+
+|`RESPONSE_ASYNC`
+|after the response is sent, in a separate thread; for what must not add to the latency
+|===
+
+See link:/docs/framework/interceptors#request-lifecycle-overview[the request lifecycle] for where each point sits in the pipeline.
+
+=== contentKind
+
+An interceptor runs on the requests of the services with the same content kind: a `json` interceptor sees the requests handled by `JsonService` plugins, a `string` one those of `StringService` plugins. Two kinds exist for interceptors only:
+
+[cols="1,3"]
+|===
+|kind |requests
+
+|`mongo`
+|the requests handled by the MongoDB service, the REST API on collections and documents. `req.content` and `res.content` are the documents, in extended JSON, and `req.mongo` is available
+
+|`csv`
+|the requests handled by the csv loader (`POST /csv`). `req.content` is the array of documents parsed from the csv
+|===
+
+A `mongo` interceptor is how the data API is extended: a field added to every document on the way out, a timestamp added on the way in, a check on what is being written.
+
+=== req.mongo
+
+For `contentKind: "mongo"`, `req.mongo` exposes the MongoDB part of the request, a curated subset of the Java `MongoRequest`:
+
+[cols="1,3"]
+|===
+|member |value
+
+|`req.mongo.dbName`, `req.mongo.collectionName`
+|the database and the collection of the request
+
+|`req.mongo.documentId`
+|the document id as native data: `{ $oid: "..." }` for an ObjectId, a string or a number otherwise
+
+|`req.mongo.filter`, `req.mongo.sort`, `req.mongo.projection`
+|the `filter`, `sort` and `keys` query parameters, parsed, `null` when absent
+
+|`req.mongo.page`, `req.mongo.pagesize`, `req.mongo.count`
+|the pagination
+
+|`req.mongo.isDocument()`, `isCollection()`, `isDb()`, `isCollectionIndexes()`, `isFile()`, `isBulkDocuments()`, `isCount()`
+|what the request addresses
+
+|`req.mongo.raw`
+|the Java `MongoRequest`, the escape hatch
+|===
+
+[source,javascript]
+----
+import { defineInterceptor, bson } from "restheart:sdk";
+
+// adds a field to the document of GET /coll/<docid>
+export default defineInterceptor({
+    name: "mongoGetDocInterceptor",
+    description: "modifies the response of GET /coll/<docid>",
+    interceptPoint: "RESPONSE",
+    contentKind: "mongo",
+
+    handle(req, res) {
+        res.content = { ...res.content, id: bson.oid(req.mongo.documentId), injected: true };
+    },
+
+    resolve(req, res) {
+        return req.isGet() && req.mongo.isDocument() && req.mongo.collectionName === "coll";
+    },
+});
+----
+
+[source,javascript]
+----
+import { defineInterceptor } from "restheart:sdk";
+
+// adds a timestamp to the document of POST /coll; a native Date is written as a BSON date
+export default defineInterceptor({
+    name: "mongoPostCollInterceptor",
+    description: "modifies the content of POST requests adding a timestamp",
+    interceptPoint: "REQUEST_AFTER_AUTH",
+    contentKind: "mongo",
+
+    handle(req, res) {
+        req.content = { ...req.content, timestamp: new Date() };
+    },
+
+    resolve(req, res) {
+        return req.isPost() && req.mongo.collectionName === "coll";
+    },
+});
+----
+
+=== Errors
+
+The rules of link:/docs/framework/javascript-services#errors[services] apply: a typed error thrown by `handle` is answered with its status and stops the request, any other exception is a 500 logged with the interceptor name. An exception in `resolve` is logged and the request is set in error.
+
+=== Interceptors written before 9.14.0
+
+An interceptor that exports `options`, `handle` and `resolve`, with `pluginClass` naming the Java interceptor class, keeps working unchanged and receives the Java request and response. `pluginClass` is deprecated in favour of `contentKind`:
+
+[cols="1,1"]
+|===
+|`pluginClass` |`contentKind`
+
+|`StringInterceptor`
+|`string`
+
+|`JsonInterceptor`
+|`json`
+
+|`BsonInterceptor`
+|`bson`
+
+|`ByteArrayInterceptor`
+|`bytes`
+
+|`MongoInterceptor`
+|`mongo`
+
+|`CsvInterceptor`
+|`csv`
+|===

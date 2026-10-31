@@ -1,0 +1,257 @@
+---
+docs_version: 9
+title: JavaScript SDK Capabilities
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+:page-liquid:
+
+=== Capabilities
+
+A capability has configuration and lifecycle behind it, so it comes from a RESTHeart provider, the way `mclient` was injected into JavaScript plugins before the SDK. A plugin reaches it with an import:
+
+[source,javascript]
+----
+import { http, mongo, config, mail, providers } from "restheart:sdk";
+----
+
+[cols="1,1,2"]
+|===
+|capability |provider |available when
+
+|`http`
+|`http-client`
+|always
+
+|`mongo`
+|`mclient`
+|MongoDB is enabled
+
+|`config`
+|`config`
+|always
+
+|`mail`
+|`emails`
+|the `emails` provider is enabled
+
+|`providers`
+|the plugins registry
+|always
+|===
+
+The import is also the declaration. A plugin that imports `mail` where email is not configured fails when it loads, and is not deployed, with a line in the log that names the capability and why it is missing:
+
+----
+Service not deployed: plugin /opt/restheart/plugins/notify/notify.mjs imports the capability 'mail' from restheart:sdk, which is not available: the emails provider is not enabled
+----
+
+That is the point of importing rather than reaching for a global: the failure happens at deploy time, in the log, instead of as a `TypeError` inside `handle()` at request time, on whichever branch happens to send the mail.
+
+=== http
+
+The shared HTTP client of the `http-client` provider: one `java.net.http.HttpClient`, built once from `restheart.yml`, with connection pooling and a TLS handshake paid once per host. A client built inside `handle()`, one per request, throws both away.
+
+[source,javascript]
+----
+const r = http.post("https://api.example.com/things", { foo: 2 });
+
+if (r.ok) {
+    logger.info("created {}", r.json().id);
+} else {
+    logger.warn("the API answered {}: {}", r.status, r.body);
+}
+----
+
+[cols="1,2"]
+|===
+|call |
+
+|`http.get(url, options?)`, `http.delete(url, options?)`
+|
+
+|`http.post(url, body?, options?)`, `http.put(...)`, `http.patch(...)`
+|an object or array body is sent as JSON, a string as text, bytes as bytes
+
+|`http.request({ method, url, body?, ...options })`
+|any request
+|===
+
+The options, all optional:
+
+[cols="1,2"]
+|===
+|option |
+
+|`headers`
+|an object of headers
+
+|`timeout`
+|milliseconds, overrides the configured `request-timeout` for this call
+
+|`auth`
+|`{ bearer: token }` or `{ basic: { user, password } }`
+
+|`form`
+|an object, sent as `application/x-www-form-urlencoded`; what an OAuth token endpoint wants
+
+|`json`
+|an explicit JSON body
+
+|`contentType`
+|the content type of the body
+|===
+
+The response is `{ status, ok, headers, body, contentType, json(), bytes() }`. `body` is the UTF-8 text, `json()` the parsed body as native data, `bytes()` the raw bytes.
+
+Two rules, both deliberate:
+
+- a 4xx or a 5xx does not throw. It comes back with `ok === false`. Throwing on a valid HTTP response is what trips everybody up;
+- the call blocks. There are no promises. On a virtual thread that is exactly right, see link:/docs/framework/javascript-plugins#the-execution-model[the execution model].
+
+A connection failure or a timeout throws, and becomes a 500 unless the plugin catches it.
+
+The client is configured in `restheart.yml`:
+
+[source,yml]
+----
+http-client:
+  connect-timeout: 10        # seconds
+  request-timeout: 30        # seconds, the default of a call that sets none
+  version: http-2            # http-1.1 or http-2
+  follow-redirects: normal   # never, normal (never from https to http), always
+  # proxy:
+  #   host: proxy.example.com
+  #   port: 3128
+----
+
+Java plugins get the same client with `@Inject("http-client")`.
+
+=== mongo
+
+Plain values in, plain values out, with the names a Node or PyMongo developer already has in their fingers. Blocking, lazy, with documents in link:/docs/framework/javascript-sdk-utilities#extended-json-and-numbers[extended JSON].
+
+[source,javascript]
+----
+const users = mongo.db("restheart").collection("users");
+
+const active = users
+    .find({ status: "active", since: { $gte: { $date: "2026-01-01T00:00:00Z" } } },
+          { sort: { since: -1 }, limit: 20, projection: { password: 0 } })
+    .toArray();
+
+const one = users.findOne({ _id: { $oid: id } });
+
+for (const u of users.find({ role: "admin" })) {
+    logger.info("admin {}", u.email);
+}
+
+users.updateOne({ _id: { $oid: id } }, { $set: { lastSeen: new Date() } });
+----
+
+[cols="1,2"]
+|===
+|call |returns
+
+|`mongo.db(name)`
+|a database
+
+|`db.collection(name)`
+|a collection
+
+|`db.command(doc)`
+|the result of any database command: `createIndexes`, `collStats`, `explain`, anything the server understands, without the SDK growing a method for each
+
+|`db.collections()`, `db.drop()`
+|
+
+|`coll.find(filter?, { limit, skip, sort, projection, batchSize }?)`
+|a cursor: iterable with `for...of` and the spread operator, with `toArray()`, `first()` and `forEach(fn)`
+
+|`coll.findOne(filter?, { sort, projection, skip }?)`
+|the document or `null`
+
+|`coll.countDocuments(filter?)`, `coll.estimatedDocumentCount()`
+|
+
+|`coll.distinct(field, filter?)`
+|an array of values
+
+|`coll.aggregate(pipeline, { allowDiskUse, batchSize }?)`
+|a cursor
+
+|`coll.insertOne(doc)`
+|`{ insertedId }`
+
+|`coll.insertMany(docs)`
+|`{ insertedCount, insertedIds }`
+
+|`coll.updateOne(filter, update, { upsert, arrayFilters }?)`, `coll.updateMany(...)`
+|`{ matchedCount, modifiedCount, upsertedId }`; `update` is a document of operators or an array of pipeline stages
+
+|`coll.replaceOne(filter, replacement, { upsert }?)`
+|`{ matchedCount, modifiedCount, upsertedId }`
+
+|`coll.deleteOne(filter)`, `coll.deleteMany(filter)`
+|`{ deletedCount }`
+
+|`coll.bulkWrite([ { insertOne: { document } }, { updateOne: { filter, update, upsert } }, { replaceOne: { filter, replacement } }, { deleteOne: { filter } }, ... ])`
+|`{ insertedCount, matchedCount, modifiedCount, deletedCount, upsertedCount }`
+
+|`coll.createIndex(keys, { unique, name, sparse, expireAfterSeconds }?)`, `coll.drop()`
+|
+
+|`mongo.raw()`, `db.raw()`, `coll.raw()`
+|the Java `MongoClient`, `MongoDatabase` and `MongoCollection<BsonDocument>`, the escape hatch
+|===
+
+Sessions, transactions and change streams are not covered: `mongo.raw()` is the driver.
+
+A cursor fetches documents from the server in batches as the plugin walks it; `toArray()` reads them all. Read what the response needs, with `limit` and `projection`, as with any driver.
+
+=== config
+
+The plugin's own section of `restheart.yml`, named after the plugin, as native data:
+
+[source,yml]
+----
+usersService:
+  db: restheart
+  collection: users
+  page-size: 50
+----
+
+[source,javascript]
+----
+const db = config.db ?? "restheart";
+const pageSize = config["page-size"] ?? 100;
+----
+
+=== mail
+
+The `emails` provider, available when it is enabled and configured, see link:/docs/framework/emails[Emails].
+
+[source,javascript]
+----
+mail.send({
+    to: user.email,
+    name: user.name,
+    subject: "Welcome",
+    html: render(resource("welcome.html"), { name: user.name }),
+});
+----
+
+`mail.send()` sends on the calling thread and returns when the SMTP transaction is over. `mail.sendAsync()` hands the send to the shared virtual threads executor and returns at once, which is what a plugin on the request path usually wants: the SMTP round trip is not added to the response time, and a failure is logged.
+
+=== providers
+
+Any registered provider, by name, untyped: `in-process-dispatcher`, `json-schemas`, `jwtIssuer`, `acl-registry`, and whatever a Java plugin of the deployment registers. The configured, initialised instance, not a class to wire up.
+
+[source,javascript]
+----
+const billing = providers["myBillingProvider"];
+billing.charge(account, amount);
+----
+
+The curated capabilities above are the ones the SDK maintains, in every language, forever, so the list is short on purpose. A provider that wants a nicer experience from JavaScript can return a `ProxyObject` and design how it looks from there.

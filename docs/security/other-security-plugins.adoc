@@ -128,18 +128,23 @@ updatePipelineSecurityChecker:
 
 === Brute Force Attack Guard
 
-bruteForceAttackGuard defends from brute force password cracking attacks
-by returning `429 Too Many Requests` when more than
-`max-failed-attempts` requests with wrong credentials
-are received in last 10 seconds from the same ip
+`bruteForceAttackGuard` defends from brute force password cracking attacks by returning `429 Too Many Requests` when more than `max-failed-attempts` requests with wrong credentials for the same user are received in the last 10 seconds from the same ip.
+
+The ip alone is not the client. Behind a carrier-grade NAT, as with several ISPs and every mobile network, and behind a corporate proxy, hundreds of users share one address: five wrong passwords typed by five unrelated people would block them all. A brute force targets an account, many passwords for one user from one source, so since 9.14.0 the failures are counted per ip and user: five wrong passwords for `alice` from one address block that address for `alice` only, and the other users behind it go on as before.
+
+A second, much higher threshold, `max-failed-attempts-per-ip`, counts the failures of an ip whatever the user, for a password spray cycling through many usernames. A request with no credentials at all counts on the ip only.
+
+The user is what the mechanism saw: the `userid` of a Basic challenge, the `username` of a Digest one, the `sub` of a bearer JWT, a fingerprint of any other bearer token such as an API key. A mechanism whose credentials travel elsewhere, a cookie or a custom header, records the user with `Metrics.attemptedUser(exchange, user)`.
 
 [source,yml]
 ----
 bruteForceAttackGuard:
   enabled: false
-  # max number of failed attempts in 10 seconds sliding window
-  # before returning 429 Too Many Requests
+  # max number of failed attempts per ip and user in 10 seconds sliding window
+  # before returning 429 Too Many Requests to that ip for that user; 0 disables it
   max-failed-attempts: 5
+  # max number of failed attempts per ip whatever the user; 0 disables it
+  max-failed-attempts-per-ip: 50
   # if true, the source ip is obtained from X-Forwarded-For header
   # this requires that header being set by the proxy, dangerous otherwise
   trust-x-forwarded-for: false
@@ -169,7 +174,9 @@ bruteForceAttackGuard:
 
 The predicate must tell the entries apart by something a client cannot forge, like a host that only one entry forwards.
 
-A blocked source is logged on one line that starts with `Brute force guard:`, when it gets blocked and when it is released. Since 9.9.2, with the `emails` provider configured, `notify-email` also mails an alarm, at most one per source every `notify-cooldown-minutes` (60 by default).
+The behaviour before 9.14.0, five failures per ip whatever the user, is `max-failed-attempts: 0` and `max-failed-attempts-per-ip: 5`.
+
+A blocked source is logged on one line that starts with `Brute force guard:`, when it gets blocked and when it is released, with the user when the block is per user. Since 9.9.2, with the `emails` provider configured, `notify-email` also mails an alarm, at most one per source (and user) every `notify-cooldown-minutes` (60 by default).
 
 === Root Role Guard
 

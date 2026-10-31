@@ -1,0 +1,151 @@
+---
+docs_version: 9
+title: JavaScript SDK Utilities
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+:page-liquid:
+
+=== Why they exist
+
+GraalJS runs JavaScript without Node. There is no `crypto`, no `fs`, no `Buffer`, no `TextEncoder`, and the npm packages that would provide them do not run. The SDK guarantees a floor instead: a small set of utilities, always present, the same in every deployment.
+
+[source,javascript]
+----
+import { logger, crypto, encode, resource, bson } from "restheart:sdk";
+----
+
+=== logger
+
+One logger per plugin, named `org.restheart.polyglot.plugins.<name>`, with SLF4J-style `{}` placeholders:
+
+[source,javascript]
+----
+logger.info("user {} asked for {} documents", req.account?.name, limit);
+logger.debug("filter {}", filter);          // an object is logged as JSON
+logger.error("upstream failed {}", error);  // an error with its message
+----
+
+`trace`, `debug`, `info`, `warn`, `error`, and `isTraceEnabled()`, `isDebugEnabled()` and the others to skip building an expensive message.
+
+`null` and `undefined` are fine: `logger.debug("x {}", null)` logs `x null`. The Java `LOGGER` global of the plugins written before 9.14.0 threw on a null argument, because a Java overload could not be chosen for it; that is the reason the SDK has a logger of its own.
+
+The log level is configured as for any logger, by name, see link:/docs/deployment/logging[Logging].
+
+=== crypto
+
+What a webhook receiver and a signed request need. Digests and HMACs are returned as lowercase hex; `encode` turns them into base64 when a provider wants that.
+
+[cols="1,2"]
+|===
+|function |returns
+
+|`crypto.sha256(data)`, `sha512(data)`, `sha1(data)`, `md5(data)`
+|the digest, hex
+
+|`crypto.hmacSha256(key, data)`, `hmacSha512(key, data)`, `hmacSha1(key, data)`
+|the HMAC, hex
+
+|`crypto.randomBytes(n)`
+|`n` random bytes from a secure random source
+
+|`crypto.randomHex(n)`
+|`n` random bytes as hex, `2n` characters
+
+|`crypto.uuid()`
+|a random UUID
+
+|`crypto.timingSafeEqual(a, b)`
+|whether two strings or byte arrays are equal, compared in constant time
+|===
+
+`data` and `key` are a string, encoded as UTF-8, or bytes.
+
+[source,javascript]
+----
+const expected = "sha256=" + crypto.hmacSha256(secret, req.content);
+
+if (!crypto.timingSafeEqual(req.headers["x-signature"] ?? "", expected)) {
+    throw new UnauthorizedError("bad signature");
+}
+----
+
+Compare a signature with `timingSafeEqual`, never with `===`: the time a plain comparison takes says how many leading bytes matched.
+
+=== encode
+
+[cols="1,2"]
+|===
+|function |returns
+
+|`encode.toBase64(data)`, `encode.fromBase64(s)`
+|base64 of a string or bytes, and back to bytes
+
+|`encode.toBase64Url(data)`, `encode.fromBase64Url(s)`
+|the url-safe alphabet, without padding
+
+|`encode.toHex(data)`, `encode.fromHex(s)`
+|hex, and back to bytes
+
+|`encode.toUtf8(s)`, `encode.fromUtf8(bytes)`
+|a string to its UTF-8 bytes, and back
+
+|`encode.urlEncode(s)`, `encode.urlDecode(s)`
+|percent-encoding for a query string value
+|===
+
+Bytes are a Java `byte[]`: `bytes.length` and `bytes[i]` work, `new Uint8Array(bytes)` makes a copy when a typed array is needed. Every function that takes bytes also takes a `Uint8Array`, an `ArrayBuffer` or a string.
+
+=== resource
+
+Reads a file shipped next to the plugin, an email template for instance:
+
+[source,javascript]
+----
+const template = resource("templates/welcome.html");      // UTF-8 text
+const logo = resource.bytes("images/logo.png");           // bytes
+if (resource.exists("overrides.json")) { ... }
+----
+
+Paths are relative to the plugin directory, the one with `package.json`, and stay inside it: `../` out of the directory is refused.
+
+=== bson
+
+Extended JSON makes two things verbose, and `bson` takes the edge off:
+
+[source,javascript]
+----
+bson.oid(doc._id)      // "507f1f77bcf86cd799439011", the hex of { $oid: "..." }
+bson.newOid()          // { $oid: "..." }, a fresh ObjectId
+bson.isOid(s)          // whether a string is a valid ObjectId
+bson.parse(json)       // a JSON string with extended JSON wrappers, to a document
+bson.stringify(value)  // the canonical extended JSON of a value
+----
+
+There is no `ObjectId` class on purpose: a wrapper would have to exist as a constructor at runtime, in every guest language, while `{ $oid }` is plain data, and the notation RESTHeart users already write in query strings and request bodies.
+
+=== Extended JSON and numbers
+
+BSON values are written as canonical extended JSON, in ordinary object literals, and read back the same way:
+
+[source,javascript]
+----
+coll.find({ _id: { $oid: id }, since: { $date: "2026-01-01T00:00:00Z" } });
+
+const doc = coll.findOne({ _id: { $oid: id } });
+doc._id            // { $oid: "..." }
+doc.since          // { $date: "2026-01-01T00:00:00Z" }
+----
+
+Reading and writing are symmetric: what a plugin writes is what comes back, there is no second representation to learn. A native `Date` is accepted on write too, and reads return `{ $date }`.
+
+JavaScript has one numeric type, so the rule is stated once:
+
+- an integer that fits in int32 is written as int32, everything else as a double;
+- `{ $numberInt: "1" }`, `{ $numberLong: "1" }`, `{ $numberDouble: "1" }` and `{ $numberDecimal: "1.50" }` override it;
+- on read, int32, double and the int64 values a JavaScript number keeps exact are plain numbers; an int64 beyond 2^53 and a Decimal128 come back as `{ $numberLong }` and `{ $numberDecimal }`.
+
+Left unstated, people discover this through a field that changes type depending on its value.
+
+The other BSON types follow the canonical extended JSON spec: `{ $binary: { base64, subType } }`, `{ $regularExpression: { pattern, options } }`, `{ $timestamp: { t, i } }`, `{ $minKey: 1 }`, `{ $maxKey: 1 }`.

@@ -1,6 +1,6 @@
 ---
 docs_version: 9
-title: Develop Core Plugins in JavaScript
+title: Develop Plugins in JavaScript
 layout: docs-adoc
 menu: framework
 applies_to: restheart
@@ -11,250 +11,183 @@ redirect_from:
 
 === Introduction
 
-_Services_ and _Interceptors_ can be developed in _JavaScript_ and _TypeScript_ when running RESTHeart with the GraalVM or using RESTHeart native.
+Services and Interceptors can be written in JavaScript or TypeScript, with no Java at all. They run inside RESTHeart on GraalVM, or in the RESTHeart native image, and they hot deploy: copy the plugin directory into the `plugins` directory and it is live, change a file and it is redeployed.
 
-TIP: See link:https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin[example JS plugins]
+Since 9.14.0 a plugin imports what it needs from the `restheart:sdk` module: the request and response as plain objects, a logger, `crypto` and `encode`, the MongoDB client, an HTTP client, its configuration. The types come from the npm package link:https://www.npmjs.com/package/@restheart/sdk[`@restheart/sdk`], so `req` and `res` autocomplete in the editor.
 
-NOTE: The default RESTHeart native binaries, can only be extended with JavaScript plugins. With Java plugins, you need to build RESTHeart and the plugins with the `native-image` tool. See link:https://restheart.org/docs/graalvm#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native-image]
-
-=== RESTHeart Concurrency Model
-
-RESTHeart is a multi-threaded application and it handles each request in a dedicated thread. This makes all code running in a request thread safe, and this also applies to JavaScript services and interceptors.
-
-This is different than usual JavaScript concurrency model, where all code is usually executed in a single thread and requires asynchronous programming, with callbacks, promises, observable, etc.
-
-In RESTHeart, you can write simple JavaScript code that also includes blocking calls, without incurring in performance problems.
-
-=== Service
-
-The JavaScript code that defines a `Service` must export the object `options` and the function `handle(req, res)`.
-
-The resulting service will be a special instance of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/plugins/StringService.html[StringService], that delegates the handling logic to the JavaScript code. For this reason, the request and response bodies are treated as strings.
-
-[source,javascript]
+[source,typescript]
 ----
-export const options = {
-    name: "helloWorldService",
-    description: "just another Hello World",
-    uri: "/hello"
-}
+import { defineService, mongo, logger, BadRequestError } from "restheart:sdk";
 
-export function handle(req, res) {
-    res.setContent(`{ "msg": `Hello ${rc.name || 'World'}` } `);
-    res.setContentTypeAsJson();
-}
+export default defineService({
+    name: "usersService",
+    description: "lists users",
+    uri: "/users",
+    contentKind: "json",
+    secured: true,
+
+    handle(req, res) {
+        const limit = Number(req.query.limit ?? 100);
+        if (Number.isNaN(limit)) throw new BadRequestError("wrong limit qparam");
+
+        logger.debug("listing users for {}", req.account?.name);
+
+        res.json(mongo.db("restheart").collection("users")
+            .find({}, { limit, sort: { _id: -1 } })
+            .toArray());
+    },
+});
 ----
 
-==== The object `options`
+This page covers what every plugin shares: the execution model, the packaging, the build for TypeScript and the deployment. The other pages of this section cover the parts:
 
-The `options` object must contain the following properties:
+- link:/docs/framework/javascript-services[Services]: `defineService`, `contentKind`, the request and the response, errors
+- link:/docs/framework/javascript-interceptors[Interceptors]: `defineInterceptor`, intercept points, `resolve`, the `mongo` and `csv` kinds
+- link:/docs/framework/javascript-sdk-utilities[Utilities]: `logger`, `crypto`, `encode`, `resource`, `bson`, extended JSON and the number rules
+- link:/docs/framework/javascript-sdk-capabilities[Capabilities]: `http`, `mongo`, `config`, `mail`, `providers`
 
-|===
-|param |description |mandatory |default value
+TIP: The link:https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin[example plugins] are written in TypeScript and cover every part of the SDK.
 
-|`name`
-|the name of the service
-|yes
-|*none*
+NOTE: The RESTHeart native binaries can be extended with JavaScript plugins only. A Java plugin needs RESTHeart and the plugin built together with `native-image`, see link:/docs/deployment/graalvm#build-restheart-with-custom-plugins-as-native-image[Build RESTHeart with custom plugins as native image].
 
-|`description`
-|description of the service
-|yes
-|*none*
+=== The execution model
 
-|`uri`
-|the uri of the service
-|yes
-|*none*
+This is where the instincts of a JavaScript developer are wrong, so it comes first.
 
-|`secured`
-|`true` to require successful authentication and authorization to be invoked;
-|no
-|`false`
+Each request runs in its own virtual thread. There is no event loop and no need to keep it free: a blocking call is the normal and correct way to do I/O. `handle(req, res)` is synchronous, its return value is ignored, what matters is what it did to `res`. Promises, `async` and `await` have no place in a plugin: `http.get()` returns the response, `coll.find().toArray()` returns the documents, and while a call waits the virtual thread parks and the server keeps serving other requests.
 
-|`matchPolicy`
-| `PREFIX` to match request paths starting with `/<uri>`,`EXACT` to only match the request path  `/<uri>` | no  | `PREFIX`
+The contexts a plugin runs in are pooled and recycled between requests. A variable at module level is not a server-wide cache: there is one copy per context, a context can be closed at any time, and two requests in a row may run in different contexts. For state that must be shared and survive, use a MongoDB collection, with a TTL index when it has to expire. That is also correct across a multi-node deployment, which an in-memory cache never is.
 
-|`modulesReplacements`
-| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
-
-|===
-
-==== The function `handle(req, res)`
-
-The `handle` functions accepts two parameters: the request and the response. These are Java objects of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
-
-=== Interceptor
-
-The JavaScript code that defines an `Interceptor` export the object `options` and the functions `handle(req, res)` and `resolve(req)`.
-
-[source,javascript]
-----
-export const options = {
-    name: "helloWorldInterceptor",
-    description: "modifies the response of helloWorldService",
-    interceptPoint: "RESPONSE"
-}
-
-export function handle(request, response) {
-    const rc = JSON.parse(response.getContent() || '{}');
-
-    let modifiedBody = {
-        msg: rc.msg + ' from Italy with Love';
-    }
-
-    response.setContent(JSON.stringify(modifiedBody));
-    response.setContentTypeAsJson();
-}
-
-export function resolve(request) {
-    return request.isHandledBy("helloWorldService");
-}
-----
-
-==== The object `options`
-
-The `options` object must contain the following properties:
-
-|===
-|param |description |mandatory |default value
-
-|`name`
-|the name of the interceptor
-|yes
-|*none*
-
-|`description`
-|description of the interceptor
-|yes
-|*none*
-
-|`interceptPoint`
-| the intercept point: `REQUEST_BEFORE_AUTH`, `REQUEST_AFTER_AUTH`, `RESPONSE`, `RESPONSE_ASYNC` | no  | REQUEST_AFTER_AUTH
-
-|`pluginClass`
-| the class of the interceptor that must match the service to intercept (e.g. `MongoInterceptor` can intercept a request handled by the `MongoService`), `StringInterceptor`, `BsonInterceptor`, `ByteArrayProxyInterceptor`, `CsvInterceptor`, `JsonInterceptor`, `MongoInterceptor`
-|no
-|`StringInterceptor`
-
-
-|`modulesReplacements`
-| experimental support for module replacements. See *Node.js core modules mockups* on link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[Using JavaScript Modules and Packages in GraalVM JavaScript] for modules. Example `buffer:my-buffer-implementation` | no | `""` (empty) |
-
-|===
-
-==== The function `resolve(req)`
-
-The function `resolve()` accepts one parameter `req`, a Java object of the concrete subclass of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] defined by the parameter `pluginClass`, e.g. with  `pluginClass: "StringInterceptor"`, the request class is link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest].
-
-An interceptor of a given class, can intercept requests handled by all services with matching types, e.g. `MongoInterceptor` can intercept requests handled by the `MongoService`.
-
-When `resolve()` returns `true` the interceptor will be actually invoked, i.e. this function allows to select the requests to intercept.
-
-==== The function `handle(req, res)`
-
-The `handle()` functions accepts two parameters: the request and the response.
-These a Java objects of the concrete subclasses of link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Request.html[Request] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/Response.html[Response] respectively.  For the default `pluginClass: "StringInterceptor"`, these are link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringRequest.html[StringRequest] and link:https://javadoc.io/doc/org.restheart/restheart-commons/latest/org/restheart/exchange/StringResponse.html[StringResponse] respectively.
+What a plugin hands to the runtime is kept as data, not as objects: no functions, no closures, and mutating a value read from the runtime does not mutate what the runtime holds.
 
 === Packaging
 
-The plugins js files must be placed in a folder with a `package.json` file.
-
-NOTE: a single plugin folder can contain multiple Services and Interceptors.
-
-The `package.json` muse declare the services in the `rh:services` array and interceptors in the `rh:interceptors` array.
+A plugin is a directory with a `package.json` that lists its modules:
 
 [source,json]
 ----
 {
-  "name": "restheart-js-foo",
-  "version": "1.0.0",
-  "description": "test js plugins for RESTHeart",
-  "rh:services": [ "foo.js" ],
-  "rh:interceptors": [ "foo-interceptor.js" ]
+  "name": "my-plugin",
+  "rh:spi": 1,
+  "rh:services": [ "users.mjs", "webhook.mjs" ],
+  "rh:interceptors": [ "audit.mjs" ]
 }
 ----
 
-=== Modules
+- `rh:services` and `rh:interceptors` list the modules, with paths relative to the directory; a subdirectory is fine
+- `rh:spi` names the SDK major the plugin is written for. RESTHeart refuses a plugin written for a future major, with a line in the log, instead of deploying it and failing at request time. The current major is 1
 
-The plugins can use npm `modules` via `require` statements. See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/require-module-service.mjs[require-module-service.mjs] for an example.
+One directory can hold any number of services and interceptors, and they can share code through ordinary relative imports.
 
-IMPORTANT: The imported modules cannot use  functionalities that are available in Node.js’ built-in modules (e.g., 'fs' and 'buffer', etc.).
+==== npm packages
 
-For instance, you cannot use the module `http`, and there is no pure JS implementation available. In this case, you can rely on <<interop,Java/Javascript interoperability>>  and use the  standard Java libraries and all the libraries that are available in RESTHeart.
+A plugin can use npm packages: run `npm install` in the plugin directory and import them. Only pure JavaScript packages run. GraalJS has no Node built-ins, so a package that needs `fs`, `crypto`, `http` or `zlib` fails, and so does a package whose dependency starts needing one in a patch release. What those built-ins give is in the SDK instead: `resource` reads files, `crypto` signs and hashes, `http` calls other services.
 
-See link:https://www.graalvm.org/22.0/reference-manual/js/Modules/[GraalVM Modules] for more details.
+=== TypeScript
+
+Write the plugin in TypeScript and compile it with `tsc` before deploying. RESTHeart deploys the compiled `.mjs` files and does not transpile: compiling is a build step, like `npm install`, and it keeps the deploy fast.
+
+[source,bash]
+----
+npm install --save-dev @restheart/sdk typescript
+----
+
+[source,json]
+----
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "types": ["@restheart/sdk"],
+    "rootDir": "src",
+    "outDir": "."
+  },
+  "include": ["src/**/*.mts"],
+  "exclude": ["node_modules"]
+}
+----
+
+A `src/users.mts` source compiles to `users.mjs`, the file `package.json` lists. `tsc --watch` recompiles on every change and RESTHeart redeploys the plugin when the `.mjs` file changes.
+
+`@restheart/sdk` contains type declarations only. It is versioned in lockstep with RESTHeart: `@restheart/sdk` 9.14.0 declares what RESTHeart 9.14.0 provides. A plugin written in plain JavaScript needs none of this: `.mjs` files and `package.json` are enough.
 
 === Deploy
 
-To the JavaScript plugin, just copy the folder containing the scripts and the file `package.json` into the `plugins` directory of RESTHeart.
-
-NOTE: JS plugins can be added or updated without requiring to restart the server, ie RESTHeart supports JS plugins hot deployment.
-
-If you modify the code, you can force RESTHeart to update it by touching the plugin folder.
+Copy the plugin directory into the `plugins` directory of RESTHeart. With Docker, mount it:
 
 [source,bash]
-$ touch plugins/my-plugin
+----
+docker run --rm -p 8080:8080 -v ./my-plugin:/opt/restheart/plugins/my-plugin softinstigate/restheart:latest-native
+----
 
-=== Configuration parameters
+RESTHeart watches the directory: a new plugin directory is deployed, a changed `.mjs` file is redeployed, a deleted one is undeployed. No restart. If a change is not picked up, touching the plugin directory forces it:
 
-It is possible to pass configuration parameters to a plugin by defining them in the RESTHeart's configuration file using the plugin's name:
+[source,bash]
+----
+touch plugins/my-plugin
+----
+
+The log says what was deployed, at which uri and with which content kind, or why a plugin was not deployed: a wrong declaration, a missing capability, an `rh:spi` the server does not have.
+
+=== Configuration
+
+A plugin reads its own section of `restheart.yml`, named after the plugin, with the `config` capability:
 
 [source,yml]
 ----
-foo: # <-- name of the plugin
-    arg: value
+usersService:
+  db: restheart
+  collection: users
 ----
-
-The arguments are available in the `pluginArgs` object.
 
 [source,javascript]
 ----
-const arg = pluginArgs.arg
+import { config } from "restheart:sdk";
+
+const db = config.db ?? "restheart";
 ----
 
-=== Java/JavaScript interoperability [[interop]]
+=== Plugins written before 9.14.0
 
-GraalVM allows to execute JavaScript code from RESTHeart and allows interoperability with Java code.
+A plugin that exports `options`, `handle` and `resolve` keeps working unchanged. Its `handle` receives the Java request and response, as before, and the globals `LOGGER`, `mclient` and `pluginArgs` are still there. They are deprecated, and the log marks such a plugin as legacy when it deploys it.
 
-This means that all the Java classes shipped with RESTHeart can be used in JavaScript code.
+[cols="1,1,2"]
+|===
+|deprecated |replacement |notes
 
-For example, see the link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/http-client.mjs[http-client.mjs] plugins, which uses `java.net.http.HttpClient` to execute an HTTP request.
+|`export const options` and `export function handle`
+|`export default defineService({ ... })` or `defineInterceptor({ ... })`
+|the declaration and the functions in one object
 
-=== MongoDB driver
+|`pluginClass: "MongoInterceptor"`
+|`contentKind: "mongo"`
+|`string`, `json`, `bson`, `bytes`, `mongo`, `csv`; `pluginClass` still works as an alias
 
-The MongoDb Java driver, configured by RESTHeart configuration file and already connected to MongoDB, is available in the JavaScript code as `mclient`.
+|`LOGGER`
+|`import { logger } from "restheart:sdk"`
+|null-safe: `LOGGER.debug("x {}", null)` threw, `logger.debug("x {}", null)` logs
 
-See link:https://github.com/SoftInstigate/restheart/blob/master/examples/js-plugin/mclient-service.mjs[mclient-service.mjs] for an example of how to use it.
+|`mclient`
+|`import { mongo } from "restheart:sdk"`
+|plain values in and out; `mongo.raw()` is still the Java `MongoClient`
 
-=== Logging
+|`pluginArgs`
+|`import { config } from "restheart:sdk"`
+|
 
-The RESTHeart Java logger can be used from JavaScript code.
+|`modulesReplacements`
+|nothing
+|the GraalJS option it mapped to was removed in GraalVM 25.1, the value is ignored
+|===
 
-[source,javascript]
-----
-LOGGER.debug("pluginArgs {}", pluginArgs);
-----
+Moving a plugin to the SDK is mechanical: the declaration becomes the default export, `request.getContent()` becomes `req.content`, `response.setContent(JSON.stringify(x)); response.setContentTypeAsJson()` becomes `res.json(x)`. The Java objects stay reachable as `req.raw` and `res.raw`, and `Java.type()` still works, so a plugin can move one call at a time.
 
-Pay attention to logging null values. With:
+=== Java interoperability
 
-[source,javascript]
-----
-var foo = null;
-LOGGER.debug("this is null {}", foo);
-----
+The SDK covers what a plugin writes every day. For the rest, the whole classpath of RESTHeart is one call away: `Java.type("org.restheart.utils.BsonUtils")` gives a Java class, `req.raw` and `res.raw` are the Java request and response, `mongo.raw()` is the `MongoClient`, and `providers["name"]` is any registered provider. This is a convenience layer, not a sandbox.
 
-An error will be raised.
+=== Running on Node
 
-[source,bash]
-----
-org.graalvm.polyglot.PolyglotException: TypeError: invokeMember (debug) on ch.qos.logback.classic.Logger@697713cb failed due to: Multiple applicable overloads found for method name debug...
-----
-
-To avoid it, use the following code:
-
-[source,javascript]
-----
-var foo = null;
-LOGGER.debug("this is null {}", foo ? foo : "null");
-----
+RESTHeart can also run on GraalVM Node, with plugins declared in `rh:node-services`. That mode is experimental, it does not use `restheart:sdk`, and it runs the plugins on the Node event loop with a different execution model. See link:https://github.com/SoftInstigate/restheart/tree/master/examples/node-plugin[examples/node-plugin].

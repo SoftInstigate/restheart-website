@@ -423,19 +423,28 @@ Familiar syntax for web developers:
 
 [source,javascript]
 ----
-export const options = { name: "myService" }
+import { defineService, mongo } from "restheart:sdk";
 
-export function handle(request, response) {
-    response.setContent(JSON.stringify({ message: "Hello" }));
-    response.setContentTypeAsJson();
-}
+export default defineService({
+    name: "myService",
+    description: "lists users",
+    uri: "/users",
+    contentKind: "json",
+
+    handle(req, res) {
+        const limit = Number(req.query.limit ?? 100);
+        res.json(mongo.db("restheart").collection("users").find({}, { limit }).toArray());
+    },
+});
 ----
 
 **Important differences from Node.js:**
 - Runs on virtual threads (not Node's event loop)
 - No need for async/await for I/O operations
 - Synchronous-style code that doesn't block
-- No Node.js stdlib - use Java libraries instead
+- No Node.js stdlib: the `restheart:sdk` module provides `crypto`, `encode`, `resource`, `http` and `mongo`, and the Java classpath is one `Java.type()` away
+
+See link:/docs/framework/javascript-plugins[Develop Plugins in JavaScript] for the SDK.
 
 **When to use JavaScript plugins:**
 - Rapid prototyping

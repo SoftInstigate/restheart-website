@@ -1,0 +1,285 @@
+---
+docs_version: 9
+title: JavaScript Services
+layout: docs-adoc
+menu: framework
+applies_to: restheart
+---
+:page-liquid:
+
+=== A service
+
+A service binds a function to a uri. The module exports it as its default export, declared with `defineService`:
+
+[source,javascript]
+----
+import { defineService } from "restheart:sdk";
+
+export default defineService({
+    name: "helloWorldService",
+    description: "just another Hello World",
+    uri: "/hello",
+    secured: false,
+    matchPolicy: "EXACT",
+    contentKind: "json",
+
+    handle(req, res) {
+        res.json({ msg: `Hello ${req.query.name ?? "World"}` });
+    },
+});
+----
+
+The module file goes in `rh:services` of `package.json`, see link:/docs/framework/javascript-plugins#packaging[Packaging].
+
+[cols="1,3,1,1"]
+|===
+|property |description |mandatory |default
+
+|`name`
+|the name of the service; also the name of its section in `restheart.yml` and of its logger
+|yes
+|
+
+|`description`
+|what it does, for the log and the catalog
+|yes
+|
+
+|`uri`
+|the uri it is bound to, starting with `/`
+|yes
+|
+
+|`secured`
+|`true` to require authentication and authorization
+|no
+|`false`
+
+|`matchPolicy`
+|`PREFIX` matches every path starting with the uri, `EXACT` the uri alone
+|no
+|`PREFIX`
+
+|`contentKind`
+|how the request and response bodies are typed, see below
+|no
+|`string`
+
+|`handle(req, res)`
+|the function that answers the request
+|yes
+|
+|===
+
+=== contentKind
+
+`contentKind` says what `req.content` and `res.content` are. It picks the Java service the plugin runs as (`StringService`, `JsonService`, `BsonService`, `ByteArrayService`), and in TypeScript it is what `req` and `res` are inferred from.
+
+[cols="1,2,2"]
+|===
+|kind |`req.content` |use it for
+
+|`string`
+|the body as a string, `null` when there is none
+|text, a raw body to verify a signature on, anything you parse yourself
+
+|`json`
+|the body as native data: objects, arrays, strings, numbers, booleans, `null`
+|a JSON API
+
+|`bson`
+|like `json`, with the BSON types in extended JSON: `{ $oid }`, `{ $date }`, `{ $numberLong }`
+|documents going to or coming from MongoDB
+
+|`bytes`
+|the body as bytes
+|binary content
+|===
+
+The `mongo` and `csv` kinds exist for link:/docs/framework/javascript-interceptors[interceptors] only.
+
+=== The request
+
+Data is exposed as data, behaviour as methods. A plugin reads `req.query.limit`, not a `getQueryParameter` call, and every decision about what a value is was made once, in the runtime, for every plugin: a missing query parameter is `undefined`, a repeated header is its first value, headers are case-insensitive.
+
+[cols="1,3"]
+|===
+|member |value
+
+|`req.path`, `req.method`, `req.url`, `req.queryString`
+|strings; `req.method` is `GET`, `POST`, ...
+
+|`req.query.name`
+|the first value of the query parameter, a string, `undefined` when absent. Values are strings, the plugin parses them: a query string carries no types
+
+|`req.queryAll.name`
+|every value of the parameter, an array, for the parameters that repeat (`?tag=a&tag=b`)
+
+|`req.headers["content-type"]`
+|the first value of the header, case-insensitive, `undefined` when absent. Assignable, for an interceptor that adds a header to the request
+
+|`req.account`
+|`{ name, roles }` when the request is authenticated, `null` otherwise
+
+|`req.content`
+|the body, typed by `contentKind`. Assignable, for an interceptor that changes the request
+
+|`req.contentType`
+|the `Content-Type` of the request
+
+|`req.isGet()`, `isPost()`, `isPut()`, `isPatch()`, `isDelete()`, `isOptions()`, `isHead()`
+|the method predicates
+
+|`req.isAuthenticated()`
+|whether the request is authenticated
+
+|`req.isHandledBy(name)`
+|whether the request is handled by the service of that name; what an interceptor's `resolve` usually checks
+
+|`req.pathParams("/users/{id}")`
+|the parameters of the path against a template, `{ id: "..." }`
+
+|`req.cookie(name)`
+|the value of a cookie, `null` when absent
+
+|`req.param(name)`, `req.attach(name, value)`
+|a parameter attached to the request by another plugin, and attaching one for the plugins that run after
+
+|`req.mongo`
+|the MongoDB part of a request handled by the MongoDB service, for `contentKind: "mongo"` interceptors
+
+|`req.raw`
+|the Java `Request`, the escape hatch
+|===
+
+The query parameters, the headers and the content are read lazily: handing a large body to a plugin costs nothing until the plugin looks into it. `req.content.user.name` reads one path, it does not copy the document. The values support everything a native object does: `in`, `Object.keys()`, the spread operator, destructuring, `JSON.stringify()`.
+
+=== The response
+
+[cols="1,3"]
+|===
+|member |value
+
+|`res.json(value)`
+|sets the content, the content type and, when none is set yet, status 200, in one call. The single most repeated snippet of a plugin
+
+|`res.text(value)`
+|the same, as `text/plain`
+
+|`res.bytes(value)`
+|the same, as `application/octet-stream`, for a `bytes` or `string` service
+
+|`res.statusCode`
+|read and set: `res.statusCode = 405`
+
+|`res.headers["x-request-id"] = id`
+|sets a header, case-insensitive; `delete res.headers.etag` removes one
+
+|`res.content`
+|the content, typed by `contentKind`, read and set
+
+|`res.contentType`
+|read and set
+
+|`res.setInError(code, message)`
+|the error body RESTHeart answers with everywhere, `{ "msg": message }` with the status
+
+|`res.raw`
+|the Java `Response`, the escape hatch
+|===
+
+`res.json()` converts what it is given according to the content kind: on a `json` service a native object becomes a JSON document, on a `bson` service it becomes BSON, with `{ $oid }` and `{ $date }` read back into their types and a native `Date` written as a BSON date. A document read with the `mongo` capability goes through untouched.
+
+=== Errors
+
+Throw a typed error and the request is answered with its status and message:
+
+[source,javascript]
+----
+import { defineService, BadRequestError, NotFoundError } from "restheart:sdk";
+
+export default defineService({
+    name: "users", description: "one user", uri: "/users", contentKind: "json", secured: true,
+
+    handle(req, res) {
+        const id = req.pathParams("/users/{id}").id;
+        if (!id) throw new BadRequestError("the user id is required");
+
+        const user = find(id);
+        if (!user) throw new NotFoundError(`no user ${id}`);
+
+        res.json(user);
+    },
+});
+----
+
+[cols="1,1"]
+|===
+|error |status
+
+|`BadRequestError`
+|400
+
+|`UnauthorizedError`
+|401
+
+|`ForbiddenError`
+|403
+
+|`NotFoundError`
+|404
+
+|`ConflictError`
+|409
+
+|`HttpError(status, message)`
+|any status
+|===
+
+A `throw` cannot be forgotten the way a `res.setInError(400, msg); return;` can. `res.setInError()` still works, for a plugin that prefers it.
+
+Any other exception, a `TypeError`, a failed `http` call, a bug, becomes a `500 Internal Server Error`. The exception is logged with the plugin name and the JavaScript stack trace, and nothing of it reaches the client.
+
+=== A complete example
+
+A webhook receiver: Stripe, GitHub and Twilio sign their payloads with HMAC, which needs `crypto`, and the signature covers the raw body, which needs `contentKind: "string"`.
+
+[source,typescript]
+----
+import { defineService, crypto, config, logger, UnauthorizedError } from "restheart:sdk";
+
+export default defineService({
+    name: "webhookService",
+    description: "verifies the HMAC signature of a webhook payload",
+    uri: "/webhook",
+    matchPolicy: "EXACT",
+    contentKind: "string",
+
+    handle(req, res) {
+        if (!req.isPost()) {
+            res.statusCode = 405;
+            return;
+        }
+
+        const signature = req.headers["x-signature"] ?? "";
+        const expected = "sha256=" + crypto.hmacSha256(config.secret as string, req.content ?? "");
+
+        if (!crypto.timingSafeEqual(signature, expected)) {
+            throw new UnauthorizedError("bad signature");
+        }
+
+        const event = JSON.parse(req.content ?? "{}");
+        logger.info("webhook event {}", event.type);
+
+        res.json({ received: true });
+    },
+});
+----
+
+With, in `restheart.yml`:
+
+[source,yml]
+----
+webhookService:
+  secret: the-signing-secret-of-the-provider
+----

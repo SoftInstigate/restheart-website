@@ -143,8 +143,7 @@ mongoRealmAuthenticator:
 
 == bruteForceAttackGuard
 
-`bruteForceAttackGuard` defends from brute force password cracking attacks
-by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests are received in last 10 seconds from the same ip.
+`bruteForceAttackGuard` defends from brute force password cracking attacks by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests for the same user are received in the last 10 seconds from the same ip, and when more than `max-failed-attempts-per-ip` are received from the same ip whatever the user. Counting per user keeps the unrelated users behind a carrier-grade NAT or a corporate proxy out of each other's blocks, see link:/docs/security/other-security-plugins#brute-force-attack-guard[Brute Force Attack Guard].
 
 IMPORTANT: if RESTHeart is behind a revers proxy, this must set the header `X-Forwarded-For` with the client IP. In this case set the option `trust-x-forwarded-for: true`
 
@@ -159,9 +158,11 @@ bruteForceAttackGuard:
     # if true, the source ip is obtained from X-Forwarded-For header
     # this requires that header being set by the proxy, dangerous otherwise
     trust-x-forwarded-for: false
-    # max number of failed attempts in 10 seconds sliding window
-    # before returning 429 Too Many Requests
+    # max number of failed attempts per ip and user in 10 seconds sliding window
+    # before returning 429 Too Many Requests to that ip for that user
     max-failed-attempts: 5
+    # max number of failed attempts per ip whatever the user
+    max-failed-attempts-per-ip: 50
 ----
 
 == originVetoer

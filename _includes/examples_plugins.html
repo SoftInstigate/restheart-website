@@ -170,32 +170,46 @@ public class HelloInterceptor implements JsonInterceptor {
       <div class="container">
         <div class="row align-items-center">
           <div class="col-md-4 mb-4">
-            <h2 class="examples__title">Implement plugins in JavaScript.</h2>
+            <h2 class="examples__title">Implement plugins in JavaScript or TypeScript.</h2>
             <p class="examples__desc">
-              This is yet another Hello World web service.
+              A web service that lists users: the request as a plain object,
+              MongoDB with the calls you already know, no Java in sight.
               <br />
-              Running RESTHeart on the GraalVM allows you to deploy JavaScript
-              Services and Interceptors.
+              Runs on the GraalVM and in the native image, hot deployed,
+              typed with <i>@restheart/sdk</i>.
             </p>
             <a
-              href="https://github.com/SoftInstigate/restheart/tree/master/examples"
+              href="https://github.com/SoftInstigate/restheart/tree/master/examples/js-plugin"
               target="_blank"
               class="btn btn-o-white"
-              >More examples</a
+              >See it on GitHub</a
+            >
+            <a
+              href="/docs/framework/javascript-plugins"
+              class="btn btn-o-white mt-2"
+              >Read the docs</a
             >
           </div>
           <div class="col-md-8">
-            {% highlight javascript %}
-export const options = {
-  name: "helloWorldService",
-  description: "just another Hello World",
-  uri: "/hello"
-}
+            {% highlight typescript %}
+import { defineService, mongo, BadRequestError } from "restheart:sdk";
 
-export function handle(req, res) {
-  res.setContent(JSON.stringify({ msg: 'Hello World' }));
-  res.setContentTypeAsJson();
-}
+export default defineService({
+  name: "users",
+  description: "lists users",
+  uri: "/users",
+  contentKind: "json",
+  secured: true,
+
+  handle(req, res) {
+    const limit = Number(req.query.limit ?? 100);
+    if (Number.isNaN(limit)) throw new BadRequestError("wrong limit");
+
+    res.json(mongo.db("restheart").collection("users")
+      .find({}, { limit, sort: { _id: -1 } })
+      .toArray());
+  },
+});
 {% endhighlight %}
           </div>
         </div>
