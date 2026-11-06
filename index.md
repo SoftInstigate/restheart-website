@@ -40,7 +40,7 @@ excerpt: RESTHeart is a backend for web, mobile and AI apps. Open source and Mon
                     </p>
                 </div>
                 <div class="hero-buttons mt-4">
-                    <a href="https://ulabase.com/signup?utm_source=restheart.org&utm_medium=home&utm_content=home" class="btn btn-primary font-weight-bold btn-lg text-black">
+                    <a href="https://ulabase.com/auth/signup?utm_source=restheart.org&utm_medium=home&utm_content=home" class="btn btn-primary font-weight-bold btn-lg text-black">
                         <span class="cta-emoji">🚀</span> Try Ulabase
                     </a>
                     <a href="/docs/setup" class="btn btn-o-white btn-lg">
@@ -120,15 +120,15 @@ curl -g 'localhost:8080/inventory?filter={"qty":{"$gt":10}}' \
 <section id="starter-apps-content" class="text-center pb-2 mt-5">
     <div class="container">
         <h2 class="text-center highlightcolor font-weight-bold">Your App, Running, in Four Commands</h2>
-        <p class="mt-2 mb-1">Clone a starter, point it at a free <a href="https://ulabase.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">Ulabase</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work — there is no server of yours to write.</p>
-        <p class="mb-4" style="opacity: 0.8; font-size: 0.95rem;">These starters run on <strong>Ulabase</strong>, the managed service. <code>ulabase</code> is its command line: it configures your cloud service from a file in the repo. For a RESTHeart you run yourself, start from <a href="/docs/setup">Setup</a> instead.</p>
+        <p class="mt-2 mb-1">Clone a starter, point it at a free <a href="https://ulabase.com/?utm_source=restheart.org&utm_medium=home&utm_content=home" class="highlightcolor font-weight-bold">Ulabase</a> service, run it. Sign-up, login, social sign-in, password reset, teams and invitations already work, and there is no server of yours to write.</p>
+        <p class="mb-4" style="opacity: 0.8; font-size: 0.95rem;">These starters run on <strong>Ulabase</strong>, the managed platform built on RESTHeart. <code>ulabase</code> is its command line: it configures your service from a file in the repo. For a RESTHeart you run yourself, start from <a href="/docs/setup">Setup</a> instead.</p>
 
         <div class="tabs-dark">
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
             <li class="nav-item"><a class="examples__link nav-link active" data-bs-toggle="tab" href="#starter-react" role="tab">React</a></li>
             <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-angular" role="tab">Angular</a></li>
+            <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-vue" role="tab">Vue</a></li>
             <li class="nav-item"><a class="examples__link nav-link" data-bs-toggle="tab" href="#starter-ecommerce" role="tab">Ecommerce with Stripe</a></li>
-            <li class="nav-item"><a class="examples__link nav-link disabled" href="#" role="tab" tabindex="-1" aria-disabled="true">Vue · coming soon</a></li>
         </ul>
 
         <div class="tab-content">
@@ -140,18 +140,17 @@ git clone https://github.com/ulabase/starter-react.git
 cd starter-react
 npm install
 
-# 2. point it at your free Ulabase service: paste its URL from the Connect page
-#    into src/environments/environment.ts
+# 2. create a free service at ulabase.com: its id is the six characters at the start of its URL
 
-# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
+# 3. set the service up from the file in the repo: accounts, sign-up, your origin and the app's URL
 npm install -g ulabase
-ulabase login                  # paste a personal access token from ulabase.com
-ulabase setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login               # paste a token from ulabase.com
+ulabase setup --srv <srvId>
 
 # 4. run it
 npm run dev
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>React</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-react" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>React</strong>: sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-react" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
             <div class="tab-pane fade" id="starter-angular" role="tabpanel">
@@ -162,18 +161,38 @@ git clone https://github.com/ulabase/starter-ng.git
 cd starter-ng
 npm install
 
-# 2. point it at your free Ulabase service: paste its URL from the Connect page
-#    into src/environments/environment.dev.ts
+# 2. create a free service at ulabase.com: its id is the six characters at the start of its URL
 
-# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
+# 3. set the service up from the file in the repo: accounts, sign-up, your origin and the app's URL
 npm install -g ulabase
-ulabase login                  # paste a personal access token from ulabase.com
-ulabase setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login               # paste a token from ulabase.com
+ulabase setup --srv <srvId>
 
 # 4. run it
 ng serve
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ng" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>Angular</strong>: sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ng" target="_blank" rel="noopener">README →</a></p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="starter-vue" role="tabpanel">
+                <div class="hero-terminal text-left p-3">
+{% highlight bash %}
+# 1. get the app
+git clone https://github.com/ulabase/starter-vue.git
+cd starter-vue
+npm install
+
+# 2. create a free service at ulabase.com: its id is the six characters at the start of its URL
+
+# 3. set the service up from the file in the repo: accounts, sign-up, your origin and the app's URL
+npm install -g ulabase
+ulabase login               # paste a token from ulabase.com
+ulabase setup --srv <srvId>
+
+# 4. run it
+npm run dev
+{% endhighlight %}
+                    <p class="mt-2 mb-0 text-left"><strong>Vue</strong>: sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-vue" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
             <div class="tab-pane fade" id="starter-ecommerce" role="tabpanel">
@@ -184,28 +203,29 @@ git clone https://github.com/ulabase/starter-ecommerce.git
 cd starter-ecommerce
 npm install
 
-# 2. point it at your free Ulabase service: paste its URL from the Connect page
-#    into src/environments/environment.ts
-#    and export your Stripe test keys, which the setup stores on the service once
-export STRIPE_SECRET_KEY=sk_test_...
-export STRIPE_WEBHOOK_SECRET=whsec_...
+# 2. create a free service at ulabase.com: its id is the six characters at the start of its URL
 
-# 3. configure the cloud service with ulabase, the Ulabase CLI (accounts, sign-up, your origin)
+# 3. set the service up from the file in the repo: accounts, sign-up, your origin and the app's URL
 npm install -g ulabase
-ulabase login                  # paste a personal access token from ulabase.com
-ulabase setup --srv <srvId>    # the six characters at the start of your service URL
+ulabase login               # paste a token from ulabase.com
+ulabase setup --srv <srvId>
+
+# for payments, add your Stripe test keys and run the setup again: the service keeps them
+# export STRIPE_SECRET_KEY=sk_test_...
+# export STRIPE_WEBHOOK_SECRET=whsec_...
+# ulabase setup --srv <srvId>
 
 # 4. run it
 npm run dev
 {% endhighlight %}
-                    <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong> — sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
+                    <p class="mt-2 mb-0 text-left"><strong>Ecommerce</strong>: sign up, check your inbox, and you are in. <a href="https://github.com/ulabase/starter-ecommerce" target="_blank" rel="noopener">README →</a></p>
                 </div>
             </div>
         </div>
         </div>
 
         <p class="mt-3 mb-1" style="opacity: 0.8; font-size: 0.95rem;">Already have an app? The same pieces are on npm as <code>@ulabase/kit-react</code>, <code>@ulabase/kit-ng</code> and <code>@ulabase/kit-vue</code>.</p>
-        <p class="mt-1"><a href="https://ulabase.com/blog/restheart-cloud-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and Starter Apps →</a></p>
+        <p class="mt-1"><a href="https://ulabase.com/blog/ulabase-kit-starter-apps?utm_source=restheart.org&utm_medium=home&utm_content=home">Read about the Kit and the starter apps →</a></p>
     </div>
 </section>
 
@@ -242,14 +262,6 @@ npm run dev
 <!-- just to make anchor link go to the right height -->
 <div id="mcp" class="pb-4"></div>
 
-
-<div class="container mt-5">
-    <h2 class="text-center color-primary font-weight-bold">Data API</h2>
-</div>
-
-<section id="examples" class="slice my-0 pb-0">
-    {% include examples.html %}
-</section>
 
 <div class="container mt-5">
     <h2 class="text-center color-primary m-0 mb-2 font-weight-bold">Polyglot Framework</h2>
