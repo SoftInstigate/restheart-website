@@ -92,4 +92,4 @@ SCSS source is in `_sass/` and compiled through `css/main.scss`. Bootstrap 4/5 m
 
 ### Analytics & Tracking
 
-Plausible is the only analytics, loaded from `_includes/footer.html`. It sets no cookies, so the site has no cookie banner; the footer links the cookie policy at https://www.restheart.com/legal/cookie-policy/.
+Plausible is the only analytics, loaded from `_includes/footer.html`. It sets no cookies, so the site has no cookie banner; the footer links the privacy policy and the cookie policy at restheart.com (https://www.restheart.com/legal/privacy-policy/, https://www.restheart.com/legal/cookie-policy/).
