@@ -92,4 +92,4 @@ SCSS source is in `_sass/` and compiled through `css/main.scss`. Bootstrap 4/5 m
 
 ### Analytics & Tracking
 
-Google Analytics (UA + GA4), Hotjar, and Plausible are configured in `_config.yml`. The cookie banner is controlled by `cookie_banner: true`.
+Plausible is the only analytics, loaded from `_includes/footer.html`. It sets no cookies, so the site has no cookie banner; the footer links the cookie policy at https://www.restheart.com/legal/cookie-policy/.
