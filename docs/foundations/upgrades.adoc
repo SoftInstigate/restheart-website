@@ -1,0 +1,40 @@
+---
+docs_version: 9
+title: Upgrading
+description: What changes between releases and what to do about it. Read only the guides between the version you run and the one you are moving to.
+layout: docs-adoc
+menu: overview
+applies_to: restheart
+---
+
+A release that changes an existing behavior has its own upgrade guide. A release that is not listed here only adds features, and upgrading to it needs no change on your side.
+
+To move across several releases, read every guide between the two versions, oldest first.
+
+== Upgrade guides
+
+[cols="1,3", options="header"]
+|===
+|Guide |Who is affected
+
+|link:/docs/foundations/upgrade-9.11-to-9.12[9.11 → 9.12]
+|Deployments that use `restheart-accounts` with teams, or `restheart-stripe`. The tokens no longer carry the active team.
+
+|link:/docs/foundations/upgrade-9.8-to-9.9[9.8 → 9.9]
+|Deployments with a service already bound to `/mcp`, and a few other behaviors around the new MCP server, the AI module and data constraints. No data migration.
+
+|link:/docs/foundations/upgrade-9.5-to-9.6[9.5 → 9.6]
+|Deployments that rely on requests with no `Origin` header, or on `secure = false` services skipping the VETOER authorizers.
+
+|link:/docs/foundations/upgrade-9.4-to-9.5[9.4 → 9.5]
+|Deployments that use `restheart-accounts`: "tenant" becomes "team" in endpoints, claims and configuration.
+
+|link:/docs/foundations/upgrade-to-v9[v8 → v9]
+|Every deployment coming from RESTHeart 8 or earlier: Java 25, the new Docker images, OAuth 2.0 and the security changes.
+|===
+
+== Before you upgrade
+
+* Read the link:https://github.com/SoftInstigate/restheart/releases[release notes on GitHub] for the full list of changes in each version.
+* Try the new version against a copy of your configuration and data first.
+* For the documentation of RESTHeart 8, use the version menu at the top of the sidebar.

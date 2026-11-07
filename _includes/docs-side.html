@@ -1,0 +1,34 @@
+{%- comment -%}
+  The left column of the documentation: version, search and the menu. Below 768px it sits above the
+  page and the menu folds behind a button.
+{%- endcomment -%}
+<aside class="bd-sidebar docs-side">
+  <div class="docs-side__head">
+    <div class="d-flex gap-2">
+      <div class="dropdown">
+        <button class="docs-version dropdown-toggle" type="button" id="dropdownMenuButton"
+          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Documentation version">
+          v{{ page.docs_version }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item{% if page.docs_version == 9 %} active{% endif %}" href="{{ '/docs/foundations/introduction' | prepend: site.baseurl }}">v9 (current)</a>
+          <a class="dropdown-item{% if page.docs_version == 8 %} active{% endif %}" href="{{ '/docs/v8' | prepend: site.baseurl }}">v8</a>
+        </div>
+      </div>
+      {% include docs-search.html %}
+    </div>
+    <button class="docs-side__toggle d-md-none" type="button" data-bs-toggle="collapse"
+      data-bs-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu" aria-expanded="false"
+      aria-label="Toggle docs navigation">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+      <span>{% if dn_section %}{{ dn_section.title }}{% else %}Menu{% endif %}</span>
+    </button>
+  </div>
+  <div class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
+    {%- if page.docs_version == 8 %}
+    {% include docs-v8-sidebar.html %}
+    {%- else %}
+    {% include docs-sidebar.html %}
+    {%- endif %}
+  </div>
+</aside>

@@ -1,0 +1,67 @@
+{%- comment -%}
+  Finds the current page in the v9 menu (_data/docs_nav.yml) and sets, for the includes that follow:
+    dn_url      page.url without .html, the form the menu uses
+    dn_group    the menu group the page belongs to
+    dn_section  its section, or the group itself for a flat group
+    dn_prev     the previous page in menu order, if any
+    dn_next     the next one, if any
+    dn_prev_section, dn_next_section  the titles of their sections, since many pages are called
+                "Overview" or "Tutorial" and need the section to be told apart
+  A page that is listed in an item's `also` counts as that item. A page not in the menu leaves
+  dn_section empty and gets no previous/next links.
+  It is included twice on Markdown pages, once from the content (docs-head) and once from the layout:
+  the content is rendered before the layout, so it cannot see variables the layout sets.
+{%- endcomment -%}
+{%- assign dn_url = page.url | remove: '.html' -%}
+{%- assign dn_flat = '' | split: '' -%}
+{%- assign dn_flat_sec = '' | split: '' -%}
+{%- assign dn_index = -1 -%}
+{%- assign dn_group = nil -%}
+{%- assign dn_section = nil -%}
+{%- assign dn_prev = nil -%}
+{%- assign dn_prev_section = nil -%}
+{%- assign dn_next_section = nil -%}
+{%- assign dn_next = nil -%}
+{%- if page.docs_version == 9 -%}
+  {%- for g in site.data.docs_nav -%}
+    {%- if g.items -%}
+      {%- assign dn_secs = '' | split: '' | push: g -%}
+    {%- else -%}
+      {%- assign dn_secs = g.sections -%}
+    {%- endif -%}
+    {%- for s in dn_secs -%}
+      {%- for it in s.items -%}
+        {%- if it.url -%}
+          {%- if it.url == dn_url or it.also contains dn_url -%}
+            {%- assign dn_index = dn_flat.size -%}
+            {%- assign dn_group = g -%}
+            {%- assign dn_section = s -%}
+          {%- endif -%}
+          {%- assign dn_flat = dn_flat | push: it -%}
+          {%- assign dn_flat_sec = dn_flat_sec | push: s.title -%}
+        {%- endif -%}
+        {%- for c in it.children -%}
+          {%- if c.url == dn_url -%}
+            {%- assign dn_index = dn_flat.size -%}
+            {%- assign dn_group = g -%}
+            {%- assign dn_section = s -%}
+          {%- endif -%}
+          {%- assign dn_flat = dn_flat | push: c -%}
+          {%- assign dn_flat_sec = dn_flat_sec | push: s.title -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- if dn_index > 0 -%}
+    {%- assign dn_i = dn_index | minus: 1 -%}
+    {%- assign dn_prev = dn_flat[dn_i] -%}
+    {%- assign dn_prev_section = dn_flat_sec[dn_i] -%}
+  {%- endif -%}
+  {%- if dn_index >= 0 -%}
+    {%- assign dn_i = dn_index | plus: 1 -%}
+    {%- if dn_i < dn_flat.size -%}
+      {%- assign dn_next = dn_flat[dn_i] -%}
+      {%- assign dn_next_section = dn_flat_sec[dn_i] -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

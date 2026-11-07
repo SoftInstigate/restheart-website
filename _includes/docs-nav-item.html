@@ -1,0 +1,18 @@
+{%- comment -%} One menu entry; include.item is a node of _data/docs_nav.yml. Needs dn_url from docs-nav-context.html. {%- endcomment -%}
+{%- assign it = include.item -%}
+{%- if it.label -%}
+<li class="dn-label">{{ it.label }}</li>
+{%- else -%}
+{%- assign dn_active = false -%}
+{%- if it.url == dn_url or it.also contains dn_url -%}{%- assign dn_active = true -%}{%- endif -%}
+<li>
+  <a href="{{ it.url }}"{% if dn_active %} class="is-active" aria-current="page"{% endif %}>{{ it.title }}</a>
+  {%- if it.children %}
+  <ul class="dn-children">
+    {%- for c in it.children %}
+    <li><a href="{{ c.url }}"{% if c.url == dn_url %} class="is-active" aria-current="page"{% endif %}>{{ c.title }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</li>
+{%- endif -%}

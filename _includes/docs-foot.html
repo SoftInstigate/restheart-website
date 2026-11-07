@@ -1,0 +1,26 @@
+{%- comment -%}
+  Below the page: the previous and next pages in menu order, and the link to edit the source.
+  A grid item of its own, under the content column, so it works for the Markdown pages too, whose
+  content column is written inside the page itself.
+{%- endcomment -%}
+<footer class="docs-foot" data-pagefind-ignore>
+  {%- if dn_prev or dn_next %}
+  <nav class="docs-pager" aria-label="Previous and next page">
+    {%- if dn_prev %}
+    <a class="docs-pager__link" href="{{ dn_prev.url }}" rel="prev">
+      <span class="docs-pager__label">&larr; Previous{% if dn_prev_section != dn_section.title %} &middot; {{ dn_prev_section }}{% endif %}</span>
+      <span class="docs-pager__title">{{ dn_prev.title }}</span>
+    </a>
+    {%- else %}<span></span>{% endif %}
+    {%- if dn_next %}
+    <a class="docs-pager__link docs-pager__link--next" href="{{ dn_next.url }}" rel="next">
+      <span class="docs-pager__label">{% if dn_next_section != dn_section.title %}{{ dn_next_section }} &middot; {% endif %}Next &rarr;</span>
+      <span class="docs-pager__title">{{ dn_next.title }}</span>
+    </a>
+    {%- endif %}
+  </nav>
+  {%- endif %}
+  <a class="docs-foot__edit" href="https://github.com/SoftInstigate/restheart-website/edit/master/{{ page.path }}">
+    <i class="icon-pencil" aria-hidden="true"></i> Edit this page on GitHub
+  </a>
+</footer>

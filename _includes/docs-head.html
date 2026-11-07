@@ -1,35 +1,31 @@
-<div class="docs-head d-flex align-items-center justify-content-between">
-  <h2 class="m-0 pe-3">{{ page.title }}</h2>
-  {% if page.applies_to %}
+{%- include docs-nav-context.html -%}
+<header class="docs-head">
+  {%- if dn_section %}
+  <p class="docs-head__eyebrow">{{ dn_section.title }}</p>
+  {%- endif %}
+  <h1 class="docs-head__title">{{ page.title }}</h1>
+  {%- if page.description and page.docs_version == 9 %}
+  <p class="docs-head__lede">{{ page.description }}</p>
+  {%- endif %}
+  {%- if page.applies_to %}
   <!-- the badges are labels, not content: out of the search index -->
-  <span class="d-inline-flex align-items-center gap-1 flex-shrink-0" data-pagefind-ignore>
-    {% if page.applies_to == 'restheart' %}
-    <span class="badge bg-primary" title="Applies to self-hosted RESTHeart only">
-      <i class="icon-desktop"></i> RESTHeart
-    </span>
-    {% elsif page.applies_to == 'cloud' %}
-    <span class="badge bg-info" title="Applies to Ulabase only">
-      <i class="icon-cloud"></i> Ulabase
-    </span>
-    {% elsif page.applies_to == 'both' %}
-    <span class="badge bg-primary" title="Applies to self-hosted RESTHeart">
-      <i class="icon-desktop"></i> RESTHeart
-    </span>
-    <span class="badge bg-info" title="Applies to Ulabase">
-      <i class="icon-cloud"></i> Ulabase
-    </span>
-    {% endif %}
-  </span>
-  {% endif %}
-</div>
-{% if page.docs_version == 9 and page.applies_to != 'cloud' %}
-<div class="cloud-callout d-flex align-items-center gap-2 my-3 px-3 py-2 rounded"
-     style="border-left: 4px solid var(--primarycolor); background: rgba(248, 168, 57, 0.08);">
-  <i class="icon-cloud" style="color: var(--primarycolor);"></i>
-  <span>
+  <div class="docs-head__applies" data-pagefind-ignore>
+    {%- if page.applies_to == 'restheart' or page.applies_to == 'both' %}
+    <span class="docs-pill" title="Applies to self-hosted RESTHeart"><i class="icon-desktop"></i> RESTHeart</span>
+    {%- endif %}
+    {%- if page.applies_to == 'cloud' or page.applies_to == 'both' %}
+    <span class="docs-pill docs-pill--cloud" title="Applies to Ulabase"><i class="icon-cloud"></i> Ulabase</span>
+    {%- endif %}
+  </div>
+  {%- endif %}
+</header>
+{%- if page.docs_version == 9 and page.applies_to != 'cloud' %}
+<aside class="docs-callout" data-pagefind-ignore>
+  <i class="icon-cloud" aria-hidden="true"></i>
+  <p>
     Prefer not to run it yourself? <strong>Ulabase</strong> is this, hosted, with sign-up, payments and an MCP server
     already on. Free to start.
     <a href="https://ulabase.com/docs/getting-started?utm_source=restheart.org&utm_medium=docs&utm_content=docs-head">Get started &rarr;</a>
-  </span>
-</div>
-{% endif %}
+  </p>
+</aside>
+{%- endif %}

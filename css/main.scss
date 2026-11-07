@@ -375,8 +375,10 @@ iframe {
   // A code block that needs more room now scrolls, which it already did on
   // narrow viewports.
   //
-  // Change it here and everything follows.
-  --doc-measure: 46rem;
+  // Change it here and everything follows. Since the grid layout ("Documentation layout", at the
+  // end of this file) the content column is itself capped at a reading width, so the measure is the
+  // whole column.
+  --doc-measure: 100%;
 
   // Body text. The site's root is 14px (layout.scss, "reduce base font size"), and asciidoctor's
   // stylesheet pins prose to 1rem and code to 0.9rem — so the documentation was reading at 14px,
@@ -592,35 +594,7 @@ iframe {
     }
   }
 
-  // Section separation. More space above a heading than below it groups it with
-  // the text it introduces; the hairline gives long pages a scannable skeleton.
-  .bd-content {
-    h2 {
-      margin-top: 3rem;
-      margin-bottom: 1rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    h3 {
-      margin-top: 2.25rem;
-      margin-bottom: 0.75rem;
-    }
-
-    h4,
-    h5,
-    h6 {
-      margin-top: 1.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    // The first heading of the page needs neither the rule nor the space
-    .sect1:first-of-type > h2 {
-      margin-top: 1rem;
-      padding-top: 0;
-      border-top: 0;
-    }
-  }
+  // Section separation: see "Documentation layout" at the end of this file.
 
   // Anchors. The header is fixed and the sticky columns start at 4rem, so a link
   // to a heading would otherwise land with that heading hidden underneath it.
@@ -949,32 +923,942 @@ iframe {
       padding: 1rem 1.1rem;
     }
   }
+}
 
-  // The sidebar and TOC dividers are declared with a black border on a black
-  // page, so the three columns run into each other.
-  .bd-toc {
-    border-left-color: rgba(255, 255, 255, 0.1);
+// ─────────────────────────────────────────────────────────────────────────────
+// Documentation layout
+//
+// The shell of _layouts/docs-adoc.html and _layouts/docs.html: a grid of three
+// columns from 1200px (menu, page, contents of the page), two from 768px, one
+// below. Sizes are in px on purpose: the site's root is 14px (layout.scss), and
+// the documentation must not follow it.
+//
+// The palette is the site's (black page, #f8a839 accent) with fewer, quieter
+// lines: surfaces are lifted by a few percent of white instead of framed, text is
+// a step below white, and the accent is kept for what is interactive or current.
+// ─────────────────────────────────────────────────────────────────────────────
 
-    ul {
-      line-height: 1.5;
+.docs-shell {
+  --d-text: #cfcfd4;
+  --d-muted: #9b9ba3;
+  --d-faint: #6f6f78;
+  --d-heading: #ffffff;
+  --d-accent: #{variables.$color-primary};
+  --d-accent-soft: rgba(248, 168, 57, 0.1);
+  --d-line: rgba(255, 255, 255, 0.08);
+  --d-surface: #111114;
+  --d-surface-2: #17171b;
+  --d-radius: 10px;
+  --d-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --d-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --d-top: 4rem; // the fixed site header
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "side"
+    "main"
+    "foot";
+  gap: 0 56px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+  font-family: var(--d-font);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--d-text);
+
+  @media (min-width: 768px) {
+    grid-template-columns: 248px minmax(0, 760px);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "side main"
+      "side foot";
+    justify-content: center;
+    gap: 0 48px;
+    padding: 0 28px 80px;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: 260px minmax(0, 760px) 220px;
+    grid-template-areas:
+      "side main toc"
+      "side foot toc";
+    gap: 0 56px;
+  }
+
+  // The Markdown pages write Bootstrap column classes on their two divs: inside
+  // the grid the area sets the width, not the column class.
+  > [class*="col-"] {
+    flex: none;
+    width: auto;
+    max-width: none;
+    padding: 0;
+  }
+
+  > .bd-sidebar {
+    grid-area: side;
+  }
+
+  // !important: the Markdown pages carry Bootstrap's pt-0 on this div, which is !important too
+  > .bd-content {
+    grid-area: main;
+    min-width: 0;
+    padding-top: 40px !important;
+
+    @media (max-width: 767px) {
+      padding-top: 20px !important;
+    }
+  }
+
+  > .bd-toc {
+    grid-area: toc;
+  }
+
+  > .docs-foot {
+    grid-area: foot;
+  }
+}
+
+// ── Sidebar ──────────────────────────────────────────────────────────────────
+
+.docs-side {
+  padding-top: 20px;
+
+  @media (min-width: 768px) {
+    position: sticky;
+    top: var(--d-top);
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--d-top));
+    padding-top: 28px;
+  }
+}
+
+.docs-side__head {
+  padding-bottom: 16px;
+
+  .dropdown-menu {
+    min-width: 9rem;
+    padding: 6px;
+    background: var(--d-surface-2);
+    border: 1px solid var(--d-line);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .dropdown-item {
+    color: var(--d-text);
+    border-radius: 6px;
+    padding: 6px 10px;
+
+    &:hover,
+    &:focus {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
     }
 
-    li {
-      margin-bottom: 0.15em;
+    &.active {
+      background: var(--d-accent-soft);
+      color: var(--d-accent);
+    }
+  }
+
+  // the search field of _includes/docs-search.html
+  .bd-sidebar__search {
+    margin: 0;
+  }
+
+  .bd-sidebar__input {
+    height: 34px;
+    padding: 0 34px 0 12px;
+    font-size: 14px;
+    color: var(--d-text);
+    background: var(--d-surface);
+    border: 1px solid var(--d-line);
+    border-radius: 8px;
+    box-shadow: none;
+
+    &::placeholder {
+      color: var(--d-faint);
     }
 
-    a {
-      color: #c4c4c4;
+    &:focus {
+      border-color: rgba(248, 168, 57, 0.5);
+      box-shadow: 0 0 0 3px rgba(248, 168, 57, 0.12);
+    }
+  }
 
-      &:hover {
-        color: variables.$color-primary;
+  .bd-sidebar__submit {
+    height: 34px;
+    width: 34px;
+    filter: invert(1);
+  }
+}
+
+.docs-version {
+  height: 34px;
+  min-width: 56px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-text);
+  background: var(--d-surface);
+  border: 1px solid var(--d-line);
+  border-radius: 8px;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+.docs-side__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--d-text);
+  background: var(--d-surface);
+  border: 1px solid var(--d-line);
+  border-radius: 8px;
+}
+
+.docs-shell .bd-sidebar__menu {
+  padding: 0 4px 24px 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+
+  @media (min-width: 768px) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    // the menu scrolls on its own: fade its edges instead of cutting them
+    mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 24px), transparent 100%);
+  }
+
+  @media (max-width: 767px) {
+    padding-top: 8px;
+    border-bottom: 1px solid var(--d-line);
+    margin-bottom: 8px;
+  }
+}
+
+.dn {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    padding: 0;
+    font-size: inherit;
+  }
+
+  // The focus ring stays for the keyboard only: after a click it remained drawn around the entry.
+  a:focus,
+  summary:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid rgba(248, 168, 57, 0.6);
+    outline-offset: -2px;
+  }
+
+  a {
+    display: block;
+    padding: 5px 10px;
+    color: var(--d-muted);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: color 0.12s ease, background-color 0.12s ease;
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    &.is-active {
+      color: var(--d-accent);
+      background: var(--d-accent-soft);
+      font-weight: 500;
+    }
+  }
+}
+
+.dn-group {
+  margin-top: 22px;
+
+  &:first-child {
+    margin-top: 6px;
+  }
+}
+
+.dn-group-title {
+  padding: 0 10px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--d-faint);
+}
+
+.dn-section {
+  > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    color: #e4e4e8;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  .dn-chevron {
+    flex-shrink: 0;
+    color: var(--d-faint);
+    transition: transform 0.15s ease;
+  }
+
+  &[open] > summary .dn-chevron {
+    transform: rotate(90deg);
+  }
+
+  // the pages of a section hang from a thin line under its name
+  > .dn-list {
+    margin: 2px 0 8px 10px;
+    padding-left: 8px;
+    border-left: 1px solid var(--d-line);
+  }
+}
+
+.dn-children {
+  margin: 0 0 2px 10px !important;
+  padding-left: 8px !important;
+  border-left: 1px solid var(--d-line);
+}
+
+.dn-label {
+  padding: 12px 10px 4px !important;
+  font-size: 10.5px !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--d-faint);
+}
+
+.dn-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: 1px;
+  color: var(--d-accent);
+  background: var(--d-accent-soft);
+  border-radius: 999px;
+}
+
+// ── Page head ────────────────────────────────────────────────────────────────
+
+.docs-shell .docs-head {
+  margin: 0 0 28px;
+  padding: 0;
+  border: 0;
+}
+
+.docs-head__eyebrow {
+  margin: 0 0 10px !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--d-accent) !important;
+}
+
+.docs-shell .docs-head__title {
+  margin: 0;
+  font-family: var(--d-font);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--d-heading);
+
+  @media (max-width: 767px) {
+    font-size: 28px;
+  }
+}
+
+.docs-head__lede {
+  margin: 14px 0 0 !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  color: var(--d-muted) !important;
+}
+
+.docs-head__applies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.docs-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--d-muted);
+  border: 1px solid var(--d-line);
+  border-radius: 999px;
+
+  i {
+    font-size: 11px;
+    color: var(--d-accent);
+  }
+
+  &--cloud i {
+    color: #5aa9e6;
+  }
+}
+
+.docs-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 36px;
+  padding: 14px 16px;
+  background: var(--d-surface);
+  border: 1px solid var(--d-line);
+  border-radius: var(--d-radius);
+
+  > i {
+    margin-top: 2px;
+    color: var(--d-accent);
+  }
+
+  p {
+    margin: 0 !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+    color: var(--d-muted) !important;
+  }
+
+  strong {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  a {
+    color: var(--d-accent);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+}
+
+// ── Content ──────────────────────────────────────────────────────────────────
+
+.docs-shell .bd-content {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--d-text);
+
+  p,
+  li,
+  dd,
+  td {
+    color: var(--d-text);
+  }
+
+  p {
+    line-height: 1.75;
+    margin-bottom: 1.15em;
+  }
+
+  // asciidoctor sets lists to 1rem, which on this site is 14px
+  ul,
+  ol,
+  dl {
+    font-size: inherit;
+    line-height: 1.75;
+  }
+
+  strong,
+  b {
+    color: #ececf0;
+    font-weight: 600;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--d-font);
+    color: var(--d-heading);
+    word-spacing: normal;
+    text-rendering: optimizeLegibility;
+  }
+
+  // A section: generous space above, the hairline under the heading, so it
+  // reads as a title of what follows.
+  h2 {
+    margin: 56px 0 18px;
+    padding: 0 0 10px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.018em;
+    border-top: 0;
+    border-bottom: 1px solid var(--d-line);
+  }
+
+  h3 {
+    margin: 36px 0 12px;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    margin: 28px 0 10px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  h5 {
+    margin: 22px 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e4e4e8;
+  }
+
+  h6 {
+    margin: 20px 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-style: normal;
+    color: var(--d-muted);
+  }
+
+  // the first section of a page sits right under the page head
+  > .sect1:first-of-type > h2,
+  > h2:first-child,
+  .docs-callout + .sect1 > h2,
+  .docs-head + .sect1 > h2 {
+    margin-top: 8px;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--d-top) + 24px);
+  }
+
+  // Links: the accent, underlined quietly until hovered.
+  a {
+    color: var(--d-accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(248, 168, 57, 0.35);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.12s ease;
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+
+  // headings that are links (asciidoc's sectlinks) stay headings
+  h2 a,
+  h3 a,
+  h4 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  li + li {
+    margin-top: 0.35em;
+  }
+
+  hr {
+    margin: 40px 0;
+    border: 0;
+    border-top: 1px solid var(--d-line);
+    opacity: 1;
+  }
+
+  // Inline code: a light plate, the text a step warmer than the prose.
+  *:not(pre) > code {
+    font-family: var(--d-mono);
+    font-size: 0.86em;
+    font-weight: 400;
+    color: #f2c47e;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.1em 0.38em;
+    border-radius: 5px;
+    word-break: break-word;
+  }
+
+  a > code {
+    color: inherit;
+  }
+
+  // Code blocks: one surface, no frame colour, a mono face sized for reading.
+  pre,
+  .listingblock > .content > pre,
+  .literalblock pre,
+  .highlight pre {
+    font-family: var(--d-mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #d4d4d8;
+    background: var(--d-surface);
+    border: 1px solid var(--d-line);
+    border-radius: var(--d-radius);
+    padding: 16px 20px;
+  }
+
+  pre code {
+    font-family: inherit;
+    font-size: 1em;
+    color: inherit;
+  }
+
+  .listingblock,
+  .literalblock {
+    margin-bottom: 24px;
+  }
+
+  .listingblock > .title,
+  .literalblock > .title,
+  .imageblock > .title,
+  table.tableblock > .title,
+  .paragraph > .title,
+  .ulist > .title,
+  .olist > .title {
+    margin-bottom: 8px;
+    font-family: var(--d-font);
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--d-muted);
+  }
+
+  // the language tag of a code block
+  .listingblock code[data-lang]::before {
+    font-family: var(--d-font);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--d-faint);
+    top: 10px;
+    bottom: auto;
+    right: 14px;
+  }
+
+  // Tables: rounded, hairlines between rows only.
+  table.tableblock,
+  table {
+    width: 100%;
+    font-size: 14.5px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+    border: 1px solid var(--d-line);
+    border-radius: var(--d-radius);
+    overflow: hidden;
+
+    thead,
+    tfoot {
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    th,
+    td {
+      padding: 10px 14px;
+      line-height: 1.6;
+      border: 0;
+      border-bottom: 1px solid var(--d-line);
+      vertical-align: top;
+    }
+
+    tr:last-child > td {
+      border-bottom: 0;
+    }
+
+    // asciidoctor stripes the rows in a light grey meant for a white page
+    tbody tr:nth-of-type(even),
+    tbody tr:nth-of-type(even) > * {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    th,
+    thead td {
+      color: #fff;
+      font-weight: 600;
+      font-size: 13.5px;
+    }
+
+    p {
+      margin: 0;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    p + p {
+      margin-top: 0.6em;
+    }
+  }
+
+  .tableblock {
+    margin-bottom: 28px;
+  }
+
+  // Admonitions: a tinted surface and a coloured label, no heavy bar.
+  .admonitionblock {
+    margin: 28px 0;
+
+    > table {
+      border: 1px solid var(--d-line);
+      border-left: 3px solid var(--d-accent);
+      border-radius: var(--d-radius);
+      background: var(--d-surface);
+
+      td {
+        border: 0;
+      }
+
+      td.icon {
+        width: 84px;
+        padding: 15px 0 15px 18px;
+
+        .title {
+          font-family: var(--d-font);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--d-accent);
+        }
+      }
+
+      td.content {
+        padding: 14px 20px 14px 12px;
+        font-size: 15px;
+        color: var(--d-text);
+
+        > :last-child,
+        .paragraph:last-child p {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &.note > table {
+      border-left-color: #5aa9e6;
+    }
+
+    &.tip > table {
+      border-left-color: #5ac882;
+
+      td.icon .title {
+        color: #5ac882;
       }
     }
   }
 
-  @media (min-width: 768px) {
-    .bd-sidebar {
-      border-color: rgba(255, 255, 255, 0.1);
+  // Images and diagrams: a soft frame so a light screenshot does not glare.
+  .imageblock img {
+    border-radius: 8px;
+  }
+
+  .quoteblock {
+    border-left-color: var(--d-line);
+  }
+
+  // the cards of a few landing pages, on the same surface as everything else
+  .card {
+    background: var(--d-surface) !important;
+    border: 1px solid var(--d-line) !important;
+    border-radius: var(--d-radius);
+    box-shadow: none;
+
+    &:hover {
+      border-color: rgba(248, 168, 57, 0.4) !important;
+      transform: none;
+      box-shadow: none;
     }
+  }
+}
+
+// ── On this page ─────────────────────────────────────────────────────────────
+
+.docs-shell .bd-toc {
+  position: sticky;
+  top: var(--d-top);
+  align-self: start;
+  max-height: calc(100vh - var(--d-top));
+  overflow-y: auto;
+  padding: 44px 0 24px;
+  font-size: 13px;
+  line-height: 1.45;
+  border: 0;
+
+  &::before {
+    content: "On this page";
+    display: block;
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--d-faint);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  > ul,
+  > div > ul {
+    border-left: 1px solid var(--d-line);
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  ul ul a {
+    padding-left: 24px;
+  }
+
+  ul ul ul a {
+    padding-left: 36px;
+  }
+
+  a {
+    display: block;
+    margin-left: -1px;
+    padding: 4px 0 4px 12px;
+    color: var(--d-muted);
+    border-left: 1px solid transparent;
+    text-decoration: none;
+    transition: color 0.12s ease, border-color 0.12s ease;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.is-current {
+      color: #fff;
+      border-left-color: var(--d-accent);
+    }
+  }
+
+  // the Markdown pages write the list inside a <p>-free div, with kramdown's own spacing
+  p {
+    margin: 0;
+  }
+}
+
+// ── Below the page ───────────────────────────────────────────────────────────
+
+.docs-foot {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--d-line);
+}
+
+.docs-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 575px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.docs-pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--d-line);
+  border-radius: var(--d-radius);
+  text-decoration: none;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+
+  &:hover {
+    border-color: rgba(248, 168, 57, 0.45);
+    background: rgba(248, 168, 57, 0.04);
+  }
+
+  &--next {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.docs-pager__label {
+  font-size: 12px;
+  color: var(--d-faint);
+}
+
+.docs-pager__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.docs-foot__edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--d-faint);
+  text-decoration: none;
+
+  &:hover {
+    color: #fff;
   }
 }

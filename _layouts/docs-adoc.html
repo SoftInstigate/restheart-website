@@ -3,69 +3,22 @@ layout: default
 ---
 {% include jsonld-docs.html %}
 
-<div class="container-fluid imgHover doc">
-  <div class="row flex-xl-nowrap">
-      <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
-          <div class="bd-sidebar__head">
-              <div class="d-flex gap-2 mb-2">
-                  <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle p-1" type="button"
-                          id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                          style="min-width: 70px; height: 2rem;">
-                          v{{ page.docs_version }}
-                      </button>
-                      <div class="dropdown-menu mt-2 me-1 pb-2" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{ "/docs" | prepend: site.baseurl }}">
-                              {% if page.docs_version == 9 %}
-                              <strong>v9 (current)</strong>
-                              {% else %}
-                              v9 (current)
-                              {% endif %}
-                          </a>
-                        <a class="dropdown-item" href="{{ "/docs/v8" | prepend: site.baseurl }}">
-                              {% if page.docs_version == 8 %}
-                              <strong>v8</strong>
-                              {% else %}
-                              v8
-                              {% endif %}
-                          </a>
-                      </div>
-                  </div>
-                  {% include docs-search.html %}
-              </div>
-              <div class="d-flex flex-wrap justify-content-between align-items-center">
-                  <a href="https://github.com/SoftInstigate/restheart-website/edit/master/{{ page.path }}"
-                      class="small mt-2 mb-1 ml-lg-auto"><i class="icon-pencil"></i>Edit Page</a>
-                  <button class="btn btn-primary bd-sidebar__toggle mb-2 d-md-none w-100" type="button"
-                      data-bs-toggle="collapse" data-bs-target="#bd-sidebar__menu" aria-controls="bd-sidebar__menu"
-                      aria-expanded="false" aria-label="Toggle docs navigation">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 30 30" width="20" height="20"
-                          focusable="false" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                          <title>Menu</title>
-                          <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22" />
-                      </svg>
-                      Documentation Menu
-                  </button>
-              </div>
-          </div>
+{% include docs-nav-context.html %}
 
-          <nav class="bd-sidebar__menu collapse d-md-block" id="bd-sidebar__menu">
-              {% if page.docs_version == 8 %}
-                  {% include docs-v8-sidebar.html %}
-              {% else %}
-                  {% include docs-sidebar.html %}
-              {% endif %}
-          </nav>
-      </div>
+<!-- Three columns from 1200px (menu, page, contents of the page), two from 768px, one below. -->
+<div class="doc docs-shell">
+  {% include docs-side.html %}
 
-      <div class="d-none d-xl-block col-xl-2 order-last bd-toc">
-          {{ page.document | tocify_asciidoc }}
-      </div>
-      <div class="col-12 col-md-9 col-xl-8 py-md-3 bd-content pt-0"{% unless page.docs_version == 8 %} data-pagefind-body{% endunless %}>
-          {% include docs-head.html %}
-          {{ content }}
-      </div>
+  <div class="bd-content"{% unless page.docs_version == 8 %} data-pagefind-body{% endunless %}>
+    {% include docs-head.html %}
+    {{ content }}
   </div>
+
+  <nav class="bd-toc d-none d-xl-block" aria-label="On this page">
+    {{ page.document | tocify_asciidoc }}
+  </nav>
+
+  {% include docs-foot.html %}
 </div>
 
 <script type="module">
@@ -100,3 +53,4 @@ layout: default
 </script>
 
 <script src="/js/doc-wide-blocks.js" defer></script>
+<script src="/js/docs-ui.js" defer></script>
