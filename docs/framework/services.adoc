@@ -26,8 +26,48 @@ The following Service interfaces are provided and differ from the data type used
 - `StringService`
 - `JsonService`
 - `BsonService`
+- `MultipartService`
 
 For instance, `BsonService` uses `BsonValue` to hold request and response content: this is useful when you cope with MongoDb that represents data using this class.
+
+The request body is read until its end, also when the request has no `Content-Length`, as with `Transfer-Encoding: chunked`.
+
+`JsonRequest` and `Request.isContentTypeJson()` accept every JSON media type: `application/json`, the media types with the `+json` suffix such as `application/problem+json` or `application/vnd.api+json`, and the legacy aliases `text/x-json` and `application/jsonrequest`, in any case and with any parameter such as `charset`.
+
+TIP: Chunked request bodies and the `+json` media types are supported since *version 9.15.0*.
+
+==== MultipartService
+
+`MultipartService` receives a `multipart/form-data` request, for instance a file upload, and replies with JSON. `MultipartRequest.getContent()` returns Undertow's `FormData`:
+
+[source,java]
+----
+@RegisterPlugin(name = "upload", description = "receives a file", blocking = true)
+public class UploadService implements MultipartService {
+    @Override
+    public void handle(MultipartRequest req, JsonResponse res) throws Exception {
+        var form = req.getContent();
+        var file = form.getFirst("file");
+
+        if (file == null || !file.isFileItem()) {
+            res.setInError(HttpStatus.SC_BAD_REQUEST, "a file named 'file' is required");
+            return;
+        }
+
+        try (var in = file.getFileItem().getInputStream()) {
+            // read the uploaded bytes
+        }
+
+        res.setContent(object().put("name", file.getFileName()));
+    }
+}
+----
+
+Parts up to 1 MiB are kept in memory, larger files are written to temporary files that are deleted when the request completes. A missing or invalid `boundary`, or a malformed body, gets `400 Bad Request`.
+
+Register it with `blocking = true`: large uploads are read while they arrive.
+
+TIP: Available since *version 9.15.0*.
 
 The code of example link:https://github.com/SoftInstigate/restheart/tree/master/examples/greeter-service[greeter-service] implementing `JsonService` follows:
 
@@ -101,9 +141,15 @@ The following table describes the arguments of the annotation for Services:
 
 RESTHeart allows you to control the execution model of your services using the `blocking` parameter in the `@RegisterPlugin` annotation.
 
+Requests are always received by the IO threads. A blocking service is then dispatched to a virtual thread, while a non-blocking service runs on the IO thread that received the request.
+
 ==== Blocking Services (Default)
 
 By default, services are executed in **blocking mode** (`blocking = true`). In this mode, when a request arrives, it is dispatched to a worker thread from the thread pool whose size is configured by the `worker-threads` parameter.
+
+If the request body has a `Content-Length` up to `blocking-content-prebuffer-limit` (64 KiB by default), RESTHeart reads it on the IO thread before the dispatch, without blocking: the service finds it already in memory and never waits for a slow client. Larger or chunked bodies are read by the service while they arrive. See the link:/docs/deployment/default-configuration[default configuration].
+
+TIP: The request body is read before the dispatch since *version 9.15.0*.
 
 This concurrency model performs well for CPU-bound and blocking operations, such as:
 - MongoDB operations executed with the `mongodb-driver-sync`
@@ -135,6 +181,11 @@ This approach follows the **Event Loop** concurrency model and can perform bette
 - Reactive operations
 - Async computations
 - Services that don't perform blocking I/O
+- Short handlers, where dispatching to another thread costs more than the work itself
+
+A non-blocking service can read the request body with `request.getContent()` as a blocking one does: RESTHeart reads the body for it before invoking the service, without blocking the IO thread. While a slow client sends the body, no thread is held. Bodies larger than `non-blocking-content-limit` (1 MiB by default) get `413 Request Entity Too Large`. See the link:/docs/deployment/default-configuration[default configuration].
+
+TIP: Non-blocking services receive the request body since *version 9.15.0*.
 
 [source,java]
 ----
