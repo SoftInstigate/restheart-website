@@ -124,7 +124,9 @@ docker run --rm -p 8080:8080 -v ./my-plugin:/opt/restheart/plugins/my-plugin sof
 
 RESTHeart watches the directory: a new plugin directory is deployed, a changed `.mjs` file is redeployed, a deleted one is undeployed. When `package.json` appears or changes, the plugins it declares that are not deployed yet are deployed, and the ones it no longer declares are undeployed. No restart.
 
-TIP: Since *version 9.15.2* a plugin directory copied while RESTHeart runs is deployed whole, whatever the order in which its files are created. In earlier versions a `.mjs` file copied before `package.json` was not deployed until a restart; on macOS new files were not deployed at all. If a change is not picked up, touching the file forces it. Touching a `.mjs` file redeploys that plugin, touching `package.json` deploys the declared plugins that are missing (since *version 9.15.2*):
+TIP: Since *version 9.15.2* a plugin directory copied while RESTHeart runs is deployed whole, whatever the order in which its files are created. In earlier versions a `.mjs` file copied before `package.json` was not deployed until a restart; on macOS new files were not deployed at all.
+
+If a change is not picked up, touching the file forces it. Touching a `.mjs` file redeploys that plugin, touching `package.json` deploys the declared plugins that are missing (since *version 9.15.2*):
 
 [source,bash]
 ----
