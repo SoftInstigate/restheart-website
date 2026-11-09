@@ -183,7 +183,9 @@ This approach follows the **Event Loop** concurrency model and can perform bette
 - Services that don't perform blocking I/O
 - Short handlers, where dispatching to another thread costs more than the work itself
 
-A non-blocking service can read the request body with `request.getContent()` as a blocking one does: RESTHeart reads the body for it before invoking the service, without blocking the IO thread. While a slow client sends the body, no thread is held. Bodies larger than `non-blocking-content-limit` (1 MiB by default) get `413 Request Entity Too Large`. See the link:/docs/deployment/default-configuration[default configuration].
+A non-blocking service can read the request body with `request.getContent()` as a blocking one does: RESTHeart reads the body for it before invoking the service, without blocking the IO thread. While a slow client sends the body, no thread is held. This applies to bodies up to `non-blocking-content-limit` (1 MiB by default). A larger body is left in the request, and the service reads it by itself, for instance with `exchange.getRequestReceiver()`. See the link:/docs/deployment/default-configuration[default configuration].
+
+WARNING: In 9.15.0 a body larger than `non-blocking-content-limit` got `413 Request Entity Too Large` and the service was not invoked. Upgrade to 9.15.1.
 
 TIP: Non-blocking services receive the request body since *version 9.15.0*.
 
