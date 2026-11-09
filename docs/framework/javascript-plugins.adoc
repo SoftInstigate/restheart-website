@@ -122,7 +122,9 @@ Copy the plugin directory into the `plugins` directory of RESTHeart. With Docker
 docker run --rm -p 8080:8080 -v ./my-plugin:/opt/restheart/plugins/my-plugin softinstigate/restheart:latest-native
 ----
 
-RESTHeart watches the directory: a new plugin directory is deployed, a changed `.mjs` file is redeployed, a deleted one is undeployed. No restart. If a change is not picked up, touching the plugin directory forces it:
+RESTHeart watches the directory: a new plugin directory is deployed, a changed `.mjs` file is redeployed, a deleted one is undeployed. When `package.json` appears or changes, the plugins it declares that are not deployed yet are deployed, and the ones it no longer declares are undeployed. No restart.
+
+TIP: Since *version 9.15.2* a plugin directory copied while RESTHeart runs is deployed whole, whatever the order in which its files are created. In earlier versions a `.mjs` file copied before `package.json` was not deployed until a restart; on macOS new files were not deployed at all. If a change is not picked up, touching the plugin directory forces it:
 
 [source,bash]
 ----
