@@ -19,11 +19,11 @@ A filter written by the client can reveal the fields that `projectResponse` hide
 
 Before 9.16, a permission that allowed a `GET` also let the client add `filter`, `sort` and `sort_by`.
 
-From 9.16, a `GET` with one of them gets `403`, unless its permission allows it. This applies to `_size` too. The response says:
+From 9.16, a `GET` with one of them gets `403`, unless its permission allows it. This applies to `_size` too. The client gets the message `filter, sort and sort_by are not allowed`. The log of RESTHeart says more, at INFO:
 
 [source]
 ----
-filter, sort and sort_by are not allowed by this permission: query through an aggregation, or ask for a permission with mongo.allowFilter
+403 for GET /mydb/orders: filter, sort and sort_by are not allowed by the permission that matches the request: query through an aggregation, or set mongo.allowFilter on the permission
 ----
 
 For each query a client sends, choose one way:
@@ -60,11 +60,11 @@ From 9.16, a change stream does not do it any more. The stream itself must send 
 * `notify_when` on a `@user` variable;
 * a `$match` stage that uses `@user` or `@mongoPermissions`.
 
-A stream under a permission with a `readFilter` that does neither is refused with `403`. Without this check, after the upgrade it would send every event to everyone, with no error. The response says:
+A stream under a permission with a `readFilter` that does neither is refused with `403`. Without this check, after the upgrade it would send every event to everyone, with no error. The client gets `Cannot open change stream: not allowed`. The log of RESTHeart says why, at WARN:
 
 [source]
 ----
-this change stream is allowed by a permission with a readFilter, which change streams do not apply since 9.16: segregate the events with notify_when on @user._id, or in the stages, or declare "segregation": "none" for a stream meant for every event
+Change stream /mydb/orders/_streams/mine refused: this change stream is allowed by a permission with a readFilter, which change streams do not apply since 9.16: segregate the events with notify_when on @user._id, or in the stages, or declare "segregation": "none" for a stream meant for every event
 ----
 
 Before (9.15), with a `readFilter` of `{"owner": "@user._id"}` on the permission:

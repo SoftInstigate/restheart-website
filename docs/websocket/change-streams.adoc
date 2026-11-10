@@ -174,7 +174,7 @@ Since v9.16 change streams do not apply the `readFilter` and `projectResponse` o
 
 To hide fields, the stages use `$project`, the same for every client.
 
-A stream allowed by a permission with a `readFilter`, which segregates in neither way, is refused with `403`. Before v9.16 such a stream sent each user only the events the `readFilter` allowed. Without the check, after the upgrade it would send every event to everyone, with no error. A stream meant for every event declares it:
+A stream allowed by a permission with a `readFilter`, which segregates in neither way, is refused with `403`. The client gets `Cannot open change stream: not allowed`, and the log of RESTHeart says why, at WARN. Before v9.16 such a stream sent each user only the events the `readFilter` allowed. Without the check, after the upgrade it would send every event to everyone, with no error. A stream meant for every event declares it:
 
 [source,json]
 ----
