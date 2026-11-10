@@ -13,7 +13,7 @@ Social login is opt-in: it is enabled only when `oauthConfig.enabled: true` is s
 Each provider is individually toggled via its own `enabled` flag inside the `providers` map.
 
 NOTE: This is _not_ the same as RESTHeart's built-in OAuth 2.1 authorization server (for MCP).
-See <<_mcp_authentication>> for details.
+See <<mcp-authentication>> for details.
 
 === Flow
 
@@ -164,7 +164,7 @@ A deployment-layer interceptor (e.g. `TeamConfigInterceptor`) must therefore be 
 
 [IMPORTANT]
 ====
-Because `redirect_uri` is derived from `override-accounts-oauth-api-base-url`, **each team must register its own callback URL** with the provider — the callback URL shown in <<_google_cloud_console_setup>> / <<_github_oauth_app_setup>> below is per-team, not a single value shared across the whole deployment.
+Because `redirect_uri` is derived from `override-accounts-oauth-api-base-url`, **each team must register its own callback URL** with the provider — the callback URL shown in <<google-cloud-console-setup>> / <<github-oauth-app-setup>> below is per-team, not a single value shared across the whole deployment.
 ====
 
 `scope`, when not itself overridden, falls back to the provider's static scope from `oauthConfig.providers.{provider}.scope`; if that provider has no static entry at all (a node whose credentials are managed entirely per-team, with no static `providers` block), it falls back to the provider's well-known default — `openid email profile` for `google`, `user:email` for `github`.

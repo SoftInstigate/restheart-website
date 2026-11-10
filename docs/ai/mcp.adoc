@@ -166,11 +166,9 @@ Since v9.16 `filter` and `sort` need a permission that allows them, with `mongo.
 
 ==== Aggregations
 
-Since v9.16 the URI of an aggregation resource uses `_queries`, as in `https://host/mydb/inventory/_queries/byStatus`. A client that saved a URI with `_aggrs` finds the new one with `list_apis`.
-
 An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations#aggregation-pipeline-security[`AggregationPipelineSecurityChecker`] clears its raw, un-interpolated pipeline (the default blacklist blocks `$out`, `$merge`, `$lookup`, `$graphLookup`, `$unionWith`) — a pipeline it rejects stays `call_api`-only, same as any other non-readable resource.
 
-If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_queries/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_queries/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
+If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_aggrs/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_aggrs/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
 
 Expect most clients not to show it. Listing resources and listing resource templates are two different MCP methods, and a client that calls only the first shows a catalog missing every parametric resource — the agent then has no reason to think it exists. `list_apis` always carries it, `call_api` always executes it, and the server says so in the instructions it sends at initialize.
 
@@ -211,7 +209,7 @@ IMPORTANT: `@user._id` identifies a caller authenticated against MongoDB users. 
 
 WARNING: `/mcp` needs `POST`, `GET` **and** `DELETE`. `POST` carries the JSON-RPC messages, but `GET` opens the stream the server delivers notifications on and `DELETE` closes the session. With `POST` alone a `resources/subscribe` succeeds and the client then waits forever for notifications it can never receive.
 
-Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_queries/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.
+Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_aggrs/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.
 
 Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` does not match `/inventory`.
 
@@ -441,7 +439,7 @@ TIP: Do not restate your ACL here. The catalog already reads it; a condition dup
 
 Subscribe to a **collection** or an **aggregation** over one, and the server sends `notifications/resources/updated` when it changes. The notification carries only the URI you subscribed to, no payload: read the resource again to get the new state.
 
-Notifications are delivered on a stream the client opens with a `GET` on `/mcp`, so **the caller needs `GET` on `/mcp` as well as `POST`** — see xref:#_securing_it[Securing it]. Without it the subscription succeeds and nothing ever arrives.
+Notifications are delivered on a stream the client opens with a `GET` on `/mcp`, so **the caller needs `GET` on `/mcp` as well as `POST`** — see xref:#securing-it[Securing it]. Without it the subscription succeeds and nothing ever arrives.
 
 [source,json]
 ----
@@ -556,8 +554,8 @@ Plugins that hold caller-specific data must filter by the scope themselves — s
 |`graphql` |`mcp: false` does the same, for GraphQL apps.
 |`mcpService` |`catalog-ttl-seconds` — see xref:/docs/framework/mcp-aware.adoc#_staying_fresh_the_catalog_cache[the catalog cache]. Default `300`.
 |`mcpService` |`subscription-notify-interval-seconds` — at most one `resources/updated` per subscribed resource per interval. Default `5`.
-|`mcpService` |`session-idle-timeout-seconds` — how long a session with no request and no open stream lives before the server ends it; see xref:#_how_long_a_session_lives[How long a session lives]. `0` keeps sessions until `DELETE`. Default `1800`.
-|`mcpService` |`max-sessions-per-scope`, `max-subscriptions-per-scope` — how many sessions and resource subscriptions a scope may hold at a time; see xref:#_how_many_sessions[How many sessions]. `0` means no cap. Default `0`.
+|`mcpService` |`session-idle-timeout-seconds` — how long a session with no request and no open stream lives before the server ends it; see xref:#how-long-a-session-lives[How long a session lives]. `0` keeps sessions until `DELETE`. Default `1800`.
+|`mcpService` |`max-sessions-per-scope`, `max-subscriptions-per-scope` — how many sessions and resource subscriptions a scope may hold at a time; see xref:#how-many-sessions[How many sessions]. `0` means no cap. Default `0`.
 |`mcpService` |`public-base-url` — the externally visible URL resource URIs are built from. Default `http://localhost:8080`; set it to your real public URL behind a proxy. Comment it out to disable the `resources` primitive entirely (`list_apis`/`call_api`/`how_to_call` keep working).
 |===
 

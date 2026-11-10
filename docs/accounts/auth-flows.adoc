@@ -351,7 +351,7 @@ sequenceDiagram
 1. User clicks "Sign in with Google/GitHub".
 2. OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
 3. Find invitation by `(email, pendingInviteToken)` in `auth_invitations`, call `MembershipProvider.addMember(userId, teamId, role)` to set team.
-4. Clear the document's password and record the provider in `socialAuths`: the account signs in through the provider from now on (since 9.13.0, see step 5 of link:#_7_oauth_login[OAuth Login]).
+4. Clear the document's password and record the provider in `socialAuths`: the account signs in through the provider from now on (since 9.13.0, see step 5 of link:#7-oauth-login[OAuth Login]).
 5. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
 6. Delete invitation from `auth_invitations`. Issue JWT, set the auth cookie, and redirect to `frontend-app-url` with the token also appended as a URL fragment (`#access_token=...`, since 9.5 — see link:/docs/security/how-clients-authenticate#choosing-how-to-deliver-the-token[Choosing How to Deliver the Token]).
 

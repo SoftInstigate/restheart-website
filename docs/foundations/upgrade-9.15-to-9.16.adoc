@@ -5,11 +5,10 @@ layout: docs-adoc
 menu: overview
 ---
 
-RESTHeart 9.16 has three breaking changes for deployments. Check each one against yours:
+RESTHeart 9.16 has two breaking changes for deployments. Check each one against yours:
 
 * clients send `filter`, `sort` or `sort_by` through ACL permissions: see <<a-read-sends-its-own-query-only-if-its-permission-allows-it>>;
 * change streams run under a permission with a `readFilter` or a `projectResponse`: see <<change-streams-do-not-apply-the-readfilter-and-projectresponse>>;
-* MCP clients saved the URI of an aggregation, or permissions name an aggregation by its exact `/_aggrs/` path: see <<aggregations-answer-at-_queries-and-mcp-uses-it>>.
 
 If you write plugins and one of them builds the key of a change stream worker, see also <<for-plugin-developers-the-key-of-a-change-stream-worker>>.
 
@@ -30,7 +29,7 @@ From 9.16, a `GET` with one of them gets `403`, unless its permission allows it.
 
 For each query a client sends, choose one way:
 
-* **An aggregation.** Declare it on the collection and call it with `/coll/_queries/<name>`. The pipeline must apply the caller's `readFilter` itself: see link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions].
+* **An aggregation.** Declare it on the collection and call it with `/coll/_aggrs/<name>`. The pipeline must apply the caller's `readFilter` itself: see link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions].
 * **A choice declared by the permission.** For an order, or an optional condition the client picks by value, the permission is enough: see link:/docs/security/permissions#alternatives[the alternatives a permission declares].
 * **`allowFilter` on the permission**, for a role that must write its own queries:
 
@@ -95,19 +94,6 @@ Two more cases:
 * a stream meant for every event declares `"segregation": "none"`, and is not refused.
 
 See link:/docs/websocket/change-streams#permissions[Change streams and permissions].
-
-=== Aggregations answer at `/_queries/`, and MCP uses it
-
-From 9.16, the suggested path of an aggregation is `/coll/_queries/<name>`. The old path, `/coll/_aggrs/<name>`, still works.
-
-A permission's predicate matches the exact path the client calls. A permission written for `_aggrs` does not allow `_queries`. When an application moves to `_queries`, update its permissions too.
-
-MCP uses `_queries` from 9.16, and this has two effects:
-
-* the URI of an aggregation resource is `.../_queries/<name>`. A client that saved a URI with `_aggrs` gets the new one from `list_apis`;
-* an MCP call runs on the `_queries` path. A permission with the exact `_aggrs` path, such as `path('/inventory/_aggrs/byStatus')`, no longer allows it. Use `path-prefix('/inventory')`, or add the `_queries` path.
-
-See link:/docs/mongodb-rest/aggregations[Aggregations].
 
 === For plugin developers: the key of a change stream worker
 

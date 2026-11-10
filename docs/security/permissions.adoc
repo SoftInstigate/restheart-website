@@ -821,7 +821,14 @@ With `?category=desk` the read is limited to that category. Without it the eleme
 
 With no `dir` the read is newest first. In `sort` a direction must be `1` or `-1`, otherwise the request gets `400`.
 
-A value taken from the request is always a value: `?category={"$ne":null}` looks for a category with that name, and an operator never reaches the query.
+A variable is written in one of two ways:
+
+* `"@qparams['dir']"`, an ACL variable: the value of `?dir=` as a string, exactly as the client wrote it;
+* `"dir"`, a plain name, as in aggregations: the value of `?dir=` read as JSON, so `?dir=1` is the number 1. A value that carries an operator, a key starting with `$`, gets `400`.
+
+Either way an operator never reaches the query: `?category={"$ne":null}` is the string itself with `@qparams`, and a `400` with a plain name.
+
+A permission whose `mongo` block is not valid is refused when it is written to the ACL, with `400` and the reason. One already stored allows nothing: the request gets `403`, and the log says, at WARN, which permission and why.
 
 === Permission Priority
 
@@ -886,7 +893,7 @@ The permissions of all the user's roles are compared together: among those that 
 
 A user with roles `[author, editor]` patching an article gets `editorsWriteAll` (200 beats 100), so no `writeFilter`: they can edit any article. A user with the single role `author` gets `authorsWriteOwn`, and edits their own articles only. The same holds with roles `[editor, author]`.
 
-Now suppose the two permissions had the same priority, `100` both. The user with roles `[author, editor]` matches both, and the tie-break decides (see <<_permissions_with_the_same_priority,Permissions with the same priority>>):
+Now suppose the two permissions had the same priority, `100` both. The user with roles `[author, editor]` matches both, and the tie-break decides (see <<permissions-with-the-same-priority,Permissions with the same priority>>):
 
 * with _mongoAclAuthorizer_ the greatest `_id` wins: `"editorsWriteAll"` sorts after `"authorsWriteOwn"`, so the user gets `editorsWriteAll` and can edit any article;
 * with _fileAclAuthorizer_ the permission written first in the configuration wins: in the order above, again `editorsWriteAll`; swap the two entries in the file and the user gets `authorsWriteOwn`.

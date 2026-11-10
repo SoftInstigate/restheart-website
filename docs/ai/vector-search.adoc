@@ -95,7 +95,7 @@ Use real `$match`/`$sort` stages to narrow candidates first — unlike `$vectorS
 
 [source,bash]
 ----
-curl 'http://localhost:8080/mydb/articles/_queries/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
+curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
 ----
 
 Stages placed after `$vectorScan` — like the `$project` above — run for real against MongoDB, bridged back in via `$documents` (requires MongoDB 6.0+). Reranking composes automatically too: attach a `rerank` block exactly as in section 5 below, since it scores whatever result array the pipeline produced regardless of how it got there.
@@ -248,7 +248,7 @@ The metadata is checked when it is written: a rule without `textField` or `embed
 
 [source,bash]
 ----
-curl 'http://localhost:8080/mydb/articles/_queries/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
+curl 'http://localhost:8080/mydb/articles/_aggrs/semantic-search?avars={"q":"electric+cars"}' -u admin:secret
 ----
 
 Requires `vectorizeOperator` enabled with its own `embedding-provider` set, unless the collection's embedding rules name a provider.

@@ -79,7 +79,7 @@ That's the whole opt-in. No restart, no extra plugin — the next `list_apis` ca
 
 === 3. See what an agent sees, over raw JSON-RPC
 
-An MCP client talks to `/mcp` in JSON-RPC over HTTP. This section does the same calls a real client would, so you can see the exact protocol — skip to <<4-connect-a-real-client,section 4>> if you just want to plug in a real client.
+An MCP client talks to `/mcp` in JSON-RPC over HTTP. This section does the same calls a real client would, so you can see the exact protocol — skip to <<connect-a-real-client,section 4>> if you just want to plug in a real client.
 
 First, a session handshake — `initialize`, capturing the `Mcp-Session-Id` response header:
 
@@ -165,7 +165,7 @@ curl -X POST [RESTHEART-URL]/mcp -u admin:secret \
 
 It composes and never executes, and it carries no credential — the placeholder is where the user's own API key or token goes in the code that will make this request.
 
-When the action has something to say about itself, both tools say it. The case that matters most is a write to a collection that declares xref:/docs/mongodb-rest/constraints[constraints]: every write then runs in a transaction and a `409` can mean three different things — `"retryable": true` is a write conflict to send again unchanged; `"constraint": "<name>"` is a violated rule, with `message` and `violations`, that no retry will change; neither is a document whose `_id` already exists. `list_apis` spells it out in the action's description, and `how_to_call` repeats it as `notes` in the descriptor:
+When the action has something to say about itself, both tools say it. The case that matters most is a write to a collection that declares link:/docs/mongodb-rest/constraints[constraints]: every write then runs in a transaction and a `409` can mean three different things — `"retryable": true` is a write conflict to send again unchanged; `"constraint": "<name>"` is a violated rule, with `message` and `violations`, that no retry will change; neither is a document whose `_id` already exists. `list_apis` spells it out in the action's description, and `how_to_call` repeats it as `notes` in the descriptor:
 
 [source,json]
 ----
@@ -176,7 +176,7 @@ When the action has something to say about itself, both tools say it. The case t
   "notes": "409 Conflict means one of three things, and the body says which. \"retryable\": true — two writes collided and this one was NOT applied: send exactly the same request again. \"constraint\": \"<name>\" — the write broke one of this collection's rules (noNegativeHoldings, noOverCommitment): \"message\" says why and \"violations\" lists the documents; do not retry, the answer will not change. Neither — a document with this _id already exists." }
 ----
 
-[[4-connect-a-real-client]]
+[[connect-a-real-client]]
 === 4. Connect a real client
 
 Point Claude Code at your running instance:
@@ -269,7 +269,7 @@ The open stream prints:
   "params": { "uri": "http://localhost:8080/inventory" } }
 ----
 
-There is no payload: the notification means "read it again". Subscribe to `inventory/_queries/byStatus` instead and you get the same signal for the aggregation, watched through the collection it reads from.
+There is no payload: the notification means "read it again". Subscribe to `inventory/_aggrs/byStatus` instead and you get the same signal for the aggregation, watched through the collection it reads from.
 
 === Next steps
 

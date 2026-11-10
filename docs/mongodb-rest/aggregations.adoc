@@ -25,12 +25,10 @@ To execute an aggregation, send a `GET` request to:
 
 [source]
 ----
-GET /collection/_queries/aggregation-name?avars={"var1":"value1"}
+GET /collection/_aggrs/aggregation-name?avars={"var1":"value1"}
 ----
 
 RESTHeart will process the request and return the computed results in the response body.
-
-NOTE: Since v9.16 the suggested path is `/collection/_queries/aggregation-name`. The path of earlier versions, `/collection/_aggrs/aggregation-name`, still works and runs the same aggregation. A permission's predicate matches the path the client asks for: when the application moves to `_queries`, update the predicates of its permissions too.
 
 [[when-you-need-an-aggregation]]
 === When you need an aggregation
@@ -148,7 +146,7 @@ This defines an aggregation named `sales-by-region` that:
 [cols="1,3,1", options="header"]
 |===
 |Property |Description |Required
-|`uri` |The name used in the URL path: `/collection/_queries/uri` |Yes
+|`uri` |The name used in the URL path: `/collection/_aggrs/uri` |Yes
 |`stages` |Array of MongoDB aggregation pipeline stages |Yes
 |`allowDiskUse` |Allows operations to use more than 100MB of memory |No (default: false)
 |===
@@ -183,14 +181,14 @@ Since 9.9.0, the simplest way to provide variable values is a plain query parame
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product?productName=Widget%20Pro" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?productName=Widget%20Pro" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
   productName=="Widget Pro" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -200,7 +198,7 @@ http GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
 ----
 const params = new URLSearchParams({ productName: "Widget Pro" });
 
-fetch(`[RESTHEART-URL]/mycollection/_queries/sales-by-product?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -246,7 +244,7 @@ Before 9.9.0, all variables had to be bundled into a single JSON object passed v
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
   -u "[BASIC-AUTH]" \
   -G --data-urlencode 'avars={"productName":"Widget Pro"}'
 ----
@@ -254,7 +252,7 @@ curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
   avars=='{"productName":"Widget Pro"}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -266,7 +264,7 @@ const params = new URLSearchParams({
   avars: JSON.stringify({"productName":"Widget Pro"})
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_queries/sales-by-product?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -316,7 +314,7 @@ You can access nested properties in variables using dot notation. Since a flat q
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
   -u "[BASIC-AUTH]" \
   -G --data-urlencode 'config={"limit":10,"skip":20}'
 ----
@@ -324,7 +322,7 @@ curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
   config=='{"limit":10,"skip":20}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -336,7 +334,7 @@ const params = new URLSearchParams({
   config: JSON.stringify({"limit":10,"skip":20})
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_queries/my-pipeline?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -403,14 +401,14 @@ Request with pagination:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/paginated-results?page=3&pagesize=25" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/paginated-results" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results" \
   page==3 pagesize==25 \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -423,7 +421,7 @@ const params = new URLSearchParams({
   pagesize: 25
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_queries/paginated-results?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/paginated-results?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -514,21 +512,21 @@ When this aggregation is executed, results are written to the `categorySalesSumm
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-summary" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/sales-summary" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[RESTHEART-URL]/mycollection/_queries/sales-summary', {
+fetch('[RESTHEART-URL]/mycollection/_aggrs/sales-summary', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -674,14 +672,14 @@ Execute aggregations within a transaction by including the `sid` and `txn` param
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline?sid=session-id&txn=transaction-id" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
+http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
   sid==session-id txn==transaction-id \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -694,7 +692,7 @@ const params = new URLSearchParams({
   txn: 'transaction-id'
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_queries/my-pipeline?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
