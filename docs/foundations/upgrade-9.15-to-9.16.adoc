@@ -5,11 +5,13 @@ layout: docs-adoc
 menu: overview
 ---
 
-RESTHeart 9.16 has three breaking changes. Check each one against your deployment:
+RESTHeart 9.16 has three breaking changes for deployments. Check each one against yours:
 
 * clients send `filter`, `sort` or `sort_by` through ACL permissions: see <<a-read-sends-its-own-query-only-if-its-permission-allows-it>>;
 * change streams run under a permission with a `readFilter` or a `projectResponse`: see <<change-streams-do-not-apply-the-readfilter-and-projectresponse>>;
 * MCP clients saved the URI of an aggregation, or permissions name an aggregation by its exact `/_aggrs/` path: see <<aggregations-answer-at-_queries-and-mcp-uses-it>>.
+
+If you write plugins and one of them builds the key of a change stream worker, see also <<for-plugin-developers-the-key-of-a-change-stream-worker>>.
 
 == What changed
 
@@ -106,6 +108,25 @@ MCP uses `_queries` from 9.16, and this has two effects:
 * an MCP call runs on the `_queries` path. A permission with the exact `_aggrs` path, such as `path('/inventory/_aggrs/byStatus')`, no longer allows it. Use `path-prefix('/inventory')`, or add the `_queries` path.
 
 See link:/docs/mongodb-rest/aggregations[Aggregations].
+
+=== For plugin developers: the key of a change stream worker
+
+A change stream worker, the object that holds the MongoDB cursor of a stream, is now identified by the URL of the stream, its stages resolved for the request, and the JSON mode. Before 9.16 it was identified by the URL, the `avars` of the request and the JSON mode.
+
+The constructor of `ChangeStreamWorkerKey` changed accordingly. A plugin compiled for 9.15 that calls it fails at runtime with `NoSuchMethodError`:
+
+* before (9.15): `new ChangeStreamWorkerKey(String url, BsonDocument avars, JsonMode jsonMode)`;
+* after (9.16): `new ChangeStreamWorkerKey(String url, BsonArray stages, JsonMode jsonMode)`.
+
+To find the worker a request opens or shares, for instance to count the cursors of a database, do not build the key yourself. Use the new method, which builds it as the change stream handler does:
+
+[source,java]
+----
+var key = ChangeStreamWorkerKey.of(mongoRequest);
+var sharesCursor = ChangeStreamWorkers.getInstance().get(key).isPresent();
+----
+
+`of` throws when the stream does not exist or a variable of its stages is not bound. In both cases the handler refuses the request and opens no cursor.
 
 == What is new
 
