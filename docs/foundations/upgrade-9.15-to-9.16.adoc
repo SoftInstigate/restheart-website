@@ -1,0 +1,113 @@
+---
+docs_version: 9
+title: Upgrade from 9.15 to 9.16
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.16 changes how a client queries MongoDB and how change streams apply the permissions. A client sends its own query only if its permission allows it, and change streams no longer apply the `readFilter` and `projectResponse` of the permission.
+
+You are affected if:
+
+* clients send `filter`, `sort` or `sort_by` through ACL permissions;
+* change streams run under a permission with a `readFilter` or a `projectResponse`;
+* MCP clients saved the URI of an aggregation, or permissions name an aggregation by its exact `/_aggrs/` path for MCP calls.
+
+This page lists the breaking changes, says who is affected and what to do.
+
+== What changed
+
+=== A read sends its own query only if its permission allows it
+
+Before 9.16, any permission that allowed a `GET` also allowed the client to add `filter`, `sort` and `sort_by` to it.
+
+From 9.16, a `GET` with one of them, `_size` included, gets `403` from a permission that does not allow it:
+
+[source]
+----
+filter, sort and sort_by are not allowed by this permission: query through an aggregation, or ask for a permission with mongo.allowFilter
+----
+
+The reason is `projectResponse`. A permission can hide a field from the response, but a filter written by the client can still test it, and a sort on it tells the order of its values.
+
+What to do, for each client query:
+
+* **Query through an aggregation.** Declare it on the collection and call it with `/coll/_queries/<name>`. The pipeline applies the caller's `readFilter` only if it matches on it: see link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions].
+* **Let the permission declare the choice.** An order, or an optional condition the client picks by value, needs no aggregation: see link:/docs/security/permissions#alternatives[the alternatives a permission declares].
+* **Allow it on the permission**, for a role that must send its own queries:
+
+[source,json]
+----
+"mongo": { "allowFilter": true }
+----
+
+To keep the behaviour of 9.15 everywhere, set the default of the mongo service:
+
+[source,yaml]
+----
+mongo:
+  default-allow-filter: true
+----
+
+Not affected: the root role, the requests a plugin allows through the `ACLRegistry`, and the writes. A bulk `PATCH` or `DELETE` still needs a filter, and `allowBulkPatch` and `allowBulkDelete` decide about it.
+
+In the MCP catalog, a caller whose permissions do not allow `filter` sees the `query` and `size` actions without it.
+
+See link:/docs/security/permissions#allowfilter[allowFilter].
+
+=== Change streams do not apply the readFilter and projectResponse
+
+Before 9.16, a change stream applied the `readFilter` and `projectResponse` of the caller's permission as its first stages. A stream with no stages of its own sent each user only the events of the documents the `readFilter` allowed.
+
+From 9.16, change streams follow the rule of aggregations: the stream segregates the events itself. A stream allowed by a permission with a `readFilter`, which does not segregate, is refused with `403`:
+
+[source]
+----
+this change stream is allowed by a permission with a readFilter, which change streams do not apply since 9.16: segregate the events with notify_when on @user._id, or in the stages, or declare "segregation": "none" for a stream meant for every event
+----
+
+Without this check, the stream would send every event to everyone after the upgrade, with no error.
+
+Before (9.15), segregated by a `readFilter` of `{"owner": "@user._id"}`:
+
+[source,json]
+----
+{ "uri": "mine", "stages": [] }
+----
+
+After (9.16), segregated by the stream:
+
+[source,json]
+----
+{
+  "uri": "mine",
+  "stages": [],
+  "notify_when": { "fullDocument::owner": { "$var": "@user._id" } }
+}
+----
+
+The server resolves `@user._id` when the session opens and never reads it from the request. Use the variable the caller's account carries: `@user.sub` with a JWT, `@user.userid` with the file realm. A stream can also segregate in its stages, with a `$match` that uses `@user` or `@mongoPermissions`.
+
+A stream that hid fields through the `projectResponse` hides them with a `$project` stage. A stream meant for every event declares it with `"segregation": "none"`.
+
+See link:/docs/websocket/change-streams#permissions[Change streams and permissions].
+
+=== Aggregations answer at `/_queries/`, and MCP uses it
+
+From 9.16, `/coll/_queries/<name>` is the suggested path of an aggregation. `/coll/_aggrs/<name>` still works and runs the same aggregation.
+
+Permissions are not normalized: a predicate matches the path the client asks for. When an application moves to `_queries`, update the predicates of its permissions too.
+
+MCP moves to `_queries` at once:
+
+* the URI of an aggregation resource is `.../_queries/<name>`. A client that saved a URI with `_aggrs` finds the new one with `list_apis`;
+* an MCP call runs on the `_queries` path. A permission that names the exact `_aggrs` path, as `path('/inventory/_aggrs/byStatus')`, does not allow it. Use `path-prefix('/inventory')`, or name the `_queries` path too.
+
+See link:/docs/mongodb-rest/aggregations[Aggregations].
+
+== What is new
+
+These need no change on your side:
+
+* `mongo.sort` sets the order of the reads a permission authorizes, and `$ifvar` and `$var` with a default let a permission offer the client a few declared choices: see link:/docs/security/permissions#sort[sort].
+* The clients of a change stream share one cursor, whatever their `notify_when` value, and `notify_when` accepts `@user` variables: see link:/docs/websocket/change-streams#notify-when-user[Events per user].
