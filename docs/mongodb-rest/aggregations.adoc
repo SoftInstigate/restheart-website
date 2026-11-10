@@ -25,10 +25,24 @@ To execute an aggregation, send a `GET` request to:
 
 [source]
 ----
-GET /collection/_aggrs/aggregation-name?avars={"var1":"value1"}
+GET /collection/_queries/aggregation-name?avars={"var1":"value1"}
 ----
 
 RESTHeart will process the request and return the computed results in the response body.
+
+NOTE: Since v9.16 the suggested path is `/collection/_queries/aggregation-name`. The path of earlier versions, `/collection/_aggrs/aggregation-name`, still works and runs the same aggregation. A permission's predicate matches the path the client asks for: when the application moves to `_queries`, update the predicates of its permissions too.
+
+[[when-you-need-an-aggregation]]
+=== When you need an aggregation
+
+Since v9.16 a client cannot send its own query unless its permission allows it (see link:/docs/security/permissions#allowfilter[allowFilter]). The permission alone still serves the simple reads:
+
+* the caller's documents, or the public ones: `GET /collection`, with the permission's `readFilter`, paged with `page` and `pagesize`;
+* one document by id: `GET /collection/<id>`, with the same `readFilter`;
+* the fields not to show: the permission's `projectResponse`;
+* the count: `GET /collection/_size`, which counts the documents the `readFilter` allows.
+
+An aggregation is needed when the client picks a criterion, such as a search, a category, a range or an order other than the default, or when it wants a computed result. A permission can also offer a few declared alternatives to the client, an order or an optional condition, without an aggregation: see link:/docs/security/permissions#alternatives[the alternatives a permission declares].
 
 TIP: By default, aggregation results are returned directly in the response without being written to the database. For persistent results, use link:#materialized-views[Materialized Views].
 
@@ -134,7 +148,7 @@ This defines an aggregation named `sales-by-region` that:
 [cols="1,3,1", options="header"]
 |===
 |Property |Description |Required
-|`uri` |The name used in the URL path: `/collection/_aggrs/uri` |Yes
+|`uri` |The name used in the URL path: `/collection/_queries/uri` |Yes
 |`stages` |Array of MongoDB aggregation pipeline stages |Yes
 |`allowDiskUse` |Allows operations to use more than 100MB of memory |No (default: false)
 |===
@@ -169,14 +183,14 @@ Since 9.9.0, the simplest way to provide variable values is a plain query parame
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?productName=Widget%20Pro" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product?productName=Widget%20Pro" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+http GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
   productName=="Widget Pro" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -186,7 +200,7 @@ http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
 ----
 const params = new URLSearchParams({ productName: "Widget Pro" });
 
-fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_queries/sales-by-product?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -232,7 +246,7 @@ Before 9.9.0, all variables had to be bundled into a single JSON object passed v
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
   -u "[BASIC-AUTH]" \
   -G --data-urlencode 'avars={"productName":"Widget Pro"}'
 ----
@@ -240,7 +254,7 @@ curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-by-product" \
+http GET "[RESTHEART-URL]/mycollection/_queries/sales-by-product" \
   avars=='{"productName":"Widget Pro"}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -252,7 +266,7 @@ const params = new URLSearchParams({
   avars: JSON.stringify({"productName":"Widget Pro"})
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_queries/sales-by-product?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -302,7 +316,7 @@ You can access nested properties in variables using dot notation. Since a flat q
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
   -u "[BASIC-AUTH]" \
   -G --data-urlencode 'config={"limit":10,"skip":20}'
 ----
@@ -310,7 +324,7 @@ curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+http GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
   config=='{"limit":10,"skip":20}' \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -322,7 +336,7 @@ const params = new URLSearchParams({
   config: JSON.stringify({"limit":10,"skip":20})
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_queries/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -354,7 +368,7 @@ RESTHeart provides several predefined variables that you can use in your aggrega
 |===
 |Variable |Description
 |`@user` |The authenticated account. Which properties it carries depends on how the caller authenticated — `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. A name the account does not carry fails the request with `variable not bound` unless the `$var` declares a default, and a value supplied by the caller for a `@` name is ignored. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
-|`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`)
+|`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`). A pipeline applies the `readFilter` only if it uses it: see <<aggregations-and-permissions>>
 |`@page` |Current page number from query parameter
 |`@pagesize` |Page size from query parameter
 |`@skip` |Calculated as `(page-1)*pagesize`
@@ -389,14 +403,14 @@ Request with pagination:
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results?page=3&pagesize=25" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/paginated-results?page=3&pagesize=25" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/paginated-results" \
+http GET "[RESTHEART-URL]/mycollection/_queries/paginated-results" \
   page==3 pagesize==25 \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -409,7 +423,7 @@ const params = new URLSearchParams({
   pagesize: 25
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_aggrs/paginated-results?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_queries/paginated-results?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -500,21 +514,21 @@ When this aggregation is executed, results are written to the `categorySalesSumm
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/sales-summary" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/sales-summary" \
+http GET "[RESTHEART-URL]/mycollection/_queries/sales-summary" \
   Authorization:"Basic [BASIC-AUTH]"
 ----
 
 ==== JavaScript
 [source,javascript]
 ----
-fetch('[RESTHEART-URL]/mycollection/_aggrs/sales-summary', {
+fetch('[RESTHEART-URL]/mycollection/_queries/sales-summary', {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'
@@ -571,6 +585,24 @@ HTTP/1.1 200 OK
 ==== Incremental Updates
 
 The `$merge` stage is more efficient than the older `$out` stage because it can update existing documents rather than replacing the entire collection each time.
+
+[[aggregations-and-permissions]]
+=== Aggregations and permissions
+
+The `readFilter`, `writeFilter` and `projectResponse` of a permission bound the requests a client shapes: a read, a query, a write. They do not apply to aggregations. The stages of an aggregation are written by whoever writes the collection's metadata, and the pipeline itself decides which documents it reads and which fields it returns.
+
+To apply the caller's `readFilter`, the pipeline matches on it:
+
+[source,json]
+----
+{ "$match": { "$var": ["@mongoPermissions.readFilter", {}] } }
+----
+
+The default `{}` matters. Without a `readFilter` in the permission the variable is not bound, and a `$var` with no default fails the request.
+
+A pipeline can also segregate the documents with the caller's identity, for instance `{ "$match": { "owner": { "$var": "@user._id" } } }`. To hide fields, it uses a `$project` stage.
+
+When a client moves from `?filter` to an aggregation, the pipeline must do the segregation that the `readFilter` used to do on the `GET`.
 
 === Security Considerations
 
@@ -642,14 +674,14 @@ Execute aggregations within a transaction by including the `sid` and `txn` param
 ==== cURL
 [source,bash]
 ----
-curl -i -X GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?sid=session-id&txn=transaction-id" \
+curl -i -X GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline?sid=session-id&txn=transaction-id" \
   -u "[BASIC-AUTH]"
 ----
 
 ==== HTTPie
 [source,bash]
 ----
-http GET "[RESTHEART-URL]/mycollection/_aggrs/my-pipeline" \
+http GET "[RESTHEART-URL]/mycollection/_queries/my-pipeline" \
   sid==session-id txn==transaction-id \
   Authorization:"Basic [BASIC-AUTH]"
 ----
@@ -662,7 +694,7 @@ const params = new URLSearchParams({
   txn: 'transaction-id'
 });
 
-fetch(`[RESTHEART-URL]/mycollection/_aggrs/my-pipeline?${params}`, {
+fetch(`[RESTHEART-URL]/mycollection/_queries/my-pipeline?${params}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Basic [BASIC-AUTH]'

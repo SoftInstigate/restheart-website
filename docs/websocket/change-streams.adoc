@@ -108,6 +108,24 @@ curl -N \
 
 The variable is bound like any other stream variable (see link:/docs/websocket/variables[Using Variables]): `?tid=acme` and `?avars={"tid":"acme"}` are equivalent, and when both are given the `avars` value wins. Before 9.12.2 `notify_when` read only the plain query parameter.
 
+[[notify-when-user]]
+==== Events per user: `notify_when` on `@user`
+
+Since v9.16 `notify_when` also accepts the variables the server resolves for the caller, `@user._id` and `@user.<property>`. Each client then receives only the events of its own documents, on the one cursor of the stream:
+
+[source,json]
+----
+{
+  "uri": "mine",
+  "stages": [ { "_$match": { "operationType": { "_$in": ["insert", "update", "replace"] } } } ],
+  "notify_when": { "fullDocument::owner": { "$var": "@user._id" } }
+}
+----
+
+The server resolves the variable when the session opens. It never reads it from the request, so a client cannot pick another user's events with a query parameter. If the variable is not bound for the caller, the connection is refused with `400`: a JWT account, for instance, has `@user.sub` and no `@user._id` (see link:/docs/security/permissions#identifying-the-caller[Identifying the caller]).
+
+The comparison is between values of the same type: an `ObjectId` owner matches an `ObjectId` `_id`, and does not match its string form.
+
 ==== Field path notation
 
 The `notify_when` key uses `::` to separate the top-level change event field from the dotted path within it:
@@ -126,11 +144,11 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 |===
 |Form |Description |Example
 |**Scalar equality**
-|Field value (string) equals the bound variable
+|Field value equals the bound variable. A variable from the request is a string; one the server resolves keeps its type, as an `ObjectId`
 |`{ "fullDocument::tenantId": { "$var": "tid" } }`
 
 |**Array membership**
-|Bound variable value is contained in a string array field
+|Bound variable value is contained in an array field
 |`{ "fullDocument::recipients": { "$var": "userId" } }`
 |===
 
@@ -143,12 +161,26 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 
 [WARNING]
 ====
-**`notify_when` is a delivery filter, not an access control.** The variable it binds comes from the client's own query string, and a client can bind any value it can name and receive the events of that value. Never use it to keep tenants apart.
-
-What does keep them apart, since 9.8.2, is the caller's permission: a `readFilter` is applied to the stream exactly as it is to the equivalent `GET`, and so is `projectResponse`. Scope the data in the ACL, and use `notify_when` on top of it to save a client the events it does not care about.
-
-A stage can also scope a stream with a server-resolved variable, `{ "$match": { "fullDocument::owner": { "$var": "@user.sub" } } }`, and so does a `readFilter` that names the caller: both become stages of the pipeline, and both cost one cursor per caller. That is the price of a boundary. `notify_when` is the selection that costs none, on top of it. See link:/docs/websocket/variables[Predefined variables].
+**`notify_when` on a variable of the request is a delivery filter, not an access control.** The client binds `?tid=` itself, and can bind any value it can name. To keep users apart, use `notify_when` on a `@user` variable (see <<notify-when-user>>), or a stage that matches on one.
 ====
+
+[[permissions]]
+==== Change streams and permissions
+
+Since v9.16 change streams do not apply the `readFilter` and `projectResponse` of the permission, as aggregations do not (see link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions]). The stream segregates the events itself, so that every client of a stream shares one cursor:
+
+* with `notify_when` on a `@user` variable;
+* or with stages that use `@user` or `@mongoPermissions`.
+
+To hide fields, the stages use `$project`, the same for every client.
+
+A stream allowed by a permission with a `readFilter`, which segregates in neither way, is refused with `403`. Before v9.16 such a stream sent each user only the events the `readFilter` allowed. Without the check, after the upgrade it would send every event to everyone, with no error. A stream meant for every event declares it:
+
+[source,json]
+----
+{ "uri": "all", "stages": [], "segregation": "none" }
+----
+
 
 ==== `Last-Event-ID` limitation
 

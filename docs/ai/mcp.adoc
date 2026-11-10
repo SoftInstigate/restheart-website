@@ -162,11 +162,15 @@ Both `resources/read` and `call_api` run on the server, as the session: the agen
 
 Reading a collection's bare URI (`https://host/mydb/inventory`) returns its first page of documents with default pagination — the same shape as `GET`. Add the usual query parameters to filter or page through it: `?filter={"qty":{"$lt":10}}&sort=-qty&pagesize=20`. A single document is read at `.../inventory/<id>`.
 
+Since v9.16 `filter` and `sort` need a permission that allows them, with `mongo.allowFilter`. When the caller's permissions do not, the `query` and `size` actions are described without `filter`, and `withheld_params` says why. See link:/docs/security/permissions#allowfilter[allowFilter].
+
 ==== Aggregations
+
+Since v9.16 the URI of an aggregation resource uses `_queries`, as in `https://host/mydb/inventory/_queries/byStatus`. A client that saved a URI with `_aggrs` finds the new one with `list_apis`.
 
 An aggregation is readable this way only if link:/docs/mongodb-rest/aggregations#aggregation-pipeline-security[`AggregationPipelineSecurityChecker`] clears its raw, un-interpolated pipeline (the default blacklist blocks `$out`, `$merge`, `$lookup`, `$graphLookup`, `$unionWith`) — a pipeline it rejects stays `call_api`-only, same as any other non-readable resource.
 
-If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_aggrs/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_aggrs/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
+If the pipeline references a `$var` with no default value outside a conditional `$ifvar`/`$ifarg` stage, it's a genuinely required parameter — `byStatus` above needs `status` — and the resource shows up under `resources/templates/list` instead of `resources/list`, as `.../inventory/_queries/byStatus{?status}`. Fill in the required variable(s) to read it: `.../inventory/_queries/byStatus?status=A`. A `$var` with a default value, or one only referenced inside an `$ifvar`/`$ifarg` guard, is optional and doesn't force this — the aggregation is a plain, directly-readable resource instead.
 
 Expect most clients not to show it. Listing resources and listing resource templates are two different MCP methods, and a client that calls only the first shows a catalog missing every parametric resource — the agent then has no reason to think it exists. `list_apis` always carries it, `call_api` always executes it, and the server says so in the instructions it sends at initialize.
 
@@ -207,7 +211,7 @@ IMPORTANT: `@user._id` identifies a caller authenticated against MongoDB users. 
 
 WARNING: `/mcp` needs `POST`, `GET` **and** `DELETE`. `POST` carries the JSON-RPC messages, but `GET` opens the stream the server delivers notifications on and `DELETE` closes the session. With `POST` alone a `resources/subscribe` succeeds and the client then waits forever for notifications it can never receive.
 
-Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_aggrs/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.
+Use `path-prefix`, not `path`. One collection answers at several paths — `/inventory`, `/inventory/_size`, `/inventory/<id>` and `/inventory/_queries/<name>` — and an exact `path('/inventory')` covers only the first, so `_size` and the aggregations come back `403`.
 
 Remember that `path-prefix` matches whole **segments**: `path-prefix('/inv')` does not match `/inventory`.
 

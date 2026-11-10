@@ -223,6 +223,8 @@ The `readFilter` applies to GET requests to limits the returned document to the 
 
 The `writeFilter` applies to write request to allow updating only the documents that match the specified condition.
 
+Both, like `projectResponse`, apply to the requests a client shapes. They do not apply to aggregations and, since v9.16, to change streams: those segregate the documents in their own stages. See link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions].
+
 WARNING: `writeFilter` only limits updates and cannot avoid creating documents that don't match the filter. The properties used in the filter should be set using `mongo.mergeRequest`.
 
 ===== mergeRequest

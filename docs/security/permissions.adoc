@@ -582,7 +582,8 @@ For requests handled by RESTHeart's MongoDB REST API, you can specify additional
     "readFilter": {"status": "public"},
     "writeFilter": {"author": "@user._id"},
     "mergeRequest": {"author": "@user._id", "createdAt": "@now"},
-    "projectResponse": {"password": 0, "secret": 0}
+    "projectResponse": {"password": 0, "secret": 0},
+    "sort": {"name": 1}
   }
 }
 ----
@@ -611,7 +612,11 @@ For requests handled by RESTHeart's MongoDB REST API, you can specify additional
 |Automatically merges properties into write request bodies
 |`projectResponse`
 |Removes (or includes) specific fields from responses
+|`sort`
+|The order of the reads the permission authorizes. Since v9.16, see <<sort>>
 |===
+
+`readFilter`, `writeFilter` and `projectResponse` apply to the requests a client shapes: a read, a query, a write. They do not apply to aggregations and, since v9.16, to change streams, which segregate the documents in their own stages. See link:/docs/mongodb-rest/aggregations#aggregations-and-permissions[Aggregations and permissions].
 
 IMPORTANT: Even if `allowManagementRequests`, `allowBulkPatch`, `allowBulkDelete`, `allowWriteMode` or `allowFilter` is set to `true`, the permission's `predicate` must also resolve to `true` for the request to be authorized.
 
@@ -750,6 +755,73 @@ The `403` says why the read was refused and suggests an aggregation. In the MCP 
 * writes: a bulk `PATCH` or `DELETE` needs a filter, and `allowBulkPatch` and `allowBulkDelete` decide about it;
 * the root role, and the requests a plugin allows through the `ACLRegistry`: they do not go through the permissions;
 * aggregations, which do not read `filter` or `sort`.
+
+[[sort]]
+===== sort
+
+Since v9.16, `sort` sets the order of the reads a permission authorizes. The server applies it to a `GET` on a collection, the way `readFilter` adds its condition:
+
+[source,json]
+----
+{
+  "roles": ["$unauthenticated"],
+  "predicate": "path('/products') and method(GET)",
+  "mongo": {
+    "readFilter": { "published": true },
+    "sort": { "name": 1 }
+  }
+}
+----
+
+The order applies when the client sends no `sort` of its own. With `allowFilter` off the client cannot send one, so the permission's order is the only one.
+
+When the order does not name `_id`, the server appends `_id`. A page is then the same page every time.
+
+Sorting on a field that `projectResponse` hides tells the order of its values: it is a choice of whoever writes the permission. Without an index on the sort fields, a large collection can exceed the memory MongoDB allows for a sort.
+
+[[alternatives]]
+===== The alternatives a permission declares
+
+Since v9.16 a permission can offer the client a few alternatives, which it picks by name or by value. The client never writes a query or names a field. Two forms do it, the same as in aggregations, and they work in `sort`, `readFilter` and `writeFilter`.
+
+`{"$ifvar": [variable, then, else]}` applies `then` when the variable is bound for the request, and the optional `else` when it is not. In `sort` it picks one of the orders the permission names:
+
+[source,json]
+----
+"sort": {
+  "$ifvar": ["@qparams['order']",
+    { "by-name": { "name": 1 }, "newest": { "createdAt": -1 } },
+    { "createdAt": -1 }
+  ]
+}
+----
+
+With `?order=by-name` the read is sorted by name. Without `order` it uses the third element. A name the permission does not declare gets `400`.
+
+In `readFilter` it adds an optional condition. The mandatory part stays outside the `$ifvar`, so the client can only narrow what the permission allows:
+
+[source,json]
+----
+"readFilter": {
+  "$and": [
+    { "published": true },
+    { "$ifvar": ["@qparams['category']", { "category": "@qparams['category']" }] }
+  ]
+}
+----
+
+With `?category=desk` the read is limited to that category. Without it the element is removed, and only `{ "published": true }` applies.
+
+`{"$var": [variable, default]}` is the value of the variable, or the default when it is not bound:
+
+[source,json]
+----
+"sort": { "createdAt": { "$var": ["@qparams['dir']", -1] } }
+----
+
+With no `dir` the read is newest first. In `sort` a direction must be `1` or `-1`, otherwise the request gets `400`.
+
+A value taken from the request is always a value: `?category={"$ne":null}` looks for a category with that name, and an operator never reaches the query.
 
 === Permission Priority
 
