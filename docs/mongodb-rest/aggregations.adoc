@@ -15,9 +15,9 @@ applies_to: both
 
 {% include get-restheart.adoc %}
 
-Aggregations are powerful operations that process data records and return computed results. You can analyze data, perform calculations, and transform documents through a series of stages called a pipeline.
+An aggregation processes the documents of a collection through a series of stages, the pipeline, and returns the result: a count, a sum, a group, a transformed document.
 
-With RESTHeart, you can easily execute MongoDB aggregations through simple REST API calls.
+With RESTHeart you declare a MongoDB aggregation on a collection, and a client runs it with a `GET`.
 
 === Running Aggregations
 
@@ -211,7 +211,9 @@ fetch(`[RESTHEART-URL]/mycollection/_aggrs/sales-by-product?${params}`, {
 .catch(error => console.error('Error:', error));
 ----
 
-This returns sales data only for the "Widget Pro" product. Any query parameter that isn't otherwise reserved by RESTHeart (`filter`, `sort`, `page`, `pagesize`, `keys`, `hint`, `avars`, and similar — see the legacy form below) is bound as a `$var` this way — you're not limited to one, and each is parsed independently, so a single request can bind as many variables as the pipeline needs.
+This returns the sales of the "Widget Pro" product only.
+
+Every query parameter binds the `$var` with its name, except those RESTHeart reserves: `filter`, `sort`, `page`, `pagesize`, `keys`, `hint`, `avars` and similar. A request can bind as many variables as the pipeline needs, and each value is parsed on its own.
 
 Each value is interpreted as JSON when it parses as one, and otherwise taken literally as a string:
 
@@ -220,7 +222,7 @@ Each value is interpreted as JSON when it parses as one, and otherwise taken lit
 |Query parameter |Bound value
 
 |`?status=A`
-|the string `"A"` (not valid JSON on its own, so taken literally — no need to quote it)
+|the string `"A"`. It is not valid JSON, so it is taken as it is: no quotes needed
 
 |`?limit=10`
 |the number `10`
@@ -232,14 +234,16 @@ Each value is interpreted as JSON when it parses as one, and otherwise taken lit
 |the object `{"limit": 10, "skip": 20}`
 
 |`?date={"$date":1700000000000}`
-|the BSON date it represents — MongoDB Extended JSON types (`$date`, `$oid`, `$numberLong`, ...) work too
+|the BSON date it represents. The MongoDB Extended JSON types work too: `$date`, `$oid`, `$numberLong` and the others
 |===
 
 NOTE: This shorthand works the same way for xref:/docs/websocket/variables.adoc[change stream variables], since both are bound through the same mechanism.
 
+NOTE: A variable is a value. Since v9.17 a query parameter that the pipeline reads, and whose value carries a MongoDB operator such as `?status={"$ne":null}`, gets `400`. See <<operator-injection-protection>>.
+
 ==== Legacy: the `avars` Query Parameter
 
-Before 9.9.0, all variables had to be bundled into a single JSON object passed via the `avars` query parameter. This form still works and remains fully supported — it's still required if your pipeline needs a variable whose name collides with a reserved query parameter (`page`, `sort`, ...), and it's the only option against a RESTHeart instance older than 9.9.0:
+Before 9.9.0 all the variables went in one JSON object, in the `avars` query parameter. This form is still supported. Two cases need it: a variable with the name of a reserved query parameter, such as `page` or `sort`, and a RESTHeart older than 9.9.0.
 
 ==== cURL
 [source,bash]
@@ -365,7 +369,7 @@ RESTHeart provides several predefined variables that you can use in your aggrega
 [cols="1,3", options="header"]
 |===
 |Variable |Description
-|`@user` |The authenticated account. Which properties it carries depends on how the caller authenticated — `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. A name the account does not carry fails the request with `variable not bound` unless the `$var` declares a default, and a value supplied by the caller for a `@` name is ignored. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
+|`@user` |The authenticated account. Its properties depend on how the caller authenticated: `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. A name the account does not carry fails the request with `variable not bound` unless the `$var` declares a default, and a value supplied by the caller for a `@` name is ignored. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
 |`@mongoPermissions` |The user's MongoDB permissions (e.g., `@mongoPermissions.readFilter`). A pipeline applies the `readFilter` only if it uses it: see <<aggregations-and-permissions>>
 |`@page` |Current page number from query parameter
 |`@pagesize` |Page size from query parameter
@@ -604,9 +608,10 @@ When a client moves from `?filter` to an aggregation, the pipeline must do the s
 
 === Security Considerations
 
+[[operator-injection-protection]]
 ==== Operator Injection Protection
 
-RESTHeart checks variables for MongoDB operators to prevent injection attacks. This protection can be disabled in the configuration file, but this is strongly discouraged.
+The pipeline is written by whoever defines the aggregation. What comes from the request is a value. With `aggregation-check-operators` enabled, the default, RESTHeart keeps it so in two ways.
 
 [source,yml]
 ----
@@ -614,9 +619,45 @@ mongo:
     aggregation-check-operators: true  # Default setting
 ----
 
+**A value with an operator is refused.** An operator is a key starting with `$`, as in `{"$ne": null}`. The request gets `400`:
+
+[source,http]
+----
+GET /orders/_aggrs/by-status?status={"$ne":null}
+
+HTTP/1.1 400 Bad Request
+illegal query parameter status: aggregation variables cannot include operators
+----
+
+The check covers:
+
+* every value in `avars`;
+* since v9.17, each plain query parameter that the pipeline reads with `$var` or `$ifvar`. A parameter the pipeline does not read is not bound and is not checked;
+* since v9.17, the predefined variables whose value can come from the client, such as `@request.body.<path>` and `@user.<property>`. `@mongoPermissions` and `@filter` are not checked: their values are filters.
+
+MongoDB Extended JSON types, such as `{"$date": 1700000000000}` and `{"$oid": "..."}`, are values and are accepted.
+
+**A string starting with `$` stays a string.** Since v9.17, a variable whose value is a string like `"$name"` or `"$$ROOT"` is bound as `{"$literal": "$name"}` wherever MongoDB would read it as a field path or as a variable: in every expression, such as `$project`, `$addFields`, `$group`, and `$expr` inside a `$match`. In a `$match` stage outside `$expr` the string is already a query value, and is left as it is. A default written in the definition is never wrapped.
+
+For example, with this stage:
+
+[source,json]
+----
+{ "$project": { "label": { "$var": "label" } } }
+----
+
+`?label=$password` returns the string `$password` in `label`. Before v9.17 it returned the value of the `password` field.
+
+Two consequences:
+
+* a pipeline that let the client choose a field through a variable, such as `{"$group": {"_id": {"$var": "groupBy"}}}` with `?groupBy=$category`, now groups by the literal string. Declare the alternatives in the pipeline with `$ifvar`, one optional stage per field the client may choose;
+* in the query stages other than `$match` (`$geoNear.query`, `$graphLookup.restrictSearchWithMatch`, `$search`) a value with a string starting with `$` is refused by MongoDB.
+
+With `aggregation-check-operators: false` a variable can carry operators and field paths into the pipeline. This is strongly discouraged.
+
 ==== Aggregation Pipeline Security
 
-RESTHeart v9 introduces comprehensive security controls for aggregation pipelines to prevent dangerous operations:
+Since v9 RESTHeart checks each pipeline against two blacklists, of stages and of operators, before running it:
 
 **Stage Blacklisting**
 
@@ -663,7 +704,7 @@ When security violations occur, RESTHeart returns HTTP 403 Forbidden with specif
 - `CROSS_DATABASE_ACCESS` - Attempted to access collections in a different database
 - `JAVASCRIPT_EXECUTION` - Attempted to execute JavaScript code
 
-IMPORTANT: These security controls are enabled by default with conservative settings to protect your data
+IMPORTANT: These checks are enabled by default.
 
 === Transaction Support
 

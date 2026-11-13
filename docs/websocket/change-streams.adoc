@@ -13,13 +13,11 @@ NOTE: Change streams can be consumed via **WebSocket** or **SSE**. This page cov
 
 === The "streams" collection metadata
 
-In RESTHeart, not only documents but also databases and collections have
-properties. Some properties are metadata, i.e. they have a special
-meaning for RESTheart that influences its behavior.
+A collection has properties of its own, as a document does. RESTHeart reads some of them as metadata, which change how it serves the collection.
 
-The collection metadata property `streams` allows to declare change streams that client can watch for to be aware about changes to documents and bind them to given URI.
+The metadata property `streams` declares the change streams of the collection. Each one is bound to a URI, and a client that opens it is notified of the changes to the documents.
 
-Change streams need to be defined as collection metadata. This way clients are not able to open up arbitrary change streams but only those defined (and tested) by the developers.
+A client can open only the streams declared here. The developers write and test them, and the client cannot write one of its own.
 
 `streams` is an array of _stream_ definitions.
 
@@ -50,24 +48,19 @@ Change streams need to be defined as collection metadata. This way clients are n
 |yes
 |===
 
-NOTE: Stages take as input link:https://docs.mongodb.com/manual/reference/change-events/[Change Events] instead of the documents. For example, the modified version of a document after a `PATCH` request is present at `event.fullDocument` property of the stages input event. (See link:/docs/mongodb-websocket/examples[examples]).
+NOTE: The input of the stages is a link:https://docs.mongodb.com/manual/reference/change-events/[Change Event], which wraps the document. After a `PATCH`, for example, the modified document is in the `fullDocument` property of the event. See the link:/docs/mongodb-websocket/examples[examples].
 
 === Optional Stages
 
-The aggregation of the stream can include optional stages. These optional stages are only executed when one or more variables are specified.
+A stream can have optional stages, applied only when the client binds one or more variables. They work as in aggregations: see link:/docs/mongodb-rest/aggregations#optional-stages[Optional stages].
 
-For a more comprehensive understanding of how to use optional stages, please refer to the link:/docs/mongodb-rest/aggregations#optional-stages[Aggregation documentation].
-
-NOTE: An optional stage is a variable in the stages, with the cost described under link:#per-client-filtering-notify_when[`notify_when`]: one MongoDB cursor per distinct binding. For a selection that differs per client, prefer `notify_when`.
+NOTE: An optional stage puts a variable in the stages, so it opens one MongoDB cursor per distinct binding, as explained under link:#per-client-filtering-notify_when[`notify_when`]. For a selection that differs per client, use `notify_when`.
 
 === Escaped stage properties
 
-MongoDB (up to v5) does not allow to store fields with names starting with `$` or
-containing _dots_ (`.`).
+MongoDB, up to v5, refuses to store a field whose name starts with `$` or contains a dot.
 
-To store stages with dollar prefixed operators or use
-the dot notation, RESTHeart _automatically_ and _transparently_ escapes
-the properties keys as follows:
+A stage has both. RESTHeart escapes the keys when it stores the definition:
 
 - the `$` prefix is "underscore escaped", e.g. `$exists` is stored as `_$exists`
 - if the dot notation has to be used in a key name, dots are replaced with `::` e.g. `SD.prop` is stored as `SD::prop`
@@ -76,9 +69,9 @@ the properties keys as follows:
 
 Available from RESTHeart 9.4.
 
-`notify_when` is an optional field in a stream definition that filters which connected clients receive each change event, without requiring a separate MongoDB cursor per client.
+`notify_when` is an optional field of a stream definition. It decides which connected clients receive each change event.
 
-Every client of the stream shares one cursor, whatever value it binds. The alternative, a `{ "$var": ... }` in a stage, changes the pipeline, and RESTHeart opens one cursor per distinct set of bound variables: a thousand users filtering in the stages are a thousand change streams on MongoDB. Keep the stages fixed and put the client-bound variables here.
+Every client of the stream shares one MongoDB cursor, whatever value it binds. A `{ "$var": ... }` in a stage works differently: it changes the pipeline, and RESTHeart opens one cursor per distinct set of bound variables. A thousand users who filter in the stages are a thousand change streams on MongoDB. Keep the stages fixed, and put the variables the client binds in `notify_when`.
 
 [source,json]
 ----
@@ -107,6 +100,8 @@ curl -N \
 ----
 
 The variable is bound like any other stream variable (see link:/docs/websocket/variables[Using Variables]): `?tid=acme` and `?avars={"tid":"acme"}` are equivalent, and when both are given the `avars` value wins. Before 9.12.2 `notify_when` read only the plain query parameter.
+
+Since v9.17 the variable of `notify_when` goes through the same operator check as the stage variables: `?tid={"$ne":null}` gets `400`. See link:/docs/websocket/variables#security-considerations[Security considerations].
 
 [[notify-when-user]]
 ==== Events per user: `notify_when` on `@user`
@@ -156,12 +151,12 @@ The `notify_when` key uses `::` to separate the top-level change event field fro
 
 * `stages` are sent to MongoDB and applied once on the shared cursor. Keep them fixed (e.g. `operationType`, `fullDocument.status`): a variable there means one cursor per distinct binding.
 * `notify_when` is evaluated server-side per event × per connected client. Use it for conditions that depend on per-client variables.
-* If `notify_when` is absent, all clients receive all events (broadcast — existing behaviour).
+* Without `notify_when`, every client receives every event.
 * If a client connects without binding the variable, neither as a query parameter nor in `avars`, the request fails with `400` and `variable not bound`, as for an unbound stage variable. Before 9.12.2 such a client received every event of the stream (pass-through).
 
 [WARNING]
 ====
-**`notify_when` on a variable of the request is a delivery filter, not an access control.** The client binds `?tid=` itself, and can bind any value it can name. To keep users apart, use `notify_when` on a `@user` variable (see <<notify-when-user>>), or a stage that matches on one.
+**`notify_when` on a variable of the request does not keep users apart.** The client binds `?tid=` itself, and can bind any value it can name. To keep users apart, use `notify_when` on a `@user` variable (see <<notify-when-user>>), or a stage that matches on one.
 ====
 
 [[permissions]]
@@ -184,7 +179,7 @@ A stream allowed by a permission with a `readFilter`, which segregates in neithe
 
 ==== `Last-Event-ID` limitation
 
-When `notify_when` is defined, `Last-Event-ID` is ignored on reconnect and a warning is logged. The shared cursor cannot be rewound for a single client; reconnecting clients should recover missed events via the REST API.
+With `notify_when`, `Last-Event-ID` is ignored on reconnect and a warning is logged: the shared cursor cannot go back for one client. A client that reconnects reads the events it missed through the REST API, as described in <<recovering-missed-events>>.
 
 === Keeping a WebSocket alive
 

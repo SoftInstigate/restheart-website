@@ -9,7 +9,7 @@ redirect_from:
   - /docs/mongodb-websocket/variables
 ---
 
-IMPORTANT: A variable in a stage changes the pipeline, and a different pipeline is a different MongoDB cursor: a stream filtered in its stages opens one change stream per distinct set of bound values. To serve many clients from one cursor, keep the stages fixed and put the client-bound variable in link:/docs/websocket/change-streams#per-client-filtering-notify_when[`notify_when`], evaluated per client on the shared cursor. The way a client binds a variable, described here, is the same for both.
+IMPORTANT: A variable in a stage changes the pipeline, and each different pipeline opens its own MongoDB cursor. A stream filtered in its stages therefore opens one change stream per distinct set of bound values. To serve many clients from one cursor, keep the stages fixed and put the variable in link:/docs/websocket/change-streams#per-client-filtering-notify_when[`notify_when`], which is evaluated per client on the shared cursor. A client binds a variable in the same way in both cases, as described here.
 
 The aggregation stages of the change stream can use _variables_, as in the following example:
 
@@ -32,9 +32,9 @@ Since 9.9.0, the client passes the variable as a plain query parameter named aft
 GET /messages/_streams/mine?n=Andrea HTTP/1.1
 ----
 
-In case of the change stream *mine* described in the link:/docs/mongodb-websocket/examples[examples], the variable `n` is used to restrict notifications only to changes on documents with the property _name_ matching it.
+With the change stream *mine* of the link:/docs/mongodb-websocket/examples[examples], the client receives only the changes to the documents whose `name` is the value of `n`.
 
-A value is interpreted as JSON when it parses as one (so `?opts={"a":1}` binds `opts` to that object and `?tags=[1,2,3]` binds `tags` to that array), and otherwise taken literally as a string (so `?n=Andrea` binds `n` to `"Andrea"`). See link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables] for the full details — the mechanism is shared between aggregations and change streams.
+A value that parses as JSON is read as JSON: `?opts={"a":1}` binds `opts` to that object, and `?tags=[1,2,3]` binds `tags` to that array. Any other value is a string: `?n=Andrea` binds `n` to `"Andrea"`. Aggregations and change streams bind variables in the same way: see link:/docs/mongodb-rest/aggregations#passing-variables[Passing Variables].
 
 ==== Legacy: the `avars` Query Parameter
 
@@ -45,13 +45,13 @@ Before 9.9.0, all variables had to be bundled into a single JSON object passed v
 GET /messages/_streams/mine?avars={"n":"Andrea"} HTTP/1.1
 ----
 
-This form still works and remains fully supported. You can combine both forms in the same request; if a variable name is given both ways, the `avars` value wins.
+This form is still supported. A request can use both forms. When a variable is given both ways, the `avars` value wins.
 
 === Dot Notation support for `$var`
 
-`$var` in RESTHeart change streams can utilize dot notation to access nested properties. This allows you to specify a complex variable structure and reference its components for more flexible filtering.
+`$var` reads a nested property of a variable with the dot notation.
 
-For example, if a client passes `?options={"name":"Andrea"}` (or, using the legacy form, `avars={"options":{"name":"Andrea"}}`), you can access the nested property `name` using dot notation within an aggregation stage, like this:
+For example, a client passes `?options={"name":"Andrea"}`, or `avars={"options":{"name":"Andrea"}}` in the legacy form. A stage reads the nested property `name` like this:
 
 [source,json]
 ----
@@ -63,15 +63,11 @@ For example, if a client passes `?options={"name":"Andrea"}` (or, using the lega
 }
 ----
 
-The `$match` stage in the previous example uses the dot notation in `{ "$var": "options.name" }` to reference the nested property `name`, in this case `Andrea`.
-
-By employing dot notation, you can work with structured and nested data effectively and make your change stream filtering more versatile and powerful.
+`{ "$var": "options.name" }` is the property `name` of the variable `options`: here, `Andrea`.
 
 === Variables with Default Values
 
-Variables can have a default value. This default value is used when the variable is not specified in the `?avar` query parameter.
-
-For more detailed information on using variables with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
+A variable can have a default value, used when the client does not bind it: `{ "$var": ["n", "Andrea"] }`. See link:/docs/mongodb-rest/aggregations#variables-with-default-values[Variables with default values] in the aggregations page.
 
 === Predefined variables
 
@@ -89,29 +85,25 @@ The change stream aggregation can use _predefined variables_, as in the followin
 
 The `$match` stage uses the predefined variable `@user.sub`, specified as `{ "$var": "@user.sub" }`, and matches it against the document's `owner`.
 
-NOTE: the predefined variables are resolved server side: the client does not pass them, and a value it supplies for one — `?avars={"@user.sub": "someone-else"}` — is ignored, so the stream stays scoped to whoever is connected.
+NOTE: The server resolves the predefined variables. The client does not pass them, and a value it sends for one, such as `?avars={"@user.sub": "someone-else"}`, is ignored. The stream stays scoped to the connected caller.
 
-NOTE: a predefined variable is resolved per caller, so a stage that uses one opens a cursor per caller, like any other stage variable. It is a boundary, and it has that price; a selection that needs no boundary belongs in `notify_when`.
+NOTE: A predefined variable has a different value for each caller, so a stage that uses one opens a cursor per caller, like any other stage variable. Use it where the events of one user must be kept from the others. For a selection among events that every client may see, use `notify_when`, which shares one cursor.
 
-IMPORTANT: use the name the caller's account actually carries. `@user.sub` identifies a caller authenticated with a JWT, `@user._id` one authenticated against MongoDB users, `@user.userid` one from the file realm — see link:/docs/security/permissions#identifying-the-caller[Identifying the caller]. A variable the account does not carry is unresolved, and since 9.8.2 an unresolved variable fails the request with `variable not bound` rather than binding `null`, which would have matched every document without that field.
+IMPORTANT: Use the name the caller's account carries. `@user.sub` identifies a caller authenticated with a JWT, `@user._id` one authenticated against MongoDB users, `@user.userid` one from the file realm: see link:/docs/security/permissions#identifying-the-caller[Identifying the caller]. A variable the account does not carry is unresolved. Since 9.8.2 an unresolved variable fails the request with `variable not bound`. Before, it was bound to `null`, which matched every document without that field.
 
-Refer to link:/docs/mongodb-rest/aggregations#predefined-variables[Aggregation] documentation page for more information.
+The list of the predefined variables is in the link:/docs/mongodb-rest/aggregations#predefined-variables[aggregations page].
 
 === Security considerations
 
-By default RESTHeart makes sure that the variables passed as query parameters don't contain MongoDB operators.
+The variables of a change stream are values, as in aggregations. With `aggregation-check-operators` enabled, the default:
 
-This behavior is required to protect data from undesirable malicious query injection.
+* a value with a MongoDB operator, a key starting with `$`, gets `400`. The check covers every value in `avars` and, since v9.17, each plain query parameter that a stage or `notify_when` reads with `$var` or `$ifvar`;
+* since v9.17, a string starting with `$` is bound as `{"$literal": value}` where MongoDB would read it as a field path or as a variable. In a `$match` stage outside `$expr` it is left as it is.
 
-Even though is highly discouraged, is possible to disable this check by editing the following property in the `restheart.yml` configuration file.
-
-[source]
+[source,yml]
 ----
-## Security
-
-# Check if aggregation variables use operators.
-# Allowing operators in aggregation variables is risky
-# because requester can inject operators modifying the query
-
-aggregation-check-operators: true
+mongo:
+  aggregation-check-operators: true
 ----
+
+Setting it to `false` lets the client change the query through a variable, and is strongly discouraged. See link:/docs/mongodb-rest/aggregations#operator-injection-protection[Operator Injection Protection] for the details and the examples.

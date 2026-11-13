@@ -8,12 +8,9 @@ applies_to: both
 
 == Introduction
 
-This section describes the security hardening features available with RESTHeart
-and some best practices to protect against common attacks.
+This page lists what to check before a RESTHeart deployment is exposed, and the features that protect it from common attacks.
 
-IMPORTANT: No system can guarantee 100% security. Security must be achieved through
-a set of security hardening measures implemented on the whole system stack
-and enforced by strong and efficient security policies.
+IMPORTANT: The checks on this page cover RESTHeart. The operating system, the network and MongoDB need their own.
 
 *Checklist*
 
@@ -31,29 +28,31 @@ and enforced by strong and efficient security policies.
 |Enable bruteForceAttackGuard|Suggested|Configuration required
 |Enable originVetoer|Suggested|Configuration required
 |Define and test the ACL|Mandatory|Action required
-|Use only aggregations and forbid the filter query parameter|Suggested|Action required
-|Blacklist the $where MongoDB operator|Mandatory|No action required
+|Use only aggregations and forbid the filter query parameter|Suggested|No action required since v9.16
+|The password and the one-time tokens cannot be queried|Mandatory|No action required
+|Blacklist the operators that run JavaScript|Mandatory|No action required
+|Keep the values bound into a query as values|Mandatory|No action required since v9.17
 |Define role-specific GraphQL applications|Mandatory|Action required
 |===
 
 == Update the `admin` user password
 
-At first startup, RESTHeart initializes the user `admin`, with the default password `secret`. *This user can execute any request*.
+At first startup RESTHeart creates the user `admin` with the password `secret`.
 
-WARNING: *YOU MUST UPDATE THE DEFAULT PASSWORD!* The role `admin` can execute any request as it is set as the `root` role in the `mongoAclAuthorizer` configuration.
+WARNING: Change this password before anything else. The role `admin` is the `root` role of `mongoAclAuthorizer`, so this user can execute any request.
 
-To update it, run the following command:
+To change it:
 
 [source,bash]
 $ curl -i -u admin:secret -X PATCH localhost:8080/users/admin -H "Content-Type: application/json" -d '{ "password": "my-strong-password" }'
 
-Refer to link:/docs/security/user-management/[User Management] for more information on how to create new users, roles and permissions.
+To create users, roles and permissions, see link:/docs/security/user-management/[User Management].
 
 === Disable the auto-creation of the admin user
 
-At startup time, the `mongoRealmAuthenticator` checks if the user `admin` exists. If it does not exist, it automatically creates it. This means that whenever the user `admin` is deleted, it will be eventually recreated with the default password `secret`.
+At startup `mongoRealmAuthenticator` creates the user `admin` if it does not exist. A deployment that deleted `admin` therefore gets it back at the next restart, with the password `secret`.
 
-To avoid this dangerous behavior, you should disable the auto-creation of the `admin` user:
+Disable the auto-creation:
 
 [source,yml]
 ----
@@ -66,7 +65,7 @@ create-user-document: '{"_id": "admin", "password": "secret", "roles": ["admin"]
 
 == Disable the root role
 
-The `mongoAclAuthorizer` by default defines the _root_ role.
+By default `mongoAclAuthorizer` defines a _root_ role.
 
 [source,yml]
 ----
@@ -76,9 +75,9 @@ mongoAclAuthorizer:
     root-role: admin
 ----
 
-WARNING: this role is granted all permission, including reading and deleting any MongoDb resource.
+WARNING: A user with this role can execute any request: it can read and delete every database and collection.
 
-When you have setup your ACL, the `root` role can be disabled as follow:
+Once the ACL is in place, disable the root role:
 
 [source,yml]
 ----
@@ -90,24 +89,19 @@ mongoAclAuthorizer:
 
 == Use HTTPS
 
-WARNING: *IT IS PARAMOUNT TO SECURE RESTHEART WITH TLS.*
+WARNING: Without TLS, credentials and tokens travel in clear text.
 
-This can be achieved either by a reverse proxy (such as Nginx, AWS API gateway, etc)
-or by configuring RESTHeart to only use the https-listener.
-
-To configure RESTHeart to use TLS, follow the instructions at link:/docs/security/tls/[Configure TLS].
+Terminate TLS in a reverse proxy, such as Nginx or an API gateway, or enable only the `https-listener` of RESTHeart: see link:/docs/security/tls/[Configure TLS].
 
 === Secure connection to MongoDB
 
-To configure RESTHeart to connect to MongoDB over TLS, follow the instructions at link:/docs/mongodb-rest/secure-connection-to-mongodb/[Secure connection to MongoDB].
+Connect to MongoDB over TLS: see link:/docs/mongodb-rest/secure-connection-to-mongodb/[Secure connection to MongoDB].
 
-It is also very important to restrict the access to the MongoDB database to only the resources that are required by RESTHeart; for this refer to link:/docs/mongodb-rest/secure-connection-to-mongodb/#restrict-permissions-of-mongodb-user[Restrict permissions of MongoDb User].
+Give the MongoDB user of RESTHeart only the permissions RESTHeart needs: see link:/docs/mongodb-rest/secure-connection-to-mongodb/#restrict-permissions-of-mongodb-user[Restrict permissions of MongoDb User].
 
 == Make sure password are stored in an encrypted form
 
-Passwords must be stored in an encrypted form.
-
-The default `mongoRealmAuthenticator` is recommended for production use and it does store the password in an encrypted form with the default configuration.
+`mongoRealmAuthenticator`, the authenticator to use in production, stores each password as a bcrypt hash with its default configuration:
 
 [source,yml]
 ----
@@ -117,15 +111,13 @@ mongoRealmAuthenticator:
     bcrypt-complexity: 12
 ----
 
-The `fileRealmAuthenticator` is for testing and development purposes only and not suggested for production use, since it does not support password hashing.
+`fileRealmAuthenticator` does not hash passwords. Use it only for development and tests.
 
-IMPORTANT: If you use a custom _Authenticator_ you must make sure that the passwords are stored in an encrypted form.
+IMPORTANT: A custom _Authenticator_ must hash the passwords it stores.
 
 == Enforce strong passwords
 
-If users can update their password, it is important enforcing that user-defined passwords are strong enough and avoid a user to chose a weak password like `123456`.
-
-The default `mongoRealmAuthenticator` is recommended for production use and it allows to refuse to update user documents with weak passwords.
+When users set their own password, some choose a weak one, like `123456`. `mongoRealmAuthenticator` can refuse a write to a user document with a password below a minimum strength:
 
 [source,yml]
 ----
@@ -143,9 +135,14 @@ mongoRealmAuthenticator:
 
 == bruteForceAttackGuard
 
-`bruteForceAttackGuard` defends from brute force password cracking attacks by returning `429 Too Many Requests` when more than `max-failed-attempts` wrong requests for the same user are received in the last 10 seconds from the same ip, and when more than `max-failed-attempts-per-ip` are received from the same ip whatever the user. Counting per user keeps the unrelated users behind a carrier-grade NAT or a corporate proxy out of each other's blocks, see link:/docs/security/other-security-plugins#brute-force-attack-guard[Brute Force Attack Guard].
+`bruteForceAttackGuard` slows down password guessing. It answers `429 Too Many Requests` in two cases, both counted over the last 10 seconds:
 
-IMPORTANT: if RESTHeart is behind a revers proxy, this must set the header `X-Forwarded-For` with the client IP. In this case set the option `trust-x-forwarded-for: true`
+* more than `max-failed-attempts` failed requests for the same user from the same ip;
+* more than `max-failed-attempts-per-ip` failed requests from the same ip, whatever the user.
+
+The count per user matters for the users who share an ip, behind a carrier-grade NAT or a corporate proxy: the failures of one do not block the others. See link:/docs/security/other-security-plugins#brute-force-attack-guard[Brute Force Attack Guard].
+
+IMPORTANT: Behind a reverse proxy, the proxy must set the `X-Forwarded-For` header with the client ip, and the option `trust-x-forwarded-for` must be `true`.
 
 [source,yml]
 ----
@@ -167,14 +164,9 @@ bruteForceAttackGuard:
 
 == originVetoer
 
-The `originVetoer` authorizer protects from CSRF attacks by *forbidding requests whose `Origin` header is not whitelisted*.
-It supports both exact origins and flexible patterns for allowed origins.
+The `originVetoer` authorizer protects from CSRF attacks: it refuses a request whose `Origin` header is not in a whitelist. An allowed origin is an exact value or a pattern.
 
-[NOTE]
-====
-This feature is *disabled by default*.
-To activate it, add the configuration below to your `restheart.yml` file and specify the allowed origins.
-====
+NOTE: It is disabled by default. To enable it, add the configuration below to `restheart.yml` with the origins to allow.
 
 === Configuration Example
 
@@ -239,7 +231,7 @@ ignore-paths:
 +
 [NOTE]
 ====
-Setting this to `true` does *not* open a CSRF hole: browsers always send `Origin` on the requests that matter for CSRF (cross-site non-GET, and any CORS-preflighted request). It does mean the vetoer no longer acts as a blanket "browser-only" gate.
+A request without `Origin` cannot be a CSRF attack: a browser always sends `Origin` on the requests CSRF uses, the cross-site ones that are not a `GET` and every request with a CORS preflight. With `true`, clients that are not browsers reach RESTHeart too.
 ====
 +
 Set to `false` to restore pre-9.6 behavior (missing `Origin` is always denied):
@@ -284,11 +276,14 @@ With this configuration:
 
 == Define and test the ACL
 
-The `mongoAclAuthorizer` allows to define a very fine grained, role based ACL.
+With `mongoAclAuthorizer` each role gets its own permissions. Write them so that a role can execute only the requests it needs:
 
-The permissions set must allow to execute just the required requests, blacklisting unused query parameters, projecting the response to hide sensitive data, merging the request body with sensitive properties at the server-side, filtering writes and reads.
+* allow only the query parameters the request uses, with `qparams-whitelist`;
+* hide the fields the role must not see, with `projectResponse`;
+* set on the server the properties the client must not choose, with `mergeRequest`;
+* limit the documents the role reads and writes, with `readFilter` and `writeFilter`.
 
-The following permission document is an example of a very fine grained ACL:
+This permission does all of it for the creation of a document:
 
 [source,json]
 ----
@@ -316,32 +311,81 @@ The following permission document is an example of a very fine grained ACL:
   }
 ----
 
-Refer to link:/docs/security/authorization/#format-of-permissions[Format of permission] for more information.
+The format is described in link:/docs/security/authorization/#format-of-permissions[Format of permission].
 
-NOTE: When the permission language cannot be used and you need more control, you can define a custom `Vetoer` or an `Request Interceptor` that can enforce additional checking logic.
+NOTE: For a rule the permission language cannot express, write a custom `Vetoer` or a request `Interceptor`.
+
+Test the ACL with a user of each role: the requests the role needs must pass, and the others must get `403`.
 
 === Use only aggregations and forbid the `filter` query parameter
 
-The `filter` query parameter for the Mongo REST API allows clients to execute any MongoDB query.
+With the `filter` query parameter a client writes its own MongoDB query. This is handy during development. In production it lets the client ask what the application never meant to answer, such as a condition on a field the permission hides.
 
-This is very convenient at development time, however when you are ready to deploy your application, you should blacklist the `filter` query parameter in your ACL and rely on link:/docs/mongodb-rest/aggregations/[Aggregations] to expose, well defined and secured queries.
+Since v9.16 a permission refuses `filter`, `sort` and `sort_by` on reads, unless it sets link:/docs/security/permissions#allowfilter[allowFilter]. Keep this default. Declare the queries of the application as link:/docs/mongodb-rest/aggregations/[aggregations]: the client then sends only the values of their variables.
+
+Before v9.16, add `qparams-blacklist(filter, sort, sort_by)` to the predicate of each permission.
+
+== The password and the one-time tokens cannot be queried
+
+A query can reveal a field that the response hides. A condition on the field tells which documents match, and a sort on it tells the order of its values.
+
+Two interceptors, enabled by default, refuse with `403` a request that queries one of these fields. They run before the request is executed:
+
+[options="header"]
+[cols="2,3,3"]
+|===
+|Interceptor |Collection |Fields
+|`denyFilterOnUserPwd` |the users collection of `mongoRealmAuthenticator` |the password
+|`denyFilterOnAccountTokens` (since v9.17) |`auth_invitations` |`token`
+|`denyFilterOnAccountTokens` (since v9.17) |the users collection |`emailVerificationToken`, `passwordResetToken`, `inviteToken`
+|===
+
+Both check the `filter`, `sort` and `sort_by` parameters at any depth: nested documents, `$or`, `$and` and `$nor`, and the field used as a path in an expression, such as `"$password"` under `$expr`.
+
+Both apply to every method. A bulk `PATCH` or `DELETE` with a condition on one of these fields is refused too: the number of documents it matches would answer as a read does.
+
+NOTE: Before v9.17 `denyFilterOnUserPwd` checked only the keys of nested documents, and only on a `GET`. A condition inside `$or`, a field path in `$expr`, a sort, and the filter of a bulk write were not refused. The tokens of the accounts had no check.
+
+`denyFilterOnAccountTokens` applies to a collection with those names in any database. To disable it:
+
+[source,yml]
+----
+denyFilterOnAccountTokens:
+  enabled: false
+----
+
+For the other fields a permission hides with `projectResponse`, keep link:/docs/security/permissions#allowfilter[allowFilter] off and do not grant bulk writes on the collection.
 
 == Blacklist the operators that run JavaScript
 
-The `$where`, `$function` and `$accumulator` operators run JavaScript on the MongoDB server, and should not be reachable from a client in any case. A client can write operators that MongoDB evaluates in three places, and each one is checked by default:
+The `$where`, `$function` and `$accumulator` operators run JavaScript on the MongoDB server. A client must never reach them. A client can write operators in three places, and each one is checked by default:
 
 - the `filter` query parameter, by the `filterOperatorsBlacklist` plugin;
 - the `keys` query parameter, by the same plugin: a projection accepts aggregation expressions, `$function` included;
 - the aggregation pipeline of a `PATCH` request, by the `updatePipelineSecurityChecker` interceptor, against the same `aggregationSecurity` blacklists that guard the link:/docs/mongodb-rest/aggregations/[aggregations] declared on a collection. A pipeline with `$function`, or with a blacklisted stage such as `$lookup`, is refused with `403`.
 
-If you cannot disable the `filter` query parameter, you can also blacklist other unused operators with `filterOperatorsBlacklist`, see link:/docs/security/other-security-plugins/#filteroperatorsblacklist[its configuration].
+A deployment that allows `filter` can blacklist the other operators it does not use with `filterOperatorsBlacklist`: see link:/docs/security/other-security-plugins/#filteroperatorsblacklist[its configuration].
 
 NOTE: `filterOperatorsBlacklist` is enabled by default and blacklists `$where`, `$function` and `$accumulator`, anywhere in `filter` and `keys`. Before 9.11.0 the default list held `$where` only; before 9.11.1 `keys` and the `PATCH` pipeline were not checked.
 
+== Keep the values bound into a query as values
+
+Aggregations, change streams, GraphQL mappings and permission filters take values from the request: variables, arguments, the body. Whoever defines them writes the query, and the client supplies only values.
+
+Since v9.17 RESTHeart enforces it. A value that carries a MongoDB operator is refused, or matches no document. A string starting with `$` is bound as a string, so MongoDB does not read it as a field path.
+
+The checks are on by default. Leave them on:
+
+* `mongo.aggregation-check-operators`, for aggregations and change streams: see link:/docs/mongodb-rest/aggregations#operator-injection-protection[Operator Injection Protection];
+* `graphql.check-operators`, for GraphQL arguments: see link:/docs/graphql/graphql-apps#arguments-are-values[Arguments are values];
+* permission filters need no option: see link:/docs/security/permissions#variables-are-values[Variables in a filter are values].
+
 == Define role-specific GraphQL applications
 
-NOTE: The GraphQL API is read-only, so you should only pay attention to avoid exposing sensitive information to users. This very important due to the nature of GraphQL that allows the client to request data in any format allowed by the GraphQL schema.
+The GraphQL API is read-only, so the risk is one: a role reads data it should not see. A GraphQL client chooses the fields and the relations it reads, among those the schema offers. An app therefore exposes to every caller everything its schema and its mappings reach.
 
-In order secure the GraphQL API, several GraphQL applications should be defined with different read logic and bound to different URIs. In this way, different roles can be granted access to different subsets of the GraphQL apps thus protecting the information.
+Define one app for each kind of caller, each bound to its own URI and with mappings that read only what that caller may see. Then grant each role only the URIs of its apps in the ACL.
 
-WARNING: Protecting the GraphQL API requires the application definitions to be defined with the correct filtering options. Always test your APIs!
+To hide single fields by role in one app, see link:/docs/graphql/graphql-apps#hiding-fields-by-role-visible[`@visible`]. To scope a mapping to the caller, use the link:/docs/graphql/graphql-apps#predefined-variables[predefined variables], such as `@user._id`.
+
+WARNING: What an app exposes depends on the filters in its mappings. Test each app with a user of each role.

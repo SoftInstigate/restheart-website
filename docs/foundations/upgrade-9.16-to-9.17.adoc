@@ -1,0 +1,117 @@
+---
+docs_version: 9
+title: Upgrade from 9.16 to 9.17
+layout: docs-adoc
+menu: overview
+---
+
+RESTHeart 9.17 is a security release. It fixes two vulnerabilities, link:https://github.com/SoftInstigate/restheart/security/advisories/GHSA-wwfj-6qr7-h9hq[GHSA-wwfj-6qr7-h9hq] and link:https://github.com/SoftInstigate/restheart/security/advisories/GHSA-8m4q-p5xx-x835[GHSA-8m4q-p5xx-x835]. Upgrade every deployment.
+
+Some requests that 9.16 accepted are refused in 9.17, or bound in a different way. Check each case against your deployment:
+
+* a client passes a MongoDB operator in a query parameter that an aggregation or a change stream reads: see <<a-query-parameter-with-an-operator-gets-400>>;
+* a client passes a field name such as `$category` in a variable: see <<a-string-starting-with-is-a-string>>;
+* a GraphQL app receives MongoDB filters in a `BsonDocument` argument: see <<graphql-arguments-are-values>>;
+* a permission filter uses `@request.body` or a property of the account that holds a document: see <<variables-in-permission-filters-are-values>>;
+* a client filters or sorts on the password, or on a token of `restheart-accounts`: see <<the-password-and-the-tokens-cannot-be-queried>>.
+
+If you write plugins and one of them registers a `VarResolver`, see also <<for-plugin-developers-varresolver-operatorsallowed>>.
+
+== What changed
+
+=== A query parameter with an operator gets 400
+
+Since 9.9 a plain query parameter is bound as an aggregation variable: `?status=A` binds `{"$var": "status"}`. Before 9.17 only the `avars` parameter was checked for operators.
+
+From 9.17 a query parameter that a pipeline, or the `notify_when` of a change stream, reads with `$var` or `$ifvar` is checked too. A value with a key starting with `$` gets `400`:
+
+[source]
+----
+illegal query parameter status: aggregation variables cannot include operators
+----
+
+A parameter the pipeline does not read is not checked.
+
+What to do: pass values. Where the client needs a different condition, declare it in the pipeline as an optional stage with `$ifvar`.
+
+See link:/docs/mongodb-rest/aggregations#operator-injection-protection[Operator Injection Protection].
+
+=== A string starting with $ is a string
+
+Before 9.17 a variable whose value was a string like `"$name"` or `"$$ROOT"` was read by MongoDB as a field path or as a variable, wherever the pipeline used it in an expression.
+
+From 9.17 such a value is bound as `{"$literal": value}` in expressions. In a `$match` stage outside `$expr` it is left as it is.
+
+A pipeline that let the client choose a field this way, such as `{"$group": {"_id": {"$var": "groupBy"}}}` with `?groupBy=$category`, now groups by the literal string. What to do: declare one optional stage per field the client may choose, and let the client pick it by name:
+
+[source,json]
+----
+{ "$ifvar": ["byCategory", { "$group": { "_id": "$category", "count": { "$sum": 1 } } }] }
+----
+
+In the query stages other than `$match` (`$geoNear.query`, `$graphLookup.restrictSearchWithMatch`, `$search`) a value with a string starting with `$` is now refused by MongoDB.
+
+=== GraphQL arguments are values
+
+The new option `graphql.check-operators` is `true` by default. An argument with an operator is refused with the error `arguments cannot include operators`, and a string argument starting with `$` is bound in `$literal` where MongoDB would read it as a field path or as a variable.
+
+An app that receives MongoDB filters in a `BsonDocument` argument on purpose has two ways:
+
+* **Declare the argument**, in each mapping that uses it. The other arguments keep the check:
+
+[source,json]
+----
+{ "$ifarg": ["filter", { "$match": { "$arg": "filter", "operators": true } }] }
+----
+
+* **Turn the check off** for every app and every argument:
+
+[source,yaml]
+----
+graphql:
+  check-operators: false
+----
+
+Use the first way where you can. See link:/docs/graphql/graphql-apps#arguments-are-values[Arguments are values].
+
+The `find` and the `sort` of a query mapping now go through the `aggregationSecurity` blacklists. A mapping whose `find` uses `$where`, `$function` or `$accumulator` is refused.
+
+=== Variables in permission filters are values
+
+`@request.body.<path>` and `@user.<property>` are resolved by the server, but their values can come from the client. From 9.17, in a `readFilter` or a `writeFilter`:
+
+* a variable whose value carries an operator matches no document, and a warning is logged;
+* under `$expr`, a string starting with `$` is bound in `$literal`.
+
+In an aggregation the same value refuses the request with `400`.
+
+What to do: nothing, unless a permission relied on an operator arriving through one of these variables. In that case write the operator in the filter and take only the value from the variable.
+
+See link:/docs/security/permissions#variables-are-values[Variables in a filter are values].
+
+=== The password and the tokens cannot be queried
+
+A request whose `filter`, `sort` or `sort_by` refers to one of these fields gets `403`, on every method and for every role:
+
+* the password, in the users collection of `mongoRealmAuthenticator`. Before 9.17 only a `GET` with the password as a key of the filter was refused;
+* `token` in `auth_invitations`, and `emailVerificationToken`, `passwordResetToken` and `inviteToken` in the users collection. This is the new interceptor `denyFilterOnAccountTokens`, enabled by default.
+
+What to do: an application that looked up an invitation or a reset by its token through the REST API must use the endpoints of `restheart-accounts`, such as `GET /auth/invitation?email=...&token=...`.
+
+See link:/docs/security/security-hardening#the-password-and-the-one-time-tokens-cannot-be-queried[Security Hardening].
+
+=== For plugin developers: VarResolver.operatorsAllowed
+
+`VarResolver` has a new method, `operatorsAllowed()`, with a default that returns `false`. Existing resolvers compile as they are.
+
+A resolver whose values are filters on purpose, as the built-in `@mongoPermissions` and `@filter`, must override it and return `true`. Otherwise its values match no document in a permission filter, and refuse an aggregation with `400`.
+
+== Configuration
+
+[cols="2,1,3", options="header"]
+|===
+|Option |Default |What it does
+|`graphql.check-operators` |`true` |New. Refuses GraphQL arguments with operators.
+|`denyFilterOnAccountTokens.enabled` |`true` |New. Refuses a `filter` or a `sort` on the tokens of `restheart-accounts`.
+|`mongo.aggregation-check-operators` |`true` |Unchanged default. It now covers the plain query parameters and the `$literal` binding too.
+|===

@@ -37,7 +37,7 @@ flowchart TD
 
 == Invite a user
 
-`POST /auth/invite` — requires role `owner`.
+`POST /auth/invite`: requires role `owner`.
 
 === Request
 
@@ -63,13 +63,13 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 . Validate `email` format and `role` value.
 . **If the user already belongs to the caller's team** → `409 Conflict`.
 . **If a pending invitation already exists** for the same email+team in `auth_invitations` → `409 Conflict`.
-. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. Membership is NOT added yet — it is deferred until the user activates.
+. **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. The membership is added only when the user activates the account.
 . **If the user exists but is NOT in this team** → create an `auth_invitations` document with `isNewUser: false`. Do NOT add membership yet. Send invite email with link to `{frontend-url}/invitations/accept?email=...&token=...`.
 . Return `201 Created`.
 
 [NOTE]
 ====
-All invitation tokens — for both new and existing users — are stored exclusively in the `auth_invitations` collection (same database as `users` and `acl`). No `inviteToken` or `inviteCreatedAt` fields are written to user documents.
+The invitation tokens of new and existing users are stored only in the `auth_invitations` collection, in the same database as `users` and `acl`. The user documents get no `inviteToken` or `inviteCreatedAt` field.
 
 The `auth_invitations` document schema:
 
@@ -88,6 +88,8 @@ The `auth_invitations` document schema:
 ----
 ====
 
+IMPORTANT: The token activates the invited account, so nobody but the invitee must learn it. A permission that lets a role read `auth_invitations` should hide it with `projectResponse`. Since v9.17 RESTHeart also refuses, with `403`, any request whose `filter` or `sort` refers to `token` in `auth_invitations`: a condition on a hidden field would reveal its value over several requests. See link:/docs/security/security-hardening#the-password-and-the-one-time-tokens-cannot-be-queried[Security Hardening].
+
 === Email links
 
 [cols="1,1"]
@@ -103,7 +105,7 @@ The `auth_invitations` document schema:
 
 == Read invitation metadata
 
-`GET /auth/invitation?email=...&token=...` — public.
+`GET /auth/invitation?email=...&token=...`: public.
 
 The frontend calls this on page load to determine which UI to show and to display the team name and role.
 
@@ -138,7 +140,7 @@ Both parameters are required. The `(email, token)` pair is known only to the inv
 
 == Activate an invitation (new user)
 
-`PATCH /auth/activate` — public (the user has only the token link).
+`PATCH /auth/activate` is public: the user has only the link with the token.
 
 === Request
 
@@ -157,13 +159,13 @@ Content-Type: application/json
 === Server-side steps
 
 . Find invitation by `(email, token)` in `auth_invitations` (not on user document).
-. Verify `isNewUser: true` — `400` otherwise (wrong endpoint).
+. Verify `isNewUser: true`. Otherwise `400`: this is the wrong endpoint for the invitation.
 . Check expiry (TTL 7 days).
 . Enforce password strength.
 . Set password, assign `roles: ["user"]`.
-. `MembershipProvider.addMember(userId, teamId, role)` — adds user to the team and sets active team (reads `teamId` and `role` from the invitation document).
+. `MembershipProvider.addMember(userId, teamId, role)` adds the user to the team and makes it the active team. `teamId` and `role` come from the invitation document.
 . Delete invitation from `auth_invitations` (one-shot).
-. Issue JWT → auto-login. The token is delivered per the optional `delivery` query parameter: `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0, returns `access_token`/`token_type`/`expires_in` in the response body plus the `Auth-Token` header, no cookie — for cross-origin SPAs using Bearer auth).
+. Issue JWT → auto-login. The token is delivered per the optional `delivery` query parameter: `cookie` (default, sets the `rh_auth` cookie) or `body` (since 9.6.0), which returns `access_token`, `token_type` and `expires_in` in the response body and the `Auth-Token` header, without a cookie. Use `body` for a cross-origin SPA that sends a Bearer token.
 . Return `200 OK`.
 
 [NOTE]
@@ -181,7 +183,7 @@ Consents are not managed by this endpoint. See link:/docs/accounts/consents-mana
 
 == Accept an invitation (existing user)
 
-`POST /auth/accept-invite` — requires authentication.
+`POST /auth/accept-invite`: requires authentication.
 
 === Request
 
@@ -199,10 +201,10 @@ Content-Type: application/json
 === Server-side steps
 
 . Find invitation by `token` in `auth_invitations`.
-. Verify `isNewUser: false` — `400` otherwise (wrong endpoint).
+. Verify `isNewUser: false`. Otherwise `400`: this is the wrong endpoint for the invitation.
 . Verify invitation email matches the authenticated user.
-. `MembershipProvider.addMember(userId, teamId, role)` — adds user to team.
-. `MembershipProvider.setActiveMembership(userId, teamId)` — switches the user's active team to the newly joined one.
+. `MembershipProvider.addMember(userId, teamId, role)` adds the user to the team.
+. `MembershipProvider.setActiveMembership(userId, teamId)` makes the new team the active one.
 . Delete invitation from `auth_invitations`.
 . Return `200 OK`.
 
@@ -230,7 +232,7 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 . OAuth callback detects `$unauthenticated` user with `pendingInviteToken`.
 . Find invitation by `(email, pendingInviteToken)` in `auth_invitations`; call `MembershipProvider.addMember(userId, teamId, role)` to set team.
 . Clear the placeholder password and record the provider in `socialAuths` (since 9.13.0).
-. `MembershipProvider.activateViaOAuth(userId, consents)` — assigns `roles: ["user"]`, stores consents.
+. `MembershipProvider.activateViaOAuth(userId, consents)` assigns `roles: ["user"]` and stores the consents.
 . Delete invitation from `auth_invitations`. JWT cookie set, redirect to `frontend-app-url`.
 
 === Existing user
@@ -242,7 +244,7 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 
 == Re-send an invitation
 
-`POST /auth/resend-invite` — requires role `owner`.
+`POST /auth/resend-invite`: requires role `owner`.
 
 *Request body:*
 
@@ -256,9 +258,9 @@ Returns `200 OK` on success. Returns `404` if no pending invitation is found for
 
 == List pending invitations
 
-`GET /auth/invitations` — requires authentication (owner/admin only).
+`GET /auth/invitations` requires authentication, as owner or admin.
 
-Returns all pending (non-expired) invitations for the caller's active team. The `token` field is intentionally excluded from the response (sensitive — one-shot secret).
+Returns all pending (non-expired) invitations for the caller's active team. The response never includes the `token` field: it is a secret, valid once.
 
 === Request
 
@@ -289,9 +291,9 @@ Disabled when `accountsConfig.membership-endpoints-enabled: false`.
 
 == List team members
 
-`GET /auth/team/members` — requires authentication.
+`GET /auth/team/members`: requires authentication.
 
-Returns the caller's active team's member list — email, name, role, and `joinedAt` — denormalized against each member's `profile`. There is no caller-supplied team filter: always the caller's own active team, so a regular member can see the roster too (not just `owner`).
+Returns the members of the caller's active team: email, name, role and `joinedAt`, with the name read from each member's `profile`. The caller cannot ask for another team. Every member of the team can read the list, an `owner` and a regular member alike.
 
 === Request
 
@@ -313,7 +315,7 @@ Authorization: Bearer <token>
 
 === Server-side steps
 
-. Read the caller's active team via `MembershipProvider.activeMembership(userId)` — `403 Forbidden` if the caller has no active team.
+. Read the caller's active team with `MembershipProvider.activeMembership(userId)`. Without an active team: `403 Forbidden`.
 . Call `MembershipProvider.listTeamMembers(teamId)`.
 . Return `200 OK`.
 
@@ -321,7 +323,7 @@ Disabled when `accountsConfig.membership-endpoints-enabled: false`.
 
 == Remove a member
 
-`DELETE /auth/remove-member` — requires role `owner`.
+`DELETE /auth/remove-member`: requires role `owner`.
 
 === Request
 
@@ -339,7 +341,7 @@ Content-Type: application/json
 === Server-side steps
 
 . Authorize the caller (must be `owner` of their active team).
-. Verify the target user is a member of the caller's team — `404 Not Found` otherwise.
+. Verify the target user is a member of the caller's team, `404 Not Found` otherwise.
 . Prevent the owner from removing themselves (`400 Bad Request`).
 . Call `MembershipProvider.removeMember(email, teamId)`.
 . Return `200 OK`.
@@ -356,7 +358,7 @@ Content-Type: application/json
 
 == Update a member's role
 
-`PATCH /auth/member-role` — requires role `owner`.
+`PATCH /auth/member-role`: requires role `owner`.
 
 === Request
 
@@ -379,8 +381,8 @@ IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as
 === Server-side steps
 
 . Authorize the caller (must be `owner` of their active team).
-. Validate `role` — `400 Bad Request` if not `memberRoleName` or `ownershipRole`.
-. Verify the target user is a member of the caller's team — `404 Not Found` otherwise.
+. Validate `role`: it must be `memberRoleName` or `ownershipRole`, otherwise `400 Bad Request`.
+. Verify the target user is a member of the caller's team, `404 Not Found` otherwise.
 . Call `MembershipProvider.updateMemberRole(email, teamId, newRole)`.
 . Return `200 OK`.
 
@@ -397,6 +399,6 @@ IMPORTANT: The `admin` role is a system-level ACL role and cannot be assigned as
 == See also
 
 Team *lifecycle* management (create an additional team, rename/edit, delete) is
-a separate concern from membership — see xref:auth-flows.adoc[Authentication Flows]
+a separate concern from membership: see xref:auth-flows.adoc[Authentication Flows]
 sections *10. Create an Additional Team*, *14. Update a Team*, and
 *15. Delete a Team*.

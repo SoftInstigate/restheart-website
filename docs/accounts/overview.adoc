@@ -8,13 +8,13 @@ applies_to: both
 
 [NOTE]
 ====
-`restheart-accounts` is available starting from *RESTHeart v9.4*, but always use the **latest RESTHeart version**: the plugin has received substantial additions and security fixes since its introduction (see xref:security.adoc[Security] for the `/users` write restriction added in 9.6.0, among others). *v9.4* and *v9.5* should be considered deprecated for practical purposes.
+`restheart-accounts` is available from *RESTHeart v9.4*. Use the **latest RESTHeart version**: the plugin has received features and security fixes in almost every release since, such as the `/users` write restriction of 9.6.0 (see xref:security.adoc[Security]). Do not run it on *v9.4* or *v9.5*.
 ====
 
-`restheart-accounts` is a RESTHeart plugin that adds application-level account management to any RESTHeart deployment.
-It covers the full user lifecycle — registration, email verification, team invitations, password reset, and Google OAuth social login — as a set of configurable HTTP endpoints backed by the existing MongoDB user collection (`mongoRealmAuthenticator`).
+`restheart-accounts` is a RESTHeart plugin that manages the accounts of an application.
+It provides HTTP endpoints for registration, email verification, team invitations, password reset and social login with Google and GitHub. The accounts are the documents of the users collection of `mongoRealmAuthenticator`.
 
-The plugin is designed to be a first-class RESTHeart module: all features are opt-in, configured exclusively via `restheart.yml`, and produce standard JWT tokens that integrate transparently with the existing RESTHeart security pipeline.
+Every feature is disabled until `restheart.yml` enables it. A login issues a standard RESTHeart JWT, so authentication and the ACL work on these accounts as on any other user.
 
 [source,mermaid]
 ----
@@ -75,14 +75,17 @@ See xref:membership-providers.adoc[Custom Membership Providers] for details.
 
 CAUTION: Since RESTHeart 9.6.0.
 
-Once `accountsInitializer` is enabled, management of the `users` collection passes to `restheart-accounts`: the generic MongoDB REST resource at `/users` blocks self-service writes to a set of account-management fields, regardless of what ACL the application defines.
+Once `accountsInitializer` is enabled, `restheart-accounts` manages the `users` collection. The MongoDB REST resource at `/users` then refuses the writes to the fields that define an account, whatever the ACL of the application allows.
 
-* `PUT` and `POST` are always rejected — creating or fully replacing a user document must go through a `restheart-accounts` endpoint (`/auth/register`, `/auth/verify`, `/auth/activate`, `/auth/accept-invite`, the OAuth callback, ...), never the generic REST resource.
-* `PATCH` is rejected if it touches `password`, `roles`, `team`, `teams`, `sub`, `socialAuths`, `providerId`, `emailVerificationToken`, `emailVerificationCreatedAt`, `passwordResetToken`, `passwordResetCreatedAt`, `inviteToken`, or `_id`. This is enforced regardless of how the field is expressed — dot notation (`team.role`) or a MongoDB update operator (`$set`, `$push`, `$addToSet`, ...) — so `{"$set": {"teams.0.role": "owner"}}` is rejected exactly like `{"teams": [...]}`. Every other field — `profile.*`, `consents`, and any application-level field — is left to the application's own ACL.
+* `PUT` and `POST` are always rejected. A user document is created or replaced only through an endpoint of `restheart-accounts`: `/auth/register`, `/auth/verify`, `/auth/activate`, `/auth/accept-invite`, the OAuth callback.
+* `PATCH` is rejected if it touches `password`, `roles`, `team`, `teams`, `sub`, `socialAuths`, `providerId`, `emailVerificationToken`, `emailVerificationCreatedAt`, `passwordResetToken`, `passwordResetCreatedAt`, `inviteToken`, or `_id`. The form of the write does not matter: dot notation (`team.role`) and update operators (`$set`, `$push`, `$addToSet`) are checked too, so `{"$set": {"teams.0.role": "owner"}}` is rejected as `{"teams": [...]}` is.
+* Every other field, such as `profile.*`, `consents` and the fields of the application, is left to the ACL of the application.
 
-This closes a privilege-escalation path: an ACL commonly grants an authenticated user permission to `PATCH` their own `/users/{email}` document for self-editing (profile, application-level data, ...). Without this restriction, that same permission would let the user rewrite *any* field on their own document — `roles`, `team`/`teams`, or a directly-set `password` — e.g. promoting themselves to `owner` of a team. The restriction is enforced unconditionally, for every application built on `restheart-accounts`, independent of how permissive its own ACL is — and it doesn't affect `restheart-accounts` itself, since every endpoint that legitimately needs to set `roles`/`teams`/`password`/tokens writes to MongoDB directly via the driver, not through the REST resource.
+The reason is a common permission. An ACL usually lets an authenticated user `PATCH` their own `/users/{email}` document, to edit the profile and the data of the application. Without this restriction the same permission would let the user rewrite `roles`, `teams` or `password` on their own document, for example to become `owner` of a team.
 
-**Exceptions** are configured via `accountsConfig.users-unrestricted-roles` — a list of roles exempt from the restriction (both the `PUT`/`POST` block and the field denylist on `PATCH`), useful for an internal admin console that manages `roles`/`teams` directly:
+The restriction applies to every application built on `restheart-accounts`, whatever its ACL. The endpoints of `restheart-accounts` are not affected: they write `roles`, `teams`, `password` and the tokens to MongoDB with the driver, without going through the REST resource.
+
+**Exceptions.** `accountsConfig.users-unrestricted-roles` lists the roles exempt from the restriction, both the `PUT` and `POST` block and the field list on `PATCH`. An internal admin console that manages `roles` and `teams` needs it:
 
 [source,yaml]
 ----
@@ -90,16 +93,22 @@ accountsConfig:
   users-unrestricted-roles: [admin]
 ----
 
-Leave it unset (the default) to apply the restriction to every caller, with no exceptions. In multi-tenant deployments this can also be overridden per team — see `override-accounts-users-unrestricted-roles` in the table below.
+Unset, the default, the restriction applies to every caller. A multi-tenant deployment can override the list per team: see `override-accounts-users-unrestricted-roles` in the table below.
 
-See xref:security.adoc#users-self-service-write-restriction[Accounts / Security] for the full technical explanation.
+See xref:security.adoc#users-self-service-write-restriction[Accounts / Security] for the details.
+
+**The one-time tokens cannot be queried.** Since v9.17 a request gets `403` when its `filter` or `sort` refers to `emailVerificationToken`, `passwordResetToken` or `inviteToken` in the users collection, or to `token` in `auth_invitations`. It applies to every method and to every role.
+
+With one of these tokens a client could verify an address it does not own, or set the password of another account. A condition on a field reveals its value over several requests, also when the response hides the field.
+
+The check is the `denyFilterOnAccountTokens` interceptor, enabled by default: see link:/docs/security/security-hardening#the-password-and-the-one-time-tokens-cannot-be-queried[Security Hardening].
 
 === Multi-tenancy
 
-`restheart-accounts` supports multi-team deployments without any custom code in the plugin itself.
-All services check for request attributes injected by an upstream interceptor (such as `AuthDbResolver` or `TeamConfigInterceptor`) and use them in place of the static configuration values.
+One deployment can serve several tenants, each with its own users database and settings.
+Each service of `restheart-accounts` reads its settings from request attributes when they are present, and from the configuration otherwise. An interceptor that you write for your deployment attaches the attributes to the request.
 
-See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanism and xref:membership-providers.adoc[Custom Membership Providers] for replacing the built-in team storage model.
+See xref:multi-tenancy.adoc[Multi-tenancy] for the overrides, and xref:membership-providers.adoc[Custom Membership Providers] to replace the way teams are stored.
 
 .Full list of override request attributes
 |===
@@ -155,28 +164,29 @@ See xref:multi-tenancy.adoc[Multi-tenancy] for the per-request override mechanis
 
 |===
 
-When an attribute is absent the plugin falls back to the corresponding static value in `accountsConfig` / `oauthConfig`.
+Without an attribute, the plugin uses the value in `accountsConfig` or `oauthConfig`.
 
-A typical multi-team setup (e.g. Ulabase) has two interceptors running at `REQUEST_BEFORE_EXCHANGE_INIT`:
+A typical multi-team setup, e.g. Ulabase, has two interceptors of its own, both at `REQUEST_BEFORE_EXCHANGE_INIT`:
 
-* `AuthDbResolver` — maps the incoming hostname to the correct `override-users-db` and `override-cookie-domain`.
-* `TeamConfigInterceptor` — reads the `confs/{srvId}.accounts` MongoDB document and attaches the remaining override attributes (`app-name`, `frontend-url`, per-team templates, per-team OAuth credentials).
+* one maps the hostname of the request to its `override-users-db` and `override-cookie-domain`;
+* one reads the settings of the team from a MongoDB document and attaches the other attributes: `app-name`, `frontend-url`, the templates and the OAuth credentials of the team.
 
-Neither interceptor is part of `restheart-accounts`; they belong to the deployment layer (e.g. `restheart-cloud-server`).
-No configuration changes to the plugin are needed per team.
+`restheart-accounts` does not ship these interceptors: they depend on how the deployment maps a request to a tenant. link:https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/java/org/restheart/test/plugins/interceptors/DbOverrideInterceptor.java[`DbOverrideInterceptor`], in the test plugins of RESTHeart, is a minimal example: it attaches `override-users-db` from a query parameter.
+
+A new team needs no change to the configuration of the plugin.
 
 === OAuth & MCP
 
-`restheart-accounts` implements **social login** via the `/auth/oauth/*` endpoints, with built-in support for **Google** and **GitHub** and a Java SPI for registering custom providers.
-The plugin exchanges the OAuth authorization code (using ScribeJava) for user information, creates or updates the user document in MongoDB, and issues a RESTHeart JWT cookie — no custom OAuth logic required in the client.
+`restheart-accounts` implements **social login** with the `/auth/oauth/*` endpoints. **Google** and **GitHub** are built in, and a Java SPI registers other providers.
+The plugin exchanges the OAuth authorization code for the user information (with ScribeJava), creates or updates the user document in MongoDB, and issues a RESTHeart JWT cookie. The client only follows the redirects.
 
-This is **distinct** from RESTHeart's built-in **OAuth 2.1 authorization server**, which is part of RESTHeart core and exposes standard endpoints (`/authorize`, `/token`, `/introspect`, etc.) intended for tool and client authentication — primarily for MCP (Model Context Protocol) integrations.
-The two systems serve different purposes and operate completely independently.
+RESTHeart core also has an **OAuth 2.1 authorization server**, with the standard endpoints `/authorize`, `/token` and `/introspect`. That one authenticates tools and clients, mainly for MCP (Model Context Protocol).
+The two are independent: social login signs a person in with an external provider, and the authorization server issues tokens to the clients of RESTHeart.
 
 See xref:google-oauth.adoc[OAuth 2.0 Social Login] for setup instructions for all providers, including the custom provider SPI.
 
 === Dependencies
 
 * RESTHeart ≥ 9.3 with `mongoRealmAuthenticator` and `jwtTokenManager` enabled.
-* An SMTP provider configured via the `emails` section (required for all email-based flows).
-* OAuth provider credentials (optional — required only for the providers enabled under `oauthConfig.providers`).
+* An SMTP provider configured in the `emails` section, required by every flow that sends an email.
+* OAuth provider credentials, only for the providers enabled under `oauthConfig.providers`.

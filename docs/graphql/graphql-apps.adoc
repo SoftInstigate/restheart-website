@@ -46,8 +46,13 @@ graphql:
   # either cap is refused before any resolver runs, 400 with the error. 0 means no cap.
   max-query-depth: 0
   max-query-complexity: 0
+  # Arguments are values: an argument with operators is refused, and a string argument starting
+  # with $ is bound in $literal where MongoDB would read it as a field path or a variable.
+  check-operators: true
   verbose: false
 ----
+
+NOTE: `check-operators` is available from v9.17. See <<arguments-are-values>>.
 
 NOTE: `max-query-depth` and `max-query-complexity` are available from v9.12.3. They bound the shape of a query, where `query-time-limit` bounds how long it runs: a query nested beyond the depth, or selecting more fields than the complexity allows (nested fields weigh more), is refused with `400` before any data is fetched. On a server that many tenants share, `10` and `1000` are a sound start.
 
@@ -217,7 +222,9 @@ You can establish a mapping between a GraphQL Object field and a MongoDB query u
 - `skip` (Document or Integer): The number of documents to skip among those resulting from the query.
 - `limit` (Document or Integer): The maximum number of documents to return among those resulting from the query.
 
-NOTE: It's important to note that unlimited queries are not allowed. If the query doesn't specify a `limit`, the service configuration's `default-limit` is applied. Additionally, the limit cannot exceed the `max-limit`.
+NOTE: Every query has a limit. A query without a `limit` gets the `default-limit` of the service configuration, and a `limit` cannot be higher than `max-limit`.
+
+NOTE: Since v9.17 the `find` and the `sort`, with their arguments bound, go through the `aggregationSecurity` blacklists, as the stages of an aggregation mapping do. `$where`, `$function` and `$accumulator` never reach MongoDB from a mapping. See link:/docs/mongodb-rest/aggregations#security-considerations[Aggregation Pipeline Security].
 
 ==== Field to Aggregation mapping
 
@@ -227,7 +234,7 @@ You can link a GraphQL Object field with a MongoDB aggregation using the followi
 - `collection` (String): The name of the collection.
 - `stages` (Array): An array of aggregation stages.
 
-Similar to field-to-query mapping, you can utilize `$arg` and `$fk` operators within aggregation stages. In reference to the previous mapping example, the following aggregation stages are possible:
+The stages can use the `$arg` and `$fk` operators, as a field-to-query mapping does. For example:
 
 [source,json]
 ----
@@ -264,7 +271,7 @@ Mappings can reference server-resolved variables through `$arg`, in both field-t
 [cols="2,5"]
 |===
 |Variable |Resolves to
-|`@user` |the authenticated account; which properties it has depends on how the caller authenticated — `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
+|`@user` |the authenticated account. Its properties depend on how the caller authenticated: `@user._id` against MongoDB users, `@user.userid` against the file realm, `@user.sub` with a token. See link:/docs/security/permissions#identifying-the-caller[Identifying the caller]
 |`@roles` |the authenticated user's roles, as an array
 |`@authenticated` |`true` when the request is authenticated
 |`@request` |the request; `@request.body`, `@request.method`, and nested properties with dot notation
@@ -275,7 +282,7 @@ Mappings can reference server-resolved variables through `$arg`, in both field-t
 |`@mongoPermissions` |the permissions applying to the request, e.g. `@mongoPermissions.readFilter`
 |===
 
-Any variable a plugin registers through the `VarResolver` SPI works here too — the Stripe module's `@subscription`, for instance.
+A variable that a plugin registers through the `VarResolver` SPI works here too, such as the `@subscription` of the Stripe module.
 
 NOTE: Before RESTHeart 9.9 only `@user` resolved inside a mapping; every other variable failed with `variable ... not bound`.
 
@@ -312,21 +319,21 @@ type Query {
 
 With this configuration, the `me` query will return the `User` object corresponding to the authenticated user.
 
-The `$or` is there because the two kinds of caller are identified differently: `@user._id` for an account read from MongoDB users, `@user.sub` for one carried by a token. Each `$arg` takes `null` as its default so that the branch which does not apply simply does not match — without a default, a name the account does not carry fails the query with `variable not bound` (since 9.8.2; before, it bound `null`, and `{"_id": null}` matches any document without an `_id`, which no document has, so that particular case was harmless here).
+The `$or` handles the two kinds of caller: an account read from MongoDB users has `@user._id`, and one carried by a token has `@user.sub`.
+
+Each `$arg` has `null` as its default, so the branch of the other kind of caller matches nothing. Without a default, a name the account does not carry fails the query with `variable not bound` (since 9.8.2).
 
 ===== Optional Stages
 
 Field-to-aggregation mapping can include optional stages that are executed only when one or more arguments are specified. This feature enables the handling of optional GraphQL arguments.
 
-Optional Stages in field-to-aggregation mapping are similar to Optional Stages in regular aggregations. The main difference lies in the conditional operators used. In field-to-aggregation mapping, the optional stage operator is `$ifarg`, whereas in regular aggregations, it is `$ifvar`.
-
-For a more in-depth understanding of how to use optional stages in both field-to-aggregation mapping and regular aggregations, please refer to the link:/docs/mongodb-rest/aggregations#optional-stages[Aggregation documentation].
+They work as the optional stages of an aggregation, with the operator `$ifarg` in place of `$ifvar`: see link:/docs/mongodb-rest/aggregations#optional-stages[Optional stages].
 
 ==== Mappings operators
 
-_Field to Query_ and _Field to Aggregation_ mappings provide the flexibility to employ the `$arg` and `$fk` operators:
+_Field to Query_ and _Field to Aggregation_ mappings can use two operators:
 
-- `$arg`: This operator enables the utilization of GraphQL arguments within mappings, enhancing dynamic query or aggregation generation.
+- `$arg`: the value of a GraphQL argument, bound into the query or the aggregation.
 - `$fk`: It allows the specification of the document field responsible for holding a relation. It enables traversing related documents.
 
 For instance, consider the following GraphQL schema:
@@ -430,7 +437,7 @@ NOTE: the `$fk` and `$arg` operators allow the usage of dot notation to traverse
 
 ==== Dot Notation support for `$arg` and `$fk`
 
-The `$fk` and `$arg` operator can utilize dot notation to access nested properties.
+The `$fk` and `$arg` operators read a nested property with the dot notation.
 
 The Dot Notation support for `$arg` feature enables the handling of `InputTypes`. The following example  will clarify:
 
@@ -461,21 +468,55 @@ The Query mapping can use the dot notation as follows to cope the `Filters Input
 
 ==== Arguments with Default Values
 
-The `$arg` operator can specify a default value. This default value is utilized when an optional argument is not provided in the GraphQL Query.
+`$arg` can have a default value, used when the GraphQL query does not pass an optional argument. `{"$arg": ["name", "Andrea"]}` gives the argument `name` the default `Andrea`.
 
-Arguments with Default Values in GraphQL mappings are similar to those in regular aggregations. The primary distinction lies in the operators used. In GraphQL mappings, the operator is `$arg`, whereas in regular aggregations, it is `$var`.
+It works as a `$var` with a default in an aggregation: see link:/docs/mongodb-rest/aggregations#variables-with-default-values[Variables with default values].
 
-For example, the following code specifies the default value `Andrea` for the argument `name`: `{"$arg": [ "name", "Andrea"]}`.
+[[arguments-are-values]]
+==== Arguments are values
 
-For a more comprehensive understanding of how to use arguments with default values, please refer to the link:/docs/mongodb-rest/aggregations#variables-with-default-values[Aggregation documentation].
+The query of a mapping is written by whoever defines the app. An argument is a value. Since v9.17, with `check-operators` enabled, the default:
+
+* an argument that carries a MongoDB operator, a key starting with `$`, is refused with the error `arguments cannot include operators`. Only a `BsonDocument` argument passed as a GraphQL variable can carry one;
+* a string argument starting with `$` is bound as `{"$literal": value}` where MongoDB would read it as a field path or as a variable: in the expressions of an aggregation mapping, and under `$expr` in a `find`.
+
+An example of what the check stops. With this mapping, and `template` of type `BsonDocument`:
+
+[source,json]
+----
+{ "$match": { "fsType": "Dataset", "template.uid": { "$arg": "template" } } }
+----
+
+a client that passes `{"$ne": null}` as `template` reads the datasets of every template. With `check-operators` the query is refused. Where the client passes one value, give the argument a scalar type such as `String`.
+
+===== An argument that carries a query: `"operators": true`
+
+Some apps let the client write a filter on purpose, in a `BsonDocument` argument. The mapping declares that argument with `"operators": true`:
+
+[source,json]
+----
+"stages": [
+  { "$match": { "fsType": "Dataset", "template.uid": "company" } },
+  { "$ifarg": [ "filter", { "$match": { "$arg": "filter", "operators": true } } ] },
+  { "$ifarg": [ "sort",   { "$sort":  { "$arg": "sort" } } ] }
+]
+----
+
+The declared arguments skip the check. The other arguments of the mapping keep it: here `sort`, which needs no operator. The form with a default is `{"$arg": ["filter", {}], "operators": true}`.
+
+Put the client's filter in a `$match` of its own, after the one the app fixes. A stage reads only the documents the stage before it lets through, so here the client filters the `company` datasets and nothing else.
+
+An argument declared with `"operators": true` in one place of a mapping and without it in another makes the app invalid. So does an `"operators"` that is not `true` or `false`.
+
+A declared argument still cannot run JavaScript. `$where`, `$function` and `$accumulator` in it are refused by the `aggregationSecurity` blacklists.
+
+`check-operators: false` turns the check off for every argument of every app. It turns off the `$literal` binding too. Use `"operators": true` on the arguments that need it.
 
 ==== The `rootDoc` argument
 
 TIP: more details about this feature are available on github link:https://github.com/SoftInstigate/restheart/issues/469[issue 469]
 
-The `{"$arg": "rootDoc"}` argument is a versatile tool that can be employed in both _Field to Query_ and _Field to Aggregation_ mappings.
-
-It enables the utilization of properties from the root document when crafting queries and aggregations.
+`{"$arg": "rootDoc"}` is the root document: the document of the parent object, whose field is being resolved. A _Field to Query_ or a _Field to Aggregation_ mapping uses its properties in the query.
 
 The root document, in this context, is the first document retrieved from the source.
 
@@ -591,7 +632,7 @@ The following mappings defines the _TypeResolver_ using the `$typeResolver` keyw
 
 The `$typeResolver` serves as an object that establishes a mapping between the names of concrete types (such as `InternalCourse` and `ExternalCourse`) and corresponding predicates. These predicates are evaluated against a document, and if a predicate returns `true`, the GraphQL type associated with that predicate is used to represent the document.
 
-This mechanism allows for dynamic determination of the GraphQL type for a document based on the conditions defined in the predicates. It's a powerful way to handle polymorphism and resolve the actual type of objects when querying against an interface.
+The predicates decide the GraphQL type of each document. A query against an interface then returns each object with its own type.
 
 `$typeResolver` can use the following predicates:
 
@@ -644,7 +685,7 @@ NOTE: An example GraphQL application that uses `union` is link:https://github.co
 
 === Hiding fields by role: `@visible`
 
-Write `@visible(roles: [...])` on a field to restrict who sees it. The directive is declared for you — do not declare it in your SDL:
+Write `@visible(roles: [...])` on a field to restrict who sees it. RESTHeart declares the directive: do not declare it in your SDL.
 
 [source,graphql]
 ----
@@ -655,7 +696,7 @@ type Employee {
 }
 ----
 
-A caller whose roles do not include `hr` or `admin` gets a schema without `salary`. Introspection does not list it, and asking for it is a validation error saying the field does not exist — so a caller who may not see a field does not learn it is there.
+A caller whose roles do not include `hr` or `admin` gets a schema without `salary`. Introspection does not list it, and a query that asks for it gets a validation error: the field does not exist. A caller who may not see a field does not learn that it is there.
 
 Undecorated fields are visible to everyone: visibility is opt-in per field, and adding the directive to a schema changes nothing until you write it on a field. An unauthenticated caller has no roles, so it sees only the fields no `@visible` restricts.
 

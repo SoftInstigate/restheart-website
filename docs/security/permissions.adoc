@@ -19,14 +19,14 @@ applies_to: both
 
 === Introduction
 
-This section provides comprehensive information about managing permissions in RESTHeart using the ACL (Access Control List) based authorization system.
+This page describes the permissions of the ACL (Access Control List): their format, how they are evaluated, and how to manage them.
 
-RESTHeart's pluggable security architecture supports different authorizers. This documentation focuses on **mongoAclAuthorizer** and **fileAclAuthorizer**, which share the same permission format:
+An authorizer is a plugin, and RESTHeart can run more than one. This page covers **mongoAclAuthorizer** and **fileAclAuthorizer**, which share the same permission format:
 
 - **mongoAclAuthorizer**: Stores permissions as JSON documents in a MongoDB collection (default: `/acl`)
 - **fileAclAuthorizer**: Stores permissions in a YAML configuration file
 
-Both authorizers provide a powerful, declarative ACL-based model for fine-grained access control.
+With both, a permission declares which roles may execute which requests, and what they may read and write.
 
 TIP: For an overview of RESTHeart's security architecture, see link:/docs/security/overview[Security Overview] and link:/docs/security/authorization[Authorization].
 
@@ -212,7 +212,7 @@ NOTE: When using BSON predicates with values, use valid JSON/BSON syntax: `"1"` 
 
 CAUTION: `gte` and `lte` are available since RESTHeart 9.8.0.
 
-Use `gte`/`lte` rather than `equals` whenever you compare numbers: `equals` compares its operands as *strings*, so `"10"` sorts before `"9"`. Both operands are parsed as numbers, and an operand that is not numeric — including an `@`-variable that failed to resolve — makes the predicate `false`, never `true`: a comparison that cannot be evaluated must not grant access.
+Use `gte`/`lte` rather than `equals` whenever you compare numbers: `equals` compares its operands as *strings*, so `"10"` sorts before `"9"`. Both operands are parsed as numbers. An operand that is not numeric, such as an `@`-variable that did not resolve, makes the predicate `false`: a comparison that cannot be evaluated grants nothing.
 
 ==== Using Variables in Predicates
 
@@ -220,17 +220,14 @@ Predicates can reference dynamic values using special variables:
 
 ==== Telling an anonymous caller apart
 
-A permission says who it is for with `roles`, and needs nothing else. A *predicate* had no way to
-ask — which matters wherever a predicate is used to decide whether a rule applies at all, such as a
-link:https://ulabase.com/docs/guards[Guards] condition.
+A permission says who it is for with `roles`. A *predicate* sometimes needs the same information. Two cases:
 
-The failure is quiet. A rule keyed on a user's state — "has this person accepted the current
-terms?" — runs the same comparison for a caller who has no user, finds it false, and acts on it. An
-anonymous visitor is shown a form they cannot possibly complete, because completing it means
-writing to a user document they do not have. A webhook from a payment provider is refused, and the
-order it was carrying is never updated.
+* one permission serves anonymous and signed-in callers together;
+* a plugin evaluates a predicate for a rule of its own, outside a permission, where no `roles` say who the rule is for.
 
-`@authenticated` answers it. It is the string `'true'` when the request carries an account and
+A comparison on a property of the user cannot answer. `equals(@user.termsAccepted, 'true')` is false for a user who has not accepted the terms, and it is false for a caller with no account too: the variable does not resolve. The predicate treats the two in the same way, without any error.
+
+`@authenticated` tells them apart. It is the string `'true'` when the request carries an account and
 `'false'` when it does not:
 
 [source,text]
@@ -240,6 +237,16 @@ equals(@authenticated, 'true')
 
 # only applies to anonymous ones
 equals(@authenticated, 'false')
+----
+
+For example, this permission lets everyone read the posts, and only signed-in callers read the drafts:
+
+[source,json]
+----
+{
+  "roles": ["$unauthenticated", "user"],
+  "predicate": "method(GET) and path-prefix('/posts') and (equals(@authenticated, 'true') or not path-prefix('/posts/drafts'))"
+}
 ----
 
 `@roles` is the caller's roles as an array, for deciding *which* signed-in callers a rule is about:
@@ -255,39 +262,37 @@ not in(value='staff', array=@roles) and not in(value='admin', array=@roles)
 
 [WARNING]
 ====
-Do not test for anonymity through `@roles`. `@roles` does resolve to `["$unauthenticated"]` for a
-request with no account — the name `mongoAclAuthorizer` uses — but the comparison cannot be
-written, because `$` is Undertow's sigil for an exchange attribute:
+Do not test for anonymity through `@roles`. For a request with no account `@roles` is `["$unauthenticated"]`, the name `mongoAclAuthorizer` uses. The comparison cannot be
+written, because in a predicate `$` marks an exchange attribute of Undertow:
 
 [source,text]
 ----
-# BROKEN — never matches, not even for an anonymous caller
+# BROKEN: never matches, not even for an anonymous caller
 in(value='$unauthenticated', array=@roles)
 ----
 
-`'$unauthenticated'` in a value position is read as an *attribute* of that name, resolves to
-nothing, and the comparison is false for everybody. The negated form is the dangerous one:
-`not in(value='$unauthenticated', array=@roles)` is true for every request, so a rule meant to skip
-anonymous callers applies to all of them — the opposite of what it says, and it fails silently.
+`'$unauthenticated'` in a value position is read as an *attribute* of that name. It resolves to
+nothing, and the comparison is false for everybody.
 
-Use `equals(@authenticated, 'true')` instead.
+The negated form is the dangerous one. `not in(value='$unauthenticated', array=@roles)` is true for every request: a rule meant to skip
+anonymous callers applies to all of them, and no error says so.
+
+Use `equals(@authenticated, 'true')`.
 ====
 
-NOTE: An authenticated account holding no roles resolves to an empty array, not to
-`$unauthenticated`. The two are different — an API key naming no roles is still a credential, and a
-rule written for guests must not apply to it. This is also why `@roles` cannot stand in for
-`@authenticated`: an empty array says nothing about whether anyone is signed in.
+NOTE: For an authenticated account with no roles, `@roles` is an empty array. An API key that names no roles is still a credential, and a rule written for guests must not apply to it. For the same reason `@roles` cannot replace
+`@authenticated`: an empty array does not say whether anyone is signed in.
 
 [options="header"]
 [cols="2,3"]
 |===
 |Variable |Description
 |`@user`
-|Properties of the authenticated account. **Which properties exist depends on how the caller authenticated** — see <<identifying-the-caller,Identifying the caller>> below. With `mongoRealmAuthenticator` they are the user document's (`@user._id`, `@user.email`, ...); with `fileRealmAuthenticator`, `@user.userid` and the roles; with a JWT, the token's claims (`@user.sub`, plus anything in `account-properties-claims`).
+|Properties of the authenticated account. **Which properties exist depends on how the caller authenticated**: see <<identifying-the-caller,Identifying the caller>> below. With `mongoRealmAuthenticator` they are the user document's (`@user._id`, `@user.email`, ...); with `fileRealmAuthenticator`, `@user.userid` and the roles; with a JWT, the token's claims (`@user.sub`, plus anything in `account-properties-claims`).
 |`@authenticated`
 |`'true'` when the request carries an account, `'false'` when it does not. Available from RESTHeart 9.8.
 |`@roles`
-|The caller's roles, as an array. Use it for role names; it cannot test for anonymity — see <<Telling an anonymous caller apart>>. Available from RESTHeart 9.8.
+|The caller's roles, as an array. Use it for role names. It cannot test for anonymity: see <<Telling an anonymous caller apart>>. Available from RESTHeart 9.8.
 |`@request`
 |Request properties (e.g., `@request.remoteIp`)
 |`@request.body`
@@ -331,18 +336,18 @@ rule written for guests must not apply to it. This is also why `@roles` cannot s
 |the token's other claims, plus whatever `jwtTokenManager/account-properties-claims` adds
 |===
 
-WARNING: **A JWT account has no `_id`.** A permission written as `readFilter: {"owner": "@user._id"}` therefore leaves the variable unresolved for every JWT caller — which, since 9.8.2, means it matches no document, and before 9.8.2 meant it matched every document without an owner. Use `@user.sub` when callers authenticate with a token, or add `_id` to `jwtTokenManager/account-properties-claims` so it travels in the token (string ids only). A permission that must serve both kinds of caller can test either: `equals(@user._id, ...) or equals(@user.sub, ...)` in a predicate, and `{"$or": [{"owner": "@user._id"}, {"owner": "@user.sub"}]}` in a filter.
+WARNING: **A JWT account has no `_id`.** A permission written as `readFilter: {"owner": "@user._id"}` therefore leaves the variable unresolved for every JWT caller. Since 9.8.2 the filter then matches no document. Before 9.8.2 it matched every document without an owner. Use `@user.sub` when callers authenticate with a token, or add `_id` to `jwtTokenManager/account-properties-claims` so it travels in the token (string ids only). A permission that must serve both kinds of caller can test either: `equals(@user._id, ...) or equals(@user.sub, ...)` in a predicate, and `{"$or": [{"owner": "@user._id"}, {"owner": "@user.sub"}]}` in a filter.
 
 TIP: Ulabase Kit applications authenticate with a JWT: Basic only on `POST /token`, Bearer afterwards. Their ACLs identify the caller by `@user.sub`.
 
 
-All of the above work identically in the `predicate` string, and in the `readFilter`/`mergeRequest` permission properties — one namespace, one place to look.
+All of the above work in the same way in the `predicate` string and in the `readFilter` and `mergeRequest` properties of a permission.
 
 ==== Adding a custom variable: the `VarResolver` SPI
 
 CAUTION: Since RESTHeart 9.7.0.
 
-The variables in the table above aren't special-cased by the framework — each is a `VarResolver`, registered at startup. A plugin can register its own the same way, making a new `@`-prefixed variable (e.g. `@subscription`) usable everywhere the built-ins are: `predicate` strings, `readFilter`, and `mergeRequest`.
+Each variable in the table above is a `VarResolver`, registered at startup. A plugin registers its own in the same way. The new `@` variable, e.g. `@subscription`, then works wherever the built-in ones do: `predicate` strings, `readFilter` and `mergeRequest`.
 
 [source,java]
 ----
@@ -356,12 +361,12 @@ public class SubscriptionVarResolver implements VarResolver {
     public BsonValue resolve(Request<?> request, String var) {
         var account = request.getAuthenticatedAccount();
         if (!(account instanceof MongoRealmAccount mra)) {
-            return null; // unresolved — see failure semantics below
+            return null; // unresolved: see failure semantics below
         }
 
         var plan = lookUpPlan(mra.properties().getString("_id").getValue());
 
-        // "var" is the full expression, e.g. "@subscription.plan" — parse whatever
+        // "var" is the full expression, e.g. "@subscription.plan": parse whatever
         // suffix your variable supports; here only the bare form is implemented.
         return "@subscription".equals(var) ? plan.asBson() : null;
     }
@@ -388,7 +393,7 @@ Then use it exactly like a built-in:
 }
 ----
 
-**Registration.** Built-in resolvers register first, at class-loading time, so they always win a name collision — registering an already-taken name (e.g. `user`) fails at startup with a clear `ConfigurationException` instead of silently being ignored.
+**Registration.** The built-in resolvers register first, at class-loading time. Registering a name already taken, e.g. `user`, fails at startup with a `ConfigurationException`.
 
 **Failure semantics.** Returning `null` (or throwing) from `resolve()` is treated as "unresolved", and an unresolved variable never widens access:
 
@@ -396,15 +401,16 @@ Then use it exactly like a built-in:
 * in a `readFilter` or `writeFilter` the same happens (since 9.8.2): the variable becomes a random value that matches no document, and a warning naming it is logged. The rest of the filter still applies, so `{"$or": [{"owner": "@user._id"}, {"public": true}]}` keeps returning the public documents;
 * in a `mergeRequest` an unresolved `@user` variable refuses the write with `403`, rather than storing `null`.
 
-WARNING: Before 9.8.2 an unresolved variable became MongoDB `null` in a filter — and `{"owner": null}` matches every document that has *no* owner, so the filter widened the read instead of narrowing it. Note that a negation of an unresolved variable still matches (`{"owner": {"$ne": "@user._id"}}`): do not negate `@` variables in filters.
+WARNING: Before 9.8.2 an unresolved variable became MongoDB `null` in a filter. `{"owner": null}` matches every document that has *no* owner, so the filter widened the read. The negation of an unresolved variable still matches, as in `{"owner": {"$ne": "@user._id"}}`: do not negate `@` variables in filters.
 
-TIP: `@subscription` is not hypothetical — link:/docs/stripe/plan-gates[`restheart-stripe`] registers exactly this variable to gate features by subscription plan and seat licence. See link:/docs/stripe/plan-gates[Plan Gates & ACL] for a working example, including the failure modes to avoid.
+TIP: link:/docs/stripe/plan-gates[`restheart-stripe`] registers `@subscription`, to gate features by subscription plan and seat licence. link:/docs/stripe/plan-gates[Plan Gates & ACL] has a working example and the mistakes to avoid.
 
 **The resolver contract:**
 
-* *No secrets in the returned value* — a registered variable also flows into `readFilter`, hence into MongoDB queries.
-* *Deterministic and request-scoped* — `resolve()` must be a pure function of the request and the authenticated identity, taking no input from whoever writes the predicate being evaluated.
-* *The cache belongs to the resolver* — the framework memoizes one call per distinct full expression per request (e.g. `@subscription.plan` computed once even if three permissions all reference it), but if your resolver does one expensive lookup behind several sub-properties (`@subscription.plan`, `@subscription.status`), caching that lookup across those calls is your own responsibility. Set `cacheable()` to `false` for a non-deterministic variable (mirroring how the built-in `@rnd` opts out — every occurrence must yield an independent value).
+* *No secrets in the returned value.* The value of a registered variable also goes into `readFilter`, and from there into MongoDB queries.
+* *Declare a resolver that returns filters.* Since v9.17 a resolved value that carries MongoDB operators is not put in a query: see <<variables-are-values>>. A resolver that returns filters overrides `operatorsAllowed()` and returns `true`, as the built-in `@mongoPermissions` and `@filter` do. The default is `false`.
+* *Deterministic and request-scoped.* `resolve()` must be a pure function of the request and of the authenticated identity. It takes no input from whoever writes the predicate.
+* *The cache belongs to the resolver.* RESTHeart calls a resolver once per request for each distinct full expression: `@subscription.plan` is computed once even if three permissions use it. A resolver that does one expensive lookup behind several sub-properties, such as `@subscription.plan` and `@subscription.status`, must cache that lookup itself. For a variable that is not deterministic, set `cacheable()` to `false`, as the built-in `@rnd` does: each occurrence must give an independent value.
 
 ===== Example: User Can Only Access Their Own Data
 
@@ -659,6 +665,29 @@ The `writeFilter` limits write operations (PATCH, PUT, DELETE) to documents matc
 
 WARNING: `writeFilter` only restricts updates to existing documents. It cannot prevent creating documents that don't match the filter. Use `mergeRequest` to enforce properties on creation.
 
+[[variables-are-values]]
+===== Variables in a filter are values
+
+A `readFilter` or a `writeFilter` is written by whoever writes the permission. A variable in it is a value, also when the value comes from the client: `@request.body.<path>` is the body the client sent, and `@user.<property>` can be a property the account is allowed to write.
+
+Since v9.17:
+
+* a variable whose value carries a MongoDB operator, a key starting with `$`, matches no document, and a warning naming it is logged. The rest of the filter still applies, as with an unresolved variable;
+* under `$expr`, a variable whose value is a string starting with `$` is bound as `{"$literal": value}`. MongoDB then reads it as a string. Outside `$expr` the string is already a value.
+
+For example, with this permission:
+
+[source,json]
+----
+"mongo": { "writeFilter": { "owner": "@request.body.owner" } }
+----
+
+a client that sends `{"owner": {"$ne": null}}` in the body matches no document. Before v9.17 the condition became `{"owner": {"$ne": null}}` and matched every document with an owner.
+
+`@mongoPermissions` and `@filter` are the exceptions: their values are filters. `@qparams['name']` is always a string. Predicates are not affected: there a value is quoted.
+
+In an link:/docs/mongodb-rest/aggregations#operator-injection-protection[aggregation] the same value refuses the request with `400`.
+
 ===== mergeRequest
 
 The `mergeRequest` automatically merges specified properties into the request body. This ensures certain fields are set server-side and cannot be overridden by clients.
@@ -715,6 +744,8 @@ The `projectResponse` removes (or includes) specific fields from API responses. 
 
 NOTE: You can use dot notation to hide nested properties: `"internal.secret": 0`
 
+IMPORTANT: `projectResponse` hides a field from the response. A client that may send `filter` or `sort` can still put a condition on the field, or sort by it, and learn its value over several requests. Leave <<allowfilter>> off for the roles that must not see the field. RESTHeart itself refuses a `filter` or a `sort` on the password and on the one-time tokens of the accounts: see link:/docs/security/security-hardening#the-password-and-the-one-time-tokens-cannot-be-queried[Security Hardening].
+
 [[allowfilter]]
 ===== allowFilter
 
@@ -752,7 +783,7 @@ The client gets `403` with the message `filter, sort and sort_by are not allowed
 
 `allowFilter` does not apply to:
 
-* writes: a bulk `PATCH` or `DELETE` needs a filter, and `allowBulkPatch` and `allowBulkDelete` decide about it;
+* writes: a bulk `PATCH` or `DELETE` needs a filter, and `allowBulkPatch` and `allowBulkDelete` decide about it. The filter of a bulk write tells, with the number of documents it matches, what the filter of a read tells: grant bulk writes only on collections without hidden fields;
 * the root role, and the requests a plugin allows through the `ACLRegistry`: they do not go through the permissions;
 * aggregations, which do not read `filter` or `sort`.
 
