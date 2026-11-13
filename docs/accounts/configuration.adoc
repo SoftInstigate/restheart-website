@@ -274,46 +274,50 @@ The claim is for the client, which reads from it which team it is working in; wi
 
 WARNING: Migrating to 9.12.0: in ACL rules replace `@user.team._id` and `@user.team.role` with `@team._id` and `@team.role`, since `@user.team` resolves to nothing for a token that carries no team claim. Clients that read the team from the JWT either read it from `GET /auth/teams` or the switch-team response, or the deployment lists `"@team"` in `jwtConfigProvider.account-properties-claims`.
 
-Since 9.7.0, `account-properties-claims` can also be overridden per team via `override-accounts-account-properties-claims` (see link:/docs/accounts/configuration#multi-tenancy-with-authdbresolver-and-teamconfiginterceptor[Multi-tenancy]) — useful when different tenants want different token payloads (e.g. one wants `consents` for ACL predicates, another wants a plan identifier, another neither). Whichever list is in effect, a fixed denylist is enforced at token issuance and cannot be bypassed by the override — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist].
+Since 9.7.0, `account-properties-claims` can also be overridden per team via `override-accounts-account-properties-claims` (see link:/docs/accounts/configuration#multi-tenancy-overrides[Multi-tenancy]) — useful when different tenants want different token payloads (e.g. one wants `consents` for ACL predicates, another wants a plan identifier, another neither). Whichever list is in effect, a fixed denylist is enforced at token issuance and cannot be bypassed by the override — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist].
 
-=== Multi-tenancy with AuthDbResolver and TeamConfigInterceptor
+[[multi-tenancy-with-authdbresolver-and-teamconfiginterceptor]]
+[[multi-tenancy-overrides]]
+=== Multi-tenancy: the override attributes
 
-To serve multiple teams from a single `restheart-accounts` deployment, configure two interceptors at `REQUEST_BEFORE_EXCHANGE_INIT`:
+One `restheart-accounts` deployment can serve several teams, each with its own users database and settings. The deployment tells `restheart-accounts` which team a request belongs to with request attributes, the `override-*` of the table below. When an attribute is present, `restheart-accounts` uses it in place of the value in the configuration.
 
-* **`AuthDbResolver`** — maps the incoming hostname to `override-users-db` and `override-cookie-domain`.
-* **`TeamConfigInterceptor`** — reads a `confs/{srvId}.accounts` document from MongoDB and attaches per-team app name, frontend URLs, email templates, and OAuth credentials.
-Since 9.6.0 the OAuth override surface covers all of `oauthConfig`, not just provider credentials — see xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides] for the OAuth-specific details, in particular `override-accounts-oauth-api-base-url`, which a multi-tenant deployment should derive from the request's own hostname rather than store, since every team is served on a different one.
+`restheart-accounts` does not ship the code that attaches the attributes: it depends on how the deployment maps a request to a team. Write it as interceptors at `REQUEST_BEFORE_EXCHANGE_INIT`. A typical deployment has two:
 
-Neither interceptor is bundled with `restheart-accounts`; implement them in your deployment layer.
-`restheart-accounts` automatically detects and uses all override attributes when present.
+* one maps the hostname of the request to the database of the team, and sets `override-users-db` and the cookie attributes;
+* one reads the settings of the team from a MongoDB document, and sets the other attributes: app name, frontend URLs, email templates, OAuth credentials.
+
+link:https://github.com/SoftInstigate/restheart/blob/master/test-plugins/src/main/java/org/restheart/test/plugins/interceptors/DbOverrideInterceptor.java[`DbOverrideInterceptor`], in the test plugins of RESTHeart, is a minimal example of the first: it sets `override-users-db` from a query parameter.
+
+Since 9.6.0 every option of `oauthConfig` can be overridden, beyond the provider credentials. A multi-tenant deployment should derive `override-accounts-oauth-api-base-url` from the hostname of the request: every team is served on a different one, so a stored value cannot be right for all. See xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides].
 
 .Override attribute reference
 |===
-| Attribute | Source | Overrides
+| Attribute | Usually derived from | Overrides
 
-| `override-users-db` | `AuthDbResolver` | the users database (also honoured by `mongoRealmAuthenticator`)
-| `override-cookie-domain` | `AuthDbResolver` | `accountsConfig.cookie-domain`
-| `override-cookie-secure` | `AuthDbResolver` | `accountsConfig.cookie-secure` (since 9.6.0)
-| `override-accounts-default-role` | `TeamConfigInterceptor` | `accountsConfig.default-role`
-| `override-accounts-ownership-role` | `TeamConfigInterceptor` | `accountsConfig.ownership-role`
-| `override-accounts-app-name` | `TeamConfigInterceptor` | `accountsConfig.app-name`
-| `override-accounts-frontend-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-url`
-| `override-accounts-frontend-app-url` | `TeamConfigInterceptor` | `accountsConfig.frontend-app-url`
-| `override-accounts-tmpl-verification` | `TeamConfigInterceptor` | email template (inline HTML)
-| `override-accounts-tmpl-password-reset` | `TeamConfigInterceptor` | email template (inline HTML)
-| `override-accounts-tmpl-invite` | `TeamConfigInterceptor` | email template (inline HTML)
-| `override-accounts-oauth-api-base-url` | `TeamConfigInterceptor` | `oauthConfig.api-base-url` (since 9.6.0)
-| `override-accounts-oauth-frontend-success-url` | `TeamConfigInterceptor` | `oauthConfig.frontend-success-url` (since 9.6.0)
-| `override-accounts-oauth-frontend-error-url` | `TeamConfigInterceptor` | `oauthConfig.frontend-error-url` (since 9.6.0)
-| `override-accounts-oauth-{provider}-enabled` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.enabled` (since 9.6.0; was `google`-only before)
-| `override-accounts-oauth-{provider}-client-id` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.client-id` (since 9.6.0; was `google`-only before)
-| `override-accounts-oauth-{provider}-client-secret` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.client-secret` (since 9.6.0; was `google`-only before)
-| `override-accounts-oauth-{provider}-scope` | `TeamConfigInterceptor` | `oauthConfig.providers.{provider}.scope` (since 9.6.0)
-| `override-accounts-users-unrestricted-roles` | `TeamConfigInterceptor` | `accountsConfig.users-unrestricted-roles` (since 9.6.0)
-| `override-accounts-signup-mgmt-enabled` | `TeamConfigInterceptor` | whether Sign-up Management is enabled for this team (since 9.6.0)
-| `override-accounts-terms-version` | `TeamConfigInterceptor` | `accountsConfig.terms-version` (since 9.7.0)
-| `override-accounts-privacy-version` | `TeamConfigInterceptor` | `accountsConfig.privacy-version` (since 9.7.0)
-| `override-accounts-account-properties-claims` | `TeamConfigInterceptor` | `accountsConfig.account-properties-claims` (since 9.7.0) — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist] for what a tenant cannot override
+| `override-users-db` | the hostname | the users database (also honoured by `mongoRealmAuthenticator`)
+| `override-cookie-domain` | the hostname | `accountsConfig.cookie-domain`
+| `override-cookie-secure` | the hostname | `accountsConfig.cookie-secure` (since 9.6.0)
+| `override-accounts-default-role` | the team settings | `accountsConfig.default-role`
+| `override-accounts-ownership-role` | the team settings | `accountsConfig.ownership-role`
+| `override-accounts-app-name` | the team settings | `accountsConfig.app-name`
+| `override-accounts-frontend-url` | the team settings | `accountsConfig.frontend-url`
+| `override-accounts-frontend-app-url` | the team settings | `accountsConfig.frontend-app-url`
+| `override-accounts-tmpl-verification` | the team settings | email template (inline HTML)
+| `override-accounts-tmpl-password-reset` | the team settings | email template (inline HTML)
+| `override-accounts-tmpl-invite` | the team settings | email template (inline HTML)
+| `override-accounts-oauth-api-base-url` | the team settings | `oauthConfig.api-base-url` (since 9.6.0)
+| `override-accounts-oauth-frontend-success-url` | the team settings | `oauthConfig.frontend-success-url` (since 9.6.0)
+| `override-accounts-oauth-frontend-error-url` | the team settings | `oauthConfig.frontend-error-url` (since 9.6.0)
+| `override-accounts-oauth-{provider}-enabled` | the team settings | `oauthConfig.providers.{provider}.enabled` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-client-id` | the team settings | `oauthConfig.providers.{provider}.client-id` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-client-secret` | the team settings | `oauthConfig.providers.{provider}.client-secret` (since 9.6.0; was `google`-only before)
+| `override-accounts-oauth-{provider}-scope` | the team settings | `oauthConfig.providers.{provider}.scope` (since 9.6.0)
+| `override-accounts-users-unrestricted-roles` | the team settings | `accountsConfig.users-unrestricted-roles` (since 9.6.0)
+| `override-accounts-signup-mgmt-enabled` | the team settings | whether Sign-up Management is enabled for this team (since 9.6.0)
+| `override-accounts-terms-version` | the team settings | `accountsConfig.terms-version` (since 9.7.0)
+| `override-accounts-privacy-version` | the team settings | `accountsConfig.privacy-version` (since 9.7.0)
+| `override-accounts-account-properties-claims` | the team settings | `accountsConfig.account-properties-claims` (since 9.7.0) — see link:/docs/accounts/security#jwt-claims-denylist[JWT claims denylist] for what a tenant cannot override
 
 |===
 
@@ -321,15 +325,15 @@ NOTE: `override-accounts-users-unrestricted-roles` and `override-accounts-signup
 
 NOTE: `{provider}` is any provider name registered with `OAuthService` — a built-in one (`google`, `github`) or a custom `OAuthProvider` plugin. The override key format is the same regardless of provider; see xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides] for the full OAuth override reference, including `scope` semantics and why `api-base-url` should be derived per-request rather than stored.
 
-==== `confs/{srvId}.accounts` document schema
+==== An example of team settings document
 
-The `TeamConfigInterceptor` reads an `accounts` sub-document from the existing service-configuration document (e.g. `cloud.confs` for free/shared nodes, `restheart.confs` for dedicated nodes).
-All fields are optional; absent fields fall back to the node-level static configuration.
+The second interceptor needs a place where the settings of each team are stored. The format is up to the deployment. This is an example: one document per team, with an `accounts` sub-document.
+Every field is optional. For a field that is absent the interceptor sets no attribute, and the value in the configuration applies.
 
 [source,json]
 ----
 {
-  "_id": "ea820b",
+  "_id": "team-1",
   "accounts": {
     "app-name":         "Customer App",
     "frontend-url":     "https://app.customer.com",
@@ -359,13 +363,12 @@ See xref:email-templates.adoc[Email Templates] for the full format reference.
 
 NOTE: `oauth.{provider}` accepts any provider name (`google`, `github`, or a custom `OAuthProvider` plugin), with the same `enabled` / `client-id` / `client-secret` / `scope` shape.
 
-IMPORTANT: `oauthConfig.api-base-url` and the `frontend-success-url` / `frontend-error-url` pair are deliberately **not** part of this document. On a multi-tenant node every team is served on a different hostname, so `TeamConfigInterceptor` should derive `override-accounts-oauth-api-base-url` from the incoming request (scheme + host) rather than read it from a stored value — a stored value could not be correct for more than one team. The frontend URLs are typically derived from the team's own `frontend-app-url` (already in this document) instead of stored separately, unless a team needs a distinct post-OAuth destination. See xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides].
+IMPORTANT: `oauthConfig.api-base-url` and the `frontend-success-url` / `frontend-error-url` pair are deliberately **not** part of this document. On a multi-tenant node every team is served on a different hostname. The interceptor should derive `override-accounts-oauth-api-base-url` from the scheme and the host of the request: a stored value cannot be right for more than one team. The frontend URLs are typically derived from the team's own `frontend-app-url` (already in this document) instead of stored separately, unless a team needs a distinct post-OAuth destination. See xref:google-oauth.adoc#_multi_tenant_per_team_overrides[Multi-tenant / per-team overrides].
 
 [TIP]
 ====
-`AuthDbResolver` and `TeamConfigInterceptor` are both disabled by default.
-Enable them only on deployments that need multi-tenancy.
-In single-team deployments the plugin uses the static `accountsConfig` values exclusively.
+A single-team deployment needs none of this.
+Without the attributes, the plugin uses the values of `accountsConfig` and `oauthConfig`.
 ====
 
 === Secrets management (RHO)

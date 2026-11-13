@@ -101,7 +101,7 @@ Both are readable in ACL rules as `@user.auth_time` and `@user.renewals`, which 
 
 CAUTION: Both claims are available since RESTHeart 9.9.0.
 
-`account-properties-claims` selects which fields of the user document are copied into the JWTs RESTHeart issues. In a multi-tenant deployment it can be overridden per tenant with the `override-accounts-account-properties-claims` request parameter, attached before authentication by a deployment-layer interceptor such as `TeamConfigInterceptor`.
+`account-properties-claims` selects which fields of the user document are copied into the JWTs RESTHeart issues. In a multi-tenant deployment it can be overridden per tenant with the `override-accounts-account-properties-claims` request parameter, attached before authentication by an interceptor of the deployment: see link:/docs/accounts/configuration#multi-tenancy-overrides[Multi-tenancy].
 
 ==== One issuance logic
 
@@ -177,7 +177,7 @@ A JWT payload is base64, not encrypted — the client reads every claim it carri
 * `emailVerificationToken`, `emailVerificationCreatedAt`
 * `passwordResetToken`, `passwordResetCreatedAt`
 
-These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds regardless of which layer wrote the list — static YAML, a `TeamConfigInterceptor` override, or a future custom source. The denylist wins over the required-claims set: a credential cannot be made mandatory.
+These are one-shot credentials or the password hash, never eligible to become a JWT claim. The filter is applied at issuance rather than at configuration validation, so it holds whoever wrote the list: the YAML configuration, a per-tenant override, or any other source. The denylist wins over the required-claims set: a credential cannot be made mandatory.
 
 ==== Claims reflect the authenticated account
 
