@@ -8,7 +8,7 @@ applies_to: restheart
 
 [.badge.bg-warning]#Preview#
 
-Plugin configuration blocks are **top-level keys named after the plugin**. There is no `plugins-args:` wrapper: RESTHeart's `PluginsFactory` looks up each plugin's arguments by name directly at the root of the configuration map.
+The examples on this page are written as RESTHeart override files, the form you pass with `-o`: each plugin's block is a key that **starts with a slash** — `/mqtt-sse:`, not `mqtt-sse:` — and **replaces that plugin's whole configuration**, so keep all the settings of a plugin in one block. There is no `plugins-args:` wrapper. See link:/docs/mqtt/#configuring[Configuring] for the rules and for `RHO`.
 
 See link:/docs/mqtt/#enablement[Enablement] for each plugin's `enabled` default; the tables below cover the other keys only.
 
@@ -211,7 +211,8 @@ Events can pass through an ordered chain of stages before reaching the client. P
 
 [source,yaml]
 ----
-mqtt-sse:
+/mqtt-sse:
+  enabled: true
   pipeline:
     - topic: "sensors/#"
       stages:
@@ -283,7 +284,7 @@ Restricts which topic filters a role may subscribe to, on both `/mqtt-sse` and `
 
 [source,yaml]
 ----
-mqtt-topic-authorizer:
+/mqtt-topic-authorizer:
   acl:
     iot-reader:
       - "sensors/#"
@@ -302,7 +303,8 @@ Persists messages to MongoDB through a bounded in-memory buffer that absorbs tra
 
 [source,yaml]
 ----
-mqtt-mongo-writer:
+/mqtt-mongo-writer:
+  enabled: true
   buffer:
     strategy: "blocking-queue"
     capacity: 10000

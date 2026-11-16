@@ -28,22 +28,15 @@ This is one walkthrough in three parts, not three independent recipes. Each part
 |How messages are stored, and why each one is stored once
 |===
 
-A fourth part — consuming MQTT from your own plugin, without depending on an MQTT library — is in https://github.com/SoftInstigate/restheart/blob/master/mqtt/TUTORIALS.md[`mqtt/TUTORIALS.md`] in the repository, alongside the compose files these commands use.
+A fourth part — consuming MQTT from your own plugin, without depending on an MQTT library — is in https://github.com/SoftInstigate/restheart/blob/master/mqtt/TUTORIALS.md[`mqtt/TUTORIALS.md`] in the repository. It needs a checkout and a JDK 25+; the three parts here need neither.
 
 == Before you start
 
-You need Docker and a JDK 25+, and a clone of the https://github.com/SoftInstigate/restheart[RESTHeart repository]. From the `mqtt` directory:
-
-[source,bash]
-----
-../mvnw -f ../pom.xml -pl mqtt -am install -DskipTests
-----
-
-That builds `target/restheart-mqtt.jar` and `target/lib`, which the compose files mount into the RESTHeart container. `-am` also installs `restheart-parent`. With an older JDK the build stops straight away and says so.
+You need Docker, and the module's archive: it holds the plugin and both compose files, so there is nothing to build. Download it and unpack it as in the link:/docs/mqtt/#quick-start[Quick start], and run every command below from the directory it creates.
 
 Both compose files bind host ports **8080** and **1883**, so run one at a time and make sure nothing else is using them.
 
-The container runs `softinstigate/restheart-snapshot:latest`, not a released image. Per-topic ACL enforcement on `/mqtt-sse` depends on a fix that is only on unreleased `master`; against a released image part 1's `403` is silently a `200` instead, which would teach you the opposite of the truth.
+The container runs `softinstigate/restheart:latest`, with the module mounted into it. With the snapshot archive, run the core built from `master` instead, by putting `RESTHEART_IMAGE=softinstigate/restheart-snapshot:latest` in front of every `docker compose` command below. Never use an image older than 9.9.0: per-topic ACL enforcement on `/mqtt-sse` is missing there, so part 1's `403` is silently a `200` instead, which would teach you the opposite of the truth.
 
 TIP: You will want three terminals: one for the server's logs, one holding a stream open, one to publish on.
 
