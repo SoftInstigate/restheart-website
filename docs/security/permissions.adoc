@@ -749,9 +749,9 @@ IMPORTANT: `projectResponse` hides a field from the response. A client that may 
 [[allowfilter]]
 ===== allowFilter
 
-Since v9.16, `allowFilter` decides whether a read may send its own query. A `GET` with the `filter`, `sort` or `sort_by` query parameter gets `403` when its permission does not allow it. This applies to `_size` too.
+Since v9.16, `allowFilter` decides whether a read may send its own query. A permission that does not allow it does not match a `GET` with the `filter`, `sort` or `sort_by` query parameter. The request gets `403` when no other permission of the caller allows it. This applies to `_size` too.
 
-The reason is `projectResponse`. A permission can hide a field from the response. A filter written by the client can still test that field: a condition on it tells which documents match, and a sort on it tells the order of its values. With `allowFilter` off, a hidden field stays hidden.
+The reason is `projectResponse`. A permission can hide a field from the response. A filter written by the client can still test that field: a condition on it tells which documents match, and a sort on it tells the order of its values. With `allowFilter` off on every permission of the caller, a hidden field stays hidden: see <<allowfilter-and-several-permissions>>.
 
 The application queries through link:/docs/mongodb-rest/aggregations[aggregations]. Whoever writes the permissions declares the aggregation on the collection, and the client sends only the values of its variables.
 
@@ -786,6 +786,46 @@ The client gets `403` with the message `filter, sort and sort_by are not allowed
 * writes: a bulk `PATCH` or `DELETE` needs a filter, and `allowBulkPatch` and `allowBulkDelete` decide about it. The filter of a bulk write tells, with the number of documents it matches, what the filter of a read tells: grant bulk writes only on collections without hidden fields;
 * the root role, and the requests a plugin allows through the `ACLRegistry`: they do not go through the permissions;
 * aggregations, which do not read `filter` or `sort`.
+
+[[allowfilter-and-several-permissions]]
+====== A caller with several permissions on the same read
+
+`allowFilter` is part of what makes a permission match, like its `predicate`. A read with `filter`, `sort` or `sort_by` is served by the permission with the highest priority among those that allow it as sent. A permission with a higher priority that does not allow these parameters takes no part.
+
+Take a user with the roles `contractor` and `analyst`, and these two permissions:
+
+[source,json]
+----
+[
+  {
+    "_id": "contractorsReadPublic",
+    "roles": ["contractor"],
+    "predicate": "path('/reports') and method(GET)",
+    "priority": 200,
+    "mongo": {
+      "readFilter": {"classification": "public"},
+      "projectResponse": {"salary": 0}
+    }
+  },
+  {
+    "_id": "analystsQueryInternal",
+    "roles": ["analyst"],
+    "predicate": "path('/reports') and method(GET)",
+    "priority": 100,
+    "mongo": {
+      "readFilter": {"classification": "internal"},
+      "allowFilter": true
+    }
+  }
+]
+----
+
+* `GET /reports` matches both, and `contractorsReadPublic` serves it: public documents, without `salary`.
+* `GET /reports?sort=_id` matches `analystsQueryInternal` only, which serves it: internal documents, with `salary`.
+
+The user is an analyst, and the second request is one the analysts' permission allows. A user with the single role `contractor` gets `403` on it.
+
+WARNING: `projectResponse` and `readFilter` restrict the requests their own permission serves. A field stays hidden from a caller, and a document out of reach, only when no permission of the caller's roles allows `filter` on the same reads without the same restrictions. When you set `allowFilter` on a permission, check the other permissions of the users who hold its role.
 
 [[sort]]
 ===== sort
@@ -859,11 +899,13 @@ A variable is written in one of two ways:
 
 Either way an operator never reaches the query: `?category={"$ne":null}` is the string itself with `@qparams`, and a `400` with a plain name.
 
-A permission whose `mongo` block is not valid is refused when it is written to the ACL, with `400` and the reason. One already stored allows nothing: the request gets `403`, and the log says, at WARN, which permission and why.
+A permission whose `mongo` block is not valid is refused when it is written to the ACL, with `400` and the reason. One already stored allows nothing: the request gets `403`, and the log says, at WARN, which permission and why. The `403` comes also when a permission with a lower priority would allow the request.
 
 === Permission Priority
 
-When multiple permissions match a request, RESTHeart evaluates them in order of priority (higher numbers first). A permission without `priority` is evaluated last.
+A request is authorized when at least one permission allows it and no vetoer refuses it. A permission allows a request when its `predicate` resolves to `true` and its `mongo` switches (`allowFilter`, `allowBulkPatch`, `allowBulkDelete`, `allowWriteMode`, `allowManagementRequests`) admit it.
+
+Priority decides which permission serves the request when more than one allows it: the one with the highest number, with its `mongo` options. A permission without `priority` comes last.
 
 [source,json]
 ----
@@ -894,9 +936,10 @@ When multiple permissions match a request, RESTHeart evaluates them in order of 
 
 In this example:
 - `userLimitedAccess` (priority 100) is evaluated before `adminFullAccess` (priority 0)
-- If a user has both roles, the higher priority permission applies first
+- A user with both roles who reads a collection is served by `userLimitedAccess`, with its `readFilter`
+- The same user sending a bulk `PATCH` is served by `adminFullAccess`: `userLimitedAccess` does not set `allowBulkPatch`, so it does not allow that request
 
-TIP: Use priority to create exception rules. For example, give high priority to specific restrictions and low priority to general access rules.
+IMPORTANT: A permission with a higher priority does not stop one with a lower priority from serving a request the first does not allow. To keep a request from being served, make sure that no permission of the caller's roles allows it, or refuse it with a vetoer.
 
 ==== A user with more than one role
 

@@ -7,24 +7,24 @@ menu: overview
 
 RESTHeart 9.16 has two breaking changes for deployments. Check each one against yours:
 
-* clients send `filter`, `sort` or `sort_by` through ACL permissions: see <<a-read-sends-its-own-query-only-if-its-permission-allows-it>>;
+* clients send `filter`, `sort` or `sort_by` through ACL permissions: see <<a-read-sends-its-own-query-only-if-a-permission-allows-it>>;
 * change streams run under a permission with a `readFilter` or a `projectResponse`: see <<change-streams-do-not-apply-the-readfilter-and-projectresponse>>;
 
 If you write plugins and one of them builds the key of a change stream worker, see also <<for-plugin-developers-the-key-of-a-change-stream-worker>>.
 
 == What changed
 
-=== A read sends its own query only if its permission allows it
+=== A read sends its own query only if a permission allows it
 
-A filter written by the client can reveal the fields that `projectResponse` hides. A condition on a hidden field tells which documents match it, and a sort on it tells the order of its values. For this reason 9.16 refuses these queries unless the permission allows them.
+A filter written by the client can reveal the fields that `projectResponse` hides. A condition on a hidden field tells which documents match it, and a sort on it tells the order of its values. For this reason 9.16 refuses these queries unless a permission allows them.
 
 Before 9.16, a permission that allowed a `GET` also let the client add `filter`, `sort` and `sort_by`.
 
-From 9.16, a `GET` with one of them gets `403`, unless its permission allows it. This applies to `_size` too. The client gets the message `filter, sort and sort_by are not allowed`. The log of RESTHeart says more, at INFO:
+From 9.16, a permission that does not allow them does not match a `GET` with one of them. The request gets `403` when no other permission of the caller allows it. This applies to `_size` too. The client gets the message `filter, sort and sort_by are not allowed`. The log of RESTHeart says more, at INFO:
 
 [source]
 ----
-403 for GET /mydb/orders: filter, sort and sort_by are not allowed by the permission that matches the request: query through an aggregation, or set mongo.allowFilter on the permission
+403 for GET /mydb/orders: no permission of the caller allows filter, sort and sort_by on this request: query through an aggregation, or set mongo.allowFilter on a permission
 ----
 
 For each query a client sends, choose one way:
@@ -37,6 +37,8 @@ For each query a client sends, choose one way:
 ----
 "mongo": { "allowFilter": true }
 ----
+
+A user with several roles is served by the permission with the highest priority among those that allow the request as sent. Before you set `allowFilter` on a permission, check the other permissions of the users who hold its role: see link:/docs/security/permissions#allowfilter-and-several-permissions[A caller with several permissions on the same read].
 
 To keep the behaviour of 9.15 on every permission, change the default of the mongo service:
 
