@@ -49,12 +49,64 @@ When the plugin renders a template it:
 
 The locale is resolved in the following order:
 
-. The user document's `locale` field, if present.
+. The recipient's `locale`: the `locale` field of their user document, if present. It is the user's choice.
+. The `locale` of the request that sends the email, if the body has one. It is the client's guess, for instance the language of the page the user is on.
 . The `default-locale` value from `accountsConfig`.
 . `en` as the ultimate fallback.
 
+Steps 1 and 2 are since 9.17.1: before, every email was rendered with `default-locale`.
+
+The endpoints that send an email accept `locale` in their body:
+
+[cols="1,1,2"]
+|===
+| Endpoint | Email | What `locale` does
+
+| `POST /auth/register`
+| verification
+| stored on the new user, and used for the email
+
+| `POST /auth/invite`
+| invitation
+| new user: stored on the user it creates, and used for the email. Existing user: used only if the user has no `locale`
+
+| `POST /auth/resend-invite`
+| invitation
+| used only if the user has no `locale`
+
+| `POST /auth/forgot-password`
+| password reset
+| used only if the user has no `locale`
+|===
+
+A request to these endpoints never overwrites a stored `locale`. The user changes their own with `PATCH /auth/profile`.
+
+`locale` is a language code of 2 to 5 letters, such as `en` or `it`: what the `lang` attribute of the templates takes. It is stored in lower case. Anything else, `it-IT` included, is refused with `400`. The value only selects a version of the template, it never reaches the text of the email.
+
+NOTE: If the users collection has a JSON Schema with `additionalProperties: false`, declare `locale` in it as an optional string. Otherwise a registration or an invitation that carries a `locale` is refused by the schema.
+
 If the resolved locale produces no visible text (i.e. all text is wrapped in non-matching `<span lang>` elements), the engine re-runs with `en`.
 If there is still no `en` content, all `<span lang>` elements are rendered without filtering.
+
+==== Languages of the built-in templates
+
+Since 9.17.1 the built-in templates (`verification.html`, `password-reset.html`, `invite.html`) come in eight languages:
+
+[cols="1,2"]
+|===
+| Code | Language
+
+| `en` | English
+| `it` | Italian
+| `es` | Spanish
+| `fr` | French
+| `de` | German
+| `nl` | Dutch
+| `pt` | Portuguese, neutral between Portugal and Brazil
+| `pl` | Polish
+|===
+
+Before, they had English and Italian. A deployment with `default-locale: de`, or a user with `locale: de`, gets the emails in German without a custom template. Any other language falls back to English.
 
 ==== Full example
 

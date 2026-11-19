@@ -817,13 +817,15 @@ Self-service update of the caller's own `profile.name` / `profile.surname` field
 
 [source,json]
 ----
-{ "firstName": "Alice", "lastName": "Rossi" }
+{ "firstName": "Alice", "lastName": "Rossi", "locale": "it" }
 ----
+
+`locale`, since 9.17.1, is the language the user wants the emails in: a code of 2 to 5 letters, stored in lower case as the top-level `locale` of the user document. This is how the user's own choice replaces the one a registration or an invitation made for them. See link:/docs/accounts/email-templates#locale-resolution[Locale resolution].
 
 *Flow:*
 
-1. Validate body — `400` if neither `firstName` nor `lastName` is present, or if either is blank.
-2. `$set profile.name` / `profile.surname` on the caller's own user document (writes directly via the MongoDB driver, not through the generic REST resource).
+1. Validate body — `400` if none of `firstName`, `lastName` and `locale` is present, if a name is blank, or if `locale` is not a language code.
+2. `$set profile.name` / `profile.surname` / `locale` on the caller's own user document (writes directly via the MongoDB driver, not through the generic REST resource).
 3. Return `200 OK`.
 
 *Frontend route:* `/account` (settings page)

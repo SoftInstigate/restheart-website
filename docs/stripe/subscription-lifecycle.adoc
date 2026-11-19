@@ -58,13 +58,15 @@ POST /stripe/checkout
 Authorization: Bearer <token>
 Content-Type: application/json
 
-{ "plan": "gold", "interval": "month" }
+{ "plan": "gold", "interval": "month", "locale": "it" }
 ----
 
 [source,json]
 ----
 { "url": "https://checkout.stripe.com/c/pay/cs_test_..." }
 ----
+
+`locale` is optional, since 9.17.1: the language of the Checkout page, a code of 2 to 5 letters. Without it the page is in the language of the billing contact, when they have one, else Stripe follows the browser. An invalid `locale` is refused with `400`. See link:/docs/stripe/configuration#_language_of_the_emails[Language of the emails].
 
 Redirect the browser to that URL. Stripe hosts the payment page — card details never reach your server.
 
@@ -197,7 +199,12 @@ Plan changes go through the Customer Portal, not through a second checkout:
 ----
 POST /stripe/portal
 Authorization: Bearer <token>
+Content-Type: application/json
+
+{ "locale": "it" }
 ----
+
+The body is optional. `locale`, since 9.17.1, is the language of the portal: the same rule as the Checkout page. Without it the portal is in the language of the billing contact, when they have one, else Stripe follows the Customer's `preferred_locales` or the browser. An invalid `locale` is refused with `400`.
 
 [source,json]
 ----

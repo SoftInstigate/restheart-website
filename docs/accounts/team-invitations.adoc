@@ -48,10 +48,13 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "email": "bob@example.com",
-  "role":  "member"
+  "email":  "bob@example.com",
+  "role":   "member",
+  "locale": "it"
 }
 ----
+
+`locale` is optional, since 9.17.1: the language of the invitation email. For a new user it is also stored on the user document the invitation creates, so the later emails reach them in the same language. For an existing user it is used only if the user has no `locale` of their own, and it is never stored. An invalid `locale` is refused with `400`. See link:/docs/accounts/email-templates#locale-resolution[Locale resolution].
 
 `role` must be one of: the configured `member-role-name` (default `"member"`) or the configured `ownership-role` (default `"owner"`).
 
@@ -60,7 +63,7 @@ IMPORTANT: The `admin` role is a system-level ACL role in RESTHeart and should N
 === Server-side steps
 
 . Authorize the caller (must be `owner` of their team).
-. Validate `email` format and `role` value.
+. Validate `email` format, `role` value and `locale`, when present.
 . **If the user already belongs to the caller's team** → `409 Conflict`.
 . **If a pending invitation already exists** for the same email+team in `auth_invitations` → `409 Conflict`.
 . **If the user does not exist** → create user with `roles: ["$unauthenticated"]`. Create an `auth_invitations` document with `isNewUser: true`. Send activation email with link to `{frontend-url}/auth/activate?email=...&token=...`. The membership is added only when the user activates the account.
@@ -250,8 +253,10 @@ Both new and existing invited users can accept via OAuth. The `pendingInviteToke
 
 [source,json]
 ----
-{ "email": "bob@example.com" }
+{ "email": "bob@example.com", "locale": "it" }
 ----
+
+`locale` is optional, since 9.17.1: the language of the email, used only if the invited user has no `locale`. A new user invited with a `locale` has that one. It is never stored.
 
 Generates a new token (invalidating the previous one) by updating the `auth_invitations` document, and re-sends the invitation email. Works for both new and existing user invitations.
 Returns `200 OK` on success. Returns `404` if no pending invitation is found for that user in the caller's team.

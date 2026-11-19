@@ -317,7 +317,8 @@ Grant `POST` and `GET` only. Without that restriction a customer can `PATCH` the
 
 Enabled by the ACL rules above, not by a config flag.
 
-A guest supplies `email` in the request body and reads the order back with `_id` + `secret`:
+A guest supplies `email` in the request body and reads the order back with `_id` + `secret`.
+Since 9.17.1 the body also takes an optional `locale`, for a guest and for a signed-in buyer alike: the language of the Checkout page and of the emails about the order. It is kept on the order as `locale`. See link:/docs/stripe/configuration#_language_of_the_emails[Language of the emails].
 
 [source,bash]
 ----
