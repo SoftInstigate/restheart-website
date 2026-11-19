@@ -51,7 +51,7 @@ The locale is resolved in the following order:
 
 . The recipient's `locale`: the `locale` field of their user document, if present. It is the user's choice.
 . The `locale` of the request that sends the email, if the body has one. It is the client's guess, for instance the language of the page the user is on.
-. The `default-locale` value from `accountsConfig`.
+. The `default-locale` value from `accountsConfig`. In a multi-tenant deployment the tenant's own, attached to the request as `override-accounts-default-locale` (since 9.17.2).
 . `en` as the ultimate fallback.
 
 Steps 1 and 2 are since 9.17.1: before, every email was rendered with `default-locale`.
