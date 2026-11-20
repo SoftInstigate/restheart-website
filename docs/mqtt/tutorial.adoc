@@ -36,14 +36,9 @@ You need Docker, and the module's archive: it holds the plugin and both compose 
 
 Both compose files bind host ports **8080** and **1883**, so run one at a time and make sure nothing else is using them.
 
-The archive is a build of the `master` branch, so run it on the RESTHeart built from that branch. Set this once in each terminal you use, before any `docker compose` command:
+The compose files run `softinstigate/restheart:latest`, the release the archive belongs to. With the snapshot archive, run the RESTHeart built from `master` instead — see link:/docs/mqtt/#which-archive[Which archive].
 
-[source,bash]
-----
-export RESTHEART_IMAGE=softinstigate/restheart-snapshot:latest
-----
-
-Without it the compose files run `softinstigate/restheart:latest`, a release the archive was not tested against. Never use an image older than 9.9.0: per-topic ACL enforcement on `/mqtt-sse` is missing there, so part 1's `403` is silently a `200` instead, which would teach you the opposite of the truth.
+Never use an image older than 9.9.0: per-topic ACL enforcement on `/mqtt-sse` is missing there, so part 1's `403` is silently a `200` instead, which would teach you the opposite of the truth.
 
 TIP: You will want three terminals: one for the server's logs, one holding a stream open, one to publish on.
 
